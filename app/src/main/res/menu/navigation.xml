@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_diarios"
+        android:icon="@drawable/ic_newspaper"
+        android:title="@string/title_diarios" />
+
+    <item
+        android:id="@+id/navigation_boletim"
+        android:icon="@drawable/ic_list"
+        android:title="@string/title_boletim" />
+
+    <item
+        android:id="@+id/navigation_horario"
+        android:icon="@drawable/ic_access_alarm_black_24dp"
+        android:title="@string/title_horario" />
+
+</menu>

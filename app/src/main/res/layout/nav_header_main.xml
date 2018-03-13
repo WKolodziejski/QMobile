@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/nav_header_height"
+    android:background="@color/colorPrimaryDark"
+    android:gravity="bottom"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+    android:id="@+id/nav_image">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            >
+
+        <ImageView
+            android:id="@+id/img_foto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            app:srcCompat="@drawable/icon_launcher_white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/nav_header_vertical_spacing"
+                android:id="@+id/msg"
+                android:textColor="@color/colorWhite"
+                android:shadowColor="@color/colorAccent"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+            <TextView
+                android:id="@+id/matricula"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/colorWhite"
+                android:shadowColor="@color/colorAccent"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+        </LinearLayout>
+
+</LinearLayout>

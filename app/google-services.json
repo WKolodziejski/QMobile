@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "145124770589",
+    "firebase_url": "https://qacademico-81a46.firebaseio.com",
+    "project_id": "qacademico-81a46",
+    "storage_bucket": "qacademico-81a46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145124770589:android:e43486d23c077a4a",
+        "android_client_info": {
+          "package_name": "com.qacademico.qacademico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145124770589-ltial6bmh4os2piis8c8d5om7ddf89jp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.qacademico.qacademico",
+            "certificate_hash": "c27a8b24b981ff47239f70d981a85b66117b20b5"
+          }
+        },
+        {
+          "client_id": "145124770589-nqbksd6lqj80v18rergpbctoppf38keu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgvs9mwnMmfChfFcReEL8SeHebmNlR-Sg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145124770589-nqbksd6lqj80v18rergpbctoppf38keu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/menu_resources">
+        <item
+            android:id="@+id/nav_materiais"
+            android:icon="@drawable/ic_closed_diary"
+            android:title="@string/menu_materiais" />
+        <item
+            android:id="@+id/nav_calendario"
+            android:icon="@drawable/ic_event_black_24dp"
+            android:title="@string/menu_calendario" />
+        <item
+            android:id="@+id/nav_documentos"
+            android:icon="@drawable/ic_check_form"
+            android:title="@string/menu_documentos" />
+    </item>
+
+    <item android:title="@string/menu_communication">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share_black_24dp"
+                android:title="@string/menu_share" />
+            <item
+                android:id="@+id/nav_sug"
+                android:icon="@drawable/ic_chat_black_24dp"
+                android:title="@string/menu_changes" />
+            <item
+            android:id="@+id/nav_bug"
+            android:icon="@drawable/ic_bug_report_black_24dp"
+            android:title="@string/menu_bug" />
+        </menu>
+    </item>
+
+    <item android:title="@string/menu_account">
+        <menu>
+            <item
+                android:id="@+id/nav_password"
+                android:icon="@drawable/ic_lock_outline_black_24dp"
+                android:title="@string/menu_password" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="@string/menu_logout" />
+        </menu>
+    </item>
+
+    <item android:title=""/>
+
+</menu>

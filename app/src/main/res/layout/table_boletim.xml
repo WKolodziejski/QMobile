@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tables_boletim"
+    android:orientation="vertical"
+    android:elevation="5dp"
+    android:background="@color/white"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/openViewBoletim"
+        >
+
+        <ImageView
+            android:layout_margin="16dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/openBoletim"
+            android:tint="@color/colorAccent"
+            android:src="@drawable/ic_expand_more_black_24dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="16dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/materiaBoletim"
+            android:textSize="@dimen/main_font_size"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/div_boletim_down"/>
+
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:id="@+id/expandable_layout_boletim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:el_duration="250"
+        app:el_expanded="true"
+        app:el_parallax="0"
+        android:layout_marginHorizontal="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            >
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:rowCount="5"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_column="0"
+                    android:layout_row="0"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_Etapa"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_Nota"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_Faltas"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_RP"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_NotaFinal"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_column="1"
+                    android:layout_row="0"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_PrimeiraEtapa"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/NotaPrimeiraEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/FaltasPrimeiraEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/RPPrimeiraEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/NotaFinalPrimeiraEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_column="2"
+                    android:layout_row="0"
+                    android:gravity="center_horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="@string/boletim_SegundaEtapa"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/NotaSegundaEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/FaltasSegundaEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/RPSegundaEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/NotaFinalSegundaEtapa"
+                        android:padding="5dp"
+                        android:singleLine="true"
+                        android:textAlignment="center"/>
+
+                </LinearLayout>
+
+            </GridLayout>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:rowCount="1"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_font_size"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    android:text="@string/boletim_TFaltas"
+                    android:layout_column="0"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/main_font_size"
+                    android:id="@+id/Tfaltas"
+                    android:padding="5dp"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:scrollHorizontally="true"/>
+
+            </GridLayout>
+
+        </LinearLayout>
+
+    </net.cachapa.expandablelayout.ExpandableLayout>
+
+</LinearLayout>
