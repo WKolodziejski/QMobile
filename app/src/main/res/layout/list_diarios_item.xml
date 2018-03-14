@@ -7,6 +7,10 @@
     android:layout_margin="5dp"
     android:elevation="2dp"
     android:background="@drawable/layout_bg_body"
+    android:stateListAnimator="@animator/raise"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     >
 
     <LinearLayout
@@ -31,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="5dp"
+        android:padding="5dp"
         >
 
     <TextView

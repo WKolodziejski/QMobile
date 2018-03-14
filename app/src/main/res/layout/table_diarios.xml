@@ -37,12 +37,6 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark"
-        android:id="@+id/div_diarios_down"/>
-
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_layout_diarios"
         android:layout_width="match_parent"
@@ -51,13 +45,13 @@
         app:el_duration="250"
         app:el_expanded="true"
         app:el_parallax="0"
-        android:paddingBottom="10dp"
         >
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_diarios_etapa"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingBottom="10dp"
             android:fitsSystemWindows="true"/>
 
         <LinearLayout
@@ -67,6 +61,7 @@
             android:id="@+id/diarios_nothing"
             android:orientation="vertical"
             android:gravity="center_horizontal"
+            android:paddingBottom="10dp"
             android:layout_marginVertical="10dp"
             >
 
@@ -92,5 +87,11 @@
         </LinearLayout>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/div_diarios_down"/>
 
 </LinearLayout>

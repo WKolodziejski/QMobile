@@ -38,12 +38,6 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark"
-        android:id="@+id/div_horario_down"/>
-
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_layout_horario"
         android:layout_width="match_parent"
@@ -63,6 +57,12 @@
             android:layout_marginTop="5dp"
             />
 
-        </net.cachapa.expandablelayout.ExpandableLayout>
+    </net.cachapa.expandablelayout.ExpandableLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/div_horario_down"/>
 
 </LinearLayout>

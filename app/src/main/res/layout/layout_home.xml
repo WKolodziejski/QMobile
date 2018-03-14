@@ -34,10 +34,14 @@
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/layout_bg_body"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:stateListAnimator="@animator/raise"
+                    android:clickable="true"
                     android:elevation="2dp"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:padding="5dp"
+                    android:focusable="true"
                     >
 
                     <TextView

@@ -36,12 +36,6 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark"
-        android:id="@+id/div_boletim_down"/>
-
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_layout_boletim"
         android:layout_width="match_parent"
@@ -267,5 +261,11 @@
         </LinearLayout>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/div_boletim_down"/>
 
 </LinearLayout>

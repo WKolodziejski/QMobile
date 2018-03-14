@@ -65,6 +65,7 @@
                     android:layout_height="wrap_content"
                     android:columnCount="3"
                     android:layout_marginBottom="10dp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:id="@+id/bug_grid_boletim"
                     >
 
@@ -103,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:columnCount="3"
                     android:layout_marginBottom="10dp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:id="@+id/bug_grid_diarios"
                     >
 
@@ -141,6 +143,7 @@
                     android:layout_height="wrap_content"
                     android:columnCount="3"
                     android:layout_marginBottom="10dp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:id="@+id/bug_grid_horario"
                     >
 
@@ -179,6 +182,7 @@
                     android:layout_height="wrap_content"
                     android:columnCount="3"
                     android:layout_marginBottom="10dp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:id="@+id/bug_grid_outro"
                     >
 
