@@ -1315,6 +1315,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 } else if (html.getUrl().contains(url + pg_horario)) {
                     html.loadUrl("javascript:window.HtmlHandler.handleHorario" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
+                } else if (html.getUrl().contains(url + pg_material)) {
+                    html.loadUrl("javascript:window.HtmlHandler.handleMaterial" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 } else if (html.getUrl().contains(url + pg_change_password)) {
                     change_password = !change_password;
                     if (change_password) {
