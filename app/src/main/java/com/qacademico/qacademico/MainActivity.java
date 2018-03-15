@@ -1233,7 +1233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             material = new ArrayList<>();
 
                             String data = element.child(0).text();
-                            String link = element.child(1).child(1).attr("href");
+                            String link = "http://qacademico.ifsul.edu.br" + element.child(1).child(1).attr("href");
                             String nomeConteudo = element.child(1).child(1).text();
                             String descricao = "";
 
@@ -1269,6 +1269,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }.start();
         }
+    }
+
+    private void test2Download(){
+        //html.loadUrl(url + pg_material);
+        html.loadUrl("javascript:document.querySelector(\"a[href='/UPLOADS/MATERIAIS_AULAS/270355-Estatística.pdf']\").click();");
     }
 
     public class CustomWebViewClient extends WebViewClient {
@@ -2432,6 +2437,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void clickDocumentos() {
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
+
+        test2Download();
+
     }
 
     public static boolean isConnected(Context context) {
