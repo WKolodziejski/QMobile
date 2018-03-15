@@ -126,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     List<Trabalho> trabalhos;
     List<Materia> materias;
     List<Guide> guide;
+    List<Material> material;
+    List<Materiais> materiais;
     String[] data_boletim, data_horario, data_diarios, periodo_horario, periodo_boletim;
     int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario, periodo_position_boletim;
     BottomNavigationView navigation;
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     FirebaseRemoteConfig remoteConfig;
-    MainMateriaisAula materialAula;
+    //MainMateriaisAula materialAula;
 
     @Override
     @AddTrace(name = "onCreateTrace")
@@ -1208,15 +1210,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Element table = homeMaterial.getElementsByTag("tbody").get(10);
                     Elements rotulos = table.getElementsByClass("rotulo");
 
-                    materialAula = new MainMateriaisAula();//ta tudo salvo nessa variavel<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    //materialAula = new MainMateriaisAula();//ta tudo salvo nessa variavel<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+                    materiais = new ArrayList<>();
 
                     for (int i = 1; i< rotulos.size();i++){
+
                         String str = rotulos.get(i).text();
                         str = str.substring(str.indexOf('-')+2,str.indexOf('('));
                         str = str.substring(str.indexOf('-')+2);
                         String nomeMateria = str;
 
-                        MateriaisMateria materias = new MateriaisMateria(nomeMateria);
+                        //MateriaisMateria materias = new MateriaisMateria(nomeMateria);
 
 
                         Log.i("Materia","\n\n\n**************************"+nomeMateria+"*********************************\n");
@@ -1225,6 +1229,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         String classe = rotulos.get(i).nextElementSibling().className();
                         Element element = rotulos.get(i).nextElementSibling();
                         while (classe.equals("conteudoTexto")){
+
+                            material = new ArrayList<>();
+
                             String data = element.child(0).text();
                             String link = element.child(1).child(1).attr("href");
                             String nomeConteudo = element.child(1).child(1).text();
@@ -1235,24 +1242,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 descricao = element.child(1).child(3).nextSibling().toString();
                             }
 
-                            MateriaisConteudo conteudo = new MateriaisConteudo(data, nomeConteudo, link,descricao);
-                            materias.addMateriais(conteudo);
+                            //MateriaisConteudo conteudo = new MateriaisConteudo(data, nomeConteudo, link, descricao);
+                            //materias.addMateriais(conteudo);
+
+                            material.add(new Material(data, nomeConteudo, link, descricao));
 
                             Log.i("Materia","\n\nNome: " +nomeConteudo + "\nData: "+ data + "\nLink: "+  link + "\nDesc: " + descricao);
                             if (element.nextElementSibling() != null){
                                 element = element.nextElementSibling();
                                 classe = element.className();
-                            }else{
+                            } else {
                                 classe = "quit";
                             }
 
                         }
-                        materialAula.addMateria(materias);
-
+                        materiais.add(new Materiais(nomeMateria, material));
+                        //materialAula.addMateria(materias);
                     }
-
-
-
 
                     runOnUiThread(() -> {
                         pg_horario_loaded = true;
