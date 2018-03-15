@@ -1262,11 +1262,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     runOnUiThread(() -> {
                         pg_horario_loaded = true;
-                        dismissProgressDialog();
-                        dismissProgressbar();
-
-                        autoLoadPages();
-
+                        //dismissProgressDialog();
+                        //dismissProgressbar();
+                        //autoLoadPages();
                     });
                 }
             }.start();
