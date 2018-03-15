@@ -6,7 +6,10 @@ import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MoreActivity extends AppCompatActivity {
@@ -20,7 +23,15 @@ public class MoreActivity extends AppCompatActivity {
         tinf_logo.setOnLongClickListener(v -> {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             vibrator.vibrate(1000);
-            Toast.makeText(getApplicationContext(), "\ud83d\udc03", Toast.LENGTH_SHORT).show();
+
+
+
+            Toast toast = Toast.makeText(getApplicationContext(), "\ud83d\udc03", Toast.LENGTH_SHORT);
+            ViewGroup group = (ViewGroup) toast.getView();
+            TextView messageTextView = (TextView) group.getChildAt(0);
+            messageTextView.setTextSize(35);
+            toast.show();
+
             return true;
         });
     }
