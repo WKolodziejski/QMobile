@@ -1293,8 +1293,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         showSnackBar(loginLayout, getResources().getString(R.string.text_invalid_login), false);
                         progressBar_login.setVisibility(View.GONE);
                     } else {
+                        dismissProgressDialog();
                         logOut();
-                        showSnackBar(loginLayout, getResources().getString(R.string.text_expired_login), false);
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_expired_login), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     dismissProgressDialog();
