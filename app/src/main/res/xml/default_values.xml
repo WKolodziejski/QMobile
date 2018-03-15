@@ -25,6 +25,10 @@
         <value>2010</value>
     </entry>
     <entry>
+        <key>pg_material</key>
+        <value>2061</value>
+    </entry>
+    <entry>
         <key>pg_change_password</key>
         <value>1011</value>
     </entry>

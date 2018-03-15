@@ -103,7 +103,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterGuide.OnGuideClicked {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_change_password, pg_erro, download_update_url, email_to, email_from, email_from_pwd;
+    static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_material, pg_change_password, pg_erro, download_update_url, email_to, email_from, email_from_pwd;
     private String matricula, password, nome, home_msg, new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario, linkAtt;
     private SharedPreferences login_info;
     private WebView html;
@@ -225,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pg_diarios = remoteConfig.getString("pg_diarios");
         pg_boletim = remoteConfig.getString("pg_boletim");
         pg_horario = remoteConfig.getString("pg_horario");
+        pg_material = remoteConfig.getString("pg_material");
         pg_change_password = remoteConfig.getString("pg_change_password");
         pg_erro = remoteConfig.getString("pg_erro");
         download_update_url = remoteConfig.getString("download_update_url");
