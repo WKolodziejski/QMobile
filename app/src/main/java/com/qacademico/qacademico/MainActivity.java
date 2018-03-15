@@ -471,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_guide);
                     FlexboxLayoutManager layout = new FlexboxLayoutManager(getBaseContext());
                     layout.setFlexDirection(FlexDirection.ROW);
-                    layout.setJustifyContent(JustifyContent.CENTER);
+                    layout.setJustifyContent(JustifyContent.FLEX_START);
 
                     runOnUiThread(() -> {
                         mySwipeRefreshLayout.setOnRefreshListener(() -> recreate());

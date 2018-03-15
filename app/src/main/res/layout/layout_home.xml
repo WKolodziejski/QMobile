@@ -63,10 +63,18 @@
 
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/recycler_guide"/>
+                    android:gravity="center_horizontal"
+                    >
+
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/recycler_guide"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
