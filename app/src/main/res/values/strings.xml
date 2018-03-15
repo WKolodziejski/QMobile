@@ -31,6 +31,7 @@
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
     <string name="text_invalid_login">Login Inválido</string>
+    <string name="text_expired_login">Seu Login Expirou</string>
     <string name="text_login_necessary">É necessário estar logado</string>
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
@@ -161,7 +162,7 @@
 
     <string name="share_download" translatable="false">https://goo.gl/1QKobL</string>
     <string name="more_link_cod" translatable="false">https://github.com/gustavohubner/QAcademico</string>
-    <string name="email" translatable="false">tinf703@gmail.com</string>
+    <!--<string name="email" translatable="false">tinf703@gmail.com</string>
     <string name="url" translatable="false">http://qacademico.ifsul.edu.br/qacademico/index.asp?t=</string>
     <string name="pg_login" translatable="false">1001</string>
     <string name="pg_home" translatable="false">2000</string>
@@ -170,7 +171,7 @@
     <string name="pg_horario" translatable="false">2010</string>
     <string name="pg_change_password" translatable="false">1011</string>
     <string name="pg_erro" translatable="false">1</string>
-    <string name="download_url" translatable="false">http://www.geocities.ws/tinfqacadmob/Qacademico/</string>
+    <string name="download_url" translatable="false">http://www.geocities.ws/tinfqacadmob/Qacademico/</string>!-->
 
     <string name="changelog_list">
         <ul>
@@ -193,7 +194,5 @@
 		<li>・ Mudança no layout geral.</li>
 		</ul>
     </string>
-
-    <string name="surpresa" translatable="false">SURPRESA</string>
 
 </resources>

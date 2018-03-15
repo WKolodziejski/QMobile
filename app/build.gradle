@@ -35,20 +35,23 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation files('libs/jsoup-1.11.2.jar')
-    implementation files('libs/expandablelayout-2.9.2-javadoc.jar')
+    //implementation files('libs/expandablelayout-2.9.2-javadoc.jar')
     compile 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
+
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-perf:11.8.0'
+    compile 'com.google.firebase:firebase-config:11.8.0'
+    compile 'com.google.android:flexbox:0.3.2'
+
+    compile 'com.github.yesidlazaro:GmailBackground:1.2.0'
+
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-perf:11.8.0'
-    compile 'com.github.yesidlazaro:GmailBackground:1.2.0'
-    compile 'com.google.android:flexbox:0.3.2'
-
     /*compile 'eu.davidea:flexible-adapter:5.0.0'
-    compile 'eu.davidea:flexible-adapter-ui:1.0.0-b2'
-    compile 'eu.davidea:flexible-adapter-livedata:1.0.0-b2'
-    compile 'eu.davidea:flexible-adapter-databinding:1.0.0-b2'*/
+            compile 'eu.davidea:flexible-adapter-ui:1.0.0-b2'
+            compile 'eu.davidea:flexible-adapter-livedata:1.0.0-b2'
+            compile 'eu.davidea:flexible-adapter-databinding:1.0.0-b2'*/
 }
 
 apply plugin: 'com.google.gms.google-services'

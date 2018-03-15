@@ -2,7 +2,6 @@ package com.qacademico.qacademico;
 
 import android.Manifest;
 import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,7 +58,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -87,22 +85,25 @@ import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterGuide.OnGuideClicked {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_change_password, pg_erro, download_url;
+    static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_change_password, pg_erro, download_update_url, email_to, email_from, email_from_pwd;
     private String matricula, password, nome, home_msg, new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario, linkAtt;
     private SharedPreferences login_info;
     private WebView html;
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RecyclerView recyclerViewDiarios, recyclerViewBoletim, recyclerViewHorario;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
+    FirebaseRemoteConfig remoteConfig;
 
     @Override
     @AddTrace(name = "onCreateTrace")
@@ -186,8 +188,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        setDefaultHashMap();
         setUp(); //inicializa as variáveis necessárias
         testLogin(); // testa se o login é válido
+    }
+
+    private void setDefaultHashMap() {
+        remoteConfig = FirebaseRemoteConfig.getInstance();
+        remoteConfig.setConfigSettings(new FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(true)
+                .build());
+
+        /*defaults.put("default_url", getResources().getString(R.string.url));
+        defaults.put("pg_login", getResources().getString(R.string.pg_login));
+        defaults.put("pg_home", getResources().getString(R.string.pg_home));
+        defaults.put("pg_diarios", getResources().getString(R.string.pg_diarios));
+        defaults.put("pg_boletim", getResources().getString(R.string.pg_boletim));
+        defaults.put("pg_horario", getResources().getString(R.string.pg_horario));
+        defaults.put("pg_change_password", getResources().getString(R.string.pg_change_password));
+        defaults.put("pg_erro", getResources().getString(R.string.pg_erro));
+        defaults.put("download_update_url", getResources().getString(R.string.download_update_url));*/
+
+        remoteConfig.setDefaults(R.xml.default_values);
+
+        final Task<Void> fetch = remoteConfig.fetch(0);
+        fetch.addOnSuccessListener(this, aVoid -> {
+            remoteConfig.activateFetched();
+            updateDefaultValues();
+        });
+    }
+
+    private void updateDefaultValues() {
+        url = remoteConfig.getString("default_url");
+        pg_login = remoteConfig.getString("pg_login");
+        pg_home = remoteConfig.getString("pg_home");
+        pg_diarios = remoteConfig.getString("pg_diarios");
+        pg_boletim = remoteConfig.getString("pg_boletim");
+        pg_horario = remoteConfig.getString("pg_horario");
+        pg_change_password = remoteConfig.getString("pg_change_password");
+        pg_erro = remoteConfig.getString("pg_erro");
+        download_update_url = remoteConfig.getString("download_update_url");
+        email_to = remoteConfig.getString("email_to");
+        email_from = remoteConfig.getString("email_from");
+        email_from_pwd = remoteConfig.getString("email_from_pass");
     }
 
     @Override
@@ -301,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.action_bug) {
-            String[] TO = {getResources().getString(R.string.email)};
+            String[] TO = {email_to};
             Intent emailIntent = new Intent(Intent.ACTION_SEND);
             emailIntent.setData(Uri.parse("mailto:"));
             emailIntent.setType("text/plain");
@@ -352,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new Thread(() -> {
                 verLocal = Float.parseFloat(versaoAtual);
                 try {
-                    Document doc = Jsoup.connect(download_url).get();
+                    Document doc = Jsoup.connect(download_update_url).get();
                     String verAtt = doc.getElementsByTag("a").last().text();
                     Log.v("VERATT", verAtt);
                     linkAtt = doc.getElementsByTag("a").last().attr("abs:href");
@@ -1250,7 +1293,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         showSnackBar(loginLayout, getResources().getString(R.string.text_invalid_login), false);
                         progressBar_login.setVisibility(View.GONE);
                     } else {
-                        recreate();
+                        logOut();
+                        showSnackBar(loginLayout, getResources().getString(R.string.text_expired_login), false);
                     }
                 } else {
                     dismissProgressDialog();
@@ -1277,17 +1321,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setUp() { //Inicializa as variáveis necessárias
-        url = getResources().getString(R.string.url);
-        pg_login = getResources().getString(R.string.pg_login);
-        pg_home = getResources().getString(R.string.pg_home);
-        pg_diarios = getResources().getString(R.string.pg_diarios);
-        pg_boletim = getResources().getString(R.string.pg_boletim);
-        pg_horario = getResources().getString(R.string.pg_horario);
-        pg_change_password = getResources().getString(R.string.pg_change_password);
-        pg_erro = getResources().getString(R.string.pg_erro);
-        download_url = getResources().getString(R.string.download_url);
-
         //showProgressDialog();
+        updateDefaultValues();
 
         html.setWebViewClient(new CustomWebViewClient());
         html.addJavascriptInterface(new MyJavaScriptInterface(), "HtmlHandler");
@@ -1944,10 +1979,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setCustomTitle(customAlertTitle(R.drawable.ic_chat_black_24dp, R.string.email_assunto_sug, R.color.pink_500))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (!message.getText().toString().equals("")) {
-                            BackgroundMail.newBuilder(this)
-                                    .withUsername("qacadmobapp@gmail.com")
-                                    .withPassword("3N7D66GP88")
-                                    .withMailto(R.string.email)
+                            /*BackgroundMail.newBuilder(this)
+                                    .withUsername(email_from)
+                                    .withPassword(email_from_pwd)
+                                    .withMailto(email_to)
                                     .withType(BackgroundMail.TYPE_PLAIN)
                                     .withSubject("QAcadMobile Sugestion")
                                     .withBody(nome + ",\n\n" +message.getText().toString() + "\n\nNota: " + String.valueOf(rating.getRating()))
@@ -1964,7 +1999,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             .setMessage(R.string.email_error)
                                             .setPositiveButton(R.string.dialog_close, null)
                                             .show())
-                                    .send();
+                                    .send();*/
+                            emailPattern("QAcadMobile Sugestion", message.getText().toString() + "\n\nNota: " + String.valueOf(rating.getRating()));
                         } else {
                             new AlertDialog.Builder(MainActivity.this)
                                     .setCustomTitle(customAlertTitle(R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
@@ -2085,10 +2121,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                             if (!message_final.equals("") || !message.getText().toString().equals("")) {
-                                BackgroundMail.newBuilder(this)
-                                        .withUsername("qacadmobapp@gmail.com")
-                                        .withPassword("3N7D66GP88")
-                                        .withMailto(R.string.email)
+                                /*BackgroundMail.newBuilder(this)
+                                        .withUsername(email_from)
+                                        .withPassword(email_from_pwd)
+                                        .withMailto(email_to)
                                         .withType(BackgroundMail.TYPE_PLAIN)
                                         .withSubject("QAcadMobile Bug Report")
                                         .withSendingMessage(R.string.email_sending)
@@ -2105,7 +2141,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 .setMessage(R.string.email_error)
                                                 .setPositiveButton(R.string.dialog_close, null)
                                                 .show())
-                                        .send();
+                                        .send();*/
+                                emailPattern("QAcadMobile Bug Report", message.getText().toString() + message_final);
                             } else {
                                 new AlertDialog.Builder(MainActivity.this)
                                         .setCustomTitle(customAlertTitle(R.drawable.ic_sync_problem_black_24dp, R.string.error_title, R.color.amber_500))
@@ -2126,6 +2163,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void emailPattern(String subject, String message) {
+        BackgroundMail.newBuilder(this)
+                .withUsername(email_from)
+                .withPassword(email_from_pwd)
+                .withMailto(email_to)
+                .withType(BackgroundMail.TYPE_PLAIN)
+                .withSubject(subject)
+                .withBody(nome + ",\n\n" + message)
+                .withSendingMessage(R.string.email_sending)
+                .withSendingMessageError(null)
+                .withSendingMessageSuccess(null)
+                .withOnSuccessCallback(() -> new AlertDialog.Builder(MainActivity.this)
+                        .setCustomTitle(customAlertTitle(R.drawable.ic_sentiment_very_satisfied_black_24dp, R.string.success_title, R.color.green_500))
+                        .setMessage(R.string.email_success)
+                        .setPositiveButton(R.string.dialog_close, null)
+                        .show())
+                .withOnFailCallback(() -> new AlertDialog.Builder(MainActivity.this)
+                        .setCustomTitle(customAlertTitle(R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
+                        .setMessage(R.string.email_error)
+                        .setPositiveButton(R.string.dialog_close, null)
+                        .show())
+                .send();
     }
 
     protected void checkBoxBugReport(GridLayout layout, CheckBox chk, ImageView img, TextView txt){
