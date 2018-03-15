@@ -9,14 +9,12 @@ public class MateriaisConteudo {
     private String nomeConteudo;
     private String link;
     private String descricao; // pode ou não ter descrição
-    public boolean temDesc;
 
-    public MateriaisConteudo(String data, String nomeConteudo, String link) {
+    public MateriaisConteudo(String data, String nomeConteudo, String link, String descricao) {
         this.data = data;
         this.nomeConteudo = nomeConteudo;
         this.link = link;
-        this.descricao = null;
-        this.temDesc = false;
+        this.descricao = descricao;
     }
 
     public String getNomeConteudo() {
@@ -35,8 +33,4 @@ public class MateriaisConteudo {
         return descricao;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-        temDesc = true;
-    }
 }

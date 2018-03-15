@@ -2,7 +2,7 @@ package com.qacademico.qacademico;
 
 import java.util.ArrayList;
 
-public class MateriaisAula {
+public class MainMateriaisAula {
     private String ano;
     private ArrayList<MateriaisMateria> materias;
 

@@ -80,6 +80,7 @@ import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.crashlytics.android.Crashlytics;
 import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.google.android.flexbox.FlexDirection;
@@ -89,10 +90,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -134,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     FirebaseRemoteConfig remoteConfig;
+    MainMateriaisAula materialAula;
 
     @Override
     @AddTrace(name = "onCreateTrace")
@@ -1200,10 +1204,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new Thread() {
                 @Override
                 public void run() {
+                    Document homeMaterial = Jsoup.parse(html_p);
+                    Element table = homeMaterial.getElementsByTag("tbody").get(10);
+                    Elements rotulos = table.getElementsByClass("rotulo");
+
+                    materialAula = new MainMateriaisAula();//ta tudo salvo nessa variavel<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+                    for (int i = 1; i< rotulos.size();i++){
+                        String str = rotulos.get(i).text();
+                        str = str.substring(str.indexOf('-')+2,str.indexOf('('));
+                        str = str.substring(str.indexOf('-')+2);
+                        String nomeMateria = str;
+
+                        MateriaisMateria materias = new MateriaisMateria(nomeMateria);
+
+
+                        Log.i("Materia","\n\n\n**************************"+nomeMateria+"*********************************\n");
+
+                        //parte dos conteudos
+                        String classe = rotulos.get(i).nextElementSibling().className();
+                        Element element = rotulos.get(i).nextElementSibling();
+                        while (classe.equals("conteudoTexto")){
+                            String data = element.child(0).text();
+                            String link = element.child(1).child(1).attr("href");
+                            String nomeConteudo = element.child(1).child(1).text();
+                            String descricao = "";
+
+                            //pode ou nao ter descricao
+                            if (element.child(1).children().size() > 2){
+                                descricao = element.child(1).child(3).nextSibling().toString();
+                            }
+
+                            MateriaisConteudo conteudo = new MateriaisConteudo(data, nomeConteudo, link,descricao);
+                            materias.addMateriais(conteudo);
+
+                            Log.i("Materia","\n\nNome: " +nomeConteudo + "\nData: "+ data + "\nLink: "+  link + "\nDesc: " + descricao);
+                            if (element.nextElementSibling() != null){
+                                element = element.nextElementSibling();
+                                classe = element.className();
+                            }else{
+                                classe = "quit";
+                            }
+
+                        }
+                        materialAula.addMateria(materias);
+
+                    }
+
+
 
 
                     runOnUiThread(() -> {
+                        pg_horario_loaded = true;
+                        dismissProgressDialog();
+                        dismissProgressbar();
 
+                        autoLoadPages();
 
                     });
                 }
@@ -1384,6 +1440,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pg_diarios_loaded = false;
         pg_boletim_loaded = false;
         pg_horario_loaded = false;
+        pg_material_loaded = false;
         pg_home_loaded = false;
         data_position_boletim = 0;
         data_position_horario = 0;
@@ -1464,7 +1521,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void refreshPage(View v) { //Atualiza a página
         showProgressbar();
         dismissErrorConnection();
-        if (!pg_home_loaded){
+        if (!pg_home_loaded) {
             recreate();
         } else {
             if (navigation.getSelectedItemId() == R.id.navigation_home) {
@@ -1484,7 +1541,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         obj.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -1540,21 +1598,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    protected void showErrorConnection(){ //Mostra a página de erro de conexão
+    protected void showErrorConnection() { //Mostra a página de erro de conexão
         html.stopLoading();
         errorConnectionLayout.setVisibility(View.VISIBLE);
         mainLayout.setVisibility(View.GONE);
     }
 
-    protected void dismissErrorConnection(){ //Esconde a página de erro de conexão
+    protected void dismissErrorConnection() { //Esconde a página de erro de conexão
         errorConnectionLayout.setVisibility(View.GONE);
         mainLayout.setVisibility(View.VISIBLE);
     }
 
-    protected void showSnackBar(View layout, String message, boolean action){ //Mostra a SnackBar
+    protected void showSnackBar(View layout, String message, boolean action) { //Mostra a SnackBar
         snackBar = Snackbar.make(layout, message, Snackbar.LENGTH_INDEFINITE);
         snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
-        if (action){
+        if (action) {
             snackBar.setAction(R.string.button_wifi, view1 -> {
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 snackBar.dismiss();
@@ -1577,14 +1635,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void showProgressDialog(){ //Mostra o diálogo de loading
+    protected void showProgressDialog() { //Mostra o diálogo de loading
         if (loadingDialog == null || !loadingDialog.isShowing())
             loadingDialog = ProgressDialog.show(MainActivity.this, getResources().getString(R.string.title_loading),
-                    getResources().getString(R.string.text_loading), true, false, dialog -> {});
+                    getResources().getString(R.string.text_loading), true, false, dialog -> {
+                    });
     }
 
     protected void showButtons() { //Mostra os FloatingActionButtons
-        if (fab_action.getAnimation() == null){
+        if (fab_action.getAnimation() == null) {
             Animation open_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open_pop);
             fab_action.startAnimation(open_linear);
         }
@@ -1604,7 +1663,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fab_action.startAnimation(close_linear);
             fab_action.getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {}
+                public void onAnimationStart(Animation animation) {
+                }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
@@ -1612,10 +1672,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {
+                }
             });
         }
-        if ((fab_data.getAnimation() != null) || (fab_expand.getAnimation() != null)){
+        if ((fab_data.getAnimation() != null) || (fab_expand.getAnimation() != null)) {
             fab_action.getAnimation().setFillAfter(false);
             fab_data.getAnimation().setFillAfter(false);
             fab_expand.getAnimation().setFillAfter(false);
@@ -1626,7 +1687,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab_isOpen = false;
     }
 
-    protected void changePageColor(){ //Muda a cor do app dependendo da página
+    protected void changePageColor() { //Muda a cor do app dependendo da página
         int colorButtonPrimaryTo = 0;
         int colorButtonSecondaryTo = 0;
         int colorButtonPrimaryFrom = 0;
@@ -1816,7 +1877,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void applyBehavior(){ //Habilita o actionBar a se esconder ao rolar a página
+    protected void applyBehavior() { //Habilita o actionBar a se esconder ao rolar a página
         CoordinatorLayout.LayoutParams mainLayoutLayoutParams = (CoordinatorLayout.LayoutParams) mainLayout.getLayoutParams();
         mainLayoutLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
         mainLayout.requestLayout();
@@ -1824,29 +1885,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
     }
 
-    protected void removeBehavior(){ //Desabilita o actionBar a se esconder ao rolar a página
+    protected void removeBehavior() { //Desabilita o actionBar a se esconder ao rolar a página
         CoordinatorLayout.LayoutParams mainLayoutLayoutParams = (CoordinatorLayout.LayoutParams) mainLayout.getLayoutParams();
         mainLayoutLayoutParams.setBehavior(null);
         AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         toolbarLayoutParams.setScrollFlags(0);
     }
 
-    protected void showProgressbar(){ //Mostra a progressBar ao carregar a página
+    protected void showProgressbar() { //Mostra a progressBar ao carregar a página
         progressBar_Main.setVisibility(View.VISIBLE);
         fab_action.setClickable(false);
         fab_data.setClickable(false);
         fab_expand.setClickable(false);
     }
 
-    protected void dismissProgressbar(){ //Esconde a progressBar ao carregar a página
+    protected void dismissProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar_Main.setVisibility(View.GONE);
         fab_action.setClickable(true);
         fab_data.setClickable(true);
         fab_expand.setClickable(true);
     }
 
-    protected void autoLoadPages(){ //Tenta carregar as páginas em segundo plano
-        try{
+    protected void autoLoadPages() { //Tenta carregar as páginas em segundo plano
+        try {
             if (!pg_diarios_loaded) {
                 html.loadUrl(url + pg_diarios);
             } else if (!pg_boletim_loaded) {
@@ -1935,7 +1996,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             pass_atual.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -1993,7 +2055,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected View customAlertTitle(int img, int txt, int color){
+    protected View customAlertTitle(int img, int txt, int color) {
         View theTitle = inflater.inflate(R.layout.dialog_title, null);
         ImageView title_img = (ImageView) theTitle.findViewById(R.id.dialog_img);
         TextView title_txt = (TextView) theTitle.findViewById(R.id.dialog_txt);
@@ -2017,7 +2079,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void sendEmail(){
+    protected void sendEmail() {
         if (isConnected(MainActivity.this)) {
 
             View theView = inflater.inflate(R.layout.dialog_sug, null);
@@ -2078,7 +2140,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void bugReport(){
+    protected void bugReport() {
         if (isConnected(getApplicationContext())) {
 
             autoLoadPages();
@@ -2123,8 +2185,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     txt_boletim.setTextColor(getResources().getColor(R.color.green_500));
                 }
             } else {
-                    checkBoxBugReport(grid_boletim, check_boletim, img_boletim, txt_boletim);
-                }
+                checkBoxBugReport(grid_boletim, check_boletim, img_boletim, txt_boletim);
+            }
 
             if (navigation.getSelectedItemId() == R.id.navigation_horario) {
                 check_horario.setChecked(true);
@@ -2148,21 +2210,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         if (!message.getText().toString().equals("")) {
 
-                            if (check_boletim.isChecked() && !bugBoletim.equals("")){
+                            if (check_boletim.isChecked() && !bugBoletim.equals("")) {
                                 message_final += "\n---------------------------------------------------------------------------------------------------";
                                 message_final += "BOLETIM";
                                 message_final += "---------------------------------------------------------------------------------------------------\n";
                                 message_final += bugBoletim;
                             }
 
-                            if (check_diarios.isChecked() && !bugDiarios.equals("")){
+                            if (check_diarios.isChecked() && !bugDiarios.equals("")) {
                                 message_final += "\n---------------------------------------------------------------------------------------------------";
                                 message_final += "DIARIOS";
                                 message_final += "---------------------------------------------------------------------------------------------------\n";
                                 message_final += bugDiarios;
                             }
 
-                            if (check_horario.isChecked() && !bugBoletim.equals("")){
+                            if (check_horario.isChecked() && !bugBoletim.equals("")) {
                                 message_final += "\n---------------------------------------------------------------------------------------------------";
                                 message_final += "HORARIO";
                                 message_final += "---------------------------------------------------------------------------------------------------\n";
@@ -2238,9 +2300,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .send();
     }
 
-    protected void checkBoxBugReport(GridLayout layout, CheckBox chk, ImageView img, TextView txt){
+    protected void checkBoxBugReport(GridLayout layout, CheckBox chk, ImageView img, TextView txt) {
         layout.setOnClickListener(v -> {
-            if (chk.isChecked()){
+            if (chk.isChecked()) {
                 chk.setChecked(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     chk.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
@@ -2258,7 +2320,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
         chk.setOnClickListener(v -> {
-            if (chk.isChecked()){
+            if (chk.isChecked()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     chk.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
                     img.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
@@ -2299,13 +2361,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loginLayout = findViewById(R.id.container_login);
         EditText user_et = (TextInputEditText) findViewById(R.id.user_input_login);
         EditText password_et = (TextInputEditText) findViewById(R.id.password_input_login);
-        progressBar_login  = (ProgressBar) findViewById(R.id.login_progressbar);
+        progressBar_login = (ProgressBar) findViewById(R.id.login_progressbar);
         Button login_btn = (Button) findViewById(R.id.btn_login);
 
         login_btn.setOnClickListener(v -> {
             View view = this.getCurrentFocus();
             if (view != null) {
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
@@ -2350,21 +2412,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         systemClick = false;
     }
 
-    public void clickHome(){
+    public void clickHome() {
         systemClick = true;
         navigation.setSelectedItemId(R.id.navigation_home);
         systemClick = false;
     }
 
-    public void clickMateriais(){
+    public void clickMateriais() {
         setMaterial();
     }
 
-    public void clickCalendario(){
+    public void clickCalendario() {
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
     }
 
-    public void clickDocumentos(){
+    public void clickDocumentos() {
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
     }
 
