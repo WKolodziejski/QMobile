@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private String matricula, password, nome, home_msg, new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario, linkAtt;
     private SharedPreferences login_info;
     private WebView html;
-    boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, fab_isOpen, change_password, systemClick, isLoginPage;
+    boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded, fab_isOpen, change_password, systemClick, isLoginPage;
     LayoutInflater inflater;
     LinearLayout errorConnectionLayout;
     ProgressBar progressBar_Main, progressBar_login;
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig){
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         Log.d("OnConfigurationChanged", "Não foi destruído yey");
     }
@@ -247,11 +247,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_materiais) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
+            clickMateriais();
         } else if (id == R.id.nav_calendario) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
+            clickCalendario();
         } else if (id == R.id.nav_documentos) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
+            clickDocumentos();
         } else if (id == R.id.nav_share) {
             shareApp();
         } else if (id == R.id.nav_sug) {
@@ -309,7 +309,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             } else {
                 RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getApplicationContext()) {
-                    @Override protected int getVerticalSnapPreference() {
+                    @Override
+                    protected int getVerticalSnapPreference() {
                         return LinearSmoothScroller.SNAP_TO_ANY;
                     }
                 };
@@ -328,7 +329,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         RecyclerView.LayoutManager recyclerLayout = recyclerViewHorario.getLayoutManager();
                         recyclerLayout.startSmoothScroll(smoothScroller);
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
             return false;
         }
@@ -516,7 +518,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             adapter.setOnExpandListener(position -> {
                                 RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getApplicationContext()) {
-                                    @Override protected int getVerticalSnapPreference() {
+                                    @Override
+                                    protected int getVerticalSnapPreference() {
                                         return LinearSmoothScroller.SNAP_TO_ANY;
                                     }
                                 };
@@ -605,7 +608,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             adapter.setOnExpandListener(position -> {
                                 RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getApplicationContext()) {
-                                    @Override protected int getVerticalSnapPreference() {
+                                    @Override
+                                    protected int getVerticalSnapPreference() {
                                         return LinearSmoothScroller.SNAP_TO_ANY;
                                     }
                                 };
@@ -702,7 +706,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             adapter.setOnExpandListener(position -> {
                                 RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getApplicationContext()) {
-                                    @Override protected int getVerticalSnapPreference() {
+                                    @Override
+                                    protected int getVerticalSnapPreference() {
                                         return LinearSmoothScroller.SNAP_TO_ANY;
                                     }
                                 };
@@ -768,6 +773,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } else {
             showErrorConnection();
+        }
+    }
+
+    @AddTrace(name = "setMaterial")
+    public void setMaterial() { //layout layout_home
+        if ((!pg_material_loaded)) {
+            html.loadUrl(url + pg_material);
+            //showErrorConnection();
+        } else {
+
+
+            new Thread() {
+                @Override
+                public void run() {
+
+
+                    runOnUiThread(() -> {
+
+
+                    });
+                }
+            }.start();
         }
     }
 
@@ -922,7 +949,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             autoLoadPages();
                         });
-                    } catch (Exception ignored){
+                    } catch (Exception ignored) {
                         Log.i("Boletim", "Trocou de layout sem terminar de carregar");
                     }
                 }
@@ -975,8 +1002,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     aux = getResources().getString(R.string.diarios_SegundaEtapa);
                                 } else if (aux.equals("1a Reavaliação da 2a Etapa") || aux.equals("1ª Reavaliação da 2ª Etapa")) {
                                     aux = getResources().getString(R.string.diarios_RP1_SegundaEtapa);
-                                }  else if (aux.equals("2a Reavaliação da 2a Etapa") || aux.equals("2ª Reavaliação da 2ª Etapa")) {
-                                aux = getResources().getString(R.string.diarios_RP2_SegundaEtapa);
+                                } else if (aux.equals("2a Reavaliação da 2a Etapa") || aux.equals("2ª Reavaliação da 2ª Etapa")) {
+                                    aux = getResources().getString(R.string.diarios_RP2_SegundaEtapa);
                                 }
 
                                 Element tabelaNotas = nxtElem.child(0).child(1).child(0);
@@ -1036,7 +1063,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         runOnUiThread(() -> {
                             pg_diarios_loaded = true;
-                            if (navigation.getSelectedItemId() == R.id.navigation_diarios){
+                            if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
                                 clickDiarios();
                             }
                             dismissProgressDialog();
@@ -1044,7 +1071,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             autoLoadPages();
                         });
-                    } catch (Exception ignored){
+                    } catch (Exception ignored) {
                         Log.i("Diarios", "Trocou de layout sem terminar de carregar");
                     }
                 }
@@ -1159,9 +1186,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             autoLoadPages();
                         });
-                    } catch (Exception ignored){
+                    } catch (Exception ignored) {
                         Log.i("Horario", "Trocou de layout sem terminar de carregar");
                     }
+                }
+            }.start();
+        }
+
+        @JavascriptInterface
+        @AddTrace(name = "handleMaterial")
+        public void handleMaterial(String html_p) {
+
+            new Thread() {
+                @Override
+                public void run() {
+
+
+                    runOnUiThread(() -> {
+
+
+                    });
                 }
             }.start();
         }
@@ -2310,7 +2354,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void clickMateriais(){
-        Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
+        setMaterial();
     }
 
     public void clickCalendario(){
