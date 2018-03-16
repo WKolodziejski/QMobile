@@ -61,6 +61,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -1228,12 +1229,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         //parte dos conteudos
                         String classe = rotulos.get(i).nextElementSibling().className();
                         Element element = rotulos.get(i).nextElementSibling();
-                        while (classe.equals("conteudoTexto")){
+                        while (classe.equals("conteudoTexto")) {
 
                             material = new ArrayList<>();
 
                             String data = element.child(0).text();
-                            String link = "http://qacademico.ifsul.edu.br" + element.child(1).child(1).attr("href");
+                            String link = element.child(1).child(1).attr("href");
                             String nomeConteudo = element.child(1).child(1).text();
                             String descricao = "";
 
@@ -1247,7 +1248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             material.add(new Material(data, nomeConteudo, link, descricao));
 
-                            Log.i("Materia","\n\nNome: " +nomeConteudo + "\nData: "+ data + "\nLink: "+  link + "\nDesc: " + descricao);
+                            Log.i("Materia","\n\nNome: " + nomeConteudo + "\nData: "+ data + "\nLink: "+  link + "\nDesc: " + descricao);
                             if (element.nextElementSibling() != null){
                                 element = element.nextElementSibling();
                                 classe = element.className();
@@ -1271,9 +1272,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void test2Download(){
-        //html.loadUrl(url + pg_material);
-        html.loadUrl("javascript:document.querySelector(\"a[href='/UPLOADS/MATERIAIS_AULAS/270355-Estatística.pdf']\").click();");
+    private void downloadMaterial(String link){
+        html.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        });
+        html.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
     public class CustomWebViewClient extends WebViewClient {
@@ -2437,9 +2442,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void clickDocumentos() {
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
-
-        test2Download();
-
     }
 
     public static boolean isConnected(Context context) {
