@@ -795,9 +795,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @Override
                 public void run() {
 
-
                     runOnUiThread(() -> {
 
+                        downloadMaterial("/UPLOADS/MATERIAIS_AULAS/344822-Respostas__exercícios_de_estatística.doc");
 
                     });
                 }
@@ -1211,7 +1211,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Element table = homeMaterial.getElementsByTag("tbody").get(10);
                     Elements rotulos = table.getElementsByClass("rotulo");
 
-                    //materialAula = new MainMateriaisAula();//ta tudo salvo nessa variavel<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
                     materiais = new ArrayList<>();
 
                     for (int i = 1; i< rotulos.size();i++){
@@ -1220,9 +1219,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         str = str.substring(str.indexOf('-')+2,str.indexOf('('));
                         str = str.substring(str.indexOf('-')+2);
                         String nomeMateria = str;
-
-                        //MateriaisMateria materias = new MateriaisMateria(nomeMateria);
-
 
                         Log.i("Materia","\n\n\n**************************"+nomeMateria+"*********************************\n");
 
@@ -1243,9 +1239,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 descricao = element.child(1).child(3).nextSibling().toString();
                             }
 
-                            //MateriaisConteudo conteudo = new MateriaisConteudo(data, nomeConteudo, link, descricao);
-                            //materias.addMateriais(conteudo);
-
                             material.add(new Material(data, nomeConteudo, link, descricao));
 
                             Log.i("Materia","\n\nNome: " + nomeConteudo + "\nData: "+ data + "\nLink: "+  link + "\nDesc: " + descricao);
@@ -1258,14 +1251,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         }
                         materiais.add(new Materiais(nomeMateria, material));
-                        //materialAula.addMateria(materias);
                     }
 
                     runOnUiThread(() -> {
-                        pg_horario_loaded = true;
-                        //dismissProgressDialog();
-                        //dismissProgressbar();
-                        //autoLoadPages();
+                        pg_material_loaded = true;
+                        clickMateriais();
                     });
                 }
             }.start();
