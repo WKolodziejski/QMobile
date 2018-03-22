@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_margin="5dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:id="@+id/materiais_layout"
+    android:background="@color/white"
+    >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_alignParentStart="true"
+                android:id="@+id/material_img_layout"
+                android:layout_alignParentLeft="true">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_file"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:padding="10dp"
+                android:background="@drawable/layout_bg_round"
+                android:id="@+id/materiais_extension"
+                />
+
+            </LinearLayout>
+
+            <net.cachapa.expandablelayout.ExpandableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:layout_gravity="start"
+                app:el_expanded="true"
+                app:el_duration="250"
+                android:id="@+id/materiais_body_expand"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="10dp"
+                android:layout_alignLeft="@id/material_img_layout"
+                android:layout_alignStart="@id/material_img_layout"
+                android:layout_toLeftOf="@id/material_menu_lateral"
+                android:layout_toStartOf="@id/material_menu_lateral">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:textSize="@dimen/alt_font_size"
+                        android:textStyle="bold"
+                        android:textColor="@color/grey_600"
+                        android:text="NOME"
+                        android:id="@+id/materiais_nome"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/grey_600"
+                        android:id="@+id/materiais_data"
+                        android:text="22/03/1999"/>
+
+                </LinearLayout>
+
+            </net.cachapa.expandablelayout.ExpandableLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/material_menu_lateral"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:id="@+id/materiais_description_layout"
+                    android:visibility="visible"
+                    >
+
+                    <net.cachapa.expandablelayout.ExpandableLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="end"
+                        android:layout_marginRight="10dp"
+                        app:el_expanded="false"
+                        app:el_duration="250"
+                        android:id="@+id/materiais_description_expand"
+                        android:layout_marginEnd="10dp"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/grey_600"
+                            android:id="@+id/materiais_description_txt"/>
+
+                    </net.cachapa.expandablelayout.ExpandableLayout>
+
+                    <android.support.v7.widget.AppCompatImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:tint="@color/colorAccent"
+                        android:background="@drawable/ic_more_horiz_black_24dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:id="@+id/materiais_description_btn"/>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:tint="@color/colorAccent"
+                    android:background="@drawable/ic_file_download_black_24dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:id="@+id/materiais_download_btn"/>
+
+                    </LinearLayout>
+
+        </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="4dp"
+        android:background="@color/black_dividers"
+        android:layout_marginEnd="70dp"
+        android:layout_marginStart="65dp" />
+
+</LinearLayout>

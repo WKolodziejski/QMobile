@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -61,7 +62,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -99,15 +99,15 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterGuide.OnGuideClicked {
     private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_material, pg_change_password, pg_erro, download_update_url, email_to, email_from, email_from_pwd;
+    static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_materiais, pg_change_password, pg_erro, download_update_url, email_to, email_from, email_from_pwd;
     private String matricula, password, nome, home_msg, new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario, linkAtt;
     private SharedPreferences login_info;
     private WebView html;
@@ -159,16 +159,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         txt_expand = (TextView) findViewById(R.id.txt_expand);
         txt_data = (TextView) findViewById(R.id.txt_data);
         buttons_layout = (CoordinatorLayout) findViewById(R.id.btns);
-        html = new WebView(this);
-        WebSettings faller = html.getSettings();
-        faller.setJavaScriptEnabled(true);
-        faller.setDomStorageEnabled(true);
-        faller.setLoadsImagesAutomatically(false);
-        faller.setUseWideViewPort(true);
-        faller.setLoadWithOverviewMode(true);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
 
-        loadingDialog = new Dialog(MainActivity.this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         toggle = new ActionBarDrawerToggle(
@@ -189,10 +183,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        html = new WebView(this);
+        WebSettings faller = html.getSettings();
+        faller.setJavaScriptEnabled(true);
+        faller.setDomStorageEnabled(true);
+        faller.setLoadsImagesAutomatically(false);
+        faller.setUseWideViewPort(true);
+        faller.setLoadWithOverviewMode(true);
 
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        loadingDialog = new Dialog(this);
+
+        navigationView.setNavigationItemSelectedListener(this);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         setDefaultHashMap();
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         pg_diarios = remoteConfig.getString("pg_diarios");
         pg_boletim = remoteConfig.getString("pg_boletim");
         pg_horario = remoteConfig.getString("pg_horario");
-        pg_material = remoteConfig.getString("pg_material");
+        pg_materiais = remoteConfig.getString("pg_materiais");
         pg_change_password = remoteConfig.getString("pg_change_password");
         pg_erro = remoteConfig.getString("pg_erro");
         download_update_url = remoteConfig.getString("download_update_url");
@@ -389,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             View theView = inflater.inflate(R.layout.dialog_changelog, null);
             TextView changes = (TextView) theView.findViewById(R.id.changelog);
             changes.setText(getResources().getString(R.string.changelog_list));
-            new AlertDialog.Builder(MainActivity.this).setView(theView)
+            new AlertDialog.Builder(this).setView(theView)
                     .setCustomTitle(customAlertTitle(R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.light_blue_A400))
                     .setPositiveButton(R.string.dialog_close, null)
                     .show();
@@ -422,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 runOnUiThread(() -> {
                     if (verLocal < verWeb) {
-                        new AlertDialog.Builder(MainActivity.this)
+                        new AlertDialog.Builder(this)
                                 .setCustomTitle(customAlertTitle(R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.colorPrimary))
                                 .setMessage(String.format(getResources().getString(R.string.dialog_att_encontrada), "" + verLocal, "" + verWeb))
                                 .setPositiveButton(R.string.dialog_att_download, (dialog, which) -> {
@@ -431,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                                 != PackageManager.PERMISSION_GRANTED) {
 
-                                            ActivityCompat.requestPermissions(MainActivity.this,
+                                            ActivityCompat.requestPermissions(this,
                                                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                                                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
                                         }
@@ -783,15 +784,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @AddTrace(name = "setMaterial")
-    public void setMaterial() { //layout layout_home
+    @AddTrace(name = "setMateriais")
+    public void setMateriais() { //layout layout_home
         if ((!pg_material_loaded)) {
-            html.loadUrl(url + pg_material);
+            showProgressDialog();
+            html.loadUrl(url + pg_materiais);
             //showErrorConnection();
         } else {
+            if (materiais.size() != 0) {
+                Intent intent = new Intent(getApplicationContext(), MateriaisActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Materiais", (Serializable) materiais);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
 
-
-            new Thread() {
+            /*new Thread() {
                 @Override
                 public void run() {
 
@@ -801,7 +809,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     });
                 }
-            }.start();
+            }.start();*/
         }
     }
 
@@ -1201,8 +1209,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         @JavascriptInterface
-        @AddTrace(name = "handleMaterial")
-        public void handleMaterial(String html_p) {
+        @AddTrace(name = "handleMateriais")
+        public void handleMateriais(String html_p) {
 
             new Thread() {
                 @Override
@@ -1225,9 +1233,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         //parte dos conteudos
                         String classe = rotulos.get(i).nextElementSibling().className();
                         Element element = rotulos.get(i).nextElementSibling();
-                        while (classe.equals("conteudoTexto")) {
 
-                            material = new ArrayList<>();
+                        material = new ArrayList<>();
+
+                        while (classe.equals("conteudoTexto")) {
 
                             String data = element.child(0).text();
                             String link = element.child(1).child(1).attr("href");
@@ -1255,6 +1264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     runOnUiThread(() -> {
                         pg_material_loaded = true;
+                        dismissProgressDialog();
                         clickMateriais();
                     });
                 }
@@ -1262,7 +1272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void downloadMaterial(String link){
+    public void downloadMaterial(String link){
         html.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
@@ -1352,16 +1362,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     html.loadUrl("javascript:var uselessvar = document.getElementById('txtSenha').value='" + password + "';");
                     html.loadUrl("javascript:document.getElementById('btnOk').click();");
                 } else if (html.getUrl().equals(url + pg_home)) {
-                    html.loadUrl("javascript:window.HtmlHandler.handleHome" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                     if (isLoginPage) {
-                        //drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                        //navigation.setVisibility(View.VISIBLE);
+                        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                        navigation.setVisibility(View.VISIBLE);
+                        isLoginPage = false;
                         SharedPreferences.Editor editor = login_info.edit();
                         editor.putString("password", password);
                         editor.putString("matricula", matricula);
                         editor.apply();
-                        isLoginPage = false;
                     }
+                    html.loadUrl("javascript:window.HtmlHandler.handleHome" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 } else if (html.getUrl().contains(url + pg_boletim)) {
                     html.loadUrl("javascript:window.HtmlHandler.handleBoletim" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 } else if (html.getUrl().equals(url + pg_diarios)) {
@@ -1376,8 +1386,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if (html.getUrl().contains(url + pg_horario)) {
                     html.loadUrl("javascript:window.HtmlHandler.handleHorario" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
-                } else if (html.getUrl().contains(url + pg_material)) {
-                    html.loadUrl("javascript:window.HtmlHandler.handleMaterial" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                } else if (html.getUrl().contains(url + pg_materiais)) {
+                    html.loadUrl("javascript:window.HtmlHandler.handleMateriais" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 } else if (html.getUrl().contains(url + pg_change_password)) {
                     change_password = !change_password;
                     if (change_password) {
@@ -1490,10 +1500,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void setNavDrawer() { //Configura o NavigationDrawer lateral
         View header = navigationView.getHeaderView(0);
 
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        /*drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         toggle.onDrawerStateChanged(DrawerLayout.LOCK_MODE_UNLOCKED);
         toggle.syncState();
-        navigation.setVisibility(View.VISIBLE);
+        navigation.setVisibility(View.VISIBLE);*/
 
         LinearLayout nav_image = (LinearLayout) header.findViewById(R.id.nav_image);
         TextView user_name_drawer = (TextView) header.findViewById(R.id.msg);
@@ -1648,7 +1658,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void showButtons() { //Mostra os FloatingActionButtons
         if (fab_action.getAnimation() == null) {
-            Animation open_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open_pop);
+            Animation open_linear = AnimationUtils.loadAnimation(this, R.anim.fab_open_pop);
             fab_action.startAnimation(open_linear);
         }
         if ((fab_data.getAnimation() != null) || (fab_expand.getAnimation() != null)) {
@@ -1786,10 +1796,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void clickButtons(View v) { //Animações ao clicar no FloatingActionButton
-        Animation open_rotate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_rotate_fwd);
-        Animation close_rotate = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_rotate_bkw);
-        Animation open_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_open_pop);
-        Animation close_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close_pop);
+        Animation open_rotate = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_fwd);
+        Animation close_rotate = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_bkw);
+        Animation open_linear = AnimationUtils.loadAnimation(this, R.anim.fab_open_pop);
+        Animation close_linear = AnimationUtils.loadAnimation(this, R.anim.fab_close_pop);
 
         if (fab_isOpen) {
             fab_action.startAnimation(close_rotate);
@@ -2423,7 +2433,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void clickMateriais() {
-        setMaterial();
+        setMateriais();
     }
 
     public void clickCalendario() {
@@ -2457,11 +2467,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @Override
+    /*@Override
     @AddTrace(name = "onActivityResult")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         recreate();
-    }
+    }*/
 
     @Override
     public void onDestroy() { //Esconde ProgressDiálogo ao destruir a atividade
