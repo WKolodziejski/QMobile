@@ -40,7 +40,7 @@ public class AdapterMaterial extends RecyclerView.Adapter {
         holder.nome.setText(material.getNomeConteudo());
         holder.data.setText(material.getData());
 
-        if (!material.getDescricao().equals("")) {
+        if (!material.getDescricao().equals("") || material.getDescricao().equals(material.getNomeConteudo())) {
             holder.description.setText(material.getDescricao());
         } else {
             holder.expandable_description.setVisibility(View.GONE);

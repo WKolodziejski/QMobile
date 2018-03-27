@@ -42,6 +42,7 @@
                     android:orientation="vertical"
                     android:padding="5dp"
                     android:focusable="true"
+                    android:id="@+id/home_header"
                     >
 
                     <TextView

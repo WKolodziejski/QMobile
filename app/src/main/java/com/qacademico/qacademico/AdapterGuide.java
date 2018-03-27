@@ -49,7 +49,7 @@ public class AdapterGuide extends RecyclerView.Adapter {
         }
 
         holder.layout.setOnClickListener(v -> {
-            onClick.OnGuideClick(position);
+            onClick.OnGuideClick(position, v);
         });
     }
 
@@ -59,7 +59,7 @@ public class AdapterGuide extends RecyclerView.Adapter {
     }
 
     public interface OnGuideClicked {
-        void OnGuideClick(int position);
+        void OnGuideClick(int position, View view);
     }
 
     public void setOnClick(OnGuideClicked onClick) {

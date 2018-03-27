@@ -37,6 +37,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
@@ -136,10 +137,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Snackbar snackBar;
     NavigationView navigationView;
     CoordinatorLayout buttons_layout;
-    RecyclerView recyclerViewDiarios, recyclerViewBoletim, recyclerViewHorario;
+    RecyclerView recyclerViewDiarios, recyclerViewBoletim, recyclerViewHorario, recyclerViewGuide;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     FirebaseRemoteConfig remoteConfig;
+    View guide_view;
     //MainMateriaisAula materialAula;
 
     @Override
@@ -253,6 +255,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {//drawer
         int id = item.getItemId();
+
+        guide_view = null;
 
         if (id == R.id.nav_materiais) {
             clickMateriais();
@@ -479,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     TextView msg = (TextView) findViewById(R.id.welcome_msg);
                     SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 
-                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_guide);
+                    recyclerViewGuide = (RecyclerView) findViewById(R.id.recycler_guide);
                     FlexboxLayoutManager layout = new FlexboxLayoutManager(getBaseContext());
                     layout.setFlexDirection(FlexDirection.ROW);
                     layout.setJustifyContent(JustifyContent.FLEX_START);
@@ -488,8 +492,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         mySwipeRefreshLayout.setOnRefreshListener(() -> recreate());
                         msg.setText(String.format(getResources().getString(R.string.home_welcome_message), home_msg, nome));
 
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setLayoutManager(layout);
+                        recyclerViewGuide.setAdapter(adapter);
+                        recyclerViewGuide.setLayoutManager(layout);
 
                         changePageColor();
                     });
@@ -796,7 +800,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("Materiais", (Serializable) materiais);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                presentActivity(intent, guide_view);
             }
 
             /*new Thread() {
@@ -814,7 +818,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void OnGuideClick(int position) {
+    public void OnGuideClick(int position, View view) {
+        guide_view = view;
         switch (position) {
             case 0:
                 clickDiarios();
@@ -1281,6 +1286,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         html.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
+    public void presentActivity(Intent intent, View view) {
+        if (view != null) {
+
+            LinearLayout home_header = (LinearLayout) findViewById(R.id.home_header);
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, view, "transition");
+            int revealX = (int) (view.getX() + view.getWidth() / 2)
+                    + (home_header.getWidth() - recyclerViewGuide.getWidth());
+            int revealY = (int) (view.getY() + (view.getHeight() / 2)
+                    + (int)(55 * getResources().getDisplayMetrics().density)
+                    + home_header.getHeight());
+
+            intent.putExtra("EXTRA_CIRCULAR_REVEAL_X", revealX);
+            intent.putExtra("EXTRA_CIRCULAR_REVEAL_Y", revealY);
+
+            ActivityCompat.startActivity(this, intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
+
     public class CustomWebViewClient extends WebViewClient {
 
         @Override
@@ -1363,8 +1390,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     html.loadUrl("javascript:document.getElementById('btnOk').click();");
                 } else if (html.getUrl().equals(url + pg_home)) {
                     if (isLoginPage) {
-                        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                        navigation.setVisibility(View.VISIBLE);
                         isLoginPage = false;
                         SharedPreferences.Editor editor = login_info.edit();
                         editor.putString("password", password);
@@ -1372,6 +1397,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         editor.apply();
                     }
                     html.loadUrl("javascript:window.HtmlHandler.handleHome" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                    drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                    navigation.setVisibility(View.VISIBLE);
                 } else if (html.getUrl().contains(url + pg_boletim)) {
                     html.loadUrl("javascript:window.HtmlHandler.handleBoletim" + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 } else if (html.getUrl().equals(url + pg_diarios)) {

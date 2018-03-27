@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -93,7 +94,9 @@
         android:layout_toLeftOf="@id/materiais_description_btn"
         android:layout_toRightOf="@id/material_img_layout"
         android:layout_toEndOf="@id/material_img_layout"
-        android:layout_marginEnd="10dp">
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        >
 
             <TextView
                 android:layout_width="match_parent"
