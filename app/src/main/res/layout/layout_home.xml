@@ -9,7 +9,6 @@
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
         >
 
         <ScrollView
@@ -27,42 +26,71 @@
                 android:layout_marginBottom="10dp"
                 >
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/layout_bg_body"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:stateListAnimator="@animator/raise"
-                    android:clickable="true"
-                    android:elevation="2dp"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:padding="5dp"
-                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="10dp"
                     android:id="@+id/home_header"
                     >
 
-                    <TextView
-                        android:id="@+id/welcome_msg"
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="@string/home_hello"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/main_font_size"
-                        android:textStyle="bold" />
+                        android:orientation="vertical"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center"
+                        >
 
-                    <TextView
-                        android:layout_width="match_parent"
+                        <TextView
+                            android:id="@+id/welcome_msg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="5dp"
+                            android:text="@string/home_hello"
+                            android:textSize="@dimen/main_font_size"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/updated_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingHorizontal="5dp"
+                            android:text="@string/home_description_welcome"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="@string/home_description_welcome"
-                        android:textAlignment="center" />
+                        android:layout_alignParentRight="true"
+                        android:layout_gravity="center"
+                        android:layout_alignParentEnd="true"
+                        android:orientation="vertical"
+                        android:id="@+id/offline"
+                        >
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_offline_pin_black_24dp"
+                            android:tint="@color/colorAccent"
+                            android:layout_gravity="center_horizontal"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Offline"
+                            android:textSize="12sp"
+                            android:textAlignment="center"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

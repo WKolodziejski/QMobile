@@ -28,4 +28,8 @@
 
     <style name="AppTheme.Transparent" parent="AppTheme"/>
 
+    <style name="LinearProgress" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>

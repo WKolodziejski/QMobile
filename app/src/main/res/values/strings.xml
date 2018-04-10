@@ -21,7 +21,6 @@
     <string name="action_changes">Últimas Mudanças</string>
     <string name="action_about">Sobre</string>
     <string name="action_att">Atualizações</string>
-    <string name="text_connection_no">Sem Conexão com a Internet</string>
     <string name="text_connection_error">Não foi Possível Carregar a Página</string>
     <string name="text_connection_timeout">Tempo esgotado</string>
     <string name="title_loading">Carregando</string>
@@ -156,6 +155,8 @@
     <string name="sigla_Prova">P</string>
     <string name="sigla_Trabalho">T</string>
     <string name="sigla_Qualitativa">Q</string>
+
+    <string name="default_notification_channel_id">QAcadêmico</string>
 
     <string name="toast_nenhuma_atualizacao">Nenhuma atualização encontrada, seu aplicativo já está atualizado.</string>
     <string name="dialog_att_encontrada">Atualização encontrada. Sua versão: %1$s, versão disponível: %2$s.</string>
