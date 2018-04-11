@@ -12,12 +12,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.R;
 
-import static com.qacademico.qacademico.Activity.MainActivity.pg_login;
-import static com.qacademico.qacademico.Activity.MainActivity.url;
+import static com.qacademico.qacademico.Application.MainApplication.pg_login;
+import static com.qacademico.qacademico.Application.MainApplication.url;
 
 public class LoginFragment extends Fragment {
     private SharedPreferences login_info;

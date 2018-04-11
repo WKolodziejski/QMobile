@@ -6,10 +6,8 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DownloadManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,14 +15,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -76,12 +70,12 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.qacademico.qacademico.Application.MainApplication;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.Class.Etapa;
@@ -96,13 +90,14 @@ import com.qacademico.qacademico.Fragment.HorarioFragment;
 import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Class.Trabalho;
+import com.qacademico.qacademico.Utilities.CheckUpdate;
+import com.qacademico.qacademico.Utilities.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -114,11 +109,23 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
+import static com.qacademico.qacademico.Application.MainApplication.email_from;
+import static com.qacademico.qacademico.Application.MainApplication.email_from_pwd;
+import static com.qacademico.qacademico.Application.MainApplication.email_to;
+import static com.qacademico.qacademico.Application.MainApplication.pg_boletim;
+import static com.qacademico.qacademico.Application.MainApplication.pg_change_password;
+import static com.qacademico.qacademico.Application.MainApplication.pg_diarios;
+import static com.qacademico.qacademico.Application.MainApplication.pg_erro;
+import static com.qacademico.qacademico.Application.MainApplication.pg_home;
+import static com.qacademico.qacademico.Application.MainApplication.pg_horario;
+import static com.qacademico.qacademico.Application.MainApplication.pg_login;
+import static com.qacademico.qacademico.Application.MainApplication.pg_materiais;
+import static com.qacademico.qacademico.Application.MainApplication.url;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
-    public static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_materiais, pg_change_password,
-            pg_erro, download_update_url, email_to, email_from, email_from_pwd;
-    public String new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario, linkAtt;
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+
+    public String new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario;
     private SharedPreferences login_info;
     public WebView html;
     public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
@@ -135,20 +142,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario,
             periodo_position_boletim;
     BottomNavigationView navigation;
-    float verLocal, verWeb;
     Snackbar snackBar;
     NavigationView navigationView;
     CoordinatorLayout buttons_layout;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
-    FirebaseRemoteConfig remoteConfig;
+
     LoginFragment loginFragment;
+    public MainApplication mainApplication;
 
     @Override
     @AddTrace(name = "onCreateTrace")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainApplication = MainApplication.getInstance();
 
         mainLayout = (ViewGroup) findViewById(R.id.main_container);
         errorConnectionLayout = (LinearLayout) findViewById(R.id.connection);
@@ -199,54 +208,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        setDefaultHashMap();
         setUp(); //inicializa as variáveis necessárias
         testLogin(); // testa se o login é válido
-
-        try {
-            PackageInfo pInfo = (getPackageManager().getPackageInfo(getPackageName(), 0));
-            String version = pInfo.versionName;
-            getWebUpdate(version, false);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        updateApp(false);
     }
 
-    private void setDefaultHashMap() {
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.setConfigSettings(new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(true)
-                .build());
-
-        remoteConfig.setDefaults(R.xml.default_values);
-
-        final Task<Void> fetch = remoteConfig.fetch(0);
-        fetch.addOnSuccessListener(this, aVoid -> {
-            remoteConfig.activateFetched();
-            updateDefaultValues();
-        });
-    }
-
-    public void updateDefaultValues() {
-        url = remoteConfig.getString("default_url");
-        pg_login = remoteConfig.getString("pg_login");
-        pg_home = remoteConfig.getString("pg_home");
-        pg_diarios = remoteConfig.getString("pg_diarios");
-        pg_boletim = remoteConfig.getString("pg_boletim");
-        pg_horario = remoteConfig.getString("pg_horario");
-        pg_materiais = remoteConfig.getString("pg_materiais");
-        pg_change_password = remoteConfig.getString("pg_change_password");
-        pg_erro = remoteConfig.getString("pg_erro");
-        download_update_url = remoteConfig.getString("download_update_url");
-        email_to = remoteConfig.getString("email_to");
-        email_from = remoteConfig.getString("email_from");
-        email_from_pwd = remoteConfig.getString("email_from_pass");
-    }
-
-    @Override
+    /*@Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-    }
+    }*/
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -268,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bugReport();
         } else if (id == R.id.nav_logout) {
             new AlertDialog.Builder(this)
-                    .setCustomTitle(customAlertTitle(R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
                     .setMessage(R.string.dialog_quit_msg)
                     .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
                     .setNegativeButton(R.string.dialog_quit_no, null)
@@ -357,14 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(emailIntent);
             return true;
         } else if (id == R.id.action_att) {
-            final String version;
-            try {
-                PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-                version = pInfo.versionName;
-                getWebUpdate(version, true);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
+            updateApp(true);
             return true;
         } else if (id == R.id.action_about) {
             Intent about = new Intent(getApplicationContext(), AboutActivity.class);
@@ -375,71 +338,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TextView changes = (TextView) theView.findViewById(R.id.changelog);
             changes.setText(getResources().getString(R.string.changelog_list));
             new AlertDialog.Builder(this).setView(theView)
-                    .setCustomTitle(customAlertTitle(R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.light_blue_A400))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.light_blue_A400))
                     .setPositiveButton(R.string.dialog_close, null)
                     .show();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @AddTrace(name = "getWebUpdate")
-    private void getWebUpdate(final String versaoAtual, final boolean showNotFound) {
-
-        if (isConnected(getApplicationContext())) {
-            new Thread(() -> {
-                verLocal = Float.parseFloat(versaoAtual);
-                try {
-                    Document doc = Jsoup.connect(download_update_url).get();
-                    String verAtt = doc.getElementsByTag("a").last().text();
-                    Log.v("VERATT", verAtt);
-                    linkAtt = doc.getElementsByTag("a").last().attr("abs:href");
-                    if (!verAtt.equals("") && verAtt.contains("Mobile")) {
-                        verAtt = verAtt.substring((verAtt.indexOf("Mobile ") + 7), (verAtt.indexOf(".apk")));
-                        verWeb = Float.parseFloat(verAtt);
-                        Log.v("UPDATEAPP", "web: " + verWeb + " atual: " + verLocal + "  " + linkAtt);
-                    } else {
-                        verWeb = 0;
-                    }
-                } catch (IOException e) {
-                    Log.v("UPDATEAPP", "erro");
-                }
-
-                runOnUiThread(() -> {
-                    if (verLocal < verWeb) {
-                        new AlertDialog.Builder(this)
-                                .setCustomTitle(customAlertTitle(R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.colorPrimary))
-                                .setMessage(String.format(getResources().getString(R.string.dialog_att_encontrada), "" + verLocal, "" + verWeb))
-                                .setPositiveButton(R.string.dialog_att_download, (dialog, which) -> {
-                                    if (Build.VERSION.SDK_INT >= 23) {
-                                        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                                                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                                != PackageManager.PERMISSION_GRANTED) {
-
-                                            ActivityCompat.requestPermissions(this,
-                                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                                        }
-                                    }
-                                    if (MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
-                                        startDownload();
-                                    } else if (Build.VERSION.SDK_INT < 23) {
-                                        startDownload();
-                                    }
-
-                                })
-                                .setNegativeButton(R.string.dialog_cancel, null)
-                                .show();
-                    } else {
-                        if (showNotFound) {
-                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.toast_nenhuma_atualizacao), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }).start();
-        } else {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @AddTrace(name = "setHome")
@@ -524,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     slash.setVisibility(View.GONE);
 
                     new AlertDialog.Builder(this).setView(theView)
-                            .setCustomTitle(customAlertTitle(R.drawable.ic_date_range_black_24dp,
+                            .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_date_range_black_24dp,
                                     R.string.dialog_date_change, R.color.orange_500))
                             .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
@@ -620,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     periodo.setWrapSelectorWheel(false);
 
                     new AlertDialog.Builder(this).setView(theView)
-                            .setCustomTitle(customAlertTitle(R.drawable.ic_date_range_black_24dp,
+                            .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_date_range_black_24dp,
                                     R.string.dialog_date_change, R.color.teal_400))
                             .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
@@ -720,7 +624,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     periodo.setWrapSelectorWheel(false);
 
                     new AlertDialog.Builder(this).setView(theView)
-                            .setCustomTitle(customAlertTitle(R.drawable.ic_date_range_black_24dp,
+                            .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_date_range_black_24dp,
                                     R.string.dialog_date_change, R.color.blue_400))
                             .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
@@ -776,7 +680,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private class MyJavaScriptInterface { //pega t.odo conteúdo das páginas e carrega nos views
+    public class MyJavaScriptInterface { //pega t.odo conteúdo das páginas e carrega nos views
         @JavascriptInterface
         @AddTrace(name = "handleHome")
         public void handleHome(String html_p) {
@@ -1257,7 +1161,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             dismissLinearProgressbar();
             dismissRoundProgressbar();
             dismissProgressDialog();
-            if (isConnected(getApplicationContext())) {
+            if (Utils.isConnected(getApplicationContext())) {
                 if (isLoginPage) {
                     loginFragment.dismissProgressBar();
                     showSnackBar(getResources().getString(R.string.text_connection_error), false);
@@ -1275,7 +1179,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             dismissLinearProgressbar();
             dismissRoundProgressbar();
             dismissProgressDialog();
-            if (isConnected(getApplicationContext())) {
+            if (Utils.isConnected(getApplicationContext())) {
                 if (!errorResponse.getReasonPhrase().equals("Not Found")) { // ignora o erro not found
                     if (isLoginPage) {
                         loginFragment.dismissProgressBar();
@@ -1290,7 +1194,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         @AddTrace(name = "onPageFinished")
         public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
-            if (isConnected(getApplicationContext()) && html.getUrl() != null) {
+            if (Utils.isConnected(getApplicationContext()) && html.getUrl() != null) {
                 if (html.getUrl().equals(url + pg_login)) {
                     html.loadUrl("javascript:var uselessvar = document.getElementById('txtLogin').value='"
                             + login_info.getString("matricula", "") + "';");
@@ -1340,8 +1244,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         SharedPreferences.Editor editor = login_info.edit();
                         editor.putString("password", new_password);
                         editor.apply();
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setCustomTitle(customAlertTitle(R.drawable.ic_check_black_24dp, R.string.success_title, R.color.green_500))
+                        new AlertDialog.Builder(getApplicationContext())
+                                .setCustomTitle(Utils.customAlertTitle(getApplicationContext(), R.drawable.ic_check_black_24dp, R.string.success_title, R.color.green_500))
                                 .setMessage(R.string.passchange_txt_success_message)
                                 .setPositiveButton(R.string.dialog_close, null)
                                 .show();
@@ -1375,7 +1279,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setUp() { //Inicializa as variáveis necessárias
-        updateDefaultValues();
 
         html.setWebViewClient(new CustomWebViewClient());
         html.addJavascriptInterface(new MyJavaScriptInterface(), "HtmlHandler");
@@ -1901,58 +1804,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return x;
     }
 
-    @AddTrace(name = "startDownload")
-    public void startDownload() {
-        try {
-            String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/";
-            String fileName = "app-att.apk";
-            destination += fileName;
-            final Uri uri = Uri.parse("file://" + destination);
-
-            File file = new File(destination);
-            file.mkdirs();
-
-            File outputFile = new File(file, "app-att.apk");
-
-            if (outputFile.exists()) {
-                outputFile.delete();
-            }
-
-            DownloadManager mManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            DownloadManager.Request mRqRequest = new DownloadManager.Request(
-                    Uri.parse(linkAtt));
-            mRqRequest.setNotificationVisibility(
-                    DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
-            );
-            //mRqRequest.setDescription(getResources().getString(R.string.download_description));
-            mRqRequest.setDescription("Qacademico Mobile " + verWeb);
-            mRqRequest.setTitle("Qacademico Update");
-            mRqRequest.setDestinationUri(uri);
-            long downloadId = mManager.enqueue(mRqRequest);
-
-            BroadcastReceiver onComplete = new BroadcastReceiver() {
-                public void onReceive(Context ctxt, Intent intent) {
-                    Intent install = new Intent(Intent.ACTION_VIEW);
-                    install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    install.setDataAndType(uri,
-                            mManager.getMimeTypeForDownloadedFile(downloadId));
-                    startActivity(install);
-
-                    unregisterReceiver(this);
-                    finish();
-                }
-            };
-            //registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_download_start), Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_download_fail), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     protected void changePassword() {
 
-        if (isConnected(getApplicationContext()) && pg_home_loaded) {
+        if (Utils.isConnected(getApplicationContext()) && pg_home_loaded) {
 
             View theView = inflater.inflate(R.layout.dialog_password_change, null);
             TextInputEditText pass_atual = (TextInputEditText) theView.findViewById(R.id.pass_atual);
@@ -2004,7 +1858,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             new AlertDialog.Builder(MainActivity.this).setView(theView)
                     .setTitle(R.string.menu_password)
-                    .setCustomTitle(customAlertTitle(R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.colorPrimary))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.colorPrimary))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
                                 && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
@@ -2013,7 +1867,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             html.loadUrl(url + pg_change_password);
                         } else {
                             new AlertDialog.Builder(this)
-                                    .setCustomTitle(customAlertTitle(R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
+                                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
                                     .setMessage(R.string.passchange_txt_error_message)
                                     .setPositiveButton(R.string.dialog_close, null)
                                     .show();
@@ -2023,17 +1877,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public View customAlertTitle(int img, int txt, int color) {
-        View theTitle = inflater.inflate(R.layout.dialog_title, null);
-        ImageView title_img = (ImageView) theTitle.findViewById(R.id.dialog_img);
-        TextView title_txt = (TextView) theTitle.findViewById(R.id.dialog_txt);
-        LinearLayout title_bckg = (LinearLayout) theTitle.findViewById(R.id.dialog_bckg);
-        title_img.setImageResource(img);
-        title_bckg.setBackgroundColor(getResources().getColor(color));
-        title_txt.setText(txt);
-        return theTitle;
     }
 
     protected void shareApp() {
@@ -2050,20 +1893,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     protected void sendEmail() {
-        if (isConnected(MainActivity.this)) {
+        if (Utils.isConnected(this)) {
 
             View theView = inflater.inflate(R.layout.dialog_sug, null);
             EditText message = (EditText) theView.findViewById(R.id.email_message);
             RatingBar rating = (RatingBar) theView.findViewById(R.id.ratingBar);
 
-            new AlertDialog.Builder(MainActivity.this).setView(theView)
-                    .setCustomTitle(customAlertTitle(R.drawable.ic_chat_black_24dp, R.string.email_assunto_sug, R.color.pink_500))
+            new AlertDialog.Builder(this).setView(theView)
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_chat_black_24dp, R.string.email_assunto_sug, R.color.pink_500))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (!message.getText().toString().equals("")) {
                             emailPattern("QAcadMobile Sugestion", message.getText().toString() + "\n\nNota: " + String.valueOf(rating.getRating()));
                         } else {
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setCustomTitle(customAlertTitle(R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
+                            new AlertDialog.Builder(this)
+                                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
                                     .setMessage(R.string.email_empty)
                                     .setPositiveButton(R.string.dialog_close, null)
                                     .show();
@@ -2090,7 +1933,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     protected void bugReport() {
-        if (isConnected(getApplicationContext())) {
+        if (Utils.isConnected(getApplicationContext())) {
 
             autoLoadPages();
 
@@ -2152,7 +1995,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             checkBoxBugReport(grid_outro, check_outro, img_outros, txt_outros);
 
             new AlertDialog.Builder(MainActivity.this).setView(theView)
-                    .setCustomTitle(customAlertTitle(R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.green_500))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.green_500))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                         String message_final = "";
@@ -2184,14 +2027,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 emailPattern("QAcadMobile Bug Report", message.getText().toString() + message_final);
                             } else {
                                 new AlertDialog.Builder(MainActivity.this)
-                                        .setCustomTitle(customAlertTitle(R.drawable.ic_sync_problem_black_24dp, R.string.error_title, R.color.amber_500))
+                                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sync_problem_black_24dp, R.string.error_title, R.color.amber_500))
                                         .setMessage(R.string.page_load_empty)
                                         .setPositiveButton(R.string.dialog_close, null)
                                         .show();
                             }
                         } else {
                             new AlertDialog.Builder(MainActivity.this)
-                                    .setCustomTitle(customAlertTitle(R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
+                                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
                                     .setMessage(R.string.email_empty)
                                     .setPositiveButton(R.string.dialog_close, null)
                                     .show();
@@ -2215,13 +2058,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .withSendingMessage(R.string.email_sending)
                 .withSendingMessageError(null)
                 .withSendingMessageSuccess(null)
-                .withOnSuccessCallback(() -> new AlertDialog.Builder(MainActivity.this)
-                        .setCustomTitle(customAlertTitle(R.drawable.ic_sentiment_very_satisfied_black_24dp, R.string.success_title, R.color.green_500))
+                .withOnSuccessCallback(() -> new AlertDialog.Builder(this)
+                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sentiment_very_satisfied_black_24dp, R.string.success_title, R.color.green_500))
                         .setMessage(R.string.email_success)
                         .setPositiveButton(R.string.dialog_close, null)
                         .show())
-                .withOnFailCallback(() -> new AlertDialog.Builder(MainActivity.this)
-                        .setCustomTitle(customAlertTitle(R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
+                .withOnFailCallback(() -> new AlertDialog.Builder(this)
+                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
                         .setMessage(R.string.email_error)
                         .setPositiveButton(R.string.dialog_close, null)
                         .show())
@@ -2330,15 +2173,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    private void updateApp(boolean showNotFound) {
+        if (Utils.isConnected(this)) {
+            if (!CheckUpdate.checkUpdate(this).equals("")) {
+                new AlertDialog.Builder(this)
+                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.colorPrimary))
+                        .setMessage(String.format(getResources().getString(R.string.dialog_att_encontrada), "" + CheckUpdate.verLocal, "" + CheckUpdate.verWeb))
+                        .setPositiveButton(R.string.dialog_att_download, (dialog, which) -> {
+                            if (Build.VERSION.SDK_INT >= 23) {
+                                if (ContextCompat.checkSelfPermission(this,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                        != PackageManager.PERMISSION_GRANTED) {
 
-        if (null != cm) {
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            return (info != null && info.isConnected());
+                                    ActivityCompat.requestPermissions(this,
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                                }
+                            }
+                            if (MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
+                                CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
+                            } else if (Build.VERSION.SDK_INT < 23) {
+                                CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .show();
+            } else {
+                if (showNotFound) {
+                    Toast.makeText(this, getResources().getString(R.string.toast_nenhuma_atualizacao), Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
         }
-        return false;
     }
 
     @Override
@@ -2347,7 +2214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDownload();
+                    CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
                 }
             }
         }

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
@@ -18,7 +17,7 @@ import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.AdapterGuide;
 import com.qacademico.qacademico.Class.Guide;
 import com.qacademico.qacademico.R;
-
+import com.qacademico.qacademico.Utilities.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -103,7 +102,7 @@ public class HomeFragment extends Fragment implements AdapterGuide.OnGuideClicke
 
         LinearLayout offilne = (LinearLayout) view.findViewById(R.id.offline);
 
-        if (((MainActivity)getActivity()).isConnected(getActivity()) || ((MainActivity)getActivity()).pg_home_loaded) {
+        if (Utils.isConnected(getActivity()) || ((MainActivity)getActivity()).pg_home_loaded) {
             offilne.setVisibility(View.GONE);
         } else {
             offilne.setVisibility(View.VISIBLE);

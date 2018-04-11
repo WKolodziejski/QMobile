@@ -3,7 +3,7 @@ package com.qacademico.qacademico.Service;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
-class BackgroundService extends JobService {
+public class BackgroundService extends JobService {
     @Override
     public boolean onStartJob(JobParameters job) {
         return false;

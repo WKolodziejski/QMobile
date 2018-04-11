@@ -1,33 +1,18 @@
 package com.qacademico.qacademico.Fragment;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
-import android.widget.TextView;
-
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.AdapterDiarios;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.R;
-import com.sun.mail.iap.Argument;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
-
-import static com.qacademico.qacademico.Activity.MainActivity.pg_diarios;
-import static com.qacademico.qacademico.Activity.MainActivity.url;
 
 public class DiariosFragment extends Fragment {
 
