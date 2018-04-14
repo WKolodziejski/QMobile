@@ -15,8 +15,8 @@ import android.widget.ProgressBar;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.R;
 
-import static com.qacademico.qacademico.Application.MainApplication.pg_login;
-import static com.qacademico.qacademico.Application.MainApplication.url;
+import static com.qacademico.qacademico.Utilities.Utils.pg_login;
+import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class LoginFragment extends Fragment {
     private SharedPreferences login_info;
@@ -49,7 +49,7 @@ public class LoginFragment extends Fragment {
             editor.putString("password", password_et.getText().toString());
             editor.apply();
 
-            ((MainActivity) getActivity()).html.loadUrl(url + pg_login);
+            ((MainActivity) getActivity()).mainWebView.html.loadUrl(url + pg_login);
             ((MainActivity) getActivity()).dismissSnackbar();
         });
         return view;

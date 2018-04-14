@@ -16,7 +16,7 @@ import org.jsoup.nodes.Document;
 import java.io.File;
 import java.io.IOException;
 
-import static com.qacademico.qacademico.Application.MainApplication.download_update_url;
+import static com.qacademico.qacademico.Utilities.Utils.download_update_url;
 
 public class CheckUpdate {
     public static float verLocal = 0;

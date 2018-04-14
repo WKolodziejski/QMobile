@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment implements AdapterGuide.OnGuideClicke
 
         LinearLayout offilne = (LinearLayout) view.findViewById(R.id.offline);
 
-        if (Utils.isConnected(getActivity()) || ((MainActivity)getActivity()).pg_home_loaded) {
+        if (Utils.isConnected(getActivity()) || ((MainActivity)getActivity()).mainWebView.pg_home_loaded) {
             offilne.setVisibility(View.GONE);
         } else {
             offilne.setVisibility(View.VISIBLE);

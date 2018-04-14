@@ -9,9 +9,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.qacademico.qacademico.R;
 
 public class Utils {
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    public static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_materiais, pg_change_password,
+            pg_erro, download_update_url, email_to, email_from, email_from_pwd;
 
     public static boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -20,6 +24,25 @@ public class Utils {
             return (info != null && info.isConnected());
         }
         return false;
+    }
+
+    /*
+     * Método que atualiza os valores das variáveis
+     */
+    public static void updateDefaultValues(FirebaseRemoteConfig remoteConfig) {
+        url = remoteConfig.getString("default_url");
+        pg_login = remoteConfig.getString("pg_login");
+        pg_home = remoteConfig.getString("pg_home");
+        pg_diarios = remoteConfig.getString("pg_diarios");
+        pg_boletim = remoteConfig.getString("pg_boletim");
+        pg_horario = remoteConfig.getString("pg_horario");
+        pg_materiais = remoteConfig.getString("pg_materiais");
+        pg_change_password = remoteConfig.getString("pg_change_password");
+        pg_erro = remoteConfig.getString("pg_erro");
+        download_update_url = remoteConfig.getString("download_update_url");
+        email_to = remoteConfig.getString("email_to");
+        email_from = remoteConfig.getString("email_from");
+        email_from_pwd = remoteConfig.getString("email_from_pass");
     }
 
     /*
