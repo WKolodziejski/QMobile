@@ -3,7 +3,6 @@ package com.qacademico.qacademico.WebView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 

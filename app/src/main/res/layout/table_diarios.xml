@@ -57,13 +57,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:id="@+id/diarios_nothing"
             android:orientation="vertical"
             android:gravity="center_horizontal"
             android:paddingBottom="10dp"
+            android:visibility="gone"
             android:layout_marginVertical="10dp"
             >
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@mipmap/Monster"
+                android:layout_marginVertical="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,13 +77,6 @@
                 android:textSize="@dimen/main_font_size"
                 android:textStyle="bold"
                 android:text="@string/diarios_nothing"/>
-
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_sentiment_very_dissatisfied_black_24dp"
-                android:tint="@color/colorAccent"
-                android:layout_marginVertical="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

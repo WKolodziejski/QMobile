@@ -23,6 +23,9 @@
     <string name="action_att">Atualizações</string>
     <string name="text_connection_error">Não foi Possível Carregar a Página</string>
     <string name="text_connection_timeout">Tempo esgotado</string>
+    <string name="text_connection_no">Sem Conexão com a Internet</string>
+    <string name="text_empty">Não há nada aqui, volte mais tarde</string>
+    <string name="text_empty_materiais">Não há materiais disponíveis</string>
     <string name="title_loading">Carregando</string>
     <string name="text_loading">Por favor, aguarde…</string>
     <string name="text_retry">Recarregar</string>

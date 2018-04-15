@@ -77,8 +77,8 @@ public class JavaScriptWebView {
                     editor.apply();
 
                     webViewMain.pg_home_loaded = true;
-                    onPageFinish.OnPageFinish(url + pg_home);
                     Log.i("handleHome", "Carregado");
+                    onPageFinish.OnPageFinish(url + pg_home);
 
                 } catch (Exception ignored) {}
             }
@@ -154,8 +154,8 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_boletim_loaded = true;
-                    onPageFinish.OnPageFinish(url + pg_boletim);
                     Log.i("handleBoletim", "Carregado");
+                    onPageFinish.OnPageFinish(url + pg_boletim);
 
                 } catch (Exception ignored) {}
             }
@@ -279,8 +279,8 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_diarios_loaded = true;
-                    onPageFinish.OnPageFinish(url + pg_diarios);
                     Log.i("handleDiarios", "Carregado");
+                    onPageFinish.OnPageFinish(url + pg_diarios);
 
                 } catch (Exception ignored) {}
             }
@@ -397,8 +397,8 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_horario_loaded = true;
-                    onPageFinish.OnPageFinish(url + pg_horario);
                     Log.i("handleHorario", "Carregado");
+                    onPageFinish.OnPageFinish(url + pg_horario);
 
                 } catch (Exception ignored) {}
             }
@@ -460,8 +460,8 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_material_loaded = true;
-                    onPageFinish.OnPageFinish(url + pg_materiais);
                     Log.i("handleMateriais", "Carregado");
+                    onPageFinish.OnPageFinish(url + pg_materiais);
 
                 } catch (Exception ignored) {}
             }

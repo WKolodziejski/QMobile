@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AddTrace(name = "setHome")
     public void setHome() { //layout layout_home
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        getSupportActionBar().setTitle(getResources().getString(R.string.title_home));
         removeBehavior();
         hideButtons();
         dismissRoundProgressbar();
@@ -375,6 +375,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AddTrace(name = "setDiarios")
     public void setDiarios() {//layout layout_diarios
+
+        Log.i("setDiarios", "seted");
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios));
         applyBehavior();
@@ -712,10 +714,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     protected void configNavDrawer() { //Configura o NavigationDrawer lateral
 
-        navigation.setVisibility(View.VISIBLE);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_menu_black_24dp));
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
         View header = navigationView.getHeaderView(0);
 
         LinearLayout nav_image = (LinearLayout) header.findViewById(R.id.nav_image);
@@ -745,25 +743,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void OnPageFinish(String url_p) {
         Log.i("Singleton", "onFinish");
         if (url_p.equals(url + pg_home)) {
+            Log.i("onFinish", "loadedHome");
             if (navigation.getSelectedItemId() == R.id.navigation_home) {
-                setHome();
+                clickHome();
                 Log.i("onFinish", "setHome");
             }
             configNavDrawer();
         } else if (url_p.equals(url + pg_boletim)) {
+            Log.i("onFinish", "loadedBoletim");
             if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
-                setBoletim();
-                Log.i("onFinish", "setHome");
+                clickBoletim();
+                Log.i("onFinish", "setBoletim");
             }
         } else if (url_p.equals(url + pg_diarios)) {
+            Log.i("onFinish", "loadedDiarios");
             if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
-                setDiarios();
-                Log.i("onFinish", "setHome");
+                clickDiarios();
+                Log.i("onFinish", "clickDiarios");
             }
         } else if (url_p.equals(url + pg_horario)) {
+            Log.i("onFinish", "loadedHorario");
             if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-                setHorario();
-                Log.i("onFinish", "setHome");
+                clickHorario();
+                Log.i("onFinish", "setHorario");
             }
         }
     }
