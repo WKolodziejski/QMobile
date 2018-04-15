@@ -88,32 +88,20 @@ import com.qacademico.qacademico.Class.Material;
 import com.qacademico.qacademico.Fragment.HorarioFragment;
 import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.Class.Trabalho;
+import com.qacademico.qacademico.Utilities.ChangePassword;
 import com.qacademico.qacademico.Utilities.CheckUpdate;
+import com.qacademico.qacademico.Utilities.Design;
+import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
-import static com.qacademico.qacademico.Utilities.Utils.email_from;
-import static com.qacademico.qacademico.Utilities.Utils.email_from_pwd;
-import static com.qacademico.qacademico.Utilities.Utils.email_to;
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
-import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_home;
 import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
@@ -178,13 +166,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                setStatusBarLight();
+                Design.setStatusBarLight(MainActivity.this);
             }
 
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                setStatusBarTransparent();
+                Design.setStatusBarTransparent(MainActivity.this);
             }
         };
         drawer.addDrawerListener(toggle);
@@ -197,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setUp(); //inicializa as variáveis necessárias
         testLogin(); // testa se o login é válido
-        updateApp(false);
+        CheckUpdate.checkUpdate(this);
     }
 
     /*
@@ -237,9 +225,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_share) {
             shareApp();
         } else if (id == R.id.nav_sug) {
-            sendEmail();
+            SendEmail.sendSuggestion(this);
         } else if (id == R.id.nav_bug) {
-            bugReport();
+            SendEmail.bugReport(this, navigation.getSelectedItemId());
         } else if (id == R.id.nav_logout) {
             new AlertDialog.Builder(this)
                     .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
@@ -248,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setNegativeButton(R.string.dialog_quit_no, null)
                     .show();
         } else if (id == R.id.nav_password) {
-            changePassword();
+            ChangePassword.changePassword(this);
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -279,22 +267,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         setHome();
-                        changePageColor(R.id.navigation_home);
+                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
+                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_home);
                         return true;
 
                     case R.id.navigation_diarios:
                         setDiarios();
-                        changePageColor(R.id.navigation_diarios);
+                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
+                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_diarios);
                         return true;
 
                     case R.id.navigation_boletim:
-                        changePageColor(R.id.navigation_boletim);
+                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
+                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_boletim);
                         setBoletim();
                         return true;
 
                     case R.id.navigation_horario:
                         setHorario();
-                        changePageColor(R.id.navigation_horario);
+                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
+                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_horario);
                         return true;
                 }
             }
@@ -313,25 +305,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.action_bug) {
-            String[] TO = {email_to};
-            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-            emailIntent.setData(Uri.parse("mailto:"));
-            emailIntent.setType("text/plain");
-            emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "QAcadMobile| " + getResources().getString(R.string.email_assunto_bug));
-            emailIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.email_content_bug));
-            final PackageManager pm = getPackageManager();
-            final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
-            ResolveInfo best = null;
-            for (final ResolveInfo info : matches)
-                if (info.activityInfo.packageName.endsWith(".gm") ||
-                        info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
-            if (best != null)
-                emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
-            startActivity(emailIntent);
+            SendEmail.openGmail(this);
             return true;
         } else if (id == R.id.action_att) {
-            updateApp(true);
+            CheckUpdate.updateApp(this, true);
             return true;
         } else if (id == R.id.action_about) {
             Intent about = new Intent(getApplicationContext(), AboutActivity.class);
@@ -354,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setHome() { //layout layout_home
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_home));
-        removeBehavior();
         hideButtons();
         dismissRoundProgressbar();
         dismissLinearProgressbar();
@@ -379,7 +355,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i("setDiarios", "seted");
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios));
-        applyBehavior();
         showButtons();
         dismissRoundProgressbar();
         dismissLinearProgressbar();
@@ -475,7 +450,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setBoletim() { //layout layout_boletim
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim));
-        applyBehavior();
         showButtons();
         dismissRoundProgressbar();
         dismissLinearProgressbar();
@@ -574,7 +548,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setHorario() { // layout layout_horario
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_horario));
-        applyBehavior();
         showButtons();
         dismissRoundProgressbar();
         dismissLinearProgressbar();
@@ -686,7 +659,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void testLogin() { //Testa se o login é válido
         if (login_info.getBoolean("valido", false)) {
-            changePageColor(R.id.navigation_home);
+            Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
+                    mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_home);
             setHome();
             mainWebView.html.loadUrl(url + pg_login);
         } else {
@@ -698,17 +672,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         login_info = getSharedPreferences("login_info", 0);
         hideButtons();
         configNavDrawer();
-        setNavigationTransparent();
+        Design.setNavigationTransparent(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
-    }
-
-    protected void setNavigationTransparent() { //Configura os botões de navegação do Android para transparente
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().setFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         }
     }
 
@@ -786,67 +752,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mainWebView.html.loadUrl(url + pg_horario);
             }
         }
-    }
-
-    protected void passwordCheck(TextInputEditText obj, TextInputEditText pass_atual, TextInputEditText pass_nova,
-                                 TextInputEditText pass_nova_confirm, TextInputLayout pass_atual_ly, ImageView img, TextView txt) { //Checa os campos para alterar a senha
-
-        obj.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                    pass_atual_ly.setErrorEnabled(true);
-                }
-                if (pass_nova.getText().toString().equals("") || pass_nova_confirm.getText().toString().equals("")) {
-                    img.setImageResource(R.drawable.ic_edit_black_24dp);
-                    txt.setText(R.string.passchange_txt_empty);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.red_500))));
-                        txt.setTextColor(getResources().getColor(R.color.red_500));
-                    }
-                } else if (!pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString())) {
-                    img.setImageResource(R.drawable.ic_cancel_black_24dp);
-                    txt.setText(R.string.passchange_txt_different);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.red_500))));
-                        txt.setTextColor(getResources().getColor(R.color.red_500));
-                    }
-                } else if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && count < 8) {
-                    img.setImageResource(R.drawable.ic_short_text_black_24dp);
-                    txt.setText(R.string.passchange_txt_short);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.amber_500))));
-                        txt.setTextColor(getResources().getColor(R.color.amber_500));
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                    pass_atual_ly.setErrorEnabled(false);
-                }
-                if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8 && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                    img.setImageResource(R.drawable.ic_done_all_black_24dp);
-                    txt.setText(R.string.passchange_txt_equals);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.green_500))));
-                        txt.setTextColor(getResources().getColor(R.color.green_500));
-                    }
-                } else if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8) {
-                    img.setImageResource(R.drawable.ic_check_black_24dp);
-                    txt.setText(R.string.passchange_txt_old_equals);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.blue_500))));
-                        txt.setTextColor(getResources().getColor(R.color.blue_500));
-                    }
-                }
-            }
-        });
     }
 
     public void showErrorConnection() { //Mostra a página de erro de conexão
@@ -938,125 +843,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab_isOpen = false;
     }
 
-    public void changePageColor(int id) { //Muda a cor do app dependendo da página
-        int colorPrimaryBtnTo = 0;
-        int colorSecondaryTo = 0;
-        int colorPrimaryBtnFrom = 0;
-        int colorSecondaryFrom = 0;
-        int colorStatusBarTo = 0;
-        int colorStatusBarFrom = 0;
-        int colorActionBarTo = 0;
-        int colorActionBarFrom = 0;
-        int colorTitleTo = 0;
-        int colorTitleFrom = 0;
-        int colorToolBarTo = 0;
-        int colorToolBarFrom = 0;
-        int colorProgressTo = 0;
-        int colorProgressFrom = 0;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            colorStatusBarFrom = getWindow().getStatusBarColor();
-        }
-
-        if (colorStatusBarFrom == getResources().getColor(R.color.colorPrimaryDark)) {
-            colorPrimaryBtnFrom = getResources().getColor(R.color.white);
-            colorSecondaryFrom = getResources().getColor(R.color.colorPrimaryDark);
-            colorActionBarFrom = getResources().getColor(R.color.white);
-            colorTitleFrom = getResources().getColor(R.color.colorPrimary);
-            colorToolBarFrom = getResources().getColor(R.color.colorAccent);
-            colorProgressFrom = getResources().getColor(R.color.colorAccent);
-        } else if (colorStatusBarFrom == getResources().getColor(R.color.blue_800)) {
-            colorPrimaryBtnFrom = getResources().getColor(R.color.cyan_A700);
-            colorSecondaryFrom = getResources().getColor(R.color.cyan_A400);
-            colorActionBarFrom = getResources().getColor(R.color.blue_600);
-            colorTitleFrom = getResources().getColor(R.color.white);
-            colorToolBarFrom = getResources().getColor(R.color.blue_50);
-            colorProgressFrom = getResources().getColor(R.color.cyan_A700);
-        } else if (colorStatusBarFrom == getResources().getColor(R.color.teal_800)) {
-            colorPrimaryBtnFrom = getResources().getColor(R.color.green_A700);
-            colorSecondaryFrom = getResources().getColor(R.color.green_A400);
-            colorActionBarFrom = getResources().getColor(R.color.teal_600);
-            colorTitleFrom = getResources().getColor(R.color.white);
-            colorToolBarFrom = getResources().getColor(R.color.teal_50);
-            colorProgressFrom = getResources().getColor(R.color.green_A700);
-        } else if (colorStatusBarFrom == getResources().getColor(R.color.orange_800)) {
-            colorPrimaryBtnFrom = getResources().getColor(R.color.yellow_A700);
-            colorSecondaryFrom = getResources().getColor(R.color.yellow_A400);
-            colorActionBarFrom = getResources().getColor(R.color.orange_600);
-            colorTitleFrom = getResources().getColor(R.color.white);
-            colorToolBarFrom = getResources().getColor(R.color.deep_orange_50);
-            colorProgressFrom = getResources().getColor(R.color.yellow_A700);
-        }
-
-        if (id == R.id.navigation_home) {
-            colorPrimaryBtnTo = getResources().getColor(R.color.white);
-            colorSecondaryTo = getResources().getColor(R.color.colorPrimaryDark);
-            colorStatusBarTo = getResources().getColor(R.color.colorPrimaryDark);
-            colorActionBarTo = getResources().getColor(R.color.white);
-            colorTitleTo = getResources().getColor(R.color.colorPrimary);
-            colorToolBarTo = getResources().getColor(R.color.colorAccent);
-            colorProgressTo = getResources().getColor(R.color.colorAccent);
-            setSystemBarTheme(this, false);
-        } else if (id == R.id.navigation_diarios) {
-            colorPrimaryBtnTo = getResources().getColor(R.color.yellow_A700);
-            colorSecondaryTo = getResources().getColor(R.color.yellow_A400);
-            colorStatusBarTo = getResources().getColor(R.color.orange_800);
-            colorActionBarTo = getResources().getColor(R.color.orange_600);
-            colorTitleTo = getResources().getColor(R.color.white);
-            colorToolBarTo = getResources().getColor(R.color.deep_orange_50);
-            colorProgressTo = getResources().getColor(R.color.yellow_A700);
-            setSystemBarTheme(this, true);
-        } else if (id == R.id.navigation_boletim) {
-            colorPrimaryBtnTo = getResources().getColor(R.color.green_A700);
-            colorSecondaryTo = getResources().getColor(R.color.green_A400);
-            colorStatusBarTo = getResources().getColor(R.color.teal_800);
-            colorActionBarTo = getResources().getColor(R.color.teal_600);
-            colorTitleTo = getResources().getColor(R.color.white);
-            colorToolBarTo = getResources().getColor(R.color.teal_50);
-            colorProgressTo = getResources().getColor(R.color.green_A700);
-            setSystemBarTheme(this, true);
-        } else if (id == R.id.navigation_horario) {
-            colorPrimaryBtnTo = getResources().getColor(R.color.cyan_A700);
-            colorSecondaryTo = getResources().getColor(R.color.cyan_A400);
-            colorStatusBarTo = getResources().getColor(R.color.blue_800);
-            colorActionBarTo = getResources().getColor(R.color.blue_600);
-            colorTitleTo = getResources().getColor(R.color.white);
-            colorToolBarTo = getResources().getColor(R.color.blue_50);
-            colorProgressTo = getResources().getColor(R.color.cyan_A700);
-            setSystemBarTheme(this, true);
-        }
-
-        changeButtonColorAnim(fab_action, colorPrimaryBtnFrom, colorPrimaryBtnTo);
-        changeButtonColorAnim(fab_expand, colorSecondaryFrom, colorSecondaryTo);
-        changeButtonColorAnim(fab_data, colorSecondaryFrom, colorSecondaryTo);
-        changeProgressBarColor(colorProgressFrom, colorProgressTo);
-        changeStatusBarColor(colorStatusBarFrom, colorStatusBarTo, colorActionBarTo, colorActionBarFrom, colorTitleTo,
-                colorTitleFrom, colorToolBarFrom, colorToolBarTo);
-    }
-
-    protected void changeButtonColorAnim(FloatingActionButton fab, int colorStart, int colorEnd) {  //Muda a cor dos FloatingActionButtons
-        ValueAnimator fabC = ValueAnimator.ofObject(new ArgbEvaluator(), colorStart, colorEnd);
-        fabC.addUpdateListener(animator -> {
-            fab.setBackgroundTintList(ColorStateList.valueOf((Integer) animator.getAnimatedValue()));
-        });
-        fabC.setDuration(250);
-        fabC.setStartDelay(0);
-        fabC.start();
-    }
-
-    protected void changeProgressBarColor(int colorStart, int colorEnd) {
-        ValueAnimator fabC = ValueAnimator.ofObject(new ArgbEvaluator(), colorStart, colorEnd);
-        fabC.addUpdateListener(animator -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                progressBar_Top.setIndeterminateTintList(ColorStateList.valueOf((Integer) animator.getAnimatedValue()));
-                progressBar_Main.setIndeterminateTintList(ColorStateList.valueOf((Integer) animator.getAnimatedValue()));
-            }
-        });
-        fabC.setDuration(250);
-        fabC.setStartDelay(0);
-        fabC.start();
-    }
-
     public void clickButtons(View v) { //Animações ao clicar no FloatingActionButton
         Animation open_rotate = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_fwd);
         Animation close_rotate = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_bkw);
@@ -1087,86 +873,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setButtonUnclickable() {
         fab_data.setClickable(false);
         fab_data.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.grey_300)));
-    }
-
-    protected void changeStatusBarColor(int colorStatusBarFrom, int colorStatusBarTo, int colorActionBarTo, int colorActionBarFrom,
-                                        int colorTitleTo, int colorTitleFrom, int colorToolBarFrom, int colorToolbarTo) { //Muda a cor da StatusBar e da ActionBar
-        ValueAnimator actionBar = ValueAnimator.ofObject(new ArgbEvaluator(), colorActionBarFrom, colorActionBarTo);
-        ValueAnimator statusBar = ValueAnimator.ofObject(new ArgbEvaluator(), colorStatusBarFrom, colorStatusBarTo);
-        ValueAnimator title = ValueAnimator.ofObject(new ArgbEvaluator(), colorTitleFrom, colorTitleTo);
-        ValueAnimator tool = ValueAnimator.ofObject(new ArgbEvaluator(), colorToolBarFrom, colorToolbarTo);
-
-        actionBar.addUpdateListener(animator -> {
-            toolbar.setBackgroundColor((Integer) animator.getAnimatedValue());
-        });
-
-        statusBar.addUpdateListener(animator -> {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor((Integer) animator.getAnimatedValue());
-            }
-        });
-
-        title.addUpdateListener(animator -> {
-            toolbar.setTitleTextColor((Integer) animator.getAnimatedValue());
-        });
-
-        tool.addUpdateListener(animator -> {
-            Drawable nav = ContextCompat.getDrawable(this, R.drawable.ic_menu_black_24dp);
-            nav = DrawableCompat.wrap(nav);
-            DrawableCompat.setTint(nav, (Integer) animator.getAnimatedValue());
-            toolbar.setNavigationIcon(nav);
-
-            Drawable menu = ContextCompat.getDrawable(this, R.drawable.ic_more_vert_black_24dp);
-            menu = DrawableCompat.wrap(menu);
-            DrawableCompat.setTint(menu, (Integer) animator.getAnimatedValue());
-            toolbar.setOverflowIcon(menu);
-        });
-
-        actionBar.setDuration(250);
-        actionBar.setStartDelay(0);
-        actionBar.start();
-        statusBar.setDuration(250);
-        statusBar.setStartDelay(0);
-        statusBar.start();
-        title.setDuration(250);
-        title.setStartDelay(0);
-        title.start();
-        tool.setDuration(250);
-        tool.setStartDelay(0);
-        tool.start();
-
-        drawer.setStatusBarBackgroundColor(colorStatusBarTo);
-    }
-
-    public static void setSystemBarTheme(final Activity pActivity, final boolean pIsDark) { //Muda o tema do app para StatusBar Light ou Dark
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final int lFlags = pActivity.getWindow().getDecorView().getSystemUiVisibility();
-            pActivity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
-        }
-    }
-
-    protected void applyBehavior() { //Habilita o actionBar a se esconder ao rolar a página
-        CoordinatorLayout.LayoutParams mainLayoutLayoutParams = (CoordinatorLayout.LayoutParams) mainLayout.getLayoutParams();
-        mainLayoutLayoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
-        mainLayout.requestLayout();
-        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        toolbarLayoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-
-        mainLayoutLayoutParams.setMargins((int) (0 * getResources().getDisplayMetrics().density), (int) (0 * getResources().getDisplayMetrics().density),
-                (int) (0 * getResources().getDisplayMetrics().density), (int) (0 * getResources().getDisplayMetrics().density));
-
-        mainLayout.setLayoutParams(mainLayoutLayoutParams);
-    }
-
-    public void removeBehavior() { //Desabilita o actionBar a se esconder ao rolar a página
-        CoordinatorLayout.LayoutParams mainLayoutLayoutParams = (CoordinatorLayout.LayoutParams) mainLayout.getLayoutParams();
-        mainLayoutLayoutParams.setBehavior(null);
-        AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        toolbarLayoutParams.setScrollFlags(0);
-
-        mainLayoutLayoutParams.setMargins((int) (0 * getResources().getDisplayMetrics().density), (int) (55 * getResources().getDisplayMetrics().density),
-                (int) (0 * getResources().getDisplayMetrics().density), (int) (0 * getResources().getDisplayMetrics().density));
-        mainLayout.setLayoutParams(mainLayoutLayoutParams);
     }
 
     protected void showRoundProgressbar() { //Mostra a progressBar ao carregar a página
@@ -1211,81 +917,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void changePassword() {
-
-        if (Utils.isConnected(getApplicationContext()) && mainWebView.pg_home_loaded) {
-
-            View theView = inflater.inflate(R.layout.dialog_password_change, null);
-            TextInputEditText pass_atual = (TextInputEditText) theView.findViewById(R.id.pass_atual);
-            TextInputEditText pass_nova = (TextInputEditText) theView.findViewById(R.id.pass_nova);
-            TextInputEditText pass_nova_confirm = (TextInputEditText) theView.findViewById(R.id.pass_nova_confirm);
-            TextInputLayout pass_atual_ly = (TextInputLayout) theView.findViewById(R.id.pass_atual_ly);
-            ImageView img = (ImageView) theView.findViewById(R.id.pass_img);
-            TextView txt = (TextView) theView.findViewById(R.id.pass_txt);
-
-            pass_atual.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (!pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                        pass_atual_ly.setErrorEnabled(true);
-                        pass_atual_ly.setError("teste");
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                        pass_atual_ly.setErrorEnabled(false);
-                    }
-                    if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
-                            && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                        img.setImageResource(R.drawable.ic_done_all_black_24dp);
-                        txt.setText(R.string.passchange_txt_equals);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.green_500))));
-                            txt.setTextColor(getResources().getColor(R.color.green_500));
-                        }
-                    } else if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8) {
-                        img.setImageResource(R.drawable.ic_check_black_24dp);
-                        txt.setText(R.string.passchange_txt_old_equals);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            img.setImageTintList(ColorStateList.valueOf((getResources().getColor(R.color.blue_500))));
-                            txt.setTextColor(getResources().getColor(R.color.blue_500));
-                        }
-                    }
-                }
-            });
-
-            passwordCheck(pass_nova, pass_atual, pass_nova, pass_nova_confirm, pass_atual_ly, img, txt);
-            passwordCheck(pass_nova_confirm, pass_atual, pass_nova, pass_nova_confirm, pass_atual_ly, img, txt);
-
-            new AlertDialog.Builder(MainActivity.this).setView(theView)
-                    .setTitle(R.string.menu_password)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.colorPrimary))
-                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-                        if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
-                                && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
-                            mainWebView.new_password = pass_nova.getText().toString();
-                            showProgressDialog();
-                            mainWebView.html.loadUrl(url + pg_change_password);
-                        } else {
-                            new AlertDialog.Builder(this)
-                                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
-                                    .setMessage(R.string.passchange_txt_error_message)
-                                    .setPositiveButton(R.string.dialog_close, null)
-                                    .show();
-                        }
-                    }).setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-        } else {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     protected void shareApp() {
         try {
             Intent i = new Intent(Intent.ACTION_SEND);
@@ -1297,221 +928,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(Intent.createChooser(i, getResources().getString(R.string.share_choose)));
         } catch (Exception e) {
         }
-    }
-
-    protected void sendEmail() {
-        if (Utils.isConnected(this)) {
-
-            View theView = inflater.inflate(R.layout.dialog_sug, null);
-            EditText message = (EditText) theView.findViewById(R.id.email_message);
-            RatingBar rating = (RatingBar) theView.findViewById(R.id.ratingBar);
-
-            new AlertDialog.Builder(this).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_chat_black_24dp, R.string.email_assunto_sug, R.color.pink_500))
-                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-                        if (!message.getText().toString().equals("")) {
-                            emailPattern("QAcadMobile Sugestion", message.getText().toString() + "\n\nNota: " + String.valueOf(rating.getRating()));
-                        } else {
-                            new AlertDialog.Builder(this)
-                                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
-                                    .setMessage(R.string.email_empty)
-                                    .setPositiveButton(R.string.dialog_close, null)
-                                    .show();
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-        } else {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    protected void setStatusBarTransparent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-    }
-
-    protected void setStatusBarLight() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-    }
-
-    protected void bugReport() {
-        if (Utils.isConnected(getApplicationContext())) {
-
-            //autoLoadPages();
-
-            View theView = inflater.inflate(R.layout.dialog_bug, null);
-            EditText message = (EditText) theView.findViewById(R.id.bug_message);
-            CheckBox check_boletim = (CheckBox) theView.findViewById(R.id.bug_check_boletim);
-            CheckBox check_diarios = (CheckBox) theView.findViewById(R.id.bug_check_diarios);
-            CheckBox check_horario = (CheckBox) theView.findViewById(R.id.bug_check_horario);
-            CheckBox check_outro = (CheckBox) theView.findViewById(R.id.bug_check_outro);
-            GridLayout grid_boletim = (GridLayout) theView.findViewById(R.id.bug_grid_boletim);
-            GridLayout grid_diarios = (GridLayout) theView.findViewById(R.id.bug_grid_diarios);
-            GridLayout grid_horario = (GridLayout) theView.findViewById(R.id.bug_grid_horario);
-            GridLayout grid_outro = (GridLayout) theView.findViewById(R.id.bug_grid_outro);
-            ImageView img_boletim = (ImageView) theView.findViewById(R.id.bug_img_boletim);
-            ImageView img_diarios = (ImageView) theView.findViewById(R.id.bug_img_diarios);
-            ImageView img_horario = (ImageView) theView.findViewById(R.id.bug_img_horario);
-            ImageView img_outros = (ImageView) theView.findViewById(R.id.bug_img_outros);
-            TextView txt_boletim = (TextView) theView.findViewById(R.id.bug_txt_boletim);
-            TextView txt_diarios = (TextView) theView.findViewById(R.id.bug_txt_diarios);
-            TextView txt_horario = (TextView) theView.findViewById(R.id.bug_txt_horario);
-            TextView txt_outros = (TextView) theView.findViewById(R.id.bug_txt_outros);
-
-            if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
-                check_diarios.setChecked(true);
-                check_diarios.setEnabled(false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    check_diarios.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    img_diarios.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    txt_diarios.setTextColor(getResources().getColor(R.color.green_500));
-                }
-            } else {
-                checkBoxBugReport(grid_diarios, check_diarios, img_diarios, txt_diarios);
-            }
-
-            if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
-                check_boletim.setChecked(true);
-                check_boletim.setEnabled(false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    check_boletim.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    img_boletim.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    txt_boletim.setTextColor(getResources().getColor(R.color.green_500));
-                }
-            } else {
-                checkBoxBugReport(grid_boletim, check_boletim, img_boletim, txt_boletim);
-            }
-
-            if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-                check_horario.setChecked(true);
-                check_horario.setEnabled(false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    check_horario.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    img_horario.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    txt_horario.setTextColor(getResources().getColor(R.color.green_500));
-                }
-            } else {
-                checkBoxBugReport(grid_horario, check_horario, img_horario, txt_horario);
-            }
-
-            checkBoxBugReport(grid_outro, check_outro, img_outros, txt_outros);
-
-            new AlertDialog.Builder(MainActivity.this).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.green_500))
-                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-
-                        String message_final = "";
-
-                        if (!message.getText().toString().equals("")) {
-
-                            if (check_boletim.isChecked() && !mainWebView.bugBoletim.equals("")) {
-                                message_final += "\n---------------------------------------------------------------------------------------------------";
-                                message_final += "BOLETIM";
-                                message_final += "---------------------------------------------------------------------------------------------------\n";
-                                message_final += mainWebView.bugBoletim;
-                            }
-
-                            if (check_diarios.isChecked() && !mainWebView.bugDiarios.equals("")) {
-                                message_final += "\n---------------------------------------------------------------------------------------------------";
-                                message_final += "DIARIOS";
-                                message_final += "---------------------------------------------------------------------------------------------------\n";
-                                message_final += mainWebView.bugDiarios;
-                            }
-
-                            if (check_horario.isChecked() && !mainWebView.bugBoletim.equals("")) {
-                                message_final += "\n---------------------------------------------------------------------------------------------------";
-                                message_final += "HORARIO";
-                                message_final += "---------------------------------------------------------------------------------------------------\n";
-                                message_final += mainWebView.bugHorario;
-                            }
-
-                            if (!message_final.equals("") || !message.getText().toString().equals("")) {
-                                emailPattern("QAcadMobile Bug Report", message.getText().toString() + message_final);
-                            } else {
-                                new AlertDialog.Builder(MainActivity.this)
-                                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sync_problem_black_24dp, R.string.error_title, R.color.amber_500))
-                                        .setMessage(R.string.page_load_empty)
-                                        .setPositiveButton(R.string.dialog_close, null)
-                                        .show();
-                            }
-                        } else {
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
-                                    .setMessage(R.string.email_empty)
-                                    .setPositiveButton(R.string.dialog_close, null)
-                                    .show();
-                        }
-                    })
-                    .setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-        } else {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void emailPattern(String subject, String message) {
-        BackgroundMail.newBuilder(this)
-                .withUsername(email_from)
-                .withPassword(email_from_pwd)
-                .withMailto(email_to)
-                .withType(BackgroundMail.TYPE_PLAIN)
-                .withSubject(subject)
-                .withBody(login_info.getString("nome", "") + ",\n\n" + message)
-                .withSendingMessage(R.string.email_sending)
-                .withSendingMessageError(null)
-                .withSendingMessageSuccess(null)
-                .withOnSuccessCallback(() -> new AlertDialog.Builder(this)
-                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_sentiment_very_satisfied_black_24dp, R.string.success_title, R.color.green_500))
-                        .setMessage(R.string.email_success)
-                        .setPositiveButton(R.string.dialog_close, null)
-                        .show())
-                .withOnFailCallback(() -> new AlertDialog.Builder(this)
-                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
-                        .setMessage(R.string.email_error)
-                        .setPositiveButton(R.string.dialog_close, null)
-                        .show())
-                .send();
-    }
-
-    protected void checkBoxBugReport(GridLayout layout, CheckBox chk, ImageView img, TextView txt) {
-        layout.setOnClickListener(v -> {
-            if (chk.isChecked()) {
-                chk.setChecked(false);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    chk.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    img.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    txt.setTextColor(getResources().getColor(R.color.colorAccent));
-                }
-            } else {
-                chk.setChecked(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    chk.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    img.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    txt.setTextColor(getResources().getColor(R.color.green_500));
-                }
-            }
-        });
-
-        chk.setOnClickListener(v -> {
-            if (chk.isChecked()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    chk.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    img.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.green_500)));
-                    txt.setTextColor(getResources().getColor(R.color.green_500));
-                }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    chk.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    img.setImageTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    txt.setTextColor(getResources().getColor(R.color.colorAccent));
-                }
-            }
-        });
     }
 
     public void logOut() {
@@ -1541,7 +957,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void clickBugReport() {
-        bugReport();
+        SendEmail.bugReport(this, navigation.getSelectedItemId());
     }
 
     public void clickShareApp() {
@@ -1549,7 +965,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void clickSug() {
-        sendEmail();
+        SendEmail.sendSuggestion(this);
     }
 
     public void clickDiarios() {
@@ -1580,41 +996,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_unavailable), Toast.LENGTH_SHORT).show();
     }
 
-    private void updateApp(boolean showNotFound) {
-        if (Utils.isConnected(this)) {
-            if (!CheckUpdate.checkUpdate(this).equals("")) {
-                new AlertDialog.Builder(this)
-                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.colorPrimary))
-                        .setMessage(String.format(getResources().getString(R.string.dialog_att_encontrada), "" + CheckUpdate.verLocal, "" + CheckUpdate.verWeb))
-                        .setPositiveButton(R.string.dialog_att_download, (dialog, which) -> {
-                            if (Build.VERSION.SDK_INT >= 23) {
-                                if (ContextCompat.checkSelfPermission(this,
-                                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                        != PackageManager.PERMISSION_GRANTED) {
-
-                                    ActivityCompat.requestPermissions(this,
-                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-                                }
-                            }
-                            if (Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
-                                CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
-                            } else if (Build.VERSION.SDK_INT < 23) {
-                                CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
-                            }
-                        })
-                        .setNegativeButton(R.string.dialog_cancel, null)
-                        .show();
-            } else {
-                if (showNotFound) {
-                    Toast.makeText(this, getResources().getString(R.string.toast_nenhuma_atualizacao), Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -1626,12 +1007,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
-    /*@Override
-    @AddTrace(name = "onActivityResult")
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        recreate();
-    }*/
 
     @Override
     public void onDestroy() { //Esconde ProgressDiálogo ao destruir a atividade

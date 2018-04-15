@@ -11,12 +11,13 @@
         android:gravity="center"
         android:id="@+id/connection"
         android:orientation="vertical"
+        android:visibility="gone"
         >
 
         <ImageView
             android:layout_width="250dp"
             android:layout_height="250dp"
-            android:src="@mipmap/Squid"/>
+            android:src="@mipmap/squid"/>
 
         <TextView
             android:layout_width="wrap_content"

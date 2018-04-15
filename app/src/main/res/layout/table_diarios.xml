@@ -68,7 +68,7 @@
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@mipmap/Monster"
+                android:src="@mipmap/monster"
                 android:layout_marginVertical="10dp"/>
 
             <TextView

@@ -1,5 +1,8 @@
 package com.qacademico.qacademico.Utilities;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +10,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 import com.qacademico.qacademico.R;
@@ -22,6 +28,45 @@ public class CheckUpdate {
     public static float verLocal = 0;
     public static float verWeb = 0;
     public static String linkAtt = "";
+
+    public static void updateApp(Activity activity, boolean showNotFound) {
+
+        Context context = activity.getApplicationContext();
+
+        if (Utils.isConnected(context)) {
+
+            if (!CheckUpdate.checkUpdate(context).equals("")) {
+                new AlertDialog.Builder(context)
+                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.colorPrimary))
+                        .setMessage(String.format(context.getResources().getString(R.string.dialog_att_encontrada), "" + CheckUpdate.verLocal, "" + CheckUpdate.verWeb))
+                        .setPositiveButton(R.string.dialog_att_download, (dialog, which) -> {
+                            if (Build.VERSION.SDK_INT >= 23) {
+                                if (ContextCompat.checkSelfPermission(context,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                        != PackageManager.PERMISSION_GRANTED) {
+
+                                    ActivityCompat.requestPermissions(activity,
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                                }
+                            }
+                            if (Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
+                                CheckUpdate.startDownload(context, CheckUpdate.checkUpdate(context));
+                            } else if (Build.VERSION.SDK_INT < 23) {
+                                CheckUpdate.startDownload(context, CheckUpdate.checkUpdate(context));
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, null)
+                        .show();
+            } else {
+                if (showNotFound) {
+                    Toast.makeText(context, context.getResources().getString(R.string.toast_nenhuma_atualizacao), Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            Toast.makeText(context, context.getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public static String checkUpdate(Context context) {
         String version = "";
