@@ -8,15 +8,15 @@ import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Class.Materia;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.ViewHolder.ViewHolderMateria;
+import com.qacademico.qacademico.ViewHolder.MateriaViewHolder;
 
 import java.util.List;
 
-public class AdapterMateria extends RecyclerView.Adapter {
+public class MateriaAdapter extends RecyclerView.Adapter {
     private List<Materia> materias;
     private Context context;
 
-    public AdapterMateria(List<Materia> materias, Context context) {
+    public MateriaAdapter(List<Materia> materias, Context context) {
         this.materias = materias;
         this.context = context;
     }
@@ -25,13 +25,13 @@ public class AdapterMateria extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_horario, parent, false);
-        ViewHolderMateria holder = new ViewHolderMateria(view);
+        MateriaViewHolder holder = new MateriaViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final ViewHolderMateria holder = (ViewHolderMateria) viewHolder;
+        final MateriaViewHolder holder = (MateriaViewHolder) viewHolder;
         Materia materia = materias.get(position) ;
 
         holder.hora.setText(materia.getHora());

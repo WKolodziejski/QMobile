@@ -18,7 +18,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 
-import com.qacademico.qacademico.Adapter.AdapterMateriais;
+import com.qacademico.qacademico.Adapter.MateriaisAdapter;
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.R;
 
@@ -36,7 +36,7 @@ public class MateriaisActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_materiais);
+        setContentView(R.layout.fragment_materiais);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_second);
         setSupportActionBar(toolbar);
@@ -81,7 +81,7 @@ public class MateriaisActivity extends AppCompatActivity {
         List<Materiais> materiaisList = (List<Materiais>) bundle.getSerializable("Materiais");
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-        AdapterMateriais adapter = new AdapterMateriais(materiaisList, getApplicationContext());
+        MateriaisAdapter adapter = new MateriaisAdapter(materiaisList, getApplicationContext());
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
     }

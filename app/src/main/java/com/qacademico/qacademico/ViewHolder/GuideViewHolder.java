@@ -8,14 +8,14 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.R;
 
-public class ViewHolderGuide extends RecyclerView.ViewHolder {
+public class GuideViewHolder extends RecyclerView.ViewHolder {
     public final TextView title;
     public final TextView description;
     public final ImageView icon;
     public final LinearLayout layout;
     public final LinearLayout header;
 
-    public ViewHolderGuide(View view) {
+    public GuideViewHolder(View view) {
         super(view);
 
         title = (TextView) view.findViewById(R.id.guide_title);

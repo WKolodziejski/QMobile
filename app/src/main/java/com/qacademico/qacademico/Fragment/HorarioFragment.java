@@ -2,6 +2,7 @@ package com.qacademico.qacademico.Fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.AdapterHorario;
+import com.qacademico.qacademico.Adapter.HorarioAdapter;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.R;
 
@@ -17,19 +18,27 @@ import java.util.List;
 
 
 public class HorarioFragment extends Fragment {
+    List<Horario> horario;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            horario = (List<Horario>) getArguments().getSerializable("Horario");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_horario, container, false);
-
-        List<Horario> horario = (List<Horario>) getArguments().getSerializable("Horario");
+        View view = inflater.inflate(R.layout.fragment_horario, container, false);
 
         if (horario != null) {
 
             RecyclerView recyclerViewHorario = (RecyclerView) view.findViewById(R.id.recycler_horario);
             RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-            AdapterHorario adapter = new AdapterHorario(horario, getActivity());
+            HorarioAdapter adapter = new HorarioAdapter(horario, getActivity());
 
             recyclerViewHorario.setAdapter(adapter);
             recyclerViewHorario.setLayoutManager(layout);

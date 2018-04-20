@@ -2,6 +2,7 @@ package com.qacademico.qacademico.WebView;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
@@ -78,7 +79,7 @@ public class JavaScriptWebView {
 
                     webViewMain.pg_home_loaded = true;
                     Log.i("handleHome", "Carregado");
-                    onPageFinish.OnPageFinish(url + pg_home);
+                    onPageFinish.onPageFinish(url + pg_home);
 
                 } catch (Exception ignored) {}
             }
@@ -117,6 +118,7 @@ public class JavaScriptWebView {
                                     trtd_boletim[i][j] = tds.get(j).text();
                                 }
                             }
+
                             boletim.add(new Boletim(trtd_boletim[i][0], trtd_boletim[i][3], trtd_boletim[i][5], trtd_boletim[i][6], trtd_boletim[i][7],
                                     trtd_boletim[i][9], trtd_boletim[i][10], trtd_boletim[i][11], trtd_boletim[i][12], trtd_boletim[i][14]));
                         }
@@ -155,7 +157,7 @@ public class JavaScriptWebView {
 
                     webViewMain.pg_boletim_loaded = true;
                     Log.i("handleBoletim", "Carregado");
-                    onPageFinish.OnPageFinish(url + pg_boletim);
+                    onPageFinish.onPageFinish(url + pg_boletim);
 
                 } catch (Exception ignored) {}
             }
@@ -280,7 +282,7 @@ public class JavaScriptWebView {
 
                     webViewMain.pg_diarios_loaded = true;
                     Log.i("handleDiarios", "Carregado");
-                    onPageFinish.OnPageFinish(url + pg_diarios);
+                    onPageFinish.onPageFinish(url + pg_diarios);
 
                 } catch (Exception ignored) {}
             }
@@ -398,7 +400,7 @@ public class JavaScriptWebView {
 
                     webViewMain.pg_horario_loaded = true;
                     Log.i("handleHorario", "Carregado");
-                    onPageFinish.OnPageFinish(url + pg_horario);
+                    onPageFinish.onPageFinish(url + pg_horario);
 
                 } catch (Exception ignored) {}
             }
@@ -440,13 +442,50 @@ public class JavaScriptWebView {
                             String link = element.child(1).child(1).attr("href");
                             String nomeConteudo = element.child(1).child(1).text();
                             String descricao = "";
+                            String extension = link.substring(link.indexOf("."));
 
                             //pode ou nao ter descricao
                             if (element.child(1).children().size() > 2) {
                                 descricao = element.child(1).child(3).nextSibling().toString();
                             }
 
-                            material.add(new Material(data, nomeConteudo, link, descricao));
+                            int color = context.getResources().getColor(R.color.colorAccent);
+                            Drawable img = context.getResources().getDrawable(R.drawable.ic_file);
+
+                            if (extension.equals(".pdf")) {
+                                color = context.getResources().getColor(R.color.red_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_pdf);
+                            } else if (extension.equals(".docx") || extension.equals(".doc")
+                                    || extension.equals(".txt") || extension.equals(".rtf")) {
+                                color = context.getResources().getColor(R.color.blue_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_docs);
+                            } else if(extension.equals(".csv") ||extension.equals(".svg")) {
+                                color = context.getResources().getColor(R.color.green_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_table);
+                            } else if(extension.equals(".zip") || extension.equals(".rar")
+                                    || extension.equals(".7z")) {
+                                color = context.getResources().getColor(R.color.yellow_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_compressed);
+                            } else if(extension.equals(".mp3") || extension.equals(".wav")
+                                    || extension.equals(".wma")) {
+                                color = context.getResources().getColor(R.color.pink_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_song);
+                            } else if(extension.equals(".mp4") || extension.equals(".wmv")
+                                    || extension.equals(".avi")) {
+                                color = context.getResources().getColor(R.color.purple_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_video);
+                            } else if(extension.equals(".jpg") || extension.equals(".png")) {
+                                color = context.getResources().getColor(R.color.orange_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_picture);
+                            } else if(extension.equals(".jar") || extension.equals(".php")
+                                    || extension.equals(".html") || extension.equals(".css")
+                                    || extension.equals(".js") || extension.equals(".json")
+                                    || extension.equals(".xml")) {
+                                color = context.getResources().getColor(R.color.blue_grey_500);
+                                img = context.getResources().getDrawable(R.drawable.ic_script);
+                            }
+
+                            material.add(new Material(data, nomeConteudo, link, descricao, color, img));
 
                             Log.i("Materia", "\n\nNome: " + nomeConteudo + "\nData: " + data + "\nLink: " + link + "\nDesc: " + descricao);
                             if (element.nextElementSibling() != null) {
@@ -461,7 +500,7 @@ public class JavaScriptWebView {
 
                     webViewMain.pg_material_loaded = true;
                     Log.i("handleMateriais", "Carregado");
-                    onPageFinish.OnPageFinish(url + pg_materiais);
+                    onPageFinish.onPageFinish(url + pg_materiais);
 
                 } catch (Exception ignored) {}
             }
@@ -481,11 +520,11 @@ public class JavaScriptWebView {
         return x;
     }
 
-    public void onPageFinished(OnPageFinished onPageFinish){
+    public void setOnPageFinished(OnPageFinished onPageFinish){
         this.onPageFinish = onPageFinish;
     }
 
     public interface OnPageFinished {
-        void OnPageFinish(String url_p);
+        void onPageFinish(String url_p);
     }
 }

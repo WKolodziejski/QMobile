@@ -13,18 +13,18 @@ import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Class.Material;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.ViewHolder.ViewHolderMaterial;
+import com.qacademico.qacademico.ViewHolder.MaterialViewHolder;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
 
 
-public class AdapterMaterial extends RecyclerView.Adapter {
+public class MaterialAdapter extends RecyclerView.Adapter {
     private List<Material> materialList;
     private Context context;
 
-    public AdapterMaterial(List<Material> materialList, Context context) {
+    public MaterialAdapter(List<Material> materialList, Context context) {
         this.materialList = materialList;
         this.context = context;
     }
@@ -33,12 +33,12 @@ public class AdapterMaterial extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_material, parent, false);
-        return new ViewHolderMaterial(view);
+        return new MaterialViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final ViewHolderMaterial holder = (ViewHolderMaterial) viewHolder;
+        final MaterialViewHolder holder = (MaterialViewHolder) viewHolder;
         Material material = materialList.get(position);
 
         holder.nome.setText(material.getNomeConteudo());
@@ -51,52 +51,14 @@ public class AdapterMaterial extends RecyclerView.Adapter {
             holder.desciption_btn.setVisibility(View.GONE);
         }
 
-        int color = context.getResources().getColor(R.color.colorAccent);
-        Drawable img = context.getResources().getDrawable(R.drawable.ic_file);
-
-        if (material.getExtension().equals(".pdf")) {
-            color = context.getResources().getColor(R.color.red_500);
-            img = context.getResources().getDrawable(R.drawable.ic_pdf);
-        } else if (material.getExtension().equals(".docx") || material.getExtension().equals(".doc")
-                || material.getExtension().equals(".txt") || material.getExtension().equals(".rtf")) {
-            color = context.getResources().getColor(R.color.blue_500);
-            img = context.getResources().getDrawable(R.drawable.ic_docs);
-        } else if(material.getExtension().equals(".csv") || material.getExtension().equals(".svg")) {
-            color = context.getResources().getColor(R.color.green_500);
-            img = context.getResources().getDrawable(R.drawable.ic_table);
-        } else if(material.getExtension().equals(".zip") || material.getExtension().equals(".rar")
-                || material.getExtension().equals(".7z")) {
-            color = context.getResources().getColor(R.color.yellow_500);
-            img = context.getResources().getDrawable(R.drawable.ic_compressed);
-        } else if(material.getExtension().equals(".mp3") || material.getExtension().equals(".wav")
-                || material.getExtension().equals(".wma")) {
-            color = context.getResources().getColor(R.color.pink_500);
-            img = context.getResources().getDrawable(R.drawable.ic_song);
-        } else if(material.getExtension().equals(".mp4") || material.getExtension().equals(".wmv")
-                || material.getExtension().equals(".avi")) {
-            color = context.getResources().getColor(R.color.purple_500);
-            img = context.getResources().getDrawable(R.drawable.ic_video);
-        } else if(material.getExtension().equals(".jpg") || material.getExtension().equals(".png")
-                || material.getExtension().equals(".avi")) {
-            color = context.getResources().getColor(R.color.orange_500);
-            img = context.getResources().getDrawable(R.drawable.ic_picture);
-        } else if(material.getExtension().equals(".jar") || material.getExtension().equals(".php")
-                || material.getExtension().equals(".html") || material.getExtension().equals(".css")
-                || material.getExtension().equals(".js") || material.getExtension().equals(".json")
-                || material.getExtension().equals(".xml")) {
-            color = context.getResources().getColor(R.color.blue_grey_500);
-            img = context.getResources().getDrawable(R.drawable.ic_script);
-        }
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable bkg = context.getResources().getDrawable(R.drawable.layout_bg_round);
-            bkg.setTint(color);
+            bkg.setTint(material.getTint());
             holder.extension_img.setBackground(bkg);
             holder.extension_img.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
         }
 
-        holder.extension_img.setImageDrawable(img);
+        holder.extension_img.setImageDrawable(material.getIcon());
 
         holder.expandable_description.setExpanded(materialList.get(position).getExpanded(), materialList.get(position).getAnim());
 

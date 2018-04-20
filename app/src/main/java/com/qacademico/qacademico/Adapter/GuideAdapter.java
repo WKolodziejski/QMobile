@@ -11,16 +11,16 @@ import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Class.Guide;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.ViewHolder.ViewHolderGuide;
+import com.qacademico.qacademico.ViewHolder.GuideViewHolder;
 
 import java.util.List;
 
-public class AdapterGuide extends RecyclerView.Adapter {
+public class GuideAdapter extends RecyclerView.Adapter {
     private List<Guide> guideList;
     private Context context;
     private OnGuideClicked onClick;
 
-    public AdapterGuide(List<Guide> guideList, Context context) {
+    public GuideAdapter(List<Guide> guideList, Context context) {
         this.guideList = guideList;
         this.context = context;
     }
@@ -29,12 +29,12 @@ public class AdapterGuide extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.table_guide, parent, false);
-        return new ViewHolderGuide(view);
+        return new GuideViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final ViewHolderGuide holder = (ViewHolderGuide) viewHolder;
+        final GuideViewHolder holder = (GuideViewHolder) viewHolder;
         final Guide guide  = guideList.get(position) ;
 
         holder.title.setText(guide.getTitle());

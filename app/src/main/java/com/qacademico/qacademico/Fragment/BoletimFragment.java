@@ -2,57 +2,50 @@ package com.qacademico.qacademico.Fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.AdapterBoletim;
+
+import com.cleveroad.adaptivetablelayout.AdaptiveTableLayout;
+import com.qacademico.qacademico.Adapter.BoletimAdapter;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.R;
 import java.util.List;
 
 public class BoletimFragment extends Fragment {
+    List<Boletim> boletim;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            boletim = (List<Boletim>) getArguments().getSerializable("Boletim");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_boletim, container, false);
-
-        List<Boletim> boletim = (List<Boletim>) getArguments().getSerializable("Boletim");
+        View view = inflater.inflate(R.layout.fragment_boletim, container, false);
 
         if (boletim != null) {
 
-            RecyclerView recyclerViewBoletim = (RecyclerView) view.findViewById(R.id.recycler_boletim);
-            RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            String[][] boletimTable = new String[boletim.size()][5];
 
-            AdapterBoletim adapter = new AdapterBoletim(boletim, getActivity());
+            for (int i = 0; i < boletim.size(); i++) {
+                boletimTable[i][0] = boletim.get(i).getMateria();
+                boletimTable[i][1] = boletim.get(i).getNotaPrimeiraEtapa();
+                boletimTable[i][2] = boletim.get(i).getFaltasPrimeiraEtapa();
+                boletimTable[i][3] = boletim.get(i).getNotaFinalPrimeiraEtapa();
+                boletimTable[i][4] = boletim.get(i).getRPPrimeiraEtapa();
+            }
 
-            recyclerViewBoletim.setAdapter(adapter);
-            recyclerViewBoletim.setLayoutManager(layout);
-            recyclerViewBoletim.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            adapter.setOnExpandListener(position -> {
-                RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()) {
-                    @Override
-                    protected int getVerticalSnapPreference() {
-                        return LinearSmoothScroller.SNAP_TO_ANY;
-                    }
-                };
-
-                if (position != 0) {
-                    smoothScroller.setTargetPosition(position);
-                    layout.startSmoothScroll(smoothScroller);
-                }
-            });
-
-            ((MainActivity) getActivity()).fab_expand.setOnClickListener(v -> {
-                adapter.toggleAll();
-                ((MainActivity) getActivity()).fab_isOpen = true;
-                ((MainActivity) getActivity()).clickButtons(null);
-            });
+            AdaptiveTableLayout table = (AdaptiveTableLayout) view.findViewById(R.id.tableBoletim);
+            table.setAdapter(new BoletimAdapter(getActivity().getApplicationContext(), boletimTable));
+            table.setFocusable(false);
         }
+
         return view;
     }
 }

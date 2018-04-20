@@ -7,11 +7,11 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.R;
 
-public class ViewHolderEtapa extends RecyclerView.ViewHolder{
+public class EtapaViewHolder extends RecyclerView.ViewHolder{
     public final TextView aux;
     public final RecyclerView recyclerView;
 
-    public ViewHolderEtapa(View view) {
+    public EtapaViewHolder(View view) {
         super(view);
 
         aux = (TextView) view.findViewById(R.id.aux);

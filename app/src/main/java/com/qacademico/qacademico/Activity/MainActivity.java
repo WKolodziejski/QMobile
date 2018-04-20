@@ -1,9 +1,5 @@
 package com.qacademico.qacademico.Activity;
 
-import android.Manifest;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
@@ -11,29 +7,18 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -41,50 +26,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
-import com.qacademico.qacademico.Class.Etapa;
 import com.qacademico.qacademico.Fragment.BoletimFragment;
 import com.qacademico.qacademico.Fragment.DiariosFragment;
 import com.qacademico.qacademico.Fragment.HomeFragment;
 import com.qacademico.qacademico.Class.Horario;
-import com.qacademico.qacademico.Class.Materia;
-import com.qacademico.qacademico.Class.Materiais;
-import com.qacademico.qacademico.Class.Material;
 import com.qacademico.qacademico.Fragment.HorarioFragment;
 import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
@@ -101,6 +66,9 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_home;
@@ -113,21 +81,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private SharedPreferences login_info;
     public boolean fab_isOpen;
     LayoutInflater inflater;
-    LinearLayout errorConnectionLayout;
-    ProgressBar progressBar_Main, progressBar_Top;
-    ViewGroup mainLayout;
+    @BindView(R.id.connection) LinearLayout errorConnectionLayout;
+    @BindView(R.id.progressbar_main) ProgressBar progressBar_Main;
+    @BindView(R.id.progressbar_horizontal) ProgressBar progressBar_Top;
+    @BindView(R.id.main_container) ViewGroup mainLayout;
     Dialog loadingDialog;
-    DrawerLayout drawer;
-    public FloatingActionButton fab_action, fab_data, fab_expand;
-    TextView txt_expand, txt_data;
-    BottomNavigationView navigation;
+    @BindView(R.id.drawer_layout) DrawerLayout drawer;
+    //@BindViews({R.id.fab_action, R.id.fab_data, R.id.fab_expand}) List<FloatingActionButton> fab_list;
+    @BindView(R.id.fab_action) public FloatingActionButton fab_action;
+    @BindView(R.id.fab_data) public FloatingActionButton fab_data;
+    @BindView(R.id.fab_expand) public FloatingActionButton fab_expand;
+    @BindView(R.id.txt_expand) TextView txt_expand;
+    @BindView(R.id.txt_data) TextView txt_data;
+    @BindView(R.id.navigation) BottomNavigationView navigation;
     Snackbar snackBar;
-    NavigationView navigationView;
-    CoordinatorLayout buttons_layout;
-    Toolbar toolbar;
+    @BindView(R.id.nav_view) NavigationView navigationView;
+    @BindView(R.id.btns) CoordinatorLayout buttons_layout;
+    @BindView(R.id.toolbar_main) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     LoginFragment loginFragment;
-    public SingletonWebView mainWebView;
+    public SingletonWebView mainWebView = SingletonWebView.getInstance();
     FirebaseRemoteConfig remoteConfig;
 
     @Override
@@ -136,45 +109,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainWebView = SingletonWebView.getInstance();
         mainWebView.configWebView(this);
-        mainWebView.onPageFinished(this);
+        mainWebView.setOnPageFinishedListener(this);
         setDefaultHashMap();
         Utils.updateDefaultValues(remoteConfig);
 
-        mainLayout = (ViewGroup) findViewById(R.id.main_container);
-        errorConnectionLayout = (LinearLayout) findViewById(R.id.connection);
-        progressBar_Main = (ProgressBar) findViewById(R.id.progressbar);
-        progressBar_Top = (ProgressBar) findViewById(R.id.progressbar_horizontal);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ButterKnife.bind(this);
+
+        /*DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("/Files/Extensions");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                    Log.v("DataBase",""+ childDataSnapshot.getKey()); //displays the key for the node
+                    Log.v("DataBase",""+ childDataSnapshot.child("Audio").getValue());   //gives the value for given keyname
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w("DataBase", "Failed to read value.", error.toException());
+            }
+        });*/
+
+
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        fab_action = (FloatingActionButton) findViewById(R.id.fab_action);
-        fab_data = (FloatingActionButton) findViewById(R.id.fab_data);
-        fab_expand = (FloatingActionButton) findViewById(R.id.fab_expand);
-        txt_expand = (TextView) findViewById(R.id.txt_expand);
-        txt_data = (TextView) findViewById(R.id.txt_data);
-        buttons_layout = (CoordinatorLayout) findViewById(R.id.btns);
-        toolbar = (Toolbar) findViewById(R.id.toolbar_main);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
 
         setSupportActionBar(toolbar);
 
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
 
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                Design.setStatusBarLight(MainActivity.this);
-            }
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+                    Design.setStatusBarLight(MainActivity.this);
+                }
 
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                Design.setStatusBarTransparent(MainActivity.this);
-            }
-        };
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    Design.setStatusBarTransparent(MainActivity.this);
+                }
+            };
+
+
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -187,6 +169,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         testLogin(); // testa se o login é válido
         CheckUpdate.checkUpdate(this);
     }
+
+    //static final ButterKnife.Setter<View, Integer> VISIBILITY = (view, value, index) -> view.setVisibility(value);
 
     /*
      * Método que recebe os valores do servidor remoto
@@ -268,25 +252,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.navigation_home:
                         setHome();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_home);
+                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
+                                R.id.navigation_home, false);
                         return true;
 
                     case R.id.navigation_diarios:
                         setDiarios();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_diarios);
+                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
+                                R.id.navigation_diarios, false);
                         return true;
 
                     case R.id.navigation_boletim:
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_boletim);
+                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
+                                R.id.navigation_boletim, false);
                         setBoletim();
                         return true;
 
                     case R.id.navigation_horario:
                         setHorario();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_horario);
+                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
+                                R.id.navigation_horario, false);
                         return true;
                 }
             }
@@ -328,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @AddTrace(name = "setHome")
-    public void setHome() { //layout layout_home
+    public void setHome() { //layout fragment_home
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_home));
         hideButtons();
@@ -337,20 +325,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         HomeFragment homeFragment = new HomeFragment();
 
-        try {
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.main_fragment, homeFragment);
-            fragmentTransaction.commit();
-        } catch (Exception e){}
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_fragment, homeFragment);
+        fragmentTransaction.commit();
 
-        if (!mainWebView.pg_home_loaded) {
+        /*if (!mainWebView.pg_home_loaded) {
             mainWebView.html.loadUrl(url + pg_home);
             showLinearProgressbar();
-        }
+        }*/
     }
 
     @AddTrace(name = "setDiarios")
-    public void setDiarios() {//layout layout_diarios
+    public void setDiarios() {//layout fragment_diarios
 
         Log.i("setDiarios", "seted");
 
@@ -378,11 +364,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putSerializable("Diarios", (Serializable) diarios);
             diariosFragment.setArguments(bundle);
 
-            try {
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_fragment, diariosFragment);
-                fragmentTransaction.commit();
-            } catch (Exception e){}
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.main_fragment, diariosFragment);
+            fragmentTransaction.commit();
 
             if (mainWebView.pg_diarios_loaded && mainWebView.data_diarios != null) {
 
@@ -447,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @AddTrace(name = "setBoletim")
-    public void setBoletim() { //layout layout_boletim
+    public void setBoletim() { //layout fragment_boletim
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim));
         showButtons();
@@ -471,11 +455,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putSerializable("Boletim", (Serializable) boletim);
             boletimFragment.setArguments(bundle);
 
-            try {
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_fragment, boletimFragment);
-                fragmentTransaction.commit();
-            } catch (Exception e){}
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.main_fragment, boletimFragment);
+            fragmentTransaction.commit();
 
             if (mainWebView.pg_boletim_loaded && mainWebView.data_boletim != null) {
 
@@ -545,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @AddTrace(name = "setHorario")
 
-    public void setHorario() { // layout layout_horario
+    public void setHorario() { // layout fragment_horario
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_horario));
         showButtons();
@@ -643,7 +625,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @AddTrace(name = "setMateriais")
-    public void setMateriais() { //layout layout_home
+    public void setMateriais() { //layout fragment_home
         if ((!mainWebView.pg_material_loaded)) {
             mainWebView.html.loadUrl(url + pg_materiais);
         } else {
@@ -660,11 +642,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void testLogin() { //Testa se o login é válido
         if (login_info.getBoolean("valido", false)) {
             Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                    mainLayout, fab_action, fab_expand, fab_data, R.id.navigation_home);
+                    mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
+                    R.id.navigation_home, false);
             setHome();
             mainWebView.html.loadUrl(url + pg_login);
         } else {
-            logIn();
+            Intent login =  new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(login);
         }
     }
 
@@ -706,7 +690,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void OnPageFinish(String url_p) {
+    public void onPageFinish(String url_p) {
         Log.i("Singleton", "onFinish");
         if (url_p.equals(url + pg_home)) {
             Log.i("onFinish", "loadedHome");
@@ -940,22 +924,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recreate();
     }
 
-    public void logIn() {
-        CoordinatorLayout.LayoutParams mainLayoutLayoutParams = (CoordinatorLayout.LayoutParams) mainLayout.getLayoutParams();
-        mainLayoutLayoutParams.setMargins((int) (0 * getResources().getDisplayMetrics().density), (int) (55 * getResources().getDisplayMetrics().density),
-                (int) (0 * getResources().getDisplayMetrics().density), (int) (0 * getResources().getDisplayMetrics().density));
-        mainLayout.setLayoutParams(mainLayoutLayoutParams);
-        mainWebView.isLoginPage = true;
-        navigation.setVisibility(View.GONE);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_lock_outline_black_24dp));
-        toolbar.setTitle(getResources().getString(R.string.title_activity_login));
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        loginFragment = new LoginFragment();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, loginFragment);
-        fragmentTransaction.commit();
-    }
-
     public void clickBugReport() {
         SendEmail.bugReport(this, navigation.getSelectedItemId());
     }
@@ -997,10 +965,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
                 }

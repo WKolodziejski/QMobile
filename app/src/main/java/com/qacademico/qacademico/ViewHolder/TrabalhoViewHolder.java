@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.R;
 
-public class ViewHolderTrabalho extends RecyclerView.ViewHolder {
+public class TrabalhoViewHolder extends RecyclerView.ViewHolder {
     public final TextView nome;
     public final TextView peso;
     public final TextView max;
@@ -15,7 +15,7 @@ public class ViewHolderTrabalho extends RecyclerView.ViewHolder {
     public final TextView tipo;
     public final LinearLayout header;
 
-    public ViewHolderTrabalho(View view) {
+    public TrabalhoViewHolder(View view) {
         super(view);
 
         nome = (TextView) view.findViewById(R.id.diarios_nome);

@@ -11,7 +11,7 @@ import com.qacademico.qacademico.R;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-public class ViewHolderHorario extends RecyclerView.ViewHolder {
+public class HorarioViewHolder extends RecyclerView.ViewHolder {
     public final TextView dia;
     public final ExpandableLayout expand;
     public final ImageView button;
@@ -19,7 +19,7 @@ public class ViewHolderHorario extends RecyclerView.ViewHolder {
     public final RecyclerView recyclerView;
     public final LinearLayout table;
 
-    public ViewHolderHorario(View view) {
+    public HorarioViewHolder(View view) {
         super(view);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_horario_materias);

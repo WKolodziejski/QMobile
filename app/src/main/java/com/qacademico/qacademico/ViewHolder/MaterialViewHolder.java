@@ -11,7 +11,7 @@ import com.qacademico.qacademico.R;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-public class ViewHolderMaterial extends RecyclerView.ViewHolder {
+public class MaterialViewHolder extends RecyclerView.ViewHolder {
     public final LinearLayout main_layout;
     public final ImageView extension_img;
     public final TextView nome;
@@ -21,7 +21,7 @@ public class ViewHolderMaterial extends RecyclerView.ViewHolder {
     public final ImageButton desciption_btn;
     public final ImageButton download_btn;
 
-    public ViewHolderMaterial(View view) {
+    public MaterialViewHolder(View view) {
         super(view);
 
         main_layout = (LinearLayout) view.findViewById(R.id.materiais_layout);

@@ -1,10 +1,16 @@
 package com.qacademico.qacademico.Utilities;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -59,7 +65,4 @@ public class Utils {
         title_txt.setText(txt);
         return theTitle;
     }
-
-
-
 }

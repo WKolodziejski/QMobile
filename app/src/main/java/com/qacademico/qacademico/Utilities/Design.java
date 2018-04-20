@@ -24,7 +24,8 @@ public class Design {
 
     public static void changePageColor(final Activity activity, Toolbar toolbar, DrawerLayout drawer, ProgressBar progressBar_Top,
                                        ProgressBar progressBar_Main, View layout, FloatingActionButton fab_action,
-                                       FloatingActionButton fab_expand, FloatingActionButton fab_data, int id) { //Muda a cor do app dependendo da página
+                                       FloatingActionButton fab_expand, FloatingActionButton fab_data, int idFrom, int idTo,
+                                       boolean changeStatusBarColor) { //Muda a cor do app dependendo da página
 
         Context context = activity.getApplicationContext();
 
@@ -43,41 +44,41 @@ public class Design {
         int colorProgressTo = 0;
         int colorProgressFrom = 0;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            colorStatusBarFrom = activity.getWindow().getStatusBarColor();
-        }
-
-        if (colorStatusBarFrom == context.getResources().getColor(R.color.colorPrimaryDark)) {
+        if (idFrom == R.id.navigation_home) {
             colorPrimaryBtnFrom = context.getResources().getColor(R.color.white);
             colorSecondaryFrom = context.getResources().getColor(R.color.colorPrimaryDark);
+            colorStatusBarFrom = context.getResources().getColor(R.color.colorPrimaryDark);
             colorActionBarFrom = context.getResources().getColor(R.color.white);
             colorTitleFrom = context.getResources().getColor(R.color.colorPrimary);
             colorToolBarFrom = context.getResources().getColor(R.color.colorAccent);
             colorProgressFrom = context.getResources().getColor(R.color.colorAccent);
-        } else if (colorStatusBarFrom == context.getResources().getColor(R.color.blue_800)) {
+        } else if (idFrom == R.id.navigation_horario) {
             colorPrimaryBtnFrom = context.getResources().getColor(R.color.cyan_A700);
             colorSecondaryFrom = context.getResources().getColor(R.color.cyan_A400);
+            colorStatusBarFrom = context.getResources().getColor(R.color.blue_800);
             colorActionBarFrom = context.getResources().getColor(R.color.blue_600);
             colorTitleFrom = context.getResources().getColor(R.color.white);
             colorToolBarFrom = context.getResources().getColor(R.color.blue_50);
             colorProgressFrom = context.getResources().getColor(R.color.cyan_A700);
-        } else if (colorStatusBarFrom == context.getResources().getColor(R.color.teal_800)) {
+        } else if (idFrom == R.id.navigation_boletim) {
             colorPrimaryBtnFrom = context.getResources().getColor(R.color.green_A700);
             colorSecondaryFrom = context.getResources().getColor(R.color.green_A400);
+            colorStatusBarFrom = context.getResources().getColor(R.color.teal_800);
             colorActionBarFrom = context.getResources().getColor(R.color.teal_600);
             colorTitleFrom = context.getResources().getColor(R.color.white);
             colorToolBarFrom = context.getResources().getColor(R.color.teal_50);
             colorProgressFrom = context.getResources().getColor(R.color.green_A700);
-        } else if (colorStatusBarFrom == context.getResources().getColor(R.color.orange_800)) {
+        } else if (idFrom == R.id.navigation_diarios) {
             colorPrimaryBtnFrom = context.getResources().getColor(R.color.yellow_A700);
             colorSecondaryFrom = context.getResources().getColor(R.color.yellow_A400);
+            colorStatusBarFrom = context.getResources().getColor(R.color.orange_800);
             colorActionBarFrom = context.getResources().getColor(R.color.orange_600);
             colorTitleFrom = context.getResources().getColor(R.color.white);
             colorToolBarFrom = context.getResources().getColor(R.color.deep_orange_50);
             colorProgressFrom = context.getResources().getColor(R.color.yellow_A700);
         }
 
-        if (id == R.id.navigation_home) {
+        if (idTo == R.id.navigation_home) {
             colorPrimaryBtnTo = context.getResources().getColor(R.color.white);
             colorSecondaryTo = context.getResources().getColor(R.color.colorPrimaryDark);
             colorStatusBarTo = context.getResources().getColor(R.color.colorPrimaryDark);
@@ -85,9 +86,7 @@ public class Design {
             colorTitleTo = context.getResources().getColor(R.color.colorPrimary);
             colorToolBarTo = context.getResources().getColor(R.color.colorAccent);
             colorProgressTo = context.getResources().getColor(R.color.colorAccent);
-            setSystemBarTheme(activity, false);
-            removeBehavior(context, layout, toolbar);
-        } else if (id == R.id.navigation_diarios) {
+        } else if (idTo == R.id.navigation_diarios) {
             colorPrimaryBtnTo = context.getResources().getColor(R.color.yellow_A700);
             colorSecondaryTo = context.getResources().getColor(R.color.yellow_A400);
             colorStatusBarTo = context.getResources().getColor(R.color.orange_800);
@@ -95,9 +94,7 @@ public class Design {
             colorTitleTo = context.getResources().getColor(R.color.white);
             colorToolBarTo = context.getResources().getColor(R.color.deep_orange_50);
             colorProgressTo = context.getResources().getColor(R.color.yellow_A700);
-            setSystemBarTheme(activity, true);
-            applyBehavior(context, layout, toolbar);
-        } else if (id == R.id.navigation_boletim) {
+        } else if (idTo == R.id.navigation_boletim) {
             colorPrimaryBtnTo = context.getResources().getColor(R.color.green_A700);
             colorSecondaryTo = context.getResources().getColor(R.color.green_A400);
             colorStatusBarTo = context.getResources().getColor(R.color.teal_800);
@@ -105,9 +102,7 @@ public class Design {
             colorTitleTo = context.getResources().getColor(R.color.white);
             colorToolBarTo = context.getResources().getColor(R.color.teal_50);
             colorProgressTo = context.getResources().getColor(R.color.green_A700);
-            setSystemBarTheme(activity, true);
-            applyBehavior(context, layout, toolbar);
-        } else if (id == R.id.navigation_horario) {
+        } else if (idTo == R.id.navigation_horario) {
             colorPrimaryBtnTo = context.getResources().getColor(R.color.cyan_A700);
             colorSecondaryTo = context.getResources().getColor(R.color.cyan_A400);
             colorStatusBarTo = context.getResources().getColor(R.color.blue_800);
@@ -115,16 +110,29 @@ public class Design {
             colorTitleTo = context.getResources().getColor(R.color.white);
             colorToolBarTo = context.getResources().getColor(R.color.blue_50);
             colorProgressTo = context.getResources().getColor(R.color.cyan_A700);
-            setSystemBarTheme(activity, true);
+        }
+
+        if (idTo == R.id.navigation_home) {
+            removeBehavior(context, layout, toolbar);
+            if (changeStatusBarColor) {
+                setSystemBarTheme(activity, false);
+            }
+        } else {
             applyBehavior(context, layout, toolbar);
+            if (changeStatusBarColor) {
+                setSystemBarTheme(activity, true);
+            }
         }
 
         changeButtonColorAnim(fab_action, colorPrimaryBtnFrom, colorPrimaryBtnTo);
         changeButtonColorAnim(fab_expand, colorSecondaryFrom, colorSecondaryTo);
         changeButtonColorAnim(fab_data, colorSecondaryFrom, colorSecondaryTo);
         changeProgressBarColor(progressBar_Top, progressBar_Main, colorProgressFrom, colorProgressTo);
-        changeStatusBarColor(toolbar, activity, drawer, colorStatusBarFrom, colorStatusBarTo, colorActionBarTo, colorActionBarFrom, colorTitleTo,
-                colorTitleFrom, colorToolBarFrom, colorToolBarTo);
+
+        if (changeStatusBarColor) {
+            changeStatusBarColor(toolbar, activity, drawer, colorStatusBarFrom, colorStatusBarTo, colorActionBarTo, colorActionBarFrom, colorTitleTo,
+                    colorTitleFrom, colorToolBarFrom, colorToolBarTo);
+        }
     }
 
     private static void changeButtonColorAnim(FloatingActionButton fab, int colorStart, int colorEnd) {  //Muda a cor dos FloatingActionButtons

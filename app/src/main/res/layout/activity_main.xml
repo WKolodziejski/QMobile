@@ -28,7 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:id="@+id/main_container">
+            android:id="@+id/main_container"
+            >
 
             <ProgressBar
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -66,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:id="@+id/progressbar"
+            android:id="@+id/progressbar_main"
             android:visibility="gone"/>
 
         <android.support.design.widget.BottomNavigationView

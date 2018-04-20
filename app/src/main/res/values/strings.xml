@@ -84,6 +84,7 @@
     <string name="text_download_start">Iniciando Download…</string>
     <string name="boletim_TFaltas">Total de Faltas</string>
     <string name="boletim_Nota">Nota</string>
+    <string name="boletim_Materia">Materia</string>
     <string name="boletim_Faltas">Faltas</string>
     <string name="boletim_RP">Nota da RP</string>
     <string name="boletim_Etapa">Etapa</string>

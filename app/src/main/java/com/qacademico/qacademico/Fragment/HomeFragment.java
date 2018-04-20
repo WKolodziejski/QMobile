@@ -1,8 +1,11 @@
 package com.qacademico.qacademico.Fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +17,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.AdapterGuide;
+import com.qacademico.qacademico.Adapter.GuideAdapter;
 import com.qacademico.qacademico.Class.Guide;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -22,16 +25,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements AdapterGuide.OnGuideClicked {
+public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicked {
     List<Guide> guide;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.layout_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         configGuide();
 
-        AdapterGuide adapter = new AdapterGuide(guide, getActivity());
+        GuideAdapter adapter = new GuideAdapter(guide, getActivity());
         adapter.setOnClick(this);
 
         SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);

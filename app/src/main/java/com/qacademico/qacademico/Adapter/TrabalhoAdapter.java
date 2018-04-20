@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Class.Trabalho;
-import com.qacademico.qacademico.ViewHolder.ViewHolderTrabalho;
+import com.qacademico.qacademico.ViewHolder.TrabalhoViewHolder;
 
 import java.util.List;
 
-public class AdapterTrabalho extends RecyclerView.Adapter{
+public class TrabalhoAdapter extends RecyclerView.Adapter{
     private List<Trabalho> trabalhos;
     private Context context;
 
-    public AdapterTrabalho(List<Trabalho> trabalhos, Context context) {
+    public TrabalhoAdapter(List<Trabalho> trabalhos, Context context) {
         this.trabalhos = trabalhos;
         this.context = context;
     }
@@ -27,13 +27,13 @@ public class AdapterTrabalho extends RecyclerView.Adapter{
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_diarios_item, parent, false);
-        ViewHolderTrabalho holder = new ViewHolderTrabalho(view);
+        TrabalhoViewHolder holder = new TrabalhoViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final ViewHolderTrabalho holder = (ViewHolderTrabalho) viewHolder;
+        final TrabalhoViewHolder holder = (TrabalhoViewHolder) viewHolder;
         Trabalho trabalho = trabalhos.get(position) ;
 
         holder.max.setText(trabalho.getMax());

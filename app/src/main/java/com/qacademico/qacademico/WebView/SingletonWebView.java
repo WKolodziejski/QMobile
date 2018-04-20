@@ -19,6 +19,13 @@ public class SingletonWebView {
 
     private SingletonWebView() {}
 
+    public synchronized static SingletonWebView getInstance() {
+        if (singleton == null) {
+            singleton = new SingletonWebView();
+        }
+        return singleton;
+    }
+
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     public void configWebView(Context context) {
         html = new WebView(context.getApplicationContext());
@@ -30,27 +37,26 @@ public class SingletonWebView {
         faller.setLoadWithOverviewMode(true);
 
         JavaScriptWebView javaScriptWebView = new JavaScriptWebView(context);
-        javaScriptWebView.onPageFinished(url_p -> {
+        javaScriptWebView.setOnPageFinished(url_p -> {
             Log.i("JavaScriptInterface", "onFinish");
-            onPageFinished.OnPageFinish(url_p);
+            onPageFinished.onPageFinish(url_p);
         });
 
-        html.setWebViewClient(new ClientWebView(context));
+        ClientWebView clientWebView = new ClientWebView(context);
+        clientWebView.setOnPageFinished(url_p -> {
+            Log.i("JavaScriptInterface", "onFinish");
+            onPageFinished.onPageFinish(url_p);
+        });
+
+        html.setWebViewClient(clientWebView);
         html.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
     }
 
-    public synchronized static SingletonWebView getInstance() {
-        if (singleton == null) {
-            singleton = new SingletonWebView();
-        }
-        return singleton;
-    }
-
-    public void onPageFinished(OnPageFinished onPageFinished){
+    public void setOnPageFinishedListener(OnPageFinished onPageFinished){
         this.onPageFinished = onPageFinished;
     }
 
     public interface OnPageFinished {
-        void OnPageFinish(String url_p);
+        void onPageFinish(String url_p);
     }
 }

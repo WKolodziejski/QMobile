@@ -7,11 +7,11 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.R;
 
-public class ViewHolderMateria extends RecyclerView.ViewHolder {
+public class MateriaViewHolder extends RecyclerView.ViewHolder {
     public final TextView hora;
     public final TextView materia;
 
-    public ViewHolderMateria(View view) {
+    public MateriaViewHolder(View view) {
         super(view);
 
         hora = (TextView) view.findViewById(R.id.horario_hora);

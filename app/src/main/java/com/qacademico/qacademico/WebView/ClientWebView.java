@@ -30,6 +30,7 @@ public class ClientWebView extends WebViewClient {
     private Context context;
     private SingletonWebView webViewMain;
     private SharedPreferences login_info;
+    private OnPageFinished onPageFinish;
 
     public ClientWebView(Context context) {
         this.context = context.getApplicationContext();
@@ -68,31 +69,32 @@ public class ClientWebView extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
             /*dismissLinearProgressbar();
             dismissRoundProgressbar();
-            dismissProgressDialog();
-            if (Utils.isConnected(getApplicationContext())) {
-                if (!errorResponse.getReasonPhrase().equals("Not Found")) { // ignora o erro not found
-                    if (isLoginPage) {
+            dismissProgressDialog();*/
+            if (Utils.isConnected(context)) {
+                if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
+                    Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
+                    /*if (isLoginPage) {
                         loginFragment.dismissProgressBar();
                         showSnackBar(getResources().getString(R.string.text_connection_error), false);
                     } else if (!pg_home_loaded && navigation.getSelectedItemId() == R.id.navigation_home) {
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                 }
-            }*/
+            }
     }
 
     @Override
-    @AddTrace(name = "onPageFinished")
+    @AddTrace(name = "setOnPageFinished")
     public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
         if (Utils.isConnected(context) && !url_i.equals("")) {
-            if (url_i.equals(url + pg_login)) {
+            if (webViewMain.html.getUrl().equals(url + pg_login)) {
                 webViewMain.html.loadUrl("javascript:var uselessvar = document.getElementById('txtLogin').value='"
                         + login_info.getString("matricula", "") + "';");
                 webViewMain.html.loadUrl("javascript:var uselessvar = document.getElementById('txtSenha').value='"
                         + login_info.getString("password", "") + "';");
                 webViewMain.html.loadUrl("javascript:document.getElementById('btnOk').click();");
                 Log.i("Login", "Tentando Logar...");
-            } else if (url_i.equals(url + pg_home)) {
+            } else if (webViewMain.html.getUrl().equals(url + pg_home)) {
                 webViewMain.html.loadUrl("javascript:window.HtmlHandler.handleHome"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 if (webViewMain.isLoginPage) {
@@ -101,12 +103,13 @@ public class ClientWebView extends WebViewClient {
                     editor.putBoolean("valido", true);
                     editor.apply();
                     Log.i("Login", "isLogin = false;");
+                    onPageFinish.onPageFinishListener(url + pg_login);
                 }
                 Log.i("Login", "Logado com sucesso");
-            } else if (url_i.contains(url + pg_boletim)) {
+            } else if (webViewMain.html.getUrl().contains(url + pg_boletim)) {
                 webViewMain.html.loadUrl("javascript:window.HtmlHandler.handleBoletim"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-            } else if (url_i.equals(url + pg_diarios)) {
+            } else if (webViewMain.html.getUrl().contains(url + pg_diarios)) {
                 if (webViewMain.scriptDiario.contains("javascript:")) {
                     Log.i("SCRIPT", "Ok");
                     webViewMain.html.loadUrl(webViewMain.scriptDiario);
@@ -115,13 +118,13 @@ public class ClientWebView extends WebViewClient {
                     webViewMain.html.loadUrl("javascript:window.HtmlHandler.handleDiarios"
                             + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 }
-            } else if (url_i.contains(url + pg_horario)) {
+            } else if (webViewMain.html.getUrl().contains(url + pg_horario)) {
                 webViewMain.html.loadUrl("javascript:window.HtmlHandler.handleHorario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-            } else if (url_i.contains(url + pg_materiais)) {
+            } else if (webViewMain.html.getUrl().contains(url + pg_materiais)) {
                 webViewMain.html.loadUrl("javascript:window.HtmlHandler.handleMateriais"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-            } else if (url_i.contains(url + pg_change_password)) {
+            } else if (webViewMain.html.getUrl().contains(url + pg_change_password)) {
                 webViewMain.isChangePasswordPage = !webViewMain.isChangePasswordPage;
                 if (webViewMain.isChangePasswordPage) {
                     webViewMain.html.loadUrl("javascript:var uselessvar = document.getElementById('senha0').value='"
@@ -140,10 +143,9 @@ public class ClientWebView extends WebViewClient {
                             .setPositiveButton(R.string.dialog_close, null)
                             .show();
                 }
-            } else if (url_i.equals(url + pg_erro)) {
+            } else if (webViewMain.html.getUrl().equals(url + pg_erro)) {
                 if (webViewMain.isLoginPage) {
-                    //loginFragment.dismissProgressBar();
-                    //showSnackBar(getResources().getString(R.string.text_invalid_login), false);
+                    onPageFinish.onPageFinishListener(url + pg_erro);
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString("matricula", "");
                     editor.putString("password", "");
@@ -155,5 +157,13 @@ public class ClientWebView extends WebViewClient {
                 }
             }
         }
+    }
+
+    public void setOnPageFinished(OnPageFinished onPageFinish){
+        this.onPageFinish = onPageFinish;
+    }
+
+    public interface OnPageFinished {
+        void onPageFinishListener(String url_p);
     }
 }

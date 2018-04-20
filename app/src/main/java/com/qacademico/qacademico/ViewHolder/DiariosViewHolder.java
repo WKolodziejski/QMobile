@@ -13,7 +13,7 @@ import com.qacademico.qacademico.R;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
-public class ViewHolderDiarios extends RecyclerView.ViewHolder{
+public class DiariosViewHolder extends RecyclerView.ViewHolder{
     public final TextView materia;
     public final ExpandableLayout expand;
     public final ImageView button;
@@ -21,7 +21,7 @@ public class ViewHolderDiarios extends RecyclerView.ViewHolder{
     public final RecyclerView recyclerView;
     public final LinearLayout table;
 
-    public ViewHolderDiarios(View view) {
+    public DiariosViewHolder(View view) {
         super(view);
 
         materia = (TextView) view.findViewById(R.id.materiaDiarios);

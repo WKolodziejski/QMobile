@@ -12,8 +12,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
+import com.qacademico.qacademico.Activity.LoginActivity;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Utils;
 
 import static com.qacademico.qacademico.Utilities.Utils.pg_login;
 import static com.qacademico.qacademico.Utilities.Utils.url;
@@ -24,7 +27,7 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         login_info = getActivity().getSharedPreferences("login_info", 0);
 
@@ -49,8 +52,8 @@ public class LoginFragment extends Fragment {
             editor.putString("password", password_et.getText().toString());
             editor.apply();
 
-            ((MainActivity) getActivity()).mainWebView.html.loadUrl(url + pg_login);
-            ((MainActivity) getActivity()).dismissSnackbar();
+            ((LoginActivity) getActivity()).dismissSnackbar();
+            ((LoginActivity) getActivity()).mainWebView.html.loadUrl(url + pg_login);
         });
         return view;
     }

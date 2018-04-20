@@ -16,16 +16,16 @@ import android.view.animation.RotateAnimation;
 
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.ViewHolder.ViewHolderMateriais;
+import com.qacademico.qacademico.ViewHolder.MateriaisViewHolder;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 import java.util.List;
 
-public class AdapterMateriais extends RecyclerView.Adapter {
+public class MateriaisAdapter extends RecyclerView.Adapter {
     private List<Materiais> materiaisList;
     private Context context;
 
-    public AdapterMateriais(List<Materiais> materiaisList, Context context) {
+    public MateriaisAdapter(List<Materiais> materiaisList, Context context) {
         this.materiaisList = materiaisList;
         this.context = context;
     }
@@ -34,12 +34,12 @@ public class AdapterMateriais extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.table_materiais, parent, false);
-        return new ViewHolderMateriais(view);
+        return new MateriaisViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final ViewHolderMateriais holder = (ViewHolderMateriais) viewHolder;
+        final MateriaisViewHolder holder = (MateriaisViewHolder) viewHolder;
         Materiais materiais = materiaisList.get(position);
 
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -83,7 +83,7 @@ public class AdapterMateriais extends RecyclerView.Adapter {
         RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false);
 
-        holder.recyclerView.setAdapter(new AdapterMaterial(materiais.getMaterialList(), context));
+        holder.recyclerView.setAdapter(new MaterialAdapter(materiais.getMaterialList(), context));
 
         holder.recyclerView.setLayoutManager(layout);
 

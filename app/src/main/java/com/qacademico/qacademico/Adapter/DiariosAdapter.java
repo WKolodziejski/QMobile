@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.ViewHolder.ViewHolderDiarios;
+import com.qacademico.qacademico.ViewHolder.DiariosViewHolder;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -24,12 +24,12 @@ import java.util.List;
 
 import static java.lang.Integer.valueOf;
 
-public class AdapterDiarios extends RecyclerView.Adapter {
+public class DiariosAdapter extends RecyclerView.Adapter {
     private List<Diarios> diarios;
     private Context context;
     OnExpandListener onExpandListener;
 
-    public AdapterDiarios(List<Diarios> diarios, Context context) {
+    public DiariosAdapter(List<Diarios> diarios, Context context) {
         this.diarios = diarios;
         this.context = context;
     }
@@ -38,12 +38,12 @@ public class AdapterDiarios extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.table_diarios, parent, false);
-        return new ViewHolderDiarios(view);
+        return new DiariosViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
-        final ViewHolderDiarios holder = (ViewHolderDiarios) viewHolder;
+        final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
         Diarios trabalhos = diarios.get(position) ;
 
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -84,7 +84,7 @@ public class AdapterDiarios extends RecyclerView.Adapter {
         RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false);
 
-        holder.recyclerView.setAdapter(new AdapterEtapa(trabalhos.getEtapaList(), context));
+        holder.recyclerView.setAdapter(new EtapaAdapter(trabalhos.getEtapaList(), context));
 
         holder.recyclerView.setLayoutManager(layout);
 
