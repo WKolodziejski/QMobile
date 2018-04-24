@@ -2,7 +2,6 @@ package com.qacademico.qacademico.Activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +18,8 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -146,13 +147,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 public void onDrawerClosed(View view) {
                     super.onDrawerClosed(view);
-                    Design.setStatusBarLight(MainActivity.this);
+                    //Design.setStatusBarLight(MainActivity.this);
                 }
 
                 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 public void onDrawerOpened(View drawerView) {
                     super.onDrawerOpened(drawerView);
-                    Design.setStatusBarTransparent(MainActivity.this);
+                    //Design.setStatusBarTransparent(MainActivity.this);
                 }
             };
 
@@ -325,8 +326,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         HomeFragment homeFragment = new HomeFragment();
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, homeFragment);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.main_fragment, homeFragment, "HOME");
         fragmentTransaction.commit();
 
         /*if (!mainWebView.pg_home_loaded) {
@@ -364,9 +366,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putSerializable("Diarios", (Serializable) diarios);
             diariosFragment.setArguments(bundle);
 
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.main_fragment, diariosFragment);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.main_fragment, diariosFragment, "DIARIOS");
             fragmentTransaction.commit();
+
+            mainLayout.postInvalidate();
 
             if (mainWebView.pg_diarios_loaded && mainWebView.data_diarios != null) {
 
@@ -455,8 +460,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putSerializable("Boletim", (Serializable) boletim);
             boletimFragment.setArguments(bundle);
 
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.main_fragment, boletimFragment);
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.main_fragment, boletimFragment, "BOLETIM");
             fragmentTransaction.commit();
 
             if (mainWebView.pg_boletim_loaded && mainWebView.data_boletim != null) {
@@ -551,11 +557,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             bundle.putSerializable("Horario", (Serializable) horario);
             horarioFragment.setArguments(bundle);
 
-            try {
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.main_fragment, horarioFragment);
-                fragmentTransaction.commit();
-            } catch (Exception e){}
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.main_fragment, horarioFragment, "HORARIO");
+            fragmentTransaction.commit();
 
             if (mainWebView.pg_horario_loaded && mainWebView.data_horario != null) {
 

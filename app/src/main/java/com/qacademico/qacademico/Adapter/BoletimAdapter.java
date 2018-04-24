@@ -2,29 +2,27 @@ package com.qacademico.qacademico.Adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cleveroad.adaptivetablelayout.LinkedAdaptiveTableAdapter;
 import com.cleveroad.adaptivetablelayout.ViewHolderImpl;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.WebView.JavaScriptWebView;
 
 import java.util.List;
 
 public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
     private LayoutInflater inflater;
-    private String[][] boletim;
+    private List<Boletim> boletim;
     private Resources res;
+    private OnHeaderClick onHeaderClick;
 
-    public BoletimAdapter(Context context, String[][] boletim) {
+    public BoletimAdapter(Context context, List<Boletim> boletim) {
         inflater = LayoutInflater.from(context);
         this.boletim = boletim;
         this.res = context.getResources();
@@ -58,22 +56,42 @@ public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolderImpl viewHolder, int row, int column) {
         final TestViewHolder vh = (TestViewHolder) viewHolder;
-        String itemData = boletim[row - 1][column]; // skip headers
+        row--;
+        String primeiraEtapa = "";
+        String segundaEtapa = "";
 
-        if (TextUtils.isEmpty(itemData)) {
-            itemData = "";
+        switch (column) {
+            case 1:
+                primeiraEtapa = boletim.get(row).getNotaPrimeiraEtapa();
+                segundaEtapa = boletim.get(row).getNotaSegundaEtapa();
+                break;
+            case 2:
+                primeiraEtapa = boletim.get(row).getFaltasPrimeiraEtapa();
+                segundaEtapa = boletim.get(row).getFaltasSegundaEtapa();
+                break;
+            case 3:
+                primeiraEtapa = boletim.get(row).getRPPrimeiraEtapa();
+                segundaEtapa = boletim.get(row).getRPSegundaEtapa();
+                break;
+            case 4:
+                primeiraEtapa = boletim.get(row).getNotaFinalPrimeiraEtapa();
+                segundaEtapa = boletim.get(row).getNotaFinalSegundaEtapa();
+                break;
         }
 
-        itemData = itemData.trim();
-        vh.tvText.setVisibility(View.VISIBLE);
-        vh.tvText.setText(itemData);
+        primeiraEtapa = primeiraEtapa.trim();
+        segundaEtapa = segundaEtapa.trim();
+        vh.tvText1.setVisibility(View.VISIBLE);
+        vh.tvText1.setText(primeiraEtapa);
+        vh.tvText2.setVisibility(View.VISIBLE);
+        vh.tvText2.setText(segundaEtapa);
     }
 
     @Override
     public void onBindHeaderColumnViewHolder(@NonNull ViewHolderImpl viewHolder, int column) {
         TestHeaderColumnViewHolder vh = (TestHeaderColumnViewHolder) viewHolder;
         String[] header = {res.getString(R.string.boletim_Nota), res.getString(R.string.boletim_Faltas),
-                res.getString(R.string.boletim_NotaFinal), res.getString(R.string.boletim_RP)};
+                res.getString(R.string.boletim_RP), res.getString(R.string.boletim_NotaFinal)};
 
         vh.tvText.setText(header[column - 1]);  // skip left top header
     }
@@ -81,13 +99,14 @@ public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
     @Override
     public void onBindHeaderRowViewHolder(@NonNull ViewHolderImpl viewHolder, int row) {
         TestHeaderRowViewHolder vh = (TestHeaderRowViewHolder) viewHolder;
-        vh.tvText.setText(boletim[row - 1][0]);
+        vh.tvText.setText(boletim.get(row - 1).getMateria());
     }
 
     @Override
     public void onBindLeftTopHeaderViewHolder(@NonNull ViewHolderImpl viewHolder) {
         TestHeaderLeftTopViewHolder vh = (TestHeaderLeftTopViewHolder) viewHolder;
         vh.tvText.setText(res.getString(R.string.boletim_Materia));
+        vh.tvText.setOnClickListener(v -> onHeaderClick.onHeaderClick());
     }
 
     @Override
@@ -112,7 +131,7 @@ public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
 
     @Override
     public int getRowCount() {
-        return boletim.length + 1;
+        return boletim.size() + 1;
     }
 
     @Override
@@ -122,22 +141,22 @@ public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
 
 
     private static class TestViewHolder extends ViewHolderImpl {
-        TextView tvText;
+        TextView tvText1;
+        TextView tvText2;
 
         private TestViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvText = (TextView) itemView.findViewById(R.id.tvText);
+            tvText1 = (TextView) itemView.findViewById(R.id.tvText1);
+            tvText2 = (TextView) itemView.findViewById(R.id.tvText2);
         }
     }
 
     private static class TestHeaderColumnViewHolder extends ViewHolderImpl {
         TextView tvText;
-        View vLine;
 
         private TestHeaderColumnViewHolder(@NonNull View itemView) {
             super(itemView);
             tvText = (TextView) itemView.findViewById(R.id.tvText);
-            vLine = itemView.findViewById(R.id.vLine);
         }
     }
 
@@ -157,5 +176,13 @@ public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
             super(itemView);
             tvText = (TextView) itemView.findViewById(R.id.tvText);
         }
+    }
+
+    public void setOnHeaderClick(OnHeaderClick onHeaderClick){
+        this.onHeaderClick = onHeaderClick;
+    }
+
+    public interface OnHeaderClick {
+        void onHeaderClick();
     }
 }

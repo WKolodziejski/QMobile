@@ -69,7 +69,7 @@ public class Boletim implements Serializable {
         return RPSegundaEtapa;
     }
 
-    public String getNotaFinalSeungaEtapa() {
+    public String getNotaFinalSegundaEtapa() {
         return NotaFinalSeungaEtapa;
     }
 

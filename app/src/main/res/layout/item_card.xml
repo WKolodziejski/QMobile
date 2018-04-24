@@ -4,19 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_100"
-    android:padding="8dp"
+    android:background="@color/white"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     >
 
-    <TextView
-        android:id="@+id/tvText"
-        android:layout_width="match_parent"
+    <View
+        android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:focusableInTouchMode="true"
-        android:gravity="center"
-        android:textSize="@dimen/alt_font_size"
-        tools:text="Text"
-        />
+        android:background="@color/black_dividers"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:rowCount="1"
+        android:columnCount="2"
+        android:padding="8dp"
+        >
+
+        <TextView
+            android:id="@+id/tvText1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_gravity="start"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:focusableInTouchMode="true"
+            android:textSize="@dimen/alt_font_size"
+            tools:text="Text" />
+
+        <TextView
+            android:id="@+id/tvText2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_row="0"
+            android:layout_column="1"
+            android:layout_gravity="end"
+            android:layout_marginRight="24dp"
+            android:layout_marginEnd="24dp"
+            android:focusableInTouchMode="true"
+            android:textSize="@dimen/alt_font_size"
+            tools:text="Text"/>
+
+    </GridLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/white_dividers"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

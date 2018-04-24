@@ -52,7 +52,7 @@
     <string name="boletim_TFaltas">Total of Absences</string>
     <string name="boletim_Faltas">Absences</string>
     <string name="boletim_Nota">Grade</string>
-    <string name="boletim_RP">Retake Test Grade</string>
+    <string name="boletim_RP">Retake Test</string>
     <string name="boletim_Etapa">Stage</string>
     <string name="boletim_NotaFinal">Final Grade</string>
     <string name="boletim_PrimeiraEtapa">First</string>

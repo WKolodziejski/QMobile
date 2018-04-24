@@ -5,8 +5,9 @@
     android:id="@+id/tableBoletim"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:isScrollContainer="true"
+    android:clickable="true"
+    android:focusable="true"
     app:cellMargin="1dp"
-    app:fixedHeaders="true"
-    app:solidRowHeaders="true"
-    app:dragAndDropEnabled="true"/>
+    app:fixedHeaders="false"
+    app:solidRowHeaders="false"
+    app:dragAndDropEnabled="false"/>

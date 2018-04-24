@@ -3,6 +3,7 @@ package com.qacademico.qacademico.WebView;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
@@ -90,7 +91,85 @@ public class JavaScriptWebView {
     @AddTrace(name = "handleBoletim")
     public void handleBoletim(String html_p) {
 
-        new Thread() {
+        new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... strings) {
+                String[][] trtd_boletim;
+                Document homeBoletim = Jsoup.parse(html_p);
+                Log.v("Home", html_p);
+                webViewMain.bugBoletim = homeBoletim.outerHtml();
+
+                final Element table_boletim = homeBoletim.select("table").get(6);
+                Element table_notas = table_boletim.select("table").get(7);
+
+                Elements tables = table_notas.children();
+
+                List<Boletim> boletim = new ArrayList<>();
+
+                for (Element table : tables) {
+                    Elements trs = table.select("tr");
+                    trtd_boletim = new String[trs.size()][];
+                    for (int i = 2; i < trs.size(); i++) {
+                        Elements tds = trs.get(i).select("td");
+                        trtd_boletim[i] = new String[tds.size()];
+                        for (int j = 0; j < tds.size(); j++) {
+                            if (tds.get(j).text().equals("")) {
+                                trtd_boletim[i][j] = "-";
+                            } else {
+                                trtd_boletim[i][j] = tds.get(j).text();
+                            }
+                        }
+
+                        boletim.add(new Boletim(trtd_boletim[i][0], trtd_boletim[i][3], trtd_boletim[i][5], trtd_boletim[i][6], trtd_boletim[i][7],
+                                trtd_boletim[i][9], trtd_boletim[i][10], trtd_boletim[i][11], trtd_boletim[i][12], trtd_boletim[i][14]));
+                    }
+                }
+
+                Collections.sort(boletim, (b1, b2) -> b1.getMateria().compareTo(b2.getMateria()));
+
+                ObjectOutputStream object;
+                try {
+                    object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
+                            login_info.getString("matricula", "") + ".boletim" )));
+                    object.writeObject(boletim);
+                    object.flush();
+                    object.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
+                Elements options_ano = ano.select("option");
+
+                webViewMain.data_boletim = new String[options_ano.size()];
+
+                for (int i = 0; i < options_ano.size(); i++) {
+                    webViewMain.data_boletim[i] = options_ano.get(i).text();
+                }
+
+                Document periodo = Jsoup.parse(homeBoletim.select("#cmbperiodos").first().toString());
+                Elements options_periodo = periodo.select("option");
+
+                webViewMain.periodo_boletim = new String[options_periodo.size()];
+
+                for (int i = 0; i < options_periodo.size(); i++) {
+                    webViewMain.periodo_boletim[i] = options_periodo.get(i).text();
+                }
+
+                webViewMain.pg_boletim_loaded = true;
+                Log.i("handleBoletim", "Carregado");
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                onPageFinish.onPageFinish(url + pg_boletim);
+            }
+        }.execute();
+
+        /*new Thread() {
             @Override
             public void run() {
                 try {
@@ -161,7 +240,7 @@ public class JavaScriptWebView {
 
                 } catch (Exception ignored) {}
             }
-        }.start();
+        }.start();*/
     }
 
     @JavascriptInterface

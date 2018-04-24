@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_400"
+    android:background="@color/white"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     >
 
     <TextView
@@ -14,5 +17,7 @@
         android:gravity="center_vertical"
         android:padding="8dp"
         android:textSize="@dimen/main_font_size"
+        android:textStyle="bold"
         tools:text="text"/>
+
 </RelativeLayout>

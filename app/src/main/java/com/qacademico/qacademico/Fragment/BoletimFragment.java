@@ -1,8 +1,8 @@
 package com.qacademico.qacademico.Fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,21 +31,15 @@ public class BoletimFragment extends Fragment {
 
         if (boletim != null) {
 
-            String[][] boletimTable = new String[boletim.size()][5];
-
-            for (int i = 0; i < boletim.size(); i++) {
-                boletimTable[i][0] = boletim.get(i).getMateria();
-                boletimTable[i][1] = boletim.get(i).getNotaPrimeiraEtapa();
-                boletimTable[i][2] = boletim.get(i).getFaltasPrimeiraEtapa();
-                boletimTable[i][3] = boletim.get(i).getNotaFinalPrimeiraEtapa();
-                boletimTable[i][4] = boletim.get(i).getRPPrimeiraEtapa();
-            }
-
             AdaptiveTableLayout table = (AdaptiveTableLayout) view.findViewById(R.id.tableBoletim);
-            table.setAdapter(new BoletimAdapter(getActivity().getApplicationContext(), boletimTable));
-            table.setFocusable(false);
-        }
+            BoletimAdapter adapter = new BoletimAdapter(getActivity().getApplicationContext(), boletim);
 
+            table.setAdapter(adapter);
+
+            adapter.setOnHeaderClick(() -> {
+                table.setHeaderFixed(!table.isHeaderFixed());
+            });
+        }
         return view;
     }
 }

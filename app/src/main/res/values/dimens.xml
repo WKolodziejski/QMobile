@@ -9,7 +9,7 @@
     <dimen name="alt_font_size">15sp</dimen>
     <dimen name="touch_raise">5dp</dimen>
 
-    <dimen name="column_width">100dp</dimen>
+    <dimen name="column_width">150dp</dimen>
     <dimen name="row_height">60dp</dimen>
     <dimen name="column_header_height">60dp</dimen>
     <dimen name="row_header_width">120dp</dimen>

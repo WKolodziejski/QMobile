@@ -66,7 +66,7 @@
     <string name="boletim_TFaltas">不在の合計</string>
     <string name="boletim_Faltas">不在</string>
     <string name="boletim_Nota">成績</string>
-    <string name="boletim_RP">回復した試験成績</string>
+    <string name="boletim_RP">回復した試験</string>
     <string name="boletim_Etapa">段階</string>
     <string name="boletim_NotaFinal">最終成績</string>
     <string name="boletim_PrimeiraEtapa">第一</string>
