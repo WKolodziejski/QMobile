@@ -1,9 +1,15 @@
 package com.qacademico.qacademico.WebView;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
@@ -17,12 +23,17 @@ import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.Class.Material;
 import com.qacademico.qacademico.Class.Trabalho;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Data;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -39,13 +50,15 @@ import static com.qacademico.qacademico.Utilities.Utils.pg_materiais;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class JavaScriptWebView {
+    private Activity activity;
     private Context context;
     private SingletonWebView webViewMain;
     private SharedPreferences login_info;
     private OnPageFinished onPageFinish;
 
-    public JavaScriptWebView(Context context) {
-        this.context = context.getApplicationContext();
+    public JavaScriptWebView(Activity activity) {
+        this.activity = activity;
+        this.context = activity.getApplicationContext();
         this.login_info = context.getSharedPreferences("login_info", 0);
         this.webViewMain = SingletonWebView.getInstance();
     }
@@ -53,13 +66,18 @@ public class JavaScriptWebView {
     @JavascriptInterface
     @AddTrace(name = "handleHome")
     public void handleHome(String html_p) {
-
+        Log.i("JavaScriptWebView", "Home handling...");
         new Thread() {
             @Override
             public void run() {
-                try {
+                if (!html_p.equals("<html><head></head><body></body></html>")) {
+                    //try {
+                    Log.i("JavaScriptWebView", html_p);
                     Document homePage = Jsoup.parse(html_p);
                     Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
+                    Element img_class = homePage.getElementsByClass("titulo").get(0);
+                    Element img_tag = img_class.getElementsByTag("img").get(0);
+                    Attributes img = img_tag.attributes();
 
                     Calendar rightNow = Calendar.getInstance();
                     int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
@@ -67,11 +85,7 @@ public class JavaScriptWebView {
                     int currentMinute = rightNow.get(Calendar.MINUTE);
 
                     SharedPreferences.Editor editor = login_info.edit();
-                    try {
-                        editor.putString("nome", drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
-                    } catch (Exception e) {
-                        Log.i("handleHome", "Erro ao atribuir nome");
-                    }
+                    editor.putString("nome", drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
 
                     editor.putInt("last_day", currentDay);
                     editor.putInt("last_hour", currentHour);
@@ -79,10 +93,45 @@ public class JavaScriptWebView {
                     editor.apply();
 
                     webViewMain.pg_home_loaded = true;
-                    Log.i("handleHome", "Carregado");
-                    onPageFinish.onPageFinish(url + pg_home);
+                    Log.i("JavaScriptWebView", "Home handled!");
 
-                } catch (Exception ignored) {}
+                    activity.runOnUiThread(() -> {
+                        onPageFinish.onPageFinish(url + pg_home);
+
+                        Log.v("handleHome", img.get("src"));
+
+                        if (Data.getImage(context) == null) {
+                            webViewMain.html.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+                                Log.i("JavaScriptWebView", "Image downloaded");
+                                try {
+                                    File dir = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
+
+                                    if (!dir.exists()) {
+                                        dir.mkdirs();
+                                    }
+
+                                    File file = new File(dir, "profile.jpg");
+
+                                    if (file.exists()) {
+                                        file.delete();
+                                    }
+
+                                    Bitmap b = BitmapFactory.decodeStream(new FileInputStream(file));
+                                    Data.setImage(context, b);
+                                    Log.i("JavaScriptWebView", "Image set success");
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                    Log.i("JavaScriptWebView", "Image set error");
+                                }
+                            });
+                            webViewMain.html.loadUrl(img.get("src"));
+                            Log.i("JavaScriptWebView", "Image downloading...");
+                        }
+                    });
+                    //} catch (Exception ignored) {
+                    //Log.i("JavaScriptWebView", "Home error");
+                    //}
+                }
             }
         }.start();
     }
@@ -90,86 +139,8 @@ public class JavaScriptWebView {
     @JavascriptInterface
     @AddTrace(name = "handleBoletim")
     public void handleBoletim(String html_p) {
-
-        new AsyncTask<String, Void, Void>() {
-            @Override
-            protected Void doInBackground(String... strings) {
-                String[][] trtd_boletim;
-                Document homeBoletim = Jsoup.parse(html_p);
-                Log.v("Home", html_p);
-                webViewMain.bugBoletim = homeBoletim.outerHtml();
-
-                final Element table_boletim = homeBoletim.select("table").get(6);
-                Element table_notas = table_boletim.select("table").get(7);
-
-                Elements tables = table_notas.children();
-
-                List<Boletim> boletim = new ArrayList<>();
-
-                for (Element table : tables) {
-                    Elements trs = table.select("tr");
-                    trtd_boletim = new String[trs.size()][];
-                    for (int i = 2; i < trs.size(); i++) {
-                        Elements tds = trs.get(i).select("td");
-                        trtd_boletim[i] = new String[tds.size()];
-                        for (int j = 0; j < tds.size(); j++) {
-                            if (tds.get(j).text().equals("")) {
-                                trtd_boletim[i][j] = "-";
-                            } else {
-                                trtd_boletim[i][j] = tds.get(j).text();
-                            }
-                        }
-
-                        boletim.add(new Boletim(trtd_boletim[i][0], trtd_boletim[i][3], trtd_boletim[i][5], trtd_boletim[i][6], trtd_boletim[i][7],
-                                trtd_boletim[i][9], trtd_boletim[i][10], trtd_boletim[i][11], trtd_boletim[i][12], trtd_boletim[i][14]));
-                    }
-                }
-
-                Collections.sort(boletim, (b1, b2) -> b1.getMateria().compareTo(b2.getMateria()));
-
-                ObjectOutputStream object;
-                try {
-                    object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                            login_info.getString("matricula", "") + ".boletim" )));
-                    object.writeObject(boletim);
-                    object.flush();
-                    object.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
-                Elements options_ano = ano.select("option");
-
-                webViewMain.data_boletim = new String[options_ano.size()];
-
-                for (int i = 0; i < options_ano.size(); i++) {
-                    webViewMain.data_boletim[i] = options_ano.get(i).text();
-                }
-
-                Document periodo = Jsoup.parse(homeBoletim.select("#cmbperiodos").first().toString());
-                Elements options_periodo = periodo.select("option");
-
-                webViewMain.periodo_boletim = new String[options_periodo.size()];
-
-                for (int i = 0; i < options_periodo.size(); i++) {
-                    webViewMain.periodo_boletim[i] = options_periodo.get(i).text();
-                }
-
-                webViewMain.pg_boletim_loaded = true;
-                Log.i("handleBoletim", "Carregado");
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                onPageFinish.onPageFinish(url + pg_boletim);
-            }
-        }.execute();
-
-        /*new Thread() {
+        Log.i("JavaScriptWebView", "Boletim handling...");
+        new Thread() {
             @Override
             public void run() {
                 try {
@@ -235,18 +206,23 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_boletim_loaded = true;
-                    Log.i("handleBoletim", "Carregado");
-                    onPageFinish.onPageFinish(url + pg_boletim);
+                    Log.i("JavaScriptWebView", "Boletim handled!");
 
-                } catch (Exception ignored) {}
+                    activity.runOnUiThread(() -> {
+                        onPageFinish.onPageFinish(url + pg_boletim);
+                    });
+
+                } catch (Exception ignored) {
+                    Log.i("JavaScriptWebView", "Boletim error");
+                }
             }
-        }.start();*/
+        }.start();
     }
 
     @JavascriptInterface
     @AddTrace(name = "handleDiarios")
     public void handleDiarios(String html_p) {
-
+        Log.i("JavaScriptWebView", "Diarios handling...");
         new Thread() {
             @Override
             public void run() {
@@ -360,10 +336,14 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_diarios_loaded = true;
-                    Log.i("handleDiarios", "Carregado");
-                    onPageFinish.onPageFinish(url + pg_diarios);
+                    Log.i("JavaScriptWebView", "Diarios handled!");
 
-                } catch (Exception ignored) {}
+                    activity.runOnUiThread(() -> {
+                        onPageFinish.onPageFinish(url + pg_diarios);
+                    });
+                } catch (Exception ignored) {
+                    Log.i("JavaScriptWebView", "Diarios error");
+                }
             }
         }.start();
     }
@@ -371,7 +351,7 @@ public class JavaScriptWebView {
     @JavascriptInterface
     @AddTrace(name = "handleHorario")
     public void handleHorario(String html_p) {
-
+        Log.i("JavaScriptWebView", "Horario handling...");
         new Thread() {
             @Override
             public void run() {
@@ -478,10 +458,14 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_horario_loaded = true;
-                    Log.i("handleHorario", "Carregado");
-                    onPageFinish.onPageFinish(url + pg_horario);
+                    Log.i("JavaScriptWebView", "Horario handled!");
 
-                } catch (Exception ignored) {}
+                    activity.runOnUiThread(() -> {
+                        onPageFinish.onPageFinish(url + pg_horario);
+                    });
+                } catch (Exception ignored) {
+                    Log.i("JavaScriptWebView", "Horario error");
+                }
             }
         }.start();
     }
@@ -489,7 +473,7 @@ public class JavaScriptWebView {
     @JavascriptInterface
     @AddTrace(name = "handleMateriais")
     public void handleMateriais(String html_p) {
-
+        Log.i("JavaScriptWebView", "Materiais handling...");
         new Thread() {
             @Override
             public void run() {
@@ -578,10 +562,14 @@ public class JavaScriptWebView {
                     }
 
                     webViewMain.pg_material_loaded = true;
-                    Log.i("handleMateriais", "Carregado");
-                    onPageFinish.onPageFinish(url + pg_materiais);
+                    Log.i("JavaScriptWebView", "Materiais handled!");
 
-                } catch (Exception ignored) {}
+                    activity.runOnUiThread(() -> {
+                        onPageFinish.onPageFinish(url + pg_materiais);
+                    });
+                } catch (Exception ignored) {
+                    Log.i("JavaScriptWebView", "Materiais error");
+                }
             }
         }.start();
     }

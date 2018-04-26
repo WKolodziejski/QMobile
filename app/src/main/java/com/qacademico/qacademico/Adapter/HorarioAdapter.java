@@ -26,13 +26,18 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 import java.util.List;
 
 public class HorarioAdapter extends RecyclerView.Adapter {
-    private List<Horario> horarios;
+    private List<Horario> horario;
     private Context context;
     OnExpandListener onExpandListener;
 
-    public HorarioAdapter(List<Horario> horarios, Context context) {
-        this.horarios = horarios;
+    public HorarioAdapter(List<Horario> horario, Context context) {
+        this.horario = horario;
         this.context = context;
+    }
+
+    public void update(List<Horario> horario) {
+        this.horario = horario;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -46,7 +51,7 @@ public class HorarioAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         final HorarioViewHolder holder = (HorarioViewHolder) viewHolder;
-        final Horario horario  = horarios.get(position) ;
+        final Horario horario  = this.horario.get(position) ;
 
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
@@ -54,9 +59,9 @@ public class HorarioAdapter extends RecyclerView.Adapter {
 
         holder.dia.setText(horario.getDia());
 
-        holder.expand.setExpanded(horarios.get(position).getExpanded(), horarios.get(position).getAnim());
+        holder.expand.setExpanded(this.horario.get(position).getExpanded(), this.horario.get(position).getAnim());
 
-        if (horarios.get(position).getExpanded()){
+        if (this.horario.get(position).getExpanded()){
             holder.button.setImageResource(R.drawable.ic_expand_less_black_24dp);
             holder.dia.setTextColor(context.getResources().getColor(R.color.white));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -82,7 +87,7 @@ public class HorarioAdapter extends RecyclerView.Adapter {
             holder.table.setLayoutParams(params);
         }
 
-        horarios.get(position).setAnim(false);
+        this.horario.get(position).setAnim(false);
 
         holder.expand.setTag(position);
 
@@ -99,9 +104,9 @@ public class HorarioAdapter extends RecyclerView.Adapter {
 
             Integer pos = (Integer) holder.expand.getTag();
 
-            horarios.get(pos).setExpanded(!horarios.get(pos).getExpanded());
+            this.horario.get(pos).setExpanded(!this.horario.get(pos).getExpanded());
 
-            if (horarios.get(pos).getExpanded()) {
+            if (this.horario.get(pos).getExpanded()) {
                 expandLayoutMargin(holder.table);
             } else {
                 collapseLayoutMargin(holder.table);
@@ -113,7 +118,7 @@ public class HorarioAdapter extends RecyclerView.Adapter {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    if (horarios.get(pos).getExpanded()) {
+                    if (HorarioAdapter.this.horario.get(pos).getExpanded()) {
                         holder.button.setImageResource(R.drawable.ic_expand_less_black_24dp);
                     } else {
                         holder.button.setImageResource(R.drawable.ic_expand_more_black_24dp);
@@ -126,7 +131,7 @@ public class HorarioAdapter extends RecyclerView.Adapter {
 
             holder.expand.setOnExpansionUpdateListener((expansionFraction, state) -> {
 
-                if (state == ExpandableLayout.State.EXPANDING && horarios.get(pos).getExpanded()) {
+                if (state == ExpandableLayout.State.EXPANDING && this.horario.get(pos).getExpanded()) {
                     onExpandListener.onExpand(position);
                 }
 
@@ -138,7 +143,7 @@ public class HorarioAdapter extends RecyclerView.Adapter {
                     }
                 }
 
-                if (horarios.get(pos).getExpanded()) {
+                if (this.horario.get(pos).getExpanded()) {
                     holder.dia.setTextColor(context.getResources().getColor(R.color.white));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         holder.button.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
@@ -159,7 +164,7 @@ public class HorarioAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return horarios.size();
+        return horario.size();
     }
 
     private void expandLayoutMargin(LinearLayout mView){
@@ -194,31 +199,31 @@ public class HorarioAdapter extends RecyclerView.Adapter {
     public void toggleAll() {
         int a = 0;
         int f = 0;
-        for (int i = 0; i < horarios.size(); i++) {
-            if (horarios.get(i).getExpanded()) {
+        for (int i = 0; i < horario.size(); i++) {
+            if (horario.get(i).getExpanded()) {
                 a++;
             } else {
                 f++;
             }
         }
         if (a > f) {
-            for (int i = 0; i < horarios.size(); i++) {
-                if (horarios.get(i).getExpanded()) {
-                    horarios.get(i).setAnim(true);
+            for (int i = 0; i < horario.size(); i++) {
+                if (horario.get(i).getExpanded()) {
+                    horario.get(i).setAnim(true);
                 } else {
-                    horarios.get(i).setAnim(false);
+                    horario.get(i).setAnim(false);
                 }
-                horarios.get(i).setExpanded(false);
+                horario.get(i).setExpanded(false);
             }
             Toast.makeText(context, context.getResources().getString(R.string.message_collapsed), Toast.LENGTH_SHORT).show();
         } else {
-            for (int i = 0; i < horarios.size(); i++) {
-                if (horarios.get(i).getExpanded()) {
-                    horarios.get(i).setAnim(false);
+            for (int i = 0; i < horario.size(); i++) {
+                if (horario.get(i).getExpanded()) {
+                    horario.get(i).setAnim(false);
                 } else {
-                    horarios.get(i).setAnim(true);
+                    horario.get(i).setAnim(true);
                 }
-                horarios.get(i).setExpanded(true);
+                horario.get(i).setExpanded(true);
             }
             Toast.makeText(context, context.getResources().getString(R.string.message_expanded), Toast.LENGTH_SHORT).show();
         }

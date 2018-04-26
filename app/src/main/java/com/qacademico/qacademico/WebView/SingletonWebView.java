@@ -1,6 +1,7 @@
 package com.qacademico.qacademico.WebView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.webkit.WebSettings;
@@ -27,8 +28,8 @@ public class SingletonWebView {
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
-    public void configWebView(Context context) {
-        html = new WebView(context.getApplicationContext());
+    public void configWebView(Activity activity) {
+        html = new WebView(activity.getApplicationContext());
         WebSettings faller = html.getSettings();
         faller.setJavaScriptEnabled(true);
         faller.setDomStorageEnabled(true);
@@ -36,13 +37,13 @@ public class SingletonWebView {
         faller.setUseWideViewPort(true);
         faller.setLoadWithOverviewMode(true);
 
-        JavaScriptWebView javaScriptWebView = new JavaScriptWebView(context);
+        JavaScriptWebView javaScriptWebView = new JavaScriptWebView(activity);
         javaScriptWebView.setOnPageFinished(url_p -> {
             Log.i("JavaScriptInterface", "onFinish");
             onPageFinished.onPageFinish(url_p);
         });
 
-        ClientWebView clientWebView = new ClientWebView(context);
+        ClientWebView clientWebView = new ClientWebView(activity.getApplicationContext());
         clientWebView.setOnPageFinished(url_p -> {
             Log.i("JavaScriptInterface", "onFinish");
             onPageFinished.onPageFinish(url_p);

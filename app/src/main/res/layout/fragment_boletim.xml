@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.cleveroad.adaptivetablelayout.AdaptiveTableLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tableBoletim"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
-    android:focusable="true"
-    app:cellMargin="1dp"
-    app:fixedHeaders="false"
-    app:solidRowHeaders="false"
-    app:dragAndDropEnabled="false"/>
+    >
+
+    <com.cleveroad.adaptivetablelayout.AdaptiveTableLayout
+        android:id="@+id/tableBoletim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cellMargin="1dp"
+        app:fixedHeaders="true"
+        app:solidRowHeaders="false"
+        app:dragAndDropEnabled="false"/>
+
+</android.support.design.widget.CoordinatorLayout>

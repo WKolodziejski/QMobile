@@ -19,6 +19,7 @@ import java.util.List;
 
 public class HorarioFragment extends Fragment {
     List<Horario> horario;
+    HorarioAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,12 +34,18 @@ public class HorarioFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_horario, container, false);
 
+        setHorario(view);
+
+        return view;
+    }
+
+    private void setHorario(View view) {
         if (horario != null) {
 
             RecyclerView recyclerViewHorario = (RecyclerView) view.findViewById(R.id.recycler_horario);
             RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-            HorarioAdapter adapter = new HorarioAdapter(horario, getActivity());
+            adapter = new HorarioAdapter(horario, getActivity());
 
             recyclerViewHorario.setAdapter(adapter);
             recyclerViewHorario.setLayoutManager(layout);
@@ -64,6 +71,14 @@ public class HorarioFragment extends Fragment {
             });
 
         }
-        return view;
+    }
+
+    public void update(List<Horario> horario) {
+        if (adapter != null) {
+            this.horario = horario;
+            adapter.update(this.horario);
+        } else {
+            setHorario(getView());
+        }
     }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.cleveroad.adaptivetablelayout.LinkedAdaptiveTableAdapter;
 import com.cleveroad.adaptivetablelayout.ViewHolderImpl;
 import com.qacademico.qacademico.Class.Boletim;
+import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.WebView.JavaScriptWebView;
 
@@ -28,6 +29,10 @@ public class BoletimAdapter extends LinkedAdaptiveTableAdapter<ViewHolderImpl> {
         this.res = context.getResources();
     }
 
+    public void update(List<Boletim> boletim) {
+        this.boletim = boletim;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override

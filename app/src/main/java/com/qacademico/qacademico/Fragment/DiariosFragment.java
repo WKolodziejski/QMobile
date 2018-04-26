@@ -19,6 +19,7 @@ import java.util.List;
 
 public class DiariosFragment extends Fragment {
     List<Diarios> diarios;
+    DiariosAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,13 +34,19 @@ public class DiariosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
+        setDiarios(view);
+
+        return view;
+    }
+
+    private void setDiarios(View view) {
         if (diarios != null) {
 
             if (diarios.size() != 0) {
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                DiariosAdapter adapter = new DiariosAdapter(diarios, getActivity());
+                adapter = new DiariosAdapter(diarios, getActivity());
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
@@ -69,6 +76,14 @@ public class DiariosFragment extends Fragment {
         } else {
             ((MainActivity) getActivity()).showErrorConnection();
         }
-        return view;
+    }
+
+    public void update(List<Diarios> diarios) {
+        if (adapter != null) {
+            this.diarios = diarios;
+            adapter.update(this.diarios);
+        } else {
+            setDiarios(getView());
+        }
     }
 }

@@ -33,6 +33,10 @@ public class MateriaisActivity extends AppCompatActivity {
     RecyclerView recyclerViewMateriais;
     Toolbar toolbar;
 
+    /*TypedValue outValue = new TypedValue();
+getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+cardView.setBackgroundResource(outValue.resourceId);*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

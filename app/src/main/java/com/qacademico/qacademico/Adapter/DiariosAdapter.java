@@ -34,6 +34,11 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         this.context = context;
     }
 
+    public void update(List<Diarios> diarios) {
+        this.diarios = diarios;
+        notifyDataSetChanged();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)

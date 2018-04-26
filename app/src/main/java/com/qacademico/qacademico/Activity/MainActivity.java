@@ -1,5 +1,6 @@
 package com.qacademico.qacademico.Activity;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -35,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
@@ -56,6 +60,7 @@ import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.ChangePassword;
 import com.qacademico.qacademico.Utilities.CheckUpdate;
+import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Design;
 import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -103,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LoginFragment loginFragment;
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
     FirebaseRemoteConfig remoteConfig;
+    private DiariosFragment diariosFragment = new DiariosFragment();
+    private HomeFragment homeFragment = new HomeFragment();
+    private BoletimFragment boletimFragment = new BoletimFragment();
+    private HorarioFragment horarioFragment = new HorarioFragment();
 
     @Override
     @AddTrace(name = "onCreateTrace")
@@ -265,10 +274,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         return true;
 
                     case R.id.navigation_boletim:
+                        setBoletim();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
                                 mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
                                 R.id.navigation_boletim, false);
-                        setBoletim();
                         return true;
 
                     case R.id.navigation_horario:
@@ -321,57 +330,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_home));
         hideButtons();
-        dismissRoundProgressbar();
-        dismissLinearProgressbar();
-
-        HomeFragment homeFragment = new HomeFragment();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, homeFragment, "HOME");
         fragmentTransaction.commit();
 
-        /*if (!mainWebView.pg_home_loaded) {
-            mainWebView.html.loadUrl(url + pg_home);
-            showLinearProgressbar();
-        }*/
+            if (!mainWebView.pg_home_loaded) {
+                mainWebView.html.loadUrl(url + pg_home);
+                showLinearProgressbar();
+            }
+
+    }
+
+    public void updateHome() {
+        homeFragment.updateHeaderStatus(homeFragment.getView());
     }
 
     @AddTrace(name = "setDiarios")
     public void setDiarios() {//layout fragment_diarios
 
-        Log.i("setDiarios", "seted");
-
         getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios));
         showButtons();
-        dismissRoundProgressbar();
-        dismissLinearProgressbar();
 
-        ObjectInputStream object;
-        List<Diarios> diarios = null;
-
-        try {
-            object = new ObjectInputStream(new FileInputStream(getFileStreamPath(login_info.getString("matricula",
-                    "") + ".diarios")));
-            diarios = (List<Diarios>) object.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (diarios != null) {
-            DiariosFragment diariosFragment = new DiariosFragment();
+        if (Data.getDiarios(this) != null) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("Diarios", (Serializable) diarios);
+            bundle.putSerializable("Diarios", (Serializable) Data.getDiarios(this));
             diariosFragment.setArguments(bundle);
 
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment, diariosFragment, "DIARIOS");
             fragmentTransaction.commit();
-
-            mainLayout.postInvalidate();
 
             if (mainWebView.pg_diarios_loaded && mainWebView.data_diarios != null) {
 
@@ -420,48 +410,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showRoundProgressbar();
         }
 
-            if (mainWebView.pg_home_loaded) {
-                if (!mainWebView.pg_diarios_loaded) {
-                    mainWebView.html.loadUrl(url + pg_diarios);
-                    showLinearProgressbar();
-                } else {
-                    getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios)
-                            + " ー " + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
-                }
-            } else {
-                mainWebView.html.loadUrl(url + pg_home);
+        if (mainWebView.pg_home_loaded) {
+            if (!mainWebView.pg_diarios_loaded) {
+                mainWebView.html.loadUrl(url + pg_diarios);
                 showLinearProgressbar();
+            } else {
+                getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios)
+                        + " ー " + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
             }
-
+        } else {
+            mainWebView.html.loadUrl(url + pg_home);
+            showLinearProgressbar();
+        }
     }
 
+    public void updateDiarios() {
+        diariosFragment.update(Data.getDiarios(this));
+
+        if (mainWebView.data_diarios != null) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios)
+                    + " ー " + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
     @AddTrace(name = "setBoletim")
     public void setBoletim() { //layout fragment_boletim
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim));
         showButtons();
-        dismissRoundProgressbar();
-        dismissLinearProgressbar();
 
-        ObjectInputStream object;
-        List<Boletim> boletim = null;
-        try {
-            object = new ObjectInputStream(new FileInputStream(getFileStreamPath(login_info.getString("matricula", "") + ".boletim")));
-            boletim = (List<Boletim>) object.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        if (Data.getBoletim(this) != null) {
 
-        if (boletim != null) {
-            BoletimFragment boletimFragment = new BoletimFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable("Boletim", (Serializable) boletim);
+            bundle.putSerializable("Boletim", (Serializable) Data.getBoletim(this));
             boletimFragment.setArguments(bundle);
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment, boletimFragment, "BOLETIM");
             fragmentTransaction.commit();
 
@@ -490,8 +475,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     periodo.setDisplayedValues(mainWebView.periodo_boletim);
                     periodo.setWrapSelectorWheel(false);
 
-                    new AlertDialog.Builder(this).setView(theView)
-                            .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_date_range_black_24dp,
+                    new AlertDialog.Builder(getApplicationContext()).setView(theView)
+                            .setCustomTitle(Utils.customAlertTitle(getApplicationContext(), R.drawable.ic_date_range_black_24dp,
                                     R.string.dialog_date_change, R.color.teal_400))
                             .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
@@ -515,50 +500,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showRoundProgressbar();
         }
 
-        if (mainWebView.pg_home_loaded) {
-            if (!mainWebView.pg_boletim_loaded) {
-                mainWebView.html.loadUrl(url + pg_boletim);
-                showLinearProgressbar();
+            if (mainWebView.pg_home_loaded) {
+                if (!mainWebView.pg_boletim_loaded) {
+                    mainWebView.html.loadUrl(url + pg_boletim);
+                    showLinearProgressbar();
+                } else {
+                    getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim)
+                            + " ー " + mainWebView.data_boletim[mainWebView.data_position_boletim] + " / "
+                            + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim]); //mostra o ano no título
+                }
             } else {
-                getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim)
-                        + " ー " + mainWebView.data_boletim[mainWebView.data_position_boletim] + " / "
-                        + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim]); //mostra o ano no título
+                mainWebView.html.loadUrl(url + pg_home);
+                showLinearProgressbar();
             }
-        } else {
-            mainWebView.html.loadUrl(url + pg_home);
-            showLinearProgressbar();
-        }
 
     }
 
-    @AddTrace(name = "setHorario")
+    @SuppressLint("StaticFieldLeak")
+    public void updateBoletim() {
 
+        if (mainWebView.data_boletim != null && mainWebView.periodo_boletim != null) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim)
+                    + " ー " + mainWebView.data_boletim[mainWebView.data_position_boletim] + " / "
+                    + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim]); //mostra o ano no título
+        }
+
+        new AsyncTask<Void, Void, List<Boletim>>() {
+            @Override
+            protected List<Boletim> doInBackground(Void... voids) {
+                return Data.getBoletim(getApplicationContext());
+            }
+
+            @Override
+            protected void onPostExecute(List<Boletim> boletim) {
+                super.onPostExecute(boletim);
+                boletimFragment.update(boletim);
+            }
+        }.execute();
+    }
+
+    @AddTrace(name = "setHorario")
     public void setHorario() { // layout fragment_horario
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_horario));
         showButtons();
-        dismissRoundProgressbar();
-        dismissLinearProgressbar();
 
-        ObjectInputStream object;
-        List<Horario> horario = null;
-        try {
-            object = new ObjectInputStream(new FileInputStream(getFileStreamPath(login_info.getString("matricula", "") + ".horario")));
-            horario = (List<Horario>) object.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        if (Data.getHorario(this) != null) {
 
-        if (horario != null) {
-            HorarioFragment horarioFragment = new HorarioFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable("Horario", (Serializable) horario);
+            bundle.putSerializable("Horario", (Serializable) Data.getHorario(this));
             horarioFragment.setArguments(bundle);
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment, horarioFragment, "HORARIO");
             fragmentTransaction.commit();
 
@@ -613,20 +606,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showRoundProgressbar();
         }
 
-            if (mainWebView.pg_home_loaded) {
-                if (!mainWebView.pg_horario_loaded) {
-                    mainWebView.html.loadUrl(url + pg_horario);
-                    showLinearProgressbar();
-                } else {
-                    getSupportActionBar().setTitle(getResources().getString(R.string.title_horario)
-                            + " ー " + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
-                            + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
-                }
-            } else {
-                mainWebView.html.loadUrl(url + pg_home);
+        if (mainWebView.pg_home_loaded) {
+            if (!mainWebView.pg_horario_loaded) {
+                mainWebView.html.loadUrl(url + pg_horario);
                 showLinearProgressbar();
+                } else {
+                getSupportActionBar().setTitle(getResources().getString(R.string.title_horario)
+                        + " ー " + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
+                        + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
             }
+        } else {
+            mainWebView.html.loadUrl(url + pg_home);
+            showLinearProgressbar();
+        }
+    }
 
+    public void updateHorario() {
+        horarioFragment.update(Data.getHorario(this));
+
+        if (mainWebView.data_boletim != null && mainWebView.periodo_horario != null) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_horario)
+                    + " ー " + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
+                    + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
+        }
     }
 
     @AddTrace(name = "setMateriais")
@@ -674,6 +676,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         LinearLayout nav_image = (LinearLayout) header.findViewById(R.id.nav_image);
         TextView user_name_drawer = (TextView) header.findViewById(R.id.msg);
         TextView matricula = (TextView) header.findViewById(R.id.matricula);
+        ImageView foto = (ImageView) header.findViewById(R.id.img_foto);
+
+        //foto.setImageBitmap(Data.getImage(this));
 
         user_name_drawer.setText(login_info.getString("nome", ""));
 
@@ -697,30 +702,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPageFinish(String url_p) {
         Log.i("Singleton", "onFinish");
+
+        dismissRoundProgressbar();
+        dismissLinearProgressbar();
+
         if (url_p.equals(url + pg_home)) {
             Log.i("onFinish", "loadedHome");
             if (navigation.getSelectedItemId() == R.id.navigation_home) {
-                clickHome();
-                Log.i("onFinish", "setHome");
+                updateHome();
+                Log.i("onFinish", "updatedHome");
             }
             configNavDrawer();
         } else if (url_p.equals(url + pg_boletim)) {
             Log.i("onFinish", "loadedBoletim");
             if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
-                clickBoletim();
-                Log.i("onFinish", "setBoletim");
+                updateBoletim();
+                Log.i("onFinish", "updatedBoletim");
             }
         } else if (url_p.equals(url + pg_diarios)) {
             Log.i("onFinish", "loadedDiarios");
             if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
-                clickDiarios();
-                Log.i("onFinish", "clickDiarios");
+                updateDiarios();
+                Log.i("onFinish", "updatedDiarios");
             }
         } else if (url_p.equals(url + pg_horario)) {
             Log.i("onFinish", "loadedHorario");
             if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-                clickHorario();
-                Log.i("onFinish", "setHorario");
+                updateHorario();
+                Log.i("onFinish", "updatedHorario");
             }
         }
     }
