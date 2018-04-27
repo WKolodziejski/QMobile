@@ -38,7 +38,8 @@ public class ClientWebView extends WebViewClient {
     private Context context;
     private SingletonWebView webViewMain;
     private SharedPreferences login_info;
-    private OnPageFinished onPageFinish;
+    private OnPageFinished onPageFinished;
+    private OnPageStarted onPageStarted;
 
     public ClientWebView(Context context) {
         this.context = context.getApplicationContext();
@@ -94,6 +95,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url_i, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
+        onPageStarted.onPageStart(url_i);
     }
 
     @Override
@@ -116,7 +118,7 @@ public class ClientWebView extends WebViewClient {
                     editor.putBoolean("valido", true);
                     editor.apply();
                     Log.i("Login", "isLogin = false;");
-                    onPageFinish.onPageFinishListener(url + pg_login);
+                    onPageFinished.onPageFinish(url + pg_login);
                     Log.i("WebViewClient", "Login done");
                 }
                 Log.i("WebViewClient", "Home loaded");
@@ -165,7 +167,7 @@ public class ClientWebView extends WebViewClient {
             } else if (url_i.equals(url + pg_erro)) {
                 Log.i("WebViewClient", "Error");
                 if (webViewMain.isLoginPage) {
-                    onPageFinish.onPageFinishListener(url + pg_erro);
+                    onPageFinished.onPageFinish(url + pg_erro);
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString("matricula", "");
                     editor.putString("password", "");
@@ -179,11 +181,19 @@ public class ClientWebView extends WebViewClient {
         }
     }
 
-    public void setOnPageFinished(OnPageFinished onPageFinish){
-        this.onPageFinish = onPageFinish;
+    public void setOnPageFinishedListener(OnPageFinished onPageFinished){
+        this.onPageFinished = onPageFinished;
     }
 
     public interface OnPageFinished {
-        void onPageFinishListener(String url_p);
+        void onPageFinish(String url_p);
+    }
+
+    public void setOnPageStartedListener(OnPageStarted onPageStarted){
+        this.onPageStarted = onPageStarted;
+    }
+
+    public interface OnPageStarted {
+        void onPageStart(String url_p);
     }
 }

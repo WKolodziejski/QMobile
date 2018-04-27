@@ -10,6 +10,7 @@ import android.webkit.WebView;
 public class SingletonWebView {
     private static SingletonWebView singleton;
     private OnPageFinished onPageFinished;
+    private OnPageStarted onPageStarted;
     public WebView html;
     public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
             isChangePasswordPage, isLoginPage;
@@ -44,9 +45,14 @@ public class SingletonWebView {
         });
 
         ClientWebView clientWebView = new ClientWebView(activity.getApplicationContext());
-        clientWebView.setOnPageFinished(url_p -> {
+        clientWebView.setOnPageFinishedListener(url_p -> {
             Log.i("JavaScriptInterface", "onFinish");
             onPageFinished.onPageFinish(url_p);
+        });
+
+        clientWebView.setOnPageStartedListener(url_p -> {
+            Log.i("JavaScriptInterface", "onStart");
+            onPageStarted.onPageStart(url_p);
         });
 
         html.setWebViewClient(clientWebView);
@@ -59,5 +65,13 @@ public class SingletonWebView {
 
     public interface OnPageFinished {
         void onPageFinish(String url_p);
+    }
+
+    public void setOnPageStartedListener(OnPageStarted onPageStarted){
+        this.onPageStarted = onPageStarted;
+    }
+
+    public interface OnPageStarted {
+        void onPageStart(String url_p);
     }
 }

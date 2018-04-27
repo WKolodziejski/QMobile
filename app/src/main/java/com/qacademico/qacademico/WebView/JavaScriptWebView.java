@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.alamkanak.weekview.WeekViewEvent;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
@@ -71,7 +72,7 @@ public class JavaScriptWebView {
             @Override
             public void run() {
                 if (!html_p.equals("<html><head></head><body></body></html>")) {
-                    //try {
+                    try {
                     Log.i("JavaScriptWebView", html_p);
                     Document homePage = Jsoup.parse(html_p);
                     Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
@@ -128,9 +129,9 @@ public class JavaScriptWebView {
                             Log.i("JavaScriptWebView", "Image downloading...");
                         }
                     });
-                    //} catch (Exception ignored) {
-                    //Log.i("JavaScriptWebView", "Home error");
-                    //}
+                    } catch (Exception ignored) {
+                        Log.i("JavaScriptWebView", "Home error");
+                    }
                 }
             }
         }.start();
