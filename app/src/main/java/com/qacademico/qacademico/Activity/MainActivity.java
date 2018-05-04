@@ -128,26 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ButterKnife.bind(this);
 
-        /*DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("/Files/Extensions");
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
-                    Log.v("DataBase",""+ childDataSnapshot.getKey()); //displays the key for the node
-                    Log.v("DataBase",""+ childDataSnapshot.child("Audio").getValue());   //gives the value for given keyname
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w("DataBase", "Failed to read value.", error.toException());
-            }
-        });*/
-
-
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         setSupportActionBar(toolbar);
