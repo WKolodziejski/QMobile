@@ -119,7 +119,7 @@ public class HorarioFragment extends Fragment {
 
                 new AlertDialog.Builder(getActivity()).setView(theView)
                         .setCustomTitle(Utils.customAlertTitle(getActivity(), R.drawable.ic_date_range_black_24dp,
-                                R.string.dialog_date_change, R.color.blue_400))
+                                R.string.dialog_date_change, R.color.horario_dialog))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                             mainWebView.data_position_horario = year.getValue();

@@ -24,7 +24,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:id="@+id/guide_img"
-            android:tint="@color/colorWhite"/>
+            android:tint="@color/white"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:textStyle="bold"
             android:textAlignment="center"
             android:id="@+id/guide_title"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/white"
             android:text="@string/title_horario"/>
 
     </LinearLayout>

@@ -2,7 +2,6 @@ package com.qacademico.qacademico.WebView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -11,6 +10,7 @@ public class SingletonWebView {
     private static SingletonWebView singleton;
     private OnPageFinished onPageFinished;
     private OnPageStarted onPageStarted;
+    private OnRecivedError onRecivedError;
     public WebView html;
     public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
             isChangePasswordPage, isLoginPage;
@@ -55,6 +55,11 @@ public class SingletonWebView {
             onPageStarted.onPageStart(url_p);
         });
 
+        clientWebView.setOnErrorRecivedListener(error -> {
+            Log.i("JavaScriptInterface", "onError");
+            onRecivedError.onErrorRecived(error);
+        });
+
         html.setWebViewClient(clientWebView);
         html.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
     }
@@ -73,5 +78,13 @@ public class SingletonWebView {
 
     public interface OnPageStarted {
         void onPageStart(String url_p);
+    }
+
+    public void setOnErrorRecivedListener(OnRecivedError onRecivedError){
+        this.onRecivedError = onRecivedError;
+    }
+
+    public interface OnRecivedError {
+        void onErrorRecived(String error);
     }
 }

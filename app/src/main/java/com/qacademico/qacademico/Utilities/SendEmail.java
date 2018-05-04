@@ -77,9 +77,9 @@ public class SendEmail {
                 check_diarios.setChecked(true);
                 check_diarios.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    check_diarios.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    img_diarios.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    txt_diarios.setTextColor(context.getResources().getColor(R.color.green_500));
+                    check_diarios.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    img_diarios.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    txt_diarios.setTextColor(context.getResources().getColor(R.color.ok));
                 }
             } else {
                 checkBoxBugReport(context, grid_diarios, check_diarios, img_diarios, txt_diarios);
@@ -89,9 +89,9 @@ public class SendEmail {
                 check_boletim.setChecked(true);
                 check_boletim.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    check_boletim.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    img_boletim.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    txt_boletim.setTextColor(context.getResources().getColor(R.color.green_500));
+                    check_boletim.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    img_boletim.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    txt_boletim.setTextColor(context.getResources().getColor(R.color.ok));
                 }
             } else {
                 checkBoxBugReport(context, grid_boletim, check_boletim, img_boletim, txt_boletim);
@@ -101,9 +101,9 @@ public class SendEmail {
                 check_horario.setChecked(true);
                 check_horario.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    check_horario.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    img_horario.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    txt_horario.setTextColor(context.getResources().getColor(R.color.green_500));
+                    check_horario.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    img_horario.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    txt_horario.setTextColor(context.getResources().getColor(R.color.ok));
                 }
             } else {
                 checkBoxBugReport(context, grid_horario, check_horario, img_horario, txt_horario);
@@ -112,7 +112,7 @@ public class SendEmail {
             checkBoxBugReport(context, grid_outro, check_outro, img_outros, txt_outros);
 
             new AlertDialog.Builder(context).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.green_500))
+                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.bug_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                         String message_final = "";
@@ -144,14 +144,14 @@ public class SendEmail {
                                 emailPattern(context, "QAcadMobile Bug Report", message.getText().toString() + message_final);
                             } else {
                                 new AlertDialog.Builder(context)
-                                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sync_problem_black_24dp, R.string.error_title, R.color.amber_500))
+                                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sync_problem_black_24dp, R.string.error_title, R.color.warning))
                                         .setMessage(R.string.page_load_empty)
                                         .setPositiveButton(R.string.dialog_close, null)
                                         .show();
                             }
                         } else {
                             new AlertDialog.Builder(context)
-                                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
+                                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.sad))
                                     .setMessage(R.string.email_empty)
                                     .setPositiveButton(R.string.dialog_close, null)
                                     .show();
@@ -174,13 +174,13 @@ public class SendEmail {
             RatingBar rating = (RatingBar) theView.findViewById(R.id.ratingBar);
 
             new AlertDialog.Builder(context).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_chat_black_24dp, R.string.email_assunto_sug, R.color.pink_500))
+                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_chat_black_24dp, R.string.email_assunto_sug, R.color.sug_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (!message.getText().toString().equals("")) {
                             emailPattern(context, "QAcadMobile Sugestion", message.getText().toString() + "\n\nNota: " + String.valueOf(rating.getRating()));
                         } else {
                             new AlertDialog.Builder(context)
-                                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.amber_500))
+                                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sentiment_neutral_black_24dp, R.string.error_title_oops, R.color.warning))
                                     .setMessage(R.string.email_empty)
                                     .setPositiveButton(R.string.dialog_close, null)
                                     .show();
@@ -205,9 +205,9 @@ public class SendEmail {
             } else {
                 chk.setChecked(true);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    chk.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    img.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    txt.setTextColor(context.getResources().getColor(R.color.green_500));
+                    chk.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    img.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    txt.setTextColor(context.getResources().getColor(R.color.ok));
                 }
             }
         });
@@ -215,9 +215,9 @@ public class SendEmail {
         chk.setOnClickListener(v -> {
             if (chk.isChecked()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    chk.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    img.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.green_500)));
-                    txt.setTextColor(context.getResources().getColor(R.color.green_500));
+                    chk.setButtonTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    img.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.ok)));
+                    txt.setTextColor(context.getResources().getColor(R.color.ok));
                 }
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -241,12 +241,12 @@ public class SendEmail {
                 .withSendingMessageError(null)
                 .withSendingMessageSuccess(null)
                 .withOnSuccessCallback(() -> new AlertDialog.Builder(context)
-                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sentiment_very_satisfied_black_24dp, R.string.success_title, R.color.green_500))
+                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_sentiment_very_satisfied_black_24dp, R.string.success_title, R.color.happy))
                         .setMessage(R.string.email_success)
                         .setPositiveButton(R.string.dialog_close, null)
                         .show())
                 .withOnFailCallback(() -> new AlertDialog.Builder(context)
-                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
+                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.error))
                         .setMessage(R.string.email_error)
                         .setPositiveButton(R.string.dialog_close, null)
                         .show())

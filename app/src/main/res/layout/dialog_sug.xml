@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@color/colorPink"
+            android:background="@color/sug_dialog"
             >
 
             <EditText
@@ -36,85 +36,18 @@
                 android:maxLength="2000"
                 android:lines="6"
                 android:gravity="top|left"
-                android:background="@color/colorWhite"
+                android:background="@color/white"
                 android:id="@+id/email_message"/>
 
         </LinearLayout>
-
-        <!--<LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
-
-            <GridLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:rowCount="1"
-                android:columnCount="5"
-                >
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_star_border_black_24dp"
-                    android:tint="@color/colorYellowLight"
-                    android:paddingHorizontal="10dp"
-                    android:layout_row="0"
-                    android:layout_column="0"
-                    android:id="@+id/sug_start_1"/>
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_star_border_black_24dp"
-                    android:tint="@color/colorYellowLight"
-                    android:paddingHorizontal="10dp"
-                    android:layout_row="0"
-                    android:layout_column="1"
-                    android:id="@+id/sug_start_2"/>
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_star_border_black_24dp"
-                    android:tint="@color/colorYellowLight"
-                    android:paddingHorizontal="10dp"
-                    android:layout_row="0"
-                    android:layout_column="2"
-                    android:id="@+id/sug_start_3"/>
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_star_border_black_24dp"
-                    android:tint="@color/colorYellowLight"
-                    android:paddingHorizontal="10dp"
-                    android:layout_row="0"
-                    android:layout_column="3"
-                    android:id="@+id/sug_start_4"/>
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_star_border_black_24dp"
-                    android:tint="@color/colorYellowLight"
-                    android:paddingHorizontal="10dp"
-                    android:layout_row="0"
-                    android:layout_column="4"
-                    android:id="@+id/sug_start_5"/>
-
-            </GridLayout>
-
-        </LinearLayout>!-->
 
         <RatingBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:numStars="5"
-            android:progressTint="@color/colorYellowLight"
-            android:secondaryProgressTint="@color/colorYellowLight"
+            android:progressTint="@color/sug_stars"
+            android:secondaryProgressTint="@color/sug_stars"
             android:id="@+id/ratingBar"/>
 
         <TextView

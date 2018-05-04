@@ -37,7 +37,7 @@ public class CheckUpdate {
 
             if (!CheckUpdate.checkUpdate(context).equals("")) {
                 new AlertDialog.Builder(context)
-                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.colorPrimary))
+                        .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_update_black_24dp, R.string.dialog_att_title, R.color.update_dialog))
                         .setMessage(String.format(context.getResources().getString(R.string.dialog_att_encontrada), "" + CheckUpdate.verLocal, "" + CheckUpdate.verWeb))
                         .setPositiveButton(R.string.dialog_att_download, (dialog, which) -> {
                             if (Build.VERSION.SDK_INT >= 23) {

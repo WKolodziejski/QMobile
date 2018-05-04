@@ -63,15 +63,15 @@ public class ChangePassword {
                         img.setImageResource(R.drawable.ic_done_all_black_24dp);
                         txt.setText(R.string.passchange_txt_equals);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.green_500))));
-                            txt.setTextColor(context.getResources().getColor(R.color.green_500));
+                            img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.ok))));
+                            txt.setTextColor(context.getResources().getColor(R.color.ok));
                         }
                     } else if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8) {
                         img.setImageResource(R.drawable.ic_check_black_24dp);
                         txt.setText(R.string.passchange_txt_old_equals);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.blue_500))));
-                            txt.setTextColor(context.getResources().getColor(R.color.blue_500));
+                            img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.check))));
+                            txt.setTextColor(context.getResources().getColor(R.color.check));
                         }
                     }
                 }
@@ -82,7 +82,7 @@ public class ChangePassword {
 
             new AlertDialog.Builder(context).setView(theView)
                     .setTitle(R.string.menu_password)
-                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.colorPrimary))
+                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.password_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
                                 && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
@@ -91,7 +91,7 @@ public class ChangePassword {
                             mainWebView.html.loadUrl(url + pg_change_password);
                         } else {
                             new AlertDialog.Builder(context)
-                                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.red_500))
+                                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.error))
                                     .setMessage(R.string.passchange_txt_error_message)
                                     .setPositiveButton(R.string.dialog_close, null)
                                     .show();
@@ -121,22 +121,22 @@ public class ChangePassword {
                     img.setImageResource(R.drawable.ic_edit_black_24dp);
                     txt.setText(R.string.passchange_txt_empty);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.red_500))));
-                        txt.setTextColor(context.getResources().getColor(R.color.red_500));
+                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.error))));
+                        txt.setTextColor(context.getResources().getColor(R.color.error));
                     }
                 } else if (!pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString())) {
                     img.setImageResource(R.drawable.ic_cancel_black_24dp);
                     txt.setText(R.string.passchange_txt_different);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.red_500))));
-                        txt.setTextColor(context.getResources().getColor(R.color.red_500));
+                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.error))));
+                        txt.setTextColor(context.getResources().getColor(R.color.error));
                     }
                 } else if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && count < 8) {
                     img.setImageResource(R.drawable.ic_short_text_black_24dp);
                     txt.setText(R.string.passchange_txt_short);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.amber_500))));
-                        txt.setTextColor(context.getResources().getColor(R.color.amber_500));
+                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.warning))));
+                        txt.setTextColor(context.getResources().getColor(R.color.warning));
                     }
                 }
             }
@@ -150,15 +150,15 @@ public class ChangePassword {
                     img.setImageResource(R.drawable.ic_done_all_black_24dp);
                     txt.setText(R.string.passchange_txt_equals);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.green_500))));
-                        txt.setTextColor(context.getResources().getColor(R.color.green_500));
+                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.ok))));
+                        txt.setTextColor(context.getResources().getColor(R.color.ok));
                     }
                 } else if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8) {
                     img.setImageResource(R.drawable.ic_check_black_24dp);
                     txt.setText(R.string.passchange_txt_old_equals);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.blue_500))));
-                        txt.setTextColor(context.getResources().getColor(R.color.blue_500));
+                        img.setImageTintList(ColorStateList.valueOf((context.getResources().getColor(R.color.check))));
+                        txt.setTextColor(context.getResources().getColor(R.color.check));
                     }
                 }
             }

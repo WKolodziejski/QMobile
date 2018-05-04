@@ -24,6 +24,7 @@ import com.qacademico.qacademico.Utilities.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicked {
     List<Guide> guide;
@@ -55,7 +56,7 @@ public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicke
 
     public void updateHeaderStatus(View view) {
 
-        SharedPreferences login_info = getActivity().getSharedPreferences("login_info", 0);
+        SharedPreferences login_info = Objects.requireNonNull(getActivity()).getSharedPreferences("login_info", 0);
 
         TextView msg = (TextView) view.findViewById(R.id.welcome_msg);
         TextView status = (TextView) view.findViewById(R.id.updated_status);
@@ -114,17 +115,17 @@ public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicke
 
     protected void configGuide() { //Configura os botões da página Home
         guide = new ArrayList<>();
-        guide.add(new Guide(getResources().getString(R.string.title_diarios), getResources().getString(R.string.home_diarios_description), R.drawable.ic_newspaper, R.color.orange_500));
-        guide.add(new Guide(getResources().getString(R.string.title_boletim), getResources().getString(R.string.home_boletim_description), R.drawable.ic_list, R.color.teal_500));
-        guide.add(new Guide(getResources().getString(R.string.title_horario), getResources().getString(R.string.home_horario_description), R.drawable.ic_access_alarm_black_24dp, R.color.blue_500));
+        guide.add(new Guide(getResources().getString(R.string.title_diarios), getResources().getString(R.string.home_diarios_description), R.drawable.ic_newspaper, R.color.diarios_guide));
+        guide.add(new Guide(getResources().getString(R.string.title_boletim), getResources().getString(R.string.home_boletim_description), R.drawable.ic_list, R.color.boletim_guide));
+        guide.add(new Guide(getResources().getString(R.string.title_horario), getResources().getString(R.string.home_horario_description), R.drawable.ic_access_alarm_black_24dp, R.color.horario_guide));
 
-        guide.add(new Guide(getResources().getString(R.string.title_materiais), getResources().getString(R.string.home_materiais_description), R.drawable.ic_closed_diary, R.color.cyan_500));
-        guide.add(new Guide(getResources().getString(R.string.title_calendario), getResources().getString(R.string.home_calendario_description), R.drawable.ic_event_black_24dp, R.color.dark_purple_500));
-        guide.add(new Guide(getResources().getString(R.string.title_documentos), getResources().getString(R.string.home_documentos_description), R.drawable.ic_check_form, R.color.brown_500));
+        guide.add(new Guide(getResources().getString(R.string.title_materiais), getResources().getString(R.string.home_materiais_description), R.drawable.ic_closed_diary, R.color.materiais_guide));
+        guide.add(new Guide(getResources().getString(R.string.title_calendario), getResources().getString(R.string.home_calendario_description), R.drawable.ic_event_black_24dp, R.color.calendario_guide));
+        guide.add(new Guide(getResources().getString(R.string.title_documentos), getResources().getString(R.string.home_documentos_description), R.drawable.ic_check_form, R.color.documentos_guide));
 
-        guide.add(new Guide(getResources().getString(R.string.email_assunto_bug), getResources().getString(R.string.home_bugreport_description), R.drawable.ic_bug_report_black_24dp, R.color.green_500));
-        guide.add(new Guide(getResources().getString(R.string.email_assunto_sug), getResources().getString(R.string.home_sug_description), R.drawable.ic_chat_black_24dp, R.color.pink_500));
-        guide.add(new Guide(getResources().getString(R.string.menu_share), getResources().getString(R.string.home_share_description), R.drawable.ic_share_black_24dp, R.color.amber_500));
+        guide.add(new Guide(getResources().getString(R.string.email_assunto_bug), getResources().getString(R.string.home_bugreport_description), R.drawable.ic_bug_report_black_24dp, R.color.bug_guide));
+        guide.add(new Guide(getResources().getString(R.string.email_assunto_sug), getResources().getString(R.string.home_sug_description), R.drawable.ic_chat_black_24dp, R.color.sug_guide));
+        guide.add(new Guide(getResources().getString(R.string.menu_share), getResources().getString(R.string.home_share_description), R.drawable.ic_share_black_24dp, R.color.share_guide));
     }
 
     @Override

@@ -53,29 +53,29 @@ public class Design {
             colorToolBarFrom = context.getResources().getColor(R.color.colorAccent);
             colorProgressFrom = context.getResources().getColor(R.color.colorAccent);
         } else if (idFrom == R.id.navigation_horario) {
-            colorPrimaryBtnFrom = context.getResources().getColor(R.color.cyan_A700);
-            colorSecondaryFrom = context.getResources().getColor(R.color.cyan_A400);
-            colorStatusBarFrom = context.getResources().getColor(R.color.blue_800);
-            colorActionBarFrom = context.getResources().getColor(R.color.blue_600);
+            colorPrimaryBtnFrom = context.getResources().getColor(R.color.horario_buttonP);
+            colorSecondaryFrom = context.getResources().getColor(R.color.horario_buttonS);
+            colorStatusBarFrom = context.getResources().getColor(R.color.horario_statusbar);
+            colorActionBarFrom = context.getResources().getColor(R.color.horario_actionbar);
             colorTitleFrom = context.getResources().getColor(R.color.white);
-            colorToolBarFrom = context.getResources().getColor(R.color.blue_50);
-            colorProgressFrom = context.getResources().getColor(R.color.cyan_A700);
+            colorToolBarFrom = context.getResources().getColor(R.color.horario_toolbar);
+            colorProgressFrom = context.getResources().getColor(R.color.horario_progressbar);
         } else if (idFrom == R.id.navigation_boletim) {
-            colorPrimaryBtnFrom = context.getResources().getColor(R.color.green_A700);
-            colorSecondaryFrom = context.getResources().getColor(R.color.green_A400);
-            colorStatusBarFrom = context.getResources().getColor(R.color.teal_800);
-            colorActionBarFrom = context.getResources().getColor(R.color.teal_600);
+            colorPrimaryBtnFrom = context.getResources().getColor(R.color.boletim_buttonP);
+            colorSecondaryFrom = context.getResources().getColor(R.color.boletim_buttonS);
+            colorStatusBarFrom = context.getResources().getColor(R.color.boletim_statusbar);
+            colorActionBarFrom = context.getResources().getColor(R.color.boletim_actionbar);
             colorTitleFrom = context.getResources().getColor(R.color.white);
-            colorToolBarFrom = context.getResources().getColor(R.color.teal_50);
-            colorProgressFrom = context.getResources().getColor(R.color.green_A700);
+            colorToolBarFrom = context.getResources().getColor(R.color.boletim_toolbar);
+            colorProgressFrom = context.getResources().getColor(R.color.boletim_progressbar);
         } else if (idFrom == R.id.navigation_diarios) {
-            colorPrimaryBtnFrom = context.getResources().getColor(R.color.yellow_A700);
-            colorSecondaryFrom = context.getResources().getColor(R.color.yellow_A400);
-            colorStatusBarFrom = context.getResources().getColor(R.color.orange_800);
-            colorActionBarFrom = context.getResources().getColor(R.color.orange_600);
+            colorPrimaryBtnFrom = context.getResources().getColor(R.color.diarios_buttonP);
+            colorSecondaryFrom = context.getResources().getColor(R.color.diarios_buttonS);
+            colorStatusBarFrom = context.getResources().getColor(R.color.diarios_statusbar);
+            colorActionBarFrom = context.getResources().getColor(R.color.diarios_actionbar);
             colorTitleFrom = context.getResources().getColor(R.color.white);
-            colorToolBarFrom = context.getResources().getColor(R.color.deep_orange_50);
-            colorProgressFrom = context.getResources().getColor(R.color.yellow_A700);
+            colorToolBarFrom = context.getResources().getColor(R.color.diarios_toolbar);
+            colorProgressFrom = context.getResources().getColor(R.color.diarios_progressbar);
         }
 
         if (idTo == R.id.navigation_home) {
@@ -87,29 +87,29 @@ public class Design {
             colorToolBarTo = context.getResources().getColor(R.color.colorAccent);
             colorProgressTo = context.getResources().getColor(R.color.colorAccent);
         } else if (idTo == R.id.navigation_diarios) {
-            colorPrimaryBtnTo = context.getResources().getColor(R.color.yellow_A700);
-            colorSecondaryTo = context.getResources().getColor(R.color.yellow_A400);
-            colorStatusBarTo = context.getResources().getColor(R.color.orange_800);
-            colorActionBarTo = context.getResources().getColor(R.color.orange_600);
+            colorPrimaryBtnTo = context.getResources().getColor(R.color.diarios_buttonP);
+            colorSecondaryTo = context.getResources().getColor(R.color.diarios_buttonS);
+            colorStatusBarTo = context.getResources().getColor(R.color.diarios_statusbar);
+            colorActionBarTo = context.getResources().getColor(R.color.diarios_actionbar);
             colorTitleTo = context.getResources().getColor(R.color.white);
-            colorToolBarTo = context.getResources().getColor(R.color.deep_orange_50);
-            colorProgressTo = context.getResources().getColor(R.color.yellow_A700);
+            colorToolBarTo = context.getResources().getColor(R.color.diarios_toolbar);
+            colorProgressTo = context.getResources().getColor(R.color.diarios_progressbar);
         } else if (idTo == R.id.navigation_boletim) {
-            colorPrimaryBtnTo = context.getResources().getColor(R.color.green_A700);
-            colorSecondaryTo = context.getResources().getColor(R.color.green_A400);
-            colorStatusBarTo = context.getResources().getColor(R.color.teal_800);
-            colorActionBarTo = context.getResources().getColor(R.color.teal_600);
+            colorPrimaryBtnTo = context.getResources().getColor(R.color.boletim_buttonP);
+            colorSecondaryTo = context.getResources().getColor(R.color.boletim_buttonS);
+            colorStatusBarTo = context.getResources().getColor(R.color.boletim_statusbar);
+            colorActionBarTo = context.getResources().getColor(R.color.boletim_actionbar);
             colorTitleTo = context.getResources().getColor(R.color.white);
-            colorToolBarTo = context.getResources().getColor(R.color.teal_50);
-            colorProgressTo = context.getResources().getColor(R.color.green_A700);
+            colorToolBarTo = context.getResources().getColor(R.color.boletim_toolbar);
+            colorProgressTo = context.getResources().getColor(R.color.boletim_progressbar);
         } else if (idTo == R.id.navigation_horario) {
-            colorPrimaryBtnTo = context.getResources().getColor(R.color.cyan_A700);
-            colorSecondaryTo = context.getResources().getColor(R.color.cyan_A400);
-            colorStatusBarTo = context.getResources().getColor(R.color.blue_800);
-            colorActionBarTo = context.getResources().getColor(R.color.blue_600);
+            colorPrimaryBtnTo = context.getResources().getColor(R.color.horario_buttonP);
+            colorSecondaryTo = context.getResources().getColor(R.color.horario_buttonS);
+            colorStatusBarTo = context.getResources().getColor(R.color.horario_statusbar);
+            colorActionBarTo = context.getResources().getColor(R.color.horario_actionbar);
             colorTitleTo = context.getResources().getColor(R.color.white);
-            colorToolBarTo = context.getResources().getColor(R.color.blue_50);
-            colorProgressTo = context.getResources().getColor(R.color.cyan_A700);
+            colorToolBarTo = context.getResources().getColor(R.color.horario_toolbar);
+            colorProgressTo = context.getResources().getColor(R.color.horario_progressbar);
         }
 
         if (idTo == R.id.navigation_home) {

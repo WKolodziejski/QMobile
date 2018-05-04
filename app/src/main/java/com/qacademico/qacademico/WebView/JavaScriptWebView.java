@@ -101,7 +101,7 @@ public class JavaScriptWebView {
 
                         Log.v("handleHome", img.get("src"));
 
-                        if (Data.getImage(context) == null) {
+                        /*if (Data.getImage(context) == null) {
                             webViewMain.html.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
                                 Log.i("JavaScriptWebView", "Image downloaded");
                                 try {
@@ -127,7 +127,7 @@ public class JavaScriptWebView {
                             });
                             webViewMain.html.loadUrl(img.get("src"));
                             Log.i("JavaScriptWebView", "Image downloading...");
-                        }
+                        }*/
                     });
                     } catch (Exception ignored) {
                         Log.i("JavaScriptWebView", "Home error");
@@ -278,15 +278,15 @@ public class JavaScriptWebView {
                             for (int i = 0; i < notasLinhas.size(); i++) {
                                 String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
                                 String tipo = context.getResources().getString(R.string.sigla_Avaliacao);
-                                int tint = context.getResources().getColor(R.color.orange_A700);
+                                int tint = context.getResources().getColor(R.color.diarios_avaliacao);
                                 if (notasLinhas.eq(i).first().child(1).text().contains("Prova")) {
-                                    tint = context.getResources().getColor(R.color.orange_A400);
+                                    tint = context.getResources().getColor(R.color.diarios_prova);
                                     tipo = context.getResources().getString(R.string.sigla_Prova);
                                 } else if (notasLinhas.eq(i).first().child(1).text().contains("Trabalho")) {
-                                    tint = context.getResources().getColor(R.color.amber_A400);
+                                    tint = context.getResources().getColor(R.color.diarios_trabalho);
                                     tipo = context.getResources().getString(R.string.sigla_Trabalho);
                                 } else if (notasLinhas.eq(i).first().child(1).text().contains("Qualitativa")) {
-                                    tint = context.getResources().getColor(R.color.yellow_A400);
+                                    tint = context.getResources().getColor(R.color.diarios_qualitativa);
                                     tipo = context.getResources().getString(R.string.sigla_Qualitativa);
                                 }
 
@@ -513,39 +513,39 @@ public class JavaScriptWebView {
                                 descricao = element.child(1).child(3).nextSibling().toString();
                             }
 
-                            int color = context.getResources().getColor(R.color.colorAccent);
+                            int color = context.getResources().getColor(R.color.materiais_file);
                             Drawable img = context.getResources().getDrawable(R.drawable.ic_file);
 
                             if (extension.equals(".pdf")) {
-                                color = context.getResources().getColor(R.color.red_500);
+                                color = context.getResources().getColor(R.color.materiais_pdf);
                                 img = context.getResources().getDrawable(R.drawable.ic_pdf);
                             } else if (extension.equals(".docx") || extension.equals(".doc")
                                     || extension.equals(".txt") || extension.equals(".rtf")) {
-                                color = context.getResources().getColor(R.color.blue_500);
+                                color = context.getResources().getColor(R.color.materiais_doc);
                                 img = context.getResources().getDrawable(R.drawable.ic_docs);
                             } else if(extension.equals(".csv") ||extension.equals(".svg")) {
-                                color = context.getResources().getColor(R.color.green_500);
+                                color = context.getResources().getColor(R.color.materiais_table);
                                 img = context.getResources().getDrawable(R.drawable.ic_table);
                             } else if(extension.equals(".zip") || extension.equals(".rar")
                                     || extension.equals(".7z")) {
-                                color = context.getResources().getColor(R.color.yellow_500);
+                                color = context.getResources().getColor(R.color.materiais_zip);
                                 img = context.getResources().getDrawable(R.drawable.ic_compressed);
                             } else if(extension.equals(".mp3") || extension.equals(".wav")
                                     || extension.equals(".wma")) {
-                                color = context.getResources().getColor(R.color.pink_500);
+                                color = context.getResources().getColor(R.color.materiais_audio);
                                 img = context.getResources().getDrawable(R.drawable.ic_song);
                             } else if(extension.equals(".mp4") || extension.equals(".wmv")
                                     || extension.equals(".avi")) {
-                                color = context.getResources().getColor(R.color.purple_500);
+                                color = context.getResources().getColor(R.color.materiais_video);
                                 img = context.getResources().getDrawable(R.drawable.ic_video);
                             } else if(extension.equals(".jpg") || extension.equals(".png")) {
-                                color = context.getResources().getColor(R.color.orange_500);
+                                color = context.getResources().getColor(R.color.materiais_image);
                                 img = context.getResources().getDrawable(R.drawable.ic_picture);
                             } else if(extension.equals(".jar") || extension.equals(".php")
                                     || extension.equals(".html") || extension.equals(".css")
                                     || extension.equals(".js") || extension.equals(".json")
                                     || extension.equals(".xml")) {
-                                color = context.getResources().getColor(R.color.blue_grey_500);
+                                color = context.getResources().getColor(R.color.materiais_script);
                                 img = context.getResources().getDrawable(R.drawable.ic_script);
                             }
 

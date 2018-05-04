@@ -4,9 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.webkit.WebResourceError;
@@ -17,12 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
@@ -40,8 +33,9 @@ public class ClientWebView extends WebViewClient {
     private SharedPreferences login_info;
     private OnPageFinished onPageFinished;
     private OnPageStarted onPageStarted;
+    private OnRecivedError onRecivedError;
 
-    public ClientWebView(Context context) {
+    ClientWebView(Context context) {
         this.context = context.getApplicationContext();
         this.login_info = this.context.getSharedPreferences("login_info", 0);
         this.webViewMain = SingletonWebView.getInstance();
@@ -58,17 +52,7 @@ public class ClientWebView extends WebViewClient {
     @AddTrace(name = "onRecivedError")
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-            /*dismissLinearProgressbar();
-            dismissRoundProgressbar();
-            dismissProgressDialog();
-            if (Utils.isConnected(getApplicationContext())) {
-                if (isLoginPage) {
-                    loginFragment.dismissProgressBar();
-                    showSnackBar(getResources().getString(R.string.text_connection_error), false);
-                } else if (!pg_home_loaded && navigation.getSelectedItemId() == R.id.navigation_home) {
-                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
-                }
-            }*/
+        onRecivedError.onErrorRecived(error.getDescription().toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -76,20 +60,12 @@ public class ClientWebView extends WebViewClient {
     @AddTrace(name = "onRecivedHttpError")
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
-            /*dismissLinearProgressbar();
-            dismissRoundProgressbar();
-            dismissProgressDialog();*/
-            if (Utils.isConnected(context)) {
-                if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
-                    Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
-                    /*if (isLoginPage) {
-                        loginFragment.dismissProgressBar();
-                        showSnackBar(getResources().getString(R.string.text_connection_error), false);
-                    } else if (!pg_home_loaded && navigation.getSelectedItemId() == R.id.navigation_home) {
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
-                    }*/
-                }
+        if (Utils.isConnected(context)) {
+            if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
+                onRecivedError.onErrorRecived(errorResponse.getReasonPhrase());
+                Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
+        }
     }
 
     @Override
@@ -159,7 +135,7 @@ public class ClientWebView extends WebViewClient {
                     editor.putString("password", webViewMain.new_password);
                     editor.apply();
                     new AlertDialog.Builder(context)
-                            .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_check_black_24dp, R.string.success_title, R.color.green_500))
+                            .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_check_black_24dp, R.string.success_title, R.color.ok))
                             .setMessage(R.string.passchange_txt_success_message)
                             .setPositiveButton(R.string.dialog_close, null)
                             .show();
@@ -195,5 +171,13 @@ public class ClientWebView extends WebViewClient {
 
     public interface OnPageStarted {
         void onPageStart(String url_p);
+    }
+
+    public void setOnErrorRecivedListener(OnRecivedError onRecivedError){
+        this.onRecivedError = onRecivedError;
+    }
+
+    public interface OnRecivedError {
+        void onErrorRecived(String error);
     }
 }

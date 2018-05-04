@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,23 +39,18 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.qacademico.qacademico.Class.Boletim;
-import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.Fragment.BoletimFragment;
 import com.qacademico.qacademico.Fragment.DiariosFragment;
 import com.qacademico.qacademico.Fragment.HomeFragment;
-import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Fragment.HorarioFragment;
-import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.ChangePassword;
 import com.qacademico.qacademico.Utilities.CheckUpdate;
@@ -65,12 +59,10 @@ import com.qacademico.qacademico.Utilities.Design;
 import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -84,7 +76,7 @@ import static com.qacademico.qacademico.Utilities.Utils.pg_materiais;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted {
+        SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
     private SharedPreferences login_info;
     public boolean fab_isOpen;
     LayoutInflater inflater;
@@ -106,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.btns) CoordinatorLayout buttons_layout;
     @BindView(R.id.toolbar_main) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
-    LoginFragment loginFragment;
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
     FirebaseRemoteConfig remoteConfig;
     private DiariosFragment diariosFragment = new DiariosFragment();
@@ -123,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainWebView.configWebView(this);
         mainWebView.setOnPageFinishedListener(this);
         mainWebView.setOnPageStartedListener(this);
+        mainWebView.setOnErrorRecivedListener(this);
         setDefaultHashMap();
         Utils.updateDefaultValues(remoteConfig);
 
@@ -182,14 +174,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.v("DefaultValues", "Valores atualizados");
         });
 
-        fetch.addOnFailureListener(e -> {
-            Log.v("DefaultValues", "Erro");
-        });
+        fetch.addOnFailureListener(e -> Log.v("DefaultValues", "Erro"));
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {//drawer
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {//drawer
         int id = item.getItemId();
 
         if (id == R.id.nav_materiais) {
@@ -206,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SendEmail.bugReport(this, navigation.getSelectedItemId());
         } else if (id == R.id.nav_logout) {
             new AlertDialog.Builder(this)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.exit_dialog))
                     .setMessage(R.string.dialog_quit_msg)
                     .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
                     .setNegativeButton(R.string.dialog_quit_no, null)
@@ -299,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             TextView changes = (TextView) theView.findViewById(R.id.changelog);
             changes.setText(getResources().getString(R.string.changelog_list));
             new AlertDialog.Builder(this).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.light_blue_A400))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.changes_dialog))
                     .setPositiveButton(R.string.dialog_close, null)
                     .show();
             return true;
@@ -310,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AddTrace(name = "setHome")
     public void setHome() { //layout fragment_home
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.title_home));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_home));
         hideButtons();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -331,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AddTrace(name = "setDiarios")
     public void setDiarios() {//layout fragment_diarios
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios));
         showButtons();
 
         if (Data.getDiarios(this) != null) {
@@ -364,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         diariosFragment.update(Data.getDiarios(this));
 
         if (mainWebView.data_diarios != null) {
-            getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios)
+            Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios)
                     + " ー " + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
         }
     }
@@ -373,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @AddTrace(name = "setBoletim")
     public void setBoletim() { //layout fragment_boletim
 
-        getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim));
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim));
         showButtons();
 
         if (Data.getBoletim(this) != null) {
@@ -576,6 +566,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             updateHorario();
             Log.i("onFinish", "updatedHorario");
         }
+    }
+
+    @Override
+    public void onErrorRecived(String error) {
+
     }
 
     public void refreshPage(View v) { //Atualiza a página

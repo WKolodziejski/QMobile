@@ -92,7 +92,7 @@ cardView.setBackgroundResource(outValue.resourceId);*/
 
     protected void revealActivity(int x, int y) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            rootLayout.setBackgroundColor(getResources().getColor(R.color.cyan_500));
+            rootLayout.setBackgroundColor(getResources().getColor(R.color.materiais_reveal));
 
             float finalRadius = (float) (Math.max(rootLayout.getWidth(), rootLayout.getHeight()) * 1.1);
 
@@ -109,7 +109,7 @@ cardView.setBackgroundResource(outValue.resourceId);*/
                     super.onAnimationEnd(animation);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         ValueAnimator bck = ValueAnimator.ofObject(new ArgbEvaluator(),
-                                getResources().getColor(R.color.cyan_500), getResources().getColor(R.color.white));
+                                getResources().getColor(R.color.materiais_reveal), getResources().getColor(R.color.white));
                         bck.addUpdateListener(animator -> {
                             rootLayout.setBackgroundColor((Integer) animator.getAnimatedValue());
                         });
@@ -135,7 +135,7 @@ cardView.setBackgroundResource(outValue.resourceId);*/
         if (revealX != 0 && revealY != 0) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ValueAnimator bck = ValueAnimator.ofObject(new ArgbEvaluator(),
-                        getResources().getColor(R.color.white), getResources().getColor(R.color.cyan_500));
+                        getResources().getColor(R.color.white), getResources().getColor(R.color.materiais_reveal));
                 bck.addUpdateListener(animator -> {
                     rootLayout.setBackgroundColor((Integer) animator.getAnimatedValue());
                 });

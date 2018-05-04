@@ -20,7 +20,7 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:background">@color/colorWhite</item>
+        <item name="android:background">@color/white</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
 

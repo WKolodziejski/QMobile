@@ -56,7 +56,7 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.button.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
                 Drawable color = context.getResources().getDrawable(R.drawable.layout_bg_header_top);
-                color.setTint(context.getResources().getColor(R.color.cyan_400));
+                color.setTint(context.getResources().getColor(R.color.materiais_list));
                 holder.expandAct.setBackground(color);
             }
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
@@ -131,7 +131,7 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         holder.button.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
                         Drawable color = context.getResources().getDrawable(R.drawable.layout_bg_header_top);
-                        color.setTint(context.getResources().getColor(R.color.cyan_400));
+                        color.setTint(context.getResources().getColor(R.color.materiais_list));
                         holder.expandAct.setBackground(color);
                     }
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
