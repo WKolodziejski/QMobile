@@ -19,12 +19,12 @@ import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.Class.Etapa;
 import com.qacademico.qacademico.Class.Horario;
-import com.qacademico.qacademico.Class.Materia;
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.Class.Material;
 import com.qacademico.qacademico.Class.Trabalho;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
+import com.qacademico.qacademico.Utilities.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attributes;
@@ -177,16 +177,7 @@ public class JavaScriptWebView {
 
                     Collections.sort(boletim, (b1, b2) -> b1.getMateria().compareTo(b2.getMateria()));
 
-                    ObjectOutputStream object;
-                    try {
-                        object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                                login_info.getString("matricula", "") + ".boletim" )));
-                        object.writeObject(boletim);
-                        object.flush();
-                        object.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Data.saveObject(context, boletim, ".boletim");
 
                     Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
@@ -317,16 +308,7 @@ public class JavaScriptWebView {
 
                     Collections.sort(diarios, (d1, d2) -> d1.getNomeMateria().compareTo(d2.getNomeMateria()));
 
-                    ObjectOutputStream object;
-                    try {
-                        object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                                login_info.getString("matricula", "") + ".diarios" )));
-                        object.writeObject(diarios);
-                        object.flush();
-                        object.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Data.saveObject(context, diarios, ".diarios");
 
                     Elements options = homeDiarios.getElementsByTag("option");
 
@@ -392,26 +374,31 @@ public class JavaScriptWebView {
                                 for (int k = 1; k < code.length; k++) {
                                     String sub = code[k].substring(0, code[k].indexOf("-") + 1);
                                     sub = sub.substring(0, sub.lastIndexOf(" ") + 1);
+
                                     String recebe = code[k].substring(code[k].indexOf("-"));
                                     recebe = recebe.substring(recebe.indexOf("-"));
                                     recebe = recebe.substring(recebe.indexOf("-") + 2);
                                     recebe = recebe.substring(recebe.indexOf("-") + 2, recebe.lastIndexOf("-"));
+
                                     if ((trtd_horario[i][j]).contains(sub)) {
                                         trtd_horario[i][j] = recebe;
                                     }
-                                    if ((trtd_horario[i][j]).contains("~")) {
-                                        trtd_horario[i][j] = trtd_horario[i][j].substring(0, trtd_horario[i][j].indexOf("~"));
-                                    }
+
                                     if (((trtd_horario[i][j]).contains("2ª-FEIRA"))) {
-                                        trtd_horario[i][j] = context.getResources().getString(R.string.day_monday);
+                                        trtd_horario[i][j] = String.valueOf(Calendar.MONDAY);
+                                        Log.v("HORARIO", "MONDAY");
                                     } else if (((trtd_horario[i][j]).contains("3ª-FEIRA"))) {
-                                        trtd_horario[i][j] = context.getResources().getString(R.string.day_tuesday);
+                                        trtd_horario[i][j] = String.valueOf(Calendar.TUESDAY);
+                                        Log.v("HORARIO", "TUESDAY");
                                     } else if (((trtd_horario[i][j]).contains("4ª-FEIRA"))) {
-                                        trtd_horario[i][j] = context.getResources().getString(R.string.day_wednesday);
+                                        trtd_horario[i][j] = String.valueOf(Calendar.WEDNESDAY);
+                                        Log.v("HORARIO", "WEDNESDAY");
                                     } else if (((trtd_horario[i][j]).contains("5ª-FEIRA"))) {
-                                        trtd_horario[i][j] = context.getResources().getString(R.string.day_thursday);
+                                        trtd_horario[i][j] = String.valueOf(Calendar.THURSDAY);
+                                        Log.v("HORARIO", "THURSDAY");
                                     } else if (((trtd_horario[i][j]).contains("6ª-FEIRA"))) {
-                                        trtd_horario[i][j] = context.getResources().getString(R.string.day_friday);
+                                        trtd_horario[i][j] = String.valueOf(Calendar.FRIDAY);
+                                        Log.v("HORARIO", "FRIDAY");
                                     }
                                 }
                             }
@@ -419,26 +406,32 @@ public class JavaScriptWebView {
                     }
 
                     for (int i = 1; i <= 5; i++) {
-                        List<Materia> materias = new ArrayList<>();
-
                         for (int j = 1; j < trtd_horario.length; j++) {
                             if (!trtd_horario[j][i].equals("")) {
-                                materias.add(new Materia(trtd_horario[j][0], trtd_horario[j][i]));
+                                horario.add(new Horario(trtd_horario[j][i], Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]));
                             }
                         }
-                        horario.add(new Horario(trtd_horario[0][i], materias));
                     }
 
-                    ObjectOutputStream object;
-                    try {
-                        object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                                login_info.getString("matricula", "") + ".horario" )));
-                        object.writeObject(horario);
-                        object.flush();
-                        object.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    for (int i = 0; i < horario.size(); i++) {
+                        if (horario.get(i).getColor() == 0) {
+                            for (int j = 0; j < horario.size(); j++) {
+                                if (horario.get(i).getMateria().equals(horario.get(j).getMateria())) {
+                                    if (horario.get(j).getColor() != 0) {
+                                        horario.get(i).setColor(horario.get(j).getColor());
+                                    } else {
+                                        for (int k = 0; k < horario.size(); k++) {
+                                            if (horario.get(i).getColor() == horario.get(k).getColor()) {
+                                                horario.get(i).setColor(Utils.getramdomColorGenerator(context));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    Data.saveObject(context, horario, ".horario");
 
                     Document ano = Jsoup.parse(homeHorario.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
@@ -576,16 +569,14 @@ public class JavaScriptWebView {
     }
 
     private String trim(String string) {
-        String x = string;
-        x = x.substring(x.indexOf(":"));
-        x = x.replace(":", "");
-        return x;
+        string = string.substring(string.indexOf(":"));
+        string = string.replace(":", "");
+        return string;
     }
 
     private String trim1(String string) {
-        String x = string;
-        x = x.substring(x.indexOf(", ") + 2);
-        return x;
+        string = string.substring(string.indexOf(", ") + 2);
+        return string;
     }
 
     public void setOnPageFinished(OnPageFinished onPageFinish){

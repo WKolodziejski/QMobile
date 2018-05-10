@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 public class Data {
@@ -70,6 +71,21 @@ public class Data {
             e.printStackTrace();
         }
         return horario;
+    }
+
+    public static void saveObject(Context context, Object obj, String name) {
+        SharedPreferences login_info = context.getSharedPreferences("login_info", 0);
+
+        ObjectOutputStream object;
+        try {
+            object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
+                    login_info.getString("matricula", "") + name )));
+            object.writeObject(obj);
+            object.flush();
+            object.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Bitmap getImage(Context context) {

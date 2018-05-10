@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.alamkanak.weekview.WeekViewLoader;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.Horario.HorarioAdapter;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
@@ -31,7 +32,6 @@ import static com.qacademico.qacademico.Utilities.Utils.url;
 public class HorarioFragment extends Fragment {
     SingletonWebView mainWebView = SingletonWebView.getInstance();
     List<Horario> horario;
-    HorarioAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,24 +40,7 @@ public class HorarioFragment extends Fragment {
         if (getArguments() != null) {
             horario = (List<Horario>) getArguments().getSerializable("Horario");
 
-            /*for (int i  = 0; i < horario.size(); i++) {
-
-                Calendar date = Calendar.getInstance();
-
-                if (horario.get(i).getDia().equals(getResources().getString(R.string.day_monday))) {
-                    date.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                }
-
-                Calendar start = (Calendar) date.clone();
-                Calendar end = (Calendar) date.clone();
-
-                for (int j = 0; j < horario.get(i).getMateriasList().size(); j++) {
-                    start.set(Calendar.HOUR_OF_DAY, horario.get(i).getMateriasList().get(j).getHora());
-                    end.set(Calendar.HOUR_OF_DAY, horario.get(i).getMateriasList().get(j).getHora());
-                }
-
-                WeekViewEvent event = new WeekViewEvent(1, "TESTE", start, end);
-            }*/
+            //Data.saveObject(getContext(), horario, ".horario");
         }
     }
 
@@ -74,70 +57,66 @@ public class HorarioFragment extends Fragment {
 
         if (horario != null) {
 
-            //List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
-
             WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
             Calendar firstDay = Calendar.getInstance();
             firstDay.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
             weekView.goToDate(firstDay);
-            weekView.goToHour(7);
 
             weekView.setMonthChangeListener((newYear, newMonth) -> {
+
+                int firstHour = 0;
 
                 List<WeekViewEvent> week = new ArrayList<>();
 
                 for (int i = 0; i < horario.size(); i++) {
                     Calendar startTime = Calendar.getInstance();
-                    startTime.set(Calendar.HOUR_OF_DAY, 7);
-                    startTime.set(Calendar.MINUTE, 30);
-                    startTime.set(Calendar.SECOND, 0);
                     startTime.set(Calendar.MONTH, newMonth - 1);
                     startTime.set(Calendar.YEAR, newYear);
+                    startTime.set(Calendar.DAY_OF_WEEK, horario.get(i).getDay());
+                    startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(horario.get(i).getDate())));
+                    startTime.set(Calendar.MINUTE, trimm(trimta(horario.get(i).getDate())));
+
                     Calendar endTime = (Calendar) startTime.clone();
-                    endTime.set(Calendar.HOUR_OF_DAY, 8);
-                    startTime.set(Calendar.MINUTE, 15);
                     endTime.set(Calendar.MONTH, newMonth - 1);
-                    WeekViewEvent event = new WeekViewEvent(1, "TESTE", startTime, endTime);
-                    event.setColor(getResources().getColor(R.color.orange_500));
+                    endTime.set(Calendar.YEAR, newYear);
+                    endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(horario.get(i).getDate())));
+                    endTime.set(Calendar.MINUTE, trimm(trimtd(horario.get(i).getDate())));
+
+                    WeekViewEvent event = new WeekViewEvent(i, horario.get(i).getMateria(), startTime,  endTime);
+                    event.setColor(horario.get(i).getColor());
+
                     week.add(event);
+
+                    if (startTime.get(Calendar.HOUR_OF_DAY) > firstHour) {
+                        firstHour = startTime.get(Calendar.HOUR_OF_DAY);
+                    }
                 }
 
+                weekView.goToHour(firstHour);
                 return week;
             });
-
-
-
-            /*RecyclerView recyclerViewHorario = (RecyclerView) view.findViewById(R.id.recycler_horario);
-            RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-
-            adapter = new HorarioAdapter(horario, getActivity());
-
-            recyclerViewHorario.setAdapter(adapter);
-            recyclerViewHorario.setLayoutManager(layout);
-
-            adapter.setOnExpandListener(position -> {
-                RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()) {
-                    @Override
-                    protected int getVerticalSnapPreference() {
-                        return LinearSmoothScroller.SNAP_TO_ANY;
-                    }
-                };
-
-                if (position != 0) {
-                    smoothScroller.setTargetPosition(position);
-                    layout.startSmoothScroll(smoothScroller);
-                }
-            });
-
-            setFABListener();
-
-            ((MainActivity) getActivity()).fab_expand.setOnClickListener(v -> {
-                adapter.toggleAll();
-                ((MainActivity) getActivity()).fab_isOpen = true;
-                ((MainActivity) getActivity()).clickButtons(null);
-            });*/
         }
+    }
+
+    private int trimh(String string) {
+        string = string.substring(0, string.indexOf(":"));
+        return Integer.valueOf(string);
+    }
+
+    private int trimm(String string) {
+        string = string.substring(string.indexOf(":") + 1);
+        return Integer.valueOf(string);
+    }
+
+    private String trimta(String string) {
+        string = string.substring(0, string.indexOf("~"));
+        return string;
+    }
+
+    private String trimtd(String string) {
+        string = string.substring(string.indexOf("~") + 1);
+        return string;
     }
 
     private void setFABListener(){
@@ -192,12 +171,6 @@ public class HorarioFragment extends Fragment {
     }
 
     public void update(List<Horario> horario) {
-        if (adapter != null) {
-            this.horario = horario;
-            adapter.update(this.horario);
-            setFABListener();
-        } else {
-            setHorario(getView());
-        }
+
     }
 }

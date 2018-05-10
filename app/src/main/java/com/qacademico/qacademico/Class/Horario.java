@@ -5,39 +5,34 @@ import java.util.Calendar;
 import java.util.List;
 
 public class Horario implements Serializable {
-    private final String dia;
-    private final List<Materia> materiasList;
-    private boolean isExpanded;
-    private boolean anim;
+    private String materia;
+    private int day;
+    private String date;
+    private int color = 0;
 
-    public Horario(String dia, List<Materia> materiasList) {
-        this.dia = dia;
-        this.materiasList = materiasList;
-        this.anim = false;
-        this.isExpanded = true;
+    public Horario(String materia, int day, String date) {
+        this.materia = materia;
+        this.day = day;
+        this.date = date;
     }
 
-    public String getDia() {
-        return dia;
+    public String getMateria() {
+        return materia;
     }
 
-    public List<Materia> getMateriasList() {
-        return materiasList;
+    public int getDay() {
+        return day;
     }
 
-    public boolean getExpanded(){
-        return isExpanded;
+    public String getDate() {
+        return date;
     }
 
-    public void setExpanded(boolean expanded){
-        isExpanded = expanded;
+    public int getColor() {
+        return color;
     }
 
-    public boolean getAnim(){
-        return anim;
-    }
-
-    public void setAnim(boolean anim){
-        this.anim = anim;
+    public void setColor(int color) {
+        this.color = color;
     }
 }

@@ -3,6 +3,7 @@ package com.qacademico.qacademico.Utilities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
@@ -17,6 +18,8 @@ import android.widget.TextView;
 
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.qacademico.qacademico.R;
+
+import java.util.Random;
 
 public class Utils {
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
@@ -64,5 +67,71 @@ public class Utils {
         title_bckg.setBackgroundColor(context.getResources().getColor(color));
         title_txt.setText(txt);
         return theTitle;
+    }
+
+    public static int getramdomColorGenerator(Context context) {
+        Resources res = context.getResources();
+        Random rnd = new Random();
+        int color = rnd.nextInt(19);
+
+        switch (color) {
+            case 0: color = res.getColor(R.color.green_400);
+            break;
+
+            case 1: color = res.getColor(R.color.red_400);
+            break;
+
+            case 2: color = res.getColor(R.color.blue_400);
+            break;
+
+            case 3: color = res.getColor(R.color.yellow_400);
+            break;
+
+            case 4: color = res.getColor(R.color.pink_400);
+            break;
+
+            case 5: color = res.getColor(R.color.brown_400);
+            break;
+
+            case 6: color = res.getColor(R.color.purple_400);
+            break;
+
+            case 7: color = res.getColor(R.color.orange_400);
+            break;
+
+            case 8: color = res.getColor(R.color.deep_orange_400);
+            break;
+
+            case 9: color = res.getColor(R.color.amber_400);
+            break;
+
+            case 10: color = res.getColor(R.color.lime_400);
+            break;
+
+            case 11: color = res.getColor(R.color.light_green_400);
+            break;
+
+            case 12: color = res.getColor(R.color.teal_400);
+            break;
+
+            case 13: color = res.getColor(R.color.cyan_400);
+            break;
+
+            case 14: color = res.getColor(R.color.light_blue_400);
+            break;
+
+            case 15: color = res.getColor(R.color.indigo_400);
+            break;
+
+            case 16: color = res.getColor(R.color.dark_purple_400);
+            break;
+
+            case 17: color = res.getColor(R.color.grey_400);
+            break;
+
+            case 18: color = res.getColor(R.color.blue_grey_400);
+            break;
+        }
+        return color;
     }
 }
