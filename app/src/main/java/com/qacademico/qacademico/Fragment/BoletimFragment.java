@@ -12,7 +12,7 @@ import android.widget.NumberPicker;
 
 import com.cleveroad.adaptivetablelayout.AdaptiveTableLayout;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.BoletimAdapter;
+import com.qacademico.qacademico.Adapter.Boletim.BoletimAdapter;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;

@@ -4,24 +4,24 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.NumberPicker;
 
+import com.alamkanak.weekview.MonthLoader;
+import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
+import com.alamkanak.weekview.WeekViewLoader;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.HorarioAdapter;
+import com.qacademico.qacademico.Adapter.Horario.HorarioAdapter;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
@@ -32,7 +32,6 @@ public class HorarioFragment extends Fragment {
     SingletonWebView mainWebView = SingletonWebView.getInstance();
     List<Horario> horario;
     HorarioAdapter adapter;
-    List<WeekViewEvent> week = new ArrayList<WeekViewEvent>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,9 +39,25 @@ public class HorarioFragment extends Fragment {
 
         if (getArguments() != null) {
             horario = (List<Horario>) getArguments().getSerializable("Horario");
-            for (int i = 0; i < horario.size(); i++) {
-                week.get(i).setName(horario.get(0).getMateriasList().get(0).getMateria());
-            }
+
+            /*for (int i  = 0; i < horario.size(); i++) {
+
+                Calendar date = Calendar.getInstance();
+
+                if (horario.get(i).getDia().equals(getResources().getString(R.string.day_monday))) {
+                    date.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                }
+
+                Calendar start = (Calendar) date.clone();
+                Calendar end = (Calendar) date.clone();
+
+                for (int j = 0; j < horario.get(i).getMateriasList().size(); j++) {
+                    start.set(Calendar.HOUR_OF_DAY, horario.get(i).getMateriasList().get(j).getHora());
+                    end.set(Calendar.HOUR_OF_DAY, horario.get(i).getMateriasList().get(j).getHora());
+                }
+
+                WeekViewEvent event = new WeekViewEvent(1, "TESTE", start, end);
+            }*/
         }
     }
 
@@ -59,7 +74,41 @@ public class HorarioFragment extends Fragment {
 
         if (horario != null) {
 
-            RecyclerView recyclerViewHorario = (RecyclerView) view.findViewById(R.id.recycler_horario);
+            //List<WeekViewEvent> events = new ArrayList<WeekViewEvent>();
+
+            WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
+
+            Calendar firstDay = Calendar.getInstance();
+            firstDay.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+            weekView.goToDate(firstDay);
+            weekView.goToHour(7);
+
+            weekView.setMonthChangeListener((newYear, newMonth) -> {
+
+                List<WeekViewEvent> week = new ArrayList<>();
+
+                for (int i = 0; i < horario.size(); i++) {
+                    Calendar startTime = Calendar.getInstance();
+                    startTime.set(Calendar.HOUR_OF_DAY, 7);
+                    startTime.set(Calendar.MINUTE, 30);
+                    startTime.set(Calendar.SECOND, 0);
+                    startTime.set(Calendar.MONTH, newMonth - 1);
+                    startTime.set(Calendar.YEAR, newYear);
+                    Calendar endTime = (Calendar) startTime.clone();
+                    endTime.set(Calendar.HOUR_OF_DAY, 8);
+                    startTime.set(Calendar.MINUTE, 15);
+                    endTime.set(Calendar.MONTH, newMonth - 1);
+                    WeekViewEvent event = new WeekViewEvent(1, "TESTE", startTime, endTime);
+                    event.setColor(getResources().getColor(R.color.orange_500));
+                    week.add(event);
+                }
+
+                return week;
+            });
+
+
+
+            /*RecyclerView recyclerViewHorario = (RecyclerView) view.findViewById(R.id.recycler_horario);
             RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
             adapter = new HorarioAdapter(horario, getActivity());
@@ -87,7 +136,7 @@ public class HorarioFragment extends Fragment {
                 adapter.toggleAll();
                 ((MainActivity) getActivity()).fab_isOpen = true;
                 ((MainActivity) getActivity()).clickButtons(null);
-            });
+            });*/
         }
     }
 

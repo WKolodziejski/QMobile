@@ -18,7 +18,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 
-import com.qacademico.qacademico.Adapter.MateriaisAdapter;
+import com.qacademico.qacademico.Adapter.Materiais.MateriaisAdapter;
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.R;
 

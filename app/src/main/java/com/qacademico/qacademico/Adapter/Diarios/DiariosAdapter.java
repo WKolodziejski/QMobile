@@ -1,8 +1,7 @@
-package com.qacademico.qacademico.Adapter;
+package com.qacademico.qacademico.Adapter.Diarios;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,51 +12,58 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.Toast;
 
-import com.qacademico.qacademico.Class.Materiais;
+import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.ViewHolder.MateriaisViewHolder;
+import com.qacademico.qacademico.ViewHolder.DiariosViewHolder;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.util.List;
 
-public class MateriaisAdapter extends RecyclerView.Adapter {
-    private List<Materiais> materiaisList;
-    private Context context;
+import static java.lang.Integer.valueOf;
 
-    public MateriaisAdapter(List<Materiais> materiaisList, Context context) {
-        this.materiaisList = materiaisList;
+public class DiariosAdapter extends RecyclerView.Adapter {
+    private List<Diarios> diarios;
+    private Context context;
+    OnExpandListener onExpandListener;
+
+    public DiariosAdapter(List<Diarios> diarios, Context context) {
+        this.diarios = diarios;
         this.context = context;
+    }
+
+    public void update(List<Diarios> diarios) {
+        this.diarios = diarios;
+        notifyDataSetChanged();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.table_materiais, parent, false);
-        return new MateriaisViewHolder(view);
+                .inflate(R.layout.table_diarios, parent, false);
+        return new DiariosViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final MateriaisViewHolder holder = (MateriaisViewHolder) viewHolder;
-        Materiais materiais = materiaisList.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+        final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
+        Diarios trabalhos = diarios.get(position) ;
 
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
         rotate.setInterpolator(new LinearInterpolator());
 
-        holder.materia.setText(materiais.getNomeMateria());
+        holder.materia.setText(trabalhos.getNomeMateria());
+        holder.expand.setExpanded(diarios.get(position).getExpanded(), diarios.get(position).getAnim());
 
-        holder.expand.setExpanded(materiaisList.get(position).getExpanded(), materiaisList.get(position).getAnim());
-
-        if (materiaisList.get(position).getExpanded()){
+        if (diarios.get(position).getExpanded()){
             holder.button.setImageResource(R.drawable.ic_expand_less_black_24dp);
+            holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.diarios_list));
             holder.materia.setTextColor(context.getResources().getColor(R.color.white));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.button.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
-                Drawable color = context.getResources().getDrawable(R.drawable.layout_bg_header_top);
-                color.setTint(context.getResources().getColor(R.color.materiais_list));
-                holder.expandAct.setBackground(color);
             }
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
             params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
@@ -76,24 +82,26 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
             holder.table.setLayoutParams(params);
         }
 
-        materiaisList.get(position).setAnim(false);
+        diarios.get(position).setAnim(false);
 
-        holder.expand.setTag(position);
+        holder.table.setTag(position);
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false);
 
-        holder.recyclerView.setAdapter(new MaterialAdapter(materiais.getMaterialList(), context));
+        holder.recyclerView.setAdapter(new EtapaAdapter(trabalhos.getEtapaList(), context));
 
         holder.recyclerView.setLayoutManager(layout);
+
+        holder.nothing.setVisibility(trabalhos.getEtapaList().isEmpty() ? View.VISIBLE : View.GONE);
 
         holder.expandAct.setOnClickListener(v -> {
             holder.expand.toggle();
             holder.button.startAnimation(rotate);
 
-            Integer pos = (Integer) holder.expand.getTag();
+            Integer pos = (Integer) holder.table.getTag();
 
-            materiaisList.get(pos).setExpanded(!materiaisList.get(pos).getExpanded());
+            diarios.get(pos).setExpanded(!diarios.get(pos).getExpanded());
 
             rotate.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -101,7 +109,7 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    if (materiaisList.get(pos).getExpanded()) {
+                    if (diarios.get(pos).getExpanded()) {
                         holder.button.setImageResource(R.drawable.ic_expand_less_black_24dp);
                     } else {
                         holder.button.setImageResource(R.drawable.ic_expand_more_black_24dp);
@@ -114,8 +122,8 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
             holder.expand.setOnExpansionUpdateListener((expansionFraction, state) -> {
 
-                if (state == ExpandableLayout.State.EXPANDING && materiaisList.get(pos).getExpanded()) {
-                    //onExpandListener.onExpand(position);
+                if (state == ExpandableLayout.State.EXPANDING && diarios.get(pos).getExpanded()) {
+                    onExpandListener.onExpand(position);
                 }
 
                 if (state == ExpandableLayout.State.EXPANDED || state == ExpandableLayout.State.COLLAPSED) {
@@ -126,13 +134,11 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
                     }
                 }
 
-                if (materiaisList.get(pos).getExpanded()) {
+                if (diarios.get(pos).getExpanded()) {
+                    holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.diarios_list));
                     holder.materia.setTextColor(context.getResources().getColor(R.color.white));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         holder.button.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
-                        Drawable color = context.getResources().getDrawable(R.drawable.layout_bg_header_top);
-                        color.setTint(context.getResources().getColor(R.color.materiais_list));
-                        holder.expandAct.setBackground(color);
                     }
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
                     params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
@@ -155,6 +161,48 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return materiaisList.size();
+        return diarios.size();
+    }
+
+    public void toggleAll(){
+        int a = 0;
+        int f = 0;
+        for (int i = 0; i < diarios.size(); i++) {
+            if (diarios.get(i).getExpanded()) {
+                a++;
+            } else {
+                f++;
+            }
+        }
+        if (a > f) {
+            for (int i = 0; i < diarios.size(); i++) {
+                if (diarios.get(i).getExpanded()) {
+                    diarios.get(i).setAnim(true);
+                } else {
+                    diarios.get(i).setAnim(false);
+                }
+                diarios.get(i).setExpanded(false);
+            }
+            Toast.makeText(context, context.getResources().getString(R.string.message_collapsed), Toast.LENGTH_SHORT).show();
+        } else {
+            for (int i = 0; i < diarios.size(); i++) {
+                if (diarios.get(i).getExpanded()) {
+                    diarios.get(i).setAnim(false);
+                } else {
+                    diarios.get(i).setAnim(true);
+                }
+                diarios.get(i).setExpanded(true);
+            }
+            Toast.makeText(context, context.getResources().getString(R.string.message_expanded), Toast.LENGTH_SHORT).show();
+        }
+        notifyDataSetChanged();
+    }
+
+    public void setOnExpandListener(OnExpandListener onExpandListener){
+        this.onExpandListener = onExpandListener;
+    }
+
+    public interface OnExpandListener {
+        void onExpand(int position);
     }
 }

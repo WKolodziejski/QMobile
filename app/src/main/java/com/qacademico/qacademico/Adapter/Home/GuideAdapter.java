@@ -1,4 +1,4 @@
-package com.qacademico.qacademico.Adapter;
+package com.qacademico.qacademico.Adapter.Home;
 
 
 import android.content.Context;

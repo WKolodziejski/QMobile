@@ -1,4 +1,4 @@
-package com.qacademico.qacademico.Adapter;
+package com.qacademico.qacademico.Adapter.Materiais;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

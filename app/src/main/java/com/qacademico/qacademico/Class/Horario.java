@@ -1,6 +1,7 @@
 package com.qacademico.qacademico.Class;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.List;
 
 public class Horario implements Serializable {

@@ -1,10 +1,7 @@
 package com.qacademico.qacademico.Fragment;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +14,7 @@ import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.GuideAdapter;
+import com.qacademico.qacademico.Adapter.Home.GuideAdapter;
 import com.qacademico.qacademico.Class.Guide;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;

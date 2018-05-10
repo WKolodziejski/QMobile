@@ -1,4 +1,4 @@
-package com.qacademico.qacademico.Adapter;
+package com.qacademico.qacademico.Adapter.Diarios;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
