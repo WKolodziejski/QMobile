@@ -8,12 +8,13 @@ public class Horario implements Serializable {
     private String materia;
     private int day;
     private String date;
-    private int color = 0;
+    private int color;
 
-    public Horario(String materia, int day, String date) {
+    public Horario(String materia, int day, String date, int color) {
         this.materia = materia;
         this.day = day;
         this.date = date;
+        this.color = color;
     }
 
     public String getMateria() {

@@ -39,8 +39,7 @@ public class HorarioFragment extends Fragment {
 
         if (getArguments() != null) {
             horario = (List<Horario>) getArguments().getSerializable("Horario");
-
-            //Data.saveObject(getContext(), horario, ".horario");
+            setColors();
         }
     }
 
@@ -56,6 +55,8 @@ public class HorarioFragment extends Fragment {
     private void setHorario(View view) {
 
         if (horario != null) {
+
+            setColors();
 
             WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
@@ -99,6 +100,33 @@ public class HorarioFragment extends Fragment {
         }
     }
 
+    private void setColors() {
+        for (int i = 0; i < horario.size(); i++) {
+            if (horario.get(i).getColor() == 0) {
+                for (int j = 0; j < horario.size(); j++) {
+                    if (horario.get(i).getMateria().equals(horario.get(j).getMateria())) {
+                        if (horario.get(j).getColor() == 0) {
+                            if (horario.get(i).getColor() == 0) {
+                                horario.get(i).setColor(Utils.getramdomColorGenerator(getContext()));
+                                horario.get(j).setColor(horario.get(i).getColor());
+                            } else {
+                                horario.get(j).setColor(horario.get(i).getColor());
+                            }
+                        } else {
+                            horario.get(i).setColor(horario.get(j).getColor());
+                        }
+                    } else {
+                        if (horario.get(i).getColor() == 0) {
+                            horario.get(i).setColor(Utils.getramdomColorGenerator(getContext()));
+                        }
+                    }
+                }
+            }
+        }
+
+        Data.saveObject(getContext(), horario, ".horario");
+    }
+
     private int trimh(String string) {
         string = string.substring(0, string.indexOf(":"));
         return Integer.valueOf(string);
@@ -119,58 +147,48 @@ public class HorarioFragment extends Fragment {
         return string;
     }
 
-    private void setFABListener(){
+    public void openDateDialog() {
         if (mainWebView.pg_horario_loaded && mainWebView.data_horario != null) {
 
-            ((MainActivity) getActivity()).fab_data.setOnClickListener(v -> {
+            View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
-                ((MainActivity) getActivity()).fab_data.setClickable(true);
+            final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
+            year.setMinValue(0);
+            year.setMaxValue(mainWebView.data_horario.length - 1);
+            year.setValue(mainWebView.data_position_horario);
+            year.setDisplayedValues(mainWebView.data_horario);
+            year.setWrapSelectorWheel(false);
 
-                ((MainActivity) getActivity()).fab_isOpen = true;
-                ((MainActivity) getActivity()).clickButtons(null);
+            final NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
+            periodo.setMinValue(0);
+            periodo.setMaxValue(mainWebView.periodo_horario.length - 1);
+            periodo.setValue(mainWebView.periodo_position_horario);
+            periodo.setDisplayedValues(mainWebView.periodo_horario);
+            periodo.setWrapSelectorWheel(false);
 
-                View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
+            new AlertDialog.Builder(getActivity()).setView(theView)
+                    .setCustomTitle(Utils.customAlertTitle(getActivity(), R.drawable.ic_date_range_black_24dp,
+                            R.string.dialog_date_change, R.color.horario_dialog))
+                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
-                year.setMinValue(0);
-                year.setMaxValue(mainWebView.data_horario.length - 1);
-                year.setValue(mainWebView.data_position_horario);
-                year.setDisplayedValues(mainWebView.data_horario);
-                year.setWrapSelectorWheel(false);
-
-                final NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
-                periodo.setMinValue(0);
-                periodo.setMaxValue(mainWebView.periodo_horario.length - 1);
-                periodo.setValue(mainWebView.periodo_position_horario);
-                periodo.setDisplayedValues(mainWebView.periodo_horario);
-                periodo.setWrapSelectorWheel(false);
-
-                new AlertDialog.Builder(getActivity()).setView(theView)
-                        .setCustomTitle(Utils.customAlertTitle(getActivity(), R.drawable.ic_date_range_black_24dp,
-                                R.string.dialog_date_change, R.color.horario_dialog))
-                        .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-
-                            mainWebView.data_position_horario = year.getValue();
-                            mainWebView.periodo_position_horario = periodo.getValue();
+                        mainWebView.data_position_horario = year.getValue();
+                        mainWebView.periodo_position_horario = periodo.getValue();
 
 
-                            if (mainWebView.data_position_horario == Integer.parseInt(mainWebView.data_horario[0])) {
-                                mainWebView.html.loadUrl(url + pg_horario);
-                            } else {
-                                mainWebView.html.loadUrl(url + pg_horario + "&COD_MATRICULA=-1&cmbanos=" +
-                                        mainWebView.data_horario[mainWebView.data_position_horario]
-                                        + "&cmbperiodos=" + mainWebView.periodo_horario[mainWebView.periodo_position_horario] + "&Exibir=OK");
-                            }
-                        }).setNegativeButton(R.string.dialog_cancel, null)
-                        .show();
-            });
-        } else {
-            ((MainActivity) getActivity()).fab_data.setClickable(false);
-            ((MainActivity) getActivity()).fab_data.setOnClickListener(null);
+                        if (mainWebView.data_position_horario == Integer.parseInt(mainWebView.data_horario[0])) {
+                            mainWebView.html.loadUrl(url + pg_horario);
+                        } else {
+                            mainWebView.html.loadUrl(url + pg_horario + "&COD_MATRICULA=-1&cmbanos=" +
+                                    mainWebView.data_horario[mainWebView.data_position_horario]
+                                    + "&cmbperiodos=" + mainWebView.periodo_horario[mainWebView.periodo_position_horario] + "&Exibir=OK");
+                        }
+                    }).setNegativeButton(R.string.dialog_cancel, null)
+                    .show();
         }
     }
 
     public void update(List<Horario> horario) {
-
+        this.horario = horario;
+        setHorario(getView());
     }
 }

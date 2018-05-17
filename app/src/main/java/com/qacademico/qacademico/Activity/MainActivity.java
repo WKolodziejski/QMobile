@@ -16,7 +16,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -47,6 +46,8 @@ import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.qacademico.qacademico.Class.Boletim;
+import com.qacademico.qacademico.Class.Diarios;
+import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Fragment.BoletimFragment;
 import com.qacademico.qacademico.Fragment.DiariosFragment;
 import com.qacademico.qacademico.Fragment.HomeFragment;
@@ -78,7 +79,6 @@ import static com.qacademico.qacademico.Utilities.Utils.url;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
     private SharedPreferences login_info;
-    public boolean fab_isOpen;
     LayoutInflater inflater;
     @BindView(R.id.connection) LinearLayout errorConnectionLayout;
     @BindView(R.id.progressbar_main) ProgressBar progressBar_Main;
@@ -86,16 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.main_container) ViewGroup mainLayout;
     Dialog loadingDialog;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
-    //@BindViews({R.id.fab_action, R.id.fab_data, R.id.fab_expand}) List<FloatingActionButton> fab_list;
-    @BindView(R.id.fab_action) public FloatingActionButton fab_action;
-    @BindView(R.id.fab_data) public FloatingActionButton fab_data;
     @BindView(R.id.fab_expand) public FloatingActionButton fab_expand;
-    @BindView(R.id.txt_expand) TextView txt_expand;
-    @BindView(R.id.txt_data) TextView txt_data;
     @BindView(R.id.navigation) BottomNavigationView navigation;
     Snackbar snackBar;
     @BindView(R.id.nav_view) NavigationView navigationView;
-    @BindView(R.id.btns) CoordinatorLayout buttons_layout;
     @BindView(R.id.toolbar_main) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
@@ -115,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainWebView.setOnPageFinishedListener(this);
         mainWebView.setOnPageStartedListener(this);
         mainWebView.setOnErrorRecivedListener(this);
+
         setDefaultHashMap();
         Utils.updateDefaultValues(remoteConfig);
 
@@ -234,29 +229,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     case R.id.navigation_home:
                         setHome();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
-                                R.id.navigation_home, false);
+                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_home, false);
                         return true;
 
                     case R.id.navigation_diarios:
                         setDiarios();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
-                                R.id.navigation_diarios, false);
+                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_diarios, false);
                         return true;
 
                     case R.id.navigation_boletim:
                         setBoletim();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
-                                R.id.navigation_boletim, false);
+                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_boletim, false);
                         return true;
 
                     case R.id.navigation_horario:
                         setHorario();
                         Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
-                                R.id.navigation_horario, false);
+                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_horario, false);
                         return true;
                 }
             }
@@ -267,6 +258,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        MenuItem date = menu.findItem(R.id.action_date);
+        if (navigation.getSelectedItemId() == R.id.navigation_home) {
+            date.setVisible(false);
+        } else {
+            date.setVisible(true);
+        }
         return true;
     }
 
@@ -274,7 +271,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_bug) {
+        if (id == R.id.action_date) {
+            if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
+                diariosFragment.openDateDialog();
+            } else if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
+                boletimFragment.openDateDialog();
+            } else if (navigation.getSelectedItemId() == R.id.navigation_horario) {
+                horarioFragment.openDateDialog();
+            }
+            return true;
+        } else if (id == R.id.action_bug) {
             SendEmail.openGmail(this);
             return true;
         } else if (id == R.id.action_att) {
@@ -301,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setHome() { //layout fragment_home
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_home));
-        hideButtons();
+        hideExpandBtn();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -322,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setDiarios() {//layout fragment_diarios
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios));
-        showButtons();
+        showExpandBtn();
 
         if (Data.getDiarios(this) != null) {
             Bundle bundle = new Bundle();
@@ -350,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void updateDiarios() {
         diariosFragment.update(Data.getDiarios(this));
 
@@ -357,6 +364,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios)
                     + " ー " + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
         }
+
+        new AsyncTask<Void, Void, List<Diarios>>() {
+            @Override
+            protected List<Diarios> doInBackground(Void... voids) {
+                return Data.getDiarios(getApplicationContext());
+            }
+
+            @Override
+            protected void onPostExecute(List<Diarios> diarios) {
+                super.onPostExecute(diarios);
+                diariosFragment.update(diarios);
+            }
+        }.execute();
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -364,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setBoletim() { //layout fragment_boletim
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim));
-        showButtons();
+        hideExpandBtn();
 
         if (Data.getBoletim(this) != null) {
 
@@ -421,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setHorario() { // layout fragment_horario
 
         getSupportActionBar().setTitle(getResources().getString(R.string.title_horario));
-        showButtons();
+        hideExpandBtn();
 
         if (Data.getHorario(this) != null) {
 
@@ -450,6 +470,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void updateHorario() {
         horarioFragment.update(Data.getHorario(this));
 
@@ -458,6 +479,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     + " ー " + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
                     + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
         }
+
+        new AsyncTask<Void, Void, List<Horario>>() {
+            @Override
+            protected List<Horario> doInBackground(Void... voids) {
+                return Data.getHorario(getApplicationContext());
+            }
+
+            @Override
+            protected void onPostExecute(List<Horario> horario) {
+                super.onPostExecute(horario);
+                horarioFragment.update(horario);
+            }
+        }.execute();
     }
 
     @AddTrace(name = "setMateriais")
@@ -478,8 +512,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void testLogin() { //Testa se o login é válido
         if (login_info.getBoolean("valido", false)) {
             Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                    mainLayout, fab_action, fab_expand, fab_data, navigation.getSelectedItemId(),
-                    R.id.navigation_home, false);
+                    mainLayout, navigation.getSelectedItemId(), R.id.navigation_home, false);
             setHome();
             mainWebView.html.loadUrl(url + pg_login);
         } else {
@@ -490,7 +523,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setUp() { //Inicializa as variáveis necessárias
         login_info = getSharedPreferences("login_info", 0);
-        hideButtons();
+        hideExpandBtn();
         configNavDrawer();
         Design.setNavigationTransparent(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -537,8 +570,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 || (url_p.equals(url + pg_diarios) && navigation.getSelectedItemId() == R.id.navigation_diarios)
                 || (url_p.equals(url + pg_horario) && navigation.getSelectedItemId() == R.id.navigation_horario)) {
             showLinearProgressbar();
-            fab_data.setClickable(false);
-            fab_data.setOnClickListener(null);
         }
     }
 
@@ -635,33 +666,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     });
     }
 
-    protected void showButtons() { //Mostra os FloatingActionButtons
-        if (fab_action.getAnimation() == null) {
+    protected void showExpandBtn() { //Mostra os FloatingActionButtons
+        if (fab_expand.getAnimation() == null) {
             Animation open_linear = AnimationUtils.loadAnimation(this, R.anim.fab_open_pop);
-            fab_action.startAnimation(open_linear);
+            fab_expand.startAnimation(open_linear);
         }
-        if ((fab_data.getAnimation() != null) || (fab_expand.getAnimation() != null)) {
-            fab_action.getAnimation().setFillAfter(true);
-            fab_data.getAnimation().setFillAfter(true);
-            txt_data.getAnimation().setFillAfter(true);
+        if ((fab_expand.getAnimation() != null)) {
             fab_expand.getAnimation().setFillAfter(true);
-            txt_expand.getAnimation().setFillAfter(true);
         }
-        fab_action.setVisibility(View.VISIBLE);
+        fab_expand.setVisibility(View.VISIBLE);
     }
 
-    public void hideButtons() { //Esconde os FloatingActionButtons
-        if (fab_action.getAnimation() != null) {
+    public void hideExpandBtn() { //Esconde os FloatingActionButtons
+        if (fab_expand.getAnimation() != null) {
             Animation close_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close_pop);
-            fab_action.startAnimation(close_linear);
-            fab_action.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+            fab_expand.startAnimation(close_linear);
+            fab_expand.getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    fab_action.setAnimation(null);
+                    fab_expand.setAnimation(null);
                 }
 
                 @Override
@@ -669,56 +696,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
         }
-        if ((fab_data.getAnimation() != null) || (fab_expand.getAnimation() != null)) {
-            fab_action.getAnimation().setFillAfter(false);
-            fab_data.getAnimation().setFillAfter(false);
+        if ((fab_expand.getAnimation() != null)) {
             fab_expand.getAnimation().setFillAfter(false);
-            txt_expand.getAnimation().setFillAfter(false);
-            txt_data.getAnimation().setFillAfter(false);
         }
-        fab_action.setVisibility(View.INVISIBLE);
-        fab_isOpen = false;
-    }
-
-    public void clickButtons(View v) { //Animações ao clicar no FloatingActionButton
-        Animation open_rotate = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_fwd);
-        Animation close_rotate = AnimationUtils.loadAnimation(this, R.anim.fab_rotate_bkw);
-        Animation open_linear = AnimationUtils.loadAnimation(this, R.anim.fab_open_pop);
-        Animation close_linear = AnimationUtils.loadAnimation(this, R.anim.fab_close_pop);
-
-        if (fab_isOpen) {
-            fab_action.startAnimation(close_rotate);
-            fab_data.startAnimation(close_linear);
-            fab_expand.startAnimation(close_linear);
-            txt_data.startAnimation(close_linear);
-            txt_expand.startAnimation(close_linear);
-            fab_data.setClickable(false);
-            fab_expand.setClickable(false);
-            fab_isOpen = false;
-        } else {
-            fab_action.startAnimation(open_rotate);
-            fab_data.startAnimation(open_linear);
-            fab_expand.startAnimation(open_linear);
-            txt_data.startAnimation(open_linear);
-            txt_expand.startAnimation(open_linear);
-            fab_data.setClickable(true);
-            fab_expand.setClickable(true);
-            fab_isOpen = true;
-        }
+        fab_expand.setVisibility(View.INVISIBLE);
     }
 
     public void showRoundProgressbar() { //Mostra a progressBar ao carregar a página
         progressBar_Main.setVisibility(View.VISIBLE);
-        fab_action.setClickable(false);
-        fab_data.setClickable(false);
-        fab_expand.setClickable(false);
     }
 
     protected void dismissRoundProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar_Main.setVisibility(View.GONE);
-        fab_action.setClickable(true);
-        fab_data.setClickable(true);
-        fab_expand.setClickable(true);
     }
 
     protected void showLinearProgressbar() { //Mostra a progressBar ao carregar a página

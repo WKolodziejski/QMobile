@@ -72,64 +72,34 @@ public class Utils {
     public static int getramdomColorGenerator(Context context) {
         Resources res = context.getResources();
         Random rnd = new Random();
-        int color = rnd.nextInt(19);
+        int color = rnd.nextInt(9);
 
         switch (color) {
-            case 0: color = res.getColor(R.color.green_400);
+            case 0: color = res.getColor(R.color.deep_orange_400);
             break;
 
-            case 1: color = res.getColor(R.color.red_400);
+            case 1: color = res.getColor(R.color.yellow_400);
             break;
 
-            case 2: color = res.getColor(R.color.blue_400);
+            case 2: color = res.getColor(R.color.lime_400);
             break;
 
-            case 3: color = res.getColor(R.color.yellow_400);
+            case 3: color = res.getColor(R.color.light_green_400);
             break;
 
-            case 4: color = res.getColor(R.color.pink_400);
+            case 4: color = res.getColor(R.color.teal_400);
             break;
 
-            case 5: color = res.getColor(R.color.brown_400);
+            case 5: color = res.getColor(R.color.cyan_400);
             break;
 
-            case 6: color = res.getColor(R.color.purple_400);
+            case 6: color = res.getColor(R.color.light_blue_400);
             break;
 
-            case 7: color = res.getColor(R.color.orange_400);
+            case 7: color = res.getColor(R.color.indigo_400);
             break;
 
-            case 8: color = res.getColor(R.color.deep_orange_400);
-            break;
-
-            case 9: color = res.getColor(R.color.amber_400);
-            break;
-
-            case 10: color = res.getColor(R.color.lime_400);
-            break;
-
-            case 11: color = res.getColor(R.color.light_green_400);
-            break;
-
-            case 12: color = res.getColor(R.color.teal_400);
-            break;
-
-            case 13: color = res.getColor(R.color.cyan_400);
-            break;
-
-            case 14: color = res.getColor(R.color.light_blue_400);
-            break;
-
-            case 15: color = res.getColor(R.color.indigo_400);
-            break;
-
-            case 16: color = res.getColor(R.color.dark_purple_400);
-            break;
-
-            case 17: color = res.getColor(R.color.grey_400);
-            break;
-
-            case 18: color = res.getColor(R.color.blue_grey_400);
+            case 8: color = res.getColor(R.color.dark_purple_400);
             break;
         }
         return color;

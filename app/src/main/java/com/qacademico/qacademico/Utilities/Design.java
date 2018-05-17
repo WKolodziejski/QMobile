@@ -23,8 +23,7 @@ import com.qacademico.qacademico.R;
 public class Design {
 
     public static void changePageColor(final Activity activity, Toolbar toolbar, DrawerLayout drawer, ProgressBar progressBar_Top,
-                                       ProgressBar progressBar_Main, View layout, FloatingActionButton fab_action,
-                                       FloatingActionButton fab_expand, FloatingActionButton fab_data, int idFrom, int idTo,
+                                       ProgressBar progressBar_Main, View layout, int idFrom, int idTo,
                                        boolean changeStatusBarColor) { //Muda a cor do app dependendo da página
 
         Context context = activity.getApplicationContext();
@@ -124,9 +123,11 @@ public class Design {
             }
         }
 
-        changeButtonColorAnim(fab_action, colorPrimaryBtnFrom, colorPrimaryBtnTo);
+        activity.invalidateOptionsMenu();
+
+        /*changeButtonColorAnim(fab_action, colorPrimaryBtnFrom, colorPrimaryBtnTo);
         changeButtonColorAnim(fab_expand, colorSecondaryFrom, colorSecondaryTo);
-        changeButtonColorAnim(fab_data, colorSecondaryFrom, colorSecondaryTo);
+        changeButtonColorAnim(fab_data, colorSecondaryFrom, colorSecondaryTo);*/
         changeProgressBarColor(progressBar_Top, progressBar_Main, colorProgressFrom, colorProgressTo);
 
         if (changeStatusBarColor) {

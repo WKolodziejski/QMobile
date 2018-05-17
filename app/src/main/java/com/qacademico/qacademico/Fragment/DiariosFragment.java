@@ -76,12 +76,8 @@ public class DiariosFragment extends Fragment {
                     }
                 });
 
-                setFABListerner();
-
                 ((MainActivity) getActivity()).fab_expand.setOnClickListener(v -> {
                     adapter.toggleAll();
-                    ((MainActivity) getActivity()).fab_isOpen = true;
-                    ((MainActivity) getActivity()).clickButtons(null);
                 });
             } else {
                 Toast.makeText(getContext(), "Vazio", Toast.LENGTH_SHORT).show();
@@ -91,50 +87,39 @@ public class DiariosFragment extends Fragment {
         }
     }
 
-    private void setFABListerner() {
+    public void openDateDialog() {
         if (mainWebView.pg_diarios_loaded && mainWebView.data_diarios != null) {
 
-            ((MainActivity) getActivity()).fab_data.setOnClickListener(v -> {
+            View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
-                ((MainActivity) getActivity()).fab_data.setClickable(true);
+            final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
+            year.setMinValue(0);
+            year.setMaxValue(mainWebView.data_diarios.length - 1);
+            year.setValue(mainWebView.data_position_diarios);
+            year.setDisplayedValues(mainWebView.data_diarios);
+            year.setWrapSelectorWheel(false);
 
-                ((MainActivity) getActivity()).fab_isOpen = true;
-                ((MainActivity) getActivity()).clickButtons(null);
+            NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
+            periodo.setVisibility(View.GONE);
 
-                View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
+            TextView slash = (TextView) theView.findViewById(R.id.slash);
+            slash.setVisibility(View.GONE);
 
-                final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
-                year.setMinValue(0);
-                year.setMaxValue(mainWebView.data_diarios.length - 1);
-                year.setValue(mainWebView.data_position_diarios);
-                year.setDisplayedValues(mainWebView.data_diarios);
-                year.setWrapSelectorWheel(false);
+            new AlertDialog.Builder(getActivity()).setView(theView)
+                    .setCustomTitle(Utils.customAlertTitle(getActivity(), R.drawable.ic_date_range_black_24dp,
+                            R.string.dialog_date_change, R.color.diarios_dialog))
+                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
-                periodo.setVisibility(View.GONE);
+                        mainWebView.data_position_diarios = year.getValue();
 
-                TextView slash = (TextView) theView.findViewById(R.id.slash);
-                slash.setVisibility(View.GONE);
-
-                new AlertDialog.Builder(getActivity()).setView(theView)
-                        .setCustomTitle(Utils.customAlertTitle(getActivity(), R.drawable.ic_date_range_black_24dp,
-                                R.string.dialog_date_change, R.color.diarios_dialog))
-                        .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-
-                            mainWebView.data_position_diarios = year.getValue();
-
-                            Log.v("Ano selecionado", String.valueOf(
-                                    mainWebView.data_diarios[mainWebView.data_position_diarios]));
-                            mainWebView.html.loadUrl(url + pg_diarios);
-                            mainWebView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                                    + (mainWebView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
-                            Log.i("SCRIPT", "" + mainWebView.scriptDiario);
-                        }).setNegativeButton(R.string.dialog_cancel, null)
-                        .show();
-            });
-        } else {
-            ((MainActivity) getActivity()).fab_data.setClickable(false);
-            ((MainActivity) getActivity()).fab_data.setOnClickListener(null);
+                        Log.v("Ano selecionado", String.valueOf(
+                                mainWebView.data_diarios[mainWebView.data_position_diarios]));
+                        mainWebView.html.loadUrl(url + pg_diarios);
+                        mainWebView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
+                                + (mainWebView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
+                        Log.i("SCRIPT", "" + mainWebView.scriptDiario);
+                    }).setNegativeButton(R.string.dialog_cancel, null)
+                    .show();
         }
     }
 
@@ -142,7 +127,6 @@ public class DiariosFragment extends Fragment {
         if (adapter != null) {
             this.diarios = diarios;
             adapter.update(this.diarios);
-            setFABListerner();
         } else {
             setDiarios(getView());
         }

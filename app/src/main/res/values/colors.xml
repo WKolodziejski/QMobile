@@ -82,4 +82,16 @@
     <color name="update_dialog">@color/colorPrimary</color>
 
     <color name="changes_dialog">@color/light_blue_A400</color>
+
+    <color name="biologia">@color/green_400</color>
+    <color name="edFisica">@color/blue_grey_400</color>
+    <color name="filosofia">@color/grey_400</color>
+    <color name="fisica">@color/amber_400</color>
+    <color name="geografia">@color/blue_400</color>
+    <color name="historia">@color/red_400</color>
+    <color name="portugues">@color/pink_400</color>
+    <color name="matematica">@color/brown_400</color>
+    <color name="quimica">@color/orange_400</color>
+    <color name="sociologia">@color/purple_400</color>
+
 </resources>

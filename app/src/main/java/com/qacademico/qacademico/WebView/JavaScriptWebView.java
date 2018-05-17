@@ -163,7 +163,7 @@ public class JavaScriptWebView {
                             Elements tds = trs.get(i).select("td");
                             trtd_boletim[i] = new String[tds.size()];
                             for (int j = 0; j < tds.size(); j++) {
-                                if (tds.get(j).text().equals("")) {
+                                if (tds.get(j).text().equals("") || tds.get(j).text().equals(",0")) {
                                     trtd_boletim[i][j] = "-";
                                 } else {
                                     trtd_boletim[i][j] = tds.get(j).text();
@@ -408,25 +408,32 @@ public class JavaScriptWebView {
                     for (int i = 1; i <= 5; i++) {
                         for (int j = 1; j < trtd_horario.length; j++) {
                             if (!trtd_horario[j][i].equals("")) {
-                                horario.add(new Horario(trtd_horario[j][i], Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]));
-                            }
-                        }
-                    }
 
-                    for (int i = 0; i < horario.size(); i++) {
-                        if (horario.get(i).getColor() == 0) {
-                            for (int j = 0; j < horario.size(); j++) {
-                                if (horario.get(i).getMateria().equals(horario.get(j).getMateria())) {
-                                    if (horario.get(j).getColor() != 0) {
-                                        horario.get(i).setColor(horario.get(j).getColor());
-                                    } else {
-                                        for (int k = 0; k < horario.size(); k++) {
-                                            if (horario.get(i).getColor() == horario.get(k).getColor()) {
-                                                horario.get(i).setColor(Utils.getramdomColorGenerator(context));
-                                            }
-                                        }
-                                    }
+                                int color = 0;
+
+                                if (trtd_horario[j][i].contains("Biologia")) {
+                                    color = context.getResources().getColor(R.color.biologia);
+                                } else if (trtd_horario[j][i].contains("Educação Física")) {
+                                    color = context.getResources().getColor(R.color.edFisica);
+                                } else if (trtd_horario[j][i].contains("Filosofia")) {
+                                    color = context.getResources().getColor(R.color.filosofia);
+                                } else if (trtd_horario[j][i].contains("Física")) {
+                                    color = context.getResources().getColor(R.color.fisica);
+                                } else if (trtd_horario[j][i].contains("Geografia")) {
+                                    color = context.getResources().getColor(R.color.geografia);
+                                } else if (trtd_horario[j][i].contains("História")) {
+                                    color = context.getResources().getColor(R.color.historia);
+                                } else if (trtd_horario[j][i].contains("Português") || trtd_horario[j][i].contains("Portuguesa")) {
+                                    color = context.getResources().getColor(R.color.portugues);
+                                } else if (trtd_horario[j][i].contains("Matemática")) {
+                                    color = context.getResources().getColor(R.color.matematica);
+                                } else if (trtd_horario[j][i].contains("Química")) {
+                                    color = context.getResources().getColor(R.color.quimica);
+                                } else if (trtd_horario[j][i].contains("Sociologia")) {
+                                    color = context.getResources().getColor(R.color.sociologia);
                                 }
+
+                                horario.add(new Horario(trtd_horario[j][i], Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], color));
                             }
                         }
                     }
