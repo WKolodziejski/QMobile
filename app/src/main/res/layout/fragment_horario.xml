@@ -22,10 +22,10 @@
         app:xScrollingSpeed="0"
         app:columnGap="8dp"
         app:noOfVisibleDays="5"
-        app:headerRowBackgroundColor="@color/white"
+        app:headerRowBackgroundColor="@color/white_dividers"
         app:dayBackgroundColor="@color/white"
-        app:todayBackgroundColor="@color/white"
-        app:headerColumnBackground="@color/white"/>
+        app:todayBackgroundColor="@color/horario_toolbar"
+        app:headerColumnBackground="@color/white_dividers"/>
 
 </android.support.design.widget.CoordinatorLayout>
 

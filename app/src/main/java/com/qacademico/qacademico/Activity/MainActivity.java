@@ -259,11 +259,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem date = menu.findItem(R.id.action_date);
-        if (navigation.getSelectedItemId() == R.id.navigation_home) {
-            date.setVisible(false);
-        } else {
-            date.setVisible(true);
-        }
+        //if (navigation.getSelectedItemId() == R.id.navigation_home) {
+            //date.setVisible(false);
+        //} else {
+            if (navigation.getSelectedItemId() == R.id.navigation_diarios
+                    && mainWebView.data_diarios != null) {
+                date.setVisible(true);
+            } else if (navigation.getSelectedItemId() == R.id.navigation_boletim
+                    && mainWebView.data_boletim != null) {
+                date.setVisible(true);
+            } else if (navigation.getSelectedItemId() == R.id.navigation_horario
+                    && mainWebView.data_horario != null) {
+                date.setVisible(true);
+            } else {
+                date.setVisible(false);
+            }
+        //}
         return true;
     }
 
@@ -322,6 +333,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void updateHome() {
         homeFragment.updateHeaderStatus(homeFragment.getView());
+        invalidateOptionsMenu();
     }
 
     @AddTrace(name = "setDiarios")
@@ -358,7 +370,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint("StaticFieldLeak")
     public void updateDiarios() {
-        diariosFragment.update(Data.getDiarios(this));
+        //diariosFragment.update(Data.getDiarios(this));
+        invalidateOptionsMenu();
 
         if (mainWebView.data_diarios != null) {
             Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios)
@@ -416,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint("StaticFieldLeak")
     public void updateBoletim() {
+        invalidateOptionsMenu();
 
         if (mainWebView.data_boletim != null && mainWebView.periodo_boletim != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim)
@@ -472,9 +486,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint("StaticFieldLeak")
     public void updateHorario() {
-        horarioFragment.update(Data.getHorario(this));
+        //horarioFragment.update(Data.getHorario(this));
+        invalidateOptionsMenu();
 
-        if (mainWebView.data_boletim != null && mainWebView.periodo_horario != null) {
+        if (mainWebView.data_horario != null && mainWebView.periodo_horario != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.title_horario)
                     + " ー " + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
                     + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
