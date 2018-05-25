@@ -1,4 +1,4 @@
-package com.qacademico.qacademico.Activity;
+package com.qacademico.qacademico.Activity.Settings;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;

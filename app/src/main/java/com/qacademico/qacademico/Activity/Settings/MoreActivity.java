@@ -1,4 +1,4 @@
-package com.qacademico.qacademico.Activity;
+package com.qacademico.qacademico.Activity.Settings;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.qacademico.qacademico.R;
 
+import java.util.Objects;
+
 public class MoreActivity extends AppCompatActivity {
 
     @Override
@@ -24,7 +26,7 @@ public class MoreActivity extends AppCompatActivity {
         ImageView tinf_logo = (ImageView) findViewById(R.id.tinf_logo);
         tinf_logo.setOnLongClickListener(v -> {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(1000);
+            Objects.requireNonNull(vibrator).vibrate(1000);
 
             Toast toast = Toast.makeText(getApplicationContext(), "\ud83d\udc03", Toast.LENGTH_SHORT);
             ViewGroup group = (ViewGroup) toast.getView();

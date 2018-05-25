@@ -29,13 +29,20 @@ import static com.qacademico.qacademico.Utilities.Utils.email_to;
 public class SendEmail {
 
     public static void openGmail(Context context) {
+        String body = null;
+        try {
+            body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+            body = "\n\n-----------------------------\nPlease don't remove this information\n Device OS: Android \n Device OS version: " +
+                    Build.VERSION.RELEASE + "\n App Version: " + body + "\n Device Brand: " + Build.BRAND +
+                    "\n Device Model: " + Build.MODEL + "\n Device Manufacturer: " + Build.MANUFACTURER;
+        } catch (PackageManager.NameNotFoundException ignored) {}
         String[] TO = {email_to};
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setData(Uri.parse("mailto:"));
         emailIntent.setType("text/plain");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "QAcadMobile| " + context.getResources().getString(R.string.email_assunto_bug));
-        emailIntent.putExtra(Intent.EXTRA_TEXT, context.getResources().getString(R.string.email_content_bug));
+        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
         final PackageManager pm = context.getPackageManager();
         final List<ResolveInfo> matches = pm.queryIntentActivities(emailIntent, 0);
         ResolveInfo best = null;

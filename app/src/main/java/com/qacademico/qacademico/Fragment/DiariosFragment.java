@@ -2,6 +2,7 @@ package com.qacademico.qacademico.Fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.url;
@@ -42,7 +44,7 @@ public class DiariosFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
         setDiarios(view);
@@ -64,7 +66,7 @@ public class DiariosFragment extends Fragment {
                 recyclerViewDiarios.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
                 adapter.setOnExpandListener(position -> {
-                    RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getActivity()) {
+                    RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
                         @Override
                         protected int getVerticalSnapPreference() {
                             return LinearSmoothScroller.SNAP_TO_ANY;
@@ -76,14 +78,14 @@ public class DiariosFragment extends Fragment {
                     }
                 });
 
-                ((MainActivity) getActivity()).fab_expand.setOnClickListener(v -> {
+                ((MainActivity) Objects.requireNonNull(getActivity())).fab_expand.setOnClickListener(v -> {
                     adapter.toggleAll();
                 });
             } else {
                 Toast.makeText(getContext(), "Vazio", Toast.LENGTH_SHORT).show();
             }
         } else {
-            ((MainActivity) getActivity()).showErrorConnection();
+            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
         }
     }
 
@@ -106,7 +108,7 @@ public class DiariosFragment extends Fragment {
             slash.setVisibility(View.GONE);
 
             new AlertDialog.Builder(getActivity()).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(getActivity(), R.drawable.ic_date_range_black_24dp,
+                    .setCustomTitle(Utils.customAlertTitle(Objects.requireNonNull(getActivity()), R.drawable.ic_date_range_black_24dp,
                             R.string.dialog_date_change, R.color.diarios_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 

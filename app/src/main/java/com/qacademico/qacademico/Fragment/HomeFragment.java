@@ -2,6 +2,7 @@ package com.qacademico.qacademico.Fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,7 @@ public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicke
     List<Guide> guide;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         configGuide();
@@ -36,7 +37,7 @@ public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicke
         adapter.setOnClick(this);
 
         SwipeRefreshLayout mySwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        mySwipeRefreshLayout.setOnRefreshListener(() -> getActivity().recreate());
+        mySwipeRefreshLayout.setOnRefreshListener(Objects.requireNonNull(getActivity())::recreate);
 
         RecyclerView recyclerViewGuide = (RecyclerView) view.findViewById(R.id.recycler_guide);
         FlexboxLayoutManager layout = new FlexboxLayoutManager(getActivity());
@@ -129,39 +130,39 @@ public class HomeFragment extends Fragment implements GuideAdapter.OnGuideClicke
     public void OnGuideClick(int position, View view) {
         switch (position) {
             case 0:
-                ((MainActivity) getActivity()).clickDiarios();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickDiarios();
                 break;
 
             case 1:
-                ((MainActivity) getActivity()).clickBoletim();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickBoletim();
                 break;
 
             case 2:
-                ((MainActivity) getActivity()).clickHorario();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickHorario();
                 break;
 
             case 3:
-                ((MainActivity) getActivity()).clickMateriais();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickMateriais();
                 break;
 
             case 4:
-                ((MainActivity) getActivity()).clickCalendario();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickCalendario();
                 break;
 
             case 5:
-                ((MainActivity) getActivity()).clickDocumentos();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickDocumentos();
                 break;
 
             case 6:
-                ((MainActivity) getActivity()).clickBugReport();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickBugReport();
                 break;
 
             case 7:
-                ((MainActivity) getActivity()).clickSug();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickSug();
                 break;
 
             case 8:
-                ((MainActivity) getActivity()).clickShareApp();
+                ((MainActivity) Objects.requireNonNull(getActivity())).clickShareApp();
                 break;
         }
     }

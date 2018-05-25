@@ -3,6 +3,7 @@ package com.qacademico.qacademico.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 
+import java.util.Objects;
+
 import static com.qacademico.qacademico.Utilities.Utils.pg_login;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
@@ -26,10 +29,10 @@ public class LoginFragment extends Fragment {
     ProgressBar progressBar_login;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        login_info = getActivity().getSharedPreferences("login_info", 0);
+        login_info = Objects.requireNonNull(getActivity()).getSharedPreferences("login_info", 0);
 
         EditText user_et = (TextInputEditText) view.findViewById(R.id.user_input_login);
         EditText password_et = (TextInputEditText) view.findViewById(R.id.password_input_login);

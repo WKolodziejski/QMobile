@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="General">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_autoload"
+            android:summary="Carrega todas as páginas automaticamente"
+            android:title="Autocarregar" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="key_notification"
+            android:summary="Receber notificação quando houver uma atualização de nota"
+            android:title="Notificações" />
+
+        <!--<CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_upload_over_wifi"
+            android:summary="@string/summary_upload_over_wifi"
+            android:title="@string/title_auto_upload" />
+
+        <ListPreference
+            android:defaultValue="3"
+            android:dialogTitle="@string/title_upload_quality"
+            android:entries="@array/pref_upload_quality_entries"
+            android:entryValues="@array/pref_upload_quality_values"
+            android:key="@string/key_upload_quality"
+            android:summary="@string/summary_upload_video_quality"
+            android:title="@string/title_upload_quality" />!-->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/title_activity_about">
+
+        <Preference
+            android:key="key_send_feedback"
+            android:summary="@string/home_bugreport_description"
+            android:title="@string/menu_bug" />
+
+        <Preference
+            android:key="key_changelog"
+            android:summary="@string/changelog_list"
+            android:title="@string/action_changes" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

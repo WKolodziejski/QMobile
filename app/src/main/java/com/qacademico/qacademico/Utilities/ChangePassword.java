@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
+import java.util.Objects;
+
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
@@ -32,7 +34,7 @@ public class ChangePassword {
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            View theView = inflater.inflate(R.layout.dialog_password_change, null);
+            View theView = Objects.requireNonNull(inflater).inflate(R.layout.dialog_password_change, null);
             TextInputEditText pass_atual = (TextInputEditText) theView.findViewById(R.id.pass_atual);
             TextInputEditText pass_nova = (TextInputEditText) theView.findViewById(R.id.pass_nova);
             TextInputEditText pass_nova_confirm = (TextInputEditText) theView.findViewById(R.id.pass_nova_confirm);

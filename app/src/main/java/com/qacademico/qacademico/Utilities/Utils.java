@@ -1,5 +1,6 @@
 package com.qacademico.qacademico.Utilities;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -19,7 +20,9 @@ import android.widget.TextView;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.qacademico.qacademico.R;
 
+import java.util.Objects;
 import java.util.Random;
+import java.util.zip.Inflater;
 
 public class Utils {
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
@@ -103,5 +106,16 @@ public class Utils {
             break;
         }
         return color;
+    }
+
+    public static void showChangelog(Context context){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View theView = Objects.requireNonNull(inflater).inflate(R.layout.dialog_changelog, null);
+        TextView changes = (TextView) theView.findViewById(R.id.changelog);
+        changes.setText(context.getResources().getString(R.string.changelog_list));
+        new AlertDialog.Builder(context).setView(theView)
+                .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.changes_dialog))
+                .setPositiveButton(R.string.dialog_close, null)
+                .show();
     }
 }

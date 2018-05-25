@@ -7,7 +7,7 @@
 
     <color name="check">@color/blue_500</color>
     <color name="ok">@color/green_500</color>
-    <color name="error">@color/red_500</color>
+    <color name="error">#B00020</color>
     <color name="warning">@color/amber_500</color>
 
     <color name="happy">@color/green_500</color>

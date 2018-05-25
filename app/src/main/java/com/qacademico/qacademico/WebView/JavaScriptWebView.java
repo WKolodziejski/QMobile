@@ -303,7 +303,7 @@ public class JavaScriptWebView {
                                 aux = "null";
                             }
                         }
-                        diarios.add(new Diarios(nomeMateria, etapas, context));
+                        diarios.add(new Diarios(nomeMateria, etapas));
                     }
 
                     Collections.sort(diarios, (d1, d2) -> d1.getNomeMateria().compareTo(d2.getNomeMateria()));

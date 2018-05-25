@@ -1,9 +1,5 @@
 package com.qacademico.qacademico.Class;
 
-/*import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;*/
 import android.content.Context;
 
 import java.io.Serializable;
@@ -15,7 +11,7 @@ public class Diarios implements Serializable {
     private boolean isExpanded;
     private boolean anim;
 
-    public Diarios(String nomeMateria, List<Etapa> etapaList, Context context) {
+    public Diarios(String nomeMateria, List<Etapa> etapaList) {
         this.nomeMateria = nomeMateria;
         this.etapaList = etapaList;
         this.anim = false;
@@ -45,5 +41,4 @@ public class Diarios implements Serializable {
     public void setAnim(boolean anim){
         this.anim = anim;
     }
-
 }

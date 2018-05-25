@@ -45,6 +45,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.qacademico.qacademico.Activity.Settings.AboutActivity;
+import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.Class.Horario;
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.navigation) BottomNavigationView navigation;
     Snackbar snackBar;
     @BindView(R.id.nav_view) NavigationView navigationView;
-    @BindView(R.id.toolbar_main) Toolbar toolbar;
+    @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
     FirebaseRemoteConfig remoteConfig;
@@ -298,19 +300,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             CheckUpdate.updateApp(this, true);
             return true;
         } else if (id == R.id.action_about) {
-            Intent about = new Intent(getApplicationContext(), AboutActivity.class);
-            startActivity(about);
+            startActivity(new Intent(MainActivity.this, AboutActivity.class));
             return true;
         } else if (id == R.id.action_changes) {
-            View theView = inflater.inflate(R.layout.dialog_changelog, null);
-            TextView changes = (TextView) theView.findViewById(R.id.changelog);
-            changes.setText(getResources().getString(R.string.changelog_list));
-            new AlertDialog.Builder(this).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.changes_dialog))
-                    .setPositiveButton(R.string.dialog_close, null)
-                    .show();
+
             return true;
-        }
+        } else if (id == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        return true;
+    }
         return super.onOptionsItemSelected(item);
     }
 
