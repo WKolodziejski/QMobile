@@ -1,31 +1,30 @@
 package com.qacademico.qacademico.Activity.Settings;
 
-import android.app.AlertDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toolbar;
-
+import android.view.ViewGroup;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.CheckUpdate;
 import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
 
+import java.util.Objects;
+
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    //private static final String TAG = SettingsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getLayoutInflater().inflate(R.layout.action_bar, (ViewGroup)findViewById(android.R.id.content));
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
     }
@@ -34,6 +33,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
             addPreferencesFromResource(R.xml.pref_main);
 
             bindPreferenceSummaryToValue(findPreference("key_autoload"));
@@ -42,13 +42,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             Preference feedback = findPreference("key_send_feedback");
             feedback.setOnPreferenceClickListener(preference -> {
-                sendFeedback(getActivity());
+                SendEmail.openGmail(getActivity());
                 return true;
             });
 
             Preference changelog = findPreference("key_changelog");
             changelog.setOnPreferenceClickListener(preference -> {
                 Utils.showChangelog(getActivity());
+                return true;
+            });
+
+            Preference update = findPreference("key_update");
+            update.setOnPreferenceClickListener(preference -> {
+                CheckUpdate.updateApp(getActivity(), true);
+                return true;
+            });
+
+            Preference about = findPreference("key_about");
+            about.setOnPreferenceClickListener(preference -> {
+                startActivity(new Intent(getActivity(), AboutActivity.class));
                 return true;
             });
         }
@@ -94,8 +106,4 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return true;
         }
     };
-
-    public static void sendFeedback(Context context) {
-        SendEmail.openGmail(context);
-    }
 }

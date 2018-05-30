@@ -2,32 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    android:background="@color/colorPrimaryDark"
+    android:layout_height="168dp"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:id="@+id/nav_image"
     >
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        >
+
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
+            android:layout_height="80dp"
             >
 
-        <ImageView
-            android:id="@+id/img_foto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            app:srcCompat="@drawable/icon_launcher_white"/>
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:tint="@color/colorAccent"
+                app:srcCompat="@drawable/ic_panorama_fish_eye_black_24dp"/>
 
-        </LinearLayout>
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/sigla"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:layout_gravity="center"
+                android:textAlignment="center"/>
+
+        </android.support.design.widget.CoordinatorLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -38,26 +51,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/nav_header_vertical_spacing"
-                android:id="@+id/msg"
-                android:textColor="@color/white"
-                android:shadowColor="@color/colorAccent"
-                android:shadowDx="5"
-                android:shadowDy="5"
-                android:shadowRadius="2"
+                android:paddingTop="8dp"
+                android:id="@+id/name"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
             <TextView
                 android:id="@+id/matricula"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:textColor="@color/white"
-                android:shadowColor="@color/colorAccent"
-                android:shadowDx="5"
-                android:shadowDy="5"
-                android:shadowRadius="2"
+                android:textColor="@color/colorAccent"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/black_dividers"/>
 
 </LinearLayout>

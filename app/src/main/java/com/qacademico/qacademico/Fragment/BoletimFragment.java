@@ -56,6 +56,9 @@ public class BoletimFragment extends Fragment {
 
             if (boletim.size() != 0) {
 
+                ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
+                ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
+
                 LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
                 ArrayList<ArrayList<String>> mTableDatas = new ArrayList<>();
@@ -191,7 +194,7 @@ public class BoletimFragment extends Fragment {
                 mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
 
             } else {
-                Toast.makeText(getContext(), "Vazio", Toast.LENGTH_SHORT).show();
+                ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
             ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();

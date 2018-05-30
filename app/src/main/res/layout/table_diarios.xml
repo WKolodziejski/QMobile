@@ -24,7 +24,7 @@
             android:layout_height="25dp"
             android:id="@+id/openDiarios"
             android:tint="@color/colorAccent"
-            android:src="@drawable/ic_expand_more_black_24dp"/>
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
 
         <TextView
             android:layout_width="match_parent"

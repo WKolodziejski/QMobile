@@ -56,6 +56,10 @@ public class DiariosFragment extends Fragment {
         if (diarios != null) {
 
             if (diarios.size() != 0) {
+
+                ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
+                ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
+
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
@@ -82,7 +86,7 @@ public class DiariosFragment extends Fragment {
                     adapter.toggleAll();
                 });
             } else {
-                Toast.makeText(getContext(), "Vazio", Toast.LENGTH_SHORT).show();
+                ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
             ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();

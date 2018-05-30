@@ -61,6 +61,9 @@ public class HorarioFragment extends Fragment {
 
             if (horario.size() != 0) {
 
+                ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
+                ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
+
                 setColors();
 
                 WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
@@ -103,7 +106,7 @@ public class HorarioFragment extends Fragment {
                     return week;
                 });
             } else {
-                Toast.makeText(getContext(), "Vazio", Toast.LENGTH_SHORT).show();
+                ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
             ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();

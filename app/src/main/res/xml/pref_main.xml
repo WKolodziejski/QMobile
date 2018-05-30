@@ -6,13 +6,15 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="key_autoload"
-            android:summary="Carrega todas as páginas automaticamente"
+            android:summaryOn="@string/pref_autoload_true"
+            android:summaryOff="@string/pref_autoload_false"
             android:title="Autocarregar" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="key_notification"
-            android:summary="Receber notificação quando houver uma atualização de nota"
+            android:summaryOn="@string/pref_notifications_true"
+            android:summaryOff="@string/pref_notifications_false"
             android:title="Notificações" />
 
         <!--<CheckBoxPreference
@@ -41,8 +43,17 @@
 
         <Preference
             android:key="key_changelog"
-            android:summary="@string/changelog_list"
+            android:summary="@string/pref_changes"
             android:title="@string/action_changes" />
+
+        <Preference
+            android:key="key_update"
+            android:summary="@string/pref_update"
+            android:title="@string/action_att" />
+
+        <Preference
+            android:key="key_about"
+            android:title="@string/action_about" />
 
     </PreferenceCategory>
 
