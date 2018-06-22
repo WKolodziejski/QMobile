@@ -10,6 +10,13 @@
             android:summaryOff="@string/pref_autoload_false"
             android:title="Autocarregar" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="key_savedata"
+            android:summaryOn="Salvar"
+            android:summaryOff="Não Salvar"
+            android:title="Offline" />
+
         <SwitchPreference
             android:defaultValue="true"
             android:key="key_notification"

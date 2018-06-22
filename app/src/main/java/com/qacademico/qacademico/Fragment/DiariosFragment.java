@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -29,18 +30,15 @@ import java.util.Objects;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
-public class DiariosFragment extends Fragment {
+public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView mainWebView = SingletonWebView.getInstance();
-    List<Diarios> diarios;
     DiariosAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            diarios = (List<Diarios>) getArguments().getSerializable("Diarios");
-        }
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageFinishedListener(this);
     }
 
     @Override
@@ -53,21 +51,26 @@ public class DiariosFragment extends Fragment {
     }
 
     private void setDiarios(View view) {
-        if (diarios != null) {
+        if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList != null) {
 
-            if (diarios.size() != 0) {
+            if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList.size() != 0) {
 
+                ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
 
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                adapter = new DiariosAdapter(diarios, getActivity());
+                adapter = new DiariosAdapter(((MainActivity) Objects.requireNonNull(getActivity())).diariosList, getActivity());
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
                 recyclerViewDiarios.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
+                        LinearLayoutManager.VERTICAL);
+                recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
 
                 adapter.setOnExpandListener(position -> {
                     RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
@@ -87,9 +90,11 @@ public class DiariosFragment extends Fragment {
                 });
             } else {
                 ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
+                ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
             }
         } else {
-            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
+            ((MainActivity) Objects.requireNonNull(getActivity())).showRoundProgressbar();
+            ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
         }
     }
 
@@ -129,10 +134,18 @@ public class DiariosFragment extends Fragment {
         }
     }
 
-    public void update(List<Diarios> diarios) {
+    @Override
+    public void onPageUpdate(List<?> list) {
+        if (mainWebView.data_diarios != null) {
+            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
+                    .getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios)
+                    + "・" + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
+        }
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<Diarios>) list;
+
         if (adapter != null) {
-            this.diarios = diarios;
-            adapter.update(this.diarios);
+            adapter.update(((MainActivity) Objects.requireNonNull(getActivity())).diariosList);
         } else {
             setDiarios(getView());
         }

@@ -5,17 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
-import android.widget.Toast;
 
-import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.alamkanak.weekview.WeekViewLoader;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.R;
@@ -32,18 +28,15 @@ import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 
-public class HorarioFragment extends Fragment {
+public class HorarioFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView mainWebView = SingletonWebView.getInstance();
-    List<Horario> horario;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            horario = (List<Horario>) getArguments().getSerializable("Horario");
-            setColors();
-        }
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageFinishedListener(this);
     }
 
     @Override
@@ -57,9 +50,9 @@ public class HorarioFragment extends Fragment {
 
     private void setHorario(View view) {
 
-        if (horario != null) {
+        if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList != null) {
 
-            if (horario.size() != 0) {
+            if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.size() != 0) {
 
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
@@ -78,22 +71,22 @@ public class HorarioFragment extends Fragment {
 
                     List<WeekViewEvent> week = new ArrayList<>();
 
-                    for (int i = 0; i < horario.size(); i++) {
+                    for (int i = 0; i < ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.size(); i++) {
                         Calendar startTime = Calendar.getInstance();
                         startTime.set(Calendar.MONTH, newMonth - 1);
                         startTime.set(Calendar.YEAR, newYear);
-                        startTime.set(Calendar.DAY_OF_WEEK, horario.get(i).getDay());
-                        startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(horario.get(i).getDate())));
-                        startTime.set(Calendar.MINUTE, trimm(trimta(horario.get(i).getDate())));
+                        startTime.set(Calendar.DAY_OF_WEEK, ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getDay());
+                        startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getDate())));
+                        startTime.set(Calendar.MINUTE, trimm(trimta(((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getDate())));
 
                         Calendar endTime = (Calendar) startTime.clone();
                         endTime.set(Calendar.MONTH, newMonth - 1);
                         endTime.set(Calendar.YEAR, newYear);
-                        endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(horario.get(i).getDate())));
-                        endTime.set(Calendar.MINUTE, trimm(trimtd(horario.get(i).getDate())));
+                        endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getDate())));
+                        endTime.set(Calendar.MINUTE, trimm(trimtd(((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getDate())));
 
-                        WeekViewEvent event = new WeekViewEvent(i, horario.get(i).getMateria(), startTime, endTime);
-                        event.setColor(horario.get(i).getColor());
+                        WeekViewEvent event = new WeekViewEvent(i, ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getMateria(), startTime, endTime);
+                        event.setColor(((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getColor());
 
                         week.add(event);
 
@@ -109,7 +102,7 @@ public class HorarioFragment extends Fragment {
                 ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
-            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
+            ((MainActivity) Objects.requireNonNull(getActivity())).showRoundProgressbar();
         }
     }
 
@@ -154,30 +147,36 @@ public class HorarioFragment extends Fragment {
     }
 
     private void setColors() {
-        for (int i = 0; i < horario.size(); i++) {
-            if (horario.get(i).getColor() == 0) {
-                for (int j = 0; j < horario.size(); j++) {
-                    if (horario.get(i).getMateria().equals(horario.get(j).getMateria())) {
-                        if (horario.get(j).getColor() == 0) {
-                            if (horario.get(i).getColor() == 0) {
-                                horario.get(i).setColor(Utils.getramdomColorGenerator(getContext()));
-                                horario.get(j).setColor(horario.get(i).getColor());
+        for (int i = 0; i < ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.size(); i++) {
+            if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getColor() == 0) {
+                for (int j = 0; j < ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.size(); j++) {
+                    if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getMateria().equals(
+                            ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(j).getMateria())) {
+                        if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(j).getColor() == 0) {
+                            if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getColor() == 0) {
+                                ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).setColor(
+                                        Utils.getRandomColorGenerator(Objects.requireNonNull(getContext())));
+                                ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(j).setColor(
+                                        ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getColor());
                             } else {
-                                horario.get(j).setColor(horario.get(i).getColor());
+                                ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(j).setColor(
+                                        ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getColor());
                             }
                         } else {
-                            horario.get(i).setColor(horario.get(j).getColor());
+                            ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).setColor(
+                                    ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(j).getColor());
                         }
                     } else {
-                        if (horario.get(i).getColor() == 0) {
-                            horario.get(i).setColor(Utils.getramdomColorGenerator(getContext()));
+                        if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).getColor() == 0) {
+                            ((MainActivity) Objects.requireNonNull(getActivity())).horarioList.get(i).setColor(
+                                    Utils.getRandomColorGenerator(Objects.requireNonNull(getContext())));
                         }
                     }
                 }
             }
         }
 
-        Data.saveObject(getContext(), horario, ".horario");
+        Data.saveObject(Objects.requireNonNull(getContext()), ((MainActivity) Objects.requireNonNull(getActivity())).horarioList, Utils.HORARIO);
     }
 
     private int trimh(String string) {
@@ -199,8 +198,17 @@ public class HorarioFragment extends Fragment {
         string = string.substring(string.indexOf("~") + 1);
         return string;
     }
-    public void update(List<Horario> horario) {
-        this.horario = horario;
+
+    @Override
+    public void onPageUpdate(List<?> list) {
+        if (mainWebView.data_horario != null && mainWebView.periodo_horario != null) {
+            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
+                    .getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
+                    + "・" + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
+                    + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
+        }
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).horarioList = (List<Horario>) list;
         setHorario(getView());
     }
 }

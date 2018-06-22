@@ -4,24 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/colorPrimaryLight"
     >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/main_font_size"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:textStyle="bold"
+        android:textColor="@color/white"
+        android:background="@color/colorAccent"
         android:id="@+id/aux"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_diarios_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="5dp"
-        android:background="@color/colorPrimaryLight"
         android:fitsSystemWindows="true"/>
 
 </LinearLayout>

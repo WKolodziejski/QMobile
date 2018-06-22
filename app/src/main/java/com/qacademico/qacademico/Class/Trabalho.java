@@ -8,14 +8,16 @@ public class Trabalho implements Serializable {
     private final String max;
     private final String nota;
     private final String tipo;
+    private final String data;
     private final int tint;
 
-    public Trabalho(String nome, String peso, String max, String nota, String tipo, int tint) {
+    public Trabalho(String nome, String peso, String max, String nota, String tipo, String data, int tint) {
         this.nome = nome;
         this.peso = peso;
         this.max = max;
         this.nota = nota;
         this.tipo = tipo;
+        this.data = data;
         this.tint = tint;
     }
 
@@ -37,6 +39,10 @@ public class Trabalho implements Serializable {
 
     public String getTipo() {
         return tipo;
+    }
+
+    public String getData() {
+        return data;
     }
 
     public int getTint() {

@@ -16,9 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-
 import java.util.Objects;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
@@ -30,7 +28,7 @@ public class ChangePassword {
 
         if (Utils.isConnected(context) && mainWebView.pg_home_loaded) {
 
-            SharedPreferences login_info = context.getSharedPreferences("login_info", 0);
+            SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -49,19 +47,18 @@ public class ChangePassword {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (!pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                    if (!pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                         pass_atual_ly.setErrorEnabled(true);
-                        pass_atual_ly.setError("teste");
                     }
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                    if (pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                         pass_atual_ly.setErrorEnabled(false);
                     }
                     if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
-                            && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                            && pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                         img.setImageResource(R.drawable.ic_done_all_black_24dp);
                         txt.setText(R.string.passchange_txt_equals);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -87,7 +84,7 @@ public class ChangePassword {
                     .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.password_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
-                                && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                                && pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                             mainWebView.new_password = pass_nova.getText().toString();
                             //showProgressDialog();
                             mainWebView.html.loadUrl(url + pg_change_password);
@@ -116,7 +113,7 @@ public class ChangePassword {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                if (!pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                     pass_atual_ly.setErrorEnabled(true);
                 }
                 if (pass_nova.getText().toString().equals("") || pass_nova_confirm.getText().toString().equals("")) {
@@ -145,10 +142,12 @@ public class ChangePassword {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                if (pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                     pass_atual_ly.setErrorEnabled(false);
                 }
-                if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8 && pass_atual.getText().toString().equals(login_info.getString("password", ""))) {
+                if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString())
+                        && pass_nova.getText().length() >= 8
+                        && pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                     img.setImageResource(R.drawable.ic_done_all_black_24dp);
                     txt.setText(R.string.passchange_txt_equals);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

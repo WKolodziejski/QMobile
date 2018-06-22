@@ -3,6 +3,7 @@ package com.qacademico.qacademico.Adapter.Diarios;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,16 +24,16 @@ public class TrabalhoAdapter extends RecyclerView.Adapter{
         this.context = context;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_diarios_item, parent, false);
-        TrabalhoViewHolder holder = new TrabalhoViewHolder(view);
-        return holder;
+        return new TrabalhoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         final TrabalhoViewHolder holder = (TrabalhoViewHolder) viewHolder;
         Trabalho trabalho = trabalhos.get(position) ;
 
@@ -41,11 +42,10 @@ public class TrabalhoAdapter extends RecyclerView.Adapter{
         holder.peso.setText(trabalho.getPeso());
         holder.nota.setText(trabalho.getNota());
         holder.tipo.setText(trabalho.getTipo());
+        holder.data.setText(trabalho.getData());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Drawable color = context.getResources().getDrawable(R.drawable.layout_bg_header_left);
-            color.setTint(trabalho.getTint());
-            holder.header.setBackground(color);
+            holder.tipo.setTextColor(trabalho.getTint());
         }
     }
 

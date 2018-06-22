@@ -12,7 +12,10 @@ import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
+
+import java.util.List;
 
 import static com.qacademico.qacademico.Utilities.Utils.pg_erro;
 import static com.qacademico.qacademico.Utilities.Utils.pg_login;
@@ -36,12 +39,12 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.login_fragment, loginFragment, "LOGIN");
+        fragmentTransaction.replace(R.id.login_fragment, loginFragment, Utils.LOGIN);
         fragmentTransaction.commit();
     }
 
     @Override
-    public void onPageFinish(String url_p) {
+    public void onPageFinish(String url_p, List<?> list) {
         if (url_p.equals(url + pg_login)) {
             finish();
         } else if (url_p.equals(url + pg_erro)) {

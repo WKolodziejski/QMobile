@@ -51,7 +51,7 @@
             android:id="@+id/recycler_diarios_etapa"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="10dp"
+            android:background="@color/white"
             android:fitsSystemWindows="true"/>
 
         <LinearLayout
@@ -86,11 +86,5 @@
         </LinearLayout>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark"
-        android:id="@+id/div_diarios_down"/>
 
 </LinearLayout>

@@ -2,9 +2,12 @@ package com.qacademico.qacademico.WebView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import java.util.List;
 
 public class SingletonWebView {
     private static SingletonWebView singleton;
@@ -13,7 +16,7 @@ public class SingletonWebView {
     private OnRecivedError onRecivedError;
     public WebView html;
     public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
-            isChangePasswordPage, isLoginPage;
+            pg_login_loaded, isChangePasswordPage, isLoginPage;
     public String new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario = "";
     public String[] data_boletim, data_horario, data_diarios, periodo_horario, periodo_boletim;
     public int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario,
@@ -39,15 +42,15 @@ public class SingletonWebView {
         faller.setLoadWithOverviewMode(true);
 
         JavaScriptWebView javaScriptWebView = new JavaScriptWebView(activity);
-        javaScriptWebView.setOnPageFinished(url_p -> {
+        javaScriptWebView.setOnPageFinished((url_p, list) -> {
             Log.i("JavaScriptInterface", "onFinish");
-            onPageFinished.onPageFinish(url_p);
+            onPageFinished.onPageFinish(url_p, list);
         });
 
         ClientWebView clientWebView = new ClientWebView(activity.getApplicationContext());
         clientWebView.setOnPageFinishedListener(url_p -> {
             Log.i("JavaScriptInterface", "onFinish");
-            onPageFinished.onPageFinish(url_p);
+            onPageFinished.onPageFinish(url_p, null);
         });
 
         clientWebView.setOnPageStartedListener(url_p -> {
@@ -69,7 +72,7 @@ public class SingletonWebView {
     }
 
     public interface OnPageFinished {
-        void onPageFinish(String url_p);
+        void onPageFinish(String url_p, List<?> list);
     }
 
     public void setOnPageStartedListener(OnPageStarted onPageStarted){

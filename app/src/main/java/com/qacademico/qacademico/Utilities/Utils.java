@@ -25,7 +25,20 @@ import java.util.Random;
 import java.util.zip.Inflater;
 
 public class Utils {
-    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    public static final String HOME = ".Home";
+    public static final String HORARIO = ".Horario";
+    public static final String DIARIOS = ".Diarios";
+    public static final String BOLETIM = ".Boletim";
+    public static final String LOGIN = ".Login";
+    public static final String LOGIN_VALID = ".Valido";
+    public static final String LOGIN_NAME = ".Nome";
+    public static final String LOGIN_INFO = ".Login_Info";
+    public static final String LOGIN_REGISTRATION = ".Matricula";
+    public static final String LOGIN_PASSWORD = ".Senha";
+    public static final String LOGIN_DAY = ".Dia";
+    public static final String LOGIN_HOUR = ".Hora";
+    public static final String LOGIN_MINUTE = ".Minuto";
+
     public static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_materiais, pg_change_password,
             pg_erro, download_update_url, email_to, email_from, email_from_pwd;
 
@@ -62,7 +75,7 @@ public class Utils {
     */
     public static View customAlertTitle(Context context, int img, int txt, int color) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View theTitle = inflater.inflate(R.layout.dialog_title, null);
+        View theTitle = Objects.requireNonNull(inflater).inflate(R.layout.dialog_title, null);
         ImageView title_img = (ImageView) theTitle.findViewById(R.id.dialog_img);
         TextView title_txt = (TextView) theTitle.findViewById(R.id.dialog_txt);
         LinearLayout title_bckg = (LinearLayout) theTitle.findViewById(R.id.dialog_bckg);
@@ -72,7 +85,7 @@ public class Utils {
         return theTitle;
     }
 
-    public static int getramdomColorGenerator(Context context) {
+    public static int getRandomColorGenerator(Context context) {
         Resources res = context.getResources();
         Random rnd = new Random();
         int color = rnd.nextInt(9);

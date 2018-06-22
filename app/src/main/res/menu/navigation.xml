@@ -16,6 +16,11 @@
         android:icon="@drawable/ic_list"
         android:title="@string/title_boletim" />
 
+    <!--<item
+        android:id="@+id/navigation_calendario"
+        android:icon="@drawable/ic_event_black_24dp"
+        android:title="@string/title_calendario" />!-->
+
     <item
         android:id="@+id/navigation_horario"
         android:icon="@drawable/ic_access_alarm_black_24dp"

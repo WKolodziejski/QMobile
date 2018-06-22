@@ -1,6 +1,7 @@
 package com.qacademico.qacademico.Adapter.Diarios;
 
 import android.content.Context;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -43,6 +44,10 @@ public class EtapaAdapter extends RecyclerView.Adapter {
         holder.recyclerView.setAdapter(new TrabalhoAdapter(etapa.getTrabalhoList(), context));
 
         holder.recyclerView.setLayoutManager(layout);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.recyclerView.getContext(),
+                LinearLayoutManager.VERTICAL);
+        holder.recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override

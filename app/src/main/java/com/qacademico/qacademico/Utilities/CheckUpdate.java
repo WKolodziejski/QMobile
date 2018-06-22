@@ -25,9 +25,9 @@ import java.io.IOException;
 import static com.qacademico.qacademico.Utilities.Utils.download_update_url;
 
 public class CheckUpdate {
-    public static float verLocal = 0;
-    public static float verWeb = 0;
-    public static String linkAtt = "";
+    private static float verLocal = 0;
+    private static float verWeb = 0;
+    private static String linkAtt = "";
 
     public static void updateApp(Activity activity, boolean showNotFound) {
 
@@ -46,15 +46,15 @@ public class CheckUpdate {
                                         != PackageManager.PERMISSION_GRANTED) {
 
                                     ActivityCompat.requestPermissions(activity,
-                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                            Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                                 }
                             }
-                            if (Utils.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED && Build.VERSION.SDK_INT >= 23) {
+                            CheckUpdate.startDownload(context, CheckUpdate.checkUpdate(context));
+                            /*if (PackageManager.PERMISSION_GRANTED == 0 && Build.VERSION.SDK_INT >= 23) {
                                 CheckUpdate.startDownload(context, CheckUpdate.checkUpdate(context));
-                            } else if (Build.VERSION.SDK_INT < 23) {
+                            } else {
                                 CheckUpdate.startDownload(context, CheckUpdate.checkUpdate(context));
-                            }
+                            }*/
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
                         .show();

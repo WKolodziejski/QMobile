@@ -49,6 +49,7 @@
     <string name="menu_communication">Comunicação</string>
     <string name="menu_share">Compartilhar</string>
     <string name="menu_changes">Sugerir Mudanças</string>
+    <string name="menu_settigs">Configurações</string>
     <string name="menu_bug">Reportar Bug</string>
     <string name="dialog_quit_yes">Sim</string>
     <string name="dialog_quit_no">Não</string>
@@ -124,6 +125,7 @@
     <string name="home_hello">Olá!</string>
     <string name="fab_expand">Expandir/Recolher</string>
     <string name="action_date">Selecionar Data</string>
+    <string name="action_column">Organizar Tabela</string>
     <string name="more_devs">Desenvolvido por:</string>
     <string name="more_free">Código Aberto</string>
     <string name="more_colab">Colabore com este projeto!</string>

@@ -168,10 +168,12 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         int a = 0;
         int f = 0;
         for (int i = 0; i < diarios.size(); i++) {
-            if (diarios.get(i).getExpanded()) {
-                a++;
-            } else {
-                f++;
+            if (diarios.get(i).getEtapaList().size() > 0) {
+                if (diarios.get(i).getExpanded()) {
+                    a++;
+                } else {
+                    f++;
+                }
             }
         }
         if (a > f) {
@@ -186,12 +188,14 @@ public class DiariosAdapter extends RecyclerView.Adapter {
             Toast.makeText(context, context.getResources().getString(R.string.message_collapsed), Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < diarios.size(); i++) {
-                if (diarios.get(i).getExpanded()) {
-                    diarios.get(i).setAnim(false);
-                } else {
-                    diarios.get(i).setAnim(true);
+                if (diarios.get(i).getEtapaList().size() > 0) {
+                    if (diarios.get(i).getExpanded()) {
+                        diarios.get(i).setAnim(false);
+                    } else {
+                        diarios.get(i).setAnim(true);
+                    }
+                    diarios.get(i).setExpanded(true);
                 }
-                diarios.get(i).setExpanded(true);
             }
             Toast.makeText(context, context.getResources().getString(R.string.message_expanded), Toast.LENGTH_SHORT).show();
         }

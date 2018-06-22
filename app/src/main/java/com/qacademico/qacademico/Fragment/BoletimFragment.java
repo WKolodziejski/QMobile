@@ -29,17 +29,15 @@ import java.util.Objects;
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
-public class BoletimFragment extends Fragment {
+public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView mainWebView = SingletonWebView.getInstance();
-    List<Boletim> boletim;
+    public boolean show_by_semestre = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            boletim = (List<Boletim>) getArguments().getSerializable("Boletim");
-        }
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageFinishedListener(this);
     }
 
     @Override
@@ -52,9 +50,9 @@ public class BoletimFragment extends Fragment {
     }
 
     private void setBoletim(View view) {
-        if (boletim != null) {
+        if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList != null) {
 
-            if (boletim.size() != 0) {
+            if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size() != 0) {
 
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
@@ -67,125 +65,90 @@ public class BoletimFragment extends Fragment {
 
                 mfristData.add(getResources().getString(R.string.boletim_Materia));
 
-                String[] header = {
-                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                        getResources().getString(R.string.boletim_TFaltas)
-                };
+                if (show_by_semestre) {
 
-                mfristData.addAll(Arrays.asList(header));
+                    Toast.makeText(getContext(), "Sort by period", Toast.LENGTH_SHORT).show();
 
-                mTableDatas.add(mfristData);
+                    String[] header = {
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                            getResources().getString(R.string.boletim_TFaltas)
+                    };
 
-                for (int i = 0; i < boletim.size(); i++) {
-                    ArrayList<String> mRowDatas = new ArrayList<>();
-                    mRowDatas.add(boletim.get(i).getMateria());
-                    mRowDatas.add(boletim.get(i).getNotaPrimeiraEtapa());
-                    mRowDatas.add(boletim.get(i).getNotaSegundaEtapa());
-                    mRowDatas.add(boletim.get(i).getFaltasPrimeiraEtapa());
-                    mRowDatas.add(boletim.get(i).getFaltasSegundaEtapa());
-                    mRowDatas.add(boletim.get(i).getRPPrimeiraEtapa());
-                    mRowDatas.add(boletim.get(i).getRPSegundaEtapa());
-                    mRowDatas.add(boletim.get(i).getNotaFinalPrimeiraEtapa());
-                    mRowDatas.add(boletim.get(i).getNotaFinalSegundaEtapa());
-                    mRowDatas.add(boletim.get(i).getTfaltas());
-                    mTableDatas.add(mRowDatas);
+                    mfristData.addAll(Arrays.asList(header));
+
+                    mTableDatas.add(mfristData);
+
+                    for (int i = 0; i < ((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size(); i++) {
+                        ArrayList<String> mRowDatas = new ArrayList<>();
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getMateria());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getTfaltas());
+                        mTableDatas.add(mRowDatas);
+                    }
+                } else {
+
+                    Toast.makeText(getContext(), "Sort by type", Toast.LENGTH_SHORT).show();
+
+                    String[] header = {
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                            getResources().getString(R.string.boletim_TFaltas)
+                    };
+
+                    mfristData.addAll(Arrays.asList(header));
+
+                    mTableDatas.add(mfristData);
+
+                    for (int i = 0; i < ((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size(); i++) {
+                        ArrayList<String> mRowDatas = new ArrayList<>();
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getMateria());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalPrimeiraEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalSegundaEtapa());
+                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getTfaltas());
+                        mTableDatas.add(mRowDatas);
+                    }
                 }
 
                 final LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
 
-                mLockTableView.setLockFristColumn(true)
+                mLockTableView
+                        .setLockFristColumn(true)
                         .setLockFristRow(true)
                         .setMaxColumnWidth(100)
                         .setMinColumnWidth(60)
-                        //.setColumnWidth(1,30)
-                        //.setColumnWidth(2,20)
                         .setMinRowHeight(20)
                         .setMaxRowHeight(80)
-                        .setTextViewSize(16)
-                        .setFristRowBackGroudColor(R.color.boletim_toolbar)
-                        .setTableHeadTextColor(R.color.boletim_actionbar)
+                        .setTextViewSize(15)
+                        .setFristRowBackGroudColor(R.color.colorAccent)
+                        .setTableHeadTextColor(R.color.white)
                         .setTableContentTextColor(R.color.colorAccent)
                         .setNullableString("-")
-                        /*.setTableViewListener(new LockTableView.OnTableViewListener() {
-                            @Override
-                            public void onTableViewScrollChange(int x, int y) {
-    //                        Log.e("滚动值","["+x+"]"+"["+y+"]");
-                            }
-                        })//设置横向滚动回调监听
-                        .setTableViewRangeListener(new LockTableView.OnTableViewRangeListener() {
-                            @Override
-                            public void onLeft(HorizontalScrollView view) {
-                                Log.e("滚动边界","滚动到最左边");
-                            }
-
-                            @Override
-                            public void onRight(HorizontalScrollView view) {
-                                Log.e("滚动边界","滚动到最右边");
-                            }
-                        })//设置横向滚动边界监听
-                        .setOnLoadingListener(new LockTableView.OnLoadingListener() {
-                            @Override
-                            public void onRefresh(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<String>> mTableDatas) {
-                                Log.e("onRefresh",Thread.currentThread().toString());
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-    //                                Log.e("现有表格数据", mTableDatas.toString());
-                                        //构造假数据
-                                        ArrayList<ArrayList<String>> mTableDatas = new ArrayList<ArrayList<String>>();
-                                        ArrayList<String> mfristData = new ArrayList<String>();
-                                        mfristData.add("标题");
-                                        for (int i = 0; i < 10; i++) {
-                                            mfristData.add("标题" + i);
-                                        }
-                                        mTableDatas.add(mfristData);
-                                        for (int i = 0; i < 20; i++) {
-                                            ArrayList<String> mRowDatas = new ArrayList<String>();
-                                            mRowDatas.add("标题" + i);
-                                            for (int j = 0; j < 10; j++) {
-                                                mRowDatas.add("数据" + j);
-                                            }
-                                            mTableDatas.add(mRowDatas);
-                                        }
-                                        mLockTableView.setTableDatas(mTableDatas);
-                                        mXRecyclerView.refreshComplete();
-                                    }
-                                }, 1000);
-                            }
-
-                            @Override
-                            public void onLoadMore(final XRecyclerView mXRecyclerView, final ArrayList<ArrayList<String>> mTableDatas) {
-                                Log.e("onLoadMore",Thread.currentThread().toString());
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (mTableDatas.size() <= 60) {
-                                            for (int i = 0; i < 10; i++) {
-                                                ArrayList<String> mRowDatas = new ArrayList<String>();
-                                                mRowDatas.add("标题" + (mTableDatas.size() - 1));
-                                                for (int j = 0; j < 10; j++) {
-                                                    mRowDatas.add("数据" + j);
-                                                }
-                                                mTableDatas.add(mRowDatas);
-                                            }
-                                            mLockTableView.setTableDatas(mTableDatas);
-                                        } else {
-                                            mXRecyclerView.setNoMore(true);
-                                        }
-                                        mXRecyclerView.loadMoreComplete();
-                                    }
-                                }, 1000);
-                            }
-                        })*/
                         .setOnItemClickListenter((item, position) -> Log.e("点击事件",position+""))
                         .setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
                         .setOnItemSeletor(R.color.white)
@@ -197,7 +160,7 @@ public class BoletimFragment extends Fragment {
                 ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
-            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
+            ((MainActivity) Objects.requireNonNull(getActivity())).showRoundProgressbar();
         }
     }
 
@@ -240,8 +203,20 @@ public class BoletimFragment extends Fragment {
         }
     }
 
-    public void update(List<Boletim> boletim) {
-        this.boletim = boletim;
+    public void changeColumnMode() {
+        setBoletim(getView());
+    }
+
+    @Override
+    public void onPageUpdate(List<?> list) {
+        if (mainWebView.data_boletim != null && mainWebView.periodo_boletim != null) {
+            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
+                    .getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim)
+                    + "・" + mainWebView.data_boletim[mainWebView.data_position_boletim] + " / "
+                    + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim]); //mostra o ano no título
+        }
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).boletimList = (List<Boletim>) list;
         setBoletim(getView());
     }
 }

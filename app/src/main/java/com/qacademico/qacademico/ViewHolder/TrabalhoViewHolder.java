@@ -13,7 +13,7 @@ public class TrabalhoViewHolder extends RecyclerView.ViewHolder {
     public final TextView max;
     public final TextView nota;
     public final TextView tipo;
-    public final LinearLayout header;
+    public final TextView data;
 
     public TrabalhoViewHolder(View view) {
         super(view);
@@ -23,6 +23,6 @@ public class TrabalhoViewHolder extends RecyclerView.ViewHolder {
         max = (TextView) view.findViewById(R.id.diarios_max);
         nota = (TextView) view.findViewById(R.id.diarios_nota);
         tipo = (TextView) view.findViewById(R.id.diarios_tipo);
-        header = (LinearLayout) view.findViewById(R.id.diarios_header);
+        data = (TextView) view.findViewById(R.id.diarios_data);
     }
 }

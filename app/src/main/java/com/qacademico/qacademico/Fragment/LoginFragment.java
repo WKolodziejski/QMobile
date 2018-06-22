@@ -32,7 +32,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        login_info = Objects.requireNonNull(getActivity()).getSharedPreferences("login_info", 0);
+        login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(Utils.LOGIN_INFO, 0);
 
         EditText user_et = (TextInputEditText) view.findViewById(R.id.user_input_login);
         EditText password_et = (TextInputEditText) view.findViewById(R.id.password_input_login);
@@ -51,8 +51,8 @@ public class LoginFragment extends Fragment {
             progressBar_login.setVisibility(View.VISIBLE);
 
             SharedPreferences.Editor editor = login_info.edit();
-            editor.putString("matricula", user_et.getText().toString().toUpperCase());
-            editor.putString("password", password_et.getText().toString());
+            editor.putString(Utils.LOGIN_REGISTRATION, user_et.getText().toString().toUpperCase());
+            editor.putString(Utils.LOGIN_PASSWORD, password_et.getText().toString());
             editor.apply();
 
             ((LoginActivity) getActivity()).dismissSnackbar();

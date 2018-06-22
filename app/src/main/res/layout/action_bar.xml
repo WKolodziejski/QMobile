@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    style="@style/AppTheme.AppBarOverlay">
+    style="@style/AppTheme.AppBarOverlay"
+    >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
