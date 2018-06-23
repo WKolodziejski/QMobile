@@ -117,9 +117,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         login_info = getSharedPreferences(Utils.LOGIN_INFO, 0);
 
-        diariosList = Data.getDiarios(this);
-        boletimList = Data.getBoletim(this);
-        horarioList = Data.getHorario(this);
+        mainWebView.data_diarios = Data.getDate(this, Utils.DIARIOS, Data.YEAR);
+        mainWebView.data_boletim = Data.getDate(this, Utils.BOLETIM, Data.YEAR);
+        mainWebView.periodo_boletim = Data.getDate(this, Utils.BOLETIM, Data.PERIOD);
+        mainWebView.data_horario = Data.getDate(this, Utils.HORARIO, Data.YEAR);
+        mainWebView.periodo_horario = Data.getDate(this, Utils.HORARIO, Data.PERIOD);
+
+        if(mainWebView.data_diarios != null) {
+            diariosList = (List<Diarios>) Data.getList(this, Utils.DIARIOS,
+                    mainWebView.data_diarios[0], null);
+        } else {
+          showErrorConnection();
+        }
+        if (mainWebView.data_boletim != null && mainWebView.periodo_boletim != null) {
+            boletimList = (List<Boletim>) Data.getList(this, Utils.BOLETIM,
+                    mainWebView.data_boletim[0], mainWebView.periodo_boletim[0]);
+        } else {
+            showErrorConnection();
+        }
+        if (mainWebView.data_horario != null && mainWebView.periodo_horario != null) {
+            horarioList = (List<Horario>) Data.getList(this, Utils.HORARIO,
+                    mainWebView.data_horario[0], mainWebView.periodo_horario[0]);
+        } else {
+            showErrorConnection();
+        }
 
         hideExpandBtn();
 
@@ -287,20 +308,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setDiarios() {//layout fragment_diarios
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios));;
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, diariosFragment, Utils.DIARIOS);
         fragmentTransaction.commit();
 
-        if (mainWebView.pg_home_loaded) {
-            if (!mainWebView.pg_diarios_loaded) {
-                mainWebView.html.loadUrl(url + pg_diarios);
-            } else {
-                getSupportActionBar().setTitle(getResources().getString(R.string.title_diarios)
-                        + "・" + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
-            }
+        if (mainWebView.pg_home_loaded && !mainWebView.pg_diarios_loaded) {
+            mainWebView.html.loadUrl(url + pg_diarios);
         } else {
             mainWebView.html.loadUrl(url + pg_home);
         }

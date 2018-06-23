@@ -176,8 +176,10 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
             }
         }
 
-        Data.saveObject(Objects.requireNonNull(getContext()), ((MainActivity) Objects.requireNonNull(getActivity())).horarioList, Utils.HORARIO);
-    }
+        Data.saveList(Objects.requireNonNull(getContext()), ((MainActivity) Objects.requireNonNull(getActivity())).horarioList,
+                Utils.HORARIO, mainWebView.data_horario[mainWebView.data_position_horario],
+                mainWebView.periodo_horario[mainWebView.periodo_position_horario]);
+        }
 
     private int trimh(String string) {
         string = string.substring(0, string.indexOf(":"));

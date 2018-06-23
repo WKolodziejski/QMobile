@@ -15,10 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.Diarios.DiariosAdapter;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 import java.util.List;
@@ -52,6 +55,9 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList.size() != 0) {
 
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                        .setTitle(getResources().getString(R.string.title_diarios)
+                        + "・" + mainWebView.data_diarios[mainWebView.data_position_diarios]); //mostra o ano no título
                 ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
@@ -96,7 +102,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     }
 
     public void openDateDialog() {
-        if (mainWebView.pg_diarios_loaded && mainWebView.data_diarios != null) {
+        if (mainWebView.data_diarios != null) {
 
             View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
@@ -118,14 +124,35 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
                             R.string.dialog_date_change, R.color.diarios_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                        mainWebView.data_position_diarios = year.getValue();
+                        if (Data.getList(Objects.requireNonNull(getContext()),
+                                Utils.DIARIOS, mainWebView.data_diarios[year.getValue()], null) != null) {
 
-                        Log.v("Ano selecionado", String.valueOf(
-                                mainWebView.data_diarios[mainWebView.data_position_diarios]));
-                        mainWebView.html.loadUrl(url + pg_diarios);
-                        mainWebView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                                + (mainWebView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
-                        Log.i("SCRIPT", "" + mainWebView.scriptDiario);
+                            mainWebView.data_position_diarios = year.getValue();
+
+                            ((MainActivity) Objects.requireNonNull(getActivity()))
+                                    .diariosList = (List<Diarios>) Data.getList(Objects.requireNonNull(getContext()),
+                                    Utils.DIARIOS, mainWebView.data_diarios[mainWebView.data_position_diarios], null);
+
+                            onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).diariosList);
+
+                        } else {
+                            if (Utils.isConnected(getContext())) {
+
+                                mainWebView.data_position_diarios = year.getValue();
+
+                                Log.v("Ano selecionado", String.valueOf(
+                                        mainWebView.data_diarios[mainWebView.data_position_diarios]));
+
+                                mainWebView.html.loadUrl(url + pg_diarios);
+
+                                mainWebView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
+                                        + (mainWebView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
+
+                                Log.i("SCRIPT", "" + mainWebView.scriptDiario);
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }).setNegativeButton(R.string.dialog_cancel, null)
                     .show();
         }

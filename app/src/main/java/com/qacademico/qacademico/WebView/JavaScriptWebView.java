@@ -58,9 +58,6 @@ public class JavaScriptWebView {
                     Log.i("JavaScriptWebView", html_p);
                     Document homePage = Jsoup.parse(html_p);
                     Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
-                    Element img_class = homePage.getElementsByClass("titulo").get(0);
-                    Element img_tag = img_class.getElementsByTag("img").get(0);
-                    Attributes img = img_tag.attributes();
 
                     Calendar rightNow = Calendar.getInstance();
                     int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
@@ -80,36 +77,6 @@ public class JavaScriptWebView {
 
                     activity.runOnUiThread(() -> {
                         onPageFinish.onPageFinish(url + pg_home, null);
-
-                        Log.v("handleHome", img.get("src"));
-
-                        /*if (Data.getImage(context) == null) {
-                            webViewMain.html.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
-                                Log.i("JavaScriptWebView", "Image downloaded");
-                                try {
-                                    File dir = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
-
-                                    if (!dir.exists()) {
-                                        dir.mkdirs();
-                                    }
-
-                                    File file = new File(dir, "profile.jpg");
-
-                                    if (file.exists()) {
-                                        file.delete();
-                                    }
-
-                                    Bitmap b = BitmapFactory.decodeStream(new FileInputStream(file));
-                                    Data.setImage(context, b);
-                                    Log.i("JavaScriptWebView", "Image set success");
-                                } catch (FileNotFoundException e) {
-                                    e.printStackTrace();
-                                    Log.i("JavaScriptWebView", "Image set error");
-                                }
-                            });
-                            webViewMain.html.loadUrl(img.get("src"));
-                            Log.i("JavaScriptWebView", "Image downloading...");
-                        }*/
                     });
                     } catch (Exception ignored) {
                         Log.i("JavaScriptWebView", "Home error");
@@ -158,10 +125,6 @@ public class JavaScriptWebView {
 
                     Collections.sort(boletim, (b1, b2) -> b1.getMateria().compareTo(b2.getMateria()));
 
-                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveObject(context, boletim, Utils.BOLETIM);
-                    }
-
                     Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
@@ -178,6 +141,14 @@ public class JavaScriptWebView {
 
                     for (int i = 0; i < options_periodo.size(); i++) {
                         webViewMain.periodo_boletim[i] = options_periodo.get(i).text();
+                    }
+
+                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
+                        Data.saveList(context, boletim, Utils.BOLETIM, webViewMain.data_boletim[webViewMain.data_position_boletim],
+                                webViewMain.periodo_boletim[webViewMain.periodo_position_boletim]);
+
+                        Data.saveDate(context, webViewMain.data_boletim, Utils.DIARIOS, Data.YEAR);
+                        Data.saveDate(context, webViewMain.periodo_boletim, Utils.DIARIOS, Data.PERIOD);
                     }
 
                     webViewMain.pg_boletim_loaded = true;
@@ -290,16 +261,19 @@ public class JavaScriptWebView {
 
                     Collections.sort(diarios, (d1, d2) -> d1.getNomeMateria().compareTo(d2.getNomeMateria()));
 
-                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveObject(context, diarios, Utils.DIARIOS);
-                    }
-
                     Elements options = homeDiarios.getElementsByTag("option");
 
                     webViewMain.data_diarios = new String[options.size() - 1];
 
                     for (int i = 0; i < options.size() - 1; i++) {
                         webViewMain.data_diarios[i] = options.get(i + 1).text();
+                    }
+
+                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
+                        Data.saveList(context, diarios, Utils.DIARIOS, webViewMain.data_diarios[webViewMain.data_position_diarios],
+                                null);
+
+                        Data.saveDate(context, webViewMain.data_diarios, Utils.DIARIOS, Data.YEAR);
                     }
 
                     webViewMain.pg_diarios_loaded = true;
@@ -421,10 +395,6 @@ public class JavaScriptWebView {
                         }
                     }
 
-                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveObject(context, horario, Utils.HORARIO);
-                    }
-
                     Document ano = Jsoup.parse(homeHorario.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
@@ -442,6 +412,14 @@ public class JavaScriptWebView {
 
                     for (int i = 0; i < options_periodo.size(); i++) {
                         webViewMain.periodo_horario[i] = options_periodo.get(i).text();
+                    }
+
+                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
+                        Data.saveList(context, horario, Utils.HORARIO, webViewMain.data_horario[webViewMain.data_position_horario],
+                                webViewMain.periodo_horario[webViewMain.periodo_position_horario]);
+
+                        Data.saveDate(context, webViewMain.data_horario, Utils.DIARIOS, Data.YEAR);
+                        Data.saveDate(context, webViewMain.periodo_horario, Utils.DIARIOS, Data.PERIOD);
                     }
 
                     webViewMain.pg_horario_loaded = true;

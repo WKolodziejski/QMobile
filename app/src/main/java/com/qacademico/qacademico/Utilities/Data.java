@@ -18,70 +18,51 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.Objects;
 
 public class Data {
+    public static final String YEAR = ".Year";
+    public static final String PERIOD = ".Period";
 
-    public static List<Diarios> getDiarios(Context context) {
+    public static List<?> getList(Context context, String type, String year, String period) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
         ObjectInputStream object;
-        List<Diarios> diarios = null;
+        List<?> list = null;
 
         try {
-            object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(login_info.getString(Utils.LOGIN_REGISTRATION,
-                    "") + Utils.DIARIOS)));
-            diarios = (List<Diarios>) object.readObject();
+            if (type.equals(Utils.DIARIOS)) {
+                object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
+                        login_info.getString(Utils.LOGIN_REGISTRATION,
+                                "") + type + "." + year.substring(0, 4) + "." + year.substring(8, 8))));
+            } else {
+                object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
+                        login_info.getString(Utils.LOGIN_REGISTRATION,
+                                "") + type + "." + year + "." + period)));
+            }
+            list = (List<?>) object.readObject();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return diarios;
+        return list;
     }
 
-    public static List<Boletim> getBoletim(Context context) {
-        SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
-
-        ObjectInputStream object;
-        List<Boletim> boletim = null;
-
-        try {
-            object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(login_info.getString(Utils.LOGIN_REGISTRATION,
-                    "") + Utils.BOLETIM)));
-            boletim = (List<Boletim>) object.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return boletim;
-    }
-
-    public static List<Horario> getHorario(Context context) {
-        SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
-
-        ObjectInputStream object;
-        List<Horario> horario = null;
-
-        try {
-            object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(login_info.getString(Utils.LOGIN_REGISTRATION,
-                    "") + Utils.HORARIO)));
-            horario = (List<Horario>) object.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return horario;
-    }
-
-    public static void saveObject(Context context, Object obj, String name) {
+    public static void saveList(Context context, Object obj, String type, String year, String period) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
         ObjectOutputStream object;
         try {
-            object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                    login_info.getString(Utils.LOGIN_REGISTRATION, "") + name)));
+            if (type.equals(Utils.DIARIOS)) {
+                object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
+                        login_info.getString(Utils.LOGIN_REGISTRATION,
+                                "") + type + "." + year.substring(0, 4) + "." + year.substring(8, 8))));
+            } else {
+                object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
+                        login_info.getString(Utils.LOGIN_REGISTRATION,
+                                "") + type + "." + year + "." + period)));
+            }
             object.writeObject(obj);
             object.flush();
             object.close();
@@ -90,46 +71,40 @@ public class Data {
         }
     }
 
-    public static Bitmap getImage(Context context) {
+    public static void saveDate(Context context, String[] array, String wich, String type) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
-        Bitmap image = null;
-
+        ObjectOutputStream object;
         try {
-            File dir = new File(String.valueOf(context.getDir(login_info.getString(Utils.LOGIN_REGISTRATION, ""), Context.MODE_PRIVATE)));
-
-            File file = new File(dir, "profile.jpg");
-            image = BitmapFactory.decodeStream(new FileInputStream(file));
-        } catch (FileNotFoundException e) {
+            object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
+                    login_info.getString(Utils.LOGIN_REGISTRATION,
+                            "") + wich + type)));
+            object.writeObject(array);
+            object.flush();
+            object.close();
+        } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
-        return image;
     }
 
-    public static void setImage(Context context, Bitmap image) {
+    public static String[] getDate(Context context, String wich, String type) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
-        File dir = new File(String.valueOf(context.getDir(login_info.getString(Utils.LOGIN_REGISTRATION, ""), Context.MODE_PRIVATE)));
-
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        File file = new File(dir, "profile.jpg");
-        FileOutputStream fos = null;
+        ObjectInputStream object;
+        String[] array = null;
 
         try {
-            fos = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
+            object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
+                    login_info.getString(Utils.LOGIN_REGISTRATION,
+                            "") + wich + type)));
+
+            array = (String[]) object.readObject();
+            object.close();
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        return array;
     }
 }
