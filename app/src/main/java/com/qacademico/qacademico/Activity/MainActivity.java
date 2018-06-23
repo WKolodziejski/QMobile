@@ -367,7 +367,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void testLogin() { //Testa se o login é válido
         if (login_info.getBoolean(Utils.LOGIN_VALID, false)) {
-            navigation.setSelectedItemId(R.id.navigation_home);
+            setHome();
+            Design.removeToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
         } else {
             Intent login =  new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(login);
