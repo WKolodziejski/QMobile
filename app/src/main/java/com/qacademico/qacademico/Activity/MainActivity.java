@@ -195,26 +195,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         setHome();
-                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_home, false);
+                        Design.removeToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        invalidateOptionsMenu();
                         return true;
 
                     case R.id.navigation_diarios:
                         setDiarios();
-                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_diarios, false);
+                        Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        invalidateOptionsMenu();
                         return true;
 
                     case R.id.navigation_boletim:
                         setBoletim();
-                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_boletim, false);
+                        Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        invalidateOptionsMenu();
                         return true;
 
                     case R.id.navigation_horario:
                         setHorario();
-                        Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                                mainLayout, navigation.getSelectedItemId(), R.id.navigation_horario, false);
+                        Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        invalidateOptionsMenu();
                         return true;
                 }
             }
@@ -367,9 +367,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void testLogin() { //Testa se o login é válido
         if (login_info.getBoolean(Utils.LOGIN_VALID, false)) {
-            Design.changePageColor(MainActivity.this, toolbar, drawer, progressBar_Top, progressBar_Main,
-                    mainLayout, navigation.getSelectedItemId(), R.id.navigation_home, false);
-            setHome();
+            navigation.setSelectedItemId(R.id.navigation_home);
         } else {
             Intent login =  new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(login);

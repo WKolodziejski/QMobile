@@ -22,7 +22,7 @@ import com.qacademico.qacademico.R;
 
 public class Design {
 
-    public static void changePageColor(final Activity activity, Toolbar toolbar, DrawerLayout drawer, ProgressBar progressBar_Top,
+    /*public static void changePageColor(final Activity activity, Toolbar toolbar, DrawerLayout drawer, ProgressBar progressBar_Top,
                                        ProgressBar progressBar_Main, View layout, int idFrom, int idTo,
                                        boolean changeStatusBarColor) { //Muda a cor do app dependendo da página
 
@@ -112,12 +112,12 @@ public class Design {
         }
 
         if (idTo == R.id.navigation_home) {
-            removeBehavior(context, layout, toolbar);
+            removeToolbarScrollBehavior(context, layout, toolbar);
             if (changeStatusBarColor) {
                 setSystemBarTheme(activity, false);
             }
         } else {
-            applyBehavior(context, layout, toolbar);
+            applyToolbarScrollBehavior(context, layout, toolbar);
             if (changeStatusBarColor) {
                 setSystemBarTheme(activity, true);
             }
@@ -125,9 +125,9 @@ public class Design {
 
         activity.invalidateOptionsMenu();
 
-        /*changeButtonColorAnim(fab_action, colorPrimaryBtnFrom, colorPrimaryBtnTo);
+        changeButtonColorAnim(fab_action, colorPrimaryBtnFrom, colorPrimaryBtnTo);
         changeButtonColorAnim(fab_expand, colorSecondaryFrom, colorSecondaryTo);
-        changeButtonColorAnim(fab_data, colorSecondaryFrom, colorSecondaryTo);*/
+        changeButtonColorAnim(fab_data, colorSecondaryFrom, colorSecondaryTo);
         changeProgressBarColor(progressBar_Top, progressBar_Main, colorProgressFrom, colorProgressTo);
 
         if (changeStatusBarColor) {
@@ -218,14 +218,27 @@ public class Design {
         drawer.setStatusBarBackgroundColor(colorStatusBarTo);
     }
 
+    public static void setStatusBarTransparent(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
+    public static void setStatusBarLight(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+    }
+
     private static void setSystemBarTheme(final Activity activity, final boolean pIsDark) { //Muda o tema do app para StatusBar Light ou Dark
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final int lFlags = activity.getWindow().getDecorView().getSystemUiVisibility();
             activity.getWindow().getDecorView().setSystemUiVisibility(pIsDark ? (lFlags & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (lFlags | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR));
         }
-    }
+    }*/
 
-    public static void applyBehavior(Context context, View layout, Toolbar toolbar) { //Habilita o actionBar a se esconder ao rolar a página
+    public static void applyToolbarScrollBehavior(Context context, View layout, Toolbar toolbar) { //Habilita o actionBar a se esconder ao rolar a página
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
         layoutParams.setBehavior(new AppBarLayout.ScrollingViewBehavior());
         layout.requestLayout();
@@ -238,7 +251,7 @@ public class Design {
         layout.setLayoutParams(layoutParams);
     }
 
-    public static void removeBehavior(Context context, View layout, Toolbar toolbar) { //Desabilita o actionBar a se esconder ao rolar a página
+    public static void removeToolbarScrollBehavior(Context context, View layout, Toolbar toolbar) { //Desabilita o actionBar a se esconder ao rolar a página
         CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) layout.getLayoutParams();
         layoutParams.setBehavior(null);
         AppBarLayout.LayoutParams toolbarLayoutParams = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
@@ -247,19 +260,6 @@ public class Design {
         layoutParams.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (55 * context.getResources().getDisplayMetrics().density),
                 (int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density));
         layout.setLayoutParams(layoutParams);
-    }
-
-    public static void setStatusBarTransparent(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-    }
-
-    public static void setStatusBarLight(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
     }
 
     public static void setNavigationTransparent(Activity activity) { //Configura os botões de navegação do Android para transparente

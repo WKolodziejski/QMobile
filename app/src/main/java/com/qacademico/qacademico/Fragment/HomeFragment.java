@@ -8,15 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.Home.ShortcutAdapter;
 import com.qacademico.qacademico.Class.Shortcut;
@@ -50,9 +48,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         adapter.setOnClickListener(this);
 
         RecyclerView recyclerViewGuide = (RecyclerView) view.findViewById(R.id.recycler_shortcut);
-        FlexboxLayoutManager layout = new FlexboxLayoutManager(getActivity());
-        layout.setFlexDirection(FlexDirection.ROW);
-        layout.setJustifyContent(JustifyContent.FLEX_START);
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         recyclerViewGuide.setAdapter(adapter);
         recyclerViewGuide.setLayoutManager(layout);

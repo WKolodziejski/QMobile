@@ -13,12 +13,8 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-import com.google.firebase.perf.metrics.AddTrace;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
-
-import java.util.List;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
@@ -51,7 +47,6 @@ public class ClientWebView extends WebViewClient {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    @AddTrace(name = "onRecivedError")
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
         onRecivedError.onErrorRecived(error.getDescription().toString());
@@ -59,7 +54,6 @@ public class ClientWebView extends WebViewClient {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    @AddTrace(name = "onRecivedHttpError")
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
         if (Utils.isConnected(context)) {
@@ -77,7 +71,6 @@ public class ClientWebView extends WebViewClient {
     }
 
     @Override
-    @AddTrace(name = "setOnPageFinished")
     public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
         if (Utils.isConnected(context) && !url_i.equals("")) {
             if (url_i.equals(url + pg_login)) {

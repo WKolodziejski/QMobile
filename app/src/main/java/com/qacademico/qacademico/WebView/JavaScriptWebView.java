@@ -2,20 +2,11 @@ package com.qacademico.qacademico.WebView;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-
-import com.alamkanak.weekview.WeekViewEvent;
-import com.google.firebase.perf.metrics.AddTrace;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.Class.Etapa;
@@ -26,24 +17,15 @@ import com.qacademico.qacademico.Class.Trabalho;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_home;
@@ -66,7 +48,6 @@ public class JavaScriptWebView {
     }
 
     @JavascriptInterface
-    @AddTrace(name = "handleHome")
     public void handleHome(String html_p) {
         Log.i("JavaScriptWebView", "Home handling...");
         new Thread() {
@@ -139,7 +120,6 @@ public class JavaScriptWebView {
     }
 
     @JavascriptInterface
-    @AddTrace(name = "handleBoletim")
     public void handleBoletim(String html_p) {
         Log.i("JavaScriptWebView", "Boletim handling...");
         new Thread() {
@@ -215,7 +195,6 @@ public class JavaScriptWebView {
     }
 
     @JavascriptInterface
-    @AddTrace(name = "handleDiarios")
     public void handleDiarios(String html_p) {
         Log.i("JavaScriptWebView", "Diarios handling...");
         new Thread() {
@@ -337,7 +316,6 @@ public class JavaScriptWebView {
     }
 
     @JavascriptInterface
-    @AddTrace(name = "handleHorario")
     public void handleHorario(String html_p) {
         Log.i("JavaScriptWebView", "Horario handling...");
         new Thread() {
@@ -480,7 +458,6 @@ public class JavaScriptWebView {
     }
 
     @JavascriptInterface
-    @AddTrace(name = "handleMateriais")
     public void handleMateriais(String html_p) {
         Log.i("JavaScriptWebView", "Materiais handling...");
         new Thread() {
