@@ -2,27 +2,17 @@ package com.qacademico.qacademico.Utilities;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.provider.Settings;
-import android.support.design.widget.Snackbar;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.qacademico.qacademico.R;
-
 import java.util.Objects;
 import java.util.Random;
-import java.util.zip.Inflater;
 
 public class Utils {
     public static final String HOME = ".Home";
@@ -38,9 +28,19 @@ public class Utils {
     public static final String LOGIN_DAY = ".Dia";
     public static final String LOGIN_HOUR = ".Hora";
     public static final String LOGIN_MINUTE = ".Minuto";
-
-    public static String url, pg_login, pg_home, pg_diarios, pg_boletim, pg_horario, pg_materiais, pg_change_password,
-            pg_erro, download_update_url, email_to, email_from, email_from_pwd;
+    public static final String url = "http://qacademico.ifsul.edu.br/qacademico/index.asp?t=";
+    public static final String pg_login = "1001";
+    public static final String pg_home = "2000";
+    public static final String pg_diarios = "2071";
+    public static final String pg_boletim = "2032";
+    public static final String pg_horario = "2010";
+    public static final String pg_materiais = "2061";
+    public static final String pg_change_password = "1011";
+    public static final String pg_erro = "1";
+    public static final String download_update_url = "http://www.geocities.ws/tinfqacadmob/Qacademico/";
+    public static final String email_to = "tinf703@gmail.com";
+    public static final String email_from = "qacadmobapp@gmail.com";
+    public static final String email_from_pwd = "3N7D66GP8";
 
     public static boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -49,25 +49,6 @@ public class Utils {
             return (info != null && info.isConnected());
         }
         return false;
-    }
-
-    /*
-     * Método que atualiza os valores das variáveis
-     */
-    public static void updateDefaultValues(FirebaseRemoteConfig remoteConfig) {
-        url = remoteConfig.getString("default_url");
-        pg_login = remoteConfig.getString("pg_login");
-        pg_home = remoteConfig.getString("pg_home");
-        pg_diarios = remoteConfig.getString("pg_diarios");
-        pg_boletim = remoteConfig.getString("pg_boletim");
-        pg_horario = remoteConfig.getString("pg_horario");
-        pg_materiais = remoteConfig.getString("pg_materiais");
-        pg_change_password = remoteConfig.getString("pg_change_password");
-        pg_erro = remoteConfig.getString("pg_erro");
-        download_update_url = remoteConfig.getString("download_update_url");
-        email_to = remoteConfig.getString("email_to");
-        email_from = remoteConfig.getString("email_from");
-        email_from_pwd = remoteConfig.getString("email_from_pass");
     }
 
     /*

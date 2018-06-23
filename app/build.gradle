@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 27
@@ -30,8 +29,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation files('libs/jsoup-1.11.2.jar')
 
     implementation 'com.android.support:support-v4:27.1.1'
@@ -43,31 +41,17 @@ dependencies {
 
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    //implementation 'com.google.android.material:material:1.0.0-alpha1'
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-
-    implementation 'com.google.firebase:firebase-core:16.0.0'
-    implementation 'com.google.firebase:firebase-perf:16.0.0'
-    implementation 'com.google.firebase:firebase-config:16.0.0'
-    implementation 'com.google.android:flexbox:0.3.2'
-    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
     implementation 'com.github.yesidlazaro:GmailBackground:1.2.0'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
     implementation 'com.github.alamkanak:android-week-view:1.2.6'
     implementation 'com.github.RmondJone:LockTableView:1.1.1'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
-        transitive = true
-    }
-
     implementation 'eu.davidea:flexible-adapter:5.0.3'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b3'
     implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b2'
     implementation 'eu.davidea:flexible-adapter-databinding:1.0.0-b3'
 }
-
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'

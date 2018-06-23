@@ -42,11 +42,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.perf.metrics.AddTrace;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.qacademico.qacademico.Activity.Settings.AboutActivity;
 import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Diarios;
@@ -98,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
-    FirebaseRemoteConfig remoteConfig;
     private DiariosFragment diariosFragment = new DiariosFragment();
     private BoletimFragment boletimFragment = new BoletimFragment();
     private HorarioFragment horarioFragment = new HorarioFragment();
@@ -108,14 +102,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public List<Horario> horarioList;
 
     @Override
-    @AddTrace(name = "onCreateTrace")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        setDefaultHashMap();
-
-        Utils.updateDefaultValues(remoteConfig);
 
         ButterKnife.bind(this);
 
@@ -156,27 +145,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         configWebView();
 
         testLogin();
-    }
-
-    /*
-     * Método que recebe os valores do servidor remoto
-     */
-    private void setDefaultHashMap() {
-        remoteConfig = FirebaseRemoteConfig.getInstance();
-        remoteConfig.setConfigSettings(new FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(true)
-                .build());
-
-        remoteConfig.setDefaults(R.xml.default_values);
-
-        final Task<Void> fetch = remoteConfig.fetch(0);
-        fetch.addOnSuccessListener(command -> {
-            remoteConfig.activateFetched();
-            Utils.updateDefaultValues(remoteConfig);
-            Log.v("DefaultValues", "Valores atualizados");
-        });
-
-        fetch.addOnFailureListener(e -> Log.v("DefaultValues", "Erro"));
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -310,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @AddTrace(name = "setHome")
     public void setHome() { //layout fragment_home
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_home));
@@ -328,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @AddTrace(name = "setDiarios")
     public void setDiarios() {//layout fragment_diarios
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios));;
@@ -350,8 +316,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    @AddTrace(name = "setBoletim")
     public void setBoletim() { //layout fragment_boletim
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim));
@@ -375,7 +339,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @AddTrace(name = "setHorario")
     public void setHorario() { // layout fragment_horario
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario));
@@ -398,7 +361,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @AddTrace(name = "setMateriais")
     public void setMateriais() { //layout fragment_home
         if ((!mainWebView.pg_material_loaded)) {
             mainWebView.html.loadUrl(url + pg_materiais);

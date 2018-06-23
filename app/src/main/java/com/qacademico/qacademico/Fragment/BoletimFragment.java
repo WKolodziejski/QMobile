@@ -44,12 +44,12 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boletim, container, false);
 
-        setBoletim(view);
+        setBoletim(view, false);
 
         return view;
     }
 
-    private void setBoletim(View view) {
+    private void setBoletim(View view, boolean showToast) {
         if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList != null) {
 
             if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size() != 0) {
@@ -67,7 +67,9 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
                 if (show_by_semestre) {
 
-                    Toast.makeText(getContext(), "Sort by period", Toast.LENGTH_SHORT).show();
+                    if (showToast) {
+                        Toast.makeText(getContext(), "Sort by period", Toast.LENGTH_SHORT).show();
+                    }
 
                     String[] header = {
                             getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
@@ -101,7 +103,9 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                     }
                 } else {
 
-                    Toast.makeText(getContext(), "Sort by type", Toast.LENGTH_SHORT).show();
+                    if (showToast) {
+                        Toast.makeText(getContext(), "Sort by type", Toast.LENGTH_SHORT).show();
+                    }
 
                     String[] header = {
                             getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
@@ -204,7 +208,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
     }
 
     public void changeColumnMode() {
-        setBoletim(getView());
+        setBoletim(getView(), true);
     }
 
     @Override
@@ -217,6 +221,6 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         }
 
         ((MainActivity) Objects.requireNonNull(getActivity())).boletimList = (List<Boletim>) list;
-        setBoletim(getView());
+        setBoletim(getView(), false);
     }
 }
