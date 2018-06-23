@@ -15,15 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.Diarios.DiariosAdapter;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
 

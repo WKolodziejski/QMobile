@@ -1,6 +1,5 @@
 package com.qacademico.qacademico.Activity;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -9,13 +8,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,7 +34,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -57,16 +53,11 @@ import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Design;
 import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
-import com.qacademico.qacademico.WebView.ClientWebView;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-import java.io.Serializable;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_home;
@@ -147,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         testLogin();
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {//drawer
         int id = item.getItemId();

@@ -6,19 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.ViewGroup;
-
 import com.qacademico.qacademico.Fragment.HorarioFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
 
 public class HorarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
-    HorarioFragment horarioFragment = new HorarioFragment();
     Toolbar toolbar;
 
     @Override
@@ -36,7 +32,7 @@ public class HorarioActivity extends AppCompatActivity implements SingletonWebVi
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.horario_fragment, horarioFragment, Utils.HORARIO);
+        fragmentTransaction.replace(R.id.horario_fragment, new HorarioFragment(), Utils.HORARIO);
         fragmentTransaction.commit();
     }
 
