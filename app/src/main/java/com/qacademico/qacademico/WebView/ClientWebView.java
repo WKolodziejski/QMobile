@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
+import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_erro;
@@ -146,6 +147,9 @@ public class ClientWebView extends WebViewClient {
                     editor.putBoolean(Utils.LOGIN_VALID, false);
                     editor.apply();
                     Log.i("Login", "Login Inválido");
+                } else if(url_i.equals(url + pg_calendario)){
+                    webViewMain.html.loadUrl("javascript:window.HtmlHandler.handleCalendario"
+                            + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
                 }

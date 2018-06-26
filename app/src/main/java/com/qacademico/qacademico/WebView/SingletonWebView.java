@@ -20,10 +20,10 @@ public class SingletonWebView {
     private OnRecivedError onRecivedError;
     public WebView html;
     public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
-            pg_login_loaded, isChangePasswordPage, isLoginPage;
-    public String new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario = "";
+            pg_login_loaded, pg_calendario_loaded, isChangePasswordPage, isLoginPage;
+    public String new_password, bugDiarios, bugCalendario, bugBoletim, bugHorario, scriptDiario = "";
     public int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario,
-            periodo_position_boletim;
+            periodo_position_boletim, periodo_position_calendario;
     public Infos infos;
 
     private SingletonWebView() {}
