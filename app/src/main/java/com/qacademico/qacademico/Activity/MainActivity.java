@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
-    public SingletonWebView mainWebView = SingletonWebView.getInstance();
+    public SingletonWebView webView = SingletonWebView.getInstance();
     private DiariosFragment diariosFragment = new DiariosFragment();
     private BoletimFragment boletimFragment = new BoletimFragment();
     private HorarioFragment horarioFragment = new HorarioFragment();
@@ -117,31 +117,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         login_info = getSharedPreferences(Utils.LOGIN_INFO, 0);
 
-        mainWebView.data_diarios = Data.getDate(this, Utils.DIARIOS, Data.YEAR);
-        mainWebView.data_boletim = Data.getDate(this, Utils.BOLETIM, Data.YEAR);
-        mainWebView.periodo_boletim = Data.getDate(this, Utils.BOLETIM, Data.PERIOD);
-        mainWebView.data_horario = Data.getDate(this, Utils.HORARIO, Data.YEAR);
-        mainWebView.periodo_horario = Data.getDate(this, Utils.HORARIO, Data.PERIOD);
-
-        if(mainWebView.data_diarios != null) {
-            diariosList = (List<Diarios>) Data.getList(this, Utils.DIARIOS,
-                    mainWebView.data_diarios[0], null);
-        } else {
-          showErrorConnection();
-        }
-        if (mainWebView.data_boletim != null && mainWebView.periodo_boletim != null) {
-            boletimList = (List<Boletim>) Data.getList(this, Utils.BOLETIM,
-                    mainWebView.data_boletim[0], mainWebView.periodo_boletim[0]);
-        } else {
-            showErrorConnection();
-        }
-        if (mainWebView.data_horario != null && mainWebView.periodo_horario != null) {
-            horarioList = (List<Horario>) Data.getList(this, Utils.HORARIO,
-                    mainWebView.data_horario[0], mainWebView.periodo_horario[0]);
-        } else {
-            showErrorConnection();
-        }
-
         hideExpandBtn();
 
         configNavDrawer();
@@ -155,6 +130,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         CheckUpdate.checkUpdate(this);
 
         configWebView();
+
+        if(webView.infos.data_diarios != null) {
+            diariosList = (List<Diarios>) Data.loadList(this, Utils.DIARIOS,
+                    webView.infos.data_diarios[0], null);
+        } else if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
+            showErrorConnection();
+        }
+        if (webView.infos.data_boletim != null && webView.infos.periodo_boletim != null) {
+            boletimList = (List<Boletim>) Data.loadList(this, Utils.BOLETIM,
+                    webView.infos.data_boletim[0], webView.infos.periodo_boletim[0]);
+        } else if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
+            showErrorConnection();
+        }
+        if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
+            horarioList = (List<Horario>) Data.loadList(this, Utils.HORARIO,
+                    webView.infos.data_horario[0], webView.infos.periodo_horario[0]);
+        } else if (navigation.getSelectedItemId() == R.id.navigation_horario) {
+            showErrorConnection();
+        }
 
         testLogin();
     }
@@ -250,9 +244,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuItem date = menu.findItem(R.id.action_date);
         MenuItem column = menu.findItem(R.id.action_column);
 
-        if ((navigation.getSelectedItemId() == R.id.navigation_diarios && mainWebView.data_diarios != null)
-                || (navigation.getSelectedItemId() == R.id.navigation_boletim && mainWebView.data_boletim != null)
-                || (navigation.getSelectedItemId() == R.id.navigation_horario && mainWebView.data_horario != null)) {
+        if ((navigation.getSelectedItemId() == R.id.navigation_diarios && webView.infos.data_diarios != null)
+                || (navigation.getSelectedItemId() == R.id.navigation_boletim && webView.infos.data_boletim != null)
+                || (navigation.getSelectedItemId() == R.id.navigation_horario && webView.infos.data_horario != null)) {
             date.setVisible(true);
         } else {
             date.setVisible(false);
@@ -299,48 +293,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.main_fragment, new HomeFragment(), Utils.HOME);
         fragmentTransaction.commit();
 
-        if(!mainWebView.pg_login_loaded) {
-            mainWebView.html.loadUrl(url + pg_login);
-        } else if (!mainWebView.pg_home_loaded) {
-            mainWebView.html.loadUrl(url + pg_home);
+        if(!webView.pg_login_loaded) {
+            webView.html.loadUrl(url + pg_login);
+        } else if (!webView.pg_home_loaded) {
+            webView.html.loadUrl(url + pg_home);
         }
     }
 
     public void setDiarios() {//layout fragment_diarios
-
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios));
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, diariosFragment, Utils.DIARIOS);
         fragmentTransaction.commit();
 
-        if (mainWebView.pg_home_loaded && !mainWebView.pg_diarios_loaded) {
-            mainWebView.html.loadUrl(url + pg_diarios);
+        if (webView.pg_home_loaded) {
+            if (!webView.pg_diarios_loaded) {
+                webView.html.loadUrl(url + pg_diarios);
+            }
         } else {
-            mainWebView.html.loadUrl(url + pg_home);
+            webView.html.loadUrl(url + pg_home);
         }
     }
 
     public void setBoletim() { //layout fragment_boletim
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim));
         hideExpandBtn();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_fragment, boletimFragment, Utils.BOLETIM);
         fragmentTransaction.commit();
 
-            if (mainWebView.pg_home_loaded) {
-                if (!mainWebView.pg_boletim_loaded) {
-                    mainWebView.html.loadUrl(url + pg_boletim);
-                } else {
-                    getSupportActionBar().setTitle(getResources().getString(R.string.title_boletim)
-                            + "・" + mainWebView.data_boletim[mainWebView.data_position_boletim] + " / "
-                            + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim]); //mostra o ano no título
+            if (webView.pg_home_loaded) {
+                if (!webView.pg_boletim_loaded) {
+                    webView.html.loadUrl(url + pg_boletim);
                 }
             } else {
-                mainWebView.html.loadUrl(url + pg_home);
+                webView.html.loadUrl(url + pg_home);
             }
 
     }
@@ -354,22 +343,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fragmentTransaction.replace(R.id.main_fragment, horarioFragment, Utils.HORARIO);
         fragmentTransaction.commit();
 
-        if (mainWebView.pg_home_loaded) {
-            if (!mainWebView.pg_horario_loaded) {
-                mainWebView.html.loadUrl(url + pg_horario);
+        if (webView.pg_home_loaded) {
+            if (!webView.pg_horario_loaded) {
+                webView.html.loadUrl(url + pg_horario);
                 } else {
                 getSupportActionBar().setTitle(getResources().getString(R.string.title_horario)
-                        + "・" + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
-                        + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
+                        + "・" + webView.infos.data_horario[webView.data_position_horario] + " / "
+                        + webView.infos.periodo_horario[webView.periodo_position_horario]); //mostra o ano no título
             }
         } else {
-            mainWebView.html.loadUrl(url + pg_home);
+            webView.html.loadUrl(url + pg_home);
         }
     }
 
     public void setMateriais() { //layout fragment_home
-        if ((!mainWebView.pg_material_loaded)) {
-            mainWebView.html.loadUrl(url + pg_materiais);
+        if ((!webView.pg_material_loaded)) {
+            webView.html.loadUrl(url + pg_materiais);
         } else {
             /*if (materiais.size() != 0) {
                 Intent intent = new Intent(getApplicationContext(), MateriaisActivity.class);
@@ -463,23 +452,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void refreshPage(View v) { //Atualiza a página
         showRoundProgressbar();
         dismissErrorConnection();
-        if (!mainWebView.pg_home_loaded) {
-            mainWebView.html.loadUrl(url + pg_login);
+        if (!webView.pg_home_loaded) {
+            webView.html.loadUrl(url + pg_login);
         } else {
             if (navigation.getSelectedItemId() == R.id.navigation_home) {
-                mainWebView.html.loadUrl(url + pg_home);
+                webView.html.loadUrl(url + pg_home);
             } else if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
-                mainWebView.html.loadUrl(url + pg_diarios);
+                webView.html.loadUrl(url + pg_diarios);
             } else if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
-                mainWebView.html.loadUrl(url + pg_boletim);
+                webView.html.loadUrl(url + pg_boletim);
             } else if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-                mainWebView.html.loadUrl(url + pg_horario);
+                webView.html.loadUrl(url + pg_horario);
             }
         }
     }
 
     public void showErrorConnection() { //Mostra a página de erro de conexão
-        //mainWebView.html.stopLoading();
+        //webView.html.stopLoading();
         errorConnectionLayout.setVisibility(View.VISIBLE);
         mainLayout.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.GONE);
@@ -591,20 +580,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void autoLoadPages() { //Tenta carregar as páginas em segundo plano
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("key_autoload", false)) {
 
-        /*if (navigation.getSelectedItemId() == R.id.navigation_diarios && !mainWebView.pg_diarios_loaded) {
-            mainWebView.html.loadUrl(url + pg_diarios);
-        } else if (navigation.getSelectedItemId() == R.id.navigation_boletim && !mainWebView.pg_boletim_loaded) {
-            mainWebView.html.loadUrl(url + pg_boletim);
-        } else if (navigation.getSelectedItemId() == R.id.navigation_horario && !mainWebView.pg_horario_loaded) {
-            mainWebView.html.loadUrl(url + pg_horario);
+        /*if (navigation.getSelectedItemId() == R.id.navigation_diarios && !webView.pg_diarios_loaded) {
+            webView.html.loadUrl(url + pg_diarios);
+        } else if (navigation.getSelectedItemId() == R.id.navigation_boletim && !webView.pg_boletim_loaded) {
+            webView.html.loadUrl(url + pg_boletim);
+        } else if (navigation.getSelectedItemId() == R.id.navigation_horario && !webView.pg_horario_loaded) {
+            webView.html.loadUrl(url + pg_horario);
         } else*/
             try {
-                if (!mainWebView.pg_diarios_loaded) {
-                    mainWebView.html.loadUrl(url + pg_diarios);
-                } else if (!mainWebView.pg_boletim_loaded) {
-                    mainWebView.html.loadUrl(url + pg_boletim);
-                } else if (!mainWebView.pg_horario_loaded) {
-                    mainWebView.html.loadUrl(url + pg_horario);
+                if (!webView.pg_diarios_loaded) {
+                    webView.html.loadUrl(url + pg_diarios);
+                } else if (!webView.pg_boletim_loaded) {
+                    webView.html.loadUrl(url + pg_boletim);
+                } else if (!webView.pg_horario_loaded) {
+                    webView.html.loadUrl(url + pg_horario);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -695,9 +684,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void configWebView(){
-        mainWebView.configWebView(this);
-        mainWebView.setOnPageFinishedListener(this);
-        mainWebView.setOnPageStartedListener(this);
-        mainWebView.setOnErrorRecivedListener(this);
+        webView.configWebView(this);
+        webView.setOnPageFinishedListener(this);
+        webView.setOnPageStartedListener(this);
+        webView.setOnErrorRecivedListener(this);
     }
 }

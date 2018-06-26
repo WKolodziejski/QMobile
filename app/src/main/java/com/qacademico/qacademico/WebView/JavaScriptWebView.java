@@ -18,7 +18,6 @@ import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -26,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_home;
@@ -36,7 +37,7 @@ import static com.qacademico.qacademico.Utilities.Utils.url;
 public class JavaScriptWebView {
     private Activity activity;
     private Context context;
-    private SingletonWebView webViewMain;
+    private SingletonWebView webView;
     private SharedPreferences login_info;
     private OnPageFinished onPageFinish;
 
@@ -44,7 +45,7 @@ public class JavaScriptWebView {
         this.activity = activity;
         this.context = activity.getApplicationContext();
         this.login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
-        this.webViewMain = SingletonWebView.getInstance();
+        this.webView = SingletonWebView.getInstance();
     }
 
     @JavascriptInterface
@@ -72,7 +73,7 @@ public class JavaScriptWebView {
                     editor.putInt(Utils.LOGIN_MINUTE, currentMinute);
                     editor.apply();
 
-                    webViewMain.pg_home_loaded = true;
+                    webView.pg_home_loaded = true;
                     Log.i("JavaScriptWebView", "Home handled!");
 
                     activity.runOnUiThread(() -> {
@@ -95,7 +96,7 @@ public class JavaScriptWebView {
                 try {
                     String[][] trtd_boletim;
                     Document homeBoletim = Jsoup.parse(html_p);
-                    webViewMain.bugBoletim = homeBoletim.outerHtml();
+                    webView.bugBoletim = homeBoletim.outerHtml();
 
                     final Element table_boletim = homeBoletim.select("table").get(6);
                     Element table_notas = table_boletim.select("table").get(7);
@@ -128,30 +129,29 @@ public class JavaScriptWebView {
                     Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
-                    webViewMain.data_boletim = new String[options_ano.size()];
+                    webView.infos.data_boletim = new String[options_ano.size()];
 
                     for (int i = 0; i < options_ano.size(); i++) {
-                        webViewMain.data_boletim[i] = options_ano.get(i).text();
+                        webView.infos.data_boletim[i] = options_ano.get(i).text();
                     }
 
                     Document periodo = Jsoup.parse(homeBoletim.select("#cmbperiodos").first().toString());
                     Elements options_periodo = periodo.select("option");
 
-                    webViewMain.periodo_boletim = new String[options_periodo.size()];
+                    webView.infos.periodo_boletim = new String[options_periodo.size()];
 
                     for (int i = 0; i < options_periodo.size(); i++) {
-                        webViewMain.periodo_boletim[i] = options_periodo.get(i).text();
+                        webView.infos.periodo_boletim[i] = options_periodo.get(i).text();
                     }
 
                     if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveList(context, boletim, Utils.BOLETIM, webViewMain.data_boletim[webViewMain.data_position_boletim],
-                                webViewMain.periodo_boletim[webViewMain.periodo_position_boletim]);
+                        Data.saveList(context, boletim, Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
+                                webView.infos.periodo_boletim[webView.periodo_position_boletim]);
 
-                        Data.saveDate(context, webViewMain.data_boletim, Utils.DIARIOS, Data.YEAR);
-                        Data.saveDate(context, webViewMain.periodo_boletim, Utils.DIARIOS, Data.PERIOD);
+                        Data.saveDate(context, webView.infos);
                     }
 
-                    webViewMain.pg_boletim_loaded = true;
+                    webView.pg_boletim_loaded = true;
                     Log.i("JavaScriptWebView", "Boletim handled!");
 
                     activity.runOnUiThread(() -> {
@@ -173,7 +173,7 @@ public class JavaScriptWebView {
             public void run() {
                 try {
                     Document homeDiarios = Jsoup.parse(html_p);
-                    webViewMain.bugDiarios = homeDiarios.outerHtml();
+                    webView.bugDiarios = homeDiarios.outerHtml();
 
                     Elements table_diarios = homeDiarios.getElementsByTag("tbody").eq(12);
                     int numMaterias = table_diarios.select("table.conteudoTexto").size();
@@ -214,7 +214,7 @@ public class JavaScriptWebView {
                                 aux = context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
                             }
 
-                            Element tabelaNotas = nxtElem.child(0).child(1).child(0);
+                            Element tabelaNotas = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
                             Elements notasLinhas = tabelaNotas.getElementsByClass("conteudoTexto");
 
                             List<Trabalho> trabalhos = new ArrayList<>();
@@ -263,20 +263,18 @@ public class JavaScriptWebView {
 
                     Elements options = homeDiarios.getElementsByTag("option");
 
-                    webViewMain.data_diarios = new String[options.size() - 1];
+                    webView.infos.data_diarios = new String[options.size() - 1];
 
                     for (int i = 0; i < options.size() - 1; i++) {
-                        webViewMain.data_diarios[i] = options.get(i + 1).text();
+                        webView.infos.data_diarios[i] = options.get(i + 1).text();
                     }
 
-                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveList(context, diarios, Utils.DIARIOS, webViewMain.data_diarios[webViewMain.data_position_diarios],
-                                null);
+                    Data.saveList(context, diarios, Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios],
+                            null);
 
-                        Data.saveDate(context, webViewMain.data_diarios, Utils.DIARIOS, Data.YEAR);
-                    }
+                    Data.saveDate(context, webView.infos);
 
-                    webViewMain.pg_diarios_loaded = true;
+                    webView.pg_diarios_loaded = true;
                     Log.i("JavaScriptWebView", "Diarios handled!");
 
                     activity.runOnUiThread(() -> {
@@ -299,7 +297,7 @@ public class JavaScriptWebView {
                     String[][] trtd_horario = null;
                     String[] code = null;
                     Document homeHorario = Jsoup.parse(html_p);
-                    webViewMain.bugHorario = homeHorario.outerHtml();
+                    webView.bugHorario = homeHorario.outerHtml();
 
                     Element table_horario = homeHorario.select("table").eq(11).first();
                     Element table_codes = homeHorario.select("table").eq(12).first();
@@ -398,31 +396,30 @@ public class JavaScriptWebView {
                     Document ano = Jsoup.parse(homeHorario.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
-                    webViewMain.data_horario = new String[options_ano.size()];
-                    webViewMain.data_horario = new String[options_ano.size()];
+                    webView.infos.data_horario = new String[options_ano.size()];
+                    webView.infos.data_horario = new String[options_ano.size()];
 
                     for (int i = 0; i < options_ano.size(); i++) {
-                        webViewMain.data_horario[i] = options_ano.get(i).text();
+                        webView.infos.data_horario[i] = options_ano.get(i).text();
                     }
 
                     Document periodo = Jsoup.parse(homeHorario.select("#cmbperiodos").first().toString());
                     Elements options_periodo = periodo.select("option");
 
-                    webViewMain.periodo_horario = new String[options_periodo.size()];
+                    webView.infos.periodo_horario = new String[options_periodo.size()];
 
                     for (int i = 0; i < options_periodo.size(); i++) {
-                        webViewMain.periodo_horario[i] = options_periodo.get(i).text();
+                        webView.infos.periodo_horario[i] = options_periodo.get(i).text();
                     }
 
                     if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveList(context, horario, Utils.HORARIO, webViewMain.data_horario[webViewMain.data_position_horario],
-                                webViewMain.periodo_horario[webViewMain.periodo_position_horario]);
+                        Data.saveList(context, horario, Utils.HORARIO, webView.infos.data_horario[webView.data_position_horario],
+                                webView.infos.periodo_horario[webView.periodo_position_horario]);
 
-                        Data.saveDate(context, webViewMain.data_horario, Utils.DIARIOS, Data.YEAR);
-                        Data.saveDate(context, webViewMain.periodo_horario, Utils.DIARIOS, Data.PERIOD);
+                        Data.saveDate(context, webView.infos);
                     }
 
-                    webViewMain.pg_horario_loaded = true;
+                    webView.pg_horario_loaded = true;
                     Log.i("JavaScriptWebView", "Horario handled!");
 
                     activity.runOnUiThread(() -> {
@@ -525,7 +522,7 @@ public class JavaScriptWebView {
                         materiais.add(new Materiais(nomeMateria, material));
                     }
 
-                    webViewMain.pg_material_loaded = true;
+                    webView.pg_material_loaded = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
 
                     activity.runOnUiThread(() -> {

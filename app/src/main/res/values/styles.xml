@@ -7,6 +7,11 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:textColorPrimary">@color/colorPrimary</item>
         <item name="android:colorForeground">@color/colorPrimary</item>
+
+        <!-- New MaterialComponents attributes. -->
+        <item name="colorSecondary">?attr/colorPrimary</item>
+        <item name="scrimBackground">@color/green_A400</item>
+        <item name="snackbarButtonStyle">?attr/borderlessButtonStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

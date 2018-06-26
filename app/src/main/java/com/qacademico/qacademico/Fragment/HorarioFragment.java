@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
-
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.qacademico.qacademico.Activity.MainActivity;
@@ -18,18 +17,16 @@ import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 
 public class HorarioFragment extends Fragment implements MainActivity.OnPageUpdated {
-    SingletonWebView mainWebView = SingletonWebView.getInstance();
+    SingletonWebView webView = SingletonWebView.getInstance();
 
 
     @Override
@@ -107,22 +104,22 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
     }
 
     public void openDateDialog() {
-        if (mainWebView.pg_horario_loaded && mainWebView.data_horario != null) {
+        if (webView.pg_horario_loaded && webView.infos.data_horario != null) {
 
             View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
             final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
             year.setMinValue(0);
-            year.setMaxValue(mainWebView.data_horario.length - 1);
-            year.setValue(mainWebView.data_position_horario);
-            year.setDisplayedValues(mainWebView.data_horario);
+            year.setMaxValue(webView.infos.data_horario.length - 1);
+            year.setValue(webView.data_position_horario);
+            year.setDisplayedValues(webView.infos.data_horario);
             year.setWrapSelectorWheel(false);
 
             final NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
             periodo.setMinValue(0);
-            periodo.setMaxValue(mainWebView.periodo_horario.length - 1);
-            periodo.setValue(mainWebView.periodo_position_horario);
-            periodo.setDisplayedValues(mainWebView.periodo_horario);
+            periodo.setMaxValue(webView.infos.periodo_horario.length - 1);
+            periodo.setValue(webView.periodo_position_horario);
+            periodo.setDisplayedValues(webView.infos.periodo_horario);
             periodo.setWrapSelectorWheel(false);
 
             new AlertDialog.Builder(getActivity()).setView(theView)
@@ -130,16 +127,16 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
                             R.string.dialog_date_change, R.color.horario_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                        mainWebView.data_position_horario = year.getValue();
-                        mainWebView.periodo_position_horario = periodo.getValue();
+                        webView.data_position_horario = year.getValue();
+                        webView.periodo_position_horario = periodo.getValue();
 
 
-                        if (mainWebView.data_position_horario == Integer.parseInt(mainWebView.data_horario[0])) {
-                            mainWebView.html.loadUrl(url + pg_horario);
+                        if (webView.data_position_horario == Integer.parseInt(webView.infos.data_horario[0])) {
+                            webView.html.loadUrl(url + pg_horario);
                         } else {
-                            mainWebView.html.loadUrl(url + pg_horario + "&COD_MATRICULA=-1&cmbanos=" +
-                                    mainWebView.data_horario[mainWebView.data_position_horario]
-                                    + "&cmbperiodos=" + mainWebView.periodo_horario[mainWebView.periodo_position_horario] + "&Exibir=OK");
+                            webView.html.loadUrl(url + pg_horario + "&COD_MATRICULA=-1&cmbanos=" +
+                                    webView.infos.data_horario[webView.data_position_horario]
+                                    + "&cmbperiodos=" + webView.infos.periodo_horario[webView.periodo_position_horario] + "&Exibir=OK");
                         }
                     }).setNegativeButton(R.string.dialog_cancel, null)
                     .show();
@@ -177,8 +174,8 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
         }
 
         Data.saveList(Objects.requireNonNull(getContext()), ((MainActivity) Objects.requireNonNull(getActivity())).horarioList,
-                Utils.HORARIO, mainWebView.data_horario[mainWebView.data_position_horario],
-                mainWebView.periodo_horario[mainWebView.periodo_position_horario]);
+                Utils.HORARIO, webView.infos.data_horario[webView.data_position_horario],
+                webView.infos.periodo_horario[webView.periodo_position_horario]);
         }
 
     private int trimh(String string) {
@@ -203,11 +200,11 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (mainWebView.data_horario != null && mainWebView.periodo_horario != null) {
+        if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
             Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
                     .getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
-                    + "・" + mainWebView.data_horario[mainWebView.data_position_horario] + " / "
-                    + mainWebView.periodo_horario[mainWebView.periodo_position_horario]); //mostra o ano no título
+                    + "・" + webView.infos.data_horario[webView.data_position_horario] + " / "
+                    + webView.infos.periodo_horario[webView.periodo_position_horario]); //mostra o ano no título
         }
 
         ((MainActivity) Objects.requireNonNull(getActivity())).horarioList = (List<Horario>) list;

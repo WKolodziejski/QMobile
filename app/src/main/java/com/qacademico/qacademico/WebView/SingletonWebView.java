@@ -7,6 +7,10 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.qacademico.qacademico.Class.Infos;
+import com.qacademico.qacademico.Utilities.Data;
+
+import java.io.Serializable;
 import java.util.List;
 
 public class SingletonWebView {
@@ -18,9 +22,9 @@ public class SingletonWebView {
     public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
             pg_login_loaded, isChangePasswordPage, isLoginPage;
     public String new_password, bugDiarios, bugBoletim, bugHorario, scriptDiario = "";
-    public String[] data_boletim, data_horario, data_diarios, periodo_horario, periodo_boletim;
     public int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario,
             periodo_position_boletim;
+    public Infos infos;
 
     private SingletonWebView() {}
 
@@ -33,6 +37,12 @@ public class SingletonWebView {
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     public void configWebView(Activity activity) {
+        if (Data.loadDate(activity.getApplicationContext()) != null) {
+            infos = Data.loadDate(activity.getApplicationContext());
+        } else {
+            infos = new Infos();
+        }
+
         html = new WebView(activity.getApplicationContext());
         WebSettings faller = html.getSettings();
         faller.setJavaScriptEnabled(true);

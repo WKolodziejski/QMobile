@@ -1,8 +1,6 @@
 package com.qacademico.qacademico.Fragment;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -110,7 +108,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         LinearLayout offilne = (LinearLayout) view.findViewById(R.id.offline);
 
-        if (Utils.isConnected(getActivity()) || ((MainActivity)getActivity()).mainWebView.pg_home_loaded) {
+        if (Utils.isConnected(getActivity()) || ((MainActivity)getActivity()).webView.pg_home_loaded) {
             offilne.setVisibility(View.GONE);
         } else {
             offilne.setVisibility(View.VISIBLE);

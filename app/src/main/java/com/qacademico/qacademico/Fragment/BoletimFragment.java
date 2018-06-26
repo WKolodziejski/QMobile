@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,24 +12,22 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-import com.rmondjone.locktableview.DisplayUtil;
 import com.rmondjone.locktableview.LockTableView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
-    SingletonWebView mainWebView = SingletonWebView.getInstance();
+    SingletonWebView webView = SingletonWebView.getInstance();
     public boolean show_by_semestre = true;
 
     @Override
@@ -54,6 +51,10 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size() != 0) {
 
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                        .setTitle(getResources().getString(R.string.title_boletim)
+                                + "・" + webView.infos.data_boletim[webView.data_position_boletim]
+                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]); //mostra o ano no título
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
 
@@ -161,30 +162,34 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
 
             } else {
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                        .setTitle(getResources().getString(R.string.title_boletim));
                 ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
+            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                    .setTitle(getResources().getString(R.string.title_boletim));
             ((MainActivity) Objects.requireNonNull(getActivity())).showRoundProgressbar();
         }
     }
 
     public void openDateDialog() {
-        if (mainWebView.pg_boletim_loaded && mainWebView.data_boletim != null) {
+        if (webView.infos.data_boletim != null) {
 
             View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
             final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
             year.setMinValue(0);
-            year.setMaxValue(mainWebView.data_boletim.length - 1);
-            year.setValue(mainWebView.data_position_boletim);
-            year.setDisplayedValues(mainWebView.data_boletim);
+            year.setMaxValue(webView.infos.data_boletim.length - 1);
+            year.setValue(webView.data_position_boletim);
+            year.setDisplayedValues(webView.infos.data_boletim);
             year.setWrapSelectorWheel(false);
 
             final NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
             periodo.setMinValue(0);
-            periodo.setMaxValue(mainWebView.periodo_boletim.length - 1);
-            periodo.setValue(mainWebView.periodo_position_boletim);
-            periodo.setDisplayedValues(mainWebView.periodo_boletim);
+            periodo.setMaxValue(webView.infos.periodo_boletim.length - 1);
+            periodo.setValue(webView.periodo_position_boletim);
+            periodo.setDisplayedValues(webView.infos.periodo_boletim);
             periodo.setWrapSelectorWheel(false);
 
             new AlertDialog.Builder(getActivity()).setView(theView)
@@ -192,15 +197,38 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                             R.string.dialog_date_change, R.color.boletim_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                        mainWebView.data_position_boletim = year.getValue();
-                        mainWebView.periodo_position_boletim = periodo.getValue();
+                        if (Data.loadList(Objects.requireNonNull(getContext()),
+                                Utils.BOLETIM, webView.infos.data_boletim[year.getValue()],
+                                webView.infos.periodo_boletim[periodo.getValue()]) != null) {
 
-                        if (mainWebView.data_position_boletim == Integer.parseInt(mainWebView.data_boletim[0])) {
-                            mainWebView.html.loadUrl(url + pg_boletim);
+                            webView.data_position_boletim = year.getValue();
+                            webView.periodo_position_boletim = periodo.getValue();
+
+                            ((MainActivity) Objects.requireNonNull(getActivity()))
+                                    .boletimList = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
+                                    Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
+                                    webView.infos.periodo_boletim[webView.periodo_position_boletim]);
+
+                            onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).boletimList);
+
                         } else {
-                            mainWebView.html.loadUrl(url + pg_boletim + "&COD_MATRICULA=-1&cmbanos="
-                                    + mainWebView.data_boletim[mainWebView.data_position_boletim]
-                                    + "&cmbperiodos=" + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim] + "&Exibir+Boletim");
+                            if (Utils.isConnected(getContext())) {
+
+                                webView.data_position_boletim = year.getValue();
+                                webView.periodo_position_boletim = periodo.getValue();
+
+                                if (webView.data_position_boletim == Integer.parseInt(webView.infos.data_boletim[0])) {
+
+                                    webView.html.loadUrl(url + pg_boletim);
+
+                                } else {
+                                    webView.html.loadUrl(url + pg_boletim + "&COD_MATRICULA=-1&cmbanos="
+                                            + webView.infos.data_boletim[webView.data_position_boletim]
+                                            + "&cmbperiodos=" + webView.infos.periodo_boletim[webView.periodo_position_boletim] + "&Exibir+Boletim");
+                                }
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }).setNegativeButton(R.string.dialog_cancel, null)
                     .show();//
@@ -213,13 +241,11 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (mainWebView.data_boletim != null && mainWebView.periodo_boletim != null) {
+        if (webView.infos.data_boletim != null) {
             Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
                     .getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim)
-                    + "・" + mainWebView.data_boletim[mainWebView.data_position_boletim] + " / "
-                    + mainWebView.periodo_boletim[mainWebView.periodo_position_boletim]); //mostra o ano no título
+                    + "・" + webView.infos.data_boletim[webView.data_position_boletim]); //mostra o ano no título
         }
-
         ((MainActivity) Objects.requireNonNull(getActivity())).boletimList = (List<Boletim>) list;
         setBoletim(getView(), false);
     }

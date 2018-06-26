@@ -2,29 +2,23 @@ package com.qacademico.qacademico.Utilities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.util.Log;
 
-import com.qacademico.qacademico.Class.Boletim;
-import com.qacademico.qacademico.Class.Diarios;
-import com.qacademico.qacademico.Class.Horario;
-
-import java.io.File;
+import com.qacademico.qacademico.Class.Infos;
+import com.qacademico.qacademico.WebView.SingletonWebView;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-import java.util.Objects;
 
 public class Data {
     public static final String YEAR = ".Year";
     public static final String PERIOD = ".Period";
+    public static final String DATE = ".Date";
 
-    public static List<?> getList(Context context, String type, String year, String period) {
+    public static List<?> loadList(Context context, String type, String year, String period) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
         ObjectInputStream object;
@@ -34,7 +28,7 @@ public class Data {
             if (type.equals(Utils.DIARIOS)) {
                 object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                         login_info.getString(Utils.LOGIN_REGISTRATION,
-                                "") + type + "." + year.substring(0, 4) + "." + year.substring(8, 8))));
+                                "") + type + "." + trim(year))));
             } else {
                 object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                         login_info.getString(Utils.LOGIN_REGISTRATION,
@@ -57,7 +51,7 @@ public class Data {
             if (type.equals(Utils.DIARIOS)) {
                 object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                         login_info.getString(Utils.LOGIN_REGISTRATION,
-                                "") + type + "." + year.substring(0, 4) + "." + year.substring(8, 8))));
+                                "") + type + "." + trim(year))));
             } else {
                 object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                         login_info.getString(Utils.LOGIN_REGISTRATION,
@@ -71,40 +65,48 @@ public class Data {
         }
     }
 
-    public static void saveDate(Context context, String[] array, String wich, String type) {
+    public static void saveDate(Context context, Object obj) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
         ObjectOutputStream object;
         try {
-            object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                    login_info.getString(Utils.LOGIN_REGISTRATION,
-                            "") + wich + type)));
-            object.writeObject(array);
+                object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
+                        login_info.getString(Utils.LOGIN_REGISTRATION,
+                                "") + DATE)));
+
+            object.writeObject(obj);
             object.flush();
             object.close();
+            Log.i("DATA", "Salvo");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static String[] getDate(Context context, String wich, String type) {
+    public static Infos loadDate(Context context) {
         SharedPreferences login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
 
         ObjectInputStream object;
-        String[] array = null;
+        Infos infos = null;
 
         try {
             object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
-                    login_info.getString(Utils.LOGIN_REGISTRATION,
-                            "") + wich + type)));
+                        login_info.getString(Utils.LOGIN_REGISTRATION,
+                                "") + DATE)));
 
-            array = (String[]) object.readObject();
-            object.close();
+            infos = (Infos) object.readObject();
+            Log.i("DATA", "Lido");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return array;
+        return infos;
+    }
+
+    private static String trim(String string) {
+        string = string.replace(" / ", ".");
+        Log.i("DATA", string);
+        return string;
     }
 }
