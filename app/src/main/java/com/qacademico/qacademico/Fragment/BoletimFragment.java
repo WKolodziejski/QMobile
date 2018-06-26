@@ -197,35 +197,34 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                             R.string.dialog_date_change, R.color.boletim_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                        if (Data.loadList(Objects.requireNonNull(getContext()),
-                                Utils.BOLETIM, webView.infos.data_boletim[year.getValue()],
-                                webView.infos.periodo_boletim[periodo.getValue()]) != null) {
-
+                        if (Utils.isConnected(Objects.requireNonNull(getContext()))) {
                             webView.data_position_boletim = year.getValue();
                             webView.periodo_position_boletim = periodo.getValue();
 
-                            ((MainActivity) Objects.requireNonNull(getActivity()))
-                                    .boletimList = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
-                                    Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
-                                    webView.infos.periodo_boletim[webView.periodo_position_boletim]);
+                            if (webView.data_position_boletim == Integer.parseInt(webView.infos.data_boletim[0])) {
 
-                            onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).boletimList);
+                                webView.html.loadUrl(url + pg_boletim);
 
+                            } else {
+                                webView.html.loadUrl(url + pg_boletim + "&COD_MATRICULA=-1&cmbanos="
+                                        + webView.infos.data_boletim[webView.data_position_boletim]
+                                        + "&cmbperiodos=" + webView.infos.periodo_boletim[webView.periodo_position_boletim] + "&Exibir+Boletim");
+                            }
                         } else {
-                            if (Utils.isConnected(getContext())) {
+                            if (Data.loadList(Objects.requireNonNull(getContext()),
+                                    Utils.BOLETIM, webView.infos.data_boletim[year.getValue()],
+                                    webView.infos.periodo_boletim[periodo.getValue()]) != null) {
 
                                 webView.data_position_boletim = year.getValue();
                                 webView.periodo_position_boletim = periodo.getValue();
 
-                                if (webView.data_position_boletim == Integer.parseInt(webView.infos.data_boletim[0])) {
+                                ((MainActivity) Objects.requireNonNull(getActivity()))
+                                        .boletimList = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
+                                        Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
+                                        webView.infos.periodo_boletim[webView.periodo_position_boletim]);
 
-                                    webView.html.loadUrl(url + pg_boletim);
+                                onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).boletimList);
 
-                                } else {
-                                    webView.html.loadUrl(url + pg_boletim + "&COD_MATRICULA=-1&cmbanos="
-                                            + webView.infos.data_boletim[webView.data_position_boletim]
-                                            + "&cmbperiodos=" + webView.infos.periodo_boletim[webView.periodo_position_boletim] + "&Exibir+Boletim");
-                                }
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
                             }

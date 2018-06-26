@@ -407,9 +407,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.i("Singleton", "onStart");
 
         if ((url_p.equals(url + pg_home))
-                || (url_p.equals(url + pg_boletim) && navigation.getSelectedItemId() == R.id.navigation_boletim)
-                || (url_p.equals(url + pg_diarios) && navigation.getSelectedItemId() == R.id.navigation_diarios)
-                || (url_p.equals(url + pg_horario) && navigation.getSelectedItemId() == R.id.navigation_horario)) {
+                || (url_p.contains(url + pg_boletim) && navigation.getSelectedItemId() == R.id.navigation_boletim)
+                || (url_p.contains(url + pg_diarios) && navigation.getSelectedItemId() == R.id.navigation_diarios)
+                || (url_p.contains(url + pg_horario) && navigation.getSelectedItemId() == R.id.navigation_horario)) {
             showLinearProgressbar();
         }
     }

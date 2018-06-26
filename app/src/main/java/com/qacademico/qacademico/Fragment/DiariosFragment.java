@@ -126,31 +126,30 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
                             R.string.dialog_date_change, R.color.diarios_dialog))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                        if (Data.loadList(Objects.requireNonNull(getContext()),
-                                Utils.DIARIOS, webView.infos.data_diarios[year.getValue()], null) != null) {
-
+                        if (Utils.isConnected(Objects.requireNonNull(getContext()))) {
                             webView.data_position_diarios = year.getValue();
 
-                            ((MainActivity) Objects.requireNonNull(getActivity()))
-                                    .diariosList = (List<Diarios>) Data.loadList(Objects.requireNonNull(getContext()),
-                                    Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios], null);
+                            Log.v("Ano selecionado", String.valueOf(
+                                    webView.infos.data_diarios[webView.data_position_diarios]));
 
-                            onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).diariosList);
+                            webView.html.loadUrl(url + pg_diarios);
 
+                            webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
+                                    + (webView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
+
+                            Log.i("SCRIPT", "" + webView.scriptDiario);
                         } else {
-                            if (Utils.isConnected(getContext())) {
+                            if (Data.loadList(Objects.requireNonNull(getContext()),
+                                    Utils.DIARIOS, webView.infos.data_diarios[year.getValue()], null) != null) {
 
                                 webView.data_position_diarios = year.getValue();
 
-                                Log.v("Ano selecionado", String.valueOf(
-                                        webView.infos.data_diarios[webView.data_position_diarios]));
+                                ((MainActivity) Objects.requireNonNull(getActivity()))
+                                        .diariosList = (List<Diarios>) Data.loadList(Objects.requireNonNull(getContext()),
+                                        Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios], null);
 
-                                webView.html.loadUrl(url + pg_diarios);
+                                onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).diariosList);
 
-                                webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                                        + (webView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
-
-                                Log.i("SCRIPT", "" + webView.scriptDiario);
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
                             }
