@@ -7,7 +7,10 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+
 import com.qacademico.qacademico.Class.Boletim;
+import com.qacademico.qacademico.Class.Calendario;
+import com.qacademico.qacademico.Class.Dia;
 import com.qacademico.qacademico.Class.Diarios;
 import com.qacademico.qacademico.Class.Etapa;
 import com.qacademico.qacademico.Class.Horario;
@@ -17,10 +20,12 @@ import com.qacademico.qacademico.Class.Trabalho;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -28,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
+import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
 import static com.qacademico.qacademico.Utilities.Utils.pg_home;
 import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
@@ -56,29 +62,29 @@ public class JavaScriptWebView {
             public void run() {
                 if (!html_p.equals("<html><head></head><body></body></html>")) {
                     try {
-                    Log.i("JavaScriptWebView", html_p);
-                    Document homePage = Jsoup.parse(html_p);
-                    Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
+                        Log.i("JavaScriptWebView", html_p);
+                        Document homePage = Jsoup.parse(html_p);
+                        Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
 
-                    Calendar rightNow = Calendar.getInstance();
-                    int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
-                    int currentDay = rightNow.get(Calendar.DAY_OF_YEAR);
-                    int currentMinute = rightNow.get(Calendar.MINUTE);
+                        Calendar rightNow = Calendar.getInstance();
+                        int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
+                        int currentDay = rightNow.get(Calendar.DAY_OF_YEAR);
+                        int currentMinute = rightNow.get(Calendar.MINUTE);
 
-                    SharedPreferences.Editor editor = login_info.edit();
-                    editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
+                        SharedPreferences.Editor editor = login_info.edit();
+                        editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
 
-                    editor.putInt(Utils.LOGIN_DAY, currentDay);
-                    editor.putInt(Utils.LOGIN_HOUR, currentHour);
-                    editor.putInt(Utils.LOGIN_MINUTE, currentMinute);
-                    editor.apply();
+                        editor.putInt(Utils.LOGIN_DAY, currentDay);
+                        editor.putInt(Utils.LOGIN_HOUR, currentHour);
+                        editor.putInt(Utils.LOGIN_MINUTE, currentMinute);
+                        editor.apply();
 
-                    webView.pg_home_loaded = true;
-                    Log.i("JavaScriptWebView", "Home handled!");
+                        webView.pg_home_loaded = true;
+                        Log.i("JavaScriptWebView", "Home handled!");
 
-                    activity.runOnUiThread(() -> {
-                        onPageFinish.onPageFinish(url + pg_home, null);
-                    });
+                        activity.runOnUiThread(() -> {
+                            onPageFinish.onPageFinish(url + pg_home, null);
+                        });
                     } catch (Exception ignored) {
                         Log.i("JavaScriptWebView", "Home error");
                     }
@@ -483,25 +489,25 @@ public class JavaScriptWebView {
                                     || extension.equals(".txt") || extension.equals(".rtf")) {
                                 color = context.getResources().getColor(R.color.materiais_doc);
                                 img = context.getResources().getDrawable(R.drawable.ic_docs);
-                            } else if(extension.equals(".csv") ||extension.equals(".svg")) {
+                            } else if (extension.equals(".csv") || extension.equals(".svg")) {
                                 color = context.getResources().getColor(R.color.materiais_table);
                                 img = context.getResources().getDrawable(R.drawable.ic_table);
-                            } else if(extension.equals(".zip") || extension.equals(".rar")
+                            } else if (extension.equals(".zip") || extension.equals(".rar")
                                     || extension.equals(".7z")) {
                                 color = context.getResources().getColor(R.color.materiais_zip);
                                 img = context.getResources().getDrawable(R.drawable.ic_compressed);
-                            } else if(extension.equals(".mp3") || extension.equals(".wav")
+                            } else if (extension.equals(".mp3") || extension.equals(".wav")
                                     || extension.equals(".wma")) {
                                 color = context.getResources().getColor(R.color.materiais_audio);
                                 img = context.getResources().getDrawable(R.drawable.ic_song);
-                            } else if(extension.equals(".mp4") || extension.equals(".wmv")
+                            } else if (extension.equals(".mp4") || extension.equals(".wmv")
                                     || extension.equals(".avi")) {
                                 color = context.getResources().getColor(R.color.materiais_video);
                                 img = context.getResources().getDrawable(R.drawable.ic_video);
-                            } else if(extension.equals(".jpg") || extension.equals(".png")) {
+                            } else if (extension.equals(".jpg") || extension.equals(".png")) {
                                 color = context.getResources().getColor(R.color.materiais_image);
                                 img = context.getResources().getDrawable(R.drawable.ic_picture);
-                            } else if(extension.equals(".jar") || extension.equals(".php")
+                            } else if (extension.equals(".jar") || extension.equals(".php")
                                     || extension.equals(".html") || extension.equals(".css")
                                     || extension.equals(".js") || extension.equals(".json")
                                     || extension.equals(".xml")) {
@@ -535,6 +541,74 @@ public class JavaScriptWebView {
         }.start();
     }
 
+    @JavascriptInterface
+    public void handleCalendario(String html_p) {
+        Log.i("JavaScriptWebView", "Calendario handling...");
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Document homeCalendario = Jsoup.parse(html_p);
+                    webView.bugCalendario = homeCalendario.outerHtml();
+
+                    Elements meses = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+                    //Elements infos = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+
+                    List<Calendario> calendario = new ArrayList<>();
+                    for (int x = 0; x < 12; x++) {
+                        String nomeMes = meses.get(x).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
+                        Elements arrayEventos = meses.get(x).nextElementSibling().child(0).getElementsByTag("tr");
+                        Elements dias = meses.get(x).getElementsByTag("td");
+
+                        List<Dia> diaList = new ArrayList<>();
+
+                        Elements tableLegenda = homeCalendario.getElementsByTag("td").parents().get(0).children();
+
+                        for (int i = 1; i < tableLegenda.size(); i++) {
+//*******************************************************PAREI***AQUI*********************************************
+//*******************************************************PAREI***AQUI*********************************************
+//*******************************************************PAREI***AQUI*********************************************
+//*******************************************************PAREI***AQUI*********************************************
+                        }
+                        for (int i = 0; i < dias.size(); i++) {
+                            String dia = dias.get(i).text();
+                            if (!dia.equals("")) {
+                                String cor = dias.get(i).attr("bgcolor");
+                                List<String> eventos = new ArrayList<>();   //mudar ao usar classe evento
+                                if (!cor.equals("")) {
+                                    for (int j = 0; j < arrayEventos.size(); j++) {
+                                        String diaEvento = arrayEventos.get(j).child(0).text();
+                                        if (diaEvento.equals(dia)) {        //mudar ao usar classe evento
+                                            String nomeEvento = arrayEventos.get(j).child(1).text();
+                                            eventos.add(nomeEvento);
+                                        }
+                                    }
+                                }
+                                Dia diaFinal = new Dia(dia, cor, eventos);
+                                diaList.add(diaFinal);
+                            }
+                        }
+                        Calendario mes = new Calendario(nomeMes, diaList);
+                        calendario.add(mes);
+                    }
+
+
+
+
+                    webView.pg_material_loaded = true;
+                    Log.i("JavaScriptWebView", "Calendario handled!");
+
+                    activity.runOnUiThread(() -> {
+                        onPageFinish.onPageFinish(url + pg_calendario, calendario);
+                    });
+                } catch (Exception ignored) {
+                    Log.i("JavaScriptWebView", "Calendario error");
+                }
+            }
+        }.start();
+    }
+
+
     private String trim(String string) {
         string = string.substring(string.indexOf(":"));
         string = string.replace(":", "");
@@ -546,7 +620,7 @@ public class JavaScriptWebView {
         return string;
     }
 
-    public void setOnPageFinished(OnPageFinished onPageFinish){
+    public void setOnPageFinished(OnPageFinished onPageFinish) {
         this.onPageFinish = onPageFinish;
     }
 

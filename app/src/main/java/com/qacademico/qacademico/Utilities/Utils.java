@@ -36,6 +36,7 @@ public class Utils {
     public static final String pg_boletim = "2032";
     public static final String pg_horario = "2010";
     public static final String pg_materiais = "2061";
+    public static final String pg_calendario = "2020";
     public static final String pg_change_password = "1011";
     public static final String pg_erro = "1";
     public static final String download_update_url = "http://www.geocities.ws/tinfqacadmob/Qacademico/";

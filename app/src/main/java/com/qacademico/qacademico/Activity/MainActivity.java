@@ -64,6 +64,7 @@ import static com.qacademico.qacademico.Utilities.Utils.pg_home;
 import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
 import static com.qacademico.qacademico.Utilities.Utils.pg_login;
 import static com.qacademico.qacademico.Utilities.Utils.pg_materiais;
+import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
@@ -367,6 +368,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtras(bundle);
                 presentActivity(intent, mainLayout);
             }*/
+        }
+    }
+
+    public void setCalendario(){
+        if (webView.pg_home_loaded) {
+            if (!webView.pg_calendario_loaded) {
+                webView.html.loadUrl(url + pg_calendario);
+            }
+        } else {
+            webView.html.loadUrl(url + pg_home);
         }
     }
 
