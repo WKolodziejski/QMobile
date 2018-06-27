@@ -9,9 +9,18 @@ import android.webkit.WebView;
 
 import com.qacademico.qacademico.Class.Infos;
 import com.qacademico.qacademico.Utilities.Data;
+import com.qacademico.qacademico.Utilities.Utils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
+import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
+import static com.qacademico.qacademico.Utilities.Utils.pg_home;
+import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
+import static com.qacademico.qacademico.Utilities.Utils.pg_login;
+import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class SingletonWebView {
     private static SingletonWebView singleton;
@@ -25,6 +34,7 @@ public class SingletonWebView {
     public int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario,
             periodo_position_boletim;
     public Infos infos;
+    private List<String> queue = new ArrayList<>();
 
     private SingletonWebView() {}
 
@@ -33,6 +43,39 @@ public class SingletonWebView {
             singleton = new SingletonWebView();
         }
         return singleton;
+    }
+
+    public void load(String url_i) {
+        if (!pg_login_loaded) {
+            html.loadUrl(url + pg_login);
+            addToQueue(url_i);
+        } else if (!pg_home_loaded) {
+            html.loadUrl(url + pg_home);
+            addToQueue(url_i);
+        } else if ((url_i.equals(pg_diarios) && !pg_diarios_loaded)
+                || (url_i.equals(pg_boletim) && !pg_boletim_loaded)
+                || (url_i.equals(pg_horario) && !pg_horario_loaded)) {
+            addToQueue(url_i);
+        }
+    }
+
+    private void addToQueue(String url_i) {
+        for (int i = 0; i < queue.size(); i++) {
+            if (queue.get(i).equals(url_i)) {
+                queue.remove(i);
+            }
+        }
+        queue.add(url_i);
+        html.loadUrl(url + url_i);
+    }
+
+    public void nextQueue() {
+        if (queue.size() > 0) {
+            queue.remove(queue.size() - 1);
+        }
+        if (queue.size() > 0) {
+            html.loadUrl(url + queue.get(queue.size() - 1));
+        }
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})

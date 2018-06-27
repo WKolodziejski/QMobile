@@ -375,8 +375,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setHome();
             Design.removeToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
         } else {
-            Intent login =  new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(login);
+            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         }
     }
 
@@ -574,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     protected void dismissLinearProgressbar() { //Esconde a progressBar ao carregar a página
-        progressBar_Top.setVisibility(View.GONE);
+        progressBar_Top.setVisibility(View.INVISIBLE);
     }
 
     protected void autoLoadPages() { //Tenta carregar as páginas em segundo plano

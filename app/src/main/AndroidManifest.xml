@@ -42,6 +42,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Activity.CalendarioActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Activity.Settings.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
