@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Fragment.CalendarioFragment;
 import com.qacademico.qacademico.Fragment.LoginFragment;
@@ -12,6 +15,9 @@ import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
 import java.util.List;
+import java.util.Objects;
+
+import butterknife.BindView;
 
 public class CalendarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
@@ -22,12 +28,23 @@ public class CalendarioActivity extends AppCompatActivity implements SingletonWe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendario);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_calendario);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mainWebView.setOnPageFinishedListener(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.calendario_fragment, calendarioFragment, Utils.CALENDARIO);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.calendario_fragment, calendarioFragment, Utils.CALENDARIO).commit();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

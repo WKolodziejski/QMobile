@@ -20,6 +20,7 @@ public class Utils {
     public static final String DIARIOS = ".Diarios";
     public static final String BOLETIM = ".Boletim";
     public static final String CALENDARIO = ".Calendario";
+    public static final String MATERIAIS = ".Materiais";
     public static final String LOGIN = ".Login";
     public static final String LOGIN_VALID = ".Valido";
     public static final String LOGIN_NAME = ".Nome";

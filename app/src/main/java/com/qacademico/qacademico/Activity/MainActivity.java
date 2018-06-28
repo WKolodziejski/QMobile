@@ -286,13 +286,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setHome() { //layout fragment_home
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_home));
-        hideExpandBtn();
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, new HomeFragment(), Utils.HOME);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
 
         if(!webView.pg_login_loaded) {
             webView.html.loadUrl(url + pg_login);
@@ -303,10 +297,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setDiarios() {//layout fragment_diarios
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, diariosFragment, Utils.DIARIOS);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, diariosFragment, Utils.DIARIOS).commit();
 
         if (webView.pg_home_loaded) {
             if (!webView.pg_diarios_loaded) {
@@ -319,11 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setBoletim() { //layout fragment_boletim
 
-        hideExpandBtn();
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, boletimFragment, Utils.BOLETIM);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, boletimFragment, Utils.BOLETIM).commit();
 
             if (webView.pg_home_loaded) {
                 if (!webView.pg_boletim_loaded) {
@@ -337,20 +324,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setHorario() { // layout fragment_horario
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario));
-        hideExpandBtn();
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, horarioFragment, Utils.HORARIO);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, horarioFragment, Utils.HORARIO).commit();
 
         if (webView.pg_home_loaded) {
             if (!webView.pg_horario_loaded) {
                 webView.html.loadUrl(url + pg_horario);
-                } else {
-                getSupportActionBar().setTitle(getResources().getString(R.string.title_horario)
-                        + "・" + webView.infos.data_horario[webView.data_position_horario] + " / "
-                        + webView.infos.periodo_horario[webView.periodo_position_horario]); //mostra o ano no título
             }
         } else {
             webView.html.loadUrl(url + pg_home);

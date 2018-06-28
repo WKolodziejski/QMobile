@@ -55,6 +55,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                         .setTitle(getResources().getString(R.string.title_boletim)
                                 + "・" + webView.infos.data_boletim[webView.data_position_boletim]
                                 + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]); //mostra o ano no título
+                ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
 

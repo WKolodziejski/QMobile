@@ -22,7 +22,7 @@ import static com.qacademico.qacademico.Utilities.Utils.pg_login;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class LoginActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
-    public SingletonWebView mainWebView = SingletonWebView.getInstance();
+    public SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
@@ -34,13 +34,10 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
         loginLayout = (ViewGroup) findViewById(R.id.login_container);
 
-        mainWebView.isLoginPage = true;
-        mainWebView.setOnPageFinishedListener(this);
+        webView.isLoginPage = true;
+        webView.setOnPageFinishedListener(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.login_fragment, loginFragment, Utils.LOGIN);
-        fragmentTransaction.commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment, Utils.LOGIN).commit();
     }
 
     @Override

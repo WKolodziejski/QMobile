@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment {
             editor.apply();
 
             ((LoginActivity) getActivity()).dismissSnackbar();
-            ((LoginActivity) getActivity()).mainWebView.html.loadUrl(url + pg_login);
+            ((LoginActivity) getActivity()).webView.html.loadUrl(url + pg_login);
         });
         return view;
     }

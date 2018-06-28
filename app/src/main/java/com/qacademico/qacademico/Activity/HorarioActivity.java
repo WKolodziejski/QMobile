@@ -15,14 +15,13 @@ import java.util.Objects;
 
 public class HorarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
-    Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horario);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario);

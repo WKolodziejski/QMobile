@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.Activity.CalendarioActivity;
 import com.qacademico.qacademico.Activity.MainActivity;
+import com.qacademico.qacademico.Activity.MateriaisActivity;
 import com.qacademico.qacademico.Adapter.Home.ShortcutAdapter;
 import com.qacademico.qacademico.Class.Shortcut;
 import com.qacademico.qacademico.R;
@@ -40,6 +41,9 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                .setTitle(getResources().getString(R.string.title_home));
+        ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
         ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
         ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
 

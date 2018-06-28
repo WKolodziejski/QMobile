@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.haibin.calendarview.CalendarView;
 import com.qacademico.qacademico.R;
 
 public class CalendarioFragment extends Fragment {
@@ -22,6 +23,16 @@ public class CalendarioFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendario, container, false);
 
+        setCalendar(view);
+
         return view;
+    }
+
+    private void setCalendar(View view) {
+
+        CalendarView calendarView = (CalendarView) view.findViewById(R.id.calendarView);
+
+        calendarView.setRange(2018, 1, 2019, 1);
+
     }
 }

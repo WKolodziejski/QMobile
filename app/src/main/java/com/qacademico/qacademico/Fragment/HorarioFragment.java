@@ -51,6 +51,11 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (((MainActivity) Objects.requireNonNull(getActivity())).horarioList.size() != 0) {
 
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                        .setTitle(getResources().getString(R.string.title_horario)
+                        + "・" + webView.infos.data_horario[webView.data_position_horario] + " / "
+                        + webView.infos.periodo_horario[webView.periodo_position_horario]);
+                ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
 

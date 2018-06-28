@@ -8,6 +8,8 @@
         <item name="android:textColorPrimary">@color/colorPrimary</item>
         <item name="android:colorForeground">@color/colorPrimary</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
 
         <!-- New MaterialComponents attributes. -->
         <item name="colorSecondary">?attr/colorPrimary</item>

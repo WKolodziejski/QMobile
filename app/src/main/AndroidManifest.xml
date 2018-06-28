@@ -19,73 +19,57 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activity.MainActivity"
-            android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activity.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.CalendarioActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".Activity.CalendarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.Settings.AboutActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".Activity.Settings.AboutActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.Settings.MoreActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".Activity.Settings.MoreActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.HorarioActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".Activity.HorarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.MateriaisActivity"
-            android:parentActivityName=".Activity.MainActivity"
-            android:theme="@style/AppTheme.Transparent">
+            android:name=".Activity.MateriaisActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Activity.MainActivity" />
         </activity>
         <activity
             android:name=".Activity.Settings.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="@string/title_activity_settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activity.MainActivity" />

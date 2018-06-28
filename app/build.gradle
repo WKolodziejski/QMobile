@@ -39,8 +39,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-
-
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
@@ -48,6 +46,7 @@ dependencies {
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
     implementation 'com.github.alamkanak:android-week-view:1.2.6'
     implementation 'com.github.RmondJone:LockTableView:1.1.1'
+    implementation 'com.haibin:calendarview:3.3.4'
 
     implementation 'eu.davidea:flexible-adapter:5.0.3'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0-b3'
