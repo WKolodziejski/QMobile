@@ -3,6 +3,7 @@ package com.qacademico.qacademico.Adapter.Diarios;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,7 +28,7 @@ import static java.lang.Integer.valueOf;
 public class DiariosAdapter extends RecyclerView.Adapter {
     private List<Diarios> diarios;
     private Context context;
-    OnExpandListener onExpandListener;
+    private OnExpandListener onExpandListener;
 
     public DiariosAdapter(List<Diarios> diarios, Context context) {
         this.diarios = diarios;
@@ -39,15 +40,16 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.table_diarios, parent, false);
         return new DiariosViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int position) {
         final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
         Diarios trabalhos = diarios.get(position) ;
 

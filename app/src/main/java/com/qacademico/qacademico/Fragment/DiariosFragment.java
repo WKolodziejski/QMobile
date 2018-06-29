@@ -30,6 +30,7 @@ import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
+    public List<Diarios> diariosList;
     DiariosAdapter adapter;
 
     @Override
@@ -43,19 +44,25 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
+        if(webView.infos.data_diarios != null) {
+            diariosList = (List<Diarios>) Data.loadList(getContext(), Utils.DIARIOS,
+                    webView.infos.data_diarios[0], null);
+        } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_diarios) {
+            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
+        }
+
         setDiarios(view);
 
         return view;
     }
 
     private void setDiarios(View view) {
-        if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList != null) {
+        if (diariosList != null) {
 
-            if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList.size() != 0) {
+            if (diariosList.size() != 0) {
 
                 Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(getResources().getString(R.string.title_diarios)
-                        + "・" + webView.infos.data_diarios[webView.data_position_diarios]); //mostra o ano no título
+                        .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
                 ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
@@ -63,7 +70,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                adapter = new DiariosAdapter(((MainActivity) Objects.requireNonNull(getActivity())).diariosList, getActivity());
+                adapter = new DiariosAdapter(diariosList, getActivity());
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
@@ -144,11 +151,10 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
                                 webView.data_position_diarios = year.getValue();
 
-                                ((MainActivity) Objects.requireNonNull(getActivity()))
-                                        .diariosList = (List<Diarios>) Data.loadList(Objects.requireNonNull(getContext()),
+                                diariosList = (List<Diarios>) Data.loadList(Objects.requireNonNull(getContext()),
                                         Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios], null);
 
-                                onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).diariosList);
+                                onPageUpdate(diariosList);
 
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
@@ -161,16 +167,12 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (webView.infos.data_diarios != null) {
-            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
-                    .getSupportActionBar()).setTitle(getResources().getString(R.string.title_diarios)
-                    + "・" + webView.infos.data_diarios[webView.data_position_diarios]); //mostra o ano no título
-        }
-
-        ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<Diarios>) list;
+        diariosList = (List<Diarios>) list;
 
         if (adapter != null) {
-            adapter.update(((MainActivity) Objects.requireNonNull(getActivity())).diariosList);
+            adapter.update(diariosList);
+            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                    .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
         } else {
             setDiarios(getView());
         }

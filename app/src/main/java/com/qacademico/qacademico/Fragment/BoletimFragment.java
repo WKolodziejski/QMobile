@@ -28,7 +28,9 @@ import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    public boolean show_by_semestre = true;
+    public List<Boletim> boletimList;
+    boolean show_by_semestre = true;
+    public boolean lock_header = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,20 +43,26 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boletim, container, false);
 
+        if (webView.infos.data_boletim != null && webView.infos.periodo_boletim != null) {
+            boletimList = (List<Boletim>) Data.loadList(getContext(), Utils.BOLETIM,
+                    webView.infos.data_boletim[0], webView.infos.periodo_boletim[0]);
+        } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_boletim) {
+            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
+        }
+
         setBoletim(view, false);
 
         return view;
     }
 
     private void setBoletim(View view, boolean showToast) {
-        if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList != null) {
+        if (boletimList != null) {
 
-            if (((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size() != 0) {
+            if (boletimList.size() != 0) {
 
                 Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(getResources().getString(R.string.title_boletim)
-                                + "・" + webView.infos.data_boletim[webView.data_position_boletim]
-                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]); //mostra o ano no título
+                        .setTitle(webView.infos.data_boletim[webView.data_position_boletim]
+                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]);
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
@@ -89,18 +97,18 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
                     mTableDatas.add(mfristData);
 
-                    for (int i = 0; i < ((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size(); i++) {
+                    for (int i = 0; i < boletimList.size(); i++) {
                         ArrayList<String> mRowDatas = new ArrayList<>();
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getMateria());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getTfaltas());
+                        mRowDatas.add(boletimList.get(i).getMateria());
+                        mRowDatas.add(boletimList.get(i).getNotaPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getFaltasPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getRPPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getNotaFinalPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getNotaSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getFaltasSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getRPSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getNotaFinalSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getTfaltas());
                         mTableDatas.add(mRowDatas);
                     }
                 } else {
@@ -125,26 +133,26 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
                     mTableDatas.add(mfristData);
 
-                    for (int i = 0; i < ((MainActivity) Objects.requireNonNull(getActivity())).boletimList.size(); i++) {
+                    for (int i = 0; i < boletimList.size(); i++) {
                         ArrayList<String> mRowDatas = new ArrayList<>();
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getMateria());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getFaltasSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getRPSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalPrimeiraEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getNotaFinalSegundaEtapa());
-                        mRowDatas.add(((MainActivity) Objects.requireNonNull(getActivity())).boletimList.get(i).getTfaltas());
+                        mRowDatas.add(boletimList.get(i).getMateria());
+                        mRowDatas.add(boletimList.get(i).getNotaPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getNotaSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getFaltasPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getFaltasSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getRPPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getRPSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getNotaFinalPrimeiraEtapa());
+                        mRowDatas.add(boletimList.get(i).getNotaFinalSegundaEtapa());
+                        mRowDatas.add(boletimList.get(i).getTfaltas());
                         mTableDatas.add(mRowDatas);
                     }
                 }
 
-                final LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
+                LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
 
                 mLockTableView
-                        .setLockFristColumn(true)
+                        .setLockFristColumn(lock_header)
                         .setLockFristRow(true)
                         .setMaxColumnWidth(100)
                         .setMinColumnWidth(60)
@@ -219,34 +227,34 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                                 webView.data_position_boletim = year.getValue();
                                 webView.periodo_position_boletim = periodo.getValue();
 
-                                ((MainActivity) Objects.requireNonNull(getActivity()))
-                                        .boletimList = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
+                                boletimList = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
                                         Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
                                         webView.infos.periodo_boletim[webView.periodo_position_boletim]);
 
-                                onPageUpdate(((MainActivity) Objects.requireNonNull(getActivity())).boletimList);
+                                onPageUpdate(boletimList);
 
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }).setNegativeButton(R.string.dialog_cancel, null)
-                    .show();//
+                    .show();
         }
     }
 
     public void changeColumnMode() {
+        show_by_semestre = !show_by_semestre;
         setBoletim(getView(), true);
+    }
+
+    public void lockHeader() {
+        lock_header = !lock_header;
+        setBoletim(getView(), false);
     }
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (webView.infos.data_boletim != null) {
-            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity()))
-                    .getSupportActionBar()).setTitle(getResources().getString(R.string.title_boletim)
-                    + "・" + webView.infos.data_boletim[webView.data_position_boletim]); //mostra o ano no título
-        }
-        ((MainActivity) Objects.requireNonNull(getActivity())).boletimList = (List<Boletim>) list;
+        boletimList = (List<Boletim>) list;
         setBoletim(getView(), false);
     }
 }

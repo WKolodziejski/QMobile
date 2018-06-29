@@ -29,7 +29,7 @@
             app:selected_theme_color="#333"
             app:week_start_with="mon"
             app:week_background="#fff"
-            app:month_view_show_mode="mode_only_current"
+            app:month_view_show_mode="mode_fix"
             app:week_text_color="#111" />
 
     </com.haibin.calendarview.CalendarLayout>

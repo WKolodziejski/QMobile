@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Dialog loadingDialog;
     @BindView(R.id.drawer_layout) DrawerLayout drawer;
     @BindView(R.id.fab_expand) public FloatingActionButton fab_expand;
-    @BindView(R.id.navigation) BottomNavigationView navigation;
+    @BindView(R.id.navigation)
+    public BottomNavigationView navigation;
     Snackbar snackBar;
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -89,9 +90,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private BoletimFragment boletimFragment = new BoletimFragment();
     private HorarioFragment horarioFragment = new HorarioFragment();
     private OnPageUpdated onPageUpdated;
-    public List<Diarios> diariosList;
-    public List<Boletim> boletimList;
-    public List<Horario> horarioList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,25 +130,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         configWebView();
 
-        if(webView.infos.data_diarios != null) {
-            diariosList = (List<Diarios>) Data.loadList(this, Utils.DIARIOS,
-                    webView.infos.data_diarios[0], null);
-        } else if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
-            showErrorConnection();
-        }
-        if (webView.infos.data_boletim != null && webView.infos.periodo_boletim != null) {
-            boletimList = (List<Boletim>) Data.loadList(this, Utils.BOLETIM,
-                    webView.infos.data_boletim[0], webView.infos.periodo_boletim[0]);
-        } else if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
-            showErrorConnection();
-        }
-        if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
-            horarioList = (List<Horario>) Data.loadList(this, Utils.HORARIO,
-                    webView.infos.data_horario[0], webView.infos.periodo_horario[0]);
-        } else if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-            showErrorConnection();
-        }
-
         testLogin();
     }
 
@@ -162,10 +141,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             clickMateriais();
         } else if (id == R.id.nav_calendario) {
             clickCalendario();
-        } else if (id == R.id.nav_documentos) {
-            clickDocumentos();
-        } else if (id == R.id.nav_share) {
-            shareApp();
         } else if (id == R.id.nav_sug) {
             SendEmail.sendSuggestion(this);
         } else if (id == R.id.nav_bug) {
@@ -177,8 +152,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
                     .setNegativeButton(R.string.dialog_quit_no, null)
                     .show();
-        } else if (id == R.id.nav_password) {
-            ChangePassword.changePassword(this);
         } else if (id == R.id.nav_settings) {
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         }
@@ -211,25 +184,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         setHome();
-                        Design.removeToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        //Design.removeToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
                         invalidateOptionsMenu();
                         return true;
 
                     case R.id.navigation_diarios:
                         setDiarios();
-                        Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        //Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
                         invalidateOptionsMenu();
                         return true;
 
                     case R.id.navigation_boletim:
                         setBoletim();
-                        Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        //Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
                         invalidateOptionsMenu();
                         return true;
 
                     case R.id.navigation_horario:
                         setHorario();
-                        Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        //Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
                         invalidateOptionsMenu();
                         return true;
                 }
@@ -244,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         MenuItem date = menu.findItem(R.id.action_date);
         MenuItem column = menu.findItem(R.id.action_column);
+        MenuItem header = menu.findItem(R.id.action_header);
 
         if ((navigation.getSelectedItemId() == R.id.navigation_diarios && webView.infos.data_diarios != null)
                 || (navigation.getSelectedItemId() == R.id.navigation_boletim && webView.infos.data_boletim != null)
@@ -253,10 +227,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             date.setVisible(false);
         }
 
-        if(navigation.getSelectedItemId() == R.id.navigation_boletim && boletimList != null) {
+        if(navigation.getSelectedItemId() == R.id.navigation_boletim && boletimFragment.boletimList != null) {
             column.setVisible(true);
+            header.setVisible(true);
+            if (boletimFragment.lock_header) {
+                header.setIcon(R.drawable.ic_lock_open_black_24dp);
+            } else {
+                header.setIcon(R.drawable.ic_lock_outline_black_24dp);
+            }
         } else {
             column.setVisible(false);
+            header.setVisible(false);
         }
 
         return true;
@@ -276,8 +257,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return true;
         } else if (id == R.id.action_column) {
-            boletimFragment.show_by_semestre = !boletimFragment.show_by_semestre;
             boletimFragment.changeColumnMode();
+            return true;
+        } else if (id == R.id.action_header) {
+            invalidateOptionsMenu();
+            boletimFragment.lockHeader();
             return true;
         }
 

@@ -31,6 +31,16 @@
             android:id="@+id/main_container"
             >
 
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:id="@+id/progressbar_horizontal"
+                android:theme="@style/LinearProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="-7dp"
+                android:indeterminate="true"
+                android:visibility="invisible"/>
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
