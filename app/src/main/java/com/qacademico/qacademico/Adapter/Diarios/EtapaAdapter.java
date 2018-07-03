@@ -26,7 +26,7 @@ public class EtapaAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.list_diarios, parent, false);
+                .inflate(R.layout.list_etapa, parent, false);
         //EtapaViewHolder holder = new EtapaViewHolder(view);
         return new EtapaViewHolder(view);
     }
@@ -41,7 +41,7 @@ public class EtapaAdapter extends RecyclerView.Adapter {
         RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false);
 
-        holder.recyclerView.setAdapter(new TrabalhoAdapter(etapa.getTrabalhoList(), context));
+        holder.recyclerView.setAdapter(new DiariosAdapter(etapa.getDiariosList(), context));
 
         holder.recyclerView.setLayoutManager(layout);
 

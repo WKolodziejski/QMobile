@@ -107,7 +107,7 @@ public class ClientWebView extends WebViewClient {
                 } else {
                     webView.html.loadUrl("javascript:window.HtmlHandler.handleDiarios"
                             + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-                    Log.i("WebViewClient", "Diarios loaded");
+                    Log.i("WebViewClient", "ExpandableList loaded");
                 }
             } else if (url_i.contains(url + pg_horario)) {
                 webView.html.loadUrl("javascript:window.HtmlHandler.handleHorario"

@@ -17,7 +17,7 @@ import java.util.Random;
 public class Utils {
     public static final String HOME = ".Home";
     public static final String HORARIO = ".Horario";
-    public static final String DIARIOS = ".Diarios";
+    public static final String DIARIOS = ".ExpandableList";
     public static final String BOLETIM = ".Boletim";
     public static final String CALENDARIO = ".Calendario";
     public static final String MATERIAIS = ".Materiais";

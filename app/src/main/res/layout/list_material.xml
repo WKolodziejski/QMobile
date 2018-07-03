@@ -2,151 +2,94 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="@color/white"
-    android:id="@+id/materiais_layout"
     >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        >
-
-    <LinearLayout
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/material_img_layout"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        >
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_file"
-            android:padding="10dp"
-            android:background="@drawable/layout_bg_round"
-            android:id="@+id/materiais_extension"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="10dp"
-        android:layout_gravity="start"
-        android:orientation="vertical"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="10dp"
-        android:layout_alignLeft="@id/material_img_layout"
-        android:layout_alignStart="@id/material_img_layout"
-        android:layout_toEndOf="@id/materiais_description_btn"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/materiais_description_btn">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:textSize="@dimen/alt_font_size"
-            android:textStyle="bold"
-            android:textColor="@color/grey_600"
-            android:text="NOME"
-            android:id="@+id/materiais_nome"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:textColor="@color/grey_600"
-            android:id="@+id/materiais_data"
-            android:text="22/03/1999"/>
+            android:layout_marginRight="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/ic_file"
+            android:id="@+id/boletim_tipo"
+            android:layout_alignParentLeft="true" />
 
-    </LinearLayout>
-
-    <net.cachapa.expandablelayout.ExpandableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:orientation="horizontal"
-        android:layout_centerVertical="true"
-        android:layout_gravity="end"
-        android:background="@color/white"
-        app:el_expanded="false"
-        app:el_duration="250"
-        android:layout_marginRight="10dp"
-        android:id="@+id/materiais_description_expand"
-        android:layout_toStartOf="@id/materiais_description_btn"
-        android:layout_toLeftOf="@id/materiais_description_btn"
-        android:layout_toRightOf="@id/material_img_layout"
-        android:layout_toEndOf="@id/material_img_layout"
-        android:layout_marginEnd="10dp"
-        android:visibility="gone"
-        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/boletim_tipo"
+            android:layout_toLeftOf="@id/materiais_info"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_toEndOf="@id/boletim_tipo"
+            android:layout_toStartOf="@id/materiais_info"
+            >
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/grey_600"
-                android:gravity="right"
-                android:text="Descrição"
-                android:id="@+id/materiais_description_txt"/>
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/main_font_size"
+                android:textStyle="bold"
+                android:id="@+id/materiais_nome"
+                tools:text="Rev Industrial de 1923 sdask" />
 
-    </net.cachapa.expandablelayout.ExpandableLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textSize="@dimen/main_font_size"
+                android:id="@+id/materiais_data"
+                tools:text="11/06/2018" />
 
-    <android.support.v7.widget.AppCompatImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:tint="@color/colorAccent"
-        android:background="@drawable/ic_more_horiz_black_24dp"
-        android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/materiais_download_btn"
-        android:id="@+id/materiais_description_btn"
-        android:layout_toLeftOf="@id/materiais_download_btn" />
+        </LinearLayout>
 
-    <android.support.v7.widget.AppCompatImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:tint="@color/colorAccent"
-        android:background="@drawable/ic_file_download_black_24dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:id="@+id/materiais_download_btn"
-        android:layout_alignParentRight="true" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/materiais_info"
+            app:srcCompat="@drawable/ic_info_outline_black_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
 
     </RelativeLayout>
 
-    <View
+    <net.cachapa.expandablelayout.ExpandableLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginRight="70dp"
-        android:layout_marginLeft="65dp"
-        android:layout_marginTop="4dp"
-        android:background="@color/black_dividers"
-        android:layout_marginEnd="70dp"
-        android:layout_marginStart="65dp"/>
+        android:layout_height="wrap_content"
+        app:el_duration="250"
+        app:el_expanded="true"
+        app:el_parallax="0"
+        android:id="@+id/materiais_expand_description"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="65dp"
+            android:layout_marginRight="130dp"
+            android:textSize="@dimen/main_font_size"
+            android:id="@+id/materiais_description"
+            tools:text="Livro de apoio - História. Contém conteúdos resumidos e questões de vestibulares resolvidas e comentadas"
+            android:layout_marginStart="65dp"
+            android:layout_marginEnd="30dp" />
+
+    </net.cachapa.expandablelayout.ExpandableLayout>
 
 </LinearLayout>

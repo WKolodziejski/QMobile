@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tables_materiais"
+    android:id="@+id/table_list"
     android:orientation="vertical"
     android:elevation="5dp"
     android:background="@color/white"
@@ -14,23 +14,24 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:foreground="?android:attr/selectableItemBackground"
-        android:id="@+id/openViewMateriais"
+        android:id="@+id/open_list"
+        android:background="@color/white"
         >
 
         <ImageView
             android:layout_margin="16dp"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:id="@+id/openMateriais"
+            android:id="@+id/list_arrow"
             android:tint="@color/colorAccent"
-            android:src="@drawable/ic_expand_less_black_24dp"/>
+            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
             android:layout_marginRight="10dp"
-            android:id="@+id/materia"
+            android:id="@+id/list_text"
             android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
             android:layout_marginEnd="10dp" />
@@ -38,7 +39,7 @@
     </LinearLayout>
 
     <net.cachapa.expandablelayout.ExpandableLayout
-        android:id="@+id/expandable_layout_materiais"
+        android:id="@+id/expandable_layout_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -48,19 +49,16 @@
         >
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_material"
+            android:id="@+id/recycler_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            />
+            android:background="@color/white"
+            android:fitsSystemWindows="true"/>
+
+        <include layout="@layout/layout_nothing"
+            android:id="@+id/list_nothing"
+            android:visibility="gone"/>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimaryDark"/>
 
 </LinearLayout>

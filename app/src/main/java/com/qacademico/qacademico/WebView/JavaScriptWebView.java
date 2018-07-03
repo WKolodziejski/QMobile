@@ -12,11 +12,10 @@ import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Calendario;
 import com.qacademico.qacademico.Class.Dia;
 import com.qacademico.qacademico.Class.Diarios;
+import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.Class.Etapa;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.Materiais;
-import com.qacademico.qacademico.Class.Material;
-import com.qacademico.qacademico.Class.Trabalho;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -62,7 +61,6 @@ public class JavaScriptWebView {
             public void run() {
                 if (!html_p.equals("<html><head></head><body></body></html>")) {
                     try {
-                        Log.i("JavaScriptWebView", html_p);
                         Document homePage = Jsoup.parse(html_p);
                         Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
 
@@ -173,7 +171,7 @@ public class JavaScriptWebView {
 
     @JavascriptInterface
     public void handleDiarios(String html_p) {
-        Log.i("JavaScriptWebView", "Diarios handling...");
+        Log.i("JavaScriptWebView", "ExpandableList handling...");
         new Thread() {
             @Override
             public void run() {
@@ -185,7 +183,7 @@ public class JavaScriptWebView {
                     int numMaterias = table_diarios.select("table.conteudoTexto").size();
                     Element nxtElem = null;
 
-                    List<Diarios> diarios = new ArrayList<>();
+                    List<ExpandableList> diarios = new ArrayList<>();
 
                     for (int y = 0; y < numMaterias; y++) {
 
@@ -223,7 +221,7 @@ public class JavaScriptWebView {
                             Element tabelaNotas = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
                             Elements notasLinhas = tabelaNotas.getElementsByClass("conteudoTexto");
 
-                            List<Trabalho> trabalhos = new ArrayList<>();
+                            List<Diarios> trabalhos = new ArrayList<>();
 
                             for (int i = 0; i < notasLinhas.size(); i++) {
                                 String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
@@ -232,7 +230,7 @@ public class JavaScriptWebView {
                                 if (notasLinhas.eq(i).first().child(1).text().contains("Prova")) {
                                     tint = context.getResources().getColor(R.color.diarios_prova);
                                     tipo = context.getResources().getString(R.string.sigla_Prova);
-                                } else if (notasLinhas.eq(i).first().child(1).text().contains("Trabalho")) {
+                                } else if (notasLinhas.eq(i).first().child(1).text().contains("Diarios")) {
                                     tint = context.getResources().getColor(R.color.diarios_trabalho);
                                     tipo = context.getResources().getString(R.string.sigla_Trabalho);
                                 } else if (notasLinhas.eq(i).first().child(1).text().contains("Qualitativa")) {
@@ -249,7 +247,7 @@ public class JavaScriptWebView {
                                 if (nota.equals("")) {
                                     nota = " -";
                                 }
-                                trabalhos.add(new Trabalho(nome, peso, max, nota, tipo, data, tint));
+                                trabalhos.add(new Diarios(nome, peso, max, nota, tipo, data, tint));
                             }
 
                             nxtElem = nxtElem.nextElementSibling();
@@ -262,10 +260,10 @@ public class JavaScriptWebView {
                                 aux = "null";
                             }
                         }
-                        diarios.add(new Diarios(nomeMateria, etapas));
+                        diarios.add(new ExpandableList(nomeMateria, etapas));
                     }
 
-                    Collections.sort(diarios, (d1, d2) -> d1.getNomeMateria().compareTo(d2.getNomeMateria()));
+                    Collections.sort(diarios, (d1, d2) -> d1.getTitle().compareTo(d2.getTitle()));
 
                     Elements options = homeDiarios.getElementsByTag("option");
 
@@ -281,13 +279,13 @@ public class JavaScriptWebView {
                     Data.saveDate(context, webView.infos);
 
                     webView.pg_diarios_loaded = true;
-                    Log.i("JavaScriptWebView", "Diarios handled!");
+                    Log.i("JavaScriptWebView", "ExpandableList handled!");
 
                     activity.runOnUiThread(() -> {
                         onPageFinish.onPageFinish(url + pg_diarios, diarios);
                     });
                 } catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "Diarios error");
+                    Log.i("JavaScriptWebView", "ExpandableList error");
                 }
             }
         }.start();
@@ -449,7 +447,7 @@ public class JavaScriptWebView {
                     Element table = homeMaterial.getElementsByTag("tbody").get(10);
                     Elements rotulos = table.getElementsByClass("rotulo");
 
-                    List<Materiais> materiais = new ArrayList<>();
+                    List<ExpandableList> materiais = new ArrayList<>();
 
                     for (int i = 1; i < rotulos.size(); i++) {
 
@@ -464,7 +462,7 @@ public class JavaScriptWebView {
                         String classe = rotulos.get(i).nextElementSibling().className();
                         Element element = rotulos.get(i).nextElementSibling();
 
-                        List<Material> material = new ArrayList<>();
+                        List<Materiais> material = new ArrayList<>();
 
                         while (classe.equals("conteudoTexto")) {
 
@@ -515,7 +513,7 @@ public class JavaScriptWebView {
                                 img = context.getResources().getDrawable(R.drawable.ic_script);
                             }
 
-                            material.add(new Material(data, nomeConteudo, link, descricao, color, img));
+                            material.add(new Materiais(data, nomeConteudo, link, descricao, color, img));
 
                             Log.i("Materia", "\n\nNome: " + nomeConteudo + "\nData: " + data + "\nLink: " + link + "\nDesc: " + descricao);
                             if (element.nextElementSibling() != null) {
@@ -525,7 +523,7 @@ public class JavaScriptWebView {
                                 classe = "quit";
                             }
                         }
-                        materiais.add(new Materiais(nomeMateria, material));
+                        materiais.add(new ExpandableList(nomeMateria, material));
                     }
 
                     webView.pg_material_loaded = true;

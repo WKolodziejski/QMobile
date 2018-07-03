@@ -17,8 +17,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.Diarios.DiariosAdapter;
-import com.qacademico.qacademico.Class.Diarios;
+import com.qacademico.qacademico.Adapter.ExpandableListAdapter;
+import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -30,8 +30,8 @@ import static com.qacademico.qacademico.Utilities.Utils.url;
 
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Diarios> diariosList;
-    DiariosAdapter adapter;
+    public List<ExpandableList> expandableListList;
+    ExpandableListAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
         if(webView.infos.data_diarios != null) {
-            diariosList = (List<Diarios>) Data.loadList(getContext(), Utils.DIARIOS,
+            expandableListList = (List<ExpandableList>) Data.loadList(getContext(), Utils.DIARIOS,
                     webView.infos.data_diarios[0], null);
         } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_diarios) {
             ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
@@ -57,9 +57,9 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     }
 
     private void setDiarios(View view) {
-        if (diariosList != null) {
+        if (expandableListList != null) {
 
-            if (diariosList.size() != 0) {
+            if (expandableListList.size() != 0) {
 
                 Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                         .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
@@ -70,7 +70,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                adapter = new DiariosAdapter(diariosList, getActivity());
+                adapter = new ExpandableListAdapter(expandableListList, getActivity(), Utils.DIARIOS);
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
@@ -151,10 +151,10 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
                                 webView.data_position_diarios = year.getValue();
 
-                                diariosList = (List<Diarios>) Data.loadList(Objects.requireNonNull(getContext()),
+                                expandableListList = (List<ExpandableList>) Data.loadList(Objects.requireNonNull(getContext()),
                                         Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios], null);
 
-                                onPageUpdate(diariosList);
+                                onPageUpdate(expandableListList);
 
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
@@ -167,10 +167,10 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        diariosList = (List<Diarios>) list;
+        expandableListList = (List<ExpandableList>) list;
 
         if (adapter != null) {
-            adapter.update(diariosList);
+            adapter.update(expandableListList);
             Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                     .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
         } else {

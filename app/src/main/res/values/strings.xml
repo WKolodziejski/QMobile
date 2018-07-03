@@ -109,7 +109,7 @@
     <string name="home_welcome_message">%1$s, %2$s!</string>
     <string name="home_description_welcome">Bem-vindo ao QAcadêmico Mobile.</string>
     <string name="home_description_message">Esta é a primeira versão do app, portanto espere por bugs.</string>
-    <string name="home_diarios_description">Veja suas notas individuais de cada trabalho</string>
+    <string name="home_diarios_description">Veja suas notas individuais de cada diarios</string>
     <string name="home_boletim_description">Veja suas notas finais de cada etapa</string>
     <string name="home_horario_description">Veja seus horários de aula</string>
     <string name="home_refresh_description">Deslize para baixo para atualizar</string>

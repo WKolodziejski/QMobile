@@ -8,15 +8,15 @@ import java.util.List;
 
 public class Etapa implements Serializable {
     private final String aux;
-    private final List<Trabalho> trabalhoList;
+    private final List<Diarios> diariosList;
 
-    public Etapa(String aux, List<Trabalho> trabalhoList){
+    public Etapa(String aux, List<Diarios> diariosList){
         this.aux = aux;
-        this.trabalhoList = trabalhoList;
+        this.diariosList = diariosList;
     }
 
-    public List<Trabalho> getTrabalhoList() {
-        return trabalhoList;
+    public List<Diarios> getDiariosList() {
+        return diariosList;
     }
 
     public String getAux() {

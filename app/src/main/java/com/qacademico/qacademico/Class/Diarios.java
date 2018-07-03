@@ -1,44 +1,51 @@
 package com.qacademico.qacademico.Class;
 
-import android.content.Context;
-
 import java.io.Serializable;
-import java.util.List;
 
 public class Diarios implements Serializable {
-    private final String nomeMateria;
-    private final List<Etapa> etapaList; //COSTUMAVA SER FINAL
-    private boolean isExpanded;
-    private boolean anim;
+    private final String nome;
+    private final String peso;
+    private final String max;
+    private final String nota;
+    private final String tipo;
+    private final String data;
+    private final int tint;
 
-    public Diarios(String nomeMateria, List<Etapa> etapaList) {
-        this.nomeMateria = nomeMateria;
-        this.etapaList = etapaList;
-        this.anim = false;
-        this.isExpanded = false;
+    public Diarios(String nome, String peso, String max, String nota, String tipo, String data, int tint) {
+        this.nome = nome;
+        this.peso = peso;
+        this.max = max;
+        this.nota = nota;
+        this.tipo = tipo;
+        this.data = data;
+        this.tint = tint;
     }
 
-    public String getNomeMateria() {
-        return nomeMateria;
+    public String getNome() {
+        return nome;
     }
 
-    public List<Etapa> getEtapaList() {
-        return etapaList;
+    public String getPeso() {
+        return peso;
     }
 
-    public boolean getExpanded(){
-        return isExpanded;
+    public String getMax() {
+        return max;
     }
 
-    public void setExpanded(boolean expanded){
-        isExpanded = expanded;
+    public String getNota() {
+        return nota;
     }
 
-    public boolean getAnim(){
-        return anim;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setAnim(boolean anim){
-        this.anim = anim;
+    public String getData() {
+        return data;
+    }
+
+    public int getTint() {
+        return tint;
     }
 }
