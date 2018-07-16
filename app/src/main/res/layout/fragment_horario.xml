@@ -6,42 +6,26 @@
     android:layout_height="match_parent"
     >
 
-    <ScrollView
+    <com.alamkanak.weekview.WeekView
+        android:id="@+id/weekView_horario"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
-
-            <com.alamkanak.weekview.WeekView
-                android:id="@+id/weekView_horario"
-                android:layout_width="match_parent"
-                android:layout_height="380dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginEnd="8dp"
-                app:eventCornerRadius="2dp"
-                app:eventTextColor="@color/white"
-                app:textSize="12sp"
-                app:hourHeight="60dp"
-                app:headerColumnPadding="8dp"
-                app:headerColumnTextColor="@color/colorAccent"
-                app:headerRowPadding="12dp"
-                app:xScrollingSpeed="0"
-                app:columnGap="8dp"
-                app:noOfVisibleDays="5"
-                app:headerRowBackgroundColor="@color/white_dividers"
-                app:dayBackgroundColor="@color/white_dividers"
-                app:todayBackgroundColor="@color/horario_toolbar"
-                app:headerColumnBackground="@color/white_dividers"/>
-
-        </LinearLayout>
-
-    </ScrollView>
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        app:eventCornerRadius="2dp"
+        app:eventTextColor="@color/white"
+        app:textSize="12sp"
+        app:hourHeight="60dp"
+        app:headerColumnPadding="8dp"
+        app:headerColumnTextColor="@color/colorAccent"
+        app:headerRowPadding="12dp"
+        app:xScrollingSpeed="0"
+        app:columnGap="8dp"
+        app:noOfVisibleDays="5"
+        app:headerRowBackgroundColor="@color/white_dividers"
+        app:dayBackgroundColor="@color/white"
+        app:todayBackgroundColor="@color/horario_toolbar"
+        app:headerColumnBackground="@color/white_dividers"/>
 
 </android.support.design.widget.CoordinatorLayout>
 
