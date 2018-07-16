@@ -6,32 +6,20 @@
     android:layout_height="match_parent"
     >
 
-    <com.haibin.calendarview.CalendarLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:default_status="shrink"
-        app:calendar_show_mode="only_week_view"
-        app:calendar_content_view_id="@+id/recyclerView">
-
-        <com.haibin.calendarview.CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            app:calendar_height="50dp"
-            app:current_month_text_color="#333333"
-            app:current_month_lunar_text_color="@color/white"
-            app:other_month_text_color="#e1e1e1"
-            app:scheme_text_color="#333"
-            app:scheme_theme_color="#333"
-            app:selected_text_color="#fff"
-            app:selected_theme_color="#333"
-            app:week_start_with="mon"
-            app:week_background="#fff"
-            app:month_view_show_mode="mode_fix"
-            app:week_text_color="#111" />
-
-    </com.haibin.calendarview.CalendarLayout>
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/compactcalendar_view"
+        android:layout_width="fill_parent"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:layout_height="250dp"
+        app:compactCalendarTargetHeight="250dp"
+        app:compactCalendarTextSize="12sp"
+        app:compactCalendarBackgroundColor="#ffe95451"
+        app:compactCalendarTextColor="#fff"
+        app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
+        app:compactCalendarCurrentDayBackgroundColor="#B71C1C"
+        app:compactCalendarMultiEventIndicatorColor="#fff"
+        />
 
 </android.support.constraint.ConstraintLayout>

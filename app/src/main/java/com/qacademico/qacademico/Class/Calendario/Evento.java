@@ -1,18 +1,25 @@
-package com.qacademico.qacademico.Class;
+package com.qacademico.qacademico.Class.Calendario;
 
 
 import java.io.Serializable;
 import java.util.List;
 
-public class Dia implements Serializable {
+public class Evento implements Serializable {
     private String dia;
     private String cor;
     private List<String> eventos;
 
+
+    /**
+     *
+     *      FALTA IMPLEMENTAR
+     *      
+     *
+     */
     private boolean isExpanded;
     private boolean anim;
 
-    public Dia(String dia, String cor, List<String> eventos) {
+    public Evento(String dia, String cor, List<String> eventos) {
         this.dia = dia;
         this.cor = cor;
         this.eventos = eventos;

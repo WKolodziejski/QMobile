@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+
 import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
 import static com.qacademico.qacademico.Utilities.Utils.url;
 
@@ -104,7 +105,7 @@ public class HorarioFragment extends Fragment implements MainActivity.OnPageUpda
                         }
                     }
 
-                    weekView.goToHour(firstHour);
+                    weekView.goToHour(firstHour - 4);
                     return week;
                 });
             } else {

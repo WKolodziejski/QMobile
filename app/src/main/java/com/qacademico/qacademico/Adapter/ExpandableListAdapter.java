@@ -17,8 +17,7 @@ import android.widget.Toast;
 
 import com.qacademico.qacademico.Adapter.Diarios.EtapaAdapter;
 import com.qacademico.qacademico.Adapter.Materiais.MateriaisAdapter;
-import com.qacademico.qacademico.Class.Diarios;
-import com.qacademico.qacademico.Class.Etapa;
+import com.qacademico.qacademico.Class.Diarios.Etapa;
 import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.R;

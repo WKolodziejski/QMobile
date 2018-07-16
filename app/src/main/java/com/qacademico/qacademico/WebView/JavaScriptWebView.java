@@ -7,30 +7,26 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-
 import com.qacademico.qacademico.Class.Boletim;
-import com.qacademico.qacademico.Class.Calendario;
-import com.qacademico.qacademico.Class.Dia;
-import com.qacademico.qacademico.Class.Diarios;
+import com.qacademico.qacademico.Class.Calendario.Calendario;
+import com.qacademico.qacademico.Class.Calendario.Dia;
+import com.qacademico.qacademico.Class.Diarios.Diarios;
 import com.qacademico.qacademico.Class.ExpandableList;
-import com.qacademico.qacademico.Class.Etapa;
+import com.qacademico.qacademico.Class.Diarios.Etapa;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
 import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
 import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;

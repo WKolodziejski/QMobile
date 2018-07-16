@@ -1,8 +1,10 @@
-package com.qacademico.qacademico.Class;
+package com.qacademico.qacademico.Class.Diarios;
 
 /*import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.ArrayList;*/
+import com.qacademico.qacademico.Class.Diarios.Diarios;
+
 import java.io.Serializable;
 import java.util.List;
 

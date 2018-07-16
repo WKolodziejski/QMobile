@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.qacademico.qacademico.Class.Etapa;
+import com.qacademico.qacademico.Class.Diarios.Etapa;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.ViewHolder.EtapaViewHolder;
 

@@ -16,19 +16,27 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alamkanak.weekview.WeekView;
+import com.alamkanak.weekview.WeekViewEvent;
 import com.qacademico.qacademico.Activity.CalendarioActivity;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Activity.MateriaisActivity;
 import com.qacademico.qacademico.Adapter.Home.ShortcutAdapter;
+import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.Shortcut;
 import com.qacademico.qacademico.R;
+import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
+import com.qacademico.qacademico.WebView.SingletonWebView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated, ShortcutAdapter.OnShortcutClicked {
+    SingletonWebView webView = SingletonWebView.getInstance();
+    public List<Horario> horarioList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,8 +74,58 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         });
 
         updateHeaderStatus(view);
+        displayHorario(view);
 
         return view;
+    }
+
+    public void displayHorario(View view) {
+
+        if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
+            horarioList = (List<Horario>) Data.loadList(getContext(), Utils.HORARIO,
+                    webView.infos.data_horario[0], webView.infos.periodo_horario[0]);
+            setColors();
+        }
+
+        WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
+
+        Calendar firstDay = Calendar.getInstance();
+        firstDay.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        weekView.goToDate(firstDay);
+
+        weekView.setMonthChangeListener((newYear, newMonth) -> {
+
+            int firstHour = 0;
+
+            List<WeekViewEvent> week = new ArrayList<>();
+
+            for (int i = 0; i < horarioList.size(); i++) {
+                Calendar startTime = Calendar.getInstance();
+                startTime.set(Calendar.MONTH, newMonth - 1);
+                startTime.set(Calendar.YEAR, newYear);
+                startTime.set(Calendar.DAY_OF_WEEK, horarioList.get(i).getDay());
+                startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(horarioList.get(i).getDate())));
+                startTime.set(Calendar.MINUTE, trimm(trimta(horarioList.get(i).getDate())));
+
+                Calendar endTime = (Calendar) startTime.clone();
+                endTime.set(Calendar.MONTH, newMonth - 1);
+                endTime.set(Calendar.YEAR, newYear);
+                endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(horarioList.get(i).getDate())));
+                endTime.set(Calendar.MINUTE, trimm(trimtd(horarioList.get(i).getDate())));
+
+                WeekViewEvent event = new WeekViewEvent(i, horarioList.get(i).getMateria(), startTime, endTime);
+                event.setColor(horarioList.get(i).getColor());
+
+                week.add(event);
+
+                if (startTime.get(Calendar.HOUR_OF_DAY) > firstHour) {
+                    firstHour = startTime.get(Calendar.HOUR_OF_DAY);
+                }
+            }
+
+            weekView.goToHour(firstHour - 3.5);
+            return week;
+        });
     }
 
     public void updateHeaderStatus(View view) {
@@ -137,6 +195,56 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     @Override
     public void OnShortcutClick(int position, View view) {
 
+    }
+
+    private void setColors() {
+        for (int i = 0; i < horarioList.size(); i++) {
+            if (horarioList.get(i).getColor() == 0) {
+                for (int j = 0; j < horarioList.size(); j++) {
+                    if (horarioList.get(i).getMateria().equals(
+                            horarioList.get(j).getMateria())) {
+                        if (horarioList.get(j).getColor() == 0) {
+                            if (horarioList.get(i).getColor() == 0) {
+                                horarioList.get(i).setColor(Utils.getRandomColorGenerator(Objects.requireNonNull(getContext())));
+                                horarioList.get(j).setColor(horarioList.get(i).getColor());
+                            } else {
+                                horarioList.get(j).setColor(horarioList.get(i).getColor());
+                            }
+                        } else {
+                            horarioList.get(i).setColor(horarioList.get(j).getColor());
+                        }
+                    } else {
+                        if (horarioList.get(i).getColor() == 0) {
+                            horarioList.get(i).setColor(Utils.getRandomColorGenerator(Objects.requireNonNull(getContext())));
+                        }
+                    }
+                }
+            }
+        }
+
+        Data.saveList(Objects.requireNonNull(getContext()), horarioList,
+                Utils.HORARIO, webView.infos.data_horario[webView.data_position_horario],
+                webView.infos.periodo_horario[webView.periodo_position_horario]);
+    }
+
+    private int trimh(String string) {
+        string = string.substring(0, string.indexOf(":"));
+        return Integer.valueOf(string);
+    }
+
+    private int trimm(String string) {
+        string = string.substring(string.indexOf(":") + 1);
+        return Integer.valueOf(string);
+    }
+
+    private String trimta(String string) {
+        string = string.substring(0, string.indexOf("~"));
+        return string;
+    }
+
+    private String trimtd(String string) {
+        string = string.substring(string.indexOf("~") + 1);
+        return string;
     }
 
     protected List<Shortcut> getShortcuts() { //Configura os botões da página Home
