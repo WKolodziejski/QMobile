@@ -1,19 +1,19 @@
 package com.qacademico.qacademico.WebView;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+
+import com.alamkanak.weekview.WeekViewEvent;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Calendario.Calendario;
 import com.qacademico.qacademico.Class.Calendario.Dia;
 import com.qacademico.qacademico.Class.Diarios.Diarios;
+import com.qacademico.qacademico.Class.Diarios.Horario;
 import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.Class.Diarios.Etapa;
-import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.Materiais;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
@@ -27,26 +27,23 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
-import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
-import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
-import static com.qacademico.qacademico.Utilities.Utils.pg_home;
-import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
-import static com.qacademico.qacademico.Utilities.Utils.pg_materiais;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class JavaScriptWebView {
-    private Activity activity;
     private Context context;
-    private SingletonWebView webView;
+    private SingletonWebView webView = SingletonWebView.getInstance();
     private SharedPreferences login_info;
     private OnPageFinished onPageFinish;
 
-    public JavaScriptWebView(Activity activity) {
-        this.activity = activity;
-        this.context = activity.getApplicationContext();
+    public JavaScriptWebView(Context context) {
+        this.context = context;
         this.login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
-        this.webView = SingletonWebView.getInstance();
     }
 
     @JavascriptInterface
@@ -76,9 +73,8 @@ public class JavaScriptWebView {
                         webView.pg_home_loaded = true;
                         Log.i("JavaScriptWebView", "Home handled!");
 
-                        activity.runOnUiThread(() -> {
-                            onPageFinish.onPageFinish(url + pg_home, null);
-                        });
+                        onPageFinish.onPageFinish(URL + PG_HOME, null);
+
                     } catch (Exception ignored) {
                         Log.i("JavaScriptWebView", "Home error");
                     }
@@ -131,6 +127,11 @@ public class JavaScriptWebView {
 
                     webView.infos.data_boletim = new String[options_ano.size()];
 
+                    if (webView.pg_boletim_loaded.length == 1) {
+                        webView.pg_boletim_loaded = new boolean[options_ano.size()];
+                        webView.pg_boletim_loaded[0] = true;
+                    }
+
                     for (int i = 0; i < options_ano.size(); i++) {
                         webView.infos.data_boletim[i] = options_ano.get(i).text();
                     }
@@ -144,19 +145,15 @@ public class JavaScriptWebView {
                         webView.infos.periodo_boletim[i] = options_periodo.get(i).text();
                     }
 
-                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveList(context, boletim, Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
-                                webView.infos.periodo_boletim[webView.periodo_position_boletim]);
+                    Data.saveList(context, boletim, Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
+                               webView.infos.periodo_boletim[webView.periodo_position_boletim]);
 
-                        Data.saveDate(context, webView.infos);
-                    }
+                    Data.saveDate(context, webView.infos);
 
-                    webView.pg_boletim_loaded = true;
+                    webView.pg_boletim_loaded[webView.data_position_boletim] = true;
                     Log.i("JavaScriptWebView", "Boletim handled!");
 
-                    activity.runOnUiThread(() -> {
-                        onPageFinish.onPageFinish(url + pg_boletim, boletim);
-                    });
+                    onPageFinish.onPageFinish(URL + PG_BOLETIM, boletim);
 
                 } catch (Exception ignored) {
                     Log.i("JavaScriptWebView", "Boletim error");
@@ -269,19 +266,23 @@ public class JavaScriptWebView {
                         webView.infos.data_diarios[i] = options.get(i + 1).text();
                     }
 
+                    if (webView.pg_diarios_loaded.length == 1) {
+                        webView.pg_diarios_loaded = new boolean[options.size()];
+                        webView.pg_diarios_loaded[0] = true;
+                    }
+
                     Data.saveList(context, diarios, Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios],
                             null);
 
                     Data.saveDate(context, webView.infos);
 
-                    webView.pg_diarios_loaded = true;
-                    Log.i("JavaScriptWebView", "ExpandableList handled!");
+                    webView.pg_diarios_loaded[webView.data_position_diarios] = true;
+                    Log.i("JavaScriptWebView", "Diarios handled!");
 
-                    activity.runOnUiThread(() -> {
-                        onPageFinish.onPageFinish(url + pg_diarios, diarios);
-                    });
+                    onPageFinish.onPageFinish(URL + PG_DIARIOS, diarios);
+
                 } catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "ExpandableList error");
+                    Log.i("JavaScriptWebView", "Diarios error");
                 }
             }
         }.start();
@@ -361,7 +362,7 @@ public class JavaScriptWebView {
                     }
 
                     for (int i = 1; i <= 5; i++) {
-                        for (int j = 1; j < trtd_horario.length; j++) {
+                        for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
                             if (!trtd_horario[j][i].equals("")) {
 
                                 int color = 0;
@@ -388,16 +389,31 @@ public class JavaScriptWebView {
                                     color = context.getResources().getColor(R.color.sociologia);
                                 }
 
-                                horario.add(new Horario(trtd_horario[j][i], Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], color));
+                                Calendar startTime = Calendar.getInstance();
+                                startTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(trtd_horario[0][i]));
+                                startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(trtd_horario[j][0])));
+                                startTime.set(Calendar.MINUTE, trimm(trimta(trtd_horario[j][0])));
+
+                                Calendar endTime = (Calendar) startTime.clone();
+                                endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(trtd_horario[j][0])));
+                                endTime.set(Calendar.MINUTE, trimm(trimtd(trtd_horario[j][0])));
+
+                                horario.add(new Horario(i, trtd_horario[j][i], startTime, endTime, color));
                             }
                         }
                     }
+
+                    horario = setColors(horario, context);
 
                     Document ano = Jsoup.parse(homeHorario.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
                     webView.infos.data_horario = new String[options_ano.size()];
-                    webView.infos.data_horario = new String[options_ano.size()];
+
+                    if (webView.pg_horario_loaded.length == 1) {
+                        webView.pg_horario_loaded = new boolean[options_ano.size()];
+                        webView.pg_horario_loaded[0] = true;
+                    }
 
                     for (int i = 0; i < options_ano.size(); i++) {
                         webView.infos.data_horario[i] = options_ano.get(i).text();
@@ -412,19 +428,16 @@ public class JavaScriptWebView {
                         webView.infos.periodo_horario[i] = options_periodo.get(i).text();
                     }
 
-                    if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("key_savedata", false)) {
-                        Data.saveList(context, horario, Utils.HORARIO, webView.infos.data_horario[webView.data_position_horario],
-                                webView.infos.periodo_horario[webView.periodo_position_horario]);
+                    Data.saveList(context, horario, Utils.HORARIO, webView.infos.data_horario[webView.data_position_horario],
+                            webView.infos.periodo_horario[webView.periodo_position_horario]);
 
-                        Data.saveDate(context, webView.infos);
-                    }
+                    Data.saveDate(context, webView.infos);
 
-                    webView.pg_horario_loaded = true;
+                    webView.pg_horario_loaded[webView.data_position_horario] = true;
                     Log.i("JavaScriptWebView", "Horario handled!");
 
-                    activity.runOnUiThread(() -> {
-                        onPageFinish.onPageFinish(url + pg_horario, horario);
-                    });
+                    onPageFinish.onPageFinish(URL + PG_HORARIO, horario);
+
                 } catch (Exception ignored) {
                     Log.i("JavaScriptWebView", "Horario error");
                 }
@@ -522,12 +535,11 @@ public class JavaScriptWebView {
                         materiais.add(new ExpandableList(nomeMateria, material));
                     }
 
-                    webView.pg_material_loaded = true;
+                    webView.pg_materiais_loaded[webView.data_position_materiais] = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
 
-                    activity.runOnUiThread(() -> {
-                        onPageFinish.onPageFinish(url + pg_materiais, materiais);
-                    });
+                    onPageFinish.onPageFinish(URL + PG_MATERIAIS, materiais);
+
                 } catch (Exception ignored) {
                     Log.i("JavaScriptWebView", "Materiais error");
                 }
@@ -586,15 +598,11 @@ public class JavaScriptWebView {
                         calendario.add(mes);
                     }
 
-
-
-
-                    webView.pg_material_loaded = true;
+                    webView.pg_calendario_loaded = true;
                     Log.i("JavaScriptWebView", "Calendario handled!");
 
-                    activity.runOnUiThread(() -> {
-                        onPageFinish.onPageFinish(url + pg_calendario, calendario);
-                    });
+                    onPageFinish.onPageFinish(URL + PG_CALENDARIO, calendario);
+
                 } catch (Exception ignored) {
                     Log.i("JavaScriptWebView", "Calendario error");
                 }
@@ -612,6 +620,53 @@ public class JavaScriptWebView {
     private String trim1(String string) {
         string = string.substring(string.indexOf(", ") + 2);
         return string;
+    }
+
+    private int trimh(String string) {
+        string = string.substring(0, string.indexOf(":"));
+        return Integer.valueOf(string);
+    }
+
+    private int trimm(String string) {
+        string = string.substring(string.indexOf(":") + 1);
+        return Integer.valueOf(string);
+    }
+
+    private String trimta(String string) {
+        string = string.substring(0, string.indexOf("~"));
+        return string;
+    }
+
+    private String trimtd(String string) {
+        string = string.substring(string.indexOf("~") + 1);
+        return string;
+    }
+
+    private List<Horario> setColors(List<Horario> horario, Context context) {
+        for (int i = 0; i < horario.size(); i++) {
+            if (horario.get(i).getColor() == 0) {
+                for (int j = 0; j < horario.size(); j++) {
+                    if (horario.get(i).getName().equals(
+                            horario.get(j).getName())) {
+                        if (horario.get(j).getColor() == 0) {
+                            if (horario.get(i).getColor() == 0) {
+                                horario.get(i).setColor(Utils.getRandomColorGenerator(Objects.requireNonNull(context)));
+                                horario.get(j).setColor(horario.get(i).getColor());
+                            } else {
+                                horario.get(j).setColor(horario.get(i).getColor());
+                            }
+                        } else {
+                            horario.get(i).setColor(horario.get(j).getColor());
+                        }
+                    } else {
+                        if (horario.get(i).getColor() == 0) {
+                            horario.get(i).setColor(Utils.getRandomColorGenerator(Objects.requireNonNull(context)));
+                        }
+                    }
+                }
+            }
+        }
+        return horario;
     }
 
     public void setOnPageFinished(OnPageFinished onPageFinish) {

@@ -27,7 +27,6 @@ public class EtapaAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_etapa, parent, false);
-        //EtapaViewHolder holder = new EtapaViewHolder(view);
         return new EtapaViewHolder(view);
     }
 

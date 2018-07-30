@@ -4,6 +4,13 @@
     <color name="colorPrimaryDark">@color/grey_300</color>
     <color name="colorPrimaryLight">@color/grey_50</color>
     <color name="colorAccent">@color/grey_800</color>
+    <color name="colorSecondary">@color/grey_500</color>
+
+    <!--<color name="colorPrimary">#1e1e24</color>
+    <color name="colorSecondary">#ffa987</color>
+    <color name="colorPrimaryDark">#444140</color>
+    <color name="colorPrimaryLight">#f7ebe8</color>
+    <color name="colorAccent">#e54b4b</color>!-->
 
     <color name="check">@color/blue_500</color>
     <color name="ok">@color/green_500</color>
@@ -13,51 +20,10 @@
     <color name="happy">@color/green_500</color>
     <color name="sad">@color/amber_500</color>
 
-    <color name="diarios_dialog">@color/orange_400</color>
-    <color name="diarios_buttonP">@color/yellow_A700</color>
-    <color name="diarios_buttonS">@color/yellow_A400</color>
-    <color name="diarios_guide">@color/orange_500</color>
-    <color name="diarios_actionbar">@color/orange_600</color>
-    <color name="diarios_statusbar">@color/orange_800</color>
-    <color name="diarios_toolbar">@color/deep_orange_50</color>
-    <color name="diarios_list">@color/orange_400</color>
-    <color name="diarios_progressbar">@color/yellow_A700</color>
-
     <color name="diarios_prova">@color/orange_A400</color>
     <color name="diarios_trabalho">@color/amber_A400</color>
     <color name="diarios_qualitativa">@color/yellow_A400</color>
     <color name="diarios_avaliacao">@color/orange_A700</color>
-
-    <color name="boletim_dialog">@color/teal_400</color>
-    <color name="boletim_buttonP">@color/green_A700</color>
-    <color name="boletim_buttonS">@color/green_A400</color>
-    <color name="boletim_guide">@color/teal_500</color>
-    <color name="boletim_actionbar">@color/teal_600</color>
-    <color name="boletim_statusbar">@color/teal_800</color>
-    <color name="boletim_toolbar">@color/teal_50</color>
-    <color name="boletim_progressbar">@color/green_A700</color>
-
-    <color name="horario_dialog">@color/blue_400</color>
-    <color name="horario_buttonP">@color/cyan_A700</color>
-    <color name="horario_buttonS">@color/cyan_A400</color>
-    <color name="horario_guide">@color/blue_500</color>
-    <color name="horario_actionbar">@color/blue_600</color>
-    <color name="horario_statusbar">@color/blue_800</color>
-    <color name="horario_toolbar">@color/blue_50</color>
-    <color name="horario_list">@color/blue_400</color>
-    <color name="horario_progressbar">@color/cyan_A700</color>
-
-    <color name="bug_dialog">@color/green_400</color>
-    <color name="bug_guide">@color/green_500</color>
-
-    <color name="share_dialog">@color/amber_400</color>
-    <color name="share_guide">@color/amber_500</color>
-
-    <color name="documentos_guide">@color/brown_500</color>
-
-    <color name="materiais_guide">@color/cyan_500</color>
-    <color name="materiais_reveal">@color/cyan_500</color>
-    <color name="materiais_list">@color/cyan_400</color>
 
     <color name="materiais_file">@color/colorPrimary</color>
     <color name="materiais_pdf">@color/red_500</color>
@@ -69,17 +35,9 @@
     <color name="materiais_image">@color/orange_500</color>
     <color name="materiais_script">@color/blue_grey_500</color>
 
-    <color name="calendario_guide">@color/dark_purple_500</color>
-
     <color name="sug_stars">@color/amber_400</color>
     <color name="sug_dialog">@color/pink_400</color>
     <color name="sug_guide">@color/pink_500</color>
-
-    <color name="password_dialog">@color/colorPrimary</color>
-
-    <color name="exit_dialog">@color/colorPrimary</color>
-
-    <color name="update_dialog">@color/colorPrimary</color>
 
     <color name="changes_dialog">@color/light_blue_A400</color>
 

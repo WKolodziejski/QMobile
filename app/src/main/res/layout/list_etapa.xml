@@ -15,8 +15,8 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:textStyle="bold"
-        android:textColor="@color/white"
-        android:background="@color/colorAccent"
+        android:textColor="@color/colorPrimaryLight"
+        android:background="@color/colorPrimaryDark"
         android:id="@+id/aux"/>
 
     <android.support.v7.widget.RecyclerView

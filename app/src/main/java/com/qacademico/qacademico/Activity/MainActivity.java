@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,28 +38,32 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
+import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.Fragment.BoletimFragment;
 import com.qacademico.qacademico.Fragment.DiariosFragment;
 import com.qacademico.qacademico.Fragment.HomeFragment;
 import com.qacademico.qacademico.Fragment.HorarioFragment;
+import com.qacademico.qacademico.Fragment.MateriaisFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.CheckUpdate;
 import com.qacademico.qacademico.Utilities.Design;
 import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
-import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
-import static com.qacademico.qacademico.Utilities.Utils.pg_home;
-import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
-import static com.qacademico.qacademico.Utilities.Utils.pg_login;
-import static com.qacademico.qacademico.Utilities.Utils.pg_materiais;
-import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+
+import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
+import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
+import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
@@ -78,10 +83,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.toolbar) Toolbar toolbar;
     ActionBarDrawerToggle toggle;
+    public List<ExpandableList> diariosList;
     public SingletonWebView webView = SingletonWebView.getInstance();
     private DiariosFragment diariosFragment = new DiariosFragment();
     private BoletimFragment boletimFragment = new BoletimFragment();
     private HorarioFragment horarioFragment = new HorarioFragment();
+    private MateriaisFragment materiaisFragment = new MateriaisFragment();
     private OnPageUpdated onPageUpdated;
 
     @Override
@@ -140,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             SendEmail.bugReport(this, navigation.getSelectedItemId());
         } else if (id == R.id.nav_logout) {
             new AlertDialog.Builder(this)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.exit_dialog))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
                     .setMessage(R.string.dialog_quit_msg)
                     .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
                     .setNegativeButton(R.string.dialog_quit_no, null)
@@ -193,11 +200,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         invalidateOptionsMenu();
                         return true;
 
-                    case R.id.navigation_horario:
-                        setHorario();
+                    case R.id.navigation_materiais:
+                        setMateriais();
                         //Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
                         invalidateOptionsMenu();
                         return true;
+
+                    /*case R.id.navigation_horario:
+                        setHorario();
+                        //Design.applyToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
+                        invalidateOptionsMenu();
+                        return true;*/
                 }
             }
             return false;
@@ -206,15 +219,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.toolbar, menu);
 
         MenuItem date = menu.findItem(R.id.action_date);
         MenuItem column = menu.findItem(R.id.action_column);
         MenuItem header = menu.findItem(R.id.action_header);
 
-        if ((navigation.getSelectedItemId() == R.id.navigation_diarios && webView.infos.data_diarios != null)
+        if (       (navigation.getSelectedItemId() == R.id.navigation_diarios && webView.infos.data_diarios != null)
                 || (navigation.getSelectedItemId() == R.id.navigation_boletim && webView.infos.data_boletim != null)
-                || (navigation.getSelectedItemId() == R.id.navigation_horario && webView.infos.data_horario != null)) {
+                || (navigation.getSelectedItemId() == R.id.navigation_materiais && webView.pg_materiais_loaded[webView.data_position_materiais])) {
             date.setVisible(true);
         } else {
             date.setVisible(false);
@@ -245,8 +258,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 diariosFragment.openDateDialog();
             } else if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
                 boletimFragment.openDateDialog();
-            } else if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-                horarioFragment.openDateDialog();
+            } else if (navigation.getSelectedItemId() == R.id.navigation_materiais) {
+                materiaisFragment.openDateDialog();
             }
             return true;
         } else if (id == R.id.action_column) {
@@ -266,9 +279,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
 
         if(!webView.pg_login_loaded) {
-            webView.html.loadUrl(url + pg_login);
+            webView.loadUrl(URL + PG_LOGIN);
         } else if (!webView.pg_home_loaded) {
-            webView.html.loadUrl(url + pg_home);
+            webView.loadUrl(URL + PG_HOME);
         }
     }
 
@@ -277,11 +290,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, diariosFragment, Utils.DIARIOS).commit();
 
         if (webView.pg_home_loaded) {
-            if (!webView.pg_diarios_loaded) {
-                webView.html.loadUrl(url + pg_diarios);
+            if (!webView.pg_diarios_loaded[webView.data_position_diarios]) {
+                webView.loadUrl(URL + PG_DIARIOS);
             }
         } else {
-            webView.html.loadUrl(url + pg_home);
+            webView.loadUrl(URL + PG_HOME);
         }
     }
 
@@ -290,11 +303,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, boletimFragment, Utils.BOLETIM).commit();
 
             if (webView.pg_home_loaded) {
-                if (!webView.pg_boletim_loaded) {
-                    webView.html.loadUrl(url + pg_boletim);
+                if (!webView.pg_boletim_loaded[webView.data_position_boletim]) {
+                    webView.loadUrl(URL + PG_BOLETIM);
                 }
             } else {
-                webView.html.loadUrl(url + pg_home);
+                webView.loadUrl(URL + PG_HOME);
             }
 
     }
@@ -304,35 +317,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, horarioFragment, Utils.HORARIO).commit();
 
         if (webView.pg_home_loaded) {
-            if (!webView.pg_horario_loaded) {
-                webView.html.loadUrl(url + pg_horario);
+            if (!webView.pg_horario_loaded[webView.data_position_horario]) {
+                 webView.loadUrl(URL + PG_HORARIO);
             }
         } else {
-            webView.html.loadUrl(url + pg_home);
+            webView.loadUrl(URL + PG_HOME);
         }
     }
 
     public void setMateriais() { //layout fragment_home
-        if ((!webView.pg_material_loaded)) {
-            webView.html.loadUrl(url + pg_materiais);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, materiaisFragment, Utils.MATERIAIS).commit();
+
+        if (webView.pg_home_loaded) {
+            if (!webView.pg_materiais_loaded[webView.data_position_materiais]) {
+                webView.loadUrl(URL + PG_MATERIAIS);
+            }
         } else {
-            /*if (materiais.size() != 0) {
-                Intent intent = new Intent(getApplicationContext(), MateriaisActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("Materiais", (Serializable) materiais);
-                intent.putExtras(bundle);
-                presentActivity(intent, mainLayout);
-            }*/
+            webView.loadUrl(URL + PG_HOME);
         }
     }
 
     public void setCalendario(){
         if (webView.pg_home_loaded) {
             if (!webView.pg_calendario_loaded) {
-                webView.html.loadUrl(url + pg_calendario);
+                webView.loadUrl(URL + PG_CALENDARIO);
             }
         } else {
-            webView.html.loadUrl(url + pg_home);
+            webView.loadUrl(URL + PG_HOME);
         }
     }
 
@@ -341,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             setHome();
             Design.removeToolbarScrollBehavior(getApplicationContext(), mainLayout, toolbar);
         } else {
-            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
     }
 
@@ -357,9 +369,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (!login_info.getString(Utils.LOGIN_NAME, "").equals("")) {
             sigla_txt = login_info.getString(Utils.LOGIN_NAME, "").substring(0, 1)
-                    + login_info.getString(Utils.LOGIN_NAME, "").substring(
-                            login_info.getString(Utils.LOGIN_NAME, "").lastIndexOf(" ") + 1,
-                    login_info.getString(Utils.LOGIN_NAME, "").lastIndexOf(" ") + 2);
+                      + login_info.getString(Utils.LOGIN_NAME, "").substring(
+                        login_info.getString(Utils.LOGIN_NAME, "").lastIndexOf(" ") + 1,
+                        login_info.getString(Utils.LOGIN_NAME, "").lastIndexOf(" ") + 2);
         }
 
         name.setText(login_info.getString(Utils.LOGIN_NAME, ""));
@@ -371,40 +383,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onPageStart(String url_p) {
         Log.i("Singleton", "onStart");
 
-        if ((url_p.equals(url + pg_home))
-                || (url_p.contains(url + pg_boletim) && navigation.getSelectedItemId() == R.id.navigation_boletim)
-                || (url_p.contains(url + pg_diarios) && navigation.getSelectedItemId() == R.id.navigation_diarios)
-                || (url_p.contains(url + pg_horario) && navigation.getSelectedItemId() == R.id.navigation_horario)) {
+        if (       (url_p.equals(URL + PG_HOME))
+                || (url_p.contains(URL + PG_BOLETIM) && navigation.getSelectedItemId() == R.id.navigation_boletim)
+                || (url_p.contains(URL + PG_DIARIOS) && navigation.getSelectedItemId() == R.id.navigation_diarios)
+                || (url_p.contains(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais)) {
             showLinearProgressbar();
         }
     }
 
     @Override
     public void onPageFinish(String url_p, List<?> list) {
-        Log.i("Singleton", "onFinish");
+        runOnUiThread(() -> {
+            Log.i("Singleton", "onFinish");
 
-        dismissRoundProgressbar();
-        dismissLinearProgressbar();
-        autoLoadPages();
-        invalidateOptionsMenu();
+            dismissRoundProgressbar();
+            dismissLinearProgressbar();
+            autoLoadPages();
+            invalidateOptionsMenu();
 
-        if (url_p.equals(url + pg_home)) {
-            Log.i("onFinish", "loadedHome");
-            if (navigation.getSelectedItemId() == R.id.navigation_home) {
-                onPageUpdated.onPageUpdate(null);
-                Log.i("onFinish", "updatedHome");
+            if (url_p.equals(URL + PG_HOME)) {
+                Log.i("onFinish", "loadedHome");
+                if (navigation.getSelectedItemId() == R.id.navigation_home) {
+                    onPageUpdated.onPageUpdate(null);
+                    Log.i("onFinish", "updatedHome");
+                }
+                configNavDrawer();
+            } else if (url_p.equals(URL + PG_BOLETIM) && navigation.getSelectedItemId() == R.id.navigation_boletim) {
+                onPageUpdated.onPageUpdate(list);
+                Log.i("onFinish", "updatedBoletim");
+            } else if (url_p.equals(URL + PG_DIARIOS) && navigation.getSelectedItemId() == R.id.navigation_diarios) {
+                onPageUpdated.onPageUpdate(list);
+                Log.i("onFinish", "updatedDiarios");
+            } else if (url_p.equals(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais) {
+                //onPageUpdated.onPageUpdate(list);
+                Log.i("onFinish", "updatedMateriais");
             }
-            configNavDrawer();
-        } else if (url_p.equals(url + pg_boletim) && navigation.getSelectedItemId() == R.id.navigation_boletim) {
-            onPageUpdated.onPageUpdate(list);
-            Log.i("onFinish", "updatedBoletim");
-        } else if (url_p.equals(url + pg_diarios) && navigation.getSelectedItemId() == R.id.navigation_diarios) {
-            onPageUpdated.onPageUpdate(list);
-            Log.i("onFinish", "updatedDiarios");
-        } else if (url_p.equals(url + pg_horario) && navigation.getSelectedItemId() == R.id.navigation_horario) {
-            onPageUpdated.onPageUpdate(list);
-            Log.i("onFinish", "updatedHorario");
-        }
+        });
     }
 
     @Override
@@ -418,22 +432,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         showRoundProgressbar();
         dismissErrorConnection();
         if (!webView.pg_home_loaded) {
-            webView.html.loadUrl(url + pg_login);
+            webView.loadUrl(URL + PG_LOGIN);
         } else {
             if (navigation.getSelectedItemId() == R.id.navigation_home) {
-                webView.html.loadUrl(url + pg_home);
+                webView.loadUrl(URL + PG_HOME);
             } else if (navigation.getSelectedItemId() == R.id.navigation_diarios) {
-                webView.html.loadUrl(url + pg_diarios);
+                webView.loadUrl(URL + PG_DIARIOS);
             } else if (navigation.getSelectedItemId() == R.id.navigation_boletim) {
-                webView.html.loadUrl(url + pg_boletim);
-            } else if (navigation.getSelectedItemId() == R.id.navigation_horario) {
-                webView.html.loadUrl(url + pg_horario);
+                webView.loadUrl(URL + PG_BOLETIM);
+            } else if (navigation.getSelectedItemId() == R.id.navigation_materiais) {
+                webView.loadUrl(URL + PG_MATERIAIS);
             }
         }
     }
 
-    public void showErrorConnection() { //Mostra a página de erro de conexão
-        //webView.html.stopLoading();
+    public void showErrorConnection() {//Mostra a página de erro de conexão
         errorConnectionLayout.setVisibility(View.VISIBLE);
         mainLayout.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.GONE);
@@ -538,7 +551,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         progressBar_Top.setVisibility(View.VISIBLE);
     }
 
-    protected void dismissLinearProgressbar() { //Esconde a progressBar ao carregar a página
+    public void dismissLinearProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar_Top.setVisibility(View.INVISIBLE);
     }
 
@@ -546,23 +559,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("key_autoload", false)) {
 
         /*if (navigation.getSelectedItemId() == R.id.navigation_diarios && !webView.pg_diarios_loaded) {
-            webView.html.loadUrl(url + pg_diarios);
+            webView.html.loadUrl(URL + PG_DIARIOS);
         } else if (navigation.getSelectedItemId() == R.id.navigation_boletim && !webView.pg_boletim_loaded) {
-            webView.html.loadUrl(url + pg_boletim);
+            webView.html.loadUrl(URL + PG_BOLETIM);
         } else if (navigation.getSelectedItemId() == R.id.navigation_horario && !webView.pg_horario_loaded) {
-            webView.html.loadUrl(url + pg_horario);
-        } else*/
+            webView.html.loadUrl(URL + PG_HORARIO);
+        } else
             try {
                 if (!webView.pg_diarios_loaded) {
-                    webView.html.loadUrl(url + pg_diarios);
+                    webView.html.loadUrl(URL + PG_DIARIOS);
                 } else if (!webView.pg_boletim_loaded) {
-                    webView.html.loadUrl(url + pg_boletim);
+                    webView.html.loadUrl(URL + PG_BOLETIM);
                 } else if (!webView.pg_horario_loaded) {
-                    webView.html.loadUrl(url + pg_horario);
+                    webView.html.loadUrl(URL + PG_HORARIO);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
@@ -621,6 +634,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     }
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        recreate();
     }
 
     @Override

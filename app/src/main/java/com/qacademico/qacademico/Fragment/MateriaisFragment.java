@@ -36,12 +36,16 @@ public class MateriaisFragment extends Fragment {
     }
 
     private void setMateriais(View view) {
-        RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
+        /*RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
         ExpandableListAdapter adapter = new ExpandableListAdapter(expandableListList, getActivity(), Utils.MATERIAIS);
 
         recyclerViewDiarios.setAdapter(adapter);
-        recyclerViewDiarios.setLayoutManager(layout);
+        recyclerViewDiarios.setLayoutManager(layout);*/
+    }
+
+    public void openDateDialog() {
+
     }
 }

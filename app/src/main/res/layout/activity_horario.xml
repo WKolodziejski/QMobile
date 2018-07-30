@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     >
 
+    <include
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        layout="@layout/action_bar"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

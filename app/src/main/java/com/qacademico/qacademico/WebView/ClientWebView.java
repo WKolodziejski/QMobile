@@ -15,20 +15,20 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
-import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
-import static com.qacademico.qacademico.Utilities.Utils.pg_calendario;
+import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
-import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
-import static com.qacademico.qacademico.Utilities.Utils.pg_erro;
-import static com.qacademico.qacademico.Utilities.Utils.pg_home;
-import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
-import static com.qacademico.qacademico.Utilities.Utils.pg_login;
-import static com.qacademico.qacademico.Utilities.Utils.pg_materiais;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.qacademico.qacademico.Utilities.Utils.PG_ERRO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
+import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class ClientWebView extends WebViewClient {
     private Context context;
-    private SingletonWebView webView;
+    private SingletonWebView webView = SingletonWebView.getInstance();
     private SharedPreferences login_info;
     private OnPageFinished onPageFinished;
     private OnPageStarted onPageStarted;
@@ -37,7 +37,6 @@ public class ClientWebView extends WebViewClient {
     ClientWebView(Context context) {
         this.context = context.getApplicationContext();
         this.login_info = this.context.getSharedPreferences(Utils.LOGIN_INFO, 0);
-        this.webView = SingletonWebView.getInstance();
     }
 
     @Override
@@ -67,70 +66,66 @@ public class ClientWebView extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url_i, Bitmap favicon) {
-        super.onPageStarted(view, url, favicon);
+        super.onPageStarted(view, URL, favicon);
         onPageStarted.onPageStart(url_i);
     }
 
     @Override
     public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
         if (Utils.isConnected(context) && !url_i.equals("")) {
-            if (url_i.equals(url + pg_login)) {
-                webView.html.loadUrl("javascript:var uselessvar = document.getElementById('txtLogin').value='"
+            if (url_i.equals(URL + PG_LOGIN)) {
+                webView.loadUrl("javascript:var uselessvar = document.getElementById('txtLogin').value='"
                         + login_info.getString(Utils.LOGIN_REGISTRATION, "") + "';");
-                webView.html.loadUrl("javascript:var uselessvar = document.getElementById('txtSenha').value='"
+                webView.loadUrl("javascript:var uselessvar = document.getElementById('txtSenha').value='"
                         + login_info.getString(Utils.LOGIN_PASSWORD, "") + "';");
-                webView.html.loadUrl("javascript:document.getElementById('btnOk').click();");
+                webView.loadUrl("javascript:document.getElementById('btnOk').click();");
                 Log.i("Login", "Tentando Logar...");
                 webView.pg_login_loaded = true;
-            } else if (url_i.equals(url + pg_home)) {
-                webView.html.loadUrl("javascript:window.HtmlHandler.handleHome"
+            } else if (url_i.equals(URL + PG_HOME)) {
+                webView.loadUrl("javascript:window.HtmlHandler.handleHome"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 if (webView.isLoginPage) {
                     webView.isLoginPage = false;
-                    SharedPreferences.Editor editor = login_info.edit();
-                    editor.putBoolean(Utils.LOGIN_VALID, true);
-                    editor.apply();
-                    Log.i("Login", "isLogin = false;");
-                    onPageFinished.onPageFinish(url + pg_login);
+                    onPageFinished.onPageFinish(URL + PG_LOGIN);
                     Log.i("WebViewClient", "Login done");
                 }
                 Log.i("WebViewClient", "Home loaded");
-            } else if (url_i.contains(url + pg_boletim)) {
-                webView.html.loadUrl("javascript:window.HtmlHandler.handleBoletim"
+            } else if (url_i.contains(URL + PG_BOLETIM)) {
+                webView.loadUrl("javascript:window.HtmlHandler.handleBoletim"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 Log.i("WebViewClient", "Boletim loaded");
-            } else if (url_i.contains(url + pg_diarios)) {
+            } else if (url_i.contains(URL + PG_DIARIOS)) {
                 if (webView.scriptDiario.contains("javascript:")) {
                     Log.i("SCRIPT", "Ok");
-                    webView.html.loadUrl(webView.scriptDiario);
+                    webView.loadUrl(webView.scriptDiario);
                     webView.scriptDiario = "";
                 } else {
-                    webView.html.loadUrl("javascript:window.HtmlHandler.handleDiarios"
+                    webView.loadUrl("javascript:window.HtmlHandler.handleDiarios"
                             + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                     Log.i("WebViewClient", "ExpandableList loaded");
                 }
-            } else if (url_i.contains(url + pg_horario)) {
-                webView.html.loadUrl("javascript:window.HtmlHandler.handleHorario"
+            } else if (url_i.contains(URL + PG_HORARIO)) {
+                webView.loadUrl("javascript:window.HtmlHandler.handleHorario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 Log.i("WebViewClient", "Horario loaded");
-            } else if (url_i.contains(url + pg_materiais)) {
-                webView.html.loadUrl("javascript:window.HtmlHandler.handleMateriais"
+            } else if (url_i.contains(URL + PG_MATERIAIS)) {
+                webView.loadUrl("javascript:window.HtmlHandler.handleMateriais"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 Log.i("WebViewClient", "Materiais loaded");
-            } else if(url_i.equals(url + pg_calendario)) {
-                webView.html.loadUrl("javascript:window.HtmlHandler.handleCalendario"
+            } else if(url_i.equals(URL + PG_CALENDARIO)) {
+                webView.loadUrl("javascript:window.HtmlHandler.handleCalendario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-            } else if (url_i.contains(url + pg_change_password)) {
+            } else if (url_i.contains(URL + pg_change_password)) {
                 webView.isChangePasswordPage = !webView.isChangePasswordPage;
                 Log.i("WebViewClient", "ChangePassword loaded");
                 if (webView.isChangePasswordPage) {
-                    webView.html.loadUrl("javascript:var uselessvar = document.getElementById('senha0').value='"
+                    webView.loadUrl("javascript:var uselessvar = document.getElementById('senha0').value='"
                             + login_info.getString(Utils.LOGIN_PASSWORD, "") + "';");
-                    webView.html.loadUrl("javascript:var uselessvar = document.getElementById('senha1').value='"
+                    webView.loadUrl("javascript:var uselessvar = document.getElementById('senha1').value='"
                             + webView.new_password + "';");
-                    webView.html.loadUrl("javascript:var uselessvar = document.getElementById('senha2').value='"
+                    webView.loadUrl("javascript:var uselessvar = document.getElementById('senha2').value='"
                             + webView.new_password + "';");
-                    webView.html.loadUrl("javascript:document.getElementById('btnConfirmar').click();");
+                    webView.loadUrl("javascript:document.getElementById('btnConfirmar').click();");
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString(Utils.LOGIN_PASSWORD, webView.new_password);
                     editor.apply();
@@ -140,10 +135,10 @@ public class ClientWebView extends WebViewClient {
                             .setPositiveButton(R.string.dialog_close, null)
                             .show();
                 }
-            } else if (url_i.equals(url + pg_erro)) {
+            } else if (url_i.equals(URL + PG_ERRO)) {
                 Log.i("WebViewClient", "Error");
                 if (webView.isLoginPage) {
-                    onPageFinished.onPageFinish(url + pg_erro);
+                    onPageFinished.onPageFinish(URL + PG_ERRO);
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString(Utils.LOGIN_REGISTRATION, "");
                     editor.putString(Utils.LOGIN_PASSWORD, "");

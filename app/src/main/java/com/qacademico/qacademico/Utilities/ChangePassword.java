@@ -16,9 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.WebView.SingletonWebView;
+
 import java.util.Objects;
 import static com.qacademico.qacademico.Utilities.Utils.pg_change_password;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class ChangePassword {
 
@@ -81,13 +82,13 @@ public class ChangePassword {
 
             new AlertDialog.Builder(context).setView(theView)
                     .setTitle(R.string.menu_password)
-                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.password_dialog))
+                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_lock_outline_black_24dp, R.string.menu_password, R.color.colorPrimary))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
                         if (pass_nova.getText().toString().equals(pass_nova_confirm.getText().toString()) && pass_nova.getText().length() >= 8
                                 && pass_atual.getText().toString().equals(login_info.getString(Utils.LOGIN_PASSWORD, ""))) {
                             mainWebView.new_password = pass_nova.getText().toString();
                             //showProgressDialog();
-                            mainWebView.html.loadUrl(url + pg_change_password);
+                            mainWebView.loadUrl(URL + pg_change_password);
                         } else {
                             new AlertDialog.Builder(context)
                                     .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_cancel_black_24dp, R.string.error_title, R.color.error))

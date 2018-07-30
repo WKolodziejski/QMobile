@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
@@ -66,6 +66,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
+                ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();
 
                 LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
@@ -154,10 +155,10 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 mLockTableView
                         .setLockFristColumn(lock_header)
                         .setLockFristRow(true)
-                        .setMaxColumnWidth(100)
-                        .setMinColumnWidth(60)
-                        .setMinRowHeight(20)
-                        .setMaxRowHeight(80)
+                        .setMaxColumnWidth(96)
+                        .setMinColumnWidth(32)
+                        .setMinRowHeight(16)
+                        .setMaxRowHeight(64)
                         .setTextViewSize(15)
                         .setFristRowBackGroudColor(R.color.colorAccent)
                         .setTableHeadTextColor(R.color.white)
@@ -203,7 +204,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
             new AlertDialog.Builder(getActivity()).setView(theView)
                     .setCustomTitle(Utils.customAlertTitle(Objects.requireNonNull(getActivity()), R.drawable.ic_date_range_black_24dp,
-                            R.string.dialog_date_change, R.color.boletim_dialog))
+                            R.string.dialog_date_change, R.color.colorPrimary))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                         if (Utils.isConnected(Objects.requireNonNull(getContext()))) {
@@ -212,12 +213,12 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
                             if (webView.data_position_boletim == Integer.parseInt(webView.infos.data_boletim[0])) {
 
-                                webView.html.loadUrl(url + pg_boletim);
+                                webView.loadUrl(URL + PG_BOLETIM);
 
                             } else {
-                                webView.html.loadUrl(url + pg_boletim + "&COD_MATRICULA=-1&cmbanos="
+                                webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
                                         + webView.infos.data_boletim[webView.data_position_boletim]
-                                        + "&cmbperiodos=" + webView.infos.periodo_boletim[webView.periodo_position_boletim] + "&Exibir+Boletim");
+                                        + "&cmbperiodos=1&Exibir+Boletim");
                             }
                         } else {
                             if (Data.loadList(Objects.requireNonNull(getContext()),

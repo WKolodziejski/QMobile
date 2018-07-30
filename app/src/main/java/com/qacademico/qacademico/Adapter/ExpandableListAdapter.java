@@ -2,8 +2,11 @@ package com.qacademico.qacademico.Adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.ColorSpace;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -68,10 +71,10 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
 
         if (list.get(position).getExpanded()){
             holder.arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
-            holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.diarios_list));
-            holder.text.setTextColor(context.getResources().getColor(R.color.white));
+            holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorSecondary));
+            holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimaryLight));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
+                holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryLight)));
             }
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
             params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
@@ -79,10 +82,10 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
             holder.table.setLayoutParams(params);
         } else {
             holder.arrow.setImageResource(R.drawable.ic_expand_more_black_24dp);
-            holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.white));
-            holder.text.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
+            holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
             }
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
             params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
@@ -100,7 +103,6 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
         if (TAG.equals(Utils.DIARIOS)) {
             holder.recyclerView.setAdapter(new EtapaAdapter((List<Etapa>) list.get(position).getList(), context));
             holder.nothing.setVisibility(list.get(position).getList().isEmpty() ? View.VISIBLE : View.GONE);
-
         } else if (TAG.equals(Utils.MATERIAIS)) {
             holder.recyclerView.setAdapter(new MateriaisAdapter((List<Materiais>) list.get(position).getList(), context));
             holder.nothing.setVisibility(list.get(position).getList().isEmpty() ? View.VISIBLE : View.GONE);
@@ -148,20 +150,20 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
                 }
 
                 if (list.get(pos).getExpanded()) {
-                    holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.diarios_list));
-                    holder.text.setTextColor(context.getResources().getColor(R.color.white));
+                    holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorSecondary));
+                    holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimaryLight));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.white)));
+                        holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryLight)));
                     }
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
                     params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
                             (int) (0 * context.getResources().getDisplayMetrics().density), (int) (10 * context.getResources().getDisplayMetrics().density));
                     holder.table.setLayoutParams(params);
                 } else {
-                    holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.white));
-                    holder.text.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                    holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
+                    holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimary));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                        holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimary)));
                     }
                     RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.table.getLayoutParams();
                     params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),

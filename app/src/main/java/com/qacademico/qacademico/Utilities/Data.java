@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.qacademico.qacademico.Class.Infos;
-import com.qacademico.qacademico.WebView.SingletonWebView;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +35,7 @@ public class Data {
                                 "") + type + "." + year + "." + period)));
             }
             list = (List<?>) object.readObject();
+            Log.i(type, "Salvo");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

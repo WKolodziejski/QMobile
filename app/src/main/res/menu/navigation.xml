@@ -22,8 +22,13 @@
         android:title="@string/title_calendario" />!-->
 
     <item
+        android:id="@+id/navigation_materiais"
+        android:icon="@drawable/ic_closed_diary"
+        android:title="@string/title_materiais" />
+
+    <!--<item
         android:id="@+id/navigation_horario"
         android:icon="@drawable/ic_access_alarm_black_24dp"
-        android:title="@string/title_horario" />
+        android:title="@string/title_horario" />!-->
 
 </menu>

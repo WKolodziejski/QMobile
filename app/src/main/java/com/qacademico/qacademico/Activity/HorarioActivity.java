@@ -10,11 +10,13 @@ import com.qacademico.qacademico.Fragment.HorarioFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
+
 import java.util.List;
 import java.util.Objects;
 
 public class HorarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
+    private OnPageUpdated onPageUpdated;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -22,8 +24,8 @@ public class HorarioActivity extends AppCompatActivity implements SingletonWebVi
         setContentView(R.layout.activity_horario);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -37,6 +39,16 @@ public class HorarioActivity extends AppCompatActivity implements SingletonWebVi
 
     @Override
     public void onPageFinish(String url_p, List<?> list) {
+        runOnUiThread(() -> {
+            onPageUpdated.onPageUpdate(list);
+        });
+    }
 
+    public void setOnPageFinishedListener(OnPageUpdated onPageUpdated){
+        this.onPageUpdated = onPageUpdated;
+    }
+
+    public interface OnPageUpdated {
+        void onPageUpdate(List<?> list);
     }
 }

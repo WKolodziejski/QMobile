@@ -34,6 +34,7 @@
     <string name="text_password">Senha</string>
     <string name="text_invalid_login">Login Inválido</string>
     <string name="text_expired_login">Seu Login Expirou</string>
+    <string name="text_loading_first_login">Carregando %1$s / %2$s</string>
     <string name="text_login_necessary">É necessário estar logado</string>
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.WebView.SingletonWebView;
+
 import java.util.List;
 
 import static com.qacademico.qacademico.Utilities.Utils.email_from;
@@ -104,7 +105,7 @@ public class SendEmail {
                 checkBoxBugReport(context, grid_boletim, check_boletim, img_boletim, txt_boletim);
             }
 
-            if (id == R.id.navigation_horario) {
+            /*if (id == R.id.navigation_horario) {
                 check_horario.setChecked(true);
                 check_horario.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -114,12 +115,12 @@ public class SendEmail {
                 }
             } else {
                 checkBoxBugReport(context, grid_horario, check_horario, img_horario, txt_horario);
-            }
+            }*/
 
             checkBoxBugReport(context, grid_outro, check_outro, img_outros, txt_outros);
 
             new AlertDialog.Builder(context).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.bug_dialog))
+                    .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_bug_report_black_24dp, R.string.email_assunto_bug, R.color.colorPrimary))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                         String message_final = "";
@@ -135,7 +136,7 @@ public class SendEmail {
 
                             if (check_diarios.isChecked() && !mainWebView.bugDiarios.equals("")) {
                                 message_final += "\n---------------------------------------------------------------------------------------------------";
-                                message_final += "DIARIOS";
+                                message_final += "EXPANDABLE_LIST";
                                 message_final += "---------------------------------------------------------------------------------------------------\n";
                                 message_final += mainWebView.bugDiarios;
                             }

@@ -13,20 +13,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.qacademico.qacademico.Activity.LoginActivity;
-import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 
 import java.util.Objects;
 
-import static com.qacademico.qacademico.Utilities.Utils.pg_login;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class LoginFragment extends Fragment {
-    private SharedPreferences login_info;
+    public SharedPreferences login_info;
     ProgressBar progressBar_login;
+    public TextView textView_loading;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class LoginFragment extends Fragment {
         EditText user_et = (TextInputEditText) view.findViewById(R.id.user_input_login);
         EditText password_et = (TextInputEditText) view.findViewById(R.id.password_input_login);
         progressBar_login = (ProgressBar) view.findViewById(R.id.login_progressbar);
+        textView_loading = (TextView) view.findViewById(R.id.login_textLoading);
         Button login_btn = (Button) view.findViewById(R.id.btn_login);
 
         login_btn.setOnClickListener(v -> {
@@ -56,12 +58,13 @@ public class LoginFragment extends Fragment {
             editor.apply();
 
             ((LoginActivity) getActivity()).dismissSnackbar();
-            ((LoginActivity) getActivity()).webView.html.loadUrl(url + pg_login);
+            ((LoginActivity) getActivity()).webView.loadUrl(URL + PG_LOGIN);
         });
         return view;
     }
 
     public void dismissProgressBar(){
         progressBar_login.setVisibility(View.GONE);
+        textView_loading.setVisibility(View.VISIBLE);
     }
 }

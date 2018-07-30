@@ -1,23 +1,17 @@
 package com.qacademico.qacademico.Activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Fragment.CalendarioFragment;
-import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
 import java.util.List;
 import java.util.Objects;
-
-import butterknife.BindView;
 
 public class CalendarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
     public SingletonWebView mainWebView = SingletonWebView.getInstance();
@@ -49,6 +43,8 @@ public class CalendarioActivity extends AppCompatActivity implements SingletonWe
 
     @Override
     public void onPageFinish(String url_p, List<?> list) {
+        runOnUiThread(() -> {
 
+        });
     }
 }

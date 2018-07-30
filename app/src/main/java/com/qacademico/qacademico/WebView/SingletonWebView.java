@@ -2,39 +2,32 @@ package com.qacademico.qacademico.WebView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.qacademico.qacademico.Class.Infos;
 import com.qacademico.qacademico.Utilities.Data;
-import com.qacademico.qacademico.Utilities.Utils;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.qacademico.qacademico.Utilities.Utils.pg_boletim;
-import static com.qacademico.qacademico.Utilities.Utils.pg_diarios;
-import static com.qacademico.qacademico.Utilities.Utils.pg_home;
-import static com.qacademico.qacademico.Utilities.Utils.pg_horario;
-import static com.qacademico.qacademico.Utilities.Utils.pg_login;
-import static com.qacademico.qacademico.Utilities.Utils.url;
+import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class SingletonWebView {
     private static SingletonWebView singleton;
     private OnPageFinished onPageFinished;
     private OnPageStarted onPageStarted;
     private OnRecivedError onRecivedError;
-    public WebView html;
-    public boolean pg_diarios_loaded, pg_horario_loaded, pg_boletim_loaded, pg_home_loaded, pg_material_loaded,
-            pg_login_loaded, pg_calendario_loaded, isChangePasswordPage, isLoginPage;
+    private WebView webView;
+    public boolean[] pg_diarios_loaded = {false},
+                     pg_horario_loaded = {false},
+                     pg_boletim_loaded = {false},
+                     pg_materiais_loaded = {false};
+    public boolean isChangePasswordPage, isLoginPage, pg_login_loaded, pg_calendario_loaded, pg_home_loaded;
     public String new_password, bugDiarios, bugCalendario, bugBoletim, bugHorario, scriptDiario = "";
-    public int data_position_horario, data_position_boletim, data_position_diarios, periodo_position_horario,
+    public int data_position_horario, data_position_boletim, data_position_diarios, data_position_materiais, periodo_position_horario,
             periodo_position_boletim, periodo_position_calendario;
     public Infos infos;
-    private List<String> queue = new ArrayList<>();
 
     private SingletonWebView() {}
 
@@ -45,37 +38,8 @@ public class SingletonWebView {
         return singleton;
     }
 
-    public void load(String url_i) {
-        if (!pg_login_loaded) {
-            html.loadUrl(url + pg_login);
-            addToQueue(url_i);
-        } else if (!pg_home_loaded) {
-            html.loadUrl(url + pg_home);
-            addToQueue(url_i);
-        } else if ((url_i.equals(pg_diarios) && !pg_diarios_loaded)
-                || (url_i.equals(pg_boletim) && !pg_boletim_loaded)
-                || (url_i.equals(pg_horario) && !pg_horario_loaded)) {
-            addToQueue(url_i);
-        }
-    }
-
-    private void addToQueue(String url_i) {
-        for (int i = 0; i < queue.size(); i++) {
-            if (queue.get(i).equals(url_i)) {
-                queue.remove(i);
-            }
-        }
-        queue.add(url_i);
-        html.loadUrl(url + url_i);
-    }
-
-    public void nextQueue() {
-        if (queue.size() > 0) {
-            queue.remove(queue.size() - 1);
-        }
-        if (queue.size() > 0) {
-            html.loadUrl(url + queue.get(queue.size() - 1));
-        }
+    public void loadUrl(String pg) {
+        webView.loadUrl(pg);
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
@@ -86,8 +50,8 @@ public class SingletonWebView {
             infos = new Infos();
         }
 
-        html = new WebView(activity.getApplicationContext());
-        WebSettings faller = html.getSettings();
+        webView = new WebView(activity.getApplicationContext());
+        WebSettings faller = webView.getSettings();
         faller.setJavaScriptEnabled(true);
         faller.setDomStorageEnabled(true);
         faller.setLoadsImagesAutomatically(false);
@@ -116,8 +80,8 @@ public class SingletonWebView {
             onRecivedError.onErrorRecived(error);
         });
 
-        html.setWebViewClient(clientWebView);
-        html.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
+        webView.setWebViewClient(clientWebView);
+        webView.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
     }
 
     public void setOnPageFinishedListener(OnPageFinished onPageFinished){

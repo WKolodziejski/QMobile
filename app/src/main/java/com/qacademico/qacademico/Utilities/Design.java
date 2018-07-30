@@ -194,11 +194,11 @@ public class Design {
                 toolbar.setNavigationIcon(nav);
             }
 
-            Drawable menu = ContextCompat.getDrawable(context, R.drawable.ic_more_vert_black_24dp);
-            menu = DrawableCompat.wrap(menu);
-            DrawableCompat.setTint(menu, (Integer) animator.getAnimatedValue());
+            Drawable toolbar = ContextCompat.getDrawable(context, R.drawable.ic_more_vert_black_24dp);
+            toolbar = DrawableCompat.wrap(toolbar);
+            DrawableCompat.setTint(toolbar, (Integer) animator.getAnimatedValue());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                toolbar.setOverflowIcon(menu);
+                toolbar.setOverflowIcon(toolbar);
             }
         });
 

@@ -27,20 +27,20 @@
             android:textSize="15sp"
             android:id="@+id/about_version"
             android:text="@string/app_version"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="4dp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="100dp"
             android:src="@drawable/icon_launcher_round_black"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="16dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:text="@string/app_q"
-            android:layout_marginTop="15dp"/>
+            android:layout_marginTop="16dp"/>
 
         <TextView
             android:layout_width="wrap_content"
