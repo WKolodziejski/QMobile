@@ -10,18 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.qacademico.qacademico.Activity.HorarioActivity;
-import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Class.Diarios.Horario;
+import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Custom.Widget.CustomWeekView;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 

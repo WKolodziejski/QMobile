@@ -1,4 +1,4 @@
-package com.qacademico.qacademico.Class.Diarios;
+package com.qacademico.qacademico.Class;
 
 import java.io.Serializable;
 import java.util.Calendar;

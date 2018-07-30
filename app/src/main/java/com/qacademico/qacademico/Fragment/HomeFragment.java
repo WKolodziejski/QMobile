@@ -16,12 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.qacademico.qacademico.Activity.CalendarioActivity;
 import com.qacademico.qacademico.Activity.HorarioActivity;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.Home.ShortcutAdapter;
-import com.qacademico.qacademico.Class.Diarios.Horario;
+import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.Shortcut;
 import com.qacademico.qacademico.Custom.Widget.CustomWeekView;
 import com.qacademico.qacademico.R;

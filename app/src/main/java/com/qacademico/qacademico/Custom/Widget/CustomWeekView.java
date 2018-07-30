@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.qacademico.qacademico.Class.Diarios.Horario;
+import com.qacademico.qacademico.Class.Horario;
 
 import java.util.ArrayList;
 import java.util.Calendar;

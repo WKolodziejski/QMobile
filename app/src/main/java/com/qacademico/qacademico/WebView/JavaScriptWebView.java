@@ -6,12 +6,11 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-import com.alamkanak.weekview.WeekViewEvent;
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Calendario.Calendario;
 import com.qacademico.qacademico.Class.Calendario.Dia;
 import com.qacademico.qacademico.Class.Diarios.Diarios;
-import com.qacademico.qacademico.Class.Diarios.Horario;
+import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.Class.Diarios.Etapa;
 import com.qacademico.qacademico.Class.Materiais;
