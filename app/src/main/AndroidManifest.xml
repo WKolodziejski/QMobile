@@ -38,12 +38,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.CalendarioActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".Activity.Settings.AboutActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
@@ -57,12 +51,6 @@
         </activity>
         <activity
             android:name=".Activity.HorarioActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".Activity.MateriaisActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

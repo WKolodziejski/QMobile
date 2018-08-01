@@ -81,7 +81,7 @@ public class SendEmail {
             TextView txt_horario = (TextView) theView.findViewById(R.id.bug_txt_horario);
             TextView txt_outros = (TextView) theView.findViewById(R.id.bug_txt_outros);
 
-            if (id == R.id.navigation_diarios) {
+            if (id == R.id.navigation_notas) {
                 check_diarios.setChecked(true);
                 check_diarios.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -93,7 +93,7 @@ public class SendEmail {
                 checkBoxBugReport(context, grid_diarios, check_diarios, img_diarios, txt_diarios);
             }
 
-            if (id == R.id.navigation_boletim) {
+            if (id == R.id.navigation_notas) {
                 check_boletim.setChecked(true);
                 check_boletim.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -1,105 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start"
-    android:clipToPadding="false"
+    android:background="@color/colorPrimaryLight"
     tools:context="com.qacademico.qacademico.Activity.MainActivity"
+    android:fitsSystemWindows="true"
     >
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/action_bar" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryLight"
+        android:orientation="vertical"
+        android:id="@+id/main_container"
         >
 
-        <include
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            layout="@layout/action_bar"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/main_container"
-            >
-
-            <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:id="@+id/progressbar_horizontal"
-                android:theme="@style/LinearProgress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="-7dp"
-                android:indeterminate="true"
-                android:visibility="invisible"/>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="55dp"
-                android:id="@+id/main_fragment"
-                android:background="@color/colorPrimaryLight"/>
-
-        </LinearLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_expand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabSize="normal"
-            app:borderWidth="0dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginBottom="70dp"
-            app:srcCompat="@drawable/ic_clear_all_black_24dp"
-            android:backgroundTint="@color/colorAccent"
-            android:tint="@color/colorPrimaryLight"/>
-
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            layout="@layout/layout_error"/>
-
-        <include
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            layout="@layout/layout_empty"/>
-
         <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/progressbar_main"
-            android:visibility="gone"/>
-
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/navigation"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:id="@+id/progressbar_horizontal"
+            android:theme="@style/LinearProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            app:itemIconTint="@color/colorPrimaryLight"
-            app:itemTextColor="@color/colorPrimaryLight"
-            android:layout_gravity="bottom"
-            app:menu="@menu/navigation"/>
+            android:layout_marginVertical="-7dp"
+            android:indeterminate="true"
+            android:visibility="invisible"/>
 
-    </android.support.design.widget.CoordinatorLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="55dp"
+            android:id="@+id/main_fragment"
+            android:background="@color/colorPrimaryLight"/>
 
-    <android.support.design.widget.NavigationView
-        android:id="@+id/nav_view"
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_expand"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"/>
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
+        app:borderWidth="0dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="70dp"
+        app:srcCompat="@drawable/ic_clear_all_black_24dp"
+        android:backgroundTint="@color/colorAccent"
+        android:tint="@color/colorPrimaryLight"/>
 
-</android.support.v4.widget.DrawerLayout>
+    <include
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        layout="@layout/layout_error"/>
+
+    <include
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        layout="@layout/layout_empty"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/progressbar_main"
+        android:visibility="gone"/>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        app:itemIconTint="@color/colorPrimaryLight"
+        app:itemTextColor="@color/colorPrimaryLight"
+        android:layout_gravity="bottom"
+        app:menu="@menu/navigation"/>
+
+</android.support.design.widget.CoordinatorLayout>

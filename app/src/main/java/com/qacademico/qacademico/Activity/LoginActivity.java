@@ -110,6 +110,9 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                 }
             }
         }
+
+        webView.data_position_boletim = 0;
+
         if (!webView.pg_horario_loaded[0]) {
             webView.loadUrl(URL + PG_HORARIO);
             Log.i("LoginActivity", "HORARIO[0]");
@@ -131,6 +134,9 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                 }
             }
         }
+
+        webView.data_position_horario = 0;
+
         if (!webView.pg_diarios_loaded[0]) {
             webView.loadUrl(URL + PG_DIARIOS);
             Log.i("LoginActivity", "DIARIOS[0]");
@@ -154,6 +160,9 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                 }
             }
         }
+
+        webView.data_position_diarios = 0;
+
         SharedPreferences.Editor editor = loginFragment.login_info.edit();
         editor.putBoolean(Utils.LOGIN_VALID, true);
         editor.putBoolean(Utils.FIRST_LOGIN, false);

@@ -17,7 +17,6 @@ import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
 

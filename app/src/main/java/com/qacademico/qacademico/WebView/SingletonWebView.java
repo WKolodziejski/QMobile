@@ -2,6 +2,7 @@ package com.qacademico.qacademico.WebView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -43,14 +44,14 @@ public class SingletonWebView {
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
-    public void configWebView(Activity activity) {
-        if (Data.loadDate(activity.getApplicationContext()) != null) {
-            infos = Data.loadDate(activity.getApplicationContext());
+    public void configWebView(Context context) {
+        if (Data.loadDate(context) != null) {
+            infos = Data.loadDate(context);
         } else {
             infos = new Infos();
         }
 
-        webView = new WebView(activity.getApplicationContext());
+        webView = new WebView(context);
         WebSettings faller = webView.getSettings();
         faller.setJavaScriptEnabled(true);
         faller.setDomStorageEnabled(true);
@@ -58,13 +59,13 @@ public class SingletonWebView {
         faller.setUseWideViewPort(true);
         faller.setLoadWithOverviewMode(true);
 
-        JavaScriptWebView javaScriptWebView = new JavaScriptWebView(activity);
+        JavaScriptWebView javaScriptWebView = new JavaScriptWebView(context);
         javaScriptWebView.setOnPageFinished((url_p, list) -> {
             Log.i("JavaScriptInterface", "onFinish");
             onPageFinished.onPageFinish(url_p, list);
         });
 
-        ClientWebView clientWebView = new ClientWebView(activity.getApplicationContext());
+        ClientWebView clientWebView = new ClientWebView(context);
         clientWebView.setOnPageFinishedListener(url_p -> {
             Log.i("JavaScriptInterface", "onFinish");
             onPageFinished.onPageFinish(url_p, null);

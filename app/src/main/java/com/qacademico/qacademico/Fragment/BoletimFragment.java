@@ -46,7 +46,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         if (webView.infos.data_boletim != null && webView.infos.periodo_boletim != null) {
             boletimList = (List<Boletim>) Data.loadList(getContext(), Utils.BOLETIM,
                     webView.infos.data_boletim[0], webView.infos.periodo_boletim[0]);
-        } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_boletim) {
+        } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_notas) {
             ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
         }
 
@@ -60,9 +60,9 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (boletimList.size() != 0) {
 
-                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                /*Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                         .setTitle(webView.infos.data_boletim[webView.data_position_boletim]
-                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]);
+                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]);*/
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();

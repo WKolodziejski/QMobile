@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+
 import com.qacademico.qacademico.Fragment.HorarioFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -50,5 +52,13 @@ public class HorarioActivity extends AppCompatActivity implements SingletonWebVi
 
     public interface OnPageUpdated {
         void onPageUpdate(List<?> list);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
