@@ -32,9 +32,8 @@ public class MateriaisFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materiais, container, false);
 
-        ((MainActivity)getActivity()).calendar.setVisibility(View.GONE);
+        ((MainActivity)getActivity()).hideCalendar();
         ((MainActivity)getActivity()).tabLayout.setVisibility(View.GONE);
-        ((MainActivity)getActivity()).invalidateOptionsMenu();
 
         ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
 

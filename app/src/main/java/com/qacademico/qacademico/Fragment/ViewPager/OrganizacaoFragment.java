@@ -47,8 +47,7 @@ public class OrganizacaoFragment extends Fragment implements ViewPager.OnPageCha
         ((MainActivity)getActivity()).tabLayout.setVisibility(View.VISIBLE);
 
         ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
-        ((MainActivity)getActivity()).calendar.setVisibility(View.VISIBLE);
-
+        ((MainActivity)getActivity()).showCalendar();
         return view;
     }
 
@@ -66,11 +65,10 @@ public class OrganizacaoFragment extends Fragment implements ViewPager.OnPageCha
     @Override
     public void onPageSelected(int i) {
         if (i == 0) {
-            ((MainActivity)getActivity()).calendar.setVisibility(View.VISIBLE);
+            ((MainActivity)getActivity()).showCalendar();
         } else {
-            ((MainActivity)getActivity()).calendar.setVisibility(View.GONE);
+            ((MainActivity)getActivity()).hideCalendar();
         }
-        ((MainActivity)getActivity()).invalidateOptionsMenu();
     }
 
     @Override

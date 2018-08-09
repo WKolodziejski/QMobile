@@ -39,9 +39,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        ((MainActivity)getActivity()).calendar.setVisibility(View.GONE);
         ((MainActivity)getActivity()).tabLayout.setVisibility(View.GONE);
-        ((MainActivity)getActivity()).invalidateOptionsMenu();
 
         SharedPreferences login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(Utils.LOGIN_INFO, 0);
 
@@ -52,6 +50,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
         ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
         ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();
+        ((MainActivity)getActivity()).hideCalendar();
 
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
         horario.setOnClickListener(v -> {

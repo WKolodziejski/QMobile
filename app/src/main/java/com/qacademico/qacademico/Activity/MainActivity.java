@@ -25,10 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.github.sundeepk.compactcalendarview.AnimatorListener;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
 import com.qacademico.qacademico.Class.ExpandableList;
@@ -85,6 +85,18 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         login_info = getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE);
+
+        calendar.setAnimationListener(new CompactCalendarView.CompactCalendarAnimationListener() {
+            @Override
+            public void onOpened() {
+                calendar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onClosed() {
+                calendar.setVisibility(View.GONE);
+            }
+        });
 
         hideExpandBtn();
         Design.setNavigationTransparent(this);
@@ -332,6 +344,25 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     public void dismissLinearProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar_Top.setVisibility(View.GONE);
+    }
+
+    public void showCalendar() {
+        calendar.setVisibility(View.VISIBLE);
+        if (calendar.getVisibility() != View.VISIBLE) {
+            calendar.showCalendarWithAnimation();
+        } else {
+            calendar.showCalendar();
+        }
+        invalidateOptionsMenu();
+    }
+
+    public void hideCalendar() {
+        if (calendar.getVisibility() == View.VISIBLE) {
+            calendar.hideCalendarWithAnimation();
+        } else {
+            calendar.hideCalendar();
+        }
+        invalidateOptionsMenu();
     }
 
     protected void shareApp() {
