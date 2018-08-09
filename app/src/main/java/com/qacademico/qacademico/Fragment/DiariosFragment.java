@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +36,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageFinishedListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
 
     @Override
@@ -61,9 +60,8 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (((MainActivity)getActivity()).diariosList.size() != 0) {
 
-                /*Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);*/
-                ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                        .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();

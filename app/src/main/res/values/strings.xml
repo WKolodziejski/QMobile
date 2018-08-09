@@ -30,6 +30,7 @@
     <string name="title_loading">Carregando</string>
     <string name="text_loading">Por favor, aguarde…</string>
     <string name="text_retry">Recarregar</string>
+    <string name="text_offline">Offline</string>
     <string name="text_unavailable">Recurso indisponível nesta versão</string>
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>

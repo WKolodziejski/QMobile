@@ -13,15 +13,13 @@ import com.qacademico.qacademico.Utilities.CheckUpdate;
 import com.qacademico.qacademico.Utilities.SendEmail;
 import com.qacademico.qacademico.Utilities.Utils;
 
-import java.util.Objects;
-
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getLayoutInflater().inflate(R.layout.action_bar, (ViewGroup) findViewById(android.R.id.content));
+        getLayoutInflater().inflate(R.layout.action_bar_main, (ViewGroup) findViewById(android.R.id.content));
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

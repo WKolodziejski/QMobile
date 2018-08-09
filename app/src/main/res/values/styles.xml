@@ -30,9 +30,8 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
         <item name="android:textColor">@color/colorPrimary</item>
-        <item name="elevation">0dp</item>
     </style>
 
     <style name="AppTheme.Transparent" parent="AppTheme">

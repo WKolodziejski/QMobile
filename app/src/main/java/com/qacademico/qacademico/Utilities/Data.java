@@ -35,7 +35,7 @@ public class Data {
                                 "") + type + "." + year + "." + period)));
             }
             list = (List<?>) object.readObject();
-            Log.i(type, "Salvo");
+            Log.i(type, "Lido");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

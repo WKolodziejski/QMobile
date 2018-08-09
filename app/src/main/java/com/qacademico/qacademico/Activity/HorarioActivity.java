@@ -25,7 +25,7 @@ public class HorarioActivity extends AppCompatActivity implements SingletonWebVi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horario);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario);

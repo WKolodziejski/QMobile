@@ -1,5 +1,6 @@
 package com.qacademico.qacademico.Activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,12 +9,14 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -22,8 +25,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.CalendarView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
 import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.Fragment.HomeFragment;
 import com.qacademico.qacademico.Fragment.MateriaisFragment;
@@ -35,9 +42,9 @@ import com.qacademico.qacademico.Utilities.Design;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 import java.util.List;
+import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
@@ -46,21 +53,24 @@ import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.qacademico.qacademico.Utilities.Utils.URL;
+import static com.qacademico.qacademico.Utilities.Utils.isConnected;
 
 public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
-    @BindView(R.id.connection) LinearLayout errorConnectionLayout;
-    @BindView(R.id.empty) LinearLayout emptyLayout;
-    @BindView(R.id.progressbar_main) ProgressBar progressBar_Main;
+    @BindView(R.id.connection)             LinearLayout errorConnectionLayout;
+    @BindView(R.id.empty)                  LinearLayout emptyLayout;
+    @BindView(R.id.progressbar_main)       ProgressBar progressBar_Main;
     @BindView(R.id.progressbar_horizontal) ProgressBar progressBar_Top;
-    @BindView(R.id.main_container) ViewGroup mainLayout;
-    @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindView(R.id.fab_expand) public FloatingActionButton fab_expand;
-    @BindView(R.id.navigation) public BottomNavigationView navigation;
+    @BindView(R.id.fab_expand)      public FloatingActionButton fab_expand;
+    @BindView(R.id.navigation)      public BottomNavigationView navigation;
     private SharedPreferences login_info;
     private Snackbar snackBar;
     private OnPageUpdated onPageUpdated;
     public List<ExpandableList> diariosList;
     public SingletonWebView webView = SingletonWebView.getInstance();
+
+    //@BindView(R.id.app_bar_layout) public AppBarLayout appBarLayout;
+    @BindView(R.id.compactcalendar_view)  public CompactCalendarView calendar;
+    @BindView(R.id.tabs) public TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,18 +79,18 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
+        showIsOffline();
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
 
-        login_info = getSharedPreferences(Utils.LOGIN_INFO, 0);
+        login_info = getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE);
 
         hideExpandBtn();
         Design.setNavigationTransparent(this);
-        Design.applyToolbarScrollBehavior(this, mainLayout, toolbar);
+        //Design.applyToolbarScrollBehavior(this, (ViewGroup) findViewById(R.id.main_container), findViewById(R.id.toolbar));
 
-        CheckUpdate.checkUpdate(this);
+        //CheckUpdate.checkUpdate(this);
 
         webView.configWebView(this);
         webView.setOnPageFinishedListener(this);
@@ -89,9 +99,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         if (login_info.getBoolean(Utils.LOGIN_VALID, false)) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
-            if(!webView.pg_login_loaded) {
-                webView.loadUrl(URL + PG_LOGIN);
-            }
+            webView.loadUrl(URL + PG_LOGIN);
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
@@ -100,11 +108,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
-
-        MenuItem date = menu.findItem(R.id.action_date);
-        MenuItem column = menu.findItem(R.id.action_column);
-        MenuItem header = menu.findItem(R.id.action_header);
-
         return true;
     }
 
@@ -112,34 +115,23 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_date) {
-
+        if (id == R.id.action_settings) {
+            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
             return true;
-        } else if (id == R.id.action_column) {
-
+        } else if (id == R.id.action_logout) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
+                    .setMessage(R.string.dialog_quit_msg)
+                    .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
+                    .setNegativeButton(R.string.dialog_quit_no, null)
+                    .show();
             return true;
-        } else if (id == R.id.action_header) {
-            invalidateOptionsMenu();
+        } else if (id == R.id.action_date) {
 
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener
-            = new BottomNavigationView.OnNavigationItemReselectedListener() {
-        @Override
-        public void onNavigationItemReselected(@NonNull MenuItem item) {
-            RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getApplicationContext()) {
-                @Override
-                protected int getVerticalSnapPreference() {
-                    return LinearSmoothScroller.SNAP_TO_ANY;
-                }
-            };
-            smoothScroller.setTargetPosition(0);
-        }
-    };
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -173,14 +165,15 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     @Override
     public void onPageStart(String url_p) {
-        Log.i("Singleton", "onStart");
-
-        if (       (url_p.equals(URL + PG_HOME))
-                || (url_p.contains(URL + PG_BOLETIM) && navigation.getSelectedItemId() == R.id.navigation_notas)
-                || (url_p.contains(URL + PG_DIARIOS) && navigation.getSelectedItemId() == R.id.navigation_notas)
-                || (url_p.contains(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais)) {
-            showLinearProgressbar();
-        }
+        runOnUiThread(() -> {
+            Log.i("Singleton", "onStart");
+            if ((url_p.equals(URL + PG_HOME))
+                    || (url_p.contains(URL + PG_BOLETIM) && navigation.getSelectedItemId() == R.id.navigation_notas)
+                    || (url_p.contains(URL + PG_DIARIOS) && navigation.getSelectedItemId() == R.id.navigation_notas)
+                    || (url_p.contains(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais)) {
+                showLinearProgressbar();
+            }
+        });
     }
 
     @Override
@@ -188,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         runOnUiThread(() -> {
             Log.i("Singleton", "onFinish");
 
+            showIsOffline();
             dismissRoundProgressbar();
             dismissLinearProgressbar();
             invalidateOptionsMenu();
@@ -213,8 +207,18 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     @Override
     public void onErrorRecived(String error) {
-        dismissLinearProgressbar();
-        dismissRoundProgressbar();
+        runOnUiThread(() -> {
+            dismissLinearProgressbar();
+            dismissRoundProgressbar();
+        });
+    }
+
+    private void showIsOffline() {
+        if (!isConnected(this)) {
+            Objects.requireNonNull(getSupportActionBar()).setSubtitle(getResources().getString(R.string.text_offline));
+        } else {
+            Objects.requireNonNull(getSupportActionBar()).setSubtitle("");
+        }
     }
 
     public void refreshPage(View v) { //Atualiza a página
@@ -237,17 +241,17 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     public void showErrorConnection() {//Mostra a página de erro de conexão
         errorConnectionLayout.setVisibility(View.VISIBLE);
-        mainLayout.setVisibility(View.GONE);
+        //mainLayout.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.GONE);
     }
 
     public void dismissErrorConnection() { //Esconde a página de erro de conexão
         errorConnectionLayout.setVisibility(View.GONE);
-        mainLayout.setVisibility(View.VISIBLE);
+        //mainLayout.setVisibility(View.VISIBLE);
     }
 
     protected void showSnackBar(String message, boolean action) { //Mostra a SnackBar
-        snackBar = Snackbar.make(mainLayout, message, Snackbar.LENGTH_INDEFINITE);
+        snackBar = Snackbar.make((ViewGroup) findViewById(R.id.main_container), message, Snackbar.LENGTH_INDEFINITE);
         snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
         if (action) {
             snackBar.setAction(R.string.button_wifi, view1 -> {
@@ -303,22 +307,22 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     public void showRoundProgressbar() { //Mostra a progressBar ao carregar a página
         progressBar_Main.setVisibility(View.VISIBLE);
-        mainLayout.setVisibility(View.GONE);
+        //mainLayout.setVisibility(View.GONE);
     }
 
     protected void dismissRoundProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar_Main.setVisibility(View.GONE);
-        mainLayout.setVisibility(View.VISIBLE);
+        //mainLayout.setVisibility(View.VISIBLE);
     }
 
     public void showEmptyLayout() {
-        mainLayout.setVisibility(View.GONE);
+        //mainLayout.setVisibility(View.GONE);
         errorConnectionLayout.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.VISIBLE);
     }
 
     public void hideEmptyLayout() {
-        mainLayout.setVisibility(View.VISIBLE);
+        //mainLayout.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
     }
 
@@ -327,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     }
 
     public void dismissLinearProgressbar() { //Esconde a progressBar ao carregar a página
-        progressBar_Top.setVisibility(View.INVISIBLE);
+        progressBar_Top.setVisibility(View.GONE);
     }
 
     protected void shareApp() {
@@ -378,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         }
     }
 
-    public void setOnPageFinishedListener(OnPageUpdated onPageUpdated){
+    public void setOnPageUpdateListener(OnPageUpdated onPageUpdated){
         this.onPageUpdated = onPageUpdated;
     }
 

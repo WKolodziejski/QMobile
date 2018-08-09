@@ -80,7 +80,6 @@ public class ClientWebView extends WebViewClient {
                         + login_info.getString(Utils.LOGIN_PASSWORD, "") + "';");
                 webView.loadUrl("javascript:document.getElementById('btnOk').click();");
                 Log.i("Login", "Tentando Logar...");
-                webView.pg_login_loaded = true;
             } else if (url_i.equals(URL + PG_HOME)) {
                 webView.loadUrl("javascript:window.HtmlHandler.handleHome"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
@@ -115,26 +114,6 @@ public class ClientWebView extends WebViewClient {
             } else if(url_i.equals(URL + PG_CALENDARIO)) {
                 webView.loadUrl("javascript:window.HtmlHandler.handleCalendario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-            } else if (url_i.contains(URL + pg_change_password)) {
-                webView.isChangePasswordPage = !webView.isChangePasswordPage;
-                Log.i("WebViewClient", "ChangePassword loaded");
-                if (webView.isChangePasswordPage) {
-                    webView.loadUrl("javascript:var uselessvar = document.getElementById('senha0').value='"
-                            + login_info.getString(Utils.LOGIN_PASSWORD, "") + "';");
-                    webView.loadUrl("javascript:var uselessvar = document.getElementById('senha1').value='"
-                            + webView.new_password + "';");
-                    webView.loadUrl("javascript:var uselessvar = document.getElementById('senha2').value='"
-                            + webView.new_password + "';");
-                    webView.loadUrl("javascript:document.getElementById('btnConfirmar').click();");
-                    SharedPreferences.Editor editor = login_info.edit();
-                    editor.putString(Utils.LOGIN_PASSWORD, webView.new_password);
-                    editor.apply();
-                    new AlertDialog.Builder(context)
-                            .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_check_black_24dp, R.string.success_title, R.color.ok))
-                            .setMessage(R.string.passchange_txt_success_message)
-                            .setPositiveButton(R.string.dialog_close, null)
-                            .show();
-                }
             } else if (url_i.equals(URL + PG_ERRO)) {
                 Log.i("WebViewClient", "Error");
                 if (webView.isLoginPage) {

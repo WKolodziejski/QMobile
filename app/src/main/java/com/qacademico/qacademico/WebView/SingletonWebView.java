@@ -10,8 +10,11 @@ import android.webkit.WebView;
 import com.qacademico.qacademico.Class.Infos;
 import com.qacademico.qacademico.Utilities.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
+import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class SingletonWebView {
@@ -24,7 +27,7 @@ public class SingletonWebView {
                      pg_horario_loaded = {false},
                      pg_boletim_loaded = {false},
                      pg_materiais_loaded = {false};
-    public boolean isChangePasswordPage, isLoginPage, pg_login_loaded, pg_calendario_loaded, pg_home_loaded;
+    public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
     public String new_password, bugDiarios, bugCalendario, bugBoletim, bugHorario, scriptDiario = "";
     public int data_position_horario, data_position_boletim, data_position_diarios, data_position_materiais, periodo_position_horario,
             periodo_position_boletim, periodo_position_calendario;

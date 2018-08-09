@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.ViewPagerAdapter;
 import com.qacademico.qacademico.Fragment.BoletimFragment;
 import com.qacademico.qacademico.Fragment.CalendarioFragment;
@@ -18,8 +19,16 @@ import com.qacademico.qacademico.Fragment.DiariosFragment;
 import com.qacademico.qacademico.Fragment.GraficosFragment;
 import com.qacademico.qacademico.R;
 
-public class OrganizacaoFragment extends Fragment {
+import java.util.Objects;
+
+public class OrganizacaoFragment extends Fragment implements ViewPager.OnPageChangeListener {
     ViewPagerAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Nullable
     @Override
@@ -32,8 +41,13 @@ public class OrganizacaoFragment extends Fragment {
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(this);
+
+        ((MainActivity)getActivity()).tabLayout.setupWithViewPager(viewPager);
+        ((MainActivity)getActivity()).tabLayout.setVisibility(View.VISIBLE);
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
+        ((MainActivity)getActivity()).calendar.setVisibility(View.VISIBLE);
 
         return view;
     }
@@ -42,5 +56,25 @@ public class OrganizacaoFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         adapter = new ViewPagerAdapter(getChildFragmentManager());
+    }
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        if (i == 0) {
+            ((MainActivity)getActivity()).calendar.setVisibility(View.VISIBLE);
+        } else {
+            ((MainActivity)getActivity()).calendar.setVisibility(View.GONE);
+        }
+        ((MainActivity)getActivity()).invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
     }
 }

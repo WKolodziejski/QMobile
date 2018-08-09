@@ -2,27 +2,21 @@ package com.qacademico.qacademico.ViewHolder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.qacademico.qacademico.R;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DiariosViewHolder extends RecyclerView.ViewHolder {
-    public final TextView nome;
-    public final TextView peso;
-    public final TextView max;
-    public final TextView nota;
-    public final TextView tipo;
-    public final TextView data;
+    @BindView(R.id.diarios_nome) public TextView nome;
+    @BindView(R.id.diarios_peso) public TextView peso;
+    @BindView(R.id.diarios_max)  public TextView max;
+    @BindView(R.id.diarios_nota) public TextView nota;
+    @BindView(R.id.diarios_tipo) public TextView tipo;
+    @BindView(R.id.diarios_data) public TextView data;
 
     public DiariosViewHolder(View view) {
         super(view);
-
-        nome = (TextView) view.findViewById(R.id.diarios_nome);
-        peso = (TextView) view.findViewById(R.id.diarios_peso);
-        max = (TextView) view.findViewById(R.id.diarios_max);
-        nota = (TextView) view.findViewById(R.id.diarios_nota);
-        tipo = (TextView) view.findViewById(R.id.diarios_tipo);
-        data = (TextView) view.findViewById(R.id.diarios_data);
+        ButterKnife.bind(this, view);
     }
 }

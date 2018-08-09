@@ -36,7 +36,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageFinishedListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
 
     @Override
@@ -60,10 +60,10 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (boletimList.size() != 0) {
 
-                /*Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                         .setTitle(webView.infos.data_boletim[webView.data_position_boletim]
-                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]);*/
-                ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
+                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]);
+                //((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();

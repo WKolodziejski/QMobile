@@ -4,22 +4,17 @@
     >
 
     <item
-        android:id="@+id/action_header"
-        android:orderInCategory="1"
-        android:title="@string/action_header"
-        android:icon="@drawable/ic_lock_outline_black_24dp"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>
 
     <item
-        android:id="@+id/action_column"
-        android:orderInCategory="2"
-        android:title="@string/action_column"
-        android:icon="@drawable/ic_filter_list_black_24dp"
-        app:showAsAction="ifRoom"/>
+        android:id="@+id/action_logout"
+        android:title="@string/menu_logout"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_date"
-        android:orderInCategory="3"
         android:title="@string/action_date"
         android:icon="@drawable/ic_date_range_black_24dp"
         app:showAsAction="ifRoom"/>

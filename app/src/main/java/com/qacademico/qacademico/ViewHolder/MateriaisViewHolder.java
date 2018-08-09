@@ -12,22 +12,19 @@ import com.qacademico.qacademico.R;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MateriaisViewHolder extends RecyclerView.ViewHolder {
-    public final ImageView img;
-    public final ImageButton btn;
-    public final TextView title;
-    public final TextView date;
-    public final ExpandableLayout exp_info;
-    public final TextView info;
+    @BindView(R.id.materiais_tipo)                  public ImageView img;
+    @BindView(R.id.materiais_btn)                   public ImageButton btn;
+    @BindView(R.id.materiais_title)                 public TextView title;
+    @BindView(R.id.materiais_date)                  public TextView date;
+    @BindView(R.id.materiais_expand_description)    public ExpandableLayout exp_info;
+    @BindView(R.id.materiais_info)                  public TextView info;
 
     public MateriaisViewHolder(@NonNull View view) {
         super(view);
-
-        img = (ImageView) view.findViewById(R.id.materiais_tipo);
-        btn = (ImageButton) view.findViewById(R.id.materiais_btn);
-        exp_info = (ExpandableLayout) view.findViewById(R.id.materiais_expand_description);
-        title = (TextView) view.findViewById(R.id.materiais_title);
-        date = (TextView) view.findViewById(R.id.materiais_date);
-        info = (TextView) view.findViewById(R.id.materiais_info);
+        ButterKnife.bind(this, view);
     }
 }

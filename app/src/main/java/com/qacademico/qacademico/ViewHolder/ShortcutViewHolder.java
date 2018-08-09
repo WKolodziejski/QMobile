@@ -8,16 +8,16 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ShortcutViewHolder extends RecyclerView.ViewHolder {
-    public final TextView title;
-    public final ImageView icon;
-    public final LinearLayout layout;
+    @BindView(R.id.shortcut_title)  public TextView title;
+    @BindView(R.id.shortcut_img)    public ImageView icon;
+    @BindView(R.id.shortcut_layout) public LinearLayout layout;
 
     public ShortcutViewHolder(View view) {
         super(view);
-
-        title = (TextView) view.findViewById(R.id.shortcut_title);
-        icon = (ImageView) view.findViewById(R.id.shortcut_img);
-        layout = (LinearLayout) view.findViewById(R.id.shortcut_layout);
+        ButterKnife.bind(this, view);
     }
 }

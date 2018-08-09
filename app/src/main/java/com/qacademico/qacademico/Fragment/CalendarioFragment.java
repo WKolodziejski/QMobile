@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.R;
 
 import java.text.SimpleDateFormat;
@@ -39,14 +40,14 @@ public class CalendarioFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendario, container, false);
 
-        setCalendar(view);
+        //setCalendar(view);
 
         return view;
     }
 
     private void setCalendar(View view) {
 
-        compactCalendar = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
+        //compactCalendar = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
         addEvents(Calendar.DECEMBER, 2018);
         addEvents(Calendar.AUGUST, 2018);
 

@@ -10,12 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.ExpandableListAdapter;
 import com.qacademico.qacademico.Class.ExpandableList;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MateriaisFragment extends Fragment {
     public List<ExpandableList> expandableListList;
@@ -29,6 +31,12 @@ public class MateriaisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materiais, container, false);
+
+        ((MainActivity)getActivity()).calendar.setVisibility(View.GONE);
+        ((MainActivity)getActivity()).tabLayout.setVisibility(View.GONE);
+        ((MainActivity)getActivity()).invalidateOptionsMenu();
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
 
         return view;
     }

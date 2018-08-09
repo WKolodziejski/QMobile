@@ -7,14 +7,15 @@ import android.widget.TextView;
 
 import com.qacademico.qacademico.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class EtapaViewHolder extends RecyclerView.ViewHolder{
-    public final TextView aux;
-    public final RecyclerView recyclerView;
+    @BindView(R.id.aux)                     public TextView aux;
+    @BindView(R.id.recycler_diarios_item)   public RecyclerView recyclerView;
 
     public EtapaViewHolder(View view) {
         super(view);
-
-        aux = (TextView) view.findViewById(R.id.aux);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_diarios_item);
+        ButterKnife.bind(this, view);
     }
 }

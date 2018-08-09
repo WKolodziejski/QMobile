@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinator_layout"
+    android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
@@ -14,31 +14,21 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/action_bar" />
+        layout="@layout/action_bar_main" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/main_container"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
-
-        <ProgressBar
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:id="@+id/progressbar_horizontal"
-            android:theme="@style/LinearProgress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="-7dp"
-            android:indeterminate="true"
-            android:visibility="invisible"/>
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="55dp"
             android:id="@+id/main_fragment"
-            android:background="@color/colorPrimaryLight"/>
+            android:background="@color/colorPrimaryLight" />
 
     </LinearLayout>
 

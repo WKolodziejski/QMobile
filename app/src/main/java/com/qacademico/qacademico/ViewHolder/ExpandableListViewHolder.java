@@ -14,24 +14,20 @@ import com.qacademico.qacademico.R;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ExpandableListViewHolder extends RecyclerView.ViewHolder {
-    public final TextView text;
-    public final ExpandableLayout expand;
-    public final ImageView arrow;
-    public final LinearLayout expandAct;
-    public final ConstraintLayout nothing;
-    public final RecyclerView recyclerView;
-    public final LinearLayout table;
+    @BindView(R.id.list_text)               public TextView text;
+    @BindView(R.id.expandable_layout_list)  public ExpandableLayout expand;
+    @BindView(R.id.list_arrow)              public ImageView arrow;
+    @BindView(R.id.open_list)               public LinearLayout expandAct;
+    @BindView(R.id.list_nothing)            public ConstraintLayout nothing;
+    @BindView(R.id.recycler_list)           public RecyclerView recyclerView;
+    @BindView(R.id.table_list)              public LinearLayout table;
 
     public ExpandableListViewHolder(View view) {
         super(view);
-
-        text = (TextView) view.findViewById(R.id.list_text);
-        expand = (ExpandableLayout) view.findViewById(R.id.expandable_layout_list);
-        arrow = (ImageView) view.findViewById(R.id.list_arrow);
-        expandAct = (LinearLayout) view.findViewById(R.id.open_list);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_list);
-        table = (LinearLayout) view.findViewById(R.id.table_list);
-        nothing = (ConstraintLayout) view.findViewById(R.id.list_nothing);
+        ButterKnife.bind(this, view);
     }
 }
