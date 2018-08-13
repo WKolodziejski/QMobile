@@ -1,12 +1,13 @@
 package com.qacademico.qacademico.Class;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class ExpandableList implements Serializable {
     private final String title;
     private final List<?> list;
-    private boolean isExpanded;
-    private boolean anim;
+    transient private boolean isExpanded;
+    transient private boolean anim;
 
     public ExpandableList(String title, List<?> list) {
         this.title = title;

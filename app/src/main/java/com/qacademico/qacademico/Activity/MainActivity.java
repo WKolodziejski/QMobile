@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         SingletonWebView.getInstance().setOnErrorRecivedListener(this);
 
         if (getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getBoolean(Utils.LOGIN_VALID, false)) {
+            getSupportActionBar().setTitle(getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getString(Utils.LOGIN_NAME, ""));
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
             SingletonWebView.getInstance().loadUrl(URL + PG_LOGIN);
         } else {
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
             if (item.getItemId() != navigation.getSelectedItemId()) {
-                dismissLinearProgressbar();
+                dismissProgressbar();
 
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             Log.i("Singleton", "onFinish");
 
             showIsOffline();
-            dismissLinearProgressbar();
+            dismissProgressbar();
             invalidateOptionsMenu();
 
             if (url_p.equals(URL + PG_HOME)) {
@@ -214,9 +215,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     @Override
     public void onErrorRecived(String error) {
-        runOnUiThread(() -> {
-            dismissLinearProgressbar();
-        });
+        runOnUiThread(this::dismissProgressbar);
     }
 
     private void showIsOffline() {
@@ -281,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         progressBar.setVisibility(View.VISIBLE);
     }
 
-    public void dismissLinearProgressbar() { //Esconde a progressBar ao carregar a página
+    public void dismissProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar.setVisibility(View.GONE);
     }
 
@@ -311,19 +310,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     public void setupTabLayoutWithViewPager(ViewPager viewPager) {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setVisibility(View.VISIBLE);
-    }
-
-    protected void shareApp() {
-        try {
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("text/plain");
-            i.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
-            String sAux = getResources().getString(R.string.share_message);
-            sAux = sAux + " " + getResources().getString(R.string.share_download);
-            i.putExtra(Intent.EXTRA_TEXT, sAux);
-            startActivity(Intent.createChooser(i, getResources().getString(R.string.share_choose)));
-        } catch (Exception e) {
-        }
     }
 
     public void logOut() {

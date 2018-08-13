@@ -1,7 +1,6 @@
 package com.qacademico.qacademico.Fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,6 +55,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
                     makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
                             weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
             startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
+            ((MainActivity)getActivity()).dismissProgressbar();
         });
 
         return view;
