@@ -46,23 +46,6 @@
         android:backgroundTint="@color/colorAccent"
         android:tint="@color/colorPrimaryLight"/>
 
-    <include
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        layout="@layout/layout_error"/>
-
-    <include
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        layout="@layout/layout_empty"/>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/progressbar_main"
-        android:visibility="gone"/>
-
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"

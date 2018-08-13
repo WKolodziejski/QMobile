@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/AppTheme.AppBarOverlay"
-    tools:showIn="@layout/activity_main"
     >
 
     <android.support.v7.widget.Toolbar
@@ -14,7 +13,7 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_scrollFlags="scroll|enterAlways|snap"
         app:layout_collapseMode="pin"
-        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         android:id="@+id/compactcalendar_view"
@@ -37,6 +36,7 @@
         android:id="@+id/tabs"
         app:tabMode="fixed"
         app:tabGravity="fill"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <ProgressBar

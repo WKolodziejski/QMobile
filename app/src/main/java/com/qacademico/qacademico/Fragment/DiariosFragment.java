@@ -46,8 +46,6 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
         if(webView.infos.data_diarios != null && ((MainActivity) Objects.requireNonNull(getActivity())).diariosList == null) {
             ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<ExpandableList>) Data.loadList(getContext(), Utils.DIARIOS,
                     webView.infos.data_diarios[0], null);
-        } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_notas) {
-            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
         }
 
         setDiarios(view);
@@ -59,12 +57,6 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
         if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList != null) {
 
             if (((MainActivity)getActivity()).diariosList.size() != 0) {
-
-                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
-                ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
-                ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
-                ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();
 
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -98,13 +90,11 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
             } else {
                 Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                         .setTitle(getResources().getString(R.string.title_diarios));
-                ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
                 ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
             }
         } else {
             Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                     .setTitle(getResources().getString(R.string.title_diarios));
-            ((MainActivity) Objects.requireNonNull(getActivity())).showRoundProgressbar();
             ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
         }
     }

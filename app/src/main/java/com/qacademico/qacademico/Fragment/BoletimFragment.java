@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -48,8 +47,6 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         if (webView.infos.data_boletim != null && webView.infos.periodo_boletim != null) {
             boletimList = (List<Boletim>) Data.loadList(getContext(), Utils.BOLETIM,
                     webView.infos.data_boletim[0], webView.infos.periodo_boletim[0]);
-        } else if (((MainActivity) Objects.requireNonNull(getActivity())).navigation.getSelectedItemId() == R.id.navigation_notas) {
-            ((MainActivity) Objects.requireNonNull(getActivity())).showErrorConnection();
         }
 
         setBoletim(view, false);
@@ -62,15 +59,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
             if (boletimList.size() != 0) {
 
-                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(webView.infos.data_boletim[webView.data_position_boletim]
-                                + " / " + webView.infos.periodo_boletim[webView.periodo_position_boletim]);
-                //((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
-                ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
-                ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
-                ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();
-
-                LinearLayout table = (LinearLayout) view.findViewById(R.id.table_boletim);
+                LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
                 ArrayList<ArrayList<String>> mTableDatas = new ArrayList<>();
 
@@ -152,7 +141,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                     }
                 }
 
-                LockTableView mLockTableView = new LockTableView(getContext(), table, mTableDatas);
+                LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
 
                 mLockTableView
                         .setLockFristColumn(lock_header)
@@ -163,10 +152,12 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                         .setMaxRowHeight(64)
                         .setTextViewSize(15)
                         .setFristRowBackGroudColor(R.color.colorAccent)
-                        .setTableHeadTextColor(R.color.colorPrimaryLight)
+                        .setTableHeadTextColor(R.color.white)
                         .setTableContentTextColor(R.color.colorAccent)
                         .setNullableString("-")
-                        .setOnItemSeletor(R.color.colorPrimaryLight)
+                        .setOnItemClickListenter((item, position) -> Log.e("点击事件",position+""))
+                        .setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
+                        .setOnItemSeletor(R.color.white)
                         .show();
                 mLockTableView.getTableScrollView().setPullRefreshEnabled(false);
                 mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
@@ -185,12 +176,10 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
             } else {
                 Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                         .setTitle(getResources().getString(R.string.title_boletim));
-                ((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
         } else {
             Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                     .setTitle(getResources().getString(R.string.title_boletim));
-            ((MainActivity) Objects.requireNonNull(getActivity())).showRoundProgressbar();
         }
     }
 

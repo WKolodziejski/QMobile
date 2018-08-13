@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MateriaisFragment extends Fragment {
-    public List<ExpandableList> expandableListList;
+    public List<ExpandableList> materiaisList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +31,6 @@ public class MateriaisFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materiais, container, false);
-
 
         return view;
     }

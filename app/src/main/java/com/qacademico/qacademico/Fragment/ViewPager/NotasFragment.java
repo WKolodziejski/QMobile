@@ -41,11 +41,7 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
         viewPager.addOnPageChangeListener(this);
 
-        ((MainActivity)getActivity()).tabLayout.setupWithViewPager(viewPager);
-        ((MainActivity)getActivity()).tabLayout.setVisibility(View.VISIBLE);
-        ((MainActivity)getActivity()).hideCalendar();
-
-        ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
+        ((MainActivity)getActivity()).setupTabLayoutWithViewPager(viewPager);
 
         return view;
     }

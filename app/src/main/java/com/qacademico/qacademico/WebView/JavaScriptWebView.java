@@ -37,12 +37,10 @@ import static com.qacademico.qacademico.Utilities.Utils.URL;
 public class JavaScriptWebView {
     private Context context;
     private SingletonWebView webView = SingletonWebView.getInstance();
-    private SharedPreferences login_info;
     private OnPageFinished onPageFinish;
 
     public JavaScriptWebView(Context context) {
         this.context = context;
-        this.login_info = context.getSharedPreferences(Utils.LOGIN_INFO, 0);
     }
 
     @JavascriptInterface
@@ -61,7 +59,7 @@ public class JavaScriptWebView {
                         int currentDay = rightNow.get(Calendar.DAY_OF_YEAR);
                         int currentMinute = rightNow.get(Calendar.MINUTE);
 
-                        SharedPreferences.Editor editor = login_info.edit();
+                        SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE).edit();
                         editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
 
                         editor.putInt(Utils.LOGIN_DAY, currentDay);

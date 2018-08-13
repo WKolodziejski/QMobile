@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,31 +41,6 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        ((MainActivity)getActivity()).tabLayout.setVisibility(View.GONE);
-
-        SharedPreferences login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(Utils.LOGIN_INFO, 0);
-
-        Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                .setTitle(login_info.getString(Utils.LOGIN_NAME, ""));
-
-        ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
-        ((MainActivity) Objects.requireNonNull(getActivity())).hideEmptyLayout();
-        ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
-        ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();
-        ((MainActivity)getActivity()).hideCalendar();
-
-        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
-        horario.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), HorarioActivity.class));
-        });
-
-        displayHorario(view);
-
-        return view;
-    }
-
-    public void displayHorario(View view) {
-
         if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
             horarioList = (List<Horario>) Data.loadList(getContext(), Utils.HORARIO,
                     webView.infos.data_horario[0], webView.infos.periodo_horario[0]);
@@ -72,6 +49,16 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
         CustomWeekView.congifWeekView(weekView, horarioList);
+
+        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
+        horario.setOnClickListener(v -> {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
+                            weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
+            startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
+        });
+
+        return view;
     }
 
     @Override

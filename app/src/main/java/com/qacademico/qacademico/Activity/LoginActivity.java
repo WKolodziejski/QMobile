@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         }
     }
 
-    private boolean firstLogin() {
+    private void firstLogin() {
         Log.i("LoginActivity", "FirstLogin()");
 
         loginFragment.textView_loading.setVisibility(View.VISIBLE);
@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         if (!webView.pg_boletim_loaded[0]) {
             webView.loadUrl(URL + PG_BOLETIM);
             Log.i("LoginActivity", "BOLETIM[0]");
-            return true;
+            return;
         } else {
             for (int i = 1; i < webView.infos.data_boletim.length; i++) {
                 if (!webView.pg_boletim_loaded[i]) {
@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                             getResources().getString(R.string.text_loading_first_login),
                             Integer.toString(i + 1), Integer.toString(webView.infos.data_boletim.length)));
 
-                    return true;
+                    return;
                 }
             }
         }
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         if (!webView.pg_horario_loaded[0]) {
             webView.loadUrl(URL + PG_HORARIO);
             Log.i("LoginActivity", "HORARIO[0]");
-            return true;
+            return;
         } else {
             for (int i = 1; i < webView.infos.data_horario.length; i++) {
                 if (!webView.pg_horario_loaded[i]) {
@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                             getResources().getString(R.string.text_loading_first_login),
                             Integer.toString(i + 1), Integer.toString(webView.infos.data_horario.length)));
 
-                    return true;
+                    return;
                 }
             }
         }
@@ -140,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         if (!webView.pg_diarios_loaded[0]) {
             webView.loadUrl(URL + PG_DIARIOS);
             Log.i("LoginActivity", "DIARIOS[0]");
-            return true;
+            return;
         } else {
             for (int i = 1; i < webView.infos.data_diarios.length; i++) {
                 if (!webView.pg_diarios_loaded[i]) {
@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                             getResources().getString(R.string.text_loading_first_login),
                             Integer.toString(i + 1), Integer.toString(webView.infos.data_diarios.length)));
 
-                    return true;
+                    return;
                 }
             }
         }
@@ -168,7 +168,6 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         editor.putBoolean(Utils.FIRST_LOGIN, false);
         editor.apply();
         finish();
-        return false;
     }
 
     @Override

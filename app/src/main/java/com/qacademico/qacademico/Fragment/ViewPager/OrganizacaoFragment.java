@@ -43,11 +43,8 @@ public class OrganizacaoFragment extends Fragment implements ViewPager.OnPageCha
 
         viewPager.addOnPageChangeListener(this);
 
-        ((MainActivity)getActivity()).tabLayout.setupWithViewPager(viewPager);
-        ((MainActivity)getActivity()).tabLayout.setVisibility(View.VISIBLE);
+        ((MainActivity)getActivity()).setupTabLayoutWithViewPager(viewPager);
 
-        ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
-        ((MainActivity)getActivity()).showCalendar();
         return view;
     }
 

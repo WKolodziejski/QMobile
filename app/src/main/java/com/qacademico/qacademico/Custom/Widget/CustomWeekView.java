@@ -1,5 +1,6 @@
 package com.qacademico.qacademico.Custom.Widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -62,6 +63,7 @@ public class CustomWeekView extends WeekView {
         });
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return false;

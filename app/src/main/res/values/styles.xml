@@ -12,7 +12,8 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowLightStatusBar">true</item>
-
+        <item name="android:windowContentTransitions">true</item>
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <!-- New MaterialComponents attributes. -->
         <item name="colorSecondary">?attr/colorPrimary</item>
         <item name="scrimBackground">@color/green_A400</item>
@@ -20,6 +21,7 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
+        <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
