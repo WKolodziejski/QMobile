@@ -83,18 +83,18 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="10dp"
                     app:eventCornerRadius="2dp"
-                    app:eventTextColor="@color/white"
                     app:textSize="12sp"
                     app:hourHeight="60dp"
                     app:headerColumnPadding="8dp"
-                    app:headerColumnTextColor="@color/colorAccent"
                     app:headerRowPadding="12dp"
                     app:xScrollingSpeed="0"
                     app:columnGap="8dp"
                     app:noOfVisibleDays="5"
+                    app:eventTextColor="@color/colorPrimaryLight"
+                    app:headerColumnTextColor="@color/colorAccent"
                     app:headerRowBackgroundColor="@color/white_dividers"
-                    app:dayBackgroundColor="@color/white_dividers"
-                    app:todayBackgroundColor="@color/colorAccent"
+                    app:dayBackgroundColor="@color/colorPrimaryLight"
+                    app:todayBackgroundColor="@color/blue_50"
                     app:headerColumnBackground="@color/white_dividers"/>
 
             </LinearLayout>

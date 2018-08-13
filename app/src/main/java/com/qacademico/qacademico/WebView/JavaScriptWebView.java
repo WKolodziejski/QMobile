@@ -402,7 +402,7 @@ public class JavaScriptWebView {
                         }
                     }
 
-                    horario = setColors(horario, context);
+                    horario = setColors(horario);
 
                     Document ano = Jsoup.parse(homeHorario.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
@@ -641,7 +641,7 @@ public class JavaScriptWebView {
         return string;
     }
 
-    private List<Horario> setColors(List<Horario> horario, Context context) {
+    private List<Horario> setColors(List<Horario> horario) {
         for (int i = 0; i < horario.size(); i++) {
             if (horario.get(i).getColor() == 0) {
                 for (int j = 0; j < horario.size(); j++) {

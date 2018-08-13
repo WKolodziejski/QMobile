@@ -33,7 +33,7 @@ public class CustomWeekView extends WeekView {
 
         weekView.setMonthChangeListener((newYear, newMonth) -> {
 
-            int firstHour = 0;
+            int firstHour = 24;
 
             List<WeekViewEvent> week = new ArrayList<>();
 
@@ -51,12 +51,12 @@ public class CustomWeekView extends WeekView {
 
                 week.add(event);
 
-                if (startTime.get(Calendar.HOUR_OF_DAY) > firstHour) {
+                if (startTime.get(Calendar.HOUR_OF_DAY) < firstHour) {
                     firstHour = startTime.get(Calendar.HOUR_OF_DAY);
                 }
             }
 
-            weekView.goToHour(firstHour - 4);
+            weekView.goToHour(firstHour + 0.5);
 
             return week;
         });

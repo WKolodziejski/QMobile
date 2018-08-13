@@ -13,7 +13,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
         app:eventCornerRadius="2dp"
-        app:eventTextColor="@color/white"
+        app:eventTextColor="@color/colorPrimaryLight"
         app:textSize="12sp"
         app:hourHeight="60dp"
         app:headerColumnPadding="8dp"
@@ -23,8 +23,8 @@
         app:columnGap="8dp"
         app:noOfVisibleDays="5"
         app:headerRowBackgroundColor="@color/white_dividers"
-        app:dayBackgroundColor="@color/white"
-        app:todayBackgroundColor="@color/colorAccent"
+        app:dayBackgroundColor="@color/colorPrimaryLight"
+        app:todayBackgroundColor="@color/blue_50"
         app:headerColumnBackground="@color/white_dividers"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -68,7 +70,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissErrorConnection();
                 ((MainActivity) Objects.requireNonNull(getActivity())).dismissLinearProgressbar();
 
-                LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
+                LinearLayout table = (LinearLayout) view.findViewById(R.id.table_boletim);
 
                 ArrayList<ArrayList<String>> mTableDatas = new ArrayList<>();
 
@@ -150,7 +152,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                     }
                 }
 
-                LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
+                LockTableView mLockTableView = new LockTableView(getContext(), table, mTableDatas);
 
                 mLockTableView
                         .setLockFristColumn(lock_header)
@@ -161,15 +163,24 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                         .setMaxRowHeight(64)
                         .setTextViewSize(15)
                         .setFristRowBackGroudColor(R.color.colorAccent)
-                        .setTableHeadTextColor(R.color.white)
+                        .setTableHeadTextColor(R.color.colorPrimaryLight)
                         .setTableContentTextColor(R.color.colorAccent)
                         .setNullableString("-")
-                        .setOnItemClickListenter((item, position) -> Log.e("点击事件",position+""))
-                        .setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
-                        .setOnItemSeletor(R.color.white)
+                        .setOnItemSeletor(R.color.colorPrimaryLight)
                         .show();
                 mLockTableView.getTableScrollView().setPullRefreshEnabled(false);
                 mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
+
+                Button lock_header_btn = (Button) view.findViewById(R.id.lock_header);
+                lock_header_btn.setOnClickListener(v -> {
+                    lockHeader();
+                });
+
+                mLockTableView.setTableViewListener((x, y) -> {
+                    if (!lock_header) {
+                        lock_header_btn.setVisibility(x == 0 ? View.VISIBLE : View.GONE);
+                    }
+                });
 
             } else {
                 Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
