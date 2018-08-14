@@ -59,7 +59,7 @@ public class CalendarioFragment extends Fragment {
         addEvents(compactCalendar, Calendar.DECEMBER, 2018);
         addEvents(compactCalendar, Calendar.AUGUST, 2018);
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
+        ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
@@ -79,7 +79,7 @@ public class CalendarioFragment extends Fragment {
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(dateFormatForMonth.format(firstDayOfNewMonth));
+                ((MainActivity) getActivity()).setTitle(dateFormatForMonth.format(firstDayOfNewMonth));
             }
         });
 

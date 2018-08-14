@@ -61,11 +61,6 @@ public class OrganizacaoFragment extends Fragment implements ViewPager.OnPageCha
 
     @Override
     public void onPageSelected(int i) {
-        if (i == 0) {
-            ((MainActivity)getActivity()).showCalendar();
-        } else {
-            ((MainActivity)getActivity()).hideCalendar();
-        }
     }
 
     @Override
