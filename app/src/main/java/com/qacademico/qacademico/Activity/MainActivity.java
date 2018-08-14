@@ -47,11 +47,11 @@ import static com.qacademico.qacademico.Utilities.Utils.URL;
 import static com.qacademico.qacademico.Utilities.Utils.isConnected;
 
 public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
-    @BindView(R.id.progressbar_horizontal) ProgressBar progressBar;
-    @BindView(R.id.fab_expand)      public FloatingActionButton fab_expand;
-    @BindView(R.id.navigation)      public BottomNavigationView navigation;
-    @BindView(R.id.compactcalendar_view)   CompactCalendarView calendar;
-    @BindView(R.id.tabs)                   TabLayout tabLayout;
+    @BindView(R.id.progressbar_horizontal)      ProgressBar progressBar;
+    @BindView(R.id.fab_expand)           public FloatingActionButton fab_expand;
+    @BindView(R.id.navigation)           public BottomNavigationView navigation;
+    @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
+    @BindView(R.id.tabs)                        TabLayout tabLayout;
     private OnPageUpdated onPageUpdated;
     public List<ExpandableList> diariosList;
 

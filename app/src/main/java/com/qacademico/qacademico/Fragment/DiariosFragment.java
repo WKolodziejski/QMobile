@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -65,11 +66,11 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
-                recyclerViewDiarios.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                //recyclerViewDiarios.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
 
-                /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
+                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
                         LinearLayoutManager.VERTICAL);
-                recyclerViewDiarios.addItemDecoration(dividerItemDecoration);*/
+                recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
 
                 adapter.setOnExpandListener(position -> {
                     RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {

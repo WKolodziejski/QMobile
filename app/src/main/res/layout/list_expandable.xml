@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/table_list"
     android:orientation="vertical"
-    android:elevation="5dp"
+    android:elevation="4dp"
     android:background="@color/white"
     >
 

@@ -26,7 +26,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="56dp"
             android:id="@+id/main_fragment"
             android:background="@color/colorPrimaryLight" />
 
@@ -51,8 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
-        app:itemIconTint="@color/colorPrimaryLight"
-        app:itemTextColor="@color/colorPrimaryLight"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/colorAccent"
         android:layout_gravity="bottom"
         app:menu="@menu/navigation"/>
 

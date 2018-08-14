@@ -2,11 +2,8 @@ package com.qacademico.qacademico.Adapter;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.ColorSpace;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -54,7 +51,7 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.table_expandable_list, parent, false);
+                .inflate(R.layout.list_expandable, parent, false);
         return new ExpandableListViewHolder(view);
     }
 
@@ -97,9 +94,6 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
 
         holder.table.setTag(position);
 
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
-                LinearLayoutManager.VERTICAL, false);
-
         if (TAG.equals(Utils.DIARIOS)) {
             holder.recyclerView.setAdapter(new EtapaAdapter((List<Etapa>) list.get(position).getList(), context));
             holder.nothing.setVisibility(list.get(position).getList().isEmpty() ? View.VISIBLE : View.GONE);
@@ -108,7 +102,8 @@ public class ExpandableListAdapter extends RecyclerView.Adapter {
             holder.nothing.setVisibility(list.get(position).getList().isEmpty() ? View.VISIBLE : View.GONE);
         }
 
-        holder.recyclerView.setLayoutManager(layout);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
+                LinearLayoutManager.VERTICAL, false));
 
         holder.expandAct.setOnClickListener(v -> {
             holder.expand.toggle();

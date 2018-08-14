@@ -5,32 +5,19 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Dia implements Serializable {
-    private String dia;
-    private String cor;
-    private List<String> eventos;
+    private List<Evento> eventos;
+    private int dia;
 
-    private boolean isExpanded;
-    private boolean anim;
-
-    public Dia(String dia, String cor, List<String> eventos) {
+    public Dia(int dia, List<Evento> eventos) {
         this.dia = dia;
-        this.cor = cor;
         this.eventos = eventos;
     }
 
-    public boolean getExpanded(){
-        return isExpanded;
+    public List<Evento> getEventos() {
+        return eventos;
     }
 
-    public void setExpanded(boolean expanded){
-        isExpanded = expanded;
-    }
-
-    public boolean getAnim(){
-        return anim;
-    }
-
-    public void setAnim(boolean anim){
-        this.anim = anim;
+    public int getDia() {
+        return dia;
     }
 }

@@ -14,7 +14,7 @@ import com.qacademico.qacademico.ViewHolder.DiariosViewHolder;
 
 import java.util.List;
 
-public class DiariosAdapter extends RecyclerView.Adapter{
+public class DiariosAdapter extends RecyclerView.Adapter {
     private List<Diarios> diarios;
     private Context context;
 
@@ -26,9 +26,8 @@ public class DiariosAdapter extends RecyclerView.Adapter{
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context)
-                .inflate(R.layout.list_diarios, parent, false);
-        return new DiariosViewHolder(view);
+        return new DiariosViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.list_diarios, parent, false));
     }
 
     @Override

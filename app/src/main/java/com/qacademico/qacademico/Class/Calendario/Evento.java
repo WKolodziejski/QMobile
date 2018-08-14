@@ -5,39 +5,25 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Evento implements Serializable {
-    private String dia;
-    private String cor;
-    private List<String> eventos;
+    private String nome;
+    private String horario;
+    private int color;
 
-
-    /**
-     *
-     *      FALTA IMPLEMENTAR
-     *      
-     *
-     */
-    private boolean isExpanded;
-    private boolean anim;
-
-    public Evento(String dia, String cor, List<String> eventos) {
-        this.dia = dia;
-        this.cor = cor;
-        this.eventos = eventos;
+    public Evento(String nome, String horario, int color) {
+        this.nome = nome;
+        this.horario = horario;
+        this.color = color;
     }
 
-    public boolean getExpanded(){
-        return isExpanded;
+    public String getNome() {
+        return nome;
     }
 
-    public void setExpanded(boolean expanded){
-        isExpanded = expanded;
+    public String getHorario() {
+        return horario;
     }
 
-    public boolean getAnim(){
-        return anim;
-    }
-
-    public void setAnim(boolean anim){
-        this.anim = anim;
+    public int getColor() {
+        return color;
     }
 }

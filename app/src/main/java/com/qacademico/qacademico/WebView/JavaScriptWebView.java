@@ -7,7 +7,6 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.qacademico.qacademico.Class.Boletim;
-import com.qacademico.qacademico.Class.Calendario.Calendario;
 import com.qacademico.qacademico.Class.Calendario.Dia;
 import com.qacademico.qacademico.Class.Diarios.Diarios;
 import com.qacademico.qacademico.Class.Horario;
@@ -557,7 +556,7 @@ public class JavaScriptWebView {
                     Elements meses = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
-                    List<Calendario> calendario = new ArrayList<>();
+                    List<Dia> calendario = new ArrayList<>();
                     for (int x = 0; x < 12; x++) {
                         String nomeMes = meses.get(x).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
                         Elements arrayEventos = meses.get(x).nextElementSibling().child(0).getElementsByTag("tr");
@@ -587,12 +586,12 @@ public class JavaScriptWebView {
                                         }
                                     }
                                 }
-                                Dia diaFinal = new Dia(dia, cor, eventos);
-                                diaList.add(diaFinal);
+                                //Dia diaFinal = new Dia(dia, cor, eventos);
+                                //diaList.add(diaFinal);
                             }
                         }
-                        Calendario mes = new Calendario(nomeMes, diaList);
-                        calendario.add(mes);
+                        //Calendario mes = new Calendario(nomeMes, diaList);
+                        //calendario.add(mes);
                     }
 
                     webView.pg_calendario_loaded = true;
