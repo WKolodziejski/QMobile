@@ -173,6 +173,9 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     case R.id.navigation_materiais:
                         //getSupportActionBar().setTitle(SingletonWebView.getInstance().infos.data_boletim[SingletonWebView.getInstance().data_position_boletim]
                         //                     + " / " + SingletonWebView.getInstance().infos.periodo_boletim[SingletonWebView.getInstance().periodo_position_boletim]);
+                        if (!SingletonWebView.getInstance().pg_materiais_loaded[0]) {
+                            SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
+                        }
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new MateriaisFragment(), Utils.MATERIAIS).commit();
                         hideExpandBtn();
                         hideTabLayout();

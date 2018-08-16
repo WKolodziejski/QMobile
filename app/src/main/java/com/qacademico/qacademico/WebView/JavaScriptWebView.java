@@ -90,7 +90,7 @@ public class JavaScriptWebView {
                 try {
                     String[][] trtd_boletim;
                     Document homeBoletim = Jsoup.parse(html_p);
-                    webView.bugBoletim = homeBoletim.outerHtml();
+                    //webView.bugBoletim = homeBoletim.outerHtml();
 
                     final Element table_boletim = homeBoletim.select("table").get(6);
                     Element table_notas = table_boletim.select("table").get(7);
@@ -168,7 +168,7 @@ public class JavaScriptWebView {
             public void run() {
                 try {
                     Document homeDiarios = Jsoup.parse(html_p);
-                    webView.bugDiarios = homeDiarios.outerHtml();
+                    //webView.bugDiarios = homeDiarios.outerHtml();
 
                     Elements table_diarios = homeDiarios.getElementsByTag("tbody").eq(12);
                     int numMaterias = table_diarios.select("table.conteudoTexto").size();
@@ -296,7 +296,7 @@ public class JavaScriptWebView {
                     String[][] trtd_horario = null;
                     String[] code = null;
                     Document homeHorario = Jsoup.parse(html_p);
-                    webView.bugHorario = homeHorario.outerHtml();
+                    //webView.bugHorario = homeHorario.outerHtml();
 
                     Element table_horario = homeHorario.select("table").eq(11).first();
                     Element table_codes = homeHorario.select("table").eq(12).first();
@@ -553,7 +553,7 @@ public class JavaScriptWebView {
             public void run() {
                try {
                     Document homeCalendario = Jsoup.parse(html_p);
-                    webView.bugCalendario = homeCalendario.outerHtml();
+                    //webView.bugCalendario = homeCalendario.outerHtml();
 
                     Elements meses = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
