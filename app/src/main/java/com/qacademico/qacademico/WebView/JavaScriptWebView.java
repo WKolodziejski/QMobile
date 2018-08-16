@@ -8,6 +8,8 @@ import android.webkit.JavascriptInterface;
 
 import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Calendario.Dia;
+import com.qacademico.qacademico.Class.Calendario.Evento;
+import com.qacademico.qacademico.Class.Calendario.Meses;
 import com.qacademico.qacademico.Class.Diarios.Diarios;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Class.ExpandableList;
@@ -556,7 +558,8 @@ public class JavaScriptWebView {
                     Elements meses = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
-                    List<Dia> calendario = new ArrayList<>();
+                    List<Meses> listMeses = new ArrayList<>();
+
                     for (int x = 0; x < 12; x++) {
                         String nomeMes = meses.get(x).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
                         Elements arrayEventos = meses.get(x).nextElementSibling().child(0).getElementsByTag("tr");
@@ -564,40 +567,38 @@ public class JavaScriptWebView {
 
                         List<Dia> diaList = new ArrayList<>();
 
-                        Elements tableLegenda = homeCalendario.getElementsByTag("td").parents().get(0).children();
+                        Elements tableLegenda = homeCalendario.getElementsByTag("td").parents()
+                                .get(0).children();
 
-                        for (int i = 1; i < tableLegenda.size(); i++) {
-//*******************************************************PAREI***AQUI*********************************************
-//*******************************************************PAREI***AQUI*********************************************
-//*******************************************************PAREI***AQUI*********************************************
-//*******************************************************PAREI***AQUI*********************************************
-                        }
+
+                        //no mes (cores)
                         for (int i = 0; i < dias.size(); i++) {
-                            String dia = dias.get(i).text();
-                            if (!dia.equals("")) {
-                                String cor = dias.get(i).attr("bgcolor");
-                                List<String> eventos = new ArrayList<>();   //mudar ao usar classe evento
-                                if (!cor.equals("")) {
+                            List<Evento> listEventos = new ArrayList<>();
+                            String numeroDia = dias.get(i).text();
+                            if (!numeroDia.equals("")) {
+                                String corQA = dias.get(i).attr("bgcolor"); // cor original
+                                if (!corQA.equals("")) {
                                     for (int j = 0; j < arrayEventos.size(); j++) {
                                         String diaEvento = arrayEventos.get(j).child(0).text();
-                                        if (diaEvento.equals(dia)) {        //mudar ao usar classe evento
+                                        if (diaEvento.equals(numeroDia)) {
                                             String nomeEvento = arrayEventos.get(j).child(1).text();
-                                            eventos.add(nomeEvento);
+                                            Evento evento = new Evento(nomeEvento, 0);
+                                            listEventos.add(evento);
                                         }
                                     }
                                 }
-                                //Dia diaFinal = new Dia(dia, cor, eventos);
-                                //diaList.add(diaFinal);
                             }
+                            Dia dia = new Dia(Integer.parseInt(numeroDia),listEventos);
+                            diaList.add(dia);
                         }
-                        //Calendario mes = new Calendario(nomeMes, diaList);
-                        //calendario.add(mes);
+                        Meses mes = new Meses(diaList, nomeMes);
+                        listMeses.add(mes);
                     }
 
                     webView.pg_calendario_loaded = true;
                     Log.i("JavaScriptWebView", "Calendario handled!");
 
-                    onPageFinish.onPageFinish(URL + PG_CALENDARIO, calendario);
+                    onPageFinish.onPageFinish(URL + PG_CALENDARIO, listMeses);
 
                 } catch (Exception ignored) {
                     Log.i("JavaScriptWebView", "Calendario error");

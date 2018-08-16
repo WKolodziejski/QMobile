@@ -15,6 +15,11 @@ public class Evento implements Serializable {
         this.color = color;
     }
 
+    public Evento(String nome, int color) {
+        this.nome = nome;
+        this.color = color;
+    }
+
     public String getNome() {
         return nome;
     }
