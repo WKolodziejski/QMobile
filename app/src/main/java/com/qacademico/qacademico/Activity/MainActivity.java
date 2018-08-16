@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
 import com.qacademico.qacademico.Class.ExpandableList;
+import com.qacademico.qacademico.Fragment.CalendarioFragment;
 import com.qacademico.qacademico.Fragment.HomeFragment;
 import com.qacademico.qacademico.Fragment.MateriaisFragment;
 import com.qacademico.qacademico.Fragment.ViewPager.NotasFragment;
@@ -44,6 +45,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
 import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         //CheckUpdate.checkUpdate(this);
 
-        SingletonWebView.getInstance().configWebView(this);
+        SingletonWebView.getInstance().configWebView(getApplicationContext());
         SingletonWebView.getInstance().setOnPageFinishedListener(this);
         SingletonWebView.getInstance().setOnPageStartedListener(this);
         SingletonWebView.getInstance().setOnErrorRecivedListener(this);
@@ -106,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
+
         return true;
     }
 
@@ -157,9 +160,13 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                         hideDatePicker();
                         return true;
 
-                    case R.id.navigation_organizacao:
+                    case R.id.navigation_calendario:
+                        if (!SingletonWebView.getInstance().pg_calendario_loaded) {
+                            SingletonWebView.getInstance().loadUrl(URL + PG_CALENDARIO);
+                        }
                         showDatePicker();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new OrganizacaoFragment(), Utils.ORGANIZACAO).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new CalendarioFragment(), Utils.CALENDARIO).commit();
+                        hideTabLayout();
                         hideExpandBtn();
                         return true;
 
@@ -343,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         tabLayout.setVisibility(View.VISIBLE);
     }
 
-    public void logOut() {
+    private void logOut() {
         SharedPreferences.Editor editor = getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
         editor.putString(Utils.LOGIN_REGISTRATION, "");
         editor.putString(Utils.LOGIN_PASSWORD, "");

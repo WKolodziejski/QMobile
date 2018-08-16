@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class CalendarioFragment extends Fragment {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
@@ -61,10 +63,25 @@ public class CalendarioFragment extends Fragment {
 
         ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                List<Event> bookingsFromMap = compactCalendar.getEvents(dateClicked);
+
+                for (int i = 0; i < calendario.get(0).getEventos().size(); i++) {
+                   if (dateFormatForDisplaying.format(dateClicked).contains(calendario.get(0).getEventos().get(i).getHorario())) {
+                       RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
+                           @Override
+                           protected int getVerticalSnapPreference() {
+                               return LinearSmoothScroller.SNAP_TO_ANY;
+                           }
+                       };
+                       smoothScroller.setTargetPosition(i);
+                       layout.startSmoothScroll(smoothScroller);
+                   }
+                }
+
                 Log.d("CALENDAR", "inside onclick " + dateFormatForDisplaying.format(dateClicked));
                 /*if (bookingsFromMap != null) {
                     Log.d("CALENDAR", bookingsFromMap.toString());
@@ -84,7 +101,6 @@ public class CalendarioFragment extends Fragment {
         });
 
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_calendario);
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
         adapter = new CalendarioAdapter(calendario, getActivity());
 
@@ -116,7 +132,7 @@ public class CalendarioFragment extends Fragment {
             List<Evento> eventos = new ArrayList<>();
 
             for (int j = 0; j < events.size(); j++) {
-                eventos.add(new Evento(events.get(j).getData().toString().substring(0, 18), events.get(j).getData().toString().substring(20), events.get(j).getColor()));
+                eventos.add(new Evento(events.get(j).getData().toString().substring(0, 18), "03-8-2018", events.get(j).getColor()));
             }
 
             calendario.add(new Dia(i + 1, eventos));

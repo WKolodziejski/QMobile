@@ -8,13 +8,13 @@
 
     <item
         android:id="@+id/navigation_notas"
-        android:icon="@drawable/ic_multiline_chart_black_24dp"
+        android:icon="@drawable/ic_school_black_24dp"
         android:title="Notas" />
 
     <item
-        android:id="@+id/navigation_organizacao"
-        android:icon="@drawable/ic_school_black_24dp"
-        android:title="Organização" />
+        android:id="@+id/navigation_calendario"
+        android:icon="@drawable/ic_event_note_black_24dp"
+        android:title="@string/title_calendario" />
 
     <!--<item
         android:id="@+id/navigation_diarios"
