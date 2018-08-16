@@ -59,7 +59,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
                 LinearLayoutManager.VERTICAL);
         recyclerViewMateriais.addItemDecoration(dividerItemDecoration);
 
-        adapter.setOnDowloadListener(position -> {
+        adapter.setOnDowloadListener(link -> {
 
         });
     }

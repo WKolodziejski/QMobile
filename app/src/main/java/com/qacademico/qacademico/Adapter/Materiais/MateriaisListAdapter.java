@@ -38,9 +38,16 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
 
         holder.header.setBackgroundColor(materiaisList.get(i).getColor());
         holder.materia.setText(materiaisList.get(i).getTitle());
-        holder.recyclerView.setAdapter(new MateriaisAdapter(materiaisList.get(i).getMateriais(), context));
+
+        MateriaisAdapter adapter = new MateriaisAdapter(materiaisList.get(i).getMateriais(), context);
+
+        holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false));
+
+        adapter.setOnDownloadListener(link -> {
+            onDownloadRepassListener.onDownload(link);
+        });
     }
 
     @Override
@@ -53,7 +60,7 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     }
 
     public interface OnDownloadRepassListener {
-        void onDownload(int position);
+        void onDownload(String link);
     }
 
 }
