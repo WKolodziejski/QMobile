@@ -33,7 +33,7 @@ public class Utils {
     public static final String LOGIN_HOUR = ".Hora";
     public static final String LOGIN_MINUTE = ".Minuto";
     public static final String FIRST_LOGIN = ".FirstLogin";
-    public static final String EXPANDABLE_LIST = ".ExpandableList";
+    public static final String EXPANDABLE_LIST = ".DiariosList";
     public static final String URL = "http://qacademico.ifsul.edu.br/qacademico/index.asp?t=";
     public static final String PG_LOGIN = "1001";
     public static final String PG_HOME = "2000";

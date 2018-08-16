@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.qacademico.qacademico.Class.Materiais;
+import com.qacademico.qacademico.Class.Materiais.Materiais;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.ViewHolder.MateriaisViewHolder;
 import java.util.List;

@@ -18,11 +18,9 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.qacademico.qacademico.Activity.MainActivity;
 import com.qacademico.qacademico.Adapter.Calendario.CalendarioAdapter;
-import com.qacademico.qacademico.Adapter.ExpandableListAdapter;
 import com.qacademico.qacademico.Class.Calendario.Dia;
 import com.qacademico.qacademico.Class.Calendario.Evento;
 import com.qacademico.qacademico.R;
-import com.qacademico.qacademico.Utilities.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -29,19 +28,20 @@ import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.qacademico.qacademico.Activity.Settings.SettingsActivity;
-import com.qacademico.qacademico.Class.ExpandableList;
+import com.qacademico.qacademico.Class.Diarios.DiariosList;
+import com.qacademico.qacademico.Class.Materiais.Materiais;
+import com.qacademico.qacademico.Class.Materiais.MateriaisList;
 import com.qacademico.qacademico.Fragment.CalendarioFragment;
 import com.qacademico.qacademico.Fragment.HomeFragment;
 import com.qacademico.qacademico.Fragment.MateriaisFragment;
 import com.qacademico.qacademico.Fragment.ViewPager.NotasFragment;
-import com.qacademico.qacademico.Fragment.ViewPager.OrganizacaoFragment;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.CheckUpdate;
 import com.qacademico.qacademico.Utilities.Design;
 import com.qacademico.qacademico.Utilities.Utils;
 import com.qacademico.qacademico.WebView.SingletonWebView;
 import java.util.List;
-import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
@@ -51,7 +51,6 @@ import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
 import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.qacademico.qacademico.Utilities.Utils.URL;
-import static com.qacademico.qacademico.Utilities.Utils.isConnected;
 
 public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
     @BindView(R.id.progressbar_horizontal)      ProgressBar progressBar;
@@ -60,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
     private OnPageUpdated onPageUpdated;
-    public List<ExpandableList> diariosList, materiaisList;
+    public List<DiariosList> diariosList;
+    public List<MateriaisList> materiaisList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

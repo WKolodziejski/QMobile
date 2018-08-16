@@ -6,7 +6,7 @@
     android:id="@+id/table_list"
     android:orientation="vertical"
     android:elevation="4dp"
-    android:background="@color/white"
+    android:background="@color/colorPrimaryLight"
     >
 
     <LinearLayout
@@ -15,13 +15,13 @@
         android:orientation="horizontal"
         android:foreground="?android:attr/selectableItemBackground"
         android:id="@+id/open_list"
-        android:background="@color/white"
+        android:background="@color/colorPrimaryLight"
         >
 
         <ImageView
             android:layout_margin="16dp"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:id="@+id/list_arrow"
             android:tint="@color/colorAccent"
             app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
@@ -30,11 +30,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="16dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="8dp"
             android:id="@+id/list_text"
             android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="8dp" />
 
     </LinearLayout>
 
@@ -49,11 +49,9 @@
         >
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_list"
+            android:id="@+id/recycler_list_diarios"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:fitsSystemWindows="true"/>
+            android:layout_height="wrap_content" />
 
         <include layout="@layout/layout_nothing"
             android:id="@+id/list_nothing"

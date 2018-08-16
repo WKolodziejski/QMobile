@@ -17,8 +17,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.ExpandableListAdapter;
-import com.qacademico.qacademico.Class.ExpandableList;
+import com.qacademico.qacademico.Adapter.Diarios.DiariosListAdapter;
+import com.qacademico.qacademico.Class.Diarios.DiariosList;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -31,7 +31,7 @@ import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    ExpandableListAdapter adapter;
+    DiariosListAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
         if(webView.infos.data_diarios != null && ((MainActivity) Objects.requireNonNull(getActivity())).diariosList == null) {
-            ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<ExpandableList>) Data.loadList(getContext(), Utils.DIARIOS,
+            ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<DiariosList>) Data.loadList(getContext(), Utils.DIARIOS,
                     webView.infos.data_diarios[0], null);
         }
 
@@ -62,7 +62,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                adapter = new ExpandableListAdapter(((MainActivity)getActivity()).diariosList, getActivity(), Utils.DIARIOS);
+                adapter = new DiariosListAdapter(((MainActivity)getActivity()).diariosList, getActivity());
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
@@ -141,7 +141,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
                                 webView.data_position_diarios = year.getValue();
 
-                                ((MainActivity)getActivity()).diariosList = (List<ExpandableList>) Data.loadList(Objects.requireNonNull(getContext()),
+                                ((MainActivity)getActivity()).diariosList = (List<DiariosList>) Data.loadList(Objects.requireNonNull(getContext()),
                                         Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios], null);
 
                                 onPageUpdate(((MainActivity)getActivity()).diariosList);
@@ -157,7 +157,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<ExpandableList>) list;
+        ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<DiariosList>) list;
 
         if (adapter != null) {
             adapter.update(((MainActivity)getActivity()).diariosList);

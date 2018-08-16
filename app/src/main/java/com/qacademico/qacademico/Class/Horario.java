@@ -4,14 +4,12 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 public class Horario implements Serializable {
-    private long id;
     private Calendar startTime;
     private Calendar endTime;
     private String name;
     private int color;
 
-    public Horario(long id, String name, Calendar startTime, Calendar endTime, int color) {
-        this.id = id;
+    public Horario(String name, Calendar startTime, Calendar endTime, int color) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -37,9 +35,4 @@ public class Horario implements Serializable {
     public void setColor(int color) {
         this.color = color;
     }
-
-    public long getId() {
-        return id;
-    }
-
 }

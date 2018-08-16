@@ -23,7 +23,7 @@ public class ExpandableListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.list_arrow)              public ImageView arrow;
     @BindView(R.id.open_list)               public LinearLayout expandAct;
     @BindView(R.id.list_nothing)            public ConstraintLayout nothing;
-    @BindView(R.id.recycler_list)           public RecyclerView recyclerView;
+    @BindView(R.id.recycler_list_diarios)   public RecyclerView recyclerView;
     @BindView(R.id.table_list)              public LinearLayout table;
 
     public ExpandableListViewHolder(View view) {

@@ -12,9 +12,10 @@ import com.qacademico.qacademico.Class.Calendario.Evento;
 import com.qacademico.qacademico.Class.Calendario.Meses;
 import com.qacademico.qacademico.Class.Diarios.Diarios;
 import com.qacademico.qacademico.Class.Horario;
-import com.qacademico.qacademico.Class.ExpandableList;
+import com.qacademico.qacademico.Class.Diarios.DiariosList;
 import com.qacademico.qacademico.Class.Diarios.Etapa;
-import com.qacademico.qacademico.Class.Materiais;
+import com.qacademico.qacademico.Class.Materiais.Materiais;
+import com.qacademico.qacademico.Class.Materiais.MateriaisList;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Data;
 import com.qacademico.qacademico.Utilities.Utils;
@@ -34,6 +35,7 @@ import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
 import static com.qacademico.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.qacademico.qacademico.Utilities.Utils.URL;
+import static com.qacademico.qacademico.Utilities.Utils.getRandomColorGenerator;
 
 public class JavaScriptWebView {
     private Context context;
@@ -162,7 +164,7 @@ public class JavaScriptWebView {
 
     @JavascriptInterface
     public void handleDiarios(String html_p) {
-        Log.i("JavaScriptWebView", "ExpandableList handling...");
+        Log.i("JavaScriptWebView", "DiariosList handling...");
         new Thread() {
             @Override
             public void run() {
@@ -174,7 +176,7 @@ public class JavaScriptWebView {
                     int numMaterias = table_diarios.select("table.conteudoTexto").size();
                     Element nxtElem = null;
 
-                    List<ExpandableList> diarios = new ArrayList<>();
+                    List<DiariosList> diarios = new ArrayList<>();
 
                     for (int y = 0; y < numMaterias; y++) {
 
@@ -251,7 +253,7 @@ public class JavaScriptWebView {
                                 aux = "null";
                             }
                         }
-                        diarios.add(new ExpandableList(nomeMateria, etapas));
+                        diarios.add(new DiariosList(nomeMateria, etapas));
                     }
 
                     Collections.sort(diarios, (d1, d2) -> d1.getTitle().compareTo(d2.getTitle()));
@@ -396,7 +398,7 @@ public class JavaScriptWebView {
                                 endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(trtd_horario[j][0])));
                                 endTime.set(Calendar.MINUTE, trimm(trimtd(trtd_horario[j][0])));
 
-                                horario.add(new Horario(i, trtd_horario[j][i], startTime, endTime, color));
+                                horario.add(new Horario(trtd_horario[j][i], startTime, endTime, color));
                             }
                         }
                     }
@@ -454,7 +456,7 @@ public class JavaScriptWebView {
                     Element table = homeMaterial.getElementsByTag("tbody").get(10);
                     Elements rotulos = table.getElementsByClass("rotulo");
 
-                    List<ExpandableList> materiais = new ArrayList<>();
+                    List<MateriaisList> materiais = new ArrayList<>();
 
                     for (int i = 1; i < rotulos.size(); i++) {
 
@@ -530,7 +532,8 @@ public class JavaScriptWebView {
                                 classe = "quit";
                             }
                         }
-                        materiais.add(new ExpandableList(nomeMateria, material));
+
+                        materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator(context)));
                     }
 
                     webView.pg_materiais_loaded[webView.data_position_materiais] = true;

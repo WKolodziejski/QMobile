@@ -13,9 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.qacademico.qacademico.Activity.MainActivity;
-import com.qacademico.qacademico.Adapter.ExpandableListAdapter;
-import com.qacademico.qacademico.Class.ExpandableList;
-import com.qacademico.qacademico.Class.Materiais;
+import com.qacademico.qacademico.Adapter.Diarios.DiariosListAdapter;
+import com.qacademico.qacademico.Adapter.Materiais.MateriaisListAdapter;
+import com.qacademico.qacademico.Class.Diarios.DiariosList;
+import com.qacademico.qacademico.Class.Materiais.MateriaisList;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.Utilities.Utils;
 
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MateriaisFragment extends Fragment implements MainActivity.OnPageUpdated {
-    ExpandableListAdapter adapter;
+    MateriaisListAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
         RecyclerView recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-        adapter = new ExpandableListAdapter(((MainActivity)getActivity()).materiaisList, getActivity(), Utils.MATERIAIS);
+        adapter = new MateriaisListAdapter(((MainActivity)getActivity()).materiaisList, getActivity());
 
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
@@ -58,23 +59,14 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
                 LinearLayoutManager.VERTICAL);
         recyclerViewMateriais.addItemDecoration(dividerItemDecoration);
 
-        adapter.setOnExpandListener(position -> {
-            RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
-                @Override
-                protected int getVerticalSnapPreference() {
-                    return LinearSmoothScroller.SNAP_TO_ANY;
-                }
-            };
-            if (position != 0) {
-                smoothScroller.setTargetPosition(position);
-                layout.startSmoothScroll(smoothScroller);
-            }
+        adapter.setOnDowloadListener(position -> {
+
         });
     }
 
     @Override
     public void onPageUpdate(List<?> list) {
-        ((MainActivity)getActivity()).materiaisList = (List<ExpandableList>) list;
+        ((MainActivity)getActivity()).materiaisList = (List<MateriaisList>) list;
         showMateriais(getView());
     }
 }
