@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class MateriaisFragment extends Fragment implements MainActivity.OnPageUpdated {
-    public List<ExpandableList> materiaisList;
     ExpandableListAdapter adapter;
 
     @Override
@@ -38,7 +37,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_materiais, container, false);
 
-        if (materiaisList != null) {
+        if (((MainActivity)getActivity()).materiaisList != null) {
             showMateriais(view);
         }
 
@@ -49,7 +48,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
         RecyclerView recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-        adapter = new ExpandableListAdapter(materiaisList, getActivity(), Utils.MATERIAIS);
+        adapter = new ExpandableListAdapter(((MainActivity)getActivity()).materiaisList, getActivity(), Utils.MATERIAIS);
 
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
@@ -75,7 +74,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
 
     @Override
     public void onPageUpdate(List<?> list) {
-        materiaisList = (List<ExpandableList>) list;
+        ((MainActivity)getActivity()).materiaisList = (List<ExpandableList>) list;
         showMateriais(getView());
     }
 }

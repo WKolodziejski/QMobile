@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
     private OnPageUpdated onPageUpdated;
-    public List<ExpandableList> diariosList;
+    public List<ExpandableList> diariosList, materiaisList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
