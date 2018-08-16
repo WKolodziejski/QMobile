@@ -28,9 +28,9 @@ public class SingletonWebView {
                      pg_boletim_loaded = {false},
                      pg_materiais_loaded = {false};
     public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
-    public String new_password, bugDiarios, bugCalendario, bugBoletim, bugHorario, scriptDiario = "";
+    public String scriptDiario = "";
     public int data_position_horario, data_position_boletim, data_position_diarios, data_position_materiais, periodo_position_horario,
-            periodo_position_boletim, periodo_position_calendario;
+            periodo_position_boletim;
     public Infos infos;
 
     private SingletonWebView() {}

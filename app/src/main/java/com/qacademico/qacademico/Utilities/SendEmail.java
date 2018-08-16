@@ -55,7 +55,7 @@ public class SendEmail {
         context.startActivity(emailIntent);
     }
 
-    public static void bugReport(Context context, int id) {
+    /*public static void bugReport(Context context, int id) {
         if (Utils.isConnected(context)) {
 
             SingletonWebView mainWebView = SingletonWebView.getInstance();
@@ -105,7 +105,7 @@ public class SendEmail {
                 checkBoxBugReport(context, grid_boletim, check_boletim, img_boletim, txt_boletim);
             }
 
-            /*if (id == R.id.navigation_horario) {
+            if (id == R.id.navigation_horario) {
                 check_horario.setChecked(true);
                 check_horario.setEnabled(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -115,7 +115,7 @@ public class SendEmail {
                 }
             } else {
                 checkBoxBugReport(context, grid_horario, check_horario, img_horario, txt_horario);
-            }*/
+            }
 
             checkBoxBugReport(context, grid_outro, check_outro, img_outros, txt_outros);
 
@@ -170,7 +170,7 @@ public class SendEmail {
         } else {
             Toast.makeText(context, context.getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     public static void sendSuggestion(Context context) {
         if (Utils.isConnected(context)) {
