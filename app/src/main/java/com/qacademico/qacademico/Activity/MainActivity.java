@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                 onPageUpdated.onPageUpdate(list);
                 Log.i("onFinish", "updatedDiarios");
             } else if (url_p.equals(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais) {
-                //onPageUpdated.onPageUpdate(list);
+                onPageUpdated.onPageUpdate(list);
                 Log.i("onFinish", "updatedMateriais");
             }
         });
