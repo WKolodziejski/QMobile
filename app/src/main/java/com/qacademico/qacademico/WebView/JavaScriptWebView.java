@@ -551,7 +551,7 @@ public class JavaScriptWebView {
         new Thread() {
             @Override
             public void run() {
-                try {
+               try {
                     Document homeCalendario = Jsoup.parse(html_p);
                     webView.bugCalendario = homeCalendario.outerHtml();
 
@@ -572,7 +572,7 @@ public class JavaScriptWebView {
 
 
                         //no mes (cores)
-                        for (int i = 0; i < dias.size(); i++) {
+                        for (int i = 7; i < dias.size(); i++) {
                             List<Evento> listEventos = new ArrayList<>();
                             String numeroDia = dias.get(i).text();
                             if (!numeroDia.equals("")) {
@@ -587,9 +587,9 @@ public class JavaScriptWebView {
                                         }
                                     }
                                 }
+                                Dia dia = new Dia(Integer.parseInt(numeroDia),listEventos);
+                                diaList.add(dia);
                             }
-                            Dia dia = new Dia(Integer.parseInt(numeroDia),listEventos);
-                            diaList.add(dia);
                         }
                         Meses mes = new Meses(diaList, nomeMes);
                         listMeses.add(mes);
