@@ -39,7 +39,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
         View view = inflater.inflate(R.layout.fragment_materiais, container, false);
 
         if (materiaisList != null) {
-            showMateriais(getView());
+            showMateriais(view);
         }
 
         return view;
