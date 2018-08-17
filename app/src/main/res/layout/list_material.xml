@@ -11,6 +11,7 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     android:layout_margin="8dp"
+    android:id="@+id/materiais_header"
     >
 
     <RelativeLayout

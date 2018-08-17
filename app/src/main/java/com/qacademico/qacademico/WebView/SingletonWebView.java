@@ -3,6 +3,8 @@ package com.qacademico.qacademico.WebView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -44,6 +46,15 @@ public class SingletonWebView {
 
     public void loadUrl(String pg) {
         webView.loadUrl(pg);
+    }
+
+    public void downloadMaterial(Context context, String link){
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            context.startActivity(i);
+        });
+        webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})

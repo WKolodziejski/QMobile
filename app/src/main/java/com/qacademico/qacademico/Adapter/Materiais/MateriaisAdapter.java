@@ -47,7 +47,7 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
         holder.title.setTag(position);
 
-        holder.btn.setOnClickListener(v -> {
+        holder.header.setOnClickListener(v -> {
 
             Integer pos = (Integer) holder.title.getTag();
 

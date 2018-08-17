@@ -12,7 +12,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MateriaisListViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.material_header)         public LinearLayout header;
     @BindView(R.id.material_text)           public TextView materia;
     @BindView(R.id.recycler_list_materiais) public RecyclerView recyclerView;
 
