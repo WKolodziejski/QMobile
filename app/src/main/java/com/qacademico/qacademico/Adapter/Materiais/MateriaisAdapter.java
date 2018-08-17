@@ -2,6 +2,7 @@ package com.qacademico.qacademico.Adapter.Materiais;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -37,10 +38,11 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(materialList.get(position).getNomeConteudo());
         holder.date.setText((materialList.get(position).getData()));
-        holder.info.setText(materialList.get(position).getDescricao());
         holder.img.setImageDrawable(materialList.get(position).getIcon());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.img.setImageTintList(ColorStateList.valueOf(materialList.get(position).getTint()));
+            Drawable background = context.getResources().getDrawable(R.drawable.layout_bg_round);
+            background.setTint(materialList.get(position).getTint());
+            holder.img.setBackground(background);
         }
 
         holder.title.setTag(position);

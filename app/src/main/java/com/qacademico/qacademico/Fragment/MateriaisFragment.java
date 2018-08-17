@@ -53,11 +53,6 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
 
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
-        //recyclerViewDiarios.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewMateriais.getContext(),
-                LinearLayoutManager.VERTICAL);
-        recyclerViewMateriais.addItemDecoration(dividerItemDecoration);
 
         adapter.setOnDowloadListener(link -> {
 

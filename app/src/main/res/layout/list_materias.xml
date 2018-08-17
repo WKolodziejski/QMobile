@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:id="@+id/material_header"
-    android:background="@color/pink_500"
     >
 
     <TextView
@@ -20,15 +19,13 @@
         android:paddingStart="8dp"
         android:paddingRight="8dp"
         android:paddingEnd="8dp"
-        android:textColor="@color/colorPrimaryLight"
+        android:textColor="@color/colorPrimary"
         tools:text="Geografia" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_list_materiais"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryLight"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp" />
+        android:background="@color/colorPrimaryLight"/>
 
 </LinearLayout>

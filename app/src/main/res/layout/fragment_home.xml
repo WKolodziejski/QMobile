@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp"
-            android:layout_margin="10dp"
+            android:layout_margin="8dp"
             >
 
             <LinearLayout

@@ -36,14 +36,14 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final MateriaisListViewHolder holder = (MateriaisListViewHolder) viewHolder;
 
-        holder.header.setBackgroundColor(materiaisList.get(i).getColor());
+        //holder.header.setBackgroundColor(materiaisList.get(i).getColor());
         holder.materia.setText(materiaisList.get(i).getTitle());
 
         MateriaisAdapter adapter = new MateriaisAdapter(materiaisList.get(i).getMateriais(), context);
 
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
-                LinearLayoutManager.VERTICAL, false));
+                LinearLayoutManager.HORIZONTAL, false));
 
         adapter.setOnDownloadListener(link -> {
             onDownloadRepassListener.onDownload(link);

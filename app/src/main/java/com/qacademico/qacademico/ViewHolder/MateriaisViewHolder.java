@@ -20,8 +20,6 @@ public class MateriaisViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.materiais_btn)                   public ImageButton btn;
     @BindView(R.id.materiais_title)                 public TextView title;
     @BindView(R.id.materiais_date)                  public TextView date;
-    @BindView(R.id.materiais_expand_description)    public ExpandableLayout exp_info;
-    @BindView(R.id.materiais_info)                  public TextView info;
 
     public MateriaisViewHolder(@NonNull View view) {
         super(view);
