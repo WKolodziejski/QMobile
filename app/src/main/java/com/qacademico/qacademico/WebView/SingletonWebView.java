@@ -1,7 +1,6 @@
 package com.qacademico.qacademico.WebView;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,8 +14,11 @@ import com.qacademico.qacademico.Utilities.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.qacademico.qacademico.Utilities.Utils.PG_HOME;
-import static com.qacademico.qacademico.Utilities.Utils.PG_LOGIN;
+import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.qacademico.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.qacademico.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.qacademico.qacademico.Utilities.Utils.URL;
 
 public class SingletonWebView {
@@ -25,6 +27,8 @@ public class SingletonWebView {
     private OnPageStarted onPageStarted;
     private OnRecivedError onRecivedError;
     private WebView webView;
+    private boolean isLoading, isPaused;
+    private List<String> queue = new ArrayList<>();
     public boolean[] pg_diarios_loaded = {false},
                      pg_horario_loaded = {false},
                      pg_boletim_loaded = {false},
@@ -45,10 +49,52 @@ public class SingletonWebView {
     }
 
     public void loadUrl(String pg) {
-        webView.loadUrl(pg);
+        if (!pg.contains("javascript")) {
+            Log.i("Client", "Não contém java script");
+            if (!isLoading) {
+                Log.i("Client", "Carregando...");
+                webView.loadUrl(pg);
+            } else {
+                boolean equals = false;
+                for (int i = 0; i < queue.size(); i++) {
+                    if (queue.get(i).equals(pg)) {
+                        equals = true;
+                        break;
+                    }
+                }
+                if (!equals) {
+                    Log.i("Client", "add a fila: " + pg);
+                    queue.add(pg);
+                }
+            }
+        } else {
+            Log.i("Client", "Contém java script");
+            webView.loadUrl(pg);
+        }
+    }
+
+    public void loadNextUrl() {
+        if (!isPaused) {
+            if (queue.size() > 0) {
+                String queue = this.queue.get(this.queue.size() - 1);
+                this.queue.remove(this.queue.size() - 1);
+
+                if (!queue.isEmpty()) {
+                    Log.i("Client", "Carregando fila...");
+                    loadUrl(queue);
+                }
+            }
+        }
+    }
+
+    public void resumeQueue() {
+        isPaused = false;
     }
 
     public void downloadMaterial(Context context, String link){
+        if (!webView.getUrl().contains(URL + PG_MATERIAIS)) {
+            loadUrl(URL + PG_MATERIAIS);
+        }
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
@@ -65,6 +111,11 @@ public class SingletonWebView {
             infos = new Infos();
         }
 
+        queue.add(URL + PG_CALENDARIO);
+        queue.add(URL + PG_HORARIO);
+        queue.add(URL + PG_BOLETIM);
+        queue.add(URL + PG_DIARIOS);
+
         webView = new WebView(context);
         WebSettings faller = webView.getSettings();
         faller.setJavaScriptEnabled(true);
@@ -74,24 +125,33 @@ public class SingletonWebView {
         faller.setLoadWithOverviewMode(true);
 
         JavaScriptWebView javaScriptWebView = new JavaScriptWebView(context);
+
         javaScriptWebView.setOnPageFinished((url_p, list) -> {
+            isLoading = false;
+            if (url_p.contains(URL + PG_MATERIAIS)) {
+                isPaused = true;
+            }
             Log.i("JavaScriptInterface", "onFinish");
             onPageFinished.onPageFinish(url_p, list);
         });
 
         ClientWebView clientWebView = new ClientWebView(context);
+
         clientWebView.setOnPageFinishedListener(url_p -> {
-            Log.i("JavaScriptInterface", "onFinish");
+            isLoading = false;
+            Log.i("Client", "onFinish");
             onPageFinished.onPageFinish(url_p, null);
         });
 
         clientWebView.setOnPageStartedListener(url_p -> {
-            Log.i("JavaScriptInterface", "onStart");
+            isLoading = true;
+            Log.i("Client", "onStart");
             onPageStarted.onPageStart(url_p);
         });
 
         clientWebView.setOnErrorRecivedListener(error -> {
-            Log.i("JavaScriptInterface", "onError");
+            isLoading = false;
+            Log.i("Client", "onError");
             onRecivedError.onErrorRecived(error);
         });
 

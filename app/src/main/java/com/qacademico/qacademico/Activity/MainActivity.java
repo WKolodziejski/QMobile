@@ -143,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
             if (item.getItemId() != navigation.getSelectedItemId()) {
                 dismissProgressbar();
+                SingletonWebView.getInstance().resumeQueue();
+                SingletonWebView.getInstance().loadNextUrl();
 
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
@@ -173,9 +175,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     case R.id.navigation_materiais:
                         setTitle(SingletonWebView.getInstance().infos.data_boletim[SingletonWebView.getInstance().data_position_boletim]
                                 + " / " + SingletonWebView.getInstance().infos.periodo_boletim[SingletonWebView.getInstance().periodo_position_boletim]);
-                        if (!SingletonWebView.getInstance().pg_materiais_loaded[0]) {
-                            SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
-                        }
+                        SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
                         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new MateriaisFragment(), Utils.MATERIAIS).commit();
                         hideExpandBtn();
                         hideTabLayout();
@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         runOnUiThread(() -> {
             Log.i("Singleton", "onFinish");
 
+            SingletonWebView.getInstance().loadNextUrl();
             dismissProgressbar();
             invalidateOptionsMenu();
 

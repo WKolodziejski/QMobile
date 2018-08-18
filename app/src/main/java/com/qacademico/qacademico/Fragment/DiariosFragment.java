@@ -157,14 +157,16 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<DiariosList>) list;
+        if (list.get(0) instanceof DiariosList) {
+            ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<DiariosList>) list;
 
-        if (adapter != null) {
-            adapter.update(((MainActivity)getActivity()).diariosList);
-            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                    .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
-        } else {
-            setDiarios(getView());
+            if (adapter != null) {
+                adapter.update(((MainActivity) getActivity()).diariosList);
+                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
+                        .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
+            } else {
+                setDiarios(getView());
+            }
         }
     }
 }

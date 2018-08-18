@@ -255,7 +255,9 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        boletimList = (List<Boletim>) list;
-        setBoletim(getView(), false);
+        if (list.get(0) instanceof Boletim) {
+            boletimList = (List<Boletim>) list;
+            setBoletim(getView(), false);
+        }
     }
 }
