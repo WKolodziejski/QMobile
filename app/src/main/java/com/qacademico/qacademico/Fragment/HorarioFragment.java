@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import com.alamkanak.weekview.WeekView;
 import com.qacademico.qacademico.Activity.HorarioActivity;
+import com.qacademico.qacademico.Class.Boletim;
 import com.qacademico.qacademico.Class.Horario;
 import com.qacademico.qacademico.Custom.Widget.CustomWeekView;
 import com.qacademico.qacademico.R;
@@ -111,7 +112,9 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
 
     @Override
     public void onPageUpdate(List<?> list) {
-        horarioList = (List<Horario>) list;
-        setHorario(getView());
+        if (list.get(0) instanceof Horario) {
+            horarioList = (List<Horario>) list;
+            setHorario(getView());
+        }
     }
 }

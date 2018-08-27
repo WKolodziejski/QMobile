@@ -5,11 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import com.qacademico.qacademico.Class.Calendario.Dia;
+import com.qacademico.qacademico.Class.Calendario.Meses;
 import com.qacademico.qacademico.R;
 import com.qacademico.qacademico.ViewHolder.CalendarioViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CalendarioAdapter extends RecyclerView.Adapter {
@@ -17,8 +20,27 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
     private Context context;
 
     public CalendarioAdapter(List<Dia> calendarioList, Context context) {
-        this.calendarioList = calendarioList;
+        this.calendarioList = clearList(calendarioList);
         this.context = context;
+    }
+
+    public void update(List<Dia> calendarioList) {
+        this.calendarioList = clearList(calendarioList);
+        notifyDataSetChanged();
+    }
+
+    private List<Dia> clearList(List<Dia> list) {
+        List<Dia> clear = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            if (!list.get(i).getEventos().isEmpty()) {
+                clear.add(list.get(i));
+            }
+        }
+        return clear;
+    }
+
+    public List<Dia> getCalendarioList() {
+        return calendarioList;
     }
 
     @NonNull
@@ -32,10 +54,10 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         final CalendarioViewHolder holder = (CalendarioViewHolder) viewHolder;
 
-        holder.dia.setText(Integer.toString(calendarioList.get(position).getDia()));
+        holder.dia.setText(String.valueOf(calendarioList.get(position).getDia()));
         holder.eventos.setAdapter(new EventosAdapter(calendarioList.get(position).getEventos(), context));
-        holder.eventos.setLayoutManager(new LinearLayoutManager(context,
-                LinearLayoutManager.VERTICAL, false));
+        holder.eventos.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        holder.layout.setTag(position);
     }
 
     @Override

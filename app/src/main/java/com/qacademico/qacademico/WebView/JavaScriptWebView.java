@@ -2,6 +2,7 @@ package com.qacademico.qacademico.WebView;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -28,6 +29,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
 import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
@@ -231,11 +233,11 @@ public class JavaScriptWebView {
                                     tipo = context.getResources().getString(R.string.sigla_Qualitativa);
                                 }
 
-                                String caps = trim(trim1(notasLinhas.eq(i).first().child(1).text()));
+                                String caps = trimp(trim1(notasLinhas.eq(i).first().child(1).text()));
                                 String nome = caps.substring(1, 2).toUpperCase() + caps.substring(2);
-                                String peso = trim(notasLinhas.eq(i).first().child(2).text());
-                                String max = trim(notasLinhas.eq(i).first().child(3).text());
-                                String nota = trim(notasLinhas.eq(i).first().child(4).text());
+                                String peso = trimp(notasLinhas.eq(i).first().child(2).text());
+                                String max = trimp(notasLinhas.eq(i).first().child(3).text());
+                                String nota = trimp(notasLinhas.eq(i).first().child(4).text());
 
                                 if (nota.equals("")) {
                                     nota = " -";
@@ -554,64 +556,118 @@ public class JavaScriptWebView {
         new Thread() {
             @Override
             public void run() {
-               try {
-                    Document homeCalendario = Jsoup.parse(html_p);
-                    //webView.bugCalendario = homeCalendario.outerHtml();
+               //try {
+                    Document document = Jsoup.parse(html_p);
+                    //webView.bugCalendario = document.outerHtml();
 
-                    Elements meses = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
-                    //Elements infos = homeCalendario.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+                    Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+                    //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
                     List<Meses> listMeses = new ArrayList<>();
 
-                    for (int x = 0; x < 12; x++) {
-                        String nomeMes = meses.get(x).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
-                        Elements arrayEventos = meses.get(x).nextElementSibling().child(0).getElementsByTag("tr");
-                        Elements dias = meses.get(x).getElementsByTag("td");
+                    boolean changeYear = false;
+
+                    for (int i = 0; i < 12; i++) {
+                        String nomeMes = meses.get(i).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
+                        int numMes = 0;
+
+                        if (nomeMes.equals("JANEIRO")) {
+                            numMes = Calendar.JANUARY;
+                        } else if (nomeMes.equals("FEVEREIRO")) {
+                            numMes = Calendar.FEBRUARY;
+                        } else if (nomeMes.equals("MARÇO")) {
+                            numMes = Calendar.MARCH;
+                        } else if (nomeMes.equals("ABRIL")) {
+                            numMes = Calendar.APRIL;
+                        } else if (nomeMes.equals("MAIO")) {
+                            numMes = Calendar.MAY;
+                        } else if (nomeMes.equals("JUNHO")) {
+                            numMes = Calendar.JUNE;
+                        } else if (nomeMes.equals("JULHO")) {
+                            numMes = Calendar.JULY;
+                        } else if (nomeMes.equals("AGOSTO")) {
+                            numMes = Calendar.AUGUST;
+                        } else if (nomeMes.equals("SETEMBRO")) {
+                            numMes = Calendar.SEPTEMBER;
+                        } else if (nomeMes.equals("OUTUBRO")) {
+                            numMes = Calendar.OCTOBER;
+                        } else if (nomeMes.equals("NOVEMBRO")) {
+                            numMes = Calendar.NOVEMBER;
+                        } else if (nomeMes.equals("DEZEMBRO")) {
+                            numMes = Calendar.DECEMBER;
+                        }
+
+                        Elements arrayEventos = meses.get(i).nextElementSibling().child(0).getElementsByTag("tr");
+                        Elements dias = meses.get(i).getElementsByTag("td");
 
                         List<Dia> diaList = new ArrayList<>();
 
-                        Elements tableLegenda = homeCalendario.getElementsByTag("td").parents()
+                        Elements tableLegenda = document.getElementsByTag("td").parents()
                                 .get(0).children();
 
+                        String date = document.getElementsByTag("font").get(2).text();
+
+                        int year = Integer.parseInt(date.substring(date.lastIndexOf("/") + 1));
+
+                        if (listMeses.size() > 1) {
+                            if (numMes < listMeses.get(listMeses.size() - 2).getMonth()) {
+                                changeYear = true;
+                            }
+                        }
+
+                        if (changeYear) {
+                            year++;
+                        }
 
                         //no mes (cores)
-                        for (int i = 7; i < dias.size(); i++) {
+                        for (int j = 7; j < dias.size(); j++) {
                             List<Evento> listEventos = new ArrayList<>();
-                            String numeroDia = dias.get(i).text();
+                            String numeroDia = dias.get(j).text();
                             if (!numeroDia.equals("")) {
-                                String corQA = dias.get(i).attr("bgcolor"); // cor original
+                                String corQA = dias.get(j).attr("bgcolor"); // cor original
                                 if (!corQA.equals("")) {
-                                    for (int j = 0; j < arrayEventos.size(); j++) {
-                                        String diaEvento = arrayEventos.get(j).child(0).text();
+                                    for (int k = 0; k < arrayEventos.size(); k++) {
+                                        String diaEvento = arrayEventos.get(k).child(0).text();
                                         if (diaEvento.equals(numeroDia)) {
-                                            String nomeEvento = arrayEventos.get(j).child(1).text();
-                                            Evento evento = new Evento(nomeEvento, 0);
+                                            String infos = arrayEventos.get(k).child(1).text();
+                                            String description = infos.substring(infos.lastIndexOf(")") + 1).trim();
+                                            String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
+                                            title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
+                                            Evento evento = new Evento(title, description,
+                                                    Color.argb(255, 255, 0, 0));
                                             listEventos.add(evento);
+                                            Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
                                         }
                                     }
                                 }
-                                Dia dia = new Dia(Integer.parseInt(numeroDia),listEventos);
-                                diaList.add(dia);
+                                Log.i("Dia", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                diaList.add(new Dia(Integer.parseInt(numeroDia),listEventos));
                             }
                         }
-                        Meses mes = new Meses(diaList, nomeMes);
-                        listMeses.add(mes);
+                        listMeses.add(new Meses(diaList, numMes, year));
                     }
 
+                    webView.infos.data_calendario = document.getElementsByClass("dado_cabecalho").get(1).text();
+
+                    Data.saveList(context, listMeses, Utils.CALENDARIO, webView.infos.data_calendario, null);
+
+                    Data.saveDate(context, webView.infos);
+
                     webView.pg_calendario_loaded = true;
+
                     Log.i("JavaScriptWebView", "Calendario handled!");
 
                     onPageFinish.onPageFinish(URL + PG_CALENDARIO, listMeses);
 
-                } catch (Exception ignored) {
+                /*} catch (Exception ignored) {
                     Log.i("JavaScriptWebView", "Calendario error");
-                }
+                }*/
             }
         }.start();
     }
 
 
-    private String trim(String string) {
+    private String trimp(String string) {
         string = string.substring(string.indexOf(":"));
         string = string.replace(":", "");
         return string;

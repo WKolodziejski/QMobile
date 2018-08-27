@@ -52,8 +52,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:textSize="@dimen/alt_font_size"
-            android:id="@+id/calendario_horario"
-            tools:text="10:45"/>
+            android:id="@+id/calendario_title"
+            tools:text="Matemática"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,8 +61,8 @@
             android:layout_margin="4dp"
             android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
-            android:id="@+id/caledario_nome"
-            tools:text="Prova de Matemática" />
+            android:id="@+id/caledario_description"
+            tools:text="Prova de trigonometria" />
 
     </LinearLayout>
 

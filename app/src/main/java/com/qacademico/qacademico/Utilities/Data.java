@@ -25,7 +25,7 @@ public class Data {
         List<?> list = null;
 
         try {
-            if (type.equals(Utils.DIARIOS)) {
+            if (type.equals(Utils.DIARIOS) || type.equals(Utils.CALENDARIO)) {
                 object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                         login_info.getString(Utils.LOGIN_REGISTRATION,
                                 "") + type + "." + trim(year))));
@@ -49,7 +49,7 @@ public class Data {
 
         ObjectOutputStream object;
         try {
-            if (type.equals(Utils.DIARIOS)) {
+            if (type.equals(Utils.DIARIOS) || type.equals(Utils.CALENDARIO)) {
                 object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                         login_info.getString(Utils.LOGIN_REGISTRATION,
                                 "") + type + "." + trim(year))));
@@ -107,6 +107,7 @@ public class Data {
 
     private static String trim(String string) {
         string = string.replace(" / ", ".");
+        string = string.replace("/", ".");
         Log.i("DATA", string);
         return string;
     }

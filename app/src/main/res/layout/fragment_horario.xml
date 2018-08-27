@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
-        android:transitionName="horario"
+        android:transitionName="title"
         app:eventCornerRadius="2dp"
         app:eventTextColor="@color/colorPrimaryLight"
         app:textSize="12sp"

@@ -2,30 +2,24 @@ package com.qacademico.qacademico.Class.Calendario;
 
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Evento implements Serializable {
-    private String nome;
-    private String horario;
+    private String description;
+    private String title;
     private int color;
 
-    public Evento(String nome, String horario, int color) {
-        this.nome = nome;
-        this.horario = horario;
+    public Evento(String title, String description, int color) {
+        this.title = title;
+        this.description = description;
         this.color = color;
     }
 
-    public Evento(String nome, int color) {
-        this.nome = nome;
-        this.color = color;
+    public String getDescription() {
+        return description;
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getHorario() {
-        return horario;
+    public String getTitle() {
+        return title;
     }
 
     public int getColor() {

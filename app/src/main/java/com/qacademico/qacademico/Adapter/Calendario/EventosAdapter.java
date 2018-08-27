@@ -34,10 +34,10 @@ public class EventosAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         final EventosViewHolder holder = (EventosViewHolder) viewHolder;
 
-        holder.horario.setText(eventos.get(position).getHorario());
-        holder.nome.setText(eventos.get(position).getNome());
+        holder.title.setText(eventos.get(position).getTitle());
+        holder.description.setText(eventos.get(position).getDescription());
+        holder.title.setTextColor(eventos.get(position).getColor());
 
-        holder.horario.setTextColor(eventos.get(position).getColor());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(position).getColor()));
         }

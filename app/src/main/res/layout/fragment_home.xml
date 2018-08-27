@@ -82,7 +82,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="10dp"
-                    android:transitionName="horario"
+                    android:transitionName="title"
                     app:eventCornerRadius="2dp"
                     app:textSize="12sp"
                     app:hourHeight="60dp"
