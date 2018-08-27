@@ -70,34 +70,54 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
         CompactCalendarView compactCalendar = ((MainActivity)getActivity()).calendar;
 
+        compactCalendar.removeAllEvents();
+
         for (int i = 0; i < calendario.size(); i++) {
             addEvents(compactCalendar, i);
         }
 
-        ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, calendario.get(calendario.size() - 1).getYear());
+        calendar.set(Calendar.MONTH, calendario.get(calendario.size() - 1).getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, calendario.get(calendario.size() - 1).getDias().get(0).getDia());
+
+        if (compactCalendar.getFirstDayOfCurrentMonth().getTime() < calendar.getTimeInMillis()) {
+            calendar.setTimeInMillis(compactCalendar.getFirstDayOfCurrentMonth().getTime());
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(calendar.getTimeInMillis());
+
+            for (int i = 0; i < calendario.size(); i++) {
+                if (calendario.get(i).getMonth() == cal.get(Calendar.MONTH)) {
+                    month = i;
+                    break;
+                }
+            }
+        } else {
+            month = calendario.size() - 1;
+        }
+
+        adapter = new CalendarioAdapter(calendario.get(month).getDias(), getActivity());
+
+        Date date = new Date();
+        date.setTime(calendar.getTimeInMillis());
+
+        compactCalendar.setCurrentDate(date);
+        compactCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
+        compactCalendar.setUseThreeLetterAbbreviation(true);
+
+        ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
 
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_calendario);
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,
                 false);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(compactCalendar.getFirstDayOfCurrentMonth().getTime());
-
-        adapter = new CalendarioAdapter(calendario.get(0).getDias(), getActivity());
-
         recyclerViewCalendario.setAdapter(adapter);
         recyclerViewCalendario.setLayoutManager(layout);
 
-        Date date = new Date();
-        //date.setTime();
-
-        //compactCalendar.setCurrentDate();
-
-        compactCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
-        compactCalendar.setUseThreeLetterAbbreviation(true);
-
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+
             @Override
             public void onDayClick(Date date) {
 
@@ -123,22 +143,40 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
             @Override
             public void onMonthScroll(Date date) {
-                ((MainActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(date.getTime());
 
+                boolean isInRange = false;
+
                 for (int i = 0; i < calendario.size(); i++) {
-                    if (calendario.get(i).getYear() == calendar.get(Calendar.YEAR)) {
-                        for (int j = i; j < calendario.size(); j++) {
-                            if (calendario.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
-                                adapter.update(calendario.get(j).getDias());
-                                month = j;
-                                break;
-                            }
-                        }
+                    if (calendar.get(Calendar.MONTH) == calendario.get(i).getMonth()
+                            && calendar.get(Calendar.YEAR) == calendario.get(i).getYear()) {
+                        isInRange = true;
                         break;
+                    } else {
+                        isInRange = false;
                     }
+                }
+
+                if (isInRange) {
+
+                    ((MainActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
+
+                    for (int i = 0; i < calendario.size(); i++) {
+                        if (calendario.get(i).getYear() == calendar.get(Calendar.YEAR)) {
+                            for (int j = i; j < calendario.size(); j++) {
+                                if (calendario.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
+                                    adapter.update(calendario.get(j).getDias());
+                                    month = j;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                } else {
+
                 }
             }
         });
