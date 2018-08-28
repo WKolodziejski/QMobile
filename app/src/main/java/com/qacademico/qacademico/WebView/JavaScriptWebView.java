@@ -667,16 +667,11 @@ public class JavaScriptWebView {
                                             diaEvento = data_inicio.substring(0,data_inicio.indexOf("/"));
                                             if (diaEvento.equals(numeroDia)) {
                                                 String infos = arrayEventos.get(k).child(1).text();
-                                                String description =  data_inicio + " - " + data_fim +": " + infos.substring(infos.lastIndexOf(")") + 1).trim();
-                                                String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
-                                                title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
+                                                String description =  data_inicio + " - " + data_fim;
+                                                //String title =  infos.substring(infos.lastIndexOf(")") + 1).trim();
+                                                //title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
-                                                if (title.equals("")){
-                                                    title = description;
-                                                    description = "";
-                                                }
-
-                                                Evento evento = new Evento(title, description,
+                                                Evento evento = new Evento(infos, description,
                                                         pickColor(corQA),data_inicio,data_fim);
                                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
                                                 listEventos.add(evento);
