@@ -605,8 +605,8 @@ public class JavaScriptWebView {
 
                         List<Dia> diaList = new ArrayList<>();
 
-                        Elements tableLegenda = document.getElementsByTag("td").parents()
-                                .get(0).children();
+                        /*Elements tableLegenda = document.getElementsByTag("td").parents()
+                                .get(0).children();*/
 
                         String date = document.getElementsByTag("font").get(2).text();
 
@@ -631,6 +631,8 @@ public class JavaScriptWebView {
                                 if (!corQA.equals("")) {
                                     for (int k = 0; k < arrayEventos.size(); k++) {
                                         String diaEvento = arrayEventos.get(k).child(0).text();
+
+                                        //Eventos normais
                                         if (diaEvento.equals(numeroDia)) {
                                             String infos = arrayEventos.get(k).child(1).text();
                                             String description = infos.substring(infos.lastIndexOf(")") + 1).trim();
@@ -640,6 +642,23 @@ public class JavaScriptWebView {
                                                     Color.argb(255, 255, 0, 0));
                                             listEventos.add(evento);
                                             Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                        }
+
+
+                                        //Eventos com mais de um dia.
+                                        if (diaEvento.contains(" ~ ")){
+                                            String data_inicio = diaEvento.substring(0,diaEvento.indexOf(" ~"));
+                                            String data_fim =  diaEvento.substring(diaEvento.lastIndexOf("~ "));
+
+                                            String infos = arrayEventos.get(k).child(1).text();
+                                            String description = diaEvento + " " + infos.substring(infos.lastIndexOf(")") + 1).trim();
+                                            String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
+                                            title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
+                                            Evento evento = new Evento(title, description,
+                                                    Color.argb(255, 0, 255, 0),data_inicio,data_fim);
+                                            listEventos.add(evento);
+                                            Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                            numeroDia = numeroDia.substring(0,numeroDia.indexOf("/"));
                                         }
                                     }
                                 }
@@ -651,11 +670,8 @@ public class JavaScriptWebView {
                     }
 
                     webView.infos.data_calendario = document.getElementsByClass("dado_cabecalho").get(1).text();
-
                     Data.saveList(context, listMeses, Utils.CALENDARIO, webView.infos.data_calendario, null);
-
                     Data.saveDate(context, webView.infos);
-
                     webView.pg_calendario_loaded = true;
 
                     Log.i("JavaScriptWebView", "Calendario handled!");
