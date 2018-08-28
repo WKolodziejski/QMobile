@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         View view = snackBar.getView();
         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
-        
+
         //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
         //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
         //  Mas aí fica por cima do botão entrar, tem q deixar mais espaço em branco embaixo.
