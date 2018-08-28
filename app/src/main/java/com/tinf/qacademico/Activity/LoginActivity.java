@@ -2,7 +2,6 @@ package com.tinf.qacademico.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
@@ -11,14 +10,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.tinf.qacademico.Fragment.LoginFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
-
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;

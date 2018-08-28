@@ -7,12 +7,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
 import com.tinf.qacademico.Fragment.HorarioFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
 
