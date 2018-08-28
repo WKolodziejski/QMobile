@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.qacademico.qacademico.Fragment.LoginFragment;
 import com.qacademico.qacademico.R;
@@ -67,7 +68,16 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
     public void showSnackBar(String message, boolean action) { //Mostra a SnackBar
         snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
-        snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
+        //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
+        View view = snackBar.getView();
+        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+        tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+
+        //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
+        //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
+        //  Mas aí fica por cima do botão entrar, tem q deixar mais espaço em branco embaixo.
+
+
         if (action) {
             snackBar.setAction(R.string.button_wifi, view1 -> {
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
