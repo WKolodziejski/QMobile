@@ -8,6 +8,7 @@
     <dimen name="main_font_size">15sp</dimen>
     <dimen name="alt_font_size">17sp</dimen>
     <dimen name="touch_raise">5dp</dimen>
+    <dimen name="snackBar_font_size">7dp</dimen>
 
     <dimen name="column_width">150dp</dimen>
     <dimen name="row_height">60dp</dimen>
