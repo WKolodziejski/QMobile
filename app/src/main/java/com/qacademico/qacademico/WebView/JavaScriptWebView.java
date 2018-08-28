@@ -596,10 +596,13 @@ public class JavaScriptWebView {
                         } else if (nomeMes.equals("DEZEMBRO")) {
                             numMes = Calendar.DECEMBER;
                         }
+
                         Elements arrayEventos = new Elements();
+
                         if ( meses.get(i).nextElementSibling().childNodeSize() > 0) {
                             arrayEventos = meses.get(i).nextElementSibling().child(0).getElementsByTag("tr");
                         }
+
                         //Elements arrayEventos = meses.get(i).nextElementSibling().child(0).getElementsByTag("tr");
                         Elements dias = meses.get(i).getElementsByTag("td");
 

@@ -39,7 +39,6 @@ import java.util.Objects;
 public class CalendarioFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
-    private SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.getDefault());
     CalendarioAdapter adapter;
     List<Meses> calendario;
     int month = 0;
@@ -68,7 +67,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
     private void setCalendar(View view) {
 
-        CompactCalendarView compactCalendar = ((MainActivity)getActivity()).calendar;
+        CompactCalendarView compactCalendar = ((MainActivity) Objects.requireNonNull(getActivity())).calendar;
 
         compactCalendar.removeAllEvents();
 
@@ -176,7 +175,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
                         }
                     }
                 } else {
-
+                    //Negar deslizar fora do período
                 }
             }
         });

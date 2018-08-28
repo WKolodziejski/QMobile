@@ -38,8 +38,10 @@ public class Data {
             Log.i(type, "Lido");
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("DATA", "Erro ao salvar: " + e);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            Log.e("DATA", "Erro ao salvar: " + e);
         }
         return list;
     }
@@ -61,8 +63,10 @@ public class Data {
             object.writeObject(obj);
             object.flush();
             object.close();
+            Log.i("DATA", "Salvo");
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("DATA", "Erro ao salvar: " + e);
         }
     }
 
@@ -81,6 +85,7 @@ public class Data {
             Log.i("DATA", "Salvo");
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("DATA", "Erro ao salvar: " + e);
         }
     }
 
@@ -99,8 +104,10 @@ public class Data {
             Log.i("DATA", "Lido");
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("DATA", "Erro ao ler: " + e);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+            Log.e("DATA", "Erro ao ler: " + e);
         }
         return infos;
     }
