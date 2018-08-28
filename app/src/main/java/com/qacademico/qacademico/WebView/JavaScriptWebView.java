@@ -649,7 +649,7 @@ public class JavaScriptWebView {
 
 
                                         //Eventos com mais de um dia.
-                                        if (diaEvento.contains(" ~ ")){
+                                        /*if (diaEvento.contains(" ~ ")){
                                             String data_inicio = diaEvento.substring(0,diaEvento.indexOf(" ~"));
                                             String data_fim =  diaEvento.substring(diaEvento.lastIndexOf("~ "));
 
@@ -662,7 +662,7 @@ public class JavaScriptWebView {
                                             listEventos.add(evento);
                                             Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
                                             numeroDia = numeroDia.substring(0,numeroDia.indexOf("/"));
-                                        }
+                                        }*/
                                     }
                                 }
                                 Log.i("Dia", numeroDia + "/" + (numMes + 1) + "/" + year);

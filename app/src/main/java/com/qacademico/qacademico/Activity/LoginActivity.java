@@ -20,6 +20,7 @@ import com.qacademico.qacademico.WebView.SingletonWebView;
 import java.util.List;
 
 import static com.qacademico.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.qacademico.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.qacademico.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.qacademico.qacademico.Utilities.Utils.PG_ERRO;
 import static com.qacademico.qacademico.Utilities.Utils.PG_HORARIO;
@@ -60,7 +61,10 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             } else if (url_p.equals(URL + PG_ERRO)) {
                 loginFragment.dismissProgressBar();
                 showSnackBar(getResources().getString(R.string.text_invalid_login), false);
-            } else if (url_p.contains(URL + PG_BOLETIM) || url_p.contains(URL + PG_HORARIO) || url_p.contains(URL + PG_DIARIOS)) {
+            } else if (url_p.contains(URL + PG_BOLETIM)
+                    || url_p.contains(URL + PG_HORARIO)
+                    || url_p.contains(URL + PG_DIARIOS)
+                    || url_p.contains(URL + PG_CALENDARIO)) {
                 firstLogin();
             }
         });
@@ -172,6 +176,17 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         }
 
         webView.data_position_diarios = 0;
+
+        if (!webView.pg_calendario_loaded) {
+            webView.loadUrl(URL + PG_CALENDARIO);
+            Log.i("LoginActivity", "CALENDÁRIO");
+
+            loginFragment.textView_loading.setText(String.format(
+                    getResources().getString(R.string.text_loading_first_login),
+                    Integer.toString(1), Integer.toString(1)));
+
+            return;
+        }
 
         SharedPreferences.Editor editor = loginFragment.login_info.edit();
         editor.putBoolean(Utils.LOGIN_VALID, true);
