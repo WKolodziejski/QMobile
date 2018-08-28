@@ -633,7 +633,10 @@ public class JavaScriptWebView {
                                 String corQA = dias.get(j).attr("bgcolor"); // cor original
                                 if (!corQA.equals("")) {
                                     for (int k = 0; k < arrayEventos.size(); k++) {
+
                                         String diaEvento = arrayEventos.get(k).child(0).text();
+
+
 
                                         //Eventos normais
                                         if (diaEvento.equals(numeroDia)) {
@@ -641,28 +644,45 @@ public class JavaScriptWebView {
                                             String description = infos.substring(infos.lastIndexOf(")") + 1).trim();
                                             String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
                                             title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
+
+
+                                            if (title.equals("")){
+                                                title = description;
+                                                description = "";
+                                            }
+
+
                                             Evento evento = new Evento(title, description,
-                                                    Color.argb(255, 255, 0, 0));
+                                                    pickColor(corQA));
+                                                    //Color.argb(255, 255, 0, 0));
                                             listEventos.add(evento);
                                             Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
                                         }
 
 
                                         //Eventos com mais de um dia.
-                                        /*if (diaEvento.contains(" ~ ")){
+                                        if (diaEvento.contains(" ~ ")){
                                             String data_inicio = diaEvento.substring(0,diaEvento.indexOf(" ~"));
-                                            String data_fim =  diaEvento.substring(diaEvento.lastIndexOf("~ "));
+                                            String data_fim =  diaEvento.substring(diaEvento.indexOf("~ ")+2);
+                                            diaEvento = data_inicio.substring(0,data_inicio.indexOf("/"));
+                                            if (diaEvento.equals(numeroDia)) {
+                                                String infos = arrayEventos.get(k).child(1).text();
+                                                String description =  data_inicio + " - " + data_fim +": " + infos.substring(infos.lastIndexOf(")") + 1).trim();
+                                                String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
+                                                title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
-                                            String infos = arrayEventos.get(k).child(1).text();
-                                            String description = diaEvento + " " + infos.substring(infos.lastIndexOf(")") + 1).trim();
-                                            String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
-                                            title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
-                                            Evento evento = new Evento(title, description,
-                                                    Color.argb(255, 0, 255, 0),data_inicio,data_fim);
-                                            listEventos.add(evento);
-                                            Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
-                                            numeroDia = numeroDia.substring(0,numeroDia.indexOf("/"));
-                                        }*/
+                                                if (title.equals("")){
+                                                    title = description;
+                                                    description = "";
+                                                }
+
+                                                Evento evento = new Evento(title, description,
+                                                        pickColor(corQA),data_inicio,data_fim);
+                                                        //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
+                                                listEventos.add(evento);
+                                                Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                            }
+                                        }
                                     }
                                 }
                                 Log.i("Dia", numeroDia + "/" + (numMes + 1) + "/" + year);
@@ -718,6 +738,51 @@ public class JavaScriptWebView {
     private String trimtd(String string) {
         string = string.substring(string.indexOf("~") + 1);
         return string;
+    }
+
+    private int pickColor(String hex){
+        int color = 0;
+        if (hex.equals("#F0F0F0")){//Avaliação
+            color = Color.rgb(255, 20, 20);
+        } else if (hex.equals("#FF0000")){//Feriado Nacional/Feriado Estadual/municipal
+            color = Color.rgb(219, 161, 26);
+        } else if (hex.equals("#008080")){//Férias/Dia não letivo
+            color = Color.rgb(255, 212, 0);
+        } else if (hex.equals("#FFFF00")){//Datas Acadêmicas
+            color = Color.rgb(255, 208, 0);
+        } else if (hex.equals("#000080")){//Início/Fim das aulas
+            color = Color.rgb(6, 0, 137);
+        } else if (hex.equals("#A62A2A")){//Recesso Escolar
+            color = Color.rgb(178, 62, 62);
+        } else if (hex.equals("#800000")){//Reunião CCS
+            color = Color.rgb(178, 62, 62);
+        } else if (hex.equals("#008000")){//Ponto Facultativo/Ajustes de matrícula
+            color = Color.rgb(0, 79, 1);
+        } else if (hex.equals("#CD7F32")){//Paralisação
+            color = Color.rgb(255, 89, 0);
+        } else if (hex.equals("#00FF00")){//Rematrícula/Matriculas/Domingo Letivo
+            color = Color.rgb(16, 255, 0);
+        } else if (hex.equals("#A6CAF0")){//Conselho de Classe
+            color = Color.rgb(110, 163, 156);
+        } else if (hex.equals("#C0DCC0")){//Sábado letivo
+            color = Color.rgb(29, 255, 0);
+        } else if (hex.equals("#D98719")){//Jogos Intermédios
+            color = Color.rgb(199, 255, 68);
+        } else if (hex.equals("#A6CAF0")){//Fim de Etapa
+            color = Color.rgb(51, 107, 95);
+        } else if (hex.equals("#238E23")){//Início de Etapa
+            color = Color.rgb(70, 147, 131);
+        } else if (hex.equals("#C0DCC0")){//início de semestre
+            color = Color.rgb(79, 168, 149);
+        } else if (hex.equals("#808080")){//Planejamento Docente
+            color = Color.rgb(145, 145, 145);
+        } else if (hex.equals("#FFFF00")){//Capacitação de Servidores
+            color = Color.rgb(221, 177, 0);
+        } else {
+            color = Color.rgb(0,0,0);
+        }
+
+        return color;
     }
 
     private List<Horario> setColors(List<Horario> horario) {
