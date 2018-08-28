@@ -75,7 +75,7 @@
                     android:layout_marginHorizontal="8dp"
                     android:background="@color/black_dividers" />
 
-                <com.qacademico.qacademico.Custom.Widget.CustomWeekView
+                <com.tinf.qacademico.Custom.Widget.CustomWeekView
                     android:id="@+id/weekView_home"
                     android:layout_width="match_parent"
                     android:layout_height="325dp"
