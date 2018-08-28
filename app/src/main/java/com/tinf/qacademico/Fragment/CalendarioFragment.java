@@ -199,7 +199,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
         for (int i = 0; i < calendario.get(j).getDias().get(day).getEventos().size(); i++) {
             Evento e = calendario.get(j).getDias().get(day).getEventos().get(i);
-            events.add(new Event(Color.argb(255, 255, 0, 0), timeInMillis, null));
+            events.add(new Event(e.getColor(), timeInMillis, null));
         }
 
         return events;
