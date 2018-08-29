@@ -38,6 +38,10 @@ public class EventosAdapter extends RecyclerView.Adapter {
         holder.description.setText(eventos.get(position).getDescription());
         holder.title.setTextColor(eventos.get(position).getColor());
 
+        if (eventos.get(position).hasHappened()) {
+            holder.description.append(" ACONTECEU");
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(position).getColor()));
         }

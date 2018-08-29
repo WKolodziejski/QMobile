@@ -367,30 +367,6 @@ public class JavaScriptWebView {
                         for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
                             if (!trtd_horario[j][i].equals("")) {
 
-                                int color = 0;
-
-                                if (trtd_horario[j][i].contains("Biologia")) {
-                                    color = context.getResources().getColor(R.color.biologia);
-                                } else if (trtd_horario[j][i].contains("Educação Física")) {
-                                    color = context.getResources().getColor(R.color.edFisica);
-                                } else if (trtd_horario[j][i].contains("Filosofia")) {
-                                    color = context.getResources().getColor(R.color.filosofia);
-                                } else if (trtd_horario[j][i].contains("Física")) {
-                                    color = context.getResources().getColor(R.color.fisica);
-                                } else if (trtd_horario[j][i].contains("Geografia")) {
-                                    color = context.getResources().getColor(R.color.geografia);
-                                } else if (trtd_horario[j][i].contains("História")) {
-                                    color = context.getResources().getColor(R.color.historia);
-                                } else if (trtd_horario[j][i].contains("Português") || trtd_horario[j][i].contains("Portuguesa")) {
-                                    color = context.getResources().getColor(R.color.portugues);
-                                } else if (trtd_horario[j][i].contains("Matemática")) {
-                                    color = context.getResources().getColor(R.color.matematica);
-                                } else if (trtd_horario[j][i].contains("Química")) {
-                                    color = context.getResources().getColor(R.color.quimica);
-                                } else if (trtd_horario[j][i].contains("Sociologia")) {
-                                    color = context.getResources().getColor(R.color.sociologia);
-                                }
-
                                 Calendar startTime = Calendar.getInstance();
                                 startTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(trtd_horario[0][i]));
                                 startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(trtd_horario[j][0])));
@@ -400,7 +376,7 @@ public class JavaScriptWebView {
                                 endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(trtd_horario[j][0])));
                                 endTime.set(Calendar.MINUTE, trimm(trimtd(trtd_horario[j][0])));
 
-                                horario.add(new Horario(trtd_horario[j][i], startTime, endTime, color));
+                                horario.add(new Horario(trtd_horario[j][i], startTime, endTime, pickColor(trtd_horario[j][i])));
                             }
                         }
                     }
@@ -629,14 +605,16 @@ public class JavaScriptWebView {
                         for (int j = 7; j < dias.size(); j++) {
                             List<Evento> listEventos = new ArrayList<>();
                             String numeroDia = dias.get(j).text();
+
                             if (!numeroDia.equals("")) {
+
                                 String corQA = dias.get(j).attr("bgcolor"); // cor original
+
                                 if (!corQA.equals("")) {
+
                                     for (int k = 0; k < arrayEventos.size(); k++) {
 
                                         String diaEvento = arrayEventos.get(k).child(0).text();
-
-
 
                                         //Eventos normais
                                         if (diaEvento.equals(numeroDia)) {
@@ -645,20 +623,16 @@ public class JavaScriptWebView {
                                             String title = infos.substring(0, infos.lastIndexOf("(") + 1).trim();
                                             title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
-
                                             if (title.equals("")){
                                                 title = description;
                                                 description = "";
                                             }
 
+                                            int cor = corQA.equals("#F0F0F0") ? pickColor(title) : pickColor(corQA);
 
-                                            Evento evento = new Evento(title, description,
-                                                    pickColor(corQA));
-                                                    //Color.argb(255, 255, 0, 0));
-                                            listEventos.add(evento);
+                                            listEventos.add(new Evento(title, description, cor));
                                             Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
                                         }
-
 
                                         //Eventos com mais de um dia.
                                         if (diaEvento.contains(" ~ ")){
@@ -672,7 +646,7 @@ public class JavaScriptWebView {
                                                 //title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
                                                 Evento evento = new Evento(infos, description,
-                                                        pickColor(corQA),data_inicio,data_fim);
+                                                        pickColor(corQA), data_inicio, data_fim);
                                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
                                                 listEventos.add(evento);
                                                 Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
@@ -681,7 +655,7 @@ public class JavaScriptWebView {
                                     }
                                 }
                                 Log.i("Dia", numeroDia + "/" + (numMes + 1) + "/" + year);
-                                diaList.add(new Dia(Integer.parseInt(numeroDia),listEventos));
+                                diaList.add(new Dia(Integer.parseInt(numeroDia), listEventos));
                             }
                         }
                         listMeses.add(new Meses(diaList, numMes, year));
@@ -735,46 +709,67 @@ public class JavaScriptWebView {
         return string;
     }
 
-    private int pickColor(String hex){
-        int color = 0;
-        if (hex.equals("#F0F0F0")){//Avaliação
+    private int pickColor(String string){
+        int color;
+
+        if (string.contains("Biologia")) {
+            color = context.getResources().getColor(R.color.biologia);
+        } else if (string.contains("Educação Física")) {
+            color = context.getResources().getColor(R.color.edFisica);
+        } else if (string.contains("Filosofia")) {
+            color = context.getResources().getColor(R.color.filosofia);
+        } else if (string.contains("Física")) {
+            color = context.getResources().getColor(R.color.fisica);
+        } else if (string.contains("Geografia")) {
+            color = context.getResources().getColor(R.color.geografia);
+        } else if (string.contains("História")) {
+            color = context.getResources().getColor(R.color.historia);
+        } else if (string.contains("Português") || string.contains("Portuguesa")) {
+            color = context.getResources().getColor(R.color.portugues);
+        } else if (string.contains("Matemática")) {
+            color = context.getResources().getColor(R.color.matematica);
+        } else if (string.contains("Química")) {
+            color = context.getResources().getColor(R.color.quimica);
+        } else if (string.contains("Sociologia")) {
+            color = context.getResources().getColor(R.color.sociologia);
+        } else if (string.equals("#F0F0F0")){//Avaliação
             color = Color.rgb(255, 20, 20);
-        } else if (hex.equals("#FF0000")){//Feriado Nacional/Feriado Estadual/municipal
+        } else if (string.equals("#FF0000")){//Feriado Nacional/Feriado Estadual/municipal
             color = Color.rgb(219, 161, 26);
-        } else if (hex.equals("#008080")){//Férias/Dia não letivo
+        } else if (string.equals("#008080")){//Férias/Dia não letivo
             color = Color.rgb(255, 212, 0);
-        } else if (hex.equals("#FFFF00")){//Datas Acadêmicas
+        } else if (string.equals("#FFFF00")){//Datas Acadêmicas
             color = Color.rgb(255, 208, 0);
-        } else if (hex.equals("#000080")){//Início/Fim das aulas
+        } else if (string.equals("#000080")){//Início/Fim das aulas
             color = Color.rgb(6, 0, 137);
-        } else if (hex.equals("#A62A2A")){//Recesso Escolar
+        } else if (string.equals("#A62A2A")){//Recesso Escolar
             color = Color.rgb(178, 62, 62);
-        } else if (hex.equals("#800000")){//Reunião CCS
+        } else if (string.equals("#800000")){//Reunião CCS
             color = Color.rgb(178, 62, 62);
-        } else if (hex.equals("#008000")){//Ponto Facultativo/Ajustes de matrícula
+        } else if (string.equals("#008000")){//Ponto Facultativo/Ajustes de matrícula
             color = Color.rgb(0, 79, 1);
-        } else if (hex.equals("#CD7F32")){//Paralisação
+        } else if (string.equals("#CD7F32")){//Paralisação
             color = Color.rgb(255, 89, 0);
-        } else if (hex.equals("#00FF00")){//Rematrícula/Matriculas/Domingo Letivo
+        } else if (string.equals("#00FF00")){//Rematrícula/Matriculas/Domingo Letivo
             color = Color.rgb(16, 255, 0);
-        } else if (hex.equals("#A6CAF0")){//Conselho de Classe
+        } else if (string.equals("#A6CAF0")){//Conselho de Classe
             color = Color.rgb(110, 163, 156);
-        } else if (hex.equals("#C0DCC0")){//Sábado letivo
+        } else if (string.equals("#C0DCC0")){//Sábado letivo
             color = Color.rgb(29, 255, 0);
-        } else if (hex.equals("#D98719")){//Jogos Intermédios
+        } else if (string.equals("#D98719")){//Jogos Intermédios
             color = Color.rgb(199, 255, 68);
-        } else if (hex.equals("#A6CAF0")){//Fim de Etapa
+        } else if (string.equals("#A6CAF0")){//Fim de Etapa
             color = Color.rgb(51, 107, 95);
-        } else if (hex.equals("#238E23")){//Início de Etapa
+        } else if (string.equals("#238E23")){//Início de Etapa
             color = Color.rgb(70, 147, 131);
-        } else if (hex.equals("#C0DCC0")){//início de semestre
+        } else if (string.equals("#C0DCC0")){//início de semestre
             color = Color.rgb(79, 168, 149);
-        } else if (hex.equals("#808080")){//Planejamento Docente
+        } else if (string.equals("#808080")){//Planejamento Docente
             color = Color.rgb(145, 145, 145);
-        } else if (hex.equals("#FFFF00")){//Capacitação de Servidores
+        } else if (string.equals("#FFFF00")){//Capacitação de Servidores
             color = Color.rgb(221, 177, 0);
         } else {
-            color = Color.rgb(0,0,0);
+            color = Utils.getRandomColorGenerator(context);
         }
 
         return color;

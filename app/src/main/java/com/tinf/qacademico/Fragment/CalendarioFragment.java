@@ -168,6 +168,17 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
                                 if (calendario.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
                                     adapter.update(calendario.get(j).getDias());
                                     month = j;
+
+                                    Calendar today = Calendar.getInstance();
+                                    today.setTime(new Date());
+
+                                    for (int k = 0; k < calendario.get(j).getDias().size(); k++) {
+                                        if (calendar.getTimeInMillis() < today.getTimeInMillis()) {
+                                            for (int l = 0; l < calendario.get(j).getDias().get(k).getEventos().size(); l++) {
+                                                calendario.get(j).getDias().get(k).getEventos().get(l).setHappened(true);
+                                            }
+                                        }
+                                    }
                                     break;
                                 }
                             }

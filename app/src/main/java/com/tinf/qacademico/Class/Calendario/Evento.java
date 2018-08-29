@@ -9,6 +9,7 @@ public class Evento implements Serializable {
     private int color;
     private String inicio;
     private String fim;
+    private boolean happened;
 
     public Evento(String title, String description, int color) {
         this.title = title;
@@ -38,4 +39,11 @@ public class Evento implements Serializable {
 
     public String getFim() { return fim;  }
 
+    public boolean hasHappened() {
+        return happened;
+    }
+
+    public void setHappened(boolean happened) {
+        this.happened = happened;
+    }
 }
