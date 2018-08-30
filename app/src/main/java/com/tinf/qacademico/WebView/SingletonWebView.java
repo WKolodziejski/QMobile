@@ -17,7 +17,9 @@ import java.util.List;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
 import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
@@ -37,6 +39,8 @@ public class SingletonWebView {
     public String scriptDiario = "";
     public int data_position_horario, data_position_boletim, data_position_diarios, data_position_materiais, periodo_position_horario,
             periodo_position_boletim;
+
+    public int year_position, period_position;
     public Infos infos;
 
     private SingletonWebView() {}
@@ -52,20 +56,15 @@ public class SingletonWebView {
         if (!pg.contains("javascript")) {
             Log.i("Client", "Não contém java script");
             if (!isLoading) {
-                Log.i("Client", "Carregando...");
-                webView.loadUrl(pg);
+                if (pg_home_loaded) {
+                    Log.i("Client", "Carregando...");
+                    webView.loadUrl(pg);
+                } else {
+                    webView.loadUrl(URL + PG_LOGIN);
+                    addToQueue(pg);
+                }
             } else {
-                boolean equals = false;
-                for (int i = 0; i < queue.size(); i++) {
-                    if (queue.get(i).equals(pg)) {
-                        equals = true;
-                        break;
-                    }
-                }
-                if (!equals) {
-                    Log.i("Client", "add a fila: " + pg);
-                    queue.add(pg);
-                }
+                addToQueue(pg);
             }
         } else {
             Log.i("Client", "Contém java script");
@@ -91,6 +90,20 @@ public class SingletonWebView {
         isPaused = false;
     }
 
+    private void addToQueue(String pg) {
+        boolean equals = false;
+        for (int i = 0; i < queue.size(); i++) {
+            if (queue.get(i).equals(pg)) {
+                equals = true;
+                break;
+            }
+        }
+        if (!equals) {
+            Log.i("Client", "add a fila: " + pg);
+            queue.add(pg);
+        }
+    }
+
     public void downloadMaterial(Context context, String link){
         if (!webView.getUrl().contains(URL + PG_MATERIAIS)) {
             loadUrl(URL + PG_MATERIAIS);
@@ -101,6 +114,10 @@ public class SingletonWebView {
             context.startActivity(i);
         });
         webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
+    }
+
+    public void changeDate() {
+
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
@@ -115,6 +132,7 @@ public class SingletonWebView {
         queue.add(URL + PG_HORARIO);
         queue.add(URL + PG_BOLETIM);
         queue.add(URL + PG_DIARIOS);
+        queue.add(URL + PG_HOME);
 
         webView = new WebView(context);
         WebSettings faller = webView.getSettings();

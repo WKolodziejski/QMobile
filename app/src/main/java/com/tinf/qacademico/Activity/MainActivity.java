@@ -22,6 +22,7 @@ import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
 import com.tinf.qacademico.Class.Diarios.DiariosList;
+import com.tinf.qacademico.Class.Materia;
 import com.tinf.qacademico.Class.Materiais.Materiais;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
@@ -36,10 +38,12 @@ import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
 import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
 import com.tinf.qacademico.R;
+import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.Utilities.Design;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
     private OnPageUpdated onPageUpdated;
+
     public List<DiariosList> diariosList;
     public List<MateriaisList> materiaisList;
 
@@ -96,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         if (getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getBoolean(Utils.LOGIN_VALID, false)) {
             setTitle(getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getString(Utils.LOGIN_NAME, ""));
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
-            SingletonWebView.getInstance().loadUrl(URL + PG_LOGIN);
+            //SingletonWebView.getInstance().loadUrl(URL + PG_LOGIN);
+            SingletonWebView.getInstance().loadNextUrl();
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
@@ -125,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     .show();
             return true;
         } else if (id == R.id.action_date) {
-
+            //Utils.showChangeDateDialog(this);
             return true;
         }
         return super.onOptionsItemSelected(item);

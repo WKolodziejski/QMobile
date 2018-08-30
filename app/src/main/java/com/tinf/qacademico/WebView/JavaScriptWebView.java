@@ -77,8 +77,8 @@ public class JavaScriptWebView {
 
                         onPageFinish.onPageFinish(URL + PG_HOME, null);
 
-                    } catch (Exception ignored) {
-                        Log.i("JavaScriptWebView", "Home error");
+                    } catch (Exception e) {
+                        Log.e("JavaScriptWebView", "Home error: " + e);
                     }
                 }
             }
@@ -94,9 +94,9 @@ public class JavaScriptWebView {
                 try {
                     String[][] trtd_boletim;
                     Document homeBoletim = Jsoup.parse(html_p);
-                    //webView.bugBoletim = homeBoletim.outerHtml();
 
                     final Element table_boletim = homeBoletim.select("table").get(6);
+
                     Element table_notas = table_boletim.select("table").get(7);
 
                     Elements tables = table_notas.children();
@@ -157,8 +157,8 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_BOLETIM, boletim);
 
-                } catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "Boletim error");
+                } catch (Exception e) {
+                    Log.e("JavaScriptWebView", "Boletim error: " + e);
                 }
             }
         }.start();
@@ -172,10 +172,11 @@ public class JavaScriptWebView {
             public void run() {
                 try {
                     Document homeDiarios = Jsoup.parse(html_p);
-                    //webView.bugDiarios = homeDiarios.outerHtml();
 
                     Elements table_diarios = homeDiarios.getElementsByTag("tbody").eq(12);
+
                     int numMaterias = table_diarios.select("table.conteudoTexto").size();
+
                     Element nxtElem = null;
 
                     List<DiariosList> diarios = new ArrayList<>();
@@ -283,8 +284,8 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_DIARIOS, diarios);
 
-                } catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "Diarios error");
+                } catch (Exception e) {
+                    Log.e("JavaScriptWebView", "Diarios error: " + e);
                 }
             }
         }.start();
@@ -416,8 +417,8 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_HORARIO, horario);
 
-                } catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "Horario error");
+                } catch (Exception e) {
+                    Log.e("JavaScriptWebView", "Horario error: " + e);
                 }
             }
         }.start();
@@ -519,8 +520,8 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_MATERIAIS, materiais);
 
-                } catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "Materiais error");
+                } catch (Exception e) {
+                    Log.e("JavaScriptWebView", "Materiais error: " + e);
                 }
             }
         }.start();
@@ -532,9 +533,8 @@ public class JavaScriptWebView {
         new Thread() {
             @Override
             public void run() {
-               //try {
+               try {
                     Document document = Jsoup.parse(html_p);
-                    //webView.bugCalendario = document.outerHtml();
 
                     Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
@@ -670,9 +670,9 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_CALENDARIO, listMeses);
 
-                /*} catch (Exception ignored) {
-                    Log.i("JavaScriptWebView", "Calendario error");
-                }*/
+                } catch (Exception e) {
+                    Log.i("JavaScriptWebView", "Calendario error: " + e);
+                }
             }
         }.start();
     }
