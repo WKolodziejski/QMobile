@@ -224,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             } else if (url_p.equals(URL + PG_CALENDARIO) && navigation.getSelectedItemId() == R.id.navigation_calendario) {
                 onPageUpdated.onPageUpdate(list);
                 Log.i("onFinish", "updatedCalendario");
+            } else if (list.get(0) instanceof MateriaisList) {
+                materiaisList = (List<MateriaisList>) list;
             }
         });
     }

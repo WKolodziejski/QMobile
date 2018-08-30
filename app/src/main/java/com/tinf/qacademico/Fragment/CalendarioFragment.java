@@ -104,6 +104,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
         compactCalendar.setCurrentDate(date);
         compactCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
         compactCalendar.setUseThreeLetterAbbreviation(true);
+        compactCalendar.shouldDrawIndicatorsBelowSelectedDays(true);
 
         ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
 
@@ -171,6 +172,9 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
                                     Calendar today = Calendar.getInstance();
                                     today.setTime(new Date());
+                                    today.set(Calendar.HOUR_OF_DAY, 0);
+                                    today.set(Calendar.MINUTE, 0);
+                                    today.set(Calendar.SECOND, 0);
 
                                     for (int k = 0; k < calendario.get(j).getDias().size(); k++) {
                                         if (calendar.getTimeInMillis() < today.getTimeInMillis()) {

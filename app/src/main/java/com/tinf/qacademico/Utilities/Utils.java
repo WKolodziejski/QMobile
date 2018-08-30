@@ -82,10 +82,10 @@ public class Utils {
             case 0: color = res.getColor(R.color.deep_orange_400);
             break;
 
-            case 1: color = res.getColor(R.color.yellow_400);
+            case 1: color = res.getColor(R.color.yellow_A700);
             break;
 
-            case 2: color = res.getColor(R.color.lime_400);
+            case 2: color = res.getColor(R.color.lime_A700);
             break;
 
             case 3: color = res.getColor(R.color.light_green_400);
