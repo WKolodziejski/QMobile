@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.CheckUpdate;
 import com.tinf.qacademico.Utilities.SendEmail;
 import com.tinf.qacademico.Utilities.Utils;
 
@@ -20,7 +19,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
 
         getLayoutInflater().inflate(R.layout.action_bar, (ViewGroup) findViewById(android.R.id.content));
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -41,18 +40,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Preference feedback = findPreference("key_send_feedback");
             feedback.setOnPreferenceClickListener(preference -> {
                 SendEmail.openGmail(getActivity());
-                return true;
-            });
-
-            Preference changelog = findPreference("key_changelog");
-            changelog.setOnPreferenceClickListener(preference -> {
-                Utils.showChangelog(getActivity());
-                return true;
-            });
-
-            Preference update = findPreference("key_update");
-            update.setOnPreferenceClickListener(preference -> {
-                CheckUpdate.updateApp(getActivity(), true);
                 return true;
             });
 

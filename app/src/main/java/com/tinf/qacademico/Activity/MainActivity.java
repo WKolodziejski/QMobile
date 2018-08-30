@@ -36,7 +36,6 @@ import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
 import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.CheckUpdate;
 import com.tinf.qacademico.Utilities.Design;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
@@ -88,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         hideExpandBtn();
 
         Design.setNavigationTransparent(this);
-
-        //CheckUpdate.checkUpdate(this);
 
         SingletonWebView.getInstance().configWebView(getApplicationContext());
         SingletonWebView.getInstance().setOnPageFinishedListener(this);
@@ -365,16 +362,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         editor.putBoolean(Utils.LOGIN_VALID, false);
         editor.apply();
         recreate();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 0: if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        CheckUpdate.startDownload(this, CheckUpdate.checkUpdate(this));
-                        break;
-                    }
-        }
     }
 
     @Override

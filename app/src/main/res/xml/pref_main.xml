@@ -50,16 +50,6 @@
             android:title="@string/menu_bug" />
 
         <Preference
-            android:key="key_changelog"
-            android:summary="@string/pref_changes"
-            android:title="@string/action_changes" />
-
-        <Preference
-            android:key="key_update"
-            android:summary="@string/pref_update"
-            android:title="@string/action_att" />
-
-        <Preference
             android:key="key_about"
             android:title="@string/action_about" />
 

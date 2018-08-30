@@ -108,15 +108,4 @@ public class Utils {
         }
         return color;
     }
-
-    public static void showChangelog(Context context){
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View theView = Objects.requireNonNull(inflater).inflate(R.layout.dialog_changelog, null);
-        TextView changes = (TextView) theView.findViewById(R.id.changelog);
-        changes.setText(context.getResources().getString(R.string.changelog_list));
-        new AlertDialog.Builder(context).setView(theView)
-                .setCustomTitle(Utils.customAlertTitle(context, R.drawable.ic_history_black_24dp, R.string.action_changes, R.color.changes_dialog))
-                .setPositiveButton(R.string.dialog_close, null)
-                .show();
-    }
 }
