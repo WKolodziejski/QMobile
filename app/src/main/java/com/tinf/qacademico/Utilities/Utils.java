@@ -14,7 +14,6 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.Objects;
 import java.util.Random;
 
@@ -26,6 +25,7 @@ public class Utils {
     public static final String CALENDARIO = ".Calendario";
     public static final String ORGANIZACAO = ".Organizacao";
     public static final String MATERIAIS = ".Materiais";
+    public static final String MATERIAS = ".Materias";
     public static final String NOTAS = ".Notas";
     public static final String LOGIN = ".Login";
     public static final String LOGIN_VALID = ".Valido";
@@ -137,12 +137,8 @@ public class Utils {
                     webView.data_position_boletim = year.getValue();
                     webView.periodo_position_boletim = periodo.getValue();
 
-                    if (Data.loadList(activity.getApplicationContext(),
-                            Utils.BOLETIM, webView.infos.data_boletim[year.getValue()],
-                            webView.infos.periodo_boletim[periodo.getValue()]) != null) {
 
 
-                    }
 
 
                     if (Utils.isConnected(activity.getApplicationContext())) {
@@ -159,6 +155,9 @@ public class Utils {
                                     + "&cmbperiodos=1&Exibir+Boletim");
                         }
                     }
+
+
+
 
 
 

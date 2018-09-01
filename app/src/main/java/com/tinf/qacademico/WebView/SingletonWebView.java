@@ -41,6 +41,7 @@ public class SingletonWebView {
             periodo_position_boletim;
 
     public int year_position, period_position;
+
     public Infos infos;
 
     private SingletonWebView() {}
@@ -122,8 +123,8 @@ public class SingletonWebView {
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     public void configWebView(Context context) {
-        if (Data.loadDate(context) != null) {
-            infos = Data.loadDate(context);
+        if (Data.loadInfos(context) != null) {
+            infos = Data.loadInfos(context);
         } else {
             infos = new Infos();
         }

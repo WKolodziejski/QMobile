@@ -17,7 +17,7 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ExpandableListViewHolder extends RecyclerView.ViewHolder {
+public class DiariosListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.list_text)               public TextView text;
     @BindView(R.id.expandable_layout_list)  public ExpandableLayout expand;
     @BindView(R.id.list_arrow)              public ImageView arrow;
@@ -26,7 +26,7 @@ public class ExpandableListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.recycler_list_diarios)   public RecyclerView recyclerView;
     @BindView(R.id.table_list)              public LinearLayout table;
 
-    public ExpandableListViewHolder(View view) {
+    public DiariosListViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
     }

@@ -7,7 +7,8 @@ import android.view.MotionEvent;
 
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.tinf.qacademico.Class.Horario;
+import com.tinf.qacademico.Class.Materias.Horario;
+import com.tinf.qacademico.Class.Materias.Materia;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,7 +27,7 @@ public class CustomWeekView extends WeekView {
         super(context, attrs, defStyleAttr);
     }
 
-    public static void congifWeekView(WeekView weekView, List<Horario> horarioList) {
+    public static void congifWeekView(WeekView weekView, List<Materia> materias) {
 
         Calendar firstDay = Calendar.getInstance();
         firstDay.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -38,22 +39,24 @@ public class CustomWeekView extends WeekView {
 
             List<WeekViewEvent> week = new ArrayList<>();
 
-            for (int i = 0; i < horarioList.size(); i++) {
-                Calendar startTime = (Calendar) horarioList.get(i).getStartTime().clone();
-                startTime.set(Calendar.MONTH, newMonth - 1);
-                startTime.set(Calendar.YEAR, newYear);
+            for (int i = 0; i < materias.size(); i++) {
+                for (int j = 0; j < materias.get(i).getHorarios().size(); j++) {
+                    Calendar startTime = (Calendar) materias.get(i).getHorarios().get(j).getStartTime().clone();
+                    startTime.set(Calendar.MONTH, newMonth - 1);
+                    startTime.set(Calendar.YEAR, newYear);
 
-                Calendar endTime = (Calendar) horarioList.get(i).getEndTime().clone();
-                endTime.set(Calendar.MONTH, newMonth - 1);
-                endTime.set(Calendar.YEAR, newYear);
+                    Calendar endTime = (Calendar) materias.get(i).getHorarios().get(j).getEndTime().clone();
+                    endTime.set(Calendar.MONTH, newMonth - 1);
+                    endTime.set(Calendar.YEAR, newYear);
 
-                WeekViewEvent event = new WeekViewEvent(i, horarioList.get(i).getName(), startTime, endTime);
-                event.setColor(horarioList.get(i).getColor());
+                    WeekViewEvent event = new WeekViewEvent(i, materias.get(i).getName(), startTime, endTime);
+                    event.setColor(materias.get(i).getColor());
 
-                week.add(event);
+                    week.add(event);
 
-                if (startTime.get(Calendar.HOUR_OF_DAY) < firstHour) {
-                    firstHour = startTime.get(Calendar.HOUR_OF_DAY);
+                    if (startTime.get(Calendar.HOUR_OF_DAY) < firstHour) {
+                        firstHour = startTime.get(Calendar.HOUR_OF_DAY);
+                    }
                 }
             }
 

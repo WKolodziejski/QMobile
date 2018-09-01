@@ -19,6 +19,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qacademico.Utilities.Utils.PG_ERRO;
+import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
 import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
@@ -57,7 +58,8 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             } else if (url_p.equals(URL + PG_ERRO)) {
                 loginFragment.dismissProgressBar();
                 showSnackBar(getResources().getString(R.string.text_invalid_login), false);
-            } else if (url_p.contains(URL + PG_BOLETIM)
+            } else if (url_p.contains(URL + PG_HOME)
+                    || url_p.contains(URL + PG_BOLETIM)
                     || url_p.contains(URL + PG_HORARIO)
                     || url_p.contains(URL + PG_DIARIOS)
                     || url_p.contains(URL + PG_CALENDARIO)) {
@@ -99,9 +101,45 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
         loginFragment.textView_loading.setVisibility(View.VISIBLE);
 
+        if (!webView.pg_diarios_loaded[0]) {
+            webView.loadUrl(URL + PG_DIARIOS);
+            Log.i("LoginActivity", "DIARIOS[0]");
+
+            loginFragment.textView_loading.setText(String.format(
+                    getResources().getString(R.string.text_loading_first_login),
+                    Integer.toString(1), "?"));
+
+            return;
+        } else {
+            for (int i = 1; i < webView.infos.data_diarios.length; i++) {
+                if (!webView.pg_diarios_loaded[i]) {
+                    Log.i("LoginActivity", "DIARIOS[" + i + "]");
+                    webView.data_position_diarios = i;
+
+                    webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
+                            + (webView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
+
+                    webView.loadUrl(URL + PG_DIARIOS);
+
+                    loginFragment.textView_loading.setText(String.format(
+                            getResources().getString(R.string.text_loading_first_login),
+                            Integer.toString(i + 1), Integer.toString(webView.infos.data_diarios.length)));
+
+                    return;
+                }
+            }
+        }
+
+        webView.data_position_diarios = 0;
+
         if (!webView.pg_boletim_loaded[0]) {
             webView.loadUrl(URL + PG_BOLETIM);
             Log.i("LoginActivity", "BOLETIM[0]");
+
+            loginFragment.textView_loading.setText(String.format(
+                    getResources().getString(R.string.text_loading_first_login),
+                    Integer.toString(1), "?"));
+
             return;
         } else {
             for (int i = 1; i < webView.infos.data_boletim.length; i++) {
@@ -126,6 +164,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         if (!webView.pg_horario_loaded[0]) {
             webView.loadUrl(URL + PG_HORARIO);
             Log.i("LoginActivity", "HORARIO[0]");
+
+            loginFragment.textView_loading.setText(String.format(
+                    getResources().getString(R.string.text_loading_first_login),
+                    Integer.toString(1), "?"));
+
             return;
         } else {
             for (int i = 1; i < webView.infos.data_horario.length; i++) {
@@ -146,32 +189,6 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         }
 
         webView.data_position_horario = 0;
-
-        if (!webView.pg_diarios_loaded[0]) {
-            webView.loadUrl(URL + PG_DIARIOS);
-            Log.i("LoginActivity", "DIARIOS[0]");
-            return;
-        } else {
-            for (int i = 1; i < webView.infos.data_diarios.length; i++) {
-                if (!webView.pg_diarios_loaded[i]) {
-                    Log.i("LoginActivity", "DIARIOS[" + i + "]");
-                    webView.data_position_diarios = i;
-
-                    webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                            + (webView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
-
-                    webView.loadUrl(URL + PG_DIARIOS);
-
-                    loginFragment.textView_loading.setText(String.format(
-                            getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_diarios.length)));
-
-                    return;
-                }
-            }
-        }
-
-        webView.data_position_diarios = 0;
 
         if (!webView.pg_calendario_loaded) {
             webView.loadUrl(URL + PG_CALENDARIO);

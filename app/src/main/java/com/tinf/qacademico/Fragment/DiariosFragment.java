@@ -1,6 +1,5 @@
 package com.tinf.qacademico.Fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,28 +8,21 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.NumberPicker;
-import android.widget.TextView;
-import android.widget.Toast;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Diarios.DiariosListAdapter;
-import com.tinf.qacademico.Class.Diarios.DiariosList;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
-import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
-import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
-import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
+    public List<Materia> materias;
     DiariosListAdapter adapter;
 
     @Override
@@ -44,10 +36,8 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
-        if(webView.infos.data_diarios != null && ((MainActivity) Objects.requireNonNull(getActivity())).diariosList == null) {
-            ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<DiariosList>) Data.loadList(getContext(), Utils.DIARIOS,
-                    webView.infos.data_diarios[0], null);
-        }
+            materias = Data.loadMaterias(getContext(), webView.infos.data_diarios[webView.data_position_diarios]);
+
 
         setDiarios(view);
 
@@ -55,14 +45,14 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     }
 
     private void setDiarios(View view) {
-        if (((MainActivity) Objects.requireNonNull(getActivity())).diariosList != null) {
+        if (materias != null) {
 
-            if (((MainActivity)getActivity()).diariosList.size() != 0) {
+            if (materias.size() != 0) {
 
                 RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
                 RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                adapter = new DiariosListAdapter(((MainActivity)getActivity()).diariosList, getActivity());
+                adapter = new DiariosListAdapter(materias, getActivity());
 
                 recyclerViewDiarios.setAdapter(adapter);
                 recyclerViewDiarios.setLayoutManager(layout);
@@ -100,7 +90,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
         }
     }
 
-    public void openDateDialog() {
+    /*public void openDateDialog() {
         if (webView.infos.data_diarios != null) {
 
             View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
@@ -153,20 +143,10 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
                     }).setNegativeButton(R.string.dialog_cancel, null)
                     .show();
         }
-    }
+    } */
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (list.get(0) instanceof DiariosList) {
-            ((MainActivity) Objects.requireNonNull(getActivity())).diariosList = (List<DiariosList>) list;
 
-            if (adapter != null) {
-                adapter.update(((MainActivity) getActivity()).diariosList);
-                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(webView.infos.data_diarios[webView.data_position_diarios]);
-            } else {
-                setDiarios(getView());
-            }
-        }
     }
 }

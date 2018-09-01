@@ -15,7 +15,8 @@ import android.widget.LinearLayout;
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Activity.MainActivity;
-import com.tinf.qacademico.Class.Horario;
+import com.tinf.qacademico.Class.Materias.Horario;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Custom.Widget.CustomWeekView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
@@ -27,7 +28,7 @@ import java.util.Objects;
 
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Horario> horarioList;
+    public List<Materia> materias;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,13 +42,12 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
-            horarioList = (List<Horario>) Data.loadList(getContext(), Utils.HORARIO,
-                    webView.infos.data_horario[0], webView.infos.periodo_horario[0]);
+            materias = Data.loadMaterias(getContext(), webView.infos.data_horario[webView.data_position_horario]);
         }
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
-        CustomWeekView.congifWeekView(weekView, horarioList);
+        CustomWeekView.congifWeekView(weekView, materias);
 
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
         horario.setOnClickListener(v -> {

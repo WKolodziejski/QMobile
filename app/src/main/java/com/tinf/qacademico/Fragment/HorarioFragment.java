@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.HorarioActivity;
-import com.tinf.qacademico.Class.Boletim;
-import com.tinf.qacademico.Class.Horario;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Custom.Widget.CustomWeekView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
@@ -20,13 +19,12 @@ import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import java.util.Objects;
-
 import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class HorarioFragment extends Fragment implements HorarioActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Horario> horarioList;
+    public List<Materia> materias;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,8 +38,7 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
         View view = inflater.inflate(R.layout.fragment_horario, container, false);
 
         if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
-            horarioList = (List<Horario>) Data.loadList(getContext(), Utils.HORARIO,
-                    webView.infos.data_horario[0], webView.infos.periodo_horario[0]);
+            materias = Data.loadMaterias(getContext(), webView.infos.data_horario[webView.data_position_horario]);
         }
 
         setHorario(view);
@@ -51,9 +48,9 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
 
     private void setHorario(View view) {
 
-        if (horarioList != null) {
+        if (materias != null) {
 
-            if (horarioList.size() != 0) {
+            if (materias.size() != 0) {
 
                 Objects.requireNonNull(((HorarioActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
                         .setTitle(webView.infos.data_horario[webView.data_position_horario] + " / "
@@ -61,7 +58,7 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
 
                 WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
-                CustomWeekView.congifWeekView(weekView, horarioList);
+                CustomWeekView.congifWeekView(weekView, materias);
             } else {
                 //((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }
@@ -112,9 +109,6 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (list.get(0) instanceof Horario) {
-            horarioList = (List<Horario>) list;
-            setHorario(getView());
-        }
+
     }
 }

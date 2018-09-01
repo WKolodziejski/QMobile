@@ -19,17 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
-
-import static com.tinf.qacademico.Utilities.Utils.email_from;
-import static com.tinf.qacademico.Utilities.Utils.email_from_pwd;
-import static com.tinf.qacademico.Utilities.Utils.email_to;
 
 public class SendEmail {
 
-    public static void openGmail(Context context) {
+    /*public static void openGmail(Context context) {
         String body = null;
         try {
             body = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
@@ -53,7 +47,7 @@ public class SendEmail {
         if (best != null)
             emailIntent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
         context.startActivity(emailIntent);
-    }
+    } */
 
     /*public static void bugReport(Context context, int id) {
         if (Utils.isConnected(context)) {
@@ -170,7 +164,7 @@ public class SendEmail {
         } else {
             Toast.makeText(context, context.getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
         }
-    }*/
+    }
 
     public static void sendSuggestion(Context context) {
         if (Utils.isConnected(context)) {
@@ -259,5 +253,5 @@ public class SendEmail {
                         .setPositiveButton(R.string.dialog_close, null)
                         .show())
                 .send();
-    }
+    } */
 }

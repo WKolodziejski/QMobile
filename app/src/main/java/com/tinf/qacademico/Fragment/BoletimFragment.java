@@ -1,6 +1,5 @@
 package com.tinf.qacademico.Fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,26 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.Toast;
 import com.tinf.qacademico.Activity.MainActivity;
-import com.tinf.qacademico.Class.Boletim;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
-import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.rmondjone.locktableview.LockTableView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
-import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Boletim> boletimList;
-    boolean show_by_semestre = true;
+    public List<Materia> materias;
     public boolean lock_header = true;
 
     @Override
@@ -45,8 +39,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         View view = inflater.inflate(R.layout.fragment_boletim, container, false);
 
         if (webView.infos.data_boletim != null && webView.infos.periodo_boletim != null) {
-            boletimList = (List<Boletim>) Data.loadList(getContext(), Utils.BOLETIM,
-                    webView.infos.data_boletim[0], webView.infos.periodo_boletim[0]);
+            materias = Data.loadMaterias(getContext(), webView.infos.data_boletim[webView.data_position_boletim]);
         }
 
         setBoletim(view, false);
@@ -55,9 +48,9 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
     }
 
     private void setBoletim(View view, boolean showToast) {
-        if (boletimList != null) {
+        if (materias != null) {
 
-            if (boletimList.size() != 0) {
+            if (materias.size() != 0) {
 
                 LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
@@ -67,79 +60,47 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
                 mfristData.add(getResources().getString(R.string.boletim_Materia));
 
-                if (show_by_semestre) {
+                if (showToast) {
+                    Toast.makeText(getContext(), "Sort by period", Toast.LENGTH_SHORT).show();
+                }
 
-                    if (showToast) {
-                        Toast.makeText(getContext(), "Sort by period", Toast.LENGTH_SHORT).show();
-                    }
+                String[] header = {
+                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                        getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                        getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                        getResources().getString(R.string.boletim_TFaltas)
+                };
 
-                    String[] header = {
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                            getResources().getString(R.string.boletim_TFaltas)
-                    };
+                mfristData.addAll(Arrays.asList(header));
 
-                    mfristData.addAll(Arrays.asList(header));
+                mTableDatas.add(mfristData);
 
-                    mTableDatas.add(mfristData);
-
-                    for (int i = 0; i < boletimList.size(); i++) {
+                for (int i = 0; i < materias.size(); i++) {
+                    if (materias.get(i).getEtapas() != null) {
                         ArrayList<String> mRowDatas = new ArrayList<>();
-                        mRowDatas.add(boletimList.get(i).getMateria());
-                        mRowDatas.add(boletimList.get(i).getNotaPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getFaltasPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getRPPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getNotaFinalPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getNotaSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getFaltasSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getRPSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getNotaFinalSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getTfaltas());
-                        mTableDatas.add(mRowDatas);
-                    }
-                } else {
-
-                    if (showToast) {
-                        Toast.makeText(getContext(), "Sort by type", Toast.LENGTH_SHORT).show();
-                    }
-
-                    String[] header = {
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                            getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                            getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                            getResources().getString(R.string.boletim_TFaltas)
-                    };
-
-                    mfristData.addAll(Arrays.asList(header));
-
-                    mTableDatas.add(mfristData);
-
-                    for (int i = 0; i < boletimList.size(); i++) {
-                        ArrayList<String> mRowDatas = new ArrayList<>();
-                        mRowDatas.add(boletimList.get(i).getMateria());
-                        mRowDatas.add(boletimList.get(i).getNotaPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getNotaSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getFaltasPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getFaltasSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getRPPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getRPSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getNotaFinalPrimeiraEtapa());
-                        mRowDatas.add(boletimList.get(i).getNotaFinalSegundaEtapa());
-                        mRowDatas.add(boletimList.get(i).getTfaltas());
+                        mRowDatas.add(materias.get(i).getName());
+                        if (materias.get(i).getEtapas().size() > 0) {
+                            mRowDatas.add(materias.get(i).getEtapas().get(0).getNota());
+                            mRowDatas.add(materias.get(i).getEtapas().get(0).getFaltas());
+                            mRowDatas.add(materias.get(i).getEtapas().get(0).getNotaRP());
+                            mRowDatas.add(materias.get(i).getEtapas().get(0).getNotaFinal());
+                            if (materias.get(i).getEtapas().size() > 1) {
+                                mRowDatas.add(materias.get(i).getEtapas().get(1).getNota());
+                                mRowDatas.add(materias.get(i).getEtapas().get(1).getFaltas());
+                                mRowDatas.add(materias.get(i).getEtapas().get(1).getNotaRP());
+                                mRowDatas.add(materias.get(i).getEtapas().get(1).getNotaFinal());
+                            }
+                        }
+                        mRowDatas.add(materias.get(i).getTotalFaltas());
                         mTableDatas.add(mRowDatas);
                     }
                 }
+
 
                 LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
 
@@ -183,7 +144,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         }
     }
 
-    public void openDateDialog() {
+    /*public void openDateDialog() {
         if (webView.infos.data_boletim != null) {
 
             View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
@@ -228,11 +189,11 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                                 webView.data_position_boletim = year.getValue();
                                 webView.periodo_position_boletim = periodo.getValue();
 
-                                boletimList = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
+                                materias = (List<Boletim>) Data.loadList(Objects.requireNonNull(getContext()),
                                         Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
                                         webView.infos.periodo_boletim[webView.periodo_position_boletim]);
 
-                                onPageUpdate(boletimList);
+                                onPageUpdate(materias);
 
                             } else {
                                 Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
@@ -241,12 +202,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                     }).setNegativeButton(R.string.dialog_cancel, null)
                     .show();
         }
-    }
-
-    public void changeColumnMode() {
-        show_by_semestre = !show_by_semestre;
-        setBoletim(getView(), true);
-    }
+    }*/
 
     public void lockHeader() {
         lock_header = !lock_header;
@@ -255,9 +211,6 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (list.get(0) instanceof Boletim) {
-            boletimList = (List<Boletim>) list;
-            setBoletim(getView(), false);
-        }
+
     }
 }

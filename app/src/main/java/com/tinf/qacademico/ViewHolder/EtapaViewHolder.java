@@ -11,8 +11,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EtapaViewHolder extends RecyclerView.ViewHolder{
-    @BindView(R.id.aux)                     public TextView aux;
-    @BindView(R.id.recycler_diarios_item)   public RecyclerView recyclerView;
+    @BindView(R.id.etapa)                 public TextView etapa;
+    @BindView(R.id.recycler_diarios_item) public RecyclerView recyclerView;
 
     public EtapaViewHolder(View view) {
         super(view);

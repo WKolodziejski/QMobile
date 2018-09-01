@@ -6,17 +6,15 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-
-import com.tinf.qacademico.Class.Boletim;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Meses;
-import com.tinf.qacademico.Class.Diarios.Diarios;
-import com.tinf.qacademico.Class.Horario;
-import com.tinf.qacademico.Class.Diarios.DiariosList;
-import com.tinf.qacademico.Class.Diarios.Etapa;
+import com.tinf.qacademico.Class.Materias.Diarios;
+import com.tinf.qacademico.Class.Materias.Horario;
+import com.tinf.qacademico.Class.Materias.Etapa;
 import com.tinf.qacademico.Class.Materiais.Materiais;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.Utilities.Utils;
@@ -29,7 +27,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
@@ -101,7 +98,25 @@ public class JavaScriptWebView {
 
                     Elements tables = table_notas.children();
 
-                    List<Boletim> boletim = new ArrayList<>();
+                    Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
+                    Elements options_ano = ano.select("option");
+
+                    webView.infos.data_boletim = new String[options_ano.size()];
+
+                    for (int i = 0; i < options_ano.size(); i++) {
+                        webView.infos.data_boletim[i] = options_ano.get(i).text();
+                    }
+
+                    Document periodo = Jsoup.parse(homeBoletim.select("#cmbperiodos").first().toString());
+                    Elements options_periodo = periodo.select("option");
+
+                    webView.infos.periodo_boletim = new String[options_periodo.size()];
+
+                    for (int i = 0; i < options_periodo.size(); i++) {
+                        webView.infos.periodo_boletim[i] = options_periodo.get(i).text();
+                    }
+
+                    List<Materia> materias = Data.loadMaterias(context, webView.infos.data_boletim[webView.data_position_boletim]);
 
                     for (Element table : tables) {
                         Elements trs = table.select("tr");
@@ -117,45 +132,50 @@ public class JavaScriptWebView {
                                 }
                             }
 
-                            boletim.add(new Boletim(trtd_boletim[i][0], trtd_boletim[i][3], trtd_boletim[i][5], trtd_boletim[i][6], trtd_boletim[i][7],
-                                    trtd_boletim[i][9], trtd_boletim[i][10], trtd_boletim[i][11], trtd_boletim[i][12], trtd_boletim[i][14]));
+                            String nomMateria = trtd_boletim[i][0].trim();
+                            String tfaltas = trtd_boletim[i][3].trim();
+                            String notaPrimeiraEtapa = trtd_boletim[i][5].trim();
+                            String faltasPrimeiraEtapa = trtd_boletim[i][6].trim();
+                            String RPPrimeiraEtapa = trtd_boletim[i][7].trim();
+                            String notaFinalPrimeiraEtapa = trtd_boletim[i][9].trim();
+                            String notaSegundaEtapa = trtd_boletim[i][10].trim();
+                            String faltasSegundaEtapa = trtd_boletim[i][11].trim();
+                            String RPSegundaEtapa = trtd_boletim[i][12].trim();
+                            String notaFinalSegundaEtapa = trtd_boletim[i][14].trim();
+
+                            for (int k = 0; k < materias.size(); k++) {
+                                if (nomMateria.equals(materias.get(k).getName())) {
+                                    materias.get(k).setTotalFaltas(tfaltas);
+                                    if (materias.get(k).getEtapas().size() > 0) {
+                                        materias.get(k).getEtapas().get(0).setNota(notaPrimeiraEtapa);
+                                        materias.get(k).getEtapas().get(0).setFaltas(faltasPrimeiraEtapa);
+                                        materias.get(k).getEtapas().get(0).setNotaFinal(notaFinalPrimeiraEtapa);
+                                        materias.get(k).getEtapas().get(0).setNotaRP(RPPrimeiraEtapa);
+                                        if (materias.get(k).getEtapas().size() > 1) {
+                                            materias.get(k).getEtapas().get(1).setNota(notaSegundaEtapa);
+                                            materias.get(k).getEtapas().get(1).setFaltas(faltasSegundaEtapa);
+                                            materias.get(k).getEtapas().get(1).setNotaFinal(notaFinalSegundaEtapa);
+                                            materias.get(k).getEtapas().get(1).setNotaRP(RPSegundaEtapa);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
-
-                    Collections.sort(boletim, (b1, b2) -> b1.getMateria().compareTo(b2.getMateria()));
-
-                    Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
-                    Elements options_ano = ano.select("option");
-
-                    webView.infos.data_boletim = new String[options_ano.size()];
 
                     if (webView.pg_boletim_loaded.length == 1) {
                         webView.pg_boletim_loaded = new boolean[options_ano.size()];
                         webView.pg_boletim_loaded[0] = true;
                     }
 
-                    for (int i = 0; i < options_ano.size(); i++) {
-                        webView.infos.data_boletim[i] = options_ano.get(i).text();
-                    }
-
-                    Document periodo = Jsoup.parse(homeBoletim.select("#cmbperiodos").first().toString());
-                    Elements options_periodo = periodo.select("option");
-
-                    webView.infos.periodo_boletim = new String[options_periodo.size()];
-
-                    for (int i = 0; i < options_periodo.size(); i++) {
-                        webView.infos.periodo_boletim[i] = options_periodo.get(i).text();
-                    }
-
-                    Data.saveList(context, boletim, Utils.BOLETIM, webView.infos.data_boletim[webView.data_position_boletim],
-                               webView.infos.periodo_boletim[webView.periodo_position_boletim]);
-
-                    Data.saveDate(context, webView.infos);
+                    Data.saveInfos(context);
+                    Data.saveMaterias(context, materias, webView.infos.data_boletim[webView.data_position_boletim]);
 
                     webView.pg_boletim_loaded[webView.data_position_boletim] = true;
                     Log.i("JavaScriptWebView", "Boletim handled!");
 
-                    onPageFinish.onPageFinish(URL + PG_BOLETIM, boletim);
+                    onPageFinish.onPageFinish(URL + PG_BOLETIM, materias);
 
                 } catch (Exception e) {
                     Log.e("JavaScriptWebView", "Boletim error: " + e);
@@ -171,15 +191,23 @@ public class JavaScriptWebView {
             @Override
             public void run() {
                 try {
-                    Document homeDiarios = Jsoup.parse(html_p);
+                    Document document = Jsoup.parse(html_p);
 
-                    Elements table_diarios = homeDiarios.getElementsByTag("tbody").eq(12);
+                    Elements table_diarios = document.getElementsByTag("tbody").eq(12);
 
                     int numMaterias = table_diarios.select("table.conteudoTexto").size();
 
                     Element nxtElem = null;
 
-                    List<DiariosList> diarios = new ArrayList<>();
+                    Elements options = document.getElementsByTag("option");
+
+                    webView.infos.data_diarios = new String[options.size() - 1];
+
+                    for (int i = 0; i < options.size() - 1; i++) {
+                        webView.infos.data_diarios[i] = options.get(i + 1).text();
+                    }
+
+                    List<Materia> materias = Data.loadMaterias(context, webView.infos.data_diarios[webView.data_position_diarios]);
 
                     for (int y = 0; y < numMaterias; y++) {
 
@@ -191,27 +219,27 @@ public class JavaScriptWebView {
                         String nomeMateria = table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).first().child(0).text();
                         nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2, nomeMateria.indexOf("("));
                         nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2);
-                        String aux;
+                        String etapa;
 
                         if (nxtElem != null) {
-                            aux = nxtElem.child(0).child(0).ownText();
+                            etapa = nxtElem.child(0).child(0).ownText();
                         } else {
-                            aux = "null";
+                            etapa = "null";
                         }
 
-                        while (aux.contains("Etapa")) {
-                            if (aux.equals("1a. Etapa") || aux.equals("1ª Etapa")) {
-                                aux = context.getResources().getString(R.string.diarios_PrimeiraEtapa);
-                            } else if (aux.equals("1a Reavaliação da 1a Etapa") || aux.equals("1ª Reavaliação da 1ª Etapa")) {
-                                aux = context.getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
-                            } else if (aux.equals("2a Reavaliação da 1a Etapa") || aux.equals("2ª Reavaliação da 1ª Etapa")) {
-                                aux = context.getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
-                            } else if (aux.equals("2a. Etapa") || aux.equals("2ª Etapa")) {
-                                aux = context.getResources().getString(R.string.diarios_SegundaEtapa);
-                            } else if (aux.equals("1a Reavaliação da 2a Etapa") || aux.equals("1ª Reavaliação da 2ª Etapa")) {
-                                aux = context.getResources().getString(R.string.diarios_RP1_SegundaEtapa);
-                            } else if (aux.equals("2a Reavaliação da 2a Etapa") || aux.equals("2ª Reavaliação da 2ª Etapa")) {
-                                aux = context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
+                        while (etapa.contains("Etapa")) {
+                            if (etapa.equals("1a. Etapa") || etapa.equals("1ª Etapa")) {
+                                etapa = context.getResources().getString(R.string.diarios_PrimeiraEtapa);
+                            } else if (etapa.equals("1a Reavaliação da 1a Etapa") || etapa.equals("1ª Reavaliação da 1ª Etapa")) {
+                                etapa = context.getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
+                            } else if (etapa.equals("2a Reavaliação da 1a Etapa") || etapa.equals("2ª Reavaliação da 1ª Etapa")) {
+                                etapa = context.getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
+                            } else if (etapa.equals("2a. Etapa") || etapa.equals("2ª Etapa")) {
+                                etapa = context.getResources().getString(R.string.diarios_SegundaEtapa);
+                            } else if (etapa.equals("1a Reavaliação da 2a Etapa") || etapa.equals("1ª Reavaliação da 2ª Etapa")) {
+                                etapa = context.getResources().getString(R.string.diarios_RP1_SegundaEtapa);
+                            } else if (etapa.equals("2a Reavaliação da 2a Etapa") || etapa.equals("2ª Reavaliação da 2ª Etapa")) {
+                                etapa = context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
                             }
 
                             Element tabelaNotas = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
@@ -248,41 +276,49 @@ public class JavaScriptWebView {
 
                             nxtElem = nxtElem.nextElementSibling();
 
-                            etapas.add(new Etapa(aux, trabalhos));
+                            etapas.add(new Etapa(etapa, trabalhos));
 
                             if (nxtElem != null) {
-                                aux = nxtElem.child(0).child(0).text();
+                                etapa = nxtElem.child(0).child(0).text();
                             } else {
-                                aux = "null";
+                                etapa = "null";
                             }
                         }
-                        diarios.add(new DiariosList(nomeMateria, etapas));
+
+                        boolean existsMateria = true;
+
+                        for (int k = 0; k < materias.size(); k++) {
+                            if (nomeMateria.trim().equals(materias.get(k).getName())) {
+                                materias.get(k).setEtapas(etapas);
+                                Log.i("Materia 1", nomeMateria);
+                                Log.i("Materia 2", materias.get(k).getName());
+                                existsMateria = true;
+                                break;
+                            } else {
+                                existsMateria = false;
+                            }
+                        }
+
+                        if (!existsMateria || materias.isEmpty()) {
+                            materias.add(new Materia(nomeMateria, pickColor(nomeMateria), etapas));
+                            Log.i("Materia 1", nomeMateria);
+                        }
                     }
 
-                    Collections.sort(diarios, (d1, d2) -> d1.getTitle().compareTo(d2.getTitle()));
-
-                    Elements options = homeDiarios.getElementsByTag("option");
-
-                    webView.infos.data_diarios = new String[options.size() - 1];
-
-                    for (int i = 0; i < options.size() - 1; i++) {
-                        webView.infos.data_diarios[i] = options.get(i + 1).text();
-                    }
+                    Collections.sort(materias, (d1, d2) -> d1.getName().compareTo(d2.getName()));
 
                     if (webView.pg_diarios_loaded.length == 1) {
                         webView.pg_diarios_loaded = new boolean[options.size()];
                         webView.pg_diarios_loaded[0] = true;
                     }
 
-                    Data.saveList(context, diarios, Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios],
-                            null);
-
-                    Data.saveDate(context, webView.infos);
+                    Data.saveInfos(context);
+                    Data.saveMaterias(context, materias, webView.infos.data_diarios[webView.data_position_diarios]);
 
                     webView.pg_diarios_loaded[webView.data_position_diarios] = true;
                     Log.i("JavaScriptWebView", "Diarios handled!");
 
-                    onPageFinish.onPageFinish(URL + PG_DIARIOS, diarios);
+                    onPageFinish.onPageFinish(URL + PG_DIARIOS, materias);
 
                 } catch (Exception e) {
                     Log.e("JavaScriptWebView", "Diarios error: " + e);
@@ -300,14 +336,29 @@ public class JavaScriptWebView {
                 try {
                     String[][] trtd_horario = null;
                     String[] code = null;
-                    Document homeHorario = Jsoup.parse(html_p);
-                    //webView.bugHorario = homeHorario.outerHtml();
+                    Document document = Jsoup.parse(html_p);
 
-                    Element table_horario = homeHorario.select("table").eq(11).first();
-                    Element table_codes = homeHorario.select("table").eq(12).first();
+                    Element table_horario = document.select("table").eq(11).first();
+                    Element table_codes = document.select("table").eq(12).first();
                     Elements codes = table_codes.children();
 
-                    List<Horario> horario = new ArrayList<>();
+                    Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
+                    Elements options_ano = ano.select("option");
+
+                    webView.infos.data_horario = new String[options_ano.size()];
+
+                    for (int i = 0; i < options_ano.size(); i++) {
+                        webView.infos.data_horario[i] = options_ano.get(i).text();
+                    }
+
+                    Document periodo = Jsoup.parse(document.select("#cmbperiodos").first().toString());
+                    Elements options_periodo = periodo.select("option");
+
+                    webView.infos.periodo_horario = new String[options_periodo.size()];
+
+                    for (int i = 0; i < options_periodo.size(); i++) {
+                        webView.infos.periodo_horario[i] = options_periodo.get(i).text();
+                    }
 
                     for (Element table : codes) {
                         Elements trs = table.select("tr");
@@ -330,7 +381,7 @@ public class JavaScriptWebView {
                             for (int j = 0; j < tds.size(); j++) {
                                 trtd_horario[i][j] = tds.get(j).text();
 
-                                for (int k = 1; k < code.length; k++) {
+                                for (int k = 1; k < Objects.requireNonNull(code).length; k++) {
                                     String sub = code[k].substring(0, code[k].indexOf("-") + 1);
                                     sub = sub.substring(0, sub.lastIndexOf(" ") + 1);
 
@@ -364,8 +415,16 @@ public class JavaScriptWebView {
                         }
                     }
 
+                    List<Materia> materias = Data.loadMaterias(context, webView.infos.data_horario[webView.data_position_horario]);
+
+                    for (int i = 0; i < materias.size(); i++) {
+                        materias.get(i).setHorarios(new ArrayList<>());
+                    }
+
                     for (int i = 1; i <= 5; i++) {
+
                         for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
+
                             if (!trtd_horario[j][i].equals("")) {
 
                                 Calendar startTime = Calendar.getInstance();
@@ -377,45 +436,27 @@ public class JavaScriptWebView {
                                 endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(trtd_horario[j][0])));
                                 endTime.set(Calendar.MINUTE, trimm(trimtd(trtd_horario[j][0])));
 
-                                horario.add(new Horario(trtd_horario[j][i], startTime, endTime, pickColor(trtd_horario[j][i])));
+                                for (int k = 0; k < materias.size(); k++) {
+                                    if (trtd_horario[j][i].trim().equals(materias.get(k).getName())) {
+                                        materias.get(k).getHorarios().add(new Horario(startTime, endTime));
+                                    }
+                                }
                             }
                         }
                     }
-
-                    horario = setColors(horario);
-
-                    Document ano = Jsoup.parse(homeHorario.select("#cmbanos").first().toString());
-                    Elements options_ano = ano.select("option");
-
-                    webView.infos.data_horario = new String[options_ano.size()];
 
                     if (webView.pg_horario_loaded.length == 1) {
                         webView.pg_horario_loaded = new boolean[options_ano.size()];
                         webView.pg_horario_loaded[0] = true;
                     }
 
-                    for (int i = 0; i < options_ano.size(); i++) {
-                        webView.infos.data_horario[i] = options_ano.get(i).text();
-                    }
-
-                    Document periodo = Jsoup.parse(homeHorario.select("#cmbperiodos").first().toString());
-                    Elements options_periodo = periodo.select("option");
-
-                    webView.infos.periodo_horario = new String[options_periodo.size()];
-
-                    for (int i = 0; i < options_periodo.size(); i++) {
-                        webView.infos.periodo_horario[i] = options_periodo.get(i).text();
-                    }
-
-                    Data.saveList(context, horario, Utils.HORARIO, webView.infos.data_horario[webView.data_position_horario],
-                            webView.infos.periodo_horario[webView.periodo_position_horario]);
-
-                    Data.saveDate(context, webView.infos);
+                    Data.saveInfos(context);
+                    Data.saveMaterias(context, materias, webView.infos.data_horario[webView.data_position_horario]);
 
                     webView.pg_horario_loaded[webView.data_position_horario] = true;
                     Log.i("JavaScriptWebView", "Horario handled!");
 
-                    onPageFinish.onPageFinish(URL + PG_HORARIO, horario);
+                    onPageFinish.onPageFinish(URL + PG_HORARIO, materias);
 
                 } catch (Exception e) {
                     Log.e("JavaScriptWebView", "Horario error: " + e);
@@ -511,9 +552,10 @@ public class JavaScriptWebView {
                                 classe = "quit";
                             }
                         }
-
                         materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator(context)));
                     }
+
+                    //Data.saveInfos(context);
 
                     webView.pg_materiais_loaded[webView.data_position_materiais] = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
@@ -538,6 +580,8 @@ public class JavaScriptWebView {
 
                     Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+
+                    webView.infos.data_calendario = document.getElementsByClass("dado_cabecalho").get(1).text();
 
                     List<Meses> listMeses = new ArrayList<>();
 
@@ -631,7 +675,7 @@ public class JavaScriptWebView {
                                             int cor = corQA.equals("#F0F0F0") ? pickColor(title) : pickColor(corQA);
 
                                             listEventos.add(new Evento(title, description, cor));
-                                            Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                            //Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
                                         }
 
                                         //Eventos com mais de um dia.
@@ -649,23 +693,22 @@ public class JavaScriptWebView {
                                                         pickColor(corQA), data_inicio, data_fim);
                                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
                                                 listEventos.add(evento);
-                                                Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                                //Log.e("Eve", numeroDia + "/" + (numMes + 1) + "/" + year);
                                             }
                                         }
                                     }
                                 }
-                                Log.i("Dia", numeroDia + "/" + (numMes + 1) + "/" + year);
+                                //Log.i("Dia", numeroDia + "/" + (numMes + 1) + "/" + year);
                                 diaList.add(new Dia(Integer.parseInt(numeroDia), listEventos));
                             }
                         }
                         listMeses.add(new Meses(diaList, numMes, year));
                     }
 
-                    webView.infos.data_calendario = document.getElementsByClass("dado_cabecalho").get(1).text();
-                    Data.saveList(context, listMeses, Utils.CALENDARIO, webView.infos.data_calendario, null);
-                    Data.saveDate(context, webView.infos);
-                    webView.pg_calendario_loaded = true;
+                    Data.saveCalendar(context, listMeses, webView.infos.data_calendario);
+                    Data.saveInfos(context);
 
+                    webView.pg_calendario_loaded = true;
                     Log.i("JavaScriptWebView", "Calendario handled!");
 
                     onPageFinish.onPageFinish(URL + PG_CALENDARIO, listMeses);
@@ -773,33 +816,6 @@ public class JavaScriptWebView {
         }
 
         return color;
-    }
-
-    private List<Horario> setColors(List<Horario> horario) {
-        for (int i = 0; i < horario.size(); i++) {
-            if (horario.get(i).getColor() == 0) {
-                for (int j = 0; j < horario.size(); j++) {
-                    if (horario.get(i).getName().equals(
-                            horario.get(j).getName())) {
-                        if (horario.get(j).getColor() == 0) {
-                            if (horario.get(i).getColor() == 0) {
-                                horario.get(i).setColor(Utils.getRandomColorGenerator(Objects.requireNonNull(context)));
-                                horario.get(j).setColor(horario.get(i).getColor());
-                            } else {
-                                horario.get(j).setColor(horario.get(i).getColor());
-                            }
-                        } else {
-                            horario.get(i).setColor(horario.get(j).getColor());
-                        }
-                    } else {
-                        if (horario.get(i).getColor() == 0) {
-                            horario.get(i).setColor(Utils.getRandomColorGenerator(Objects.requireNonNull(context)));
-                        }
-                    }
-                }
-            }
-        }
-        return horario;
     }
 
     public void setOnPageFinished(OnPageFinished onPageFinish) {

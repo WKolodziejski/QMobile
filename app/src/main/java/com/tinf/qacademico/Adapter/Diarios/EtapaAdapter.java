@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tinf.qacademico.Class.Diarios.Etapa;
+import com.tinf.qacademico.Class.Materias.Etapa;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.ViewHolder.EtapaViewHolder;
 
@@ -35,7 +35,7 @@ public class EtapaAdapter extends RecyclerView.Adapter {
         final EtapaViewHolder holder = (EtapaViewHolder) viewHolder;
         Etapa etapa = etapas.get(position) ;
 
-        holder.aux.setText(etapa.getAux());
+        holder.etapa.setText(etapa.getEtapa());
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false);

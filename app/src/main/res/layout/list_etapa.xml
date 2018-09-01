@@ -17,7 +17,7 @@
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryLight"
         android:background="@color/colorPrimaryDark"
-        android:id="@+id/aux"/>
+        android:id="@+id/etapa"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_diarios_item"

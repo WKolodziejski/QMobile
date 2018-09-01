@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -22,36 +21,33 @@ import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
-import com.tinf.qacademico.Class.Diarios.DiariosList;
-import com.tinf.qacademico.Class.Materia;
-import com.tinf.qacademico.Class.Materiais.Materiais;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
 import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
 import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.Utilities.Design;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
-import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.tinf.qacademico.Utilities.Utils.CALENDARIO;
+import static com.tinf.qacademico.Utilities.Utils.HOME;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
+import static com.tinf.qacademico.Utilities.Utils.MATERIAIS;
+import static com.tinf.qacademico.Utilities.Utils.NOTAS;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
-import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
-import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
-import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
@@ -62,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
     private OnPageUpdated onPageUpdated;
-
-    public List<DiariosList> diariosList;
     public List<MateriaisList> materiaisList;
 
     @Override
@@ -91,17 +85,16 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         hideExpandBtn();
 
-        Design.setNavigationTransparent(this);
+        //Design.setNavigationTransparent(this);
 
         SingletonWebView.getInstance().configWebView(getApplicationContext());
         SingletonWebView.getInstance().setOnPageFinishedListener(this);
         SingletonWebView.getInstance().setOnPageStartedListener(this);
         SingletonWebView.getInstance().setOnErrorRecivedListener(this);
 
-        if (getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getBoolean(Utils.LOGIN_VALID, false)) {
-            setTitle(getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getString(Utils.LOGIN_NAME, ""));
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
-            //SingletonWebView.getInstance().loadUrl(URL + PG_LOGIN);
+        if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
+            setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), HOME).commit();
             SingletonWebView.getInstance().loadNextUrl();
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
@@ -151,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        setTitle(getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).getString(Utils.LOGIN_NAME, ""));
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), Utils.HOME).commit();
+                        setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), HOME).commit();
                         hideTabLayout();
                         hideExpandBtn();
                         hideDatePicker();
@@ -160,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
                     case R.id.navigation_notas:
                         setTitle(SingletonWebView.getInstance().infos.data_diarios[SingletonWebView.getInstance().data_position_diarios]);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new NotasFragment(), Utils.NOTAS).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new NotasFragment(), NOTAS).commit();
                         showExpandBtn();
                         hideDatePicker();
                         return true;
@@ -170,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                             SingletonWebView.getInstance().loadUrl(URL + PG_CALENDARIO);
                         }
                         showDatePicker();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new CalendarioFragment(), Utils.CALENDARIO).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new CalendarioFragment(), CALENDARIO).commit();
                         hideTabLayout();
                         hideExpandBtn();
                         return true;
@@ -179,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                         setTitle(SingletonWebView.getInstance().infos.data_boletim[SingletonWebView.getInstance().data_position_boletim]
                                 + " / " + SingletonWebView.getInstance().infos.periodo_boletim[SingletonWebView.getInstance().periodo_position_boletim]);
                         SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new MateriaisFragment(), Utils.MATERIAIS).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new MateriaisFragment(), MATERIAIS).commit();
                         hideExpandBtn();
                         hideTabLayout();
                         hideDatePicker();
@@ -194,12 +187,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     public void onPageStart(String url_p) {
         runOnUiThread(() -> {
             Log.i("Singleton", "onStart");
-            if (       (url_p.equals(URL + PG_HOME))
-                    || (url_p.contains(URL + PG_BOLETIM) && navigation.getSelectedItemId() == R.id.navigation_notas)
-                    || (url_p.contains(URL + PG_DIARIOS) && navigation.getSelectedItemId() == R.id.navigation_notas)
-                    || (url_p.contains(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais)) {
                 showLinearProgressbar();
-            }
         });
     }
 
@@ -212,26 +200,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             dismissProgressbar();
             invalidateOptionsMenu();
 
-            if (url_p.equals(URL + PG_HOME)) {
-                Log.i("onFinish", "loadedHome");
-                if (navigation.getSelectedItemId() == R.id.navigation_home) {
-                    onPageUpdated.onPageUpdate(null);
-                    Log.i("onFinish", "updatedHome");
-                }
-            } else if (url_p.equals(URL + PG_BOLETIM) && navigation.getSelectedItemId() == R.id.navigation_notas) {
+            if (list != null) {
                 onPageUpdated.onPageUpdate(list);
-                Log.i("onFinish", "updatedBoletim");
-            } else if (url_p.equals(URL + PG_DIARIOS) && navigation.getSelectedItemId() == R.id.navigation_notas) {
-                onPageUpdated.onPageUpdate(list);
-                Log.i("onFinish", "updatedDiarios");
-            } else if (url_p.equals(URL + PG_MATERIAIS) && navigation.getSelectedItemId() == R.id.navigation_materiais) {
-                onPageUpdated.onPageUpdate(list);
-                Log.i("onFinish", "updatedMateriais");
-            } else if (url_p.equals(URL + PG_CALENDARIO) && navigation.getSelectedItemId() == R.id.navigation_calendario) {
-                onPageUpdated.onPageUpdate(list);
-                Log.i("onFinish", "updatedCalendario");
-            } else if (list.get(0) instanceof MateriaisList) {
-                materiaisList = (List<MateriaisList>) list;
             }
         });
     }
@@ -363,11 +333,11 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     }
 
     private void logOut() {
-        SharedPreferences.Editor editor = getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
-        editor.putString(Utils.LOGIN_REGISTRATION, "");
-        editor.putString(Utils.LOGIN_PASSWORD, "");
-        editor.putString(Utils.LOGIN_NAME, "");
-        editor.putBoolean(Utils.LOGIN_VALID, false);
+        SharedPreferences.Editor editor = getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
+        editor.putString(LOGIN_REGISTRATION, "");
+        editor.putString(LOGIN_PASSWORD, "");
+        editor.putString(LOGIN_NAME, "");
+        editor.putBoolean(LOGIN_VALID, false);
         editor.apply();
         recreate();
     }

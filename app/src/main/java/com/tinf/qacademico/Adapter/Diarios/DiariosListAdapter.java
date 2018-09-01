@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,28 +14,24 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Toast;
-
-import com.tinf.qacademico.Class.Diarios.DiariosList;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.ViewHolder.ExpandableListViewHolder;
+import com.tinf.qacademico.ViewHolder.DiariosListViewHolder;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
-
 import java.util.List;
 
-import static java.lang.Integer.valueOf;
-
 public class DiariosListAdapter extends RecyclerView.Adapter {
-    private List<DiariosList> diariosList;
+    private List<Materia> diariosList;
     private Context context;
     private OnExpandListener onExpandListener;
 
-    public DiariosListAdapter(List<DiariosList> diariosList, Context context) {
+    public DiariosListAdapter(List<Materia> diariosList, Context context) {
         this.diariosList = diariosList;
         this.context = context;
     }
 
-    public void update(List<DiariosList> diariosList) {
+    public void update(List<Materia> diariosList) {
         this.diariosList = diariosList;
         notifyDataSetChanged();
     }
@@ -46,21 +41,21 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context)
                 .inflate(R.layout.list_expandable, parent, false);
-        return new ExpandableListViewHolder(view);
+        return new DiariosListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
-        final ExpandableListViewHolder holder = (ExpandableListViewHolder) viewHolder;
+        final DiariosListViewHolder holder = (DiariosListViewHolder) viewHolder;
 
         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
         rotate.setInterpolator(new LinearInterpolator());
 
-        holder.text.setText(diariosList.get(i).getTitle());
-        holder.expand.setExpanded(diariosList.get(i).getExpanded(), diariosList.get(i).getAnim());
+        holder.text.setText(diariosList.get(i).getName());
+        holder.expand.setExpanded(diariosList.get(i).isExpanded(), diariosList.get(i).isAnim());
 
-        if (diariosList.get(i).getExpanded()){
+        if (diariosList.get(i).isExpanded()){
             holder.arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
             holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorSecondary));
             holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimaryLight));
@@ -100,7 +95,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
             Integer pos = (Integer) holder.table.getTag();
 
-            diariosList.get(pos).setExpanded(!diariosList.get(pos).getExpanded());
+            diariosList.get(pos).setExpanded(!diariosList.get(pos).isExpanded());
 
             rotate.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -108,7 +103,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    if (diariosList.get(pos).getExpanded()) {
+                    if (diariosList.get(pos).isExpanded()) {
                         holder.arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
                     } else {
                         holder.arrow.setImageResource(R.drawable.ic_expand_more_black_24dp);
@@ -121,7 +116,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
             holder.expand.setOnExpansionUpdateListener((expansionFraction, state) -> {
 
-                if (state == ExpandableLayout.State.EXPANDING && diariosList.get(pos).getExpanded()) {
+                if (state == ExpandableLayout.State.EXPANDING && diariosList.get(pos).isExpanded()) {
                     onExpandListener.onExpand(i);
                 }
 
@@ -133,7 +128,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                     }
                 }
 
-                if (diariosList.get(pos).getExpanded()) {
+                if (diariosList.get(pos).isExpanded()) {
                     holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorSecondary));
                     holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimaryLight));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -168,7 +163,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         int f = 0;
         for (int i = 0; i < diariosList.size(); i++) {
             if (diariosList.get(i).getEtapas().size() > 0) {
-                if (diariosList.get(i).getExpanded()) {
+                if (diariosList.get(i).isExpanded()) {
                     a++;
                 } else {
                     f++;
@@ -177,7 +172,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         }
         if (a > f) {
             for (int i = 0; i < diariosList.size(); i++) {
-                if (diariosList.get(i).getExpanded()) {
+                if (diariosList.get(i).isExpanded()) {
                     diariosList.get(i).setAnim(true);
                 } else {
                     diariosList.get(i).setAnim(false);
@@ -188,7 +183,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         } else {
             for (int i = 0; i < diariosList.size(); i++) {
                 if (diariosList.get(i).getEtapas().size() > 0) {
-                    if (diariosList.get(i).getExpanded()) {
+                    if (diariosList.get(i).isExpanded()) {
                         diariosList.get(i).setAnim(false);
                     } else {
                         diariosList.get(i).setAnim(true);

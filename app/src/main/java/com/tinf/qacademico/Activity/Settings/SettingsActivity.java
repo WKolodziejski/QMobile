@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             Preference feedback = findPreference("key_send_feedback");
             feedback.setOnPreferenceClickListener(preference -> {
-                SendEmail.openGmail(getActivity());
+                //SendEmail.openGmail(getActivity());
                 return true;
             });
 

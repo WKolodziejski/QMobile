@@ -4,24 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tinf.qacademico.Activity.MainActivity;
-import com.tinf.qacademico.Adapter.Diarios.DiariosListAdapter;
 import com.tinf.qacademico.Adapter.Materiais.MateriaisListAdapter;
-import com.tinf.qacademico.Class.Diarios.DiariosList;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
 

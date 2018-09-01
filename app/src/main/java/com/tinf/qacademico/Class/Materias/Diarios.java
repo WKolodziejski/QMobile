@@ -1,4 +1,4 @@
-package com.tinf.qacademico.Class.Diarios;
+package com.tinf.qacademico.Class.Materias;
 
 import java.io.Serializable;
 
