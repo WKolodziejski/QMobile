@@ -57,7 +57,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
         if (diariosList.get(i).isExpanded()){
             holder.arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
-            holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorSecondary));
+            holder.expandAct.setBackgroundColor(diariosList.get(i).getColor());
             holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimaryLight));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryLight)));
@@ -129,7 +129,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                 }
 
                 if (diariosList.get(pos).isExpanded()) {
-                    holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorSecondary));
+                    holder.expandAct.setBackgroundColor(diariosList.get(i).getColor());
                     holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimaryLight));
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         holder.arrow.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorPrimaryLight)));
