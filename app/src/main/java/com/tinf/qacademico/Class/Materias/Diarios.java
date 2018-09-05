@@ -2,7 +2,11 @@ package com.tinf.qacademico.Class.Materias;
 
 import java.io.Serializable;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+
 public class Diarios implements Serializable {
+    //public long id;
     private final String nome;
     private final String peso;
     private final String max;

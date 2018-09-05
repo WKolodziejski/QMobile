@@ -2,6 +2,7 @@ package com.tinf.qacademico.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -38,6 +39,9 @@ import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+
 import static com.tinf.qacademico.Utilities.Utils.CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.HOME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
@@ -85,8 +89,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         hideExpandBtn();
 
-        //Design.setNavigationTransparent(this);
-
         SingletonWebView.getInstance().configWebView(getApplicationContext());
         SingletonWebView.getInstance().setOnPageFinishedListener(this);
         SingletonWebView.getInstance().setOnPageStartedListener(this);
@@ -96,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), HOME).commit();
             SingletonWebView.getInstance().loadNextUrl();
+
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }

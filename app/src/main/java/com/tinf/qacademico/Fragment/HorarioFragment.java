@@ -12,7 +12,7 @@ import android.widget.NumberPicker;
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
-import com.tinf.qacademico.Custom.Widget.CustomWeekView;
+import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.Utilities.Utils;
@@ -58,7 +58,7 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
 
                 WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
-                CustomWeekView.congifWeekView(weekView, materias);
+                HorarioView.congifWeekView(weekView, materias);
             } else {
                 //((MainActivity) Objects.requireNonNull(getActivity())).showEmptyLayout();
             }

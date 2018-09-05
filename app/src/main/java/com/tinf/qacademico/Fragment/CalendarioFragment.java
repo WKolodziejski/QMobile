@@ -1,6 +1,5 @@
 package com.tinf.qacademico.Fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,26 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
-import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Meses;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
-import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -40,7 +33,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
     SingletonWebView webView = SingletonWebView.getInstance();
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
     CalendarioAdapter adapter;
-    List<Meses> calendario;
+    List<Meses> mesesList;
     int month = 0;
 
     @Override
@@ -56,7 +49,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
         View view = inflater.inflate(R.layout.fragment_calendario, container, false);
 
         if (webView.infos.data_calendario != null) {
-            calendario = Data.loadCalendar(getContext(), webView.infos.data_calendario);
+            mesesList = Data.loadCalendar(getContext(), webView.infos.data_calendario);
         }
 
         setCalendar(view);
@@ -66,46 +59,40 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
     private void setCalendar(View view) {
 
-        CompactCalendarView compactCalendar = ((MainActivity) Objects.requireNonNull(getActivity())).calendar;
+        CompactCalendarView calendarView = ((MainActivity) Objects.requireNonNull(getActivity())).calendar;
 
-        compactCalendar.removeAllEvents();
+        calendarView.removeAllEvents();
 
-        for (int i = 0; i < calendario.size(); i++) {
-            addEvents(compactCalendar, i);
+        for (int i = 0; i < mesesList.size(); i++) {
+            addEvents(calendarView, i);
         }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, calendario.get(calendario.size() - 1).getYear());
-        calendar.set(Calendar.MONTH, calendario.get(calendario.size() - 1).getMonth());
-        calendar.set(Calendar.DAY_OF_MONTH, calendario.get(calendario.size() - 1).getDias().get(0).getDia());
+        Calendar lastDateMesesList = Calendar.getInstance();
+        lastDateMesesList.set(Calendar.YEAR, mesesList.get(mesesList.size() - 1).getYear());
+        lastDateMesesList.set(Calendar.MONTH, mesesList.get(mesesList.size() - 1).getMonth());
+        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).getDias().get(0).getDia());
 
-        if (compactCalendar.getFirstDayOfCurrentMonth().getTime() < calendar.getTimeInMillis()) {
-            calendar.setTimeInMillis(compactCalendar.getFirstDayOfCurrentMonth().getTime());
+        if (new Date().getTime() < lastDateMesesList.getTimeInMillis()) {
+            lastDateMesesList.setTimeInMillis(new Date().getTime());
 
-            Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(calendar.getTimeInMillis());
-
-            for (int i = 0; i < calendario.size(); i++) {
-                if (calendario.get(i).getMonth() == cal.get(Calendar.MONTH)) {
+            for (int i = 0; i < mesesList.size(); i++) {
+                if (mesesList.get(i).getMonth() == lastDateMesesList.get(Calendar.MONTH)) {
                     month = i;
                     break;
                 }
             }
         } else {
-            month = calendario.size() - 1;
+            month = mesesList.size() - 1;
         }
 
-        adapter = new CalendarioAdapter(calendario.get(month).getDias(), getActivity());
+        adapter = new CalendarioAdapter(mesesList.get(month).getDias(), getActivity());
 
-        Date date = new Date();
-        date.setTime(calendar.getTimeInMillis());
+        calendarView.setCurrentDate(lastDateMesesList.getTime());
+        calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
+        calendarView.setUseThreeLetterAbbreviation(true);
+        calendarView.shouldDrawIndicatorsBelowSelectedDays(true);
 
-        compactCalendar.setCurrentDate(date);
-        compactCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
-        compactCalendar.setUseThreeLetterAbbreviation(true);
-        compactCalendar.shouldDrawIndicatorsBelowSelectedDays(true);
-
-        ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
+        ((AppCompatActivity) getActivity()).setTitle(dateFormatForMonth.format(lastDateMesesList.getTime()));
 
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_calendario);
 
@@ -115,7 +102,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
         recyclerViewCalendario.setAdapter(adapter);
         recyclerViewCalendario.setLayoutManager(layout);
 
-        compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+        calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
 
             @Override
             public void onDayClick(Date date) {
@@ -148,9 +135,9 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
                 boolean isInRange = false;
 
-                for (int i = 0; i < calendario.size(); i++) {
-                    if (calendar.get(Calendar.MONTH) == calendario.get(i).getMonth()
-                            && calendar.get(Calendar.YEAR) == calendario.get(i).getYear()) {
+                for (int i = 0; i < mesesList.size(); i++) {
+                    if (calendar.get(Calendar.MONTH) == mesesList.get(i).getMonth()
+                            && calendar.get(Calendar.YEAR) == mesesList.get(i).getYear()) {
                         isInRange = true;
                         break;
                     } else {
@@ -162,11 +149,11 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
                     ((MainActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
 
-                    for (int i = 0; i < calendario.size(); i++) {
-                        if (calendario.get(i).getYear() == calendar.get(Calendar.YEAR)) {
-                            for (int j = i; j < calendario.size(); j++) {
-                                if (calendario.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
-                                    adapter.update(calendario.get(j).getDias());
+                    for (int i = 0; i < mesesList.size(); i++) {
+                        if (mesesList.get(i).getYear() == calendar.get(Calendar.YEAR)) {
+                            for (int j = i; j < mesesList.size(); j++) {
+                                if (mesesList.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
+                                    adapter.update(mesesList.get(j).getDias());
                                     month = j;
 
                                     Calendar today = Calendar.getInstance();
@@ -175,10 +162,10 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
                                     today.set(Calendar.MINUTE, 0);
                                     today.set(Calendar.SECOND, 0);
 
-                                    for (int k = 0; k < calendario.get(j).getDias().size(); k++) {
+                                    for (int k = 0; k < mesesList.get(j).getDias().size(); k++) {
                                         if (calendar.getTimeInMillis() < today.getTimeInMillis()) {
-                                            for (int l = 0; l < calendario.get(j).getDias().get(k).getEventos().size(); l++) {
-                                                calendario.get(j).getDias().get(k).getEventos().get(l).setHappened(true);
+                                            for (int l = 0; l < mesesList.get(j).getDias().get(k).getEventos().size(); l++) {
+                                                mesesList.get(j).getDias().get(k).getEventos().get(l).setHappened(true);
                                             }
                                         }
                                     }
@@ -195,24 +182,24 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
         });
     }
 
-    private void addEvents(CompactCalendarView compactCalendar, int j) {
-        for (int i = 0; i < calendario.get(j).getDias().size(); i++) {
+    private void addEvents(CompactCalendarView calendarView, int j) {
+        for (int i = 0; i < mesesList.get(j).getDias().size(); i++) {
             Calendar date = Calendar.getInstance(Locale.getDefault());
 
-            date.set(Calendar.MONTH, calendario.get(j).getMonth());
+            date.set(Calendar.MONTH, mesesList.get(j).getMonth());
             date.set(Calendar.ERA, GregorianCalendar.AD);
-            date.set(Calendar.YEAR, calendario.get(j).getYear());
+            date.set(Calendar.YEAR, mesesList.get(j).getYear());
             date.set(Calendar.DAY_OF_MONTH, i + 1);
 
-            compactCalendar.addEvents(getEvents(date.getTimeInMillis(), j, i));
+            calendarView.addEvents(getEvents(date.getTimeInMillis(), j, i));
         }
     }
 
     private List<Event> getEvents(long timeInMillis, int j, int day) {
         List<Event> events = new ArrayList<>();
 
-        for (int i = 0; i < calendario.get(j).getDias().get(day).getEventos().size(); i++) {
-            Evento e = calendario.get(j).getDias().get(day).getEventos().get(i);
+        for (int i = 0; i < mesesList.get(j).getDias().get(day).getEventos().size(); i++) {
+            Evento e = mesesList.get(j).getDias().get(day).getEventos().get(i);
             events.add(new Event(e.getColor(), timeInMillis, null));
         }
 
@@ -222,8 +209,8 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
     @Override
     public void onPageUpdate(List<?> list) {
         if (list.get(0) instanceof Meses) {
-            calendario = (List<Meses>) list;
-            adapter.update(calendario.get(month).getDias());
+            mesesList = (List<Meses>) list;
+            adapter.update(mesesList.get(month).getDias());
         }
     }
 }

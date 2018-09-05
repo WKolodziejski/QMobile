@@ -73,36 +73,55 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
         if (Utils.isConnected(context) && !url_i.equals("")) {
+
             if (url_i.equals(URL + PG_LOGIN)) {
+
                 webView.loadUrl("javascript:var uselessvar = document.getElementById('txtLogin').value='"
                         + login_info.getString(Utils.LOGIN_REGISTRATION, "") + "';");
+
                 webView.loadUrl("javascript:var uselessvar = document.getElementById('txtSenha').value='"
                         + login_info.getString(Utils.LOGIN_PASSWORD, "") + "';");
+
                 webView.loadUrl("javascript:document.getElementById('btnOk').click();");
+
                 Log.i("Login", "Tentando Logar...");
+
             } else if (url_i.equals(URL + PG_HOME)) {
+
                 webView.loadUrl("javascript:window.HtmlHandler.handleHome"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
                 if (webView.isLoginPage) {
                     webView.isLoginPage = false;
                     onPageFinished.onPageFinish(URL + PG_LOGIN);
                     Log.i("WebViewClient", "Login done");
                 }
+
                 Log.i("WebViewClient", "Home loaded");
+
             } else if (url_i.contains(URL + PG_BOLETIM)) {
+
                 webView.loadUrl("javascript:window.HtmlHandler.handleBoletim"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
                 Log.i("WebViewClient", "Boletim loaded");
+
             } else if (url_i.contains(URL + PG_DIARIOS)) {
+
                 if (webView.scriptDiario.contains("javascript:")) {
+
                     Log.i("SCRIPT", "Ok");
                     webView.loadUrl(webView.scriptDiario);
                     webView.scriptDiario = "";
+
                 } else {
+
                     webView.loadUrl("javascript:window.HtmlHandler.handleDiarios"
                             + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
                     Log.i("WebViewClient", "DiariosList loaded");
                 }
+
             } else if (url_i.contains(URL + PG_HORARIO)) {
                 webView.loadUrl("javascript:window.HtmlHandler.handleHorario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");

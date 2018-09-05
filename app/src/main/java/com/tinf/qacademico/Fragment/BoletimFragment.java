@@ -1,9 +1,11 @@
 package com.tinf.qacademico.Fragment;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,12 +44,12 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
             materias = Data.loadMaterias(getContext(), webView.infos.data_boletim[webView.data_position_boletim]);
         }
 
-        setBoletim(view, false);
+        setBoletim(view);
 
         return view;
     }
 
-    private void setBoletim(View view, boolean showToast) {
+    private void setBoletim(View view) {
         if (materias != null) {
 
             if (materias.size() != 0) {
@@ -59,10 +61,6 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 ArrayList<String> mfristData = new ArrayList<>();
 
                 mfristData.add(getResources().getString(R.string.boletim_Materia));
-
-                if (showToast) {
-                    Toast.makeText(getContext(), "Sort by period", Toast.LENGTH_SHORT).show();
-                }
 
                 String[] header = {
                         getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
@@ -127,7 +125,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 lock_header_btn.setOnClickListener(v -> {
                     lockHeader();
                 });
-
+                
                 mLockTableView.setTableViewListener((x, y) -> {
                     if (!lock_header) {
                         lock_header_btn.setVisibility(x == 0 ? View.VISIBLE : View.GONE);
@@ -206,7 +204,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
     public void lockHeader() {
         lock_header = !lock_header;
-        setBoletim(getView(), false);
+        setBoletim(getView());
     }
 
     @Override

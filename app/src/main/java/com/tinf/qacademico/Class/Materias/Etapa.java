@@ -9,7 +9,12 @@ import com.tinf.qacademico.Class.Materias.Diarios;
 import java.io.Serializable;
 import java.util.List;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+
+
 public class Etapa implements Serializable {
+    //public long id;
     private String etapa;
     private List<Diarios> diariosList;
     private String nota;

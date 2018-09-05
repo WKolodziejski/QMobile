@@ -24,7 +24,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class LoginActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
+public class LoginActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnRecivedError {
     public SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
@@ -39,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
         webView.isLoginPage = true;
         webView.setOnPageFinishedListener(this);
+        webView.setOnErrorRecivedListener(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment, Utils.LOGIN).commit();
     }
@@ -56,8 +57,10 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                     finish();
                 }
             } else if (url_p.equals(URL + PG_ERRO)) {
+
                 loginFragment.dismissProgressBar();
                 showSnackBar(getResources().getString(R.string.text_invalid_login), false);
+
             } else if (url_p.contains(URL + PG_HOME)
                     || url_p.contains(URL + PG_BOLETIM)
                     || url_p.contains(URL + PG_HORARIO)
@@ -209,7 +212,14 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     }
 
     @Override
+    public void onErrorRecived(String error) {
+        loginFragment.textView_loading.setVisibility(View.INVISIBLE);
+        loginFragment.dismissProgressBar();
+    }
+
+    @Override
     public void onBackPressed(){
         this.moveTaskToBack(true);
     }
+
 }

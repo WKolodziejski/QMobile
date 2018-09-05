@@ -4,7 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Unique;
+
+
 public class Materia implements Serializable {
+    //public long id;
     private List<Etapa> etapas;
     private List<Horario> horarios;
     private int color;

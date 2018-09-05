@@ -426,19 +426,9 @@ public class JavaScriptWebView {
                         for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
 
                             if (!trtd_horario[j][i].equals("")) {
-
-                                Calendar startTime = Calendar.getInstance();
-                                startTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(trtd_horario[0][i]));
-                                startTime.set(Calendar.HOUR_OF_DAY, trimh(trimta(trtd_horario[j][0])));
-                                startTime.set(Calendar.MINUTE, trimm(trimta(trtd_horario[j][0])));
-
-                                Calendar endTime = (Calendar) startTime.clone();
-                                endTime.set(Calendar.HOUR_OF_DAY, trimh(trimtd(trtd_horario[j][0])));
-                                endTime.set(Calendar.MINUTE, trimm(trimtd(trtd_horario[j][0])));
-
                                 for (int k = 0; k < materias.size(); k++) {
                                     if (trtd_horario[j][i].trim().equals(materias.get(k).getName())) {
-                                        materias.get(k).getHorarios().add(new Horario(startTime, endTime));
+                                        materias.get(k).getHorarios().add(new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]));
                                     }
                                 }
                             }
@@ -729,26 +719,6 @@ public class JavaScriptWebView {
 
     private String trim1(String string) {
         string = string.substring(string.indexOf(", ") + 2);
-        return string;
-    }
-
-    private int trimh(String string) {
-        string = string.substring(0, string.indexOf(":"));
-        return Integer.valueOf(string);
-    }
-
-    private int trimm(String string) {
-        string = string.substring(string.indexOf(":") + 1);
-        return Integer.valueOf(string);
-    }
-
-    private String trimta(String string) {
-        string = string.substring(0, string.indexOf("~"));
-        return string;
-    }
-
-    private String trimtd(String string) {
-        string = string.substring(string.indexOf("~") + 1);
         return string;
     }
 

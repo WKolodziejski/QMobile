@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.creativityapps.gmailbackgroundlibrary.BackgroundMail;
 import com.tinf.qacademico.R;
 import java.util.List;
 
