@@ -98,9 +98,9 @@ public class JavaScriptWebView {
                     String[][] trtd_boletim;
                     Document document = Jsoup.parse(html_p);
 
-                    final Element table_boletim = document.getElementsByTag("table").get(7);
+                    final Element table_boletim = document.getElementsByTag("table").get(6);
 
-                    Element table_notas = table_boletim.getElementsByTag("table").get(6);
+                    Element table_notas = table_boletim.getElementsByTag("table").get(7);
 
                     Elements tables = table_notas.children();
 
@@ -131,7 +131,7 @@ public class JavaScriptWebView {
                             Elements tds = trs.get(i).select("td");
                             trtd_boletim[i] = new String[tds.size()];
                             for (int j = 0; j < tds.size(); j++) {
-                                if (tds.get(j).text().equals("") || tds.get(j).text().equals(",0")) {
+                                if (tds.get(j).text().equals("") || tds.get(j).text().startsWith(",")) {
                                     trtd_boletim[i][j] = "-";
                                 } else {
                                     trtd_boletim[i][j] = tds.get(j).text();
