@@ -109,15 +109,16 @@ public class Data {
         }
     }
 
-    public static void saveMaterias(Context context, Object obj, String year) {
+    public static void saveMaterias(Context context, Object obj) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
+        SingletonWebView webView = SingletonWebView.getInstance();
 
         ObjectOutputStream object;
 
         try {
             object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
-                            + "." + trimb(year))));
+                            + "." + trimb(webView.infos.data_year[webView.year_position]))));
 
             object.writeObject(obj);
             object.flush();
@@ -129,8 +130,9 @@ public class Data {
         }
     }
 
-    public static List<Materia> loadMaterias(Context context, String year) {
+    public static List<Materia> loadMaterias(Context context) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
+        SingletonWebView webView = SingletonWebView.getInstance();
 
         List<Materia> materias = new ArrayList<>();
 
@@ -139,7 +141,7 @@ public class Data {
         try {
             object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
-                            + "." + trimb(year))));
+                            + "." + trimb(webView.infos.data_year[webView.year_position]))));
 
             materias = (List<Materia>) object.readObject();
             Log.i("Materias", "Lido");

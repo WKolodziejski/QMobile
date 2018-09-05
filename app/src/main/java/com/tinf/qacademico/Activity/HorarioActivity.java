@@ -33,7 +33,7 @@ public class HorarioActivity extends AppCompatActivity implements SingletonWebVi
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.horario_fragment, new HorarioFragment(), Utils.HORARIO);
+        fragmentTransaction.replace(R.id.horario_fragment, new HorarioFragment());
         fragmentTransaction.commit();
     }
 

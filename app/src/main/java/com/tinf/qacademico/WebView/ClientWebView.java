@@ -1,6 +1,5 @@
 package com.tinf.qacademico.WebView;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
-import static com.tinf.qacademico.Utilities.Utils.pg_change_password;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qacademico.Utilities.Utils.PG_ERRO;
 import static com.tinf.qacademico.Utilities.Utils.PG_HOME;

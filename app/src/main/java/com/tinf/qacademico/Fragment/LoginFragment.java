@@ -21,6 +21,13 @@ import com.tinf.qacademico.Utilities.Utils;
 
 import java.util.Objects;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
@@ -33,7 +40,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
-        login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(Utils.LOGIN_INFO, 0);
+        login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
 
         EditText user_et = (TextInputEditText) view.findViewById(R.id.user_input_login);
         EditText password_et = (TextInputEditText) view.findViewById(R.id.password_input_login);
@@ -44,17 +51,17 @@ public class LoginFragment extends Fragment {
         login_btn.setOnClickListener(v -> {
             View vi = getActivity().getCurrentFocus();
             if (vi != null) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(vi.getWindowToken(), 0);
                 }
             }
 
-            progressBar_login.setVisibility(View.VISIBLE);
+            progressBar_login.setVisibility(VISIBLE);
 
             SharedPreferences.Editor editor = login_info.edit();
-            editor.putString(Utils.LOGIN_REGISTRATION, user_et.getText().toString().toUpperCase());
-            editor.putString(Utils.LOGIN_PASSWORD, password_et.getText().toString());
+            editor.putString(LOGIN_REGISTRATION, user_et.getText().toString().toUpperCase());
+            editor.putString(LOGIN_PASSWORD, password_et.getText().toString());
             editor.apply();
 
             ((LoginActivity) getActivity()).dismissSnackbar();
@@ -64,7 +71,7 @@ public class LoginFragment extends Fragment {
     }
 
     public void dismissProgressBar(){
-        progressBar_login.setVisibility(View.GONE);
-        textView_loading.setVisibility(View.VISIBLE);
+        progressBar_login.setVisibility(GONE);
+        textView_loading.setVisibility(VISIBLE);
     }
 }

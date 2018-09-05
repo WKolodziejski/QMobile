@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         webView.setOnPageFinishedListener(this);
         webView.setOnErrorRecivedListener(this);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment, Utils.LOGIN).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment).commit();
     }
 
     @Override
@@ -114,26 +114,26 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             return;
         } else {
-            for (int i = 1; i < webView.infos.data_diarios.length; i++) {
+            for (int i = 1; i < webView.infos.data_year.length; i++) {
                 if (!webView.pg_diarios_loaded[i]) {
                     Log.i("LoginActivity", "DIARIOS[" + i + "]");
-                    webView.data_position_diarios = i;
+                    webView.year_position = i;
 
                     webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                            + (webView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
+                            + (webView.year_position + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
 
                     webView.loadUrl(URL + PG_DIARIOS);
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_diarios.length)));
+                            Integer.toString(i + 1), Integer.toString(webView.infos.data_year.length)));
 
                     return;
                 }
             }
         }
 
-        webView.data_position_diarios = 0;
+        webView.year_position = 0;
 
         if (!webView.pg_boletim_loaded[0]) {
             webView.loadUrl(URL + PG_BOLETIM);
@@ -145,24 +145,24 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             return;
         } else {
-            for (int i = 1; i < webView.infos.data_boletim.length; i++) {
+            for (int i = 1; i < webView.infos.data_year.length; i++) {
                 if (!webView.pg_boletim_loaded[i]) {
                     Log.i("LoginActivity", "BOLETIM[" + i + "]");
-                    webView.data_position_boletim = i;
+                    webView.year_position = i;
 
                     webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
-                            + webView.infos.data_boletim[i] + "&cmbperiodos=1&Exibir+Boletim");
+                            + webView.infos.data_year[i] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_boletim.length)));
+                            Integer.toString(i + 1), Integer.toString(webView.infos.data_year.length)));
 
                     return;
                 }
             }
         }
 
-        webView.data_position_boletim = 0;
+        webView.year_position = 0;
 
         if (!webView.pg_horario_loaded[0]) {
             webView.loadUrl(URL + PG_HORARIO);
@@ -174,24 +174,24 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             return;
         } else {
-            for (int i = 1; i < webView.infos.data_horario.length; i++) {
+            for (int i = 1; i < webView.infos.data_year.length; i++) {
                 if (!webView.pg_horario_loaded[i]) {
                     Log.i("LoginActivity", "HORARIO[" + i + "]");
-                    webView.data_position_horario = i;
+                    webView.year_position = i;
 
                     webView.loadUrl(URL + PG_HORARIO + "&COD_MATRICULA=-1&cmbanos=" +
-                            webView.infos.data_horario[i] + "&cmbperiodos=1&Exibir=OK");
+                            webView.infos.data_year[i] + "&cmbperiodos=1&Exibir=OK");
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_horario.length)));
+                            Integer.toString(i + 1), Integer.toString(webView.infos.data_year.length)));
 
                     return;
                 }
             }
         }
 
-        webView.data_position_horario = 0;
+        webView.year_position = 0;
 
         if (!webView.pg_calendario_loaded) {
             webView.loadUrl(URL + PG_CALENDARIO);

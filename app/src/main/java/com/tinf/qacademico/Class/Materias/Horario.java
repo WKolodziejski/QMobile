@@ -19,8 +19,9 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
 
+@Entity
 public class Horario implements Serializable {
-    //public long id;
+    @Id public long id;
     private int day;
     private String time;
 
@@ -48,6 +49,10 @@ public class Horario implements Serializable {
 
     public int getEndMinute() {
         return trimm(trimtd(time));
+    }
+
+    public String getTime() {
+        return time;
     }
 
     private int trimh(String string) {

@@ -1,11 +1,14 @@
 package com.tinf.qacademico.WebView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Meses;
@@ -27,6 +30,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import io.objectbox.Box;
+
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
@@ -88,20 +94,20 @@ public class JavaScriptWebView {
         new Thread() {
             @Override
             public void run() {
-                try {
+                //try {
                     String[][] trtd_boletim;
-                    Document homeBoletim = Jsoup.parse(html_p);
+                    Document document = Jsoup.parse(html_p);
 
-                    final Element table_boletim = homeBoletim.select("table").get(6);
+                    final Element table_boletim = document.getElementsByTag("table").get(7);
 
-                    Element table_notas = table_boletim.select("table").get(7);
+                    Element table_notas = table_boletim.getElementsByTag("table").get(6);
 
                     Elements tables = table_notas.children();
 
-                    Document ano = Jsoup.parse(homeBoletim.select("#cmbanos").first().toString());
+                    Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
-                    webView.infos.data_boletim = new String[options_ano.size()];
+                    /*webView.infos.data_boletim = new String[options_ano.size()];
 
                     for (int i = 0; i < options_ano.size(); i++) {
                         webView.infos.data_boletim[i] = options_ano.get(i).text();
@@ -114,9 +120,9 @@ public class JavaScriptWebView {
 
                     for (int i = 0; i < options_periodo.size(); i++) {
                         webView.infos.periodo_boletim[i] = options_periodo.get(i).text();
-                    }
+                    }*/
 
-                    List<Materia> materias = Data.loadMaterias(context, webView.infos.data_boletim[webView.data_position_boletim]);
+                    List<Materia> materias = Data.loadMaterias(context);
 
                     for (Element table : tables) {
                         Elements trs = table.select("tr");
@@ -170,16 +176,16 @@ public class JavaScriptWebView {
                     }
 
                     Data.saveInfos(context);
-                    Data.saveMaterias(context, materias, webView.infos.data_boletim[webView.data_position_boletim]);
+                    Data.saveMaterias(context, materias);
 
-                    webView.pg_boletim_loaded[webView.data_position_boletim] = true;
+                    webView.pg_boletim_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Boletim handled!");
 
                     onPageFinish.onPageFinish(URL + PG_BOLETIM, materias);
 
-                } catch (Exception e) {
+                /*} catch (Exception e) {
                     Log.e("JavaScriptWebView", "Boletim error: " + e);
-                }
+                }*/
             }
         }.start();
     }
@@ -201,13 +207,13 @@ public class JavaScriptWebView {
 
                     Elements options = document.getElementsByTag("option");
 
-                    webView.infos.data_diarios = new String[options.size() - 1];
+                    webView.infos.data_year = new String[options.size() - 1];
 
                     for (int i = 0; i < options.size() - 1; i++) {
-                        webView.infos.data_diarios[i] = options.get(i + 1).text();
+                        webView.infos.data_year[i] = options.get(i + 1).text();
                     }
 
-                    List<Materia> materias = Data.loadMaterias(context, webView.infos.data_diarios[webView.data_position_diarios]);
+                    List<Materia> materias = Data.loadMaterias(context);
 
                     for (int y = 0; y < numMaterias; y++) {
 
@@ -313,9 +319,9 @@ public class JavaScriptWebView {
                     }
 
                     Data.saveInfos(context);
-                    Data.saveMaterias(context, materias, webView.infos.data_diarios[webView.data_position_diarios]);
+                    Data.saveMaterias(context, materias);
 
-                    webView.pg_diarios_loaded[webView.data_position_diarios] = true;
+                    webView.pg_diarios_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Diarios handled!");
 
                     onPageFinish.onPageFinish(URL + PG_DIARIOS, materias);
@@ -345,7 +351,7 @@ public class JavaScriptWebView {
                     Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
                     Elements options_ano = ano.select("option");
 
-                    webView.infos.data_horario = new String[options_ano.size()];
+                    /*webView.infos.data_horario = new String[options_ano.size()];
 
                     for (int i = 0; i < options_ano.size(); i++) {
                         webView.infos.data_horario[i] = options_ano.get(i).text();
@@ -358,7 +364,7 @@ public class JavaScriptWebView {
 
                     for (int i = 0; i < options_periodo.size(); i++) {
                         webView.infos.periodo_horario[i] = options_periodo.get(i).text();
-                    }
+                    }*/
 
                     for (Element table : codes) {
                         Elements trs = table.select("tr");
@@ -415,7 +421,7 @@ public class JavaScriptWebView {
                         }
                     }
 
-                    List<Materia> materias = Data.loadMaterias(context, webView.infos.data_horario[webView.data_position_horario]);
+                    List<Materia> materias = Data.loadMaterias(context);
 
                     for (int i = 0; i < materias.size(); i++) {
                         materias.get(i).setHorarios(new ArrayList<>());
@@ -441,9 +447,9 @@ public class JavaScriptWebView {
                     }
 
                     Data.saveInfos(context);
-                    Data.saveMaterias(context, materias, webView.infos.data_horario[webView.data_position_horario]);
+                    Data.saveMaterias(context, materias);
 
-                    webView.pg_horario_loaded[webView.data_position_horario] = true;
+                    webView.pg_horario_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Horario handled!");
 
                     onPageFinish.onPageFinish(URL + PG_HORARIO, materias);
@@ -547,7 +553,7 @@ public class JavaScriptWebView {
 
                     //Data.saveInfos(context);
 
-                    webView.pg_materiais_loaded[webView.data_position_materiais] = true;
+                    webView.pg_materiais_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
 
                     onPageFinish.onPageFinish(URL + PG_MATERIAIS, materiais);

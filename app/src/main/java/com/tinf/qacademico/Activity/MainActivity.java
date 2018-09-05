@@ -2,7 +2,6 @@ package com.tinf.qacademico.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -14,43 +13,42 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
 import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
 import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Design;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.Box;
-import io.objectbox.BoxStore;
-
-import static com.tinf.qacademico.Utilities.Utils.CALENDARIO;
-import static com.tinf.qacademico.Utilities.Utils.HOME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
-import static com.tinf.qacademico.Utilities.Utils.MATERIAIS;
-import static com.tinf.qacademico.Utilities.Utils.NOTAS;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
@@ -96,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), HOME).commit();
+            changeFragment(new HomeFragment());
             SingletonWebView.getInstance().loadNextUrl();
 
         } else {
@@ -127,7 +125,35 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     .show();
             return true;
         } else if (id == R.id.action_date) {
-            //Utils.showChangeDateDialog(this);
+            SingletonWebView webView = SingletonWebView.getInstance();
+
+            View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
+
+            final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
+
+            year.setMinValue(0);
+            year.setMaxValue(webView.infos.data_year.length - 1);
+            year.setValue(webView.year_position);
+            year.setDisplayedValues(webView.infos.data_year);
+            year.setWrapSelectorWheel(false);
+
+            new AlertDialog.Builder(MainActivity.this)
+                    .setView(view)
+                    .setCustomTitle(
+                            Utils.customAlertTitle(
+                                    Objects.requireNonNull(getApplicationContext()),
+                                    R.drawable.ic_date_range_black_24dp,
+                                    R.string.dialog_date_change, R.color.colorPrimary))
+                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+
+                        webView.year_position = year.getValue();
+
+                        webView.changeDate();
+
+                        onPageUpdated.onPageUpdate(null);
+
+                    }).setNegativeButton(R.string.dialog_cancel, null)
+                    .show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -148,15 +174,14 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new HomeFragment(), HOME).commit();
+                        changeFragment(new HomeFragment());
                         hideTabLayout();
                         hideExpandBtn();
                         hideDatePicker();
                         return true;
 
                     case R.id.navigation_notas:
-                        setTitle(SingletonWebView.getInstance().infos.data_diarios[SingletonWebView.getInstance().data_position_diarios]);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new NotasFragment(), NOTAS).commit();
+                        changeFragment(new NotasFragment());
                         showExpandBtn();
                         hideDatePicker();
                         return true;
@@ -166,16 +191,15 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                             SingletonWebView.getInstance().loadUrl(URL + PG_CALENDARIO);
                         }
                         showDatePicker();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new CalendarioFragment(), CALENDARIO).commit();
+                        changeFragment(new CalendarioFragment());
                         hideTabLayout();
                         hideExpandBtn();
                         return true;
 
                     case R.id.navigation_materiais:
-                        setTitle(SingletonWebView.getInstance().infos.data_boletim[SingletonWebView.getInstance().data_position_boletim]
-                                + " / " + SingletonWebView.getInstance().infos.periodo_boletim[SingletonWebView.getInstance().periodo_position_boletim]);
+                        setTitle(SingletonWebView.getInstance().infos.data_year[0]);
                         SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
-                        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, new MateriaisFragment(), MATERIAIS).commit();
+                        changeFragment(new MateriaisFragment());
                         hideExpandBtn();
                         hideTabLayout();
                         hideDatePicker();
@@ -188,17 +212,12 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     @Override
     public void onPageStart(String url_p) {
-        runOnUiThread(() -> {
-            Log.i("Singleton", "onStart");
-                showLinearProgressbar();
-        });
+        runOnUiThread(this::showLinearProgressbar);
     }
 
     @Override
     public void onPageFinish(String url_p, List<?> list) {
         runOnUiThread(() -> {
-            Log.i("Singleton", "onFinish");
-
             SingletonWebView.getInstance().loadNextUrl();
             dismissProgressbar();
             invalidateOptionsMenu();
@@ -343,6 +362,14 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         editor.putBoolean(LOGIN_VALID, false);
         editor.apply();
         recreate();
+    }
+
+    private void changeFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_fragment, fragment)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out) // funcionou?
+                .commit();
     }
 
     @Override

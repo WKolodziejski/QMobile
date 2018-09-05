@@ -7,18 +7,19 @@ import java.util.List;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Index;
+import io.objectbox.annotation.Transient;
 import io.objectbox.annotation.Unique;
 
-
+@Entity
 public class Materia implements Serializable {
-    //public long id;
+    @Id public long id;
     private List<Etapa> etapas;
     private List<Horario> horarios;
     private int color;
     private String name;
     private String totalFaltas;
-    transient private boolean isExpanded;
-    transient private boolean anim;
+    @Transient transient private boolean isExpanded;
+    @Transient transient private boolean anim;
 
     public Materia(String name, int color, List<Etapa> etapas) {
         this.color = color;

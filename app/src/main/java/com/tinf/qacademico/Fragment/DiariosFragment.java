@@ -36,117 +36,47 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
-            materias = Data.loadMaterias(getContext(), webView.infos.data_diarios[webView.data_position_diarios]);
-
-
         setDiarios(view);
 
         return view;
     }
 
     private void setDiarios(View view) {
-        if (materias != null) {
 
-            if (materias.size() != 0) {
+        materias = Data.loadMaterias(getContext());
 
-                RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
-                RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-                adapter = new DiariosListAdapter(materias, getActivity());
+        adapter = new DiariosListAdapter(materias, getActivity());
 
-                recyclerViewDiarios.setAdapter(adapter);
-                recyclerViewDiarios.setLayoutManager(layout);
-                //recyclerViewDiarios.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        recyclerViewDiarios.setAdapter(adapter);
+        recyclerViewDiarios.setLayoutManager(layout);
 
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
-                        LinearLayoutManager.VERTICAL);
-                recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
+                LinearLayoutManager.VERTICAL);
+        recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
 
-                adapter.setOnExpandListener(position -> {
-                    RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
-                        @Override
-                        protected int getVerticalSnapPreference() {
-                            return LinearSmoothScroller.SNAP_TO_ANY;
-                        }
-                    };
-                    if (position != 0) {
-                        smoothScroller.setTargetPosition(position);
-                        layout.startSmoothScroll(smoothScroller);
-                    }
-                });
-
-                ((MainActivity) Objects.requireNonNull(getActivity())).fab_expand.setOnClickListener(v -> {
-                    adapter.toggleAll();
-                });
-            } else {
-                Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                        .setTitle(getResources().getString(R.string.title_diarios));
-                ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
+        adapter.setOnExpandListener(position -> {
+            RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
+                @Override
+                protected int getVerticalSnapPreference() {
+                    return LinearSmoothScroller.SNAP_TO_ANY;
+                }
+            };
+            if (position != 0) {
+                smoothScroller.setTargetPosition(position);
+                layout.startSmoothScroll(smoothScroller);
             }
-        } else {
-            Objects.requireNonNull(((MainActivity) Objects.requireNonNull(getActivity())).getSupportActionBar())
-                    .setTitle(getResources().getString(R.string.title_diarios));
-            ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
-        }
+        });
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).fab_expand.setOnClickListener(v -> {
+            adapter.toggleAll();
+        });
     }
-
-    /*public void openDateDialog() {
-        if (webView.infos.data_diarios != null) {
-
-            View theView = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
-
-            final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
-            year.setMinValue(0);
-            year.setMaxValue(webView.infos.data_diarios.length - 1);
-            year.setValue(webView.data_position_diarios);
-            year.setDisplayedValues(webView.infos.data_diarios);
-            year.setWrapSelectorWheel(false);
-
-            NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
-            periodo.setVisibility(View.GONE);
-
-            TextView slash = (TextView) theView.findViewById(R.id.slash);
-            slash.setVisibility(View.GONE);
-
-            new AlertDialog.Builder(getActivity()).setView(theView)
-                    .setCustomTitle(Utils.customAlertTitle(Objects.requireNonNull(getActivity()), R.drawable.ic_date_range_black_24dp,
-                            R.string.dialog_date_change, R.color.colorPrimary))
-                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-
-                        if (Utils.isConnected(Objects.requireNonNull(getContext()))) {
-                            webView.data_position_diarios = year.getValue();
-
-                            Log.v("Ano selecionado", String.valueOf(
-                                    webView.infos.data_diarios[webView.data_position_diarios]));
-
-                            webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                                    + (webView.data_position_diarios + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
-
-                            webView.loadUrl(URL + PG_DIARIOS);
-
-                            Log.i("SCRIPT", "" + webView.scriptDiario);
-                        } else {
-                            if (Data.loadList(Objects.requireNonNull(getContext()),
-                                    Utils.DIARIOS, webView.infos.data_diarios[year.getValue()], null) != null) {
-
-                                webView.data_position_diarios = year.getValue();
-
-                                ((MainActivity)getActivity()).diariosList = (List<DiariosList>) Data.loadList(Objects.requireNonNull(getContext()),
-                                        Utils.DIARIOS, webView.infos.data_diarios[webView.data_position_diarios], null);
-
-                                onPageUpdate(((MainActivity)getActivity()).diariosList);
-
-                            } else {
-                                Toast.makeText(getContext(), getResources().getString(R.string.text_no_connection), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }).setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-        }
-    } */
 
     @Override
     public void onPageUpdate(List<?> list) {
-
+        setDiarios(getView());
     }
 }

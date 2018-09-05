@@ -32,20 +32,14 @@ import java.util.Objects;
 
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
     SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Materia> materias;
+    List<Materia> materias;
     List<Meses> mesesList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (webView.infos.data_horario != null && webView.infos.periodo_horario != null) {
-            materias = Data.loadMaterias(getContext(), webView.infos.data_horario[webView.data_position_horario]);
-        }
-
-        if (webView.infos.data_calendario != null) {
-            mesesList = Data.loadCalendar(getContext(), webView.infos.data_calendario);
-        }
+        mesesList = Data.loadCalendar(getContext(), webView.infos.data_calendario);
 
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
@@ -93,6 +87,9 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     }
 
     private void showHorario(View view) {
+
+        materias = Data.loadMaterias(getContext());
+
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
         HorarioView.congifWeekView(weekView, materias);
@@ -110,6 +107,6 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
     @Override
     public void onPageUpdate(List<?> list) {
-
+        showHorario(getView());
     }
 }

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.Objects;
@@ -37,7 +39,7 @@ public class Utils {
     public static final String LOGIN_HOUR = ".Hora";
     public static final String LOGIN_MINUTE = ".Minuto";
     public static final String FIRST_LOGIN = ".FirstLogin";
-    public static final String URL = "http://qacademico.ifsul.edu.br/qacademico/index.asp?t=";
+    public static final String URL = "http://qacademico.ifsul.edu.br//qacademico/index.asp?t=";
     public static final String PG_LOGIN = "1001";
     public static final String PG_HOME = "2000";
     public static final String PG_DIARIOS = "2071";
@@ -108,60 +110,4 @@ public class Utils {
         return color;
     }
 
-    public static void showChangeDateDialog(Activity activity) {
-
-        SingletonWebView webView = SingletonWebView.getInstance();
-
-        View theView = activity.getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
-
-        final NumberPicker year = (NumberPicker) theView.findViewById(R.id.year_picker);
-
-        year.setMinValue(0);
-        year.setMaxValue(webView.infos.data_boletim.length - 1);
-        year.setValue(webView.data_position_boletim);
-        year.setDisplayedValues(webView.infos.data_boletim);
-        year.setWrapSelectorWheel(false);
-
-        final NumberPicker periodo = (NumberPicker) theView.findViewById(R.id.periodo_picker);
-        periodo.setMinValue(0);
-        periodo.setMaxValue(webView.infos.periodo_boletim.length - 1);
-        periodo.setValue(webView.periodo_position_boletim);
-        periodo.setDisplayedValues(webView.infos.periodo_boletim);
-        periodo.setWrapSelectorWheel(false);
-
-        new AlertDialog.Builder(activity.getApplicationContext()).setView(theView)
-                .setCustomTitle(Utils.customAlertTitle(Objects.requireNonNull(activity.getApplicationContext()), R.drawable.ic_date_range_black_24dp,
-                        R.string.dialog_date_change, R.color.colorPrimary))
-                .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
-
-                    webView.data_position_boletim = year.getValue();
-                    webView.periodo_position_boletim = periodo.getValue();
-
-
-
-
-
-                    if (Utils.isConnected(activity.getApplicationContext())) {
-                        webView.data_position_boletim = year.getValue();
-                        webView.periodo_position_boletim = periodo.getValue();
-
-                        if (webView.data_position_boletim == Integer.parseInt(webView.infos.data_boletim[0])) {
-
-                            webView.loadUrl(URL + PG_BOLETIM);
-
-                        } else {
-                            webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
-                                    + webView.infos.data_boletim[webView.data_position_boletim]
-                                    + "&cmbperiodos=1&Exibir+Boletim");
-                        }
-                    }
-
-
-
-
-
-
-                }).setNegativeButton(R.string.dialog_cancel, null)
-                .show();
-    }
 }

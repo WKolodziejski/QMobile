@@ -37,10 +37,7 @@ public class SingletonWebView {
                      pg_materiais_loaded = {false};
     public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
     public String scriptDiario = "";
-    public int data_position_horario, data_position_boletim, data_position_diarios, data_position_materiais, periodo_position_horario,
-            periodo_position_boletim;
-
-    public int year_position, period_position;
+    public int year_position;
 
     public Infos infos;
 
@@ -150,7 +147,7 @@ public class SingletonWebView {
             if (url_p.contains(URL + PG_MATERIAIS)) {
                 isPaused = true;
             }
-            Log.i("JavaScriptInterface", "onFinish");
+            Log.i("Handled", url_p);
             onPageFinished.onPageFinish(url_p, list);
         });
 
@@ -158,19 +155,19 @@ public class SingletonWebView {
 
         clientWebView.setOnPageFinishedListener(url_p -> {
             isLoading = false;
-            Log.i("Client", "onFinish");
+            Log.i("Finish", url_p);
             onPageFinished.onPageFinish(url_p, null);
         });
 
         clientWebView.setOnPageStartedListener(url_p -> {
             isLoading = true;
-            Log.i("Client", "onStart");
+            Log.i("Start", url_p);
             onPageStarted.onPageStart(url_p);
         });
 
         clientWebView.setOnErrorRecivedListener(error -> {
             isLoading = false;
-            Log.i("Client", "onError");
+            Log.i("Error", error);
             onRecivedError.onErrorRecived(error);
         });
 
