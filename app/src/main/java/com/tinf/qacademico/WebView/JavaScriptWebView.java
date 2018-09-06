@@ -1,14 +1,11 @@
 package com.tinf.qacademico.WebView;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-
-import com.tinf.qacademico.App;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Meses;
@@ -21,6 +18,7 @@ import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.Utilities.Utils;
+import org.json.JSONArray;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -30,9 +28,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import io.objectbox.Box;
-
+import static android.content.Context.MODE_PRIVATE;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
@@ -40,6 +37,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
 import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
+import static com.tinf.qacademico.Utilities.Utils.YEARS;
 import static com.tinf.qacademico.Utilities.Utils.getRandomColorGenerator;
 
 public class JavaScriptWebView {
@@ -67,7 +65,7 @@ public class JavaScriptWebView {
                         int currentDay = rightNow.get(Calendar.DAY_OF_YEAR);
                         int currentMinute = rightNow.get(Calendar.MINUTE);
 
-                        SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE).edit();
+                        SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
                         editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
 
                         editor.putInt(Utils.LOGIN_DAY, currentDay);
@@ -105,7 +103,7 @@ public class JavaScriptWebView {
                     Elements tables = table_notas.children();
 
                     Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
-                    Elements options_ano = ano.select("option");
+                    Elements options = ano.select("option");
 
                     /*webView.infos.data_boletim = new String[options_ano.size()];
 
@@ -171,11 +169,10 @@ public class JavaScriptWebView {
                     }
 
                     if (webView.pg_boletim_loaded.length == 1) {
-                        webView.pg_boletim_loaded = new boolean[options_ano.size()];
+                        webView.pg_boletim_loaded = new boolean[options.size()];
                         webView.pg_boletim_loaded[0] = true;
                     }
 
-                    Data.saveInfos(context);
                     Data.saveMaterias(context, materias);
 
                     webView.pg_boletim_loaded[webView.year_position] = true;
@@ -207,11 +204,19 @@ public class JavaScriptWebView {
 
                     Elements options = document.getElementsByTag("option");
 
-                    webView.infos.data_year = new String[options.size() - 1];
+                    webView.data_year = new String[options.size() - 1];
 
                     for (int i = 0; i < options.size() - 1; i++) {
-                        webView.infos.data_year[i] = trimb(options.get(i + 1).text());
+                        webView.data_year[i] = trimb(options.get(i + 1).text());
                     }
+
+                    SharedPreferences.Editor editor = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
+                    JSONArray jsonArray = new JSONArray();
+                    for (String z : webView.data_year) {
+                        jsonArray.put((String) z);
+                    }
+                    editor.putString(YEARS, jsonArray.toString());
+                    editor.apply();
 
                     List<Materia> materias = Data.loadMaterias(context);
 
@@ -314,11 +319,10 @@ public class JavaScriptWebView {
                     Collections.sort(materias, (d1, d2) -> d1.getName().compareTo(d2.getName()));
 
                     if (webView.pg_diarios_loaded.length == 1) {
-                        webView.pg_diarios_loaded = new boolean[options.size()];
+                        webView.pg_diarios_loaded = new boolean[options.size() - 1];
                         webView.pg_diarios_loaded[0] = true;
                     }
 
-                    Data.saveInfos(context);
                     Data.saveMaterias(context, materias);
 
                     webView.pg_diarios_loaded[webView.year_position] = true;
@@ -349,7 +353,7 @@ public class JavaScriptWebView {
                     Elements codes = table_codes.children();
 
                     Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
-                    Elements options_ano = ano.select("option");
+                    Elements options = ano.select("option");
 
                     /*webView.infos.data_horario = new String[options_ano.size()];
 
@@ -442,11 +446,10 @@ public class JavaScriptWebView {
                     }
 
                     if (webView.pg_horario_loaded.length == 1) {
-                        webView.pg_horario_loaded = new boolean[options_ano.size()];
+                        webView.pg_horario_loaded = new boolean[options.size()];
                         webView.pg_horario_loaded[0] = true;
                     }
 
-                    Data.saveInfos(context);
                     Data.saveMaterias(context, materias);
 
                     webView.pg_horario_loaded[webView.year_position] = true;
@@ -468,8 +471,8 @@ public class JavaScriptWebView {
             @Override
             public void run() {
                 try {
-                    Document homeMaterial = Jsoup.parse(html_p);
-                    Element table = homeMaterial.getElementsByTag("tbody").get(10);
+                    Document document = Jsoup.parse(html_p);
+                    Element table = document.getElementsByTag("tbody").get(10);
                     Elements rotulos = table.getElementsByClass("rotulo");
 
                     List<MateriaisList> materiais = new ArrayList<>();
@@ -551,7 +554,12 @@ public class JavaScriptWebView {
                         materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator(context)));
                     }
 
-                    //Data.saveInfos(context);
+                    Elements options = document.getElementsByTag("option");
+
+                    if (webView.pg_materiais_loaded.length == 1) {
+                        webView.pg_materiais_loaded = new boolean[options.size() - 1];
+                        webView.pg_materiais_loaded[0] = true;
+                    }
 
                     webView.pg_materiais_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
@@ -577,7 +585,7 @@ public class JavaScriptWebView {
                     Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
-                    webView.infos.data_calendario = trimb(document.getElementsByClass("dado_cabecalho").get(1).text());
+                    //webView.data_calendario = trimb(document.getElementsByClass("dado_cabecalho").get(1).text());
 
                     List<Meses> listMeses = new ArrayList<>();
 
@@ -702,7 +710,6 @@ public class JavaScriptWebView {
                     }
 
                     Data.saveCalendar(context, listMeses);
-                    Data.saveInfos(context);
 
                     webView.pg_calendario_loaded = true;
                     Log.i("JavaScriptWebView", "Calendario handled!");

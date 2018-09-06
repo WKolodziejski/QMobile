@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
+    int num = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,11 +111,13 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(1), "?"));
+                    Integer.toString(num), "?"));
+
+            num++;
 
             return;
         } else {
-            for (int i = 1; i < webView.infos.data_year.length; i++) {
+            for (int i = 1; i < webView.data_year.length; i++) {
                 if (!webView.pg_diarios_loaded[i]) {
                     Log.i("LoginActivity", "DIARIOS[" + i + "]");
                     webView.year_position = i;
@@ -126,7 +129,9 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_year.length)));
+                            Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+
+                    num++;
 
                     return;
                 }
@@ -141,21 +146,25 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(1), "?"));
+                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+
+            num++;
 
             return;
         } else {
-            for (int i = 1; i < webView.infos.data_year.length; i++) {
+            for (int i = 1; i < webView.data_year.length; i++) {
                 if (!webView.pg_boletim_loaded[i]) {
                     Log.i("LoginActivity", "BOLETIM[" + i + "]");
                     webView.year_position = i;
 
                     webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
-                            + webView.infos.data_year[i] + "&cmbperiodos=1&Exibir+Boletim");
+                            + webView.data_year[i] + "&cmbperiodos=1&Exibir+Boletim");
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_year.length)));
+                            Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+
+                    num++;
 
                     return;
                 }
@@ -170,21 +179,25 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(1), "?"));
+                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+
+            num++;
 
             return;
         } else {
-            for (int i = 1; i < webView.infos.data_year.length; i++) {
+            for (int i = 1; i < webView.data_year.length; i++) {
                 if (!webView.pg_horario_loaded[i]) {
                     Log.i("LoginActivity", "HORARIO[" + i + "]");
                     webView.year_position = i;
 
                     webView.loadUrl(URL + PG_HORARIO + "&COD_MATRICULA=-1&cmbanos=" +
-                            webView.infos.data_year[i] + "&cmbperiodos=1&Exibir=OK");
+                            webView.data_year[i] + "&cmbperiodos=1&Exibir=OK");
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(i + 1), Integer.toString(webView.infos.data_year.length)));
+                            Integer.toString(num), Integer.toString(webView.data_year.length  * 3 + 1)));
+
+                    num++;
 
                     return;
                 }
@@ -199,10 +212,14 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(1), Integer.toString(1)));
+                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+
+            num++;
 
             return;
         }
+
+        num = 0;
 
         SharedPreferences.Editor editor = loginFragment.login_info.edit();
         editor.putBoolean(Utils.LOGIN_VALID, true);

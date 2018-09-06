@@ -41,6 +41,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
     }
 
     private void showMateriais(View view) {
+
         RecyclerView recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
@@ -57,11 +58,9 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (list != null) {
-            if (list.get(0) instanceof MateriaisList) {
-                ((MainActivity) getActivity()).materiaisList = (List<MateriaisList>) list;
-                showMateriais(getView());
-            }
+        if (list != null && list.get(0) instanceof MateriaisList) {
+            ((MainActivity) getActivity()).materiaisList = (List<MateriaisList>) list;
+            showMateriais(getView());
         }
     }
 }

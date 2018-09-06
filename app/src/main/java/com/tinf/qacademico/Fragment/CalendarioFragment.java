@@ -30,7 +30,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class CalendarioFragment extends Fragment implements MainActivity.OnPageUpdated {
-    SingletonWebView webView = SingletonWebView.getInstance();
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
     CalendarioAdapter adapter;
     List<Meses> mesesList;
@@ -48,8 +47,6 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendario, container, false);
 
-        mesesList = Data.loadCalendar(getContext());
-
         setCalendar(view);
 
         return view;
@@ -57,9 +54,15 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
     private void setCalendar(View view) {
 
-        CompactCalendarView calendarView = ((MainActivity) Objects.requireNonNull(getActivity())).calendar;
+        mesesList = Data.loadCalendar(getContext());
 
+        CompactCalendarView calendarView = ((MainActivity) Objects.requireNonNull(getActivity())).calendar;
         calendarView.removeAllEvents();
+
+        if (mesesList.isEmpty()) {
+            ((AppCompatActivity) getActivity()).setTitle(getResources().getString(R.string.title_calendario));
+            return;
+        }
 
         for (int i = 0; i < mesesList.size(); i++) {
             addEvents(calendarView, i);
@@ -206,9 +209,6 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (list.get(0) instanceof Meses) {
-            mesesList = (List<Meses>) list;
-            adapter.update(mesesList.get(month).getDias());
-        }
+
     }
 }

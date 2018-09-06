@@ -25,21 +25,20 @@ import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.WebView.SingletonWebView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static android.view.View.GONE;
+
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
-    SingletonWebView webView = SingletonWebView.getInstance();
-    List<Materia> materias;
-    List<Meses> mesesList;
+    CalendarioAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mesesList = Data.loadCalendar(getContext());
 
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
@@ -55,6 +54,16 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     }
 
     private void showEvents(View view) {
+
+        List<Meses> mesesList = Data.loadCalendar(getContext());
+
+        RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
+
+        if (mesesList.isEmpty()) {
+            recyclerViewCalendario.setVisibility(GONE);
+            return;
+        }
+
         int month = 0;
 
         Calendar lastDateMesesList = Calendar.getInstance();
@@ -75,9 +84,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
             month = mesesList.size() - 1;
         }
 
-        CalendarioAdapter adapter = new CalendarioAdapter(mesesList.get(month).getDias(), getActivity());
-
-        RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
+        adapter = new CalendarioAdapter(mesesList.get(month).getDias(), getActivity());
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,
                 false);
@@ -88,11 +95,9 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
     private void showHorario(View view) {
 
-        materias = Data.loadMaterias(getContext());
-
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
-        HorarioView.congifWeekView(weekView, materias);
+        HorarioView.congifWeekView(weekView, Data.loadMaterias(getContext()));
 
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 
@@ -107,6 +112,6 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
     @Override
     public void onPageUpdate(List<?> list) {
-        showHorario(getView());
+
     }
 }

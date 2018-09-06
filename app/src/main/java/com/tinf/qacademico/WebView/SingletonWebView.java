@@ -4,17 +4,17 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import com.tinf.qacademico.Class.Infos;
-import com.tinf.qacademico.Utilities.Data;
-
+import org.json.JSONArray;
+import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
-
+import static android.content.Context.MODE_PRIVATE;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
@@ -23,6 +23,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
+import static com.tinf.qacademico.Utilities.Utils.YEARS;
 
 public class SingletonWebView {
     private static SingletonWebView singleton;
@@ -37,10 +38,9 @@ public class SingletonWebView {
                      pg_boletim_loaded = {false},
                      pg_materiais_loaded = {false};
     public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
-    public String scriptDiario = "";
+    public String scriptDiario = "", scriptMateriais = "";
     public int year_position;
-
-    public Infos infos;
+    public String[] data_year = {""};
 
     private SingletonWebView() {}
 
@@ -104,9 +104,6 @@ public class SingletonWebView {
     }
 
     public void downloadMaterial(Context context, String link){
-        if (!webView.getUrl().contains(URL + PG_MATERIAIS)) {
-            loadUrl(URL + PG_MATERIAIS);
-        }
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
@@ -118,19 +115,39 @@ public class SingletonWebView {
     public void changeDate(Context context, int value) {
         if (!isLoading) {
             year_position = value;
-            onPageFinished.onPageFinish("", null);
+
+            scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
+                    + (year_position + 1) + ";document.forms[0].submit();";
+
+            webView.loadUrl(URL + PG_MATERIAIS);
+
         } else {
             Toast.makeText(context, "Espere terminar de carregar", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private String[] loadYears(Context context) {
+        List<String> years = new ArrayList<>();
+        String jsonArrayString = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(YEARS, "");
+        if (!TextUtils.isEmpty(jsonArrayString)) {
+            try {
+                JSONArray jsonArray = new JSONArray(jsonArrayString);
+                if (jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        years.add(jsonArray.getString(i));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return years.toArray(new String[0]);
+    }
+
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     public void configWebView(Context context) {
-        if (Data.loadInfos(context) != null) {
-            infos = Data.loadInfos(context);
-        } else {
-            infos = new Infos();
-        }
+
+        data_year = loadYears(context);
 
         queue.add(URL + PG_CALENDARIO);
         queue.add(URL + PG_HORARIO);

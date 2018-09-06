@@ -23,7 +23,6 @@ import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class HorarioFragment extends Fragment implements HorarioActivity.OnPageUpdated {
-    SingletonWebView webView = SingletonWebView.getInstance();
     public List<Materia> materias;
 
     @Override
@@ -54,6 +53,6 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
 
     @Override
     public void onPageUpdate(List<?> list) {
-        setHorario(getView());
+
     }
 }

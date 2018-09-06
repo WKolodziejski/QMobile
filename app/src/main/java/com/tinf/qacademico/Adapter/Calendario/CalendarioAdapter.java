@@ -25,7 +25,11 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
     }
 
     public void update(List<Dia> calendarioList) {
-        this.calendarioList = clearList(calendarioList);
+        if (calendarioList != null) {
+            this.calendarioList = clearList(calendarioList);
+        } else {
+            this.calendarioList = new ArrayList<>();
+        }
         notifyDataSetChanged();
     }
 

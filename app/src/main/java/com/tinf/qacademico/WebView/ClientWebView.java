@@ -121,18 +121,36 @@ public class ClientWebView extends WebViewClient {
                 }
 
             } else if (url_i.contains(URL + PG_HORARIO)) {
+
                 webView.loadUrl("javascript:window.HtmlHandler.handleHorario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                 Log.i("WebViewClient", "Horario loaded");
+
             } else if (url_i.contains(URL + PG_MATERIAIS)) {
-                webView.loadUrl("javascript:window.HtmlHandler.handleMateriais"
-                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-                Log.i("WebViewClient", "Materiais loaded");
+
+                if (webView.scriptMateriais.contains("javascript:")) {
+
+                    Log.i("SCRIPT", "Ok");
+                    webView.loadUrl(webView.scriptMateriais);
+                    webView.scriptMateriais = "";
+
+                } else {
+
+                    webView.loadUrl("javascript:window.HtmlHandler.handleMateriais"
+                            + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
+                    Log.i("WebViewClient", "Materiais loaded");
+
+                }
             } else if(url_i.equals(URL + PG_CALENDARIO)) {
+
                 webView.loadUrl("javascript:window.HtmlHandler.handleCalendario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
             } else if (url_i.equals(URL + PG_ERRO)) {
+
                 Log.i("WebViewClient", "Error");
+
                 if (webView.isLoginPage) {
                     onPageFinished.onPageFinish(URL + PG_ERRO);
                     SharedPreferences.Editor editor = login_info.edit();

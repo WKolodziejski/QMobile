@@ -25,9 +25,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
-    SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Materia> materias;
-    public boolean lock_header = true;
+    boolean lock_header = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +45,7 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
     private void setBoletim(View view) {
 
-        materias = Data.loadMaterias(getContext());
+        List<Materia> materias = Data.loadMaterias(getContext());
 
         LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 

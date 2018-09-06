@@ -33,6 +33,7 @@ public class Utils {
     public static final String LOGIN_VALID = ".Valido";
     public static final String LOGIN_NAME = ".Nome";
     public static final String LOGIN_INFO = ".Login_Info";
+    public static final String YEARS = ".Years";
     public static final String LOGIN_REGISTRATION = ".Matricula";
     public static final String LOGIN_PASSWORD = ".Senha";
     public static final String LOGIN_DAY = ".Dia";

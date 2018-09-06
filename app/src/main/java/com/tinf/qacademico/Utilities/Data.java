@@ -24,49 +24,6 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qacademico.Utilities.Utils.MATERIAS;
 
 public class Data {
-    private static final String INFOS = ".Infos";
-
-    public static void saveInfos(Context context) {
-        SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, 0);
-
-        ObjectOutputStream object;
-        try {
-                object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
-                        login_info.getString(LOGIN_REGISTRATION,
-                                "") + INFOS)));
-
-            object.writeObject(SingletonWebView.getInstance().infos);
-            object.flush();
-            object.close();
-            Log.i("DATA", "Salvo");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("DATA", "Erro ao salvar: " + e);
-        }
-    }
-
-    public static Infos loadInfos(Context context) {
-        SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
-
-        ObjectInputStream object;
-        Infos infos = null;
-
-        try {
-            object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
-                        login_info.getString(LOGIN_REGISTRATION,
-                                "") + INFOS)));
-
-            infos = (Infos) object.readObject();
-            Log.i("DATA", "Lido");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("DATA", "Erro ao ler: " + e);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            Log.e("DATA", "Erro ao ler: " + e);
-        }
-        return infos;
-    }
 
     public static List<Meses> loadCalendar(Context context) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
@@ -78,7 +35,7 @@ public class Data {
         try {
             object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION,
-                            "") + CALENDARIO + "." + webView.infos.data_calendario)));
+                            "") + CALENDARIO + "." + webView.data_year[webView.year_position])));
 
             calendar = (List<Meses>) object.readObject();
             Log.i("Calendario", "Lido");
@@ -100,7 +57,7 @@ public class Data {
         try {
             object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION,
-                            "") + CALENDARIO + "." + webView.infos.data_calendario)));
+                            "") + CALENDARIO + "." + webView.data_year[webView.year_position])));
             object.writeObject(obj);
             object.flush();
             object.close();
@@ -120,7 +77,7 @@ public class Data {
         try {
             object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
-                            + "." + webView.infos.data_year[webView.year_position])));
+                            + "." + webView.data_year[webView.year_position])));
 
             object.writeObject(obj);
             object.flush();
@@ -143,7 +100,7 @@ public class Data {
         try {
             object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
-                            + "." + webView.infos.data_year[webView.year_position])));
+                            + "." + webView.data_year[webView.year_position])));
 
             materias = (List<Materia>) object.readObject();
             Log.i("Materias", "Lido");

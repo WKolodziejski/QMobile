@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
-    SingletonWebView webView = SingletonWebView.getInstance();
-    public List<Materia> materias;
     DiariosListAdapter adapter;
 
     @Override
@@ -43,7 +41,7 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     private void setDiarios(View view) {
 
-        materias = Data.loadMaterias(getContext());
+        List<Materia> materias = Data.loadMaterias(getContext());
 
         RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
@@ -77,6 +75,6 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     @Override
     public void onPageUpdate(List<?> list) {
-        setDiarios(getView());
+
     }
 }

@@ -132,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
 
             year.setMinValue(0);
-            year.setMaxValue(webView.infos.data_year.length - 1);
+            year.setMaxValue(webView.data_year.length - 1);
             year.setValue(webView.year_position);
-            year.setDisplayedValues(webView.infos.data_year);
+            year.setDisplayedValues(webView.data_year);
             year.setWrapSelectorWheel(false);
 
             new AlertDialog.Builder(MainActivity.this)
@@ -183,9 +183,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                         return true;
 
                     case R.id.navigation_calendario:
-                        if (!SingletonWebView.getInstance().pg_calendario_loaded) {
-                            SingletonWebView.getInstance().loadUrl(URL + PG_CALENDARIO);
-                        }
                         showDatePicker();
                         changeFragment(new CalendarioFragment());
                         hideTabLayout();
@@ -193,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                         return true;
 
                     case R.id.navigation_materiais:
-                        setTitle(SingletonWebView.getInstance().infos.data_year[0]);
+                        setTitle(SingletonWebView.getInstance().data_year[0]);
                         SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
                         changeFragment(new MateriaisFragment());
                         hideExpandBtn();
