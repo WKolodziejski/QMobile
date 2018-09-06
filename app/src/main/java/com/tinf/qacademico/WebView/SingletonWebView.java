@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.tinf.qacademico.Class.Infos;
 import com.tinf.qacademico.Utilities.Data;
@@ -37,7 +38,7 @@ public class SingletonWebView {
                      pg_materiais_loaded = {false};
     public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
     public String scriptDiario = "";
-    public int year_position, new_year_position;
+    public int year_position;
 
     public Infos infos;
 
@@ -80,8 +81,6 @@ public class SingletonWebView {
                     Log.i("Client", "Carregando fila...");
                     loadUrl(queue);
                 }
-            } else {
-                year_position = new_year_position;
             }
         }
     }
@@ -116,11 +115,12 @@ public class SingletonWebView {
         webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
-    public void changeDate(int value) {
-        new_year_position = value;
+    public void changeDate(Context context, int value) {
         if (!isLoading) {
             year_position = value;
             onPageFinished.onPageFinish("", null);
+        } else {
+            Toast.makeText(context, "Espere terminar de carregar", Toast.LENGTH_SHORT).show();
         }
     }
 
