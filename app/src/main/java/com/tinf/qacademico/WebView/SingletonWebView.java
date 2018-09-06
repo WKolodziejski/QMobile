@@ -37,7 +37,7 @@ public class SingletonWebView {
                      pg_materiais_loaded = {false};
     public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
     public String scriptDiario = "";
-    public int year_position;
+    public int year_position, new_year_position;
 
     public Infos infos;
 
@@ -80,6 +80,8 @@ public class SingletonWebView {
                     Log.i("Client", "Carregando fila...");
                     loadUrl(queue);
                 }
+            } else {
+                year_position = new_year_position;
             }
         }
     }
@@ -114,8 +116,12 @@ public class SingletonWebView {
         webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
-    public void changeDate() {
-
+    public void changeDate(int value) {
+        new_year_position = value;
+        if (!isLoading) {
+            year_position = value;
+            onPageFinished.onPageFinish("", null);
+        }
     }
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})

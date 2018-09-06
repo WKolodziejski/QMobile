@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mesesList = Data.loadCalendar(getContext(), webView.infos.data_calendario);
+        mesesList = Data.loadCalendar(getContext());
 
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }

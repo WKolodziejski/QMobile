@@ -94,13 +94,13 @@ public class JavaScriptWebView {
         new Thread() {
             @Override
             public void run() {
-                //try {
+                try {
                     String[][] trtd_boletim;
                     Document document = Jsoup.parse(html_p);
 
-                    final Element table_boletim = document.getElementsByTag("table").get(6);
+                    final Element table_boletim = document.select("table").get(6);
 
-                    Element table_notas = table_boletim.getElementsByTag("table").get(7);
+                    Element table_notas = table_boletim.select("table").get(7);
 
                     Elements tables = table_notas.children();
 
@@ -183,9 +183,9 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_BOLETIM, materias);
 
-                /*} catch (Exception e) {
+                } catch (Exception e) {
                     Log.e("JavaScriptWebView", "Boletim error: " + e);
-                }*/
+                }
             }
         }.start();
     }
@@ -210,7 +210,7 @@ public class JavaScriptWebView {
                     webView.infos.data_year = new String[options.size() - 1];
 
                     for (int i = 0; i < options.size() - 1; i++) {
-                        webView.infos.data_year[i] = options.get(i + 1).text();
+                        webView.infos.data_year[i] = trimb(options.get(i + 1).text());
                     }
 
                     List<Materia> materias = Data.loadMaterias(context);
@@ -577,7 +577,7 @@ public class JavaScriptWebView {
                     Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
                     //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
-                    webView.infos.data_calendario = document.getElementsByClass("dado_cabecalho").get(1).text();
+                    webView.infos.data_calendario = trimb(document.getElementsByClass("dado_cabecalho").get(1).text());
 
                     List<Meses> listMeses = new ArrayList<>();
 
@@ -701,7 +701,7 @@ public class JavaScriptWebView {
                         listMeses.add(new Meses(diaList, numMes, year));
                     }
 
-                    Data.saveCalendar(context, listMeses, webView.infos.data_calendario);
+                    Data.saveCalendar(context, listMeses);
                     Data.saveInfos(context);
 
                     webView.pg_calendario_loaded = true;
@@ -800,5 +800,10 @@ public class JavaScriptWebView {
 
     public interface OnPageFinished {
         void onPageFinish(String url_p, List<?> list);
+    }
+
+    private static String trimb(String string) {
+        string = string.substring(0, 4);
+        return string;
     }
 }

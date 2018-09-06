@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                     webView.year_position = i;
 
                     webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
-                            + webView.infos.data_year[i] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
+                            + webView.infos.data_year[i] + "&cmbperiodos=1&Exibir+Boletim");
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),

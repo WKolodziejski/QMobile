@@ -146,11 +146,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                                     R.string.dialog_date_change, R.color.colorPrimary))
                     .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                        webView.year_position = year.getValue();
-
-                        webView.changeDate();
-
-                        onPageUpdated.onPageUpdate(null);
+                        webView.changeDate(year.getValue());
 
                     }).setNegativeButton(R.string.dialog_cancel, null)
                     .show();
@@ -222,9 +218,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             dismissProgressbar();
             invalidateOptionsMenu();
 
-            if (list != null) {
-                onPageUpdated.onPageUpdate(list);
-            }
+            onPageUpdated.onPageUpdate(list);
         });
     }
 

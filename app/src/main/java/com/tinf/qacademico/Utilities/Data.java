@@ -68,8 +68,9 @@ public class Data {
         return infos;
     }
 
-    public static List<Meses> loadCalendar(Context context, String year) {
+    public static List<Meses> loadCalendar(Context context) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
+        SingletonWebView webView = SingletonWebView.getInstance();
 
         ObjectInputStream object;
         List<Meses> calendar = new ArrayList<>();
@@ -77,7 +78,7 @@ public class Data {
         try {
             object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION,
-                            "") + CALENDARIO + "." + trimb(year))));
+                            "") + CALENDARIO + "." + webView.infos.data_calendario)));
 
             calendar = (List<Meses>) object.readObject();
             Log.i("Calendario", "Lido");
@@ -91,14 +92,15 @@ public class Data {
         return calendar;
     }
 
-    public static void saveCalendar(Context context, Object obj, String year) {
+    public static void saveCalendar(Context context, Object obj) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
+        SingletonWebView webView = SingletonWebView.getInstance();
 
         ObjectOutputStream object;
         try {
             object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION,
-                            "") + CALENDARIO + "." + trimb(year))));
+                            "") + CALENDARIO + "." + webView.infos.data_calendario)));
             object.writeObject(obj);
             object.flush();
             object.close();
@@ -118,7 +120,7 @@ public class Data {
         try {
             object = new ObjectOutputStream(new FileOutputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
-                            + "." + trimb(webView.infos.data_year[webView.year_position]))));
+                            + "." + webView.infos.data_year[webView.year_position])));
 
             object.writeObject(obj);
             object.flush();
@@ -141,7 +143,7 @@ public class Data {
         try {
             object = new ObjectInputStream(new FileInputStream(context.getFileStreamPath(
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
-                            + "." + trimb(webView.infos.data_year[webView.year_position]))));
+                            + "." + webView.infos.data_year[webView.year_position])));
 
             materias = (List<Materia>) object.readObject();
             Log.i("Materias", "Lido");
@@ -156,11 +158,4 @@ public class Data {
         return materias;
     }
 
-    private static String trimb(String string) {
-        //string = string.replace(" / ", ".");
-        //string = string.replace("/", ".");
-        string = string.substring(0, 4);
-        Log.i("DATA", string);
-        return string;
-    }
 }

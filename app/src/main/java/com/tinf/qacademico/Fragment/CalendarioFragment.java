@@ -48,9 +48,7 @@ public class CalendarioFragment extends Fragment implements MainActivity.OnPageU
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendario, container, false);
 
-        if (webView.infos.data_calendario != null) {
-            mesesList = Data.loadCalendar(getContext(), webView.infos.data_calendario);
-        }
+        mesesList = Data.loadCalendar(getContext());
 
         setCalendar(view);
 
