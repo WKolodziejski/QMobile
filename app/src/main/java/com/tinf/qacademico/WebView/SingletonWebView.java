@@ -153,7 +153,7 @@ public class SingletonWebView {
         //queue.add(URL + PG_HORARIO);
         queue.add(URL + PG_BOLETIM);
         queue.add(URL + PG_DIARIOS);
-        queue.add(URL + PG_HOME);
+        //queue.add(URL + PG_HOME);
 
         webView = new WebView(context);
         WebSettings faller = webView.getSettings();
