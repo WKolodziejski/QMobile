@@ -20,16 +20,8 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Utils {
-    public static final String HOME = ".Home";
-    public static final String HORARIO = ".Horario";
-    public static final String BOLETIM = ".Boletim";
-    public static final String DIARIOS = ".Diarios";
     public static final String CALENDARIO = ".Calendario";
-    public static final String ORGANIZACAO = ".Organizacao";
-    public static final String MATERIAIS = ".Materiais";
     public static final String MATERIAS = ".Materias";
-    public static final String NOTAS = ".Notas";
-    public static final String LOGIN = ".Login";
     public static final String LOGIN_VALID = ".Valido";
     public static final String LOGIN_NAME = ".Nome";
     public static final String LOGIN_INFO = ".Login_Info";
@@ -48,7 +40,6 @@ public class Utils {
     public static final String PG_HORARIO = "2010";
     public static final String PG_MATERIAIS = "2061";
     public static final String PG_CALENDARIO = "2020";
-    public static final String pg_change_password = "1011";
     public static final String PG_ERRO = "1";
 
     public static boolean isConnected(Context context) {
