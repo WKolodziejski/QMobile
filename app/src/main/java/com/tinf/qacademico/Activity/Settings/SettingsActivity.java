@@ -9,8 +9,6 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.SendEmail;
-import com.tinf.qacademico.Utilities.Utils;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
