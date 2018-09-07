@@ -149,8 +149,8 @@ public class SingletonWebView {
 
         data_year = loadYears(context);
 
-        queue.add(URL + PG_CALENDARIO);
-        queue.add(URL + PG_HORARIO);
+        //queue.add(URL + PG_CALENDARIO);
+        //queue.add(URL + PG_HORARIO);
         queue.add(URL + PG_BOLETIM);
         queue.add(URL + PG_DIARIOS);
         queue.add(URL + PG_HOME);

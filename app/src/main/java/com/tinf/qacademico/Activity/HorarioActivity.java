@@ -14,42 +14,23 @@ import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import java.util.Objects;
 
-public class HorarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished {
-    public SingletonWebView mainWebView = SingletonWebView.getInstance();
-    private OnPageUpdated onPageUpdated;
+public class HorarioActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horario);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar2);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mainWebView.setOnPageFinishedListener(this);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.horario_fragment, new HorarioFragment());
-        fragmentTransaction.commit();
-    }
-
-    @Override
-    public void onPageFinish(String url_p, List<?> list) {
-        runOnUiThread(() -> {
-            onPageUpdated.onPageUpdate(list);
-        });
-    }
-
-    public void setOnPageFinishedListener(OnPageUpdated onPageUpdated){
-        this.onPageUpdated = onPageUpdated;
-    }
-
-    public interface OnPageUpdated {
-        void onPageUpdate(List<?> list);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.horario_fragment, new HorarioFragment())
+                .commit();
     }
 
     @Override

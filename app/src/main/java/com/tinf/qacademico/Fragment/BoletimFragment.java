@@ -107,8 +107,8 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
                 .setTableHeadTextColor(R.color.white)
                 .setTableContentTextColor(R.color.colorAccent)
                 .setNullableString("-")
-                .setOnItemClickListenter((item, position) -> Log.e("点击事件",position+""))
-                .setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
+                //.setOnItemClickListenter((item, position) -> Log.e("点击事件",position+""))
+                //.setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
                 .setOnItemSeletor(R.color.white)
                 .show();
         mLockTableView.getTableScrollView().setPullRefreshEnabled(false);

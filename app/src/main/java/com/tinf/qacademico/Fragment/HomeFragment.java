@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.alamkanak.weekview.WeekView;
+import com.tinf.qacademico.Activity.CalendarioActivity;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
@@ -91,6 +92,16 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         recyclerViewCalendario.setAdapter(adapter);
         recyclerViewCalendario.setLayoutManager(layout);
+
+        LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
+
+        calendario.setOnClickListener(v -> {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
+                            recyclerViewCalendario, Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
+            startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
+            ((MainActivity)getActivity()).dismissProgressbar();
+        });
     }
 
     private void showHorario(View view) {

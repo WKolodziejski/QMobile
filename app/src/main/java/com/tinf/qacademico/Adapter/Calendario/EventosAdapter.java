@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.tinf.qacademico.Class.Calendario.Evento;
@@ -31,19 +32,24 @@ public class EventosAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final EventosViewHolder holder = (EventosViewHolder) viewHolder;
 
-        holder.title.setText(eventos.get(position).getTitle());
-        holder.description.setText(eventos.get(position).getDescription());
-        holder.title.setTextColor(eventos.get(position).getColor());
+        holder.title.setText(eventos.get(i).getTitle());
+        holder.description.setText(eventos.get(i).getDescription());
+        holder.header.setBackgroundColor(eventos.get(i).getColor());
 
-        if (eventos.get(position).hasHappened()) {
+        if (eventos.get(i).getDescription().isEmpty()) {
+            holder.description.setVisibility(View.GONE);
+        }
+
+        if (eventos.get(i).hasHappened()) {
             holder.description.append(" ACONTECEU");
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(position).getColor()));
+            holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(i).getColor()));
+
         }
     }
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     >
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="16dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -15,55 +15,70 @@
 
         <View
             android:layout_width="1dp"
-            android:layout_height="27dp"
-            android:background="@color/black_dividers"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" />
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/calendario_point"
+            android:background="@color/black_dividers" />
 
         <View
             android:layout_width="9dp"
             android:layout_height="9dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
+            android:layout_centerInParent="true"
             android:id="@+id/calendario_point"
             android:background="@drawable/ic_brightness_1_black_24dp" />
 
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/black_dividers"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"/>
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/calendario_point"
+            android:background="@color/black_dividers" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
+    <android.support.design.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="0dp"
         >
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:textSize="@dimen/alt_font_size"
-            android:id="@+id/calendario_title"
-            tools:text="Matemática"/>
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:background="@color/colorPrimary"
+            android:id="@+id/calendario_header"
+            >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:textSize="@dimen/main_font_size"
-            android:textStyle="bold"
-            android:id="@+id/caledario_description"
-            tools:text="Prova de trigonometria" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/alt_font_size"
+                android:id="@+id/calendario_title"
+                android:textColor="@color/colorPrimaryLight"
+                tools:text="Matemática"/>
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/main_font_size"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:id="@+id/caledario_description"
+                android:textColor="@color/colorPrimaryLight"
+                tools:text="Prova de trigonometria" />
+
+        </LinearLayout>
+
+    </android.support.design.card.MaterialCardView>
+
 
 </LinearLayout>

@@ -55,6 +55,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".Activity.CalendarioActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".Activity.Settings.SettingsActivity"
             android:label="@string/title_activity_settings">
             <meta-data

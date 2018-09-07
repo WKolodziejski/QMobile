@@ -17,8 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Fade;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,11 +25,8 @@ import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
-import com.tinf.qacademico.App;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
-import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
 import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
@@ -41,7 +36,6 @@ import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import java.util.Objects;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
@@ -49,7 +43,6 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
-import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
@@ -57,8 +50,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @BindView(R.id.progressbar_horizontal)      ProgressBar progressBar;
     @BindView(R.id.fab_expand)           public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)           public BottomNavigationView navigation;
-    @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
+    private SingletonWebView webView = SingletonWebView.getInstance();
     private OnPageUpdated onPageUpdated;
     public List<MateriaisList> materiaisList;
 
@@ -73,29 +66,17 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        calendar.setAnimationListener(new CompactCalendarView.CompactCalendarAnimationListener() {
-            @Override
-            public void onOpened() {
-                calendar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onClosed() {
-                calendar.setVisibility(View.GONE);
-            }
-        });
-
         hideExpandBtn();
 
-        SingletonWebView.getInstance().configWebView(getApplicationContext());
-        SingletonWebView.getInstance().setOnPageFinishedListener(this);
-        SingletonWebView.getInstance().setOnPageStartedListener(this);
-        SingletonWebView.getInstance().setOnErrorRecivedListener(this);
+        webView.configWebView(getApplicationContext());
+        webView.setOnPageFinishedListener(this);
+        webView.setOnPageStartedListener(this);
+        webView.setOnErrorRecivedListener(this);
 
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
             changeFragment(new HomeFragment());
-            SingletonWebView.getInstance().loadNextUrl();
+            webView.loadNextUrl();
 
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
@@ -125,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     .show();
             return true;
         } else if (id == R.id.action_date) {
-            SingletonWebView webView = SingletonWebView.getInstance();
 
             View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
@@ -164,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
             if (item.getItemId() != navigation.getSelectedItemId()) {
                 dismissProgressbar();
-                SingletonWebView.getInstance().resumeQueue();
-                SingletonWebView.getInstance().loadNextUrl();
+                webView.resumeQueue();
+                webView.loadNextUrl();
 
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
@@ -173,29 +153,20 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                         changeFragment(new HomeFragment());
                         hideTabLayout();
                         hideExpandBtn();
-                        hideDatePicker();
                         return true;
 
                     case R.id.navigation_notas:
+                        setTitle(webView.data_year[webView.year_position]);
                         changeFragment(new NotasFragment());
                         showExpandBtn();
-                        hideDatePicker();
-                        return true;
-
-                    case R.id.navigation_calendario:
-                        showDatePicker();
-                        changeFragment(new CalendarioFragment());
-                        hideTabLayout();
-                        hideExpandBtn();
                         return true;
 
                     case R.id.navigation_materiais:
-                        setTitle(SingletonWebView.getInstance().data_year[0]);
-                        SingletonWebView.getInstance().loadUrl(URL + PG_MATERIAIS);
+                        setTitle(webView.data_year[webView.year_position]);
+                        webView.loadUrl(URL + PG_MATERIAIS);
                         changeFragment(new MateriaisFragment());
                         hideExpandBtn();
                         hideTabLayout();
-                        hideDatePicker();
                         return true;
                 }
             }
@@ -211,10 +182,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public void onPageFinish(String url_p, List<?> list) {
         runOnUiThread(() -> {
-            SingletonWebView.getInstance().loadNextUrl();
+            webView.loadNextUrl();
             dismissProgressbar();
-            invalidateOptionsMenu();
-
             onPageUpdated.onPageUpdate(list);
         });
     }
@@ -222,41 +191,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public void onErrorRecived(String error) {
         runOnUiThread(this::dismissProgressbar);
-    }
-
-    @Override
-    public void setTitle(CharSequence text) {
-        TextView title = (TextView) findViewById(R.id.actionBar_title);
-        title.setText(text);
-    }
-
-    private void showDatePicker() {
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.actionBar_picker);
-        ImageView arrow = (ImageView) findViewById(R.id.actionBar_arrow);
-        arrow.setVisibility(View.VISIBLE);
-        layout.setOnClickListener(v -> {
-            if (calendar.getVisibility() == View.VISIBLE) {
-                hideCalendar();
-                ViewCompat.animate(arrow).rotation(0).start();
-            } else {
-                showCalendar();
-                ViewCompat.animate(arrow).rotation(180).start();
-            }
-        });
-        layout.setClickable(true);
-        layout.setFocusable(true);
-    }
-
-    private void hideDatePicker() {
-        calendar.setVisibility(View.GONE);
-
-        ImageView arrow = (ImageView) findViewById(R.id.actionBar_arrow);
-        arrow.setVisibility(View.GONE);
-        arrow.setRotation(0);
-
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.actionBar_picker);
-        layout.setClickable(false);
-        layout.setFocusable(false);
     }
 
     protected void showSnackBar(String message, boolean action) { //Mostra a SnackBar
@@ -315,25 +249,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     public void dismissProgressbar() { //Esconde a progressBar ao carregar a página
         progressBar.setVisibility(View.GONE);
-    }
-
-    private void showCalendar() {
-        calendar.setVisibility(View.VISIBLE);
-        if (calendar.getVisibility() != View.VISIBLE) {
-            calendar.showCalendarWithAnimation();
-        } else {
-            calendar.showCalendar();
-        }
-        invalidateOptionsMenu();
-    }
-
-    private void hideCalendar() {
-        if (calendar.getVisibility() == View.VISIBLE) {
-            calendar.hideCalendarWithAnimation();
-        } else {
-            calendar.hideCalendar();
-        }
-        invalidateOptionsMenu();
     }
 
     public void hideTabLayout() {
