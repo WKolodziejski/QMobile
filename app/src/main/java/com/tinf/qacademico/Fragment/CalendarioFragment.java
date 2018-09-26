@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qacademico.Activity.CalendarioActivity;
@@ -125,6 +127,7 @@ public class CalendarioFragment extends Fragment {
                 calendar.setTimeInMillis(date.getTime());
 
                 boolean isInRange = false;
+                int direction = 0; // 1 Direita      -1 Esquerda
 
                 for (int i = 0; i < mesesList.size(); i++) {
                     if (calendar.get(Calendar.MONTH) == mesesList.get(i).getMonth()
@@ -132,6 +135,11 @@ public class CalendarioFragment extends Fragment {
                         isInRange = true;
                         break;
                     } else {
+                        if (calendar.get(Calendar.YEAR) == mesesList.get(i).getYear()) {
+                            direction = -1;
+                        } else {
+                            direction = 1;
+                        }
                         isInRange = false;
                     }
                 }
@@ -167,7 +175,14 @@ public class CalendarioFragment extends Fragment {
                         }
                     }
                 } else {
-                    //Negar deslizar fora do período
+                    Toast.makeText(getContext(), "Fim do período letivo", Toast.LENGTH_SHORT).show();
+                    if (direction == 1) {
+                        calendarView.scrollRight();
+                        calendarView.scrollLeft();
+                    } else if (direction == -1) {
+                        calendarView.scrollLeft();
+                        calendarView.scrollRight();
+                    }
                 }
             }
         });
