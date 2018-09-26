@@ -10,8 +10,6 @@
         android:id="@+id/toolbar_calendario"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        app:layout_scrollFlags="scroll|enterAlways|snap"
-        app:layout_collapseMode="pin"
         app:popupTheme="@style/AppTheme.PopupOverlay"
         >
 

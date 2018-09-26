@@ -7,14 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alamkanak.weekview.WeekView;
+import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
+import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
 import java.util.List;
 
+import io.objectbox.BoxStore;
+
 public class HorarioFragment extends Fragment {
-    public List<Materia> materias;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,11 +30,13 @@ public class HorarioFragment extends Fragment {
 
     private void setHorario(View view) {
 
-        materias = Data.loadMaterias(getContext());
-
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
-        HorarioView.congifWeekView(weekView, materias);
+        HorarioView.congifWeekView(weekView, Data.loadMaterias(getContext()));
 
+    }
+
+    private BoxStore getBox() {
+        return ((MainActivity) getActivity()).getBox();
     }
 }

@@ -50,6 +50,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_list_diarios"
+            android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

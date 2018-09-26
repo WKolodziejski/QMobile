@@ -106,7 +106,7 @@ public class ClientWebView extends WebViewClient {
 
             } else if (url_i.contains(URL + PG_DIARIOS)) {
 
-                if (webView.scriptDiario.contains("javascript:")) {
+                if (!webView.scriptDiario.isEmpty()) {
 
                     Log.i("SCRIPT", "Ok");
                     webView.loadUrl(webView.scriptDiario);
@@ -128,7 +128,7 @@ public class ClientWebView extends WebViewClient {
 
             } else if (url_i.contains(URL + PG_MATERIAIS)) {
 
-                if (webView.scriptMateriais.contains("javascript:")) {
+                if (!webView.scriptMateriais.isEmpty()) {
 
                     Log.i("SCRIPT", "Ok");
                     webView.loadUrl(webView.scriptMateriais);

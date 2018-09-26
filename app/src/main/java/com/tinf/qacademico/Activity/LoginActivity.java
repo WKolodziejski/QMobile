@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.LoginFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
@@ -29,7 +31,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
-    int num = 1;
+    int num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     public void onPageFinish(String url_p, List<?> list) {
         runOnUiThread(() -> {
             if (url_p.equals(URL + PG_LOGIN)) {
+                ((App) getApplication()).setLogged(true);
+                SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
                 if (loginFragment.login_info.getBoolean(Utils.FIRST_LOGIN, true)) {
                     firstLogin();
                 } else {

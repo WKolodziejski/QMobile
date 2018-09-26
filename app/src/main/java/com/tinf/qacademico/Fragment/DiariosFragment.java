@@ -20,6 +20,8 @@ import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import java.util.Objects;
 
+import io.objectbox.BoxStore;
+
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
     DiariosListAdapter adapter;
 
@@ -41,12 +43,10 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     private void setDiarios(View view) {
 
-        List<Materia> materias = Data.loadMaterias(getContext());
-
         RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
 
-        adapter = new DiariosListAdapter(materias, getActivity());
+        adapter = new DiariosListAdapter(Data.loadMaterias(getContext()), getActivity());
 
         recyclerViewDiarios.setAdapter(adapter);
         recyclerViewDiarios.setLayoutManager(layout);
@@ -71,6 +71,10 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
         ((MainActivity) Objects.requireNonNull(getActivity())).fab_expand.setOnClickListener(v -> {
             adapter.toggleAll();
         });
+    }
+
+    private BoxStore getBox() {
+        return ((MainActivity) getActivity()).getBox();
     }
 
     @Override

@@ -17,6 +17,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.BoxStore;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
@@ -68,7 +70,7 @@ public class Data {
         }
     }
 
-    public static void saveMaterias(Context context, Object obj) {
+    public static void saveMaterias(Context context, List<Materia> materias) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
         SingletonWebView webView = SingletonWebView.getInstance();
 
@@ -79,7 +81,7 @@ public class Data {
                     login_info.getString(LOGIN_REGISTRATION, "") + MATERIAS
                             + "." + webView.data_year[webView.year_position])));
 
-            object.writeObject(obj);
+            object.writeObject(materias);
             object.flush();
             object.close();
             Log.i("Materias", "Salvo");

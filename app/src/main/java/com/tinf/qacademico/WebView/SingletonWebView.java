@@ -1,6 +1,7 @@
 package com.tinf.qacademico.WebView;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,10 +10,17 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import com.tinf.qacademico.Activity.MainActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
@@ -41,6 +49,7 @@ public class SingletonWebView {
     public String scriptDiario = "", scriptMateriais = "";
     public int year_position;
     public String[] data_year = {""};
+    public BoxStore box;
 
     private SingletonWebView() {}
 
@@ -170,7 +179,7 @@ public class SingletonWebView {
             if (url_p.contains(URL + PG_MATERIAIS)) {
                 isPaused = true;
             }
-            Log.i("Handled", url_p);
+            Log.i("Finish", url_p);
             onPageFinished.onPageFinish(url_p, list);
         });
 
@@ -196,6 +205,11 @@ public class SingletonWebView {
 
         webView.setWebViewClient(clientWebView);
         webView.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
+    }
+
+    public void setBoxStore(BoxStore box) {
+        this.box = box;
+        Log.i("BoxStore", box.toString());
     }
 
     public void setOnPageFinishedListener(OnPageFinished onPageFinished){

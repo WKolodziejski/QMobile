@@ -16,9 +16,11 @@ import android.widget.LinearLayout;
 
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.CalendarioActivity;
+import com.tinf.qacademico.Activity.CalendarioActivity2;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
+import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Meses;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Widget.HorarioView;
@@ -31,6 +33,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import io.objectbox.BoxStore;
 
 import static android.view.View.GONE;
 
@@ -85,7 +89,9 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
             month = mesesList.size() - 1;
         }
 
-        adapter = new CalendarioAdapter(mesesList.get(month).getDias(), getActivity());
+        List<Dia> dias = mesesList.get(month).getDias().subList(0, 5);
+
+        adapter = new CalendarioAdapter(dias, getActivity());
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,
                 false);
@@ -119,6 +125,10 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
             startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
             ((MainActivity)getActivity()).dismissProgressbar();
         });
+    }
+
+    private BoxStore getBox() {
+        return ((MainActivity) getActivity()).getBox();
     }
 
     @Override

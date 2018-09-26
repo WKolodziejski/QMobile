@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qacademico.Activity.CalendarioActivity;
+import com.tinf.qacademico.Activity.CalendarioActivity2;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Meses;

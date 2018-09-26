@@ -1,5 +1,9 @@
 package com.tinf.qacademico.Class.Materias;
 
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,26 +17,32 @@ import io.objectbox.annotation.Unique;
 @Entity
 public class Materia implements Serializable {
     @Id public long id;
-    private List<Etapa> etapas;
-    private List<Horario> horarios;
-    private int color;
-    private String name;
+    @NonNull private List<Etapa> etapas;
+    @NonNull private List<Horario> horarios = new ArrayList<>();
+    @ColorInt private int color;
+    @Unique private String name;
     private String totalFaltas;
-    @Transient transient private boolean isExpanded;
-    @Transient transient private boolean anim;
+    @Transient private boolean isExpanded;
+    @Transient private boolean anim;
 
-    public Materia(String name, int color, List<Etapa> etapas) {
+    public Materia(String name, int color, @NonNull List<Etapa> etapas) {
         this.color = color;
         this.name = name.trim();
         this.etapas = etapas;
+        Log.i(name, etapas.toString());
     }
 
+    @NonNull
     public List<Horario> getHorarios() {
         return horarios;
     }
 
-    public void setHorarios(List<Horario> horarios) {
+    public void setHorarios(@NonNull List<Horario> horarios) {
         this.horarios = horarios;
+    }
+
+    public void addHorario(Horario horario) {
+        this.horarios.add(horario);
     }
 
     public int getColor() {
@@ -44,18 +54,19 @@ public class Materia implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return name.trim();
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    @NonNull
     public List<Etapa> getEtapas() {
         return etapas;
     }
 
-    public void setEtapas(List<Etapa> etapas) {
+    public void setEtapas(@NonNull List<Etapa> etapas) {
         this.etapas = etapas;
     }
 
@@ -81,5 +92,9 @@ public class Materia implements Serializable {
 
     public void setAnim(boolean anim) {
         this.anim = anim;
+    }
+
+    public long getId(){
+        return id;
     }
 }

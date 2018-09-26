@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import io.objectbox.BoxStore;
+
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
     boolean lock_header = true;
 
@@ -125,6 +127,10 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
             }
         });
 
+    }
+
+    private BoxStore getBox() {
+        return ((MainActivity) getActivity()).getBox();
     }
 
     public void lockHeader() {

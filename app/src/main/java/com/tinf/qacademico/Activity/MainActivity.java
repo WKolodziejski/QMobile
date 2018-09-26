@@ -14,20 +14,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
-import com.tinf.qacademico.Fragment.CalendarioFragment;
 import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
 import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
@@ -38,6 +35,8 @@ import java.util.List;
 import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.BoxStore;
+
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
@@ -49,7 +48,7 @@ import static com.tinf.qacademico.Utilities.Utils.URL;
 public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
     @BindView(R.id.progressbar_horizontal)      ProgressBar progressBar;
     @BindView(R.id.fab_expand)           public FloatingActionButton fab_expand;
-    @BindView(R.id.navigation)           public BottomNavigationView navigation;
+    @BindView(R.id.navigation)           public BottomNavigationView bottomNav;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnPageUpdated onPageUpdated;
@@ -59,25 +58,25 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
-
         setSupportActionBar(findViewById(R.id.toolbar));
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        hideExpandBtn();
-
-        webView.configWebView(getApplicationContext());
+        webView.configWebView(this);
         webView.setOnPageFinishedListener(this);
         webView.setOnPageStartedListener(this);
         webView.setOnErrorRecivedListener(this);
 
+        hideExpandBtn();
+        testLogin();
+    }
+
+    private void testLogin() {
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
+            ((App) getApplication()).setLogged(true);
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
             changeFragment(new HomeFragment());
             webView.loadNextUrl();
-
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
@@ -86,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
-
         return true;
     }
 
@@ -135,14 +133,14 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         return super.onOptionsItemSelected(item);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
         @SuppressWarnings("StatementWithEmptyBody")
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-            if (item.getItemId() != navigation.getSelectedItemId()) {
+            if (item.getItemId() != bottomNav.getSelectedItemId()) {
                 dismissProgressbar();
                 webView.resumeQueue();
                 webView.loadNextUrl();
@@ -281,13 +279,17 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        recreate();
+        testLogin();
+    }
+
+    public BoxStore getBox() {
+        return ((App) getApplication()).getBoxStore();
     }
 
     @Override
     public void onBackPressed() {
-        if (navigation.getSelectedItemId() != R.id.navigation_home) {
-            navigation.setSelectedItemId(R.id.navigation_home);
+        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
+            bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             super.onBackPressed();
         }

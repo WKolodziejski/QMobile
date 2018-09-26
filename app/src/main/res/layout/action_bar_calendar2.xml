@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/app_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme.AppBarOverlay"
+    app:expanded="true"
+    app:layout_behavior="com.tinf.qacademico.Widget.ScrollingCalendarBehavior"
+    >
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsingToolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        app:contentScrim="@color/colorPrimaryLight"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:statusBarScrim="@color/colorPrimaryLight"
+        >
+
+        <LinearLayout
+            android:id="@+id/compactcalendar_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:paddingTop="?attr/actionBarSize"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="1.0"
+            >
+
+            <com.github.sundeepk.compactcalendarview.CompactCalendarView
+                android:id="@+id/compactcalendar_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                app:compactCalendarTargetHeight="250dp"
+                app:compactCalendarTextSize="12sp"
+                app:compactCalendarBackgroundColor="@color/colorPrimaryLight"
+                app:compactCalendarTextColor="@color/colorPrimary"
+                app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorSecondary"
+                app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
+                app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            >
+
+            <RelativeLayout
+                android:id="@+id/date_picker_button"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:foreground="?android:selectableItemBackground"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:focusable="true"
+                >
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="@color/colorAccent" />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+</android.support.design.widget.AppBarLayout>

@@ -2,6 +2,7 @@ package com.tinf.qacademico.Adapter.Calendario;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -44,7 +45,8 @@ public class EventosAdapter extends RecyclerView.Adapter {
         }
 
         if (eventos.get(i).hasHappened()) {
-            holder.description.append(" ACONTECEU");
+            holder.title.setPaintFlags(holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.description.setPaintFlags(holder.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
