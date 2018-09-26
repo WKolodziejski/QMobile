@@ -892,11 +892,21 @@ public class JavaScriptWebView {
 
             if (materia != null) {
                 color = materia.getColor();
-            }*/
+            }
 
             if (color == 0) {
                 color = Utils.getRandomColorGenerator(context);
+            }*/
+
+            List<Materia> materias = Data.loadMaterias(context);
+
+            for (int i = 0; i < materias.size(); i++) {
+                if (materias.get(i).getName().equals(string)) {
+                    return materias.get(i).getColor();
+                }
             }
+
+            color = Utils.getRandomColorGenerator(context);
         }
 
         return color;

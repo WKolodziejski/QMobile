@@ -207,6 +207,10 @@ public class SingletonWebView {
         webView.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
     }
 
+    public synchronized static void logOut() {
+        singleton = new SingletonWebView();
+    }
+
     public void setBoxStore(BoxStore box) {
         this.box = box;
         Log.i("BoxStore", box.toString());

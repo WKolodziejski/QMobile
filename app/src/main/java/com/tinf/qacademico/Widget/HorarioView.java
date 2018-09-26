@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.tinf.qacademico.Class.Materias.Materia;
+import com.tinf.qacademico.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 public class HorarioView extends WeekView {
+
     public HorarioView(Context context) {
         super(context);
     }

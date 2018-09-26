@@ -63,15 +63,15 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         webView.configWebView(this);
-        webView.setOnPageFinishedListener(this);
-        webView.setOnPageStartedListener(this);
-        webView.setOnErrorRecivedListener(this);
 
-        hideExpandBtn();
         testLogin();
     }
 
     private void testLogin() {
+        webView.setOnPageFinishedListener(this);
+        webView.setOnPageStartedListener(this);
+        webView.setOnErrorRecivedListener(this);
+
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
             ((App) getApplication()).setLogged(true);
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
+
+        hideExpandBtn();
+        dismissProgressbar();
     }
 
     @Override
@@ -265,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         editor.putString(LOGIN_NAME, "");
         editor.putBoolean(LOGIN_VALID, false);
         editor.apply();
+        SingletonWebView.logOut();
         recreate();
     }
 

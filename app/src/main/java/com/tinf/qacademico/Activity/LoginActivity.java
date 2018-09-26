@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.LoginFragment;
@@ -53,16 +52,8 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             if (url_p.equals(URL + PG_LOGIN)) {
                 ((App) getApplication()).setLogged(true);
                 SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
-                if (loginFragment.login_info.getBoolean(Utils.FIRST_LOGIN, true)) {
-                    firstLogin();
-                } else {
-                    SharedPreferences.Editor editor = loginFragment.login_info.edit();
-                    editor.putBoolean(Utils.LOGIN_VALID, true);
-                    editor.apply();
-                    finish();
-                }
-            } else if (url_p.equals(URL + PG_ERRO)) {
 
+            } else if (url_p.equals(URL + PG_ERRO)) {
                 loginFragment.dismissProgressBar();
                 showSnackBar(getResources().getString(R.string.text_invalid_login), false);
 
@@ -71,17 +62,17 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                     || url_p.contains(URL + PG_HORARIO)
                     || url_p.contains(URL + PG_DIARIOS)
                     || url_p.contains(URL + PG_CALENDARIO)) {
-                firstLogin();
+                loadData();
             }
         });
     }
 
     public void showSnackBar(String message, boolean action) { //Mostra a SnackBar
-        snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
+        /*snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
         //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
         View view = snackBar.getView();
         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+        tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));*/
 
         //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
         //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
@@ -104,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         }
     }
 
-    private void firstLogin() {
+    private void loadData() {
         Log.i("LoginActivity", "FirstLogin()");
 
         loginFragment.textView_loading.setVisibility(View.VISIBLE);
@@ -227,7 +218,6 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
         SharedPreferences.Editor editor = loginFragment.login_info.edit();
         editor.putBoolean(Utils.LOGIN_VALID, true);
-        editor.putBoolean(Utils.FIRST_LOGIN, false);
         editor.apply();
         finish();
     }
