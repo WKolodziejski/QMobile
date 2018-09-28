@@ -1,11 +1,10 @@
 package com.tinf.qacademico.Fragment;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import com.google.android.material.textfield.TextInputEditText;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.tinf.qacademico.Activity.LoginActivity;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Utils;
 
 import java.util.Objects;
 

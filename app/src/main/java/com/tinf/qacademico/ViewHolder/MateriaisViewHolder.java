@@ -1,18 +1,14 @@
 package com.tinf.qacademico.ViewHolder;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.tinf.qacademico.R;
-
-import net.cachapa.expandablelayout.ExpandableLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

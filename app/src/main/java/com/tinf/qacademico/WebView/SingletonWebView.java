@@ -18,6 +18,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.UiThread;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 

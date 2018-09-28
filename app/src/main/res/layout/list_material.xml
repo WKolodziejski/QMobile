@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="200dp"
-    android:layout_height="200dp"
+    android:layout_width="190dp"
+    android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
@@ -16,7 +16,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="8dp"
         >
 
@@ -42,22 +42,26 @@
         <ImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
-            app:srcCompat="@drawable/ic_file"
+            tools:srcCompat="@drawable/ic_file"
             android:id="@+id/materiais_tipo"
             android:background="@drawable/layout_bg_round"
             android:padding="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/materiais_date"
             android:layout_centerInParent="true"
-            android:tint="@color/colorPrimaryLight" />
+            tools:tint="@color/colorPrimary"
+            tools:backgroundTint="@color/green"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
             android:id="@+id/materiais_title"
             tools:text="Rev Industrial de 2046"
-            android:layout_alignParentBottom="true"/>
+            android:layout_below="@id/materiais_tipo"/>
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

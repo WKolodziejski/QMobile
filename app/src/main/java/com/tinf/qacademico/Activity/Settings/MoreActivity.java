@@ -1,14 +1,11 @@
 package com.tinf.qacademico.Activity.Settings;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 

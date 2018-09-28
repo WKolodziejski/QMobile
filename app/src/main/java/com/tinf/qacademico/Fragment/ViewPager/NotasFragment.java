@@ -2,18 +2,14 @@ package com.tinf.qacademico.Fragment.ViewPager;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
-import android.widget.Toast;
+import androidx.fragment.app.Fragment;
 
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.ViewPagerAdapter;

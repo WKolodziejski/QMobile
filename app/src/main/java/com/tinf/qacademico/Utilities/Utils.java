@@ -14,8 +14,14 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.tinf.qacademico.Activity.MainActivity;
+import com.tinf.qacademico.Class.Calendario.Meses;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -101,5 +107,4 @@ public class Utils {
         }
         return color;
     }
-
 }

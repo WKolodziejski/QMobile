@@ -1,13 +1,18 @@
 package com.tinf.qacademico.Adapter.Materiais;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.flexbox.AlignItems;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.ViewHolder.MateriaisListViewHolder;
@@ -41,9 +46,13 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
 
         MateriaisAdapter adapter = new MateriaisAdapter(materiaisList.get(i).getMateriais(), context);
 
+        FlexboxLayoutManager layout = new FlexboxLayoutManager(context);
+        layout.setFlexDirection(FlexDirection.ROW);
+        layout.setFlexWrap(FlexWrap.WRAP);
+        layout.setJustifyContent(JustifyContent.FLEX_START);
+
         holder.recyclerView.setAdapter(adapter);
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
-                LinearLayoutManager.HORIZONTAL, false));
+        holder.recyclerView.setLayoutManager(layout);
 
         adapter.setOnDownloadListener(link -> {
             onDownloadRepassListener.onDownload(link);

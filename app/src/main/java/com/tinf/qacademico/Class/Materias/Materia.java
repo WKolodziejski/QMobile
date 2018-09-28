@@ -1,7 +1,7 @@
 package com.tinf.qacademico.Class.Materias;
 
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -10,7 +10,6 @@ import java.util.List;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Index;
 import io.objectbox.annotation.Transient;
 import io.objectbox.annotation.Unique;
 
@@ -25,7 +24,7 @@ public class Materia implements Serializable {
     @Transient private boolean isExpanded;
     @Transient private boolean anim;
 
-    public Materia(String name, int color, @NonNull List<Etapa> etapas) {
+    public Materia(String name, int color, List<Etapa> etapas) {
         this.color = color;
         this.name = name.trim();
         this.etapas = etapas;

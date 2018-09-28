@@ -1,14 +1,12 @@
 package com.tinf.qacademico.Adapter.Calendario;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import com.tinf.qacademico.Class.Calendario.Dia;
-import com.tinf.qacademico.Class.Calendario.Meses;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.ViewHolder.CalendarioViewHolder;
 
