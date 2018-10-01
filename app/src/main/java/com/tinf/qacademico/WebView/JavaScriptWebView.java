@@ -275,9 +275,9 @@ public class JavaScriptWebView {
                 String[][] trtd_boletim;
                 Document document = Jsoup.parse(html_p);
 
-                final Element table_boletim = document.select("table").get(6);
+                Element table_boletim = document.select("table").get(6);
 
-                Element table_notas = table_boletim.select("table").get(6);
+                Element table_notas = table_boletim.select("table").get(7);
 
                 Elements tables = table_notas.children();
 
