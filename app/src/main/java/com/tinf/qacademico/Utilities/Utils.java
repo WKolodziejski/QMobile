@@ -1,7 +1,5 @@
 package com.tinf.qacademico.Utilities;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
@@ -10,18 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.NumberPicker;
 import android.widget.TextView;
-
-import com.tinf.qacademico.Activity.MainActivity;
-import com.tinf.qacademico.Class.Calendario.Meses;
-import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.WebView.SingletonWebView;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
@@ -34,10 +22,6 @@ public class Utils {
     public static final String YEARS = ".Years";
     public static final String LOGIN_REGISTRATION = ".Matricula";
     public static final String LOGIN_PASSWORD = ".Senha";
-    public static final String LOGIN_DAY = ".Dia";
-    public static final String LOGIN_HOUR = ".Hora";
-    public static final String LOGIN_MINUTE = ".Minuto";
-    public static final String FIRST_LOGIN = ".FirstLogin";
     public static final String URL = "http://qacademico.ifsul.edu.br//qacademico/index.asp?t=";
     public static final String PG_LOGIN = "1001";
     public static final String PG_HOME = "2000";

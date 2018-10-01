@@ -2,6 +2,7 @@ package com.tinf.qacademico.Adapter.Materiais;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,13 +47,21 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
 
         MateriaisAdapter adapter = new MateriaisAdapter(materiaisList.get(i).getMateriais(), context);
 
-        FlexboxLayoutManager layout = new FlexboxLayoutManager(context);
+        /*FlexboxLayoutManager layout = new FlexboxLayoutManager(context);
         layout.setFlexDirection(FlexDirection.ROW);
         layout.setFlexWrap(FlexWrap.WRAP);
-        layout.setJustifyContent(JustifyContent.FLEX_START);
+        layout.setJustifyContent(JustifyContent.FLEX_START);*/
+
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
+                RecyclerView.VERTICAL, false);
 
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(layout);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.recyclerView.getContext(),
+                LinearLayoutManager.VERTICAL);
+
+        holder.recyclerView.addItemDecoration(dividerItemDecoration);
 
         adapter.setOnDownloadListener(link -> {
             onDownloadRepassListener.onDownload(link);

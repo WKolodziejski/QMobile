@@ -16,6 +16,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:id="@+id/open_list"
         android:background="@color/colorPrimaryLight"
+        android:gravity="center_vertical"
         >
 
         <ImageView

@@ -9,11 +9,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.*;
@@ -21,6 +26,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
 import com.tinf.qacademico.App;
@@ -36,7 +43,6 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.BoxStore;
-
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
@@ -45,11 +51,13 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError {
+public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError, BottomNavigationView.OnNavigationItemSelectedListener,  AppBarLayout.OnOffsetChangedListener {
     @BindView(R.id.progressbar_horizontal)      ProgressBar progressBar;
     @BindView(R.id.fab_expand)           public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)           public BottomNavigationView bottomNav;
     @BindView(R.id.tabs)                        TabLayout tabLayout;
+    @BindView(R.id.refresh_layout)              SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.app_bar_layout)              AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnPageUpdated onPageUpdated;
     public List<MateriaisList> materiaisList;
@@ -58,13 +66,22 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
+
         setSupportActionBar(findViewById(R.id.toolbar));
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        bottomNav.setOnNavigationItemSelectedListener(this);
 
         webView.configWebView(this);
 
+        refreshLayout.setOnRefreshListener(() -> webView.reload());
+
         testLogin();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        refreshLayout.setEnabled(i == 0);
     }
 
     private void testLogin() {
@@ -136,62 +153,71 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         return super.onOptionsItemSelected(item);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        @SuppressWarnings("StatementWithEmptyBody")
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() != bottomNav.getSelectedItemId()) {
+            dismissProgressbar();
+            webView.resumeQueue();
+            webView.loadNextUrl();
 
-            if (item.getItemId() != bottomNav.getSelectedItemId()) {
-                dismissProgressbar();
-                webView.resumeQueue();
-                webView.loadNextUrl();
+            switch (item.getItemId()) {
+                case R.id.navigation_home:
+                    setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
+                    changeFragment(new HomeFragment());
+                    hideTabLayout();
+                    hideExpandBtn();
+                    return true;
 
-                switch (item.getItemId()) {
-                    case R.id.navigation_home:
-                        setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
-                        changeFragment(new HomeFragment());
-                        hideTabLayout();
-                        hideExpandBtn();
-                        return true;
+                case R.id.navigation_notas:
+                    setTitle(webView.data_year[webView.year_position]);
+                    changeFragment(new NotasFragment());
+                    showExpandBtn();
+                    return true;
 
-                    case R.id.navigation_notas:
-                        setTitle(webView.data_year[webView.year_position]);
-                        changeFragment(new NotasFragment());
-                        showExpandBtn();
-                        return true;
-
-                    case R.id.navigation_materiais:
-                        setTitle(webView.data_year[webView.year_position]);
-                        webView.loadUrl(URL + PG_MATERIAIS);
-                        changeFragment(new MateriaisFragment());
-                        hideExpandBtn();
-                        hideTabLayout();
-                        return true;
-                }
+                case R.id.navigation_materiais:
+                    setTitle(webView.data_year[webView.year_position]);
+                    webView.loadUrl(URL + PG_MATERIAIS);
+                    changeFragment(new MateriaisFragment());
+                    hideExpandBtn();
+                    hideTabLayout();
+                    return true;
             }
-            return false;
         }
-    };
+        return false;
+    }
 
     @Override
     public void onPageStart(String url_p) {
-        runOnUiThread(this::showLinearProgressbar);
+        runOnUiThread(() -> {
+            if (!refreshLayout.isRefreshing()) {
+                showProgressbar();
+            } else {
+                dismissProgressbar();
+            }
+        });
     }
 
     @Override
     public void onPageFinish(String url_p, List<?> list) {
         runOnUiThread(() -> {
             webView.loadNextUrl();
+            refreshLayout.setRefreshing(false);
             dismissProgressbar();
-            onPageUpdated.onPageUpdate(list);
+            if (list != null && list.size() > 0) {
+                onPageUpdated.onPageUpdate(list);
+            }
         });
     }
 
     @Override
     public void onErrorRecived(String error) {
-        runOnUiThread(this::dismissProgressbar);
+        runOnUiThread(() -> {
+            dismissProgressbar();
+            refreshLayout.setRefreshing(false);
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        });
     }
 
     protected void showSnackBar(String message, boolean action) { //Mostra a SnackBar
@@ -244,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         fab_expand.setVisibility(View.INVISIBLE);
     }
 
-    protected void showLinearProgressbar() { //Mostra a progressBar ao carregar a página
+    protected void showProgressbar() { //Mostra a progressBar ao carregar a página
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -284,6 +310,30 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         testLogin();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        appBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        appBarLayout.removeOnOffsetChangedListener(this);
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        appBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        appBarLayout.removeOnOffsetChangedListener(this);
     }
 
     public BoxStore getBox() {

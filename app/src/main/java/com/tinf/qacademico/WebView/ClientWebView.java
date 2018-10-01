@@ -90,7 +90,7 @@ public class ClientWebView extends WebViewClient {
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
                 if (webView.isLoginPage) {
-                    webView.isLoginPage = false;
+                    //webView.isLoginPage = false;
                     onPageFinished.onPageFinish(URL + PG_LOGIN);
                     Log.i("WebViewClient", "Login done");
                 }
@@ -163,6 +163,8 @@ public class ClientWebView extends WebViewClient {
                     Toast.makeText(context, context.getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
                 }
             }
+        } else {
+            Log.e("ClientWebView", "Deu pau");
         }
     }
 

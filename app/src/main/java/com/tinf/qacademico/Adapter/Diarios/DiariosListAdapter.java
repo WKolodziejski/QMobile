@@ -87,7 +87,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         holder.nothing.setVisibility(diariosList.get(i).getEtapas().isEmpty() ? View.VISIBLE : View.GONE);
 
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
-                LinearLayoutManager.VERTICAL, false));
+                RecyclerView.VERTICAL, false));
 
         holder.expandAct.setOnClickListener(v -> {
             holder.expand.toggle();

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.LoginFragment;
@@ -68,9 +69,10 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     }
 
     public void showSnackBar(String message, boolean action) { //Mostra a SnackBar
-        /*snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
+        snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
         //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
-        View view = snackBar.getView();
+
+        /*View view = snackBar.getView();
         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
         tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));*/
 
@@ -153,7 +155,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                     webView.year_position = i;
 
                     webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
-                            + webView.data_year[i] + "&cmbperiodos=1&Exibir+Boletim");
+                            + webView.data_year[i] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
 
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
@@ -216,6 +218,8 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
         num = 0;
 
+        webView.isLoginPage = false;
+
         SharedPreferences.Editor editor = loginFragment.login_info.edit();
         editor.putBoolean(Utils.LOGIN_VALID, true);
         editor.apply();
@@ -224,8 +228,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
     @Override
     public void onErrorRecived(String error) {
-        loginFragment.textView_loading.setVisibility(View.INVISIBLE);
-        loginFragment.dismissProgressBar();
+        runOnUiThread(() -> {
+            loginFragment.textView_loading.setVisibility(View.INVISIBLE);
+            loginFragment.dismissProgressBar();
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        });
     }
 
     @Override

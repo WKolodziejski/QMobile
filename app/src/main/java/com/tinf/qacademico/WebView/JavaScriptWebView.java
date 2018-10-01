@@ -28,9 +28,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import io.objectbox.Box;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
@@ -63,17 +61,8 @@ public class JavaScriptWebView {
                         Document homePage = Jsoup.parse(html_p);
                         Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
 
-                        Calendar rightNow = Calendar.getInstance();
-                        int currentHour = rightNow.get(Calendar.HOUR_OF_DAY);
-                        int currentDay = rightNow.get(Calendar.DAY_OF_YEAR);
-                        int currentMinute = rightNow.get(Calendar.MINUTE);
-
                         SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
                         editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
-
-                        editor.putInt(Utils.LOGIN_DAY, currentDay);
-                        editor.putInt(Utils.LOGIN_HOUR, currentHour);
-                        editor.putInt(Utils.LOGIN_MINUTE, currentMinute);
                         editor.apply();
 
                         webView.pg_home_loaded = true;
@@ -222,8 +211,6 @@ public class JavaScriptWebView {
                         for (int k = 0; k < materias.size(); k++) {
                             if (nomeMateria.trim().equals(materias.get(k).getName())) {
                                 materias.get(k).setEtapas(etapas);
-                                Log.i("Materia 1", nomeMateria);
-                                Log.i("Materia 2", materias.get(k).getName());
                                 existsMateria = true;
                                 break;
                             } else {
@@ -233,7 +220,6 @@ public class JavaScriptWebView {
 
                         if (!existsMateria || materias.isEmpty()) {
                             materias.add(new Materia(nomeMateria, pickColor(nomeMateria), etapas));
-                            Log.i("Materia 1", nomeMateria);
                         }
                     }
 
@@ -291,7 +277,7 @@ public class JavaScriptWebView {
 
                 final Element table_boletim = document.select("table").get(6);
 
-                Element table_notas = table_boletim.select("table").get(7);
+                Element table_notas = table_boletim.select("table").get(6);
 
                 Elements tables = table_notas.children();
 
@@ -342,8 +328,6 @@ public class JavaScriptWebView {
                         String faltasSegundaEtapa = trtd_boletim[i][11].trim();
                         String RPSegundaEtapa = trtd_boletim[i][12].trim();
                         String notaFinalSegundaEtapa = trtd_boletim[i][14].trim();
-
-
 
                         for (int k = 0; k < materias.size(); k++) {
                             if (nomeMateria.equals(materias.get(k).getName())) {
@@ -420,8 +404,10 @@ public class JavaScriptWebView {
                     String[] code = null;
                     Document document = Jsoup.parse(html_p);
 
+                //Element table_horario = document.select("table").get(11).getElementsByTag("tbody").get(0);
                     Element table_horario = document.select("table").eq(11).first();
-                    Element table_codes = document.select("table").eq(12).first();
+
+                    Element table_codes = document.select("table").get(12);
                     Elements codes = table_codes.children();
 
                     Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
@@ -670,7 +656,7 @@ public class JavaScriptWebView {
         new Thread() {
             @Override
             public void run() {
-               try {
+               //try {
                     Document document = Jsoup.parse(html_p);
 
                     Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
@@ -808,9 +794,9 @@ public class JavaScriptWebView {
 
                     onPageFinish.onPageFinish(URL + PG_CALENDARIO, listMeses);
 
-                } catch (Exception e) {
-                    Log.i("JavaScriptWebView", "Calendario error: " + e);
-                }
+                //} catch (Exception e) {
+                //    Log.i("JavaScriptWebView", "Calendario error: " + e);
+                //}
             }
         }.start();
     }

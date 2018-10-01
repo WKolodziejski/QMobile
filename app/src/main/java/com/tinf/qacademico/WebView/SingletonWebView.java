@@ -4,14 +4,19 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.tinf.qacademico.Activity.MainActivity;
+import com.tinf.qacademico.R;
+import com.tinf.qacademico.Utilities.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,7 +45,7 @@ public class SingletonWebView {
     private OnPageStarted onPageStarted;
     private OnRecivedError onRecivedError;
     private WebView webView;
-    private boolean isLoading, isPaused;
+    private boolean isLoading, isPaused, isTimeout;
     private List<String> queue = new ArrayList<>();
     public boolean[] pg_diarios_loaded = {false},
                      pg_horario_loaded = {false},
@@ -51,6 +56,7 @@ public class SingletonWebView {
     public int year_position;
     public String[] data_year = {""};
     public BoxStore box;
+    private Context context;
 
     private SingletonWebView() {}
 
@@ -62,23 +68,29 @@ public class SingletonWebView {
     }
 
     public void loadUrl(String pg) {
-        if (!pg.contains("javascript")) {
-            Log.i("Client", "Não contém java script");
-            if (!isLoading) {
-                if (pg_home_loaded) {
-                    Log.i("Client", "Carregando...");
-                    webView.loadUrl(pg);
+        if (Utils.isConnected(context)) {
+            if (!pg.contains("javascript")) {
+                Log.i("Client", "Não contém java script");
+                if (!isLoading) {
+                    if (pg_home_loaded) {
+                        Log.i("Client", "Carregando...");
+                        webView.loadUrl(pg);
+                    } else {
+                        webView.loadUrl(URL + PG_LOGIN);
+                        addToQueue(pg);
+                    }
                 } else {
-                    webView.loadUrl(URL + PG_LOGIN);
                     addToQueue(pg);
                 }
             } else {
-                addToQueue(pg);
+                Log.i("Client", "Contém java script");
+                webView.loadUrl(pg);
             }
-        } else {
-            Log.i("Client", "Contém java script");
-            webView.loadUrl(pg);
         }
+    }
+
+    public void reload() {
+        webView.reload();
     }
 
     public void loadNextUrl() {
@@ -158,6 +170,7 @@ public class SingletonWebView {
     public void configWebView(Context context) {
 
         data_year = loadYears(context);
+        this.context = context;
 
         //queue.add(URL + PG_CALENDARIO);
         //queue.add(URL + PG_HORARIO);
@@ -177,6 +190,7 @@ public class SingletonWebView {
 
         javaScriptWebView.setOnPageFinished((url_p, list) -> {
             isLoading = false;
+            isTimeout = false;
             if (url_p.contains(URL + PG_MATERIAIS)) {
                 isPaused = true;
             }
@@ -188,18 +202,22 @@ public class SingletonWebView {
 
         clientWebView.setOnPageFinishedListener(url_p -> {
             isLoading = false;
+            isTimeout = false;
             Log.i("Finish", url_p);
             onPageFinished.onPageFinish(url_p, null);
         });
 
         clientWebView.setOnPageStartedListener(url_p -> {
             isLoading = true;
+            isTimeout = true;
             Log.i("Start", url_p);
             onPageStarted.onPageStart(url_p);
         });
 
         clientWebView.setOnErrorRecivedListener(error -> {
             isLoading = false;
+            isTimeout = false;
+            webView.stopLoading();
             Log.i("Error", error);
             onRecivedError.onErrorRecived(error);
         });
@@ -214,7 +232,6 @@ public class SingletonWebView {
 
     public void setBoxStore(BoxStore box) {
         this.box = box;
-        Log.i("BoxStore", box.toString());
     }
 
     public void setOnPageFinishedListener(OnPageFinished onPageFinished){

@@ -1,67 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="190dp"
     android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
     android:foreground="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    android:layout_margin="8dp"
+    android:background="@color/colorPrimaryLight"
+    android:gravity="center_vertical"
     android:id="@+id/materiais_header"
     >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        tools:srcCompat="@drawable/ic_file"
+        android:id="@+id/materiais_tipo"
+        android:background="@drawable/layout_bg_round"
+        android:padding="12dp"
+        android:tint="@color/colorPrimaryLight"
+        tools:backgroundTint="@color/green" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:orientation="vertical"
+        android:layout_margin="8dp"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:textSize="@dimen/main_font_size"
-            android:id="@+id/materiais_date"
-            tools:text="11/06/2018"
-            android:layout_alignParentTop="true"/>
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_more_vert_black_24dp"
-            android:id="@+id/materiais_btn"
-            android:background="@color/transparent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
-
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            tools:srcCompat="@drawable/ic_file"
-            android:id="@+id/materiais_tipo"
-            android:background="@drawable/layout_bg_round"
-            android:padding="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_below="@id/materiais_date"
-            android:layout_centerInParent="true"
-            tools:tint="@color/colorPrimary"
-            tools:backgroundTint="@color/green"/>
+            android:textStyle="bold"
+            android:id="@+id/materiais_title"
+            tools:text="Rev Industrial de 2046"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:textSize="@dimen/main_font_size"
-            android:textStyle="bold"
-            android:id="@+id/materiais_title"
-            tools:text="Rev Industrial de 2046"
-            android:layout_below="@id/materiais_tipo"/>
+            android:id="@+id/materiais_date"
+            tools:text="11/06/2018"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>
