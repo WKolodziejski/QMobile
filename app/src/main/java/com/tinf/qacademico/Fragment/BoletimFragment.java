@@ -14,9 +14,12 @@ import android.widget.LinearLayout;
 
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
+import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
 import com.rmondjone.locktableview.LockTableView;
+import com.tinf.qacademico.WebView.SingletonWebView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +48,10 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
 
     private void setBoletim(View view) {
 
-        List<Materia> materias = Data.loadMaterias(getContext());
+        SingletonWebView webView = SingletonWebView.getInstance();
+
+        List<Materia> materias = getBox().boxFor(Materia.class).query().order(Materia_.name)
+                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build().find();
 
         LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
@@ -75,16 +81,22 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
             if (materias.get(i).getEtapas() != null) {
                 ArrayList<String> mRowDatas = new ArrayList<>();
                 mRowDatas.add(materias.get(i).getName());
-                if (materias.get(i).getEtapas().size() > 0) {
-                    mRowDatas.add(materias.get(i).getEtapas().get(0).getNota());
-                    mRowDatas.add(materias.get(i).getEtapas().get(0).getFaltas());
-                    mRowDatas.add(materias.get(i).getEtapas().get(0).getNotaRP());
-                    mRowDatas.add(materias.get(i).getEtapas().get(0).getNotaFinal());
-                    if (materias.get(i).getEtapas().size() > 1) {
-                        mRowDatas.add(materias.get(i).getEtapas().get(1).getNota());
-                        mRowDatas.add(materias.get(i).getEtapas().get(1).getFaltas());
-                        mRowDatas.add(materias.get(i).getEtapas().get(1).getNotaRP());
-                        mRowDatas.add(materias.get(i).getEtapas().get(1).getNotaFinal());
+
+                for(int j = 0; j < materias.get(i).getEtapas().size(); j++) {
+                    if (materias.get(i).getEtapas().get(j).getEtapa().equals(
+                            getResources().getString(R.string.diarios_PrimeiraEtapa))) {
+
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNota());
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getFaltas());
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaRP());
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaFinal());
+                    } else if ((materias.get(i).getEtapas().get(j).getEtapa().equals(
+                            getResources().getString(R.string.diarios_SegundaEtapa)))) {
+
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNota());
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getFaltas());
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaRP());
+                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaFinal());
                     }
                 }
                 mRowDatas.add(materias.get(i).getTotalFaltas());

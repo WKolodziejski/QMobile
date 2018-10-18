@@ -3,17 +3,19 @@ package com.tinf.qacademico.Class.Materias;
 import java.io.Serializable;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class Diarios implements Serializable {
     @Id public long id;
-    private final String nome;
-    private final String peso;
-    private final String max;
-    private final String nota;
-    private final String tipo;
-    private final String data;
-    private final int tint;
+    private String nome;
+    private String peso;
+    private String max;
+    private String nota;
+    private String tipo;
+    private String data;
+    private int tint;
+    public ToOne<Etapa> etapa;
 
     public Diarios(String nome, String peso, String max, String nota, String tipo, String data, int tint) {
         this.nome = nome;
@@ -23,6 +25,12 @@ public class Diarios implements Serializable {
         this.tipo = tipo;
         this.data = data;
         this.tint = tint;
+    }
+
+    public Diarios() {}
+
+    public long getId() {
+        return id;
     }
 
     public String getNome() {

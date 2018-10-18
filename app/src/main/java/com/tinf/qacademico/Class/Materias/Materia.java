@@ -4,44 +4,59 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import android.util.Log;
 
+import com.tinf.qacademico.Utilities.Utils;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.annotation.Unique;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class Materia implements Serializable {
     @Id public long id;
-    @NonNull private List<Etapa> etapas;
-    @NonNull private List<Horario> horarios = new ArrayList<>();
-    @ColorInt private int color;
+    private int color;
     @Unique private String name;
     private String totalFaltas;
     @Transient private boolean isExpanded;
     @Transient private boolean anim;
+    private int year;
+    @Backlink(to = "materia") public ToMany<Etapa> etapas;
+    @Backlink public ToMany<Horario> horarios;
+    private ToOne<Infos> infos;
 
-    public Materia(String name, int color, List<Etapa> etapas) {
-        this.color = color;
+    public Materia() {}
+
+    public Materia(String name, int color, int year) {
         this.name = name.trim();
-        this.etapas = etapas;
-        Log.i(name, etapas.toString());
+        this.color = color;
+        this.year = year;
     }
 
-    @NonNull
-    public List<Horario> getHorarios() {
+    public ToOne<Infos> getInfos() {
+        return infos;
+    }
+
+    public ToMany<Etapa> getEtapas() {
+        return etapas;
+    }
+
+    public ToMany<Horario> getHorarios() {
         return horarios;
     }
 
-    public void setHorarios(@NonNull List<Horario> horarios) {
-        this.horarios = horarios;
+    public int getYear() {
+        return year;
     }
 
-    public void addHorario(Horario horario) {
-        this.horarios.add(horario);
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public int getColor() {
@@ -58,15 +73,6 @@ public class Materia implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @NonNull
-    public List<Etapa> getEtapas() {
-        return etapas;
-    }
-
-    public void setEtapas(@NonNull List<Etapa> etapas) {
-        this.etapas = etapas;
     }
 
     public String getTotalFaltas() {

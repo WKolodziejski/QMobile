@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tinf.qacademico.App;
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Fragment.LoginFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.tinf.qacademico.Class.Calendario.Meses;
-import com.tinf.qacademico.Class.Infos;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.WebView.SingletonWebView;
 
@@ -91,7 +90,7 @@ public class Data {
         }
     }
 
-    public static List<Materia> loadMaterias(Context context) {
+    /*public static List<Materia> loadMaterias(Context context) {
         SharedPreferences login_info = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
         SingletonWebView webView = SingletonWebView.getInstance();
 
@@ -115,6 +114,6 @@ public class Data {
         }
 
         return materias;
-    }
+    }*/
 
 }

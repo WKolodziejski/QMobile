@@ -2,34 +2,45 @@ package com.tinf.qacademico.Class.Materias;
 
 import java.io.Serializable;
 import java.util.List;
+
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class Etapa implements Serializable {
     @Id public long id;
     private String etapa;
-    private List<Diarios> diariosList;
     private String nota;
     private String notaRP;
     private String notaFinal;
     private String faltas;
+    public ToOne<Materia> materia;
+    @Backlink public ToMany<Diarios> diarios;
+    @Backlink private ToMany<Aula> aulas;
 
-    public Etapa(String etapa, List<Diarios> diariosList){
+    public Etapa(String etapa){
         this.etapa = etapa.trim();
-        this.diariosList = diariosList;
     }
 
-    public List<Diarios> getDiariosList() {
-        return diariosList;
+    public Etapa() {}
+
+    public ToMany<Diarios> getDiarios() {
+        return diarios;
+    }
+
+    public ToMany<Aula> getAulas() {
+        return aulas;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getEtapa() {
         return etapa;
-    }
-
-    public void setDiariosList(List<Diarios> diariosList) {
-        this.diariosList = diariosList;
     }
 
     public String getNota() {
@@ -67,4 +78,5 @@ public class Etapa implements Serializable {
     public void setEtapa(String etapa) {
         this.etapa = etapa;
     }
+
 }

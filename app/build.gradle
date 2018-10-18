@@ -12,6 +12,11 @@ android {
         versionCode 0
         vectorDrawables.useSupportLibrary = true
         versionNameSuffix 'beta-r0'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ 'objectbox.debug' : 'true' ]
+            }
+        }
     }
     buildTypes {
         release {

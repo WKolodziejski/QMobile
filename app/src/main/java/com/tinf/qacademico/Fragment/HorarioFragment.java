@@ -7,7 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alamkanak.weekview.WeekView;
+import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Activity.MainActivity;
+import com.tinf.qacademico.Class.Materias.Materia;
+import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
@@ -29,11 +33,13 @@ public class HorarioFragment extends Fragment {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
-        HorarioView.congifWeekView(weekView, Data.loadMaterias(getContext()));
+        SingletonWebView webView = SingletonWebView.getInstance();
+        HorarioView.congifWeekView(weekView, getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                Integer.valueOf(webView.data_year[webView.year_position])).build().find());
 
     }
 
     private BoxStore getBox() {
-        return ((MainActivity) getActivity()).getBox();
+        return ((HorarioActivity) getActivity()).getBox();
     }
 }

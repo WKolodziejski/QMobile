@@ -21,6 +21,9 @@ import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Meses;
+import com.tinf.qacademico.Class.Materias.Materia;
+import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
@@ -89,7 +92,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         adapter = new CalendarioAdapter(dias, getActivity());
 
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
                 false);
 
         recyclerViewCalendario.setAdapter(adapter);
@@ -110,7 +113,11 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
-        HorarioView.congifWeekView(weekView, Data.loadMaterias(getContext()));
+        SingletonWebView webView = SingletonWebView.getInstance();
+
+        HorarioView.congifWeekView(weekView,
+                getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                        Integer.valueOf(webView.data_year[webView.year_position])).build().find());
 
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 

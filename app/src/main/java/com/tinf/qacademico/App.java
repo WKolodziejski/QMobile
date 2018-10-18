@@ -2,7 +2,11 @@ package com.tinf.qacademico;
 
 import android.app.Application;
 import android.util.Log;
+
+import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.MyObjectBox;
+
+import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
@@ -27,7 +31,7 @@ public class App extends Application {
         if (!isLogged || boxStore == null) {
             initBoxStore();
         }
-        Log.i("BoxStore", "Returned " + boxStore);
+        Log.i("BoxStore", "Returned " + boxStore + ", size of " + boxStore.boxFor(Materia.class).count());
         return boxStore;
     }
 
@@ -39,7 +43,6 @@ public class App extends Application {
                     .name(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE)
                             .getString(LOGIN_REGISTRATION, ""))
                     .build();
-            Log.i("BoxStore", "Initialized");
         }
     }
 }

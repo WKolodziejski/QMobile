@@ -4,8 +4,12 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import io.objectbox.BoxStore;
+
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.HorarioFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
@@ -47,5 +51,9 @@ public class HorarioActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public BoxStore getBox() {
+        return ((App) getApplication()).getBoxStore();
     }
 }

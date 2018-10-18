@@ -67,6 +67,10 @@ public class SingletonWebView {
         return singleton;
     }
 
+    public WebView getWebView() {
+        return webView;
+    }
+
     public void loadUrl(String pg) {
         if (Utils.isConnected(context)) {
             if (!pg.contains("javascript")) {
@@ -89,8 +93,15 @@ public class SingletonWebView {
         }
     }
 
-    public void reload() {
-        webView.reload();
+    public void reload(int id) {
+        if (id == R.id.navigation_home) {
+           loadUrl(URL + PG_LOGIN);
+        } else if (id == R.id.navigation_notas) {
+            loadUrl(URL + PG_DIARIOS);
+            //loadUrl(URL + PG_BOLETIM);
+        } else if (id == R.id.navigation_materiais) {
+            webView.reload();
+        }
     }
 
     public void loadNextUrl() {

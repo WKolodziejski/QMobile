@@ -48,6 +48,7 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
+import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         webView.configWebView(this);
 
-        refreshLayout.setOnRefreshListener(() -> webView.reload());
+        refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
 
         testLogin();
     }
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
             ((App) getApplication()).setLogged(true);
+            SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
             changeFragment(new HomeFragment());
             webView.loadNextUrl();

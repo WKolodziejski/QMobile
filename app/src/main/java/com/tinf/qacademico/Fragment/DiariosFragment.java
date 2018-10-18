@@ -13,8 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Diarios.DiariosListAdapter;
+import com.tinf.qacademico.Class.Materias.Materia;
+import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Data;
+import com.tinf.qacademico.WebView.SingletonWebView;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,9 +46,12 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
     private void setDiarios(View view) {
 
         RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
 
-        adapter = new DiariosListAdapter(Data.loadMaterias(getContext()), getActivity());
+        SingletonWebView webView = SingletonWebView.getInstance();
+
+        adapter = new DiariosListAdapter(getActivity(), getBox().boxFor(Materia.class).query().order(Materia_.name)
+                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build().find());
 
         recyclerViewDiarios.setAdapter(adapter);
         recyclerViewDiarios.setLayoutManager(layout);

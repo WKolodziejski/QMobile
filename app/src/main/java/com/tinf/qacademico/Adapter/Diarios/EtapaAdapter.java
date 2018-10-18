@@ -40,7 +40,7 @@ public class EtapaAdapter extends RecyclerView.Adapter {
         RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false);
 
-        holder.recyclerView.setAdapter(new DiariosAdapter(etapa.getDiariosList(), context));
+        holder.recyclerView.setAdapter(new DiariosAdapter(etapa.getDiarios(), context));
 
         holder.recyclerView.setLayoutManager(layout);
 

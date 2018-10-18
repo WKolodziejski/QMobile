@@ -26,7 +26,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     private Context context;
     private OnExpandListener onExpandListener;
 
-    public DiariosListAdapter(List<Materia> diariosList, Context context) {
+    public DiariosListAdapter(Context context, List<Materia> diariosList) {
         this.diariosList = diariosList;
         this.context = context;
     }

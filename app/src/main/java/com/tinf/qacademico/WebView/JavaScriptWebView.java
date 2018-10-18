@@ -9,6 +9,7 @@ import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Meses;
 import com.tinf.qacademico.Class.Materias.Diarios;
+import com.tinf.qacademico.Class.Materias.Etapa_;
 import com.tinf.qacademico.Class.Materias.Horario;
 import com.tinf.qacademico.Class.Materias.Etapa;
 import com.tinf.qacademico.Class.Materiais.Materiais;
@@ -28,7 +29,13 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+
 import io.objectbox.Box;
+import io.objectbox.BoxStore;
+import io.objectbox.BoxStoreBuilder;
+import io.objectbox.query.Query;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
@@ -52,493 +59,423 @@ public class JavaScriptWebView {
 
     @JavascriptInterface
     public void handleHome(String html_p) {
+
         Log.i("JavaScriptWebView", "Home handling...");
-        new Thread() {
-            @Override
-            public void run() {
-                if (!html_p.equals("<html><head></head><body></body></html>")) {
-                    try {
-                        Document homePage = Jsoup.parse(html_p);
-                        Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
 
-                        SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
-                        editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
-                        editor.apply();
+        new Thread(() -> {
+            Document homePage = Jsoup.parse(html_p);
+            Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
+            SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
+            editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
+            editor.apply();
 
-                        webView.pg_home_loaded = true;
-                        Log.i("JavaScriptWebView", "Home handled!");
+            webView.pg_home_loaded = true;
+            Log.i("JavaScriptWebView", "Home handled!");
 
-                        onPageFinish.onPageFinish(URL + PG_HOME, null);
+            onPageFinish.onPageFinish(URL + PG_HOME, null);
 
-                    } catch (Exception e) {
-                        Log.e("JavaScriptWebView", "Home error: " + e);
-                    }
-                }
-            }
-        }.start();
+        }).start();
     }
 
     @JavascriptInterface
     public void handleDiarios(String html_p) {
-        Log.i("JavaScriptWebView", "DiariosList handling...");
-        /*new Thread() {
-            @Override
-            public void run() {*/
-                //try {
 
-                //Box<Materia> box = getMaterias();
+        getBox().runInTxAsync(() -> {
 
-                //getMaterias().runInTx(() -> {
+            Log.i("JavaScriptWebView", "DiariosList handling...");
 
-                    Document document = Jsoup.parse(html_p);
+            Box<Materia> materiaBox = getBox().boxFor(Materia.class);
+            Box<Etapa> etapaBox = getBox().boxFor(Etapa.class);
+            Box<Diarios> diariosBox = getBox().boxFor(Diarios.class);
 
-                    Elements table_diarios = document.getElementsByTag("tbody").eq(12);
+                        Document document = Jsoup.parse(html_p);
 
-                    int numMaterias = table_diarios.select("table.conteudoTexto").size();
+                        Elements table_diarios = document.getElementsByTag("tbody").eq(12);
 
-                    Element nxtElem = null;
+                        int numMaterias = table_diarios.select("table.conteudoTexto").size();
 
-                    Elements options = document.getElementsByTag("option");
+                        Element nxtElem = null;
 
-                    webView.data_year = new String[options.size() - 1];
+                        Elements options = document.getElementsByTag("option");
 
-                    for (int i = 0; i < options.size() - 1; i++) {
-                        webView.data_year[i] = trimb(options.get(i + 1).text());
-                    }
+                        webView.data_year = new String[options.size() - 1];
 
-                    SharedPreferences.Editor editor = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
-                    JSONArray jsonArray = new JSONArray();
-                    for (String z : webView.data_year) {
-                        jsonArray.put((String) z);
-                    }
-                    editor.putString(YEARS, jsonArray.toString());
-                    editor.apply();
-
-                    List<Materia> materias = Data.loadMaterias(context);
-
-
-                    //List<Materia> materias = getMaterias().getAll();
-
-
-                    for (int y = 0; y < numMaterias; y++) {
-
-                        List<Etapa> etapas = new ArrayList<>();
-
-                        if (table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).next().eq(0) != null) {
-                            nxtElem = table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).next().eq(0).first();
-                        }
-                        String nomeMateria = table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).first().child(0).text();
-                        nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2, nomeMateria.indexOf("("));
-                        nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2);
-                        String etapa;
-
-                        if (nxtElem != null) {
-                            etapa = nxtElem.child(0).child(0).ownText();
-                        } else {
-                            etapa = "null";
+                        for (int i = 0; i < options.size() - 1; i++) {
+                            webView.data_year[i] = trimb(options.get(i + 1).text());
                         }
 
-                        while (etapa.contains("Etapa")) {
-                            if (etapa.equals("1a. Etapa") || etapa.equals("1ª Etapa")) {
-                                etapa = context.getResources().getString(R.string.diarios_PrimeiraEtapa);
-                            } else if (etapa.equals("1a Reavaliação da 1a Etapa") || etapa.equals("1ª Reavaliação da 1ª Etapa")) {
-                                etapa = context.getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
-                            } else if (etapa.equals("2a Reavaliação da 1a Etapa") || etapa.equals("2ª Reavaliação da 1ª Etapa")) {
-                                etapa = context.getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
-                            } else if (etapa.equals("2a. Etapa") || etapa.equals("2ª Etapa")) {
-                                etapa = context.getResources().getString(R.string.diarios_SegundaEtapa);
-                            } else if (etapa.equals("1a Reavaliação da 2a Etapa") || etapa.equals("1ª Reavaliação da 2ª Etapa")) {
-                                etapa = context.getResources().getString(R.string.diarios_RP1_SegundaEtapa);
-                            } else if (etapa.equals("2a Reavaliação da 2a Etapa") || etapa.equals("2ª Reavaliação da 2ª Etapa")) {
-                                etapa = context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
+                        SharedPreferences.Editor editor = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
+                        JSONArray jsonArray = new JSONArray();
+                        for (String z : webView.data_year) {
+                            jsonArray.put((String) z);
+                        }
+                        editor.putString(YEARS, jsonArray.toString());
+                        editor.apply();
+
+                        for (int y = 0; y < numMaterias; y++) {
+
+                            if (table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).next().eq(0) != null) {
+                                nxtElem = table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).next().eq(0).first();
+                            }
+                            String nomeMateria = table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).first().child(0).text();
+                            nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2, nomeMateria.indexOf("("));
+                            nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2);
+
+                            Materia materia = materiaBox.query().equal(Materia_.name, nomeMateria).build().findUnique();
+
+                            if (materia == null) {
+                                materia = new Materia(nomeMateria, pickColor(nomeMateria),
+                                        Integer.valueOf(webView.data_year[webView.year_position]));
                             }
 
-                            Element tabelaNotas = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
-                            Elements notasLinhas = tabelaNotas.getElementsByClass("conteudoTexto");
-
-                            List<Diarios> trabalhos = new ArrayList<>();
-
-                            for (int i = 0; i < notasLinhas.size(); i++) {
-                                String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
-                                String tipo = context.getResources().getString(R.string.sigla_Avaliacao);
-                                int tint = context.getResources().getColor(R.color.diarios_avaliacao);
-                                if (notasLinhas.eq(i).first().child(1).text().contains("Prova")) {
-                                    tint = context.getResources().getColor(R.color.diarios_prova);
-                                    tipo = context.getResources().getString(R.string.sigla_Prova);
-                                } else if (notasLinhas.eq(i).first().child(1).text().contains("Diarios")) {
-                                    tint = context.getResources().getColor(R.color.diarios_trabalho);
-                                    tipo = context.getResources().getString(R.string.sigla_Trabalho);
-                                } else if (notasLinhas.eq(i).first().child(1).text().contains("Qualitativa")) {
-                                    tint = context.getResources().getColor(R.color.diarios_qualitativa);
-                                    tipo = context.getResources().getString(R.string.sigla_Qualitativa);
-                                }
-
-                                String caps = trimp(trim1(notasLinhas.eq(i).first().child(1).text()));
-                                String nome = caps.substring(1, 2).toUpperCase() + caps.substring(2);
-                                String peso = trimp(notasLinhas.eq(i).first().child(2).text());
-                                String max = trimp(notasLinhas.eq(i).first().child(3).text());
-                                String nota = trimp(notasLinhas.eq(i).first().child(4).text());
-
-                                if (nota.equals("")) {
-                                    nota = " -";
-                                }
-                                trabalhos.add(new Diarios(nome, peso, max, nota, tipo, data, tint));
-                            }
-
-                            nxtElem = nxtElem.nextElementSibling();
-
-                            etapas.add(new Etapa(etapa, trabalhos));
+                            String nome_etapa;
 
                             if (nxtElem != null) {
-                                etapa = nxtElem.child(0).child(0).text();
+                                nome_etapa = nxtElem.child(0).child(0).ownText();
                             } else {
-                                etapa = "null";
+                                nome_etapa = "null";
                             }
-                        }
 
+                            while (nome_etapa.contains("Etapa")) {
+                                if (nome_etapa.equals("1a. Etapa") || nome_etapa.equals("1ª Etapa")) {
+                                    nome_etapa = context.getResources().getString(R.string.diarios_PrimeiraEtapa);
+                                } else if (nome_etapa.equals("1a Reavaliação da 1a Etapa") || nome_etapa.equals("1ª Reavaliação da 1ª Etapa")) {
+                                    nome_etapa = context.getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
+                                } else if (nome_etapa.equals("2a Reavaliação da 1a Etapa") || nome_etapa.equals("2ª Reavaliação da 1ª Etapa")) {
+                                    nome_etapa = context.getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
+                                } else if (nome_etapa.equals("2a. Etapa") || nome_etapa.equals("2ª Etapa")) {
+                                    nome_etapa = context.getResources().getString(R.string.diarios_SegundaEtapa);
+                                } else if (nome_etapa.equals("1a Reavaliação da 2a Etapa") || nome_etapa.equals("1ª Reavaliação da 2ª Etapa")) {
+                                    nome_etapa = context.getResources().getString(R.string.diarios_RP1_SegundaEtapa);
+                                } else if (nome_etapa.equals("2a Reavaliação da 2a Etapa") || nome_etapa.equals("2ª Reavaliação da 2ª Etapa")) {
+                                    nome_etapa = context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
+                                }
 
-                        /*Materia materia = findMateria(nomeMateria);
+                                Element tabelaNotas = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
+                                Elements notasLinhas = tabelaNotas.getElementsByClass("conteudoTexto");
+                                nxtElem = nxtElem.nextElementSibling();
 
-                        if (materia != null) {
-                            materia.setEtapas(etapas);
-                            box.put(materia);
-                        } else {
-                            box.put(new Materia(nomeMateria, pickColor(nomeMateria), etapas));
-                        }*/
+                                List<Etapa> etapas = materia.getEtapas();
+                                Etapa etapa = null;
 
-                        boolean existsMateria = true;
+                                for (int i = 0; i < etapas.size(); i++) {
+                                    if (etapas.get(i).getEtapa().equals(nome_etapa)) {
+                                        etapa = etapaBox.get(etapas.get(i).getId());
+                                        break;
+                                    }
+                                }
 
-                        for (int k = 0; k < materias.size(); k++) {
-                            if (nomeMateria.trim().equals(materias.get(k).getName())) {
-                                materias.get(k).setEtapas(etapas);
-                                existsMateria = true;
-                                break;
-                            } else {
-                                existsMateria = false;
+                                if (etapa == null) {
+                                    etapa = new Etapa(nome_etapa);
+                                }
+
+                                if (nxtElem != null) {
+                                    nome_etapa = nxtElem.child(0).child(0).text();
+                                } else {
+                                    nome_etapa = "null";
+                                }
+
+                                etapa.diarios.clear();
+
+                                for (int i = 0; i < notasLinhas.size(); i++) {
+                                    String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
+                                    String tipo = context.getResources().getString(R.string.sigla_Avaliacao);
+                                    int tint = context.getResources().getColor(R.color.diarios_avaliacao);
+                                    if (notasLinhas.eq(i).first().child(1).text().contains("Prova")) {
+                                        tint = context.getResources().getColor(R.color.diarios_prova);
+                                        tipo = context.getResources().getString(R.string.sigla_Prova);
+                                    } else if (notasLinhas.eq(i).first().child(1).text().contains("Diarios")) {
+                                        tint = context.getResources().getColor(R.color.diarios_trabalho);
+                                        tipo = context.getResources().getString(R.string.sigla_Trabalho);
+                                    } else if (notasLinhas.eq(i).first().child(1).text().contains("Qualitativa")) {
+                                        tint = context.getResources().getColor(R.color.diarios_qualitativa);
+                                        tipo = context.getResources().getString(R.string.sigla_Qualitativa);
+                                    }
+
+                                    String caps = trimp(trim1(notasLinhas.eq(i).first().child(1).text()));
+                                    String nome = caps.substring(1, 2).toUpperCase() + caps.substring(2);
+                                    String peso = trimp(notasLinhas.eq(i).first().child(2).text());
+                                    String max = trimp(notasLinhas.eq(i).first().child(3).text());
+                                    String nota = trimp(notasLinhas.eq(i).first().child(4).text());
+
+                                    if (nota.equals("")) {
+                                        nota = " -";
+                                    }
+
+                                    Diarios diario = new Diarios(nome, peso, max, nota, tipo, data, tint);
+
+                                    diario.etapa.setTarget(etapa);
+                                    etapa.diarios.add(diario);
+                                    diariosBox.put(diario);
+
+                                    Log.v("Box for Diarios", "size of " + diariosBox.count());
+                                }
+
+                                etapa.materia.setTarget(materia);
+                                materia.etapas.add(etapa);
+                                etapaBox.put(etapa);
+                                Log.v("Box for Etapa", "size of " + etapaBox.count());
                             }
+                            materiaBox.put(materia);
+                            Log.v("Box for Materia", "size of " + materiaBox.count());
                         }
 
-                        if (!existsMateria || materias.isEmpty()) {
-                            materias.add(new Materia(nomeMateria, pickColor(nomeMateria), etapas));
+                        if (webView.pg_diarios_loaded.length == 1) {
+                            webView.pg_diarios_loaded = new boolean[options.size() - 1];
+                            webView.pg_diarios_loaded[0] = true;
                         }
-                    }
 
-                    Collections.sort(materias, (d1, d2) -> d1.getName().compareTo(d2.getName()));
+        }, (result, error) -> {
+            if (error == null) {
+                webView.pg_diarios_loaded[webView.year_position] = true;
+                Log.i("JavaScriptWebView", "Diarios handled!");
+                onPageFinish.onPageFinish(URL + PG_DIARIOS, null);
+            } else {
+                Log.e("BoxStore", error.getMessage());
+            }
+        });
 
-
-
-
-        //Collections.sort(materias, (d1, d2) -> d1.getName().compareTo(d2.getName()));
-
-                    if (webView.pg_diarios_loaded.length == 1) {
-                        webView.pg_diarios_loaded = new boolean[options.size() - 1];
-                        webView.pg_diarios_loaded[0] = true;
-                    }
-
-        Data.saveMaterias(context, materias);
-
-        //getMaterias().put(materias);
-
-                    /*Data.saveMaterias(context, materias, SingletonWebView
-                            .getInstance().box);*/
-
-                    //getMaterias().close();
-
-                //});
-
-
-                //getMaterias().closeThreadResources();
-
-                    webView.pg_diarios_loaded[webView.year_position] = true;
-                    Log.i("JavaScriptWebView", "Diarios handled!");
-
-                    onPageFinish.onPageFinish(URL + PG_DIARIOS, null);
-
-                //} catch (Exception e) {
-                    //Log.e("JavaScriptWebView", "Diarios error: " + e);
-                //}
-            /*}
-        }.start();*/
     }
 
     @JavascriptInterface
     public void handleBoletim(String html_p) {
-        Log.i("JavaScriptWebView", "Boletim handling...");
-        /*new Thread() {
-            @Override
-            public void run() {*/
-                //try {
+        getBox().runInTxAsync(() -> {
 
-                //getMaterias().runInTx(() -> {
+            Log.i("JavaScriptWebView", "Boletim handling...");
 
+            Box<Materia> materiaBox = getBox().boxFor(Materia.class);
+            Box<Etapa> etapaBox = getBox().boxFor(Etapa.class);
 
-                String[][] trtd_boletim;
-                Document document = Jsoup.parse(html_p);
+            String[][] trtd_boletim;
+            Document document = Jsoup.parse(html_p);
 
-                Element table_boletim = document.select("table").get(6);
+            Element table_boletim = document.select("table").get(6);
 
-                Element table_notas = table_boletim.select("table").get(7);
+            Element table_notas = table_boletim.select("table").get(7);
 
-                Elements tables = table_notas.children();
+            Elements tables = table_notas.children();
 
-                Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
-                Elements options = ano.select("option");
+            Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
+            Elements options = ano.select("option");
 
-                    /*webView.infos.data_boletim = new String[options_ano.size()];
-
-                    for (int i = 0; i < options_ano.size(); i++) {
-                        webView.infos.data_boletim[i] = options_ano.get(i).text();
+            for (Element table : tables) {
+                Elements trs = table.select("tr");
+                trtd_boletim = new String[trs.size()][];
+                for (int i = 2; i < trs.size(); i++) {
+                    Elements tds = trs.get(i).select("td");
+                    trtd_boletim[i] = new String[tds.size()];
+                    for (int j = 0; j < tds.size(); j++) {
+                        if (tds.get(j).text().equals("") || tds.get(j).text().startsWith(",")) {
+                            trtd_boletim[i][j] = "-";
+                        } else {
+                            trtd_boletim[i][j] = tds.get(j).text();
+                        }
                     }
 
-                    Document periodo = Jsoup.parse(homeBoletim.select("#cmbperiodos").first().toString());
-                    Elements options_periodo = periodo.select("option");
+                    String nomeMateria = trtd_boletim[i][0].trim();
+                    String tfaltas = trtd_boletim[i][3].trim();
+                    String notaPrimeiraEtapa = trtd_boletim[i][5].trim();
+                    String faltasPrimeiraEtapa = trtd_boletim[i][6].trim();
+                    String RPPrimeiraEtapa = trtd_boletim[i][7].trim();
+                    String notaFinalPrimeiraEtapa = trtd_boletim[i][9].trim();
+                    String notaSegundaEtapa = trtd_boletim[i][10].trim();
+                    String faltasSegundaEtapa = trtd_boletim[i][11].trim();
+                    String RPSegundaEtapa = trtd_boletim[i][12].trim();
+                    String notaFinalSegundaEtapa = trtd_boletim[i][14].trim();
 
-                    webView.infos.periodo_boletim = new String[options_periodo.size()];
+                    Materia materia = materiaBox.query().equal(Materia_.name, nomeMateria).build().findUnique();
 
-                    for (int i = 0; i < options_periodo.size(); i++) {
-                        webView.infos.periodo_boletim[i] = options_periodo.get(i).text();
-                    }*/
-
-                    List<Materia> materias = Data.loadMaterias(context);
-
-                //Box<Materia> box = getMaterias().boxFor(Materia.class);
-                    //List<Materia> materias = getMaterias().getAll();
-
-                for (Element table : tables) {
-                    Elements trs = table.select("tr");
-                    trtd_boletim = new String[trs.size()][];
-                    for (int i = 2; i < trs.size(); i++) {
-                        Elements tds = trs.get(i).select("td");
-                        trtd_boletim[i] = new String[tds.size()];
-                        for (int j = 0; j < tds.size(); j++) {
-                            if (tds.get(j).text().equals("") || tds.get(j).text().startsWith(",")) {
-                                trtd_boletim[i][j] = "-";
-                            } else {
-                                trtd_boletim[i][j] = tds.get(j).text();
-                            }
-                        }
-
-                        String nomeMateria = trtd_boletim[i][0].trim();
-                        String tfaltas = trtd_boletim[i][3].trim();
-                        String notaPrimeiraEtapa = trtd_boletim[i][5].trim();
-                        String faltasPrimeiraEtapa = trtd_boletim[i][6].trim();
-                        String RPPrimeiraEtapa = trtd_boletim[i][7].trim();
-                        String notaFinalPrimeiraEtapa = trtd_boletim[i][9].trim();
-                        String notaSegundaEtapa = trtd_boletim[i][10].trim();
-                        String faltasSegundaEtapa = trtd_boletim[i][11].trim();
-                        String RPSegundaEtapa = trtd_boletim[i][12].trim();
-                        String notaFinalSegundaEtapa = trtd_boletim[i][14].trim();
-
-                        for (int k = 0; k < materias.size(); k++) {
-                            if (nomeMateria.equals(materias.get(k).getName())) {
-                                materias.get(k).setTotalFaltas(tfaltas);
-                                if (materias.get(k).getEtapas().size() > 0) {
-                                    materias.get(k).getEtapas().get(0).setNota(notaPrimeiraEtapa);
-                                    materias.get(k).getEtapas().get(0).setFaltas(faltasPrimeiraEtapa);
-                                    materias.get(k).getEtapas().get(0).setNotaFinal(notaFinalPrimeiraEtapa);
-                                    materias.get(k).getEtapas().get(0).setNotaRP(RPPrimeiraEtapa);
-                                    if (materias.get(k).getEtapas().size() > 1) {
-                                        materias.get(k).getEtapas().get(1).setNota(notaSegundaEtapa);
-                                        materias.get(k).getEtapas().get(1).setFaltas(faltasSegundaEtapa);
-                                        materias.get(k).getEtapas().get(1).setNotaFinal(notaFinalSegundaEtapa);
-                                        materias.get(k).getEtapas().get(1).setNotaRP(RPSegundaEtapa);
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                        /*Materia materia = findMateria(nomeMateria.trim());
-
+                    if (materia != null) {
                         materia.setTotalFaltas(tfaltas);
 
-                        if (!materia.getEtapas().isEmpty()) {
-                            materia.getEtapas().get(0).setNota(notaPrimeiraEtapa);
-                            materia.getEtapas().get(0).setFaltas(faltasPrimeiraEtapa);
-                            materia.getEtapas().get(0).setNotaFinal(notaFinalPrimeiraEtapa);
-                            materia.getEtapas().get(0).setNotaRP(RPPrimeiraEtapa);
-                            if (materia.getEtapas().size() > 1) {
-                                materia.getEtapas().get(1).setNota(notaSegundaEtapa);
-                                materia.getEtapas().get(1).setFaltas(faltasSegundaEtapa);
-                                materia.getEtapas().get(1).setNotaFinal(notaFinalSegundaEtapa);
-                                materia.getEtapas().get(1).setNotaRP(RPSegundaEtapa);
+                        for (int j = 0; j < materia.etapas.size(); j++) {
+                            Etapa etapa = materia.etapas.get(j);
+
+                            if (etapa.getEtapa().equals(context.getResources().getString(R.string.diarios_PrimeiraEtapa))) {
+                                etapa.setNota(notaPrimeiraEtapa);
+                                etapa.setFaltas(faltasPrimeiraEtapa);
+                                etapa.setNotaFinal(notaFinalPrimeiraEtapa);
+                                etapa.setNotaRP(RPPrimeiraEtapa);
+                            } else if (etapa.getEtapa().equals(context.getResources().getString(R.string.diarios_SegundaEtapa))) {
+                                etapa.setNota(notaSegundaEtapa);
+                                etapa.setFaltas(faltasSegundaEtapa);
+                                etapa.setNotaFinal(notaFinalSegundaEtapa);
+                                etapa.setNotaRP(RPSegundaEtapa);
                             }
+
+                            etapa.materia.setTarget(materia);
+                            materia.etapas.removeById(etapa.id);
+                            materia.etapas.add(etapa);
+                            etapaBox.put(etapa);
                         }
-                        box.put(materia);*/
+                        materiaBox.put(materia);
                     }
                 }
+            }
 
-                if (webView.pg_boletim_loaded.length == 1) {
-                    webView.pg_boletim_loaded = new boolean[options.size()];
-                    webView.pg_boletim_loaded[0] = true;
-                }
+            if (webView.pg_boletim_loaded.length == 1) {
+                webView.pg_boletim_loaded = new boolean[options.size()];
+                webView.pg_boletim_loaded[0] = true;
+            }
 
-                Data.saveMaterias(context, materias);
-
-                //getMaterias().put(materias);
-
-                //});
-
-                //getMaterias().closeThreadResources();
-
+        }, (result, error) -> {
+            if (error == null) {
                 webView.pg_boletim_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Boletim handled!");
-
                 onPageFinish.onPageFinish(URL + PG_BOLETIM, null);
-
-                /*} catch (Exception e) {
-                    Log.e("JavaScriptWebView", "Boletim error: " + e);
-                }*/
-            /*}
-        }.start();*/
+            } else {
+                Log.e("BoxStore", error.getMessage());
+            }
+        });
     }
 
     @JavascriptInterface
     public void handleHorario(String html_p) {
-        Log.i("JavaScriptWebView", "Horario handling...");
-        new Thread() {
-            @Override
-            public void run() {
-                //try {
-                    String[][] trtd_horario = null;
-                    String[] code = null;
-                    Document document = Jsoup.parse(html_p);
 
-                //Element table_horario = document.select("table").get(11).getElementsByTag("tbody").get(0);
-                    Element table_horario = document.select("table").eq(11).first();
+        getBox().runInTxAsync(() -> {
 
-                    Element table_codes = document.select("table").get(12);
-                    Elements codes = table_codes.children();
+            Log.i("JavaScriptWebView", "Horario handling...");
 
-                    Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
-                    Elements options = ano.select("option");
+            Box<Materia> materiaBox = getBox().boxFor(Materia.class);
+            Box<Horario> horarioBox = getBox().boxFor(Horario.class);
 
-                    /*webView.infos.data_horario = new String[options_ano.size()];
+            String[][] trtd_horario = null;
+            String[] code = null;
+            Document document = Jsoup.parse(html_p);
 
-                    for (int i = 0; i < options_ano.size(); i++) {
-                        webView.infos.data_horario[i] = options_ano.get(i).text();
-                    }
+            //Element table_horario = document.select("table").get(11).getElementsByTag("tbody").get(0);
+            Element table_horario = document.select("table").eq(11).first();
 
-                    Document periodo = Jsoup.parse(document.select("#cmbperiodos").first().toString());
-                    Elements options_periodo = periodo.select("option");
+            Element table_codes = document.select("table").get(12);
+            Elements codes = table_codes.children();
 
-                    webView.infos.periodo_horario = new String[options_periodo.size()];
+            Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
+            Elements options = ano.select("option");
 
-                    for (int i = 0; i < options_periodo.size(); i++) {
-                        webView.infos.periodo_horario[i] = options_periodo.get(i).text();
-                    }*/
+                  /*webView.infos.data_horario = new String[options_ano.size()];
 
-                    for (Element table : codes) {
-                        Elements trs = table.select("tr");
-                        code = new String[trs.size()];
-                        for (int i = 0; i < trs.size(); i++) {
-                            code[i] = trs.get(i).text();
-                        }
-                    }
-
-                    Elements tables = table_horario.children();
-
-                    for (Element table : tables) {
-                        Elements trs = table.select("tr");
-                        trtd_horario = new String[trs.size()][]; //pega total de colunas
-
-                        for (int i = 0; i < trs.size(); i++) {
-                            Elements tds = trs.get(i).select("td");
-                            trtd_horario[i] = new String[tds.size()]; // pega total de linhas
-
-                            for (int j = 0; j < tds.size(); j++) {
-                                trtd_horario[i][j] = tds.get(j).text();
-
-                                for (int k = 1; k < Objects.requireNonNull(code).length; k++) {
-                                    String sub = code[k].substring(0, code[k].indexOf("-") + 1);
-                                    sub = sub.substring(0, sub.lastIndexOf(" ") + 1);
-
-                                    String recebe = code[k].substring(code[k].indexOf("-"));
-                                    recebe = recebe.substring(recebe.indexOf("-"));
-                                    recebe = recebe.substring(recebe.indexOf("-") + 2);
-                                    recebe = recebe.substring(recebe.indexOf("-") + 2, recebe.lastIndexOf("-"));
-
-                                    if ((trtd_horario[i][j]).contains(sub)) {
-                                        trtd_horario[i][j] = recebe;
-                                    }
-
-                                    if (((trtd_horario[i][j]).contains("2ª-FEIRA"))) {
-                                        trtd_horario[i][j] = String.valueOf(Calendar.MONDAY);
-                                        Log.v("HORARIO", "MONDAY");
-                                    } else if (((trtd_horario[i][j]).contains("3ª-FEIRA"))) {
-                                        trtd_horario[i][j] = String.valueOf(Calendar.TUESDAY);
-                                        Log.v("HORARIO", "TUESDAY");
-                                    } else if (((trtd_horario[i][j]).contains("4ª-FEIRA"))) {
-                                        trtd_horario[i][j] = String.valueOf(Calendar.WEDNESDAY);
-                                        Log.v("HORARIO", "WEDNESDAY");
-                                    } else if (((trtd_horario[i][j]).contains("5ª-FEIRA"))) {
-                                        trtd_horario[i][j] = String.valueOf(Calendar.THURSDAY);
-                                        Log.v("HORARIO", "THURSDAY");
-                                    } else if (((trtd_horario[i][j]).contains("6ª-FEIRA"))) {
-                                        trtd_horario[i][j] = String.valueOf(Calendar.FRIDAY);
-                                        Log.v("HORARIO", "FRIDAY");
-                                    }
-                                }
+                            for (int i = 0; i < options_ano.size(); i++) {
+                                webView.infos.data_horario[i] = options_ano.get(i).text();
                             }
-                        }
+
+                            Document periodo = Jsoup.parse(document.select("#cmbperiodos").first().toString());
+                            Elements options_periodo = periodo.select("option");
+
+                            webView.infos.periodo_horario = new String[options_periodo.size()];
+
+                            for (int i = 0; i < options_periodo.size(); i++) {
+                                webView.infos.periodo_horario[i] = options_periodo.get(i).text();
+                            }*/
+
+            for (Element table : codes) {
+                Elements trs = table.select("tr");
+                code = new String[trs.size()];
+                for (int i = 0; i < trs.size(); i++) {
+                    code[i] = trs.get(i).text();
                     }
-
-                    List<Materia> materias = Data.loadMaterias(context);
-
-                    /*Box<Materia> box = getMaterias().boxFor(Materia.class);
-
-                    for (int i = 1; i <= 5; i++) {
-                        for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
-                            if (!trtd_horario[j][i].equals("")) {
-                                Materia materia = findMateria(trtd_horario[j][i].trim());
-
-                                if (materia != null) {
-                                    materia.addHorario(new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]));
-                                    box.put(materia);
-                                }
-                            }
-                        }
-                    }*/
-
-                //List<Materia> materias = getMaterias().getAll();
-
-                for (int i = 0; i < materias.size(); i++) {
-                    materias.get(i).setHorarios(new ArrayList<>());
-                }
-
-                for (int i = 1; i <= 5; i++) {
-
-                    for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
-
-                        if (!trtd_horario[j][i].equals("")) {
-                            for (int k = 0; k < materias.size(); k++) {
-                                if (trtd_horario[j][i].trim().equals(materias.get(k).getName())) {
-                                    materias.get(k).getHorarios().add(new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]));
-                                }
-                            }
-                        }
-                    }
-                }
-
-                    if (webView.pg_horario_loaded.length == 1) {
-                        webView.pg_horario_loaded = new boolean[options.size()];
-                        webView.pg_horario_loaded[0] = true;
-                    }
-
-                    //getMaterias().closeThreadResources();
-                //getMaterias().put(materias);
-                Data.saveMaterias(context, materias);
-
-                    webView.pg_horario_loaded[webView.year_position] = true;
-                    Log.i("JavaScriptWebView", "Horario handled!");
-
-                    onPageFinish.onPageFinish(URL + PG_HORARIO, null);
-
-                /*} catch (Exception e) {
-                    Log.e("JavaScriptWebView", "Horario error: " + e);
-                }*/
             }
-        }.start();
+
+            Elements tables = table_horario.children();
+
+            for (Element table : tables) {
+                Elements trs = table.select("tr");
+                trtd_horario = new String[trs.size()][]; //pega total de colunas
+
+                for (int i = 0; i < trs.size(); i++) {
+                    Elements tds = trs.get(i).select("td");
+                    trtd_horario[i] = new String[tds.size()]; // pega total de linhas
+
+                    for (int j = 0; j < tds.size(); j++) {
+                        trtd_horario[i][j] = tds.get(j).text();
+
+                        for (int k = 1; k < Objects.requireNonNull(code).length; k++) {
+                            String sub = code[k].substring(0, code[k].indexOf("-") + 1);
+                            sub = sub.substring(0, sub.lastIndexOf(" ") + 1);
+
+                            String recebe = code[k].substring(code[k].indexOf("-"));
+                            recebe = recebe.substring(recebe.indexOf("-"));
+                            recebe = recebe.substring(recebe.indexOf("-") + 2);
+                            recebe = recebe.substring(recebe.indexOf("-") + 2, recebe.lastIndexOf("-"));
+
+                            if ((trtd_horario[i][j]).contains(sub)) {
+                                trtd_horario[i][j] = recebe;
+                            }
+
+                            if (((trtd_horario[i][j]).contains("2ª-FEIRA"))) {
+                                trtd_horario[i][j] = String.valueOf(Calendar.MONDAY);
+                                Log.v("HORARIO", "MONDAY");
+                            } else if (((trtd_horario[i][j]).contains("3ª-FEIRA"))) {
+                                trtd_horario[i][j] = String.valueOf(Calendar.TUESDAY);
+                                Log.v("HORARIO", "TUESDAY");
+                            } else if (((trtd_horario[i][j]).contains("4ª-FEIRA"))) {
+                                trtd_horario[i][j] = String.valueOf(Calendar.WEDNESDAY);
+                                Log.v("HORARIO", "WEDNESDAY");
+                            } else if (((trtd_horario[i][j]).contains("5ª-FEIRA"))) {
+                                trtd_horario[i][j] = String.valueOf(Calendar.THURSDAY);
+                                Log.v("HORARIO", "THURSDAY");
+                            } else if (((trtd_horario[i][j]).contains("6ª-FEIRA"))) {
+                                trtd_horario[i][j] = String.valueOf(Calendar.FRIDAY);
+                                Log.v("HORARIO", "FRIDAY");
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            /*Box<Materia> box = getMaterias().boxFor(Materia.class);
+
+            for (int i = 1; i <= 5; i++) {
+                for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
+                    if (!trtd_horario[j][i].equals("")) {
+                        Materia materia = findMateria(trtd_horario[j][i].trim());
+
+                        if (materia != null) {
+                            materia.addHorario(new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]));
+                            box.put(materia);
+                        }
+                    }
+                }
+            }*/
+
+            List<Materia> materias = materiaBox.query().equal(Materia_.year,
+                    Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+
+            for (int i = 0; i < materias.size(); i++) {
+                materias.get(i).horarios.clear();
+            }
+
+            for (int i = 1; i <= 5; i++) {
+                for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
+                    if (!trtd_horario[j][i].equals("")) {
+
+                        Materia materia = materiaBox.query().equal(Materia_.name, trtd_horario[j][i].trim()).build().findUnique();
+                        Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]);
+
+                        if (materia != null) {
+                            horario.materia.setTarget(materia);
+                            materia.horarios.add(horario);
+                            materiaBox.put(materia);
+                            horarioBox.put(horario);
+                        }
+                    }
+                }
+            }
+
+            if (webView.pg_horario_loaded.length == 1) {
+                webView.pg_horario_loaded = new boolean[options.size()];
+                webView.pg_horario_loaded[0] = true;
+            }
+
+        }, (result, error) -> {
+            if (error == null) {
+                webView.pg_horario_loaded[webView.year_position] = true;
+                Log.i("JavaScriptWebView", "Horario handled!");
+                onPageFinish.onPageFinish(URL + PG_HORARIO, null);
+            } else {
+                Log.e("BoxStore", error.getMessage());
+            }
+        });
     }
 
     @JavascriptInterface
@@ -874,7 +811,7 @@ public class JavaScriptWebView {
             color = Color.rgb(221, 177, 0);
         }*/
         else {
-            /*Materia materia = findMateria(string);
+            Materia materia = getBox().boxFor(Materia.class).query().equal(Materia_.name, string).build().findUnique();
 
             if (materia != null) {
                 color = materia.getColor();
@@ -882,28 +819,14 @@ public class JavaScriptWebView {
 
             if (color == 0) {
                 color = Utils.getRandomColorGenerator(context);
-            }*/
-
-            List<Materia> materias = Data.loadMaterias(context);
-
-            for (int i = 0; i < materias.size(); i++) {
-                if (materias.get(i).getName().equals(string)) {
-                    return materias.get(i).getColor();
-                }
             }
-
-            color = Utils.getRandomColorGenerator(context);
         }
 
         return color;
     }
 
-    private Box<Materia> getMaterias() {
-        return SingletonWebView.getInstance().box.boxFor(Materia.class);
-    }
-
-    private Materia findMateria(String string) {
-        return getMaterias().query().equal(Materia_.name, string).build().findUnique();
+    private BoxStore getBox() {
+        return SingletonWebView.getInstance().box;
     }
 
     public void setOnPageFinished(OnPageFinished onPageFinish) {

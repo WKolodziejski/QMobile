@@ -18,17 +18,25 @@ import io.objectbox.annotation.Convert;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.converter.PropertyConverter;
+import io.objectbox.relation.ToOne;
 
 @Entity
 public class Horario implements Serializable {
     @Id public long id;
     private int day;
     private String time;
+    public ToOne<Materia> materia;
 
     public Horario(int day, String time) {
         this.day = day;
         this.time = time;
         Log.v("New Horário", day + time);
+    }
+
+    public Horario() {}
+
+    public long getId() {
+        return id;
     }
 
     public int getDay() {
