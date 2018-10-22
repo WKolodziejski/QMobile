@@ -3,9 +3,12 @@ package com.tinf.qacademico.Adapter.Calendario;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +42,14 @@ public class EventosAdapter extends RecyclerView.Adapter {
         holder.title.setText(eventos.get(i).getTitle());
         holder.description.setText(eventos.get(i).getDescription());
         holder.header.setBackgroundColor(eventos.get(i).getColor());
+
+        //Ednaldo Pereira
+        if ( eventos.get(i).getColor()  == -14606047){ //não sei qual a cor certa peguei pelo inteiro dela
+            holder.header.setBackgroundResource(R.color.grey_50);
+            holder.title.setTextColor(eventos.get(i).getColor());
+            holder.description.setTextColor(eventos.get(i).getColor());
+            holder.title.setTypeface(null, Typeface.BOLD);
+        }
 
         if (eventos.get(i).getDescription().isEmpty()) {
             holder.description.setVisibility(View.GONE);
