@@ -22,7 +22,7 @@ import io.objectbox.relation.ToOne;
 public class Materia implements Serializable {
     @Id public long id;
     private int color;
-    @Unique private String name;
+    private String name;
     private String totalFaltas;
     @Transient private boolean isExpanded;
     @Transient private boolean anim;
