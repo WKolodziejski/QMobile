@@ -4,23 +4,23 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import io.objectbox.BoxStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qacademico.Activity.CalendarioActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qacademico.Class.Calendario.Evento;
-import com.tinf.qacademico.Class.Calendario.Meses;
+import com.tinf.qacademico.Class.Calendario.Mes;
+import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Data;
+import com.tinf.qacademico.WebView.SingletonWebView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,8 +32,9 @@ import java.util.Objects;
 
 public class CalendarioFragment extends Fragment {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
+    SingletonWebView webView = SingletonWebView.getInstance();
     CalendarioAdapter adapter;
-    List<Meses> mesesList;
+    List<Mes> mesesList;
     int month = 0;
 
     @Nullable
@@ -48,7 +49,8 @@ public class CalendarioFragment extends Fragment {
 
     private void setCalendar(View view) {
 
-        mesesList = Data.loadCalendar(getContext());
+        mesesList = getBox().boxFor(Mes.class).query().equal(Mes_.year,
+                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
 
         CompactCalendarView calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
         calendarView.removeAllEvents();
@@ -60,7 +62,7 @@ public class CalendarioFragment extends Fragment {
         Calendar lastDateMesesList = Calendar.getInstance();
         lastDateMesesList.set(Calendar.YEAR, mesesList.get(mesesList.size() - 1).getYear());
         lastDateMesesList.set(Calendar.MONTH, mesesList.get(mesesList.size() - 1).getMonth());
-        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).getDias().get(0).getDia());
+        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).days.get(0).getDay());
 
         if (new Date().getTime() < lastDateMesesList.getTimeInMillis()) {
             lastDateMesesList.setTimeInMillis(new Date().getTime());
@@ -75,7 +77,7 @@ public class CalendarioFragment extends Fragment {
             month = mesesList.size() - 1;
         }
 
-        adapter = new CalendarioAdapter(mesesList.get(month).getDias(), getActivity());
+        adapter = new CalendarioAdapter(mesesList.get(month).days, getActivity());
 
         calendarView.setCurrentDate(lastDateMesesList.getTime());
 
@@ -88,7 +90,7 @@ public class CalendarioFragment extends Fragment {
 
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_calendario);
 
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,
+        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
                 false);
 
         recyclerViewCalendario.setAdapter(adapter);
@@ -103,7 +105,7 @@ public class CalendarioFragment extends Fragment {
                 calendar.setTimeInMillis(date.getTime());
 
                 for (int i = 0; i < adapter.getCalendarioList().size(); i++) {
-                    if (adapter.getCalendarioList().get(i).getDia() == calendar.get(Calendar.DAY_OF_MONTH)) {
+                    if (adapter.getCalendarioList().get(i).getDay() == calendar.get(Calendar.DAY_OF_MONTH)) {
 
                         RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
                             @Override
@@ -151,7 +153,7 @@ public class CalendarioFragment extends Fragment {
                         if (mesesList.get(i).getYear() == calendar.get(Calendar.YEAR)) {
                             for (int j = i; j < mesesList.size(); j++) {
                                 if (mesesList.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
-                                    adapter.update(mesesList.get(j).getDias());
+                                    adapter.update(mesesList.get(j).days);
                                     month = j;
 
                                     Calendar today = Calendar.getInstance();
@@ -160,10 +162,10 @@ public class CalendarioFragment extends Fragment {
                                     today.set(Calendar.MINUTE, 0);
                                     today.set(Calendar.SECOND, 0);
 
-                                    for (int k = 0; k < mesesList.get(j).getDias().size(); k++) {
+                                    for (int k = 0; k < mesesList.get(j).days.size(); k++) {
                                         if (calendar.getTimeInMillis() < today.getTimeInMillis()) {
-                                            for (int l = 0; l < mesesList.get(j).getDias().get(k).getEventos().size(); l++) {
-                                                mesesList.get(j).getDias().get(k).getEventos().get(l).setHappened(true);
+                                            for (int l = 0; l < mesesList.get(j).days.get(k).eventos.size(); l++) {
+                                                mesesList.get(j).days.get(k).eventos.get(l).setHappened(true);
                                             }
                                         }
                                     }
@@ -188,7 +190,7 @@ public class CalendarioFragment extends Fragment {
     }
 
     private void addEvents(CompactCalendarView calendarView, int j) {
-        for (int i = 0; i < mesesList.get(j).getDias().size(); i++) {
+        for (int i = 0; i < mesesList.get(j).days.size(); i++) {
             Calendar date = Calendar.getInstance(Locale.getDefault());
 
             date.set(Calendar.MONTH, mesesList.get(j).getMonth());
@@ -203,11 +205,15 @@ public class CalendarioFragment extends Fragment {
     private List<Event> getEvents(long timeInMillis, int j, int day) {
         List<Event> events = new ArrayList<>();
 
-        for (int i = 0; i < mesesList.get(j).getDias().get(day).getEventos().size(); i++) {
-            Evento e = mesesList.get(j).getDias().get(day).getEventos().get(i);
+        for (int i = 0; i < mesesList.get(j).days.get(day).eventos.size(); i++) {
+            Evento e = mesesList.get(j).days.get(day).eventos.get(i);
             events.add(new Event(e.getColor(), timeInMillis, null));
         }
 
         return events;
+    }
+
+    private BoxStore getBox() {
+        return ((CalendarioActivity) getActivity()).getBox();
     }
 }

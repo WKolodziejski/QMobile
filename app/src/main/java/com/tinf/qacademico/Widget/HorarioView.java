@@ -43,17 +43,17 @@ public class HorarioView extends WeekView {
             List<WeekViewEvent> week = new ArrayList<>();
 
             for (int i = 0; i < materias.size(); i++) {
-                for (int j = 0; j < materias.get(i).getHorarios().size(); j++) {
+                for (int j = 0; j < materias.get(i).horarios.size(); j++) {
                     Calendar startTime = Calendar.getInstance();
                     startTime.set(Calendar.YEAR, newYear);
                     startTime.set(Calendar.MONTH, newMonth - 1);
-                    startTime.set(Calendar.DAY_OF_WEEK, materias.get(i).getHorarios().get(j).getDay());
-                    startTime.set(Calendar.HOUR_OF_DAY, materias.get(i).getHorarios().get(j).getStartHour());
-                    startTime.set(Calendar.MINUTE, materias.get(i).getHorarios().get(j).getStartMinute());
+                    startTime.set(Calendar.DAY_OF_WEEK, materias.get(i).horarios.get(j).getDay());
+                    startTime.set(Calendar.HOUR_OF_DAY, materias.get(i).horarios.get(j).getStartHour());
+                    startTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getStartMinute());
 
                     Calendar endTime = (Calendar) startTime.clone();
-                    endTime.set(Calendar.HOUR_OF_DAY, materias.get(i).getHorarios().get(j).getEndHour());
-                    endTime.set(Calendar.MINUTE, materias.get(i).getHorarios().get(j).getEndMinute());
+                    endTime.set(Calendar.HOUR_OF_DAY, materias.get(i).horarios.get(j).getEndHour());
+                    endTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getEndMinute());
 
                     WeekViewEvent event = new WeekViewEvent(i, materias.get(i).getName(), startTime, endTime);
                     event.setColor(materias.get(i).getColor());

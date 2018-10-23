@@ -2,11 +2,8 @@ package com.tinf.qacademico;
 
 import android.app.Application;
 import android.util.Log;
-
 import com.tinf.qacademico.Class.Materias.Materia;
-import com.tinf.qacademico.Class.Materias.MyObjectBox;
-
-import io.objectbox.Box;
+import com.tinf.qacademico.Class.MyObjectBox;
 import io.objectbox.BoxStore;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;

@@ -6,10 +6,13 @@ import com.google.android.material.appbar.AppBarLayout;
 import androidx.core.view.ViewCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import io.objectbox.BoxStore;
+
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
 import com.tinf.qacademico.R;
 
@@ -70,5 +73,9 @@ public class CalendarioActivity2 extends AppCompatActivity {
     public void setTitle(CharSequence text) {
         TextView title = (TextView) findViewById(R.id.title);
         title.setText(text);
+    }
+
+    public BoxStore getBox() {
+        return ((App) getApplication()).getBoxStore();
     }
 }

@@ -16,12 +16,9 @@ import com.tinf.qacademico.Adapter.Diarios.DiariosListAdapter;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Data;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
-
 import io.objectbox.BoxStore;
 
 public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {

@@ -13,32 +13,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.CalendarioActivity;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qacademico.Class.Calendario.Dia;
-import com.tinf.qacademico.Class.Calendario.Meses;
+import com.tinf.qacademico.Class.Calendario.Mes;
+import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Data;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import io.objectbox.BoxStore;
-
 import static android.view.View.GONE;
 
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
     CalendarioAdapter adapter;
+    SingletonWebView webView = SingletonWebView.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +56,8 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
     private void showEvents(View view) {
 
-        List<Meses> mesesList = Data.loadCalendar(getContext());
+        List<Mes> mesesList = getBox().boxFor(Mes.class).query().equal(Mes_.year,
+                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
 
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
 
@@ -73,7 +71,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         Calendar lastDateMesesList = Calendar.getInstance();
         lastDateMesesList.set(Calendar.YEAR, mesesList.get(mesesList.size() - 1).getYear());
         lastDateMesesList.set(Calendar.MONTH, mesesList.get(mesesList.size() - 1).getMonth());
-        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).getDias().get(0).getDia());
+        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).days.get(0).getDay());
 
         if (new Date().getTime() < lastDateMesesList.getTimeInMillis()) {
             lastDateMesesList.setTimeInMillis(new Date().getTime());
@@ -88,7 +86,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
             month = mesesList.size() - 1;
         }
 
-        List<Dia> dias = mesesList.get(month).getDias().subList(0, 5);
+        List<Dia> dias = mesesList.get(month).days.subList(0, 5);
 
         adapter = new CalendarioAdapter(dias, getActivity());
 
@@ -112,8 +110,6 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     private void showHorario(View view) {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
-
-        SingletonWebView webView = SingletonWebView.getInstance();
 
         HorarioView.congifWeekView(weekView,
                 getBox().boxFor(Materia.class).query().equal(Materia_.year,

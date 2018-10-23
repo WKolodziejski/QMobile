@@ -28,8 +28,8 @@ public class Materia implements Serializable {
     @Transient private boolean anim;
     private int year;
     @Backlink(to = "materia") public ToMany<Etapa> etapas;
-    @Backlink public ToMany<Horario> horarios;
-    private ToOne<Infos> infos;
+    @Backlink(to = "materia") public ToMany<Horario> horarios;
+    public ToOne<Infos> infos;
 
     public Materia() {}
 
@@ -37,18 +37,6 @@ public class Materia implements Serializable {
         this.name = name.trim();
         this.color = color;
         this.year = year;
-    }
-
-    public ToOne<Infos> getInfos() {
-        return infos;
-    }
-
-    public ToMany<Etapa> getEtapas() {
-        return etapas;
-    }
-
-    public ToMany<Horario> getHorarios() {
-        return horarios;
     }
 
     public int getYear() {

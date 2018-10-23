@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.BoxStore;
 
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.URL;
@@ -64,5 +66,9 @@ public class CalendarioActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public BoxStore getBox() {
+        return ((App) getApplication()).getBoxStore();
     }
 }

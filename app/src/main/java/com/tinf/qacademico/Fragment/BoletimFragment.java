@@ -5,26 +5,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Data;
 import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
 import io.objectbox.BoxStore;
 
 public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
@@ -78,25 +73,25 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         mTableDatas.add(mfristData);
 
         for (int i = 0; i < materias.size(); i++) {
-            if (materias.get(i).getEtapas() != null) {
+            if (materias.get(i).etapas != null) {
                 ArrayList<String> mRowDatas = new ArrayList<>();
                 mRowDatas.add(materias.get(i).getName());
 
-                for(int j = 0; j < materias.get(i).getEtapas().size(); j++) {
-                    if (materias.get(i).getEtapas().get(j).getEtapa().equals(
+                for(int j = 0; j < materias.get(i).etapas.size(); j++) {
+                    if (materias.get(i).etapas.get(j).getEtapa().equals(
                             getResources().getString(R.string.diarios_PrimeiraEtapa))) {
 
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNota());
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getFaltas());
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaRP());
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaFinal());
-                    } else if ((materias.get(i).getEtapas().get(j).getEtapa().equals(
+                        mRowDatas.add(materias.get(i).etapas.get(j).getNota());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getFaltas());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getNotaRP());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getNotaFinal());
+                    } else if ((materias.get(i).etapas.get(j).getEtapa().equals(
                             getResources().getString(R.string.diarios_SegundaEtapa)))) {
 
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNota());
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getFaltas());
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaRP());
-                        mRowDatas.add(materias.get(i).getEtapas().get(j).getNotaFinal());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getNota());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getFaltas());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getNotaRP());
+                        mRowDatas.add(materias.get(i).etapas.get(j).getNotaFinal());
                     }
                 }
                 mRowDatas.add(materias.get(i).getTotalFaltas());

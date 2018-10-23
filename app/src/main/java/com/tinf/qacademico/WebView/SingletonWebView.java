@@ -1,20 +1,15 @@
 package com.tinf.qacademico.WebView;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 
@@ -23,17 +18,12 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.UiThread;
-import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
-import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
-import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
-import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
@@ -43,7 +33,7 @@ public class SingletonWebView {
     private static SingletonWebView singleton;
     private OnPageFinished onPageFinished;
     private OnPageStarted onPageStarted;
-    private OnRecivedError onRecivedError;
+    private OnErrorRecived onErrorRecived;
     private WebView webView;
     private boolean isLoading, isPaused, isTimeout;
     private List<String> queue = new ArrayList<>();
@@ -230,7 +220,7 @@ public class SingletonWebView {
             isTimeout = false;
             webView.stopLoading();
             Log.i("Error", error);
-            onRecivedError.onErrorRecived(error);
+            onErrorRecived.onErrorRecived(error);
         });
 
         webView.setWebViewClient(clientWebView);
@@ -261,11 +251,11 @@ public class SingletonWebView {
         void onPageStart(String url_p);
     }
 
-    public void setOnErrorRecivedListener(OnRecivedError onRecivedError){
-        this.onRecivedError = onRecivedError;
+    public void setOnErrorRecivedListener(OnErrorRecived onErrorRecived){
+        this.onErrorRecived = onErrorRecived;
     }
 
-    public interface OnRecivedError {
+    public interface OnErrorRecived {
         void onErrorRecived(String error);
     }
 }

@@ -83,8 +83,8 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
         holder.table.setTag(i);
 
-        holder.recyclerView.setAdapter(new EtapaAdapter(diariosList.get(i).getEtapas(), context));
-        holder.nothing.setVisibility(diariosList.get(i).getEtapas().isEmpty() ? View.VISIBLE : View.GONE);
+        holder.recyclerView.setAdapter(new EtapaAdapter(diariosList.get(i).etapas, context));
+        holder.nothing.setVisibility(diariosList.get(i).etapas.isEmpty() ? View.VISIBLE : View.GONE);
 
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false));
@@ -162,7 +162,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         int a = 0;
         int f = 0;
         for (int i = 0; i < diariosList.size(); i++) {
-            if (diariosList.get(i).getEtapas().size() > 0) {
+            if (diariosList.get(i).etapas.size() > 0) {
                 if (diariosList.get(i).isExpanded()) {
                     a++;
                 } else {
@@ -182,7 +182,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             Toast.makeText(context, context.getResources().getString(R.string.message_collapsed), Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < diariosList.size(); i++) {
-                if (diariosList.get(i).getEtapas().size() > 0) {
+                if (diariosList.get(i).etapas.size() > 0) {
                     if (diariosList.get(i).isExpanded()) {
                         diariosList.get(i).setAnim(false);
                     } else {

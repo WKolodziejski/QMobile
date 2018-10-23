@@ -44,7 +44,7 @@ public class EventosAdapter extends RecyclerView.Adapter {
             holder.description.setVisibility(View.GONE);
         }
 
-        if (eventos.get(i).hasHappened()) {
+        if (eventos.get(i).getHappened()) {
             holder.title.setPaintFlags(holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.description.setPaintFlags(holder.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }

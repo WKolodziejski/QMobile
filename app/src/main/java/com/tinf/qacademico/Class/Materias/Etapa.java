@@ -19,20 +19,12 @@ public class Etapa implements Serializable {
     private String faltas;
     public ToOne<Materia> materia;
     @Backlink public ToMany<Diarios> diarios;
-    @Backlink private ToMany<Aula> aulas;
-
-    public Etapa(String etapa){
-        this.etapa = etapa.trim();
-    }
+    @Backlink public ToMany<Aula> aulas;
 
     public Etapa() {}
 
-    public ToMany<Diarios> getDiarios() {
-        return diarios;
-    }
-
-    public ToMany<Aula> getAulas() {
-        return aulas;
+    public Etapa(String etapa){
+        this.etapa = etapa.trim();
     }
 
     public long getId() {

@@ -14,8 +14,6 @@ import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.Utilities.Data;
-
 import io.objectbox.BoxStore;
 
 public class HorarioFragment extends Fragment {

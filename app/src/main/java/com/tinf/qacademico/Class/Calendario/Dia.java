@@ -2,22 +2,27 @@ package com.tinf.qacademico.Class.Calendario;
 
 
 import java.io.Serializable;
-import java.util.List;
 
+import io.objectbox.annotation.Backlink;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToMany;
+import io.objectbox.relation.ToOne;
+
+@Entity
 public class Dia implements Serializable {
-    private List<Evento> eventos;
-    private int dia;
+    @Id public long id;
+    @Backlink(to = "day") public ToMany<Evento> eventos;
+    private int day;
+    public ToOne<Mes> mes;
 
-    public Dia(int dia, List<Evento> eventos) {
-        this.dia = dia;
-        this.eventos = eventos;
+    public Dia(){};
+
+    public Dia(int day) {
+        this.day = day;
     }
 
-    public List<Evento> getEventos() {
-        return eventos;
-    }
-
-    public int getDia() {
-        return dia;
+    public int getDay() {
+        return day;
     }
 }

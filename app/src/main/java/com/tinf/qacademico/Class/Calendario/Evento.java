@@ -3,13 +3,22 @@ package com.tinf.qacademico.Class.Calendario;
 
 import java.io.Serializable;
 
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToOne;
+
+@Entity
 public class Evento implements Serializable {
+    @Id public long id;
     private String description;
     private String title;
     private int color;
     private String inicio;
     private String fim;
     private boolean happened;
+    public ToOne<Dia> day;
+
+    public Evento(){};
 
     public Evento(String title, String description, int color) {
         this.title = title;
@@ -21,7 +30,7 @@ public class Evento implements Serializable {
         this.title = title;
         this.description = description;
         this.color = color;
-        this.inicio = inicio ;
+        this.inicio = inicio;
         this.fim = fim;
     }
 
@@ -39,7 +48,7 @@ public class Evento implements Serializable {
 
     public String getFim() { return fim;  }
 
-    public boolean hasHappened() {
+    public boolean getHappened() {
         return happened;
     }
 

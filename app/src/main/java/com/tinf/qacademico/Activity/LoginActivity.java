@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tinf.qacademico.App;
-import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Fragment.LoginFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
@@ -27,7 +26,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class LoginActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnRecivedError {
+public class LoginActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnErrorRecived {
     public SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;

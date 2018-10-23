@@ -16,7 +16,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.core.view.MotionEventCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
@@ -27,7 +26,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
 import com.tinf.qacademico.App;
@@ -48,11 +46,10 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_PASSWORD;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
-import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnRecivedError, BottomNavigationView.OnNavigationItemSelectedListener,  AppBarLayout.OnOffsetChangedListener {
+public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted, SingletonWebView.OnErrorRecived, BottomNavigationView.OnNavigationItemSelectedListener,  AppBarLayout.OnOffsetChangedListener {
     @BindView(R.id.progressbar_horizontal)      ProgressBar progressBar;
     @BindView(R.id.fab_expand)           public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)           public BottomNavigationView bottomNav;

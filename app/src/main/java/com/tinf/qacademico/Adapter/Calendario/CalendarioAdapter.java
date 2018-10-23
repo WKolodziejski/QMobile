@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.ViewHolder.CalendarioViewHolder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
     private List<Dia> clearList(List<Dia> list) {
         List<Dia> clear = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            if (!list.get(i).getEventos().isEmpty()) {
+            if (!list.get(i).eventos.isEmpty()) {
                 clear.add(list.get(i));
             }
         }
@@ -56,9 +55,9 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         final CalendarioViewHolder holder = (CalendarioViewHolder) viewHolder;
 
-        holder.dia.setText(String.valueOf(calendarioList.get(position).getDia()));
-        holder.eventos.setAdapter(new EventosAdapter(calendarioList.get(position).getEventos(), context));
-        holder.eventos.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        holder.dia.setText(String.valueOf(calendarioList.get(position).getDay()));
+        holder.eventos.setAdapter(new EventosAdapter(calendarioList.get(position).eventos, context));
+        holder.eventos.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         holder.layout.setTag(position);
     }
 
