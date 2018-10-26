@@ -22,6 +22,7 @@ public class Utils {
     public static final String YEARS = ".Years";
     public static final String ETAPAS = ".Etapas";
     public static final String HORARIO = ".Horario";
+    public static final String LAST_LOGIN = ".Last_Login";
     public static final String LOGIN_REGISTRATION = ".Matricula";
     public static final String LOGIN_PASSWORD = ".Senha";
     public static final String URL = "http://qacademico.ifsul.edu.br//qacademico/index.asp?t=";

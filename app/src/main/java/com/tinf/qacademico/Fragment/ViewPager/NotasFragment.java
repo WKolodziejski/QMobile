@@ -18,16 +18,35 @@ import com.tinf.qacademico.Fragment.DiariosFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
 
+import java.util.List;
 import java.util.Objects;
 
-public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener {
-    SingletonWebView webView = SingletonWebView.getInstance();
-    ViewPagerAdapter adapter;
+public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, MainActivity.OnPageUpdated {
+    private SingletonWebView webView = SingletonWebView.getInstance();
+    private int currentFragment;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_viewpager, container, false);
+
+        showNotas(view);
+
+        return view;
+    }
+
+    private void showNotas(View view) {
+
+        ((MainActivity) getActivity()).setTitle(webView.data_year[webView.year_position]);
+
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
 
         adapter.addFragment(new DiariosFragment(), getString(R.string.title_diarios));
         adapter.addFragment(new BoletimFragment(), getString(R.string.title_boletim));
@@ -35,26 +54,16 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
 
+        viewPager.setCurrentItem(currentFragment);
+
         viewPager.addOnPageChangeListener(this);
 
-        ((MainActivity)getActivity()).setupTabLayoutWithViewPager(viewPager);
-
-        return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        adapter = new ViewPagerAdapter(getChildFragmentManager());
-    }
-
-    @Override
-    public void onPageScrolled(int i, float v, int i1) {
-
+        ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
     }
 
     @Override
     public void onPageSelected(int i) {
+        currentFragment = i;
         if (i == 0) {
             ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
         } else {
@@ -63,7 +72,13 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    public void onPageScrollStateChanged(int i) {
-
+    public void onPageUpdate(List<?> list) {
+        showNotas(getView());
     }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {}
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {}
 }

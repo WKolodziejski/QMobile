@@ -106,7 +106,8 @@
     <string name="diarios_Nota">Nota:</string>
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>
-    <string name="home_welcome_message_dia">Bom day</string>
+    <string name="home_welcome_message_dia">Bom dia</string>
+    <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_welcome_message_tarde">Boa tarde</string>
     <string name="home_welcome_message_noite">Boa noite</string>
     <string name="home_welcome_message">%1$s, %2$s!</string>

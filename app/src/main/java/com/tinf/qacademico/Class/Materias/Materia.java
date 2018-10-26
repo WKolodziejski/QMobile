@@ -1,20 +1,12 @@
 package com.tinf.qacademico.Class.Materias;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import android.util.Log;
-
-import com.tinf.qacademico.Utilities.Utils;
+import com.tinf.qacademico.Class.Calendario.Evento;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
-import io.objectbox.annotation.Unique;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -29,6 +21,7 @@ public class Materia implements Serializable {
     private int year;
     @Backlink(to = "materia") public ToMany<Etapa> etapas;
     @Backlink(to = "materia") public ToMany<Horario> horarios;
+    @Backlink(to = "materia") public ToMany<Evento> eventos;
     public ToOne<Infos> infos;
 
     public Materia() {}

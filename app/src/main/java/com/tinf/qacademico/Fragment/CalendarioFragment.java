@@ -49,8 +49,7 @@ public class CalendarioFragment extends Fragment {
 
     private void setCalendar(View view) {
 
-        mesesList = getBox().boxFor(Mes.class).query().equal(Mes_.year,
-                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+        mesesList = getBox().boxFor(Mes.class).query().build().find();
 
         CompactCalendarView calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
         calendarView.removeAllEvents();
@@ -77,7 +76,7 @@ public class CalendarioFragment extends Fragment {
             month = mesesList.size() - 1;
         }
 
-        adapter = new CalendarioAdapter(mesesList.get(month).days, getActivity());
+        adapter = new CalendarioAdapter(getActivity(), mesesList.get(month).days, false);
 
         calendarView.setCurrentDate(lastDateMesesList.getTime());
 
@@ -153,7 +152,8 @@ public class CalendarioFragment extends Fragment {
                         if (mesesList.get(i).getYear() == calendar.get(Calendar.YEAR)) {
                             for (int j = i; j < mesesList.size(); j++) {
                                 if (mesesList.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
-                                    adapter.update(mesesList.get(j).days);
+                                    adapter = new CalendarioAdapter(getActivity(), mesesList.get(j).days, false);
+                                    recyclerViewCalendario.setAdapter(adapter);
                                     month = j;
 
                                     Calendar today = Calendar.getInstance();

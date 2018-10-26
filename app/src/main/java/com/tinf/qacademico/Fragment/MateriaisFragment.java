@@ -31,23 +31,17 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_materiais, container, false);
-
-        if (((MainActivity)getActivity()).materiaisList != null) {
-            showMateriais(view);
-        }
-
-        return view;
+        return inflater.inflate(R.layout.fragment_materiais, container, false);
     }
 
-    private void showMateriais(View view) {
+    private void showMateriais(View view, List<MateriaisList> materiaisList) {
 
         ((MainActivity) getActivity()).setTitle(webView.data_year[webView.year_position]);
 
         RecyclerView recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
 
-        MateriaisListAdapter adapter = new MateriaisListAdapter(((MainActivity) getActivity()).materiaisList, getActivity());
+        MateriaisListAdapter adapter = new MateriaisListAdapter(materiaisList, getActivity());
 
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
@@ -61,8 +55,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
     @Override
     public void onPageUpdate(List<?> list) {
         if (list.get(0) instanceof MateriaisList) {
-            ((MainActivity) getActivity()).materiaisList = (List<MateriaisList>) list;
-            showMateriais(getView());
+            showMateriais(getView(), (List<MateriaisList>) list);
         }
     }
 }

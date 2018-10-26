@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @BindView(R.id.app_bar_layout)              AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnPageUpdated onPageUpdated;
-    public List<MateriaisList> materiaisList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +74,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
 
         testLogin();
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        refreshLayout.setEnabled(i == 0);
     }
 
     private void testLogin() {
@@ -109,45 +103,44 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            case R.id.action_logout:
+                new AlertDialog.Builder(MainActivity.this)
+                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
+                        .setMessage(R.string.dialog_quit_msg)
+                        .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
+                        .setNegativeButton(R.string.dialog_quit_no, null)
+                        .show();
+                return true;
+            case R.id.action_date:
 
-        if (id == R.id.action_settings) {
-            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-            return true;
-        } else if (id == R.id.action_logout) {
-            new AlertDialog.Builder(MainActivity.this)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit_title, R.color.colorPrimary))
-                    .setMessage(R.string.dialog_quit_msg)
-                    .setPositiveButton(R.string.dialog_quit_yes, (dialog, which) -> logOut())
-                    .setNegativeButton(R.string.dialog_quit_no, null)
-                    .show();
-            return true;
-        } else if (id == R.id.action_date) {
+                View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
-            View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
+                final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
 
-            final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
+                year.setMinValue(0);
+                year.setMaxValue(webView.data_year.length - 1);
+                year.setValue(webView.year_position);
+                year.setDisplayedValues(webView.data_year);
+                year.setWrapSelectorWheel(false);
 
-            year.setMinValue(0);
-            year.setMaxValue(webView.data_year.length - 1);
-            year.setValue(webView.year_position);
-            year.setDisplayedValues(webView.data_year);
-            year.setWrapSelectorWheel(false);
+                new AlertDialog.Builder(MainActivity.this)
+                        .setView(view)
+                        .setCustomTitle(
+                                Utils.customAlertTitle(
+                                        Objects.requireNonNull(getApplicationContext()),
+                                        R.drawable.ic_date_range_black_24dp,
+                                        R.string.dialog_date_change, R.color.colorPrimary))
+                        .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-            new AlertDialog.Builder(MainActivity.this)
-                    .setView(view)
-                    .setCustomTitle(
-                            Utils.customAlertTitle(
-                                    Objects.requireNonNull(getApplicationContext()),
-                                    R.drawable.ic_date_range_black_24dp,
-                                    R.string.dialog_date_change, R.color.colorPrimary))
-                    .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                            webView.changeDate(this, year.getValue());
 
-                        webView.changeDate(this, year.getValue());
-
-                    }).setNegativeButton(R.string.dialog_cancel, null)
-                    .show();
-            return true;
+                        }).setNegativeButton(R.string.dialog_cancel, null)
+                        .show();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -155,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
             dismissProgressbar();
             webView.resumeQueue();
@@ -163,21 +155,22 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
                     changeFragment(new HomeFragment());
                     hideTabLayout();
                     hideExpandBtn();
                     return true;
 
                 case R.id.navigation_notas:
-                    setTitle(webView.data_year[webView.year_position]);
                     changeFragment(new NotasFragment());
                     showExpandBtn();
                     return true;
 
                 case R.id.navigation_materiais:
-                    setTitle(webView.data_year[webView.year_position]);
                     webView.loadUrl(URL + PG_MATERIAIS);
+                    if (webView.year_position > 0) {
+                        webView.scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
+                                + (webView.year_position + 1) + ";document.forms[0].submit();";
+                    }
                     changeFragment(new MateriaisFragment());
                     hideExpandBtn();
                     hideTabLayout();
@@ -190,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public void onPageStart(String url_p) {
         runOnUiThread(() -> {
-            if (!refreshLayout.isRefreshing()) {
+            if (!refreshLayout.isRefreshing() || !url_p.contains("UPLOADS")) {
                 showProgressbar();
             } else {
                 dismissProgressbar();
@@ -287,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     }
 
     private void logOut() {
+        getBox().close();
         SharedPreferences.Editor editor = getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
         editor.putString(LOGIN_REGISTRATION, "");
         editor.putString(LOGIN_PASSWORD, "");
@@ -319,8 +313,9 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
 
     @Override
     protected void onStop() {
-        appBarLayout.removeOnOffsetChangedListener(this);
         super.onStop();
+        appBarLayout.removeOnOffsetChangedListener(this);
+        dismissProgressbar();
     }
 
     @Override
@@ -333,10 +328,16 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     protected void onPause() {
         super.onPause();
         appBarLayout.removeOnOffsetChangedListener(this);
+        dismissProgressbar();
     }
 
     public BoxStore getBox() {
         return ((App) getApplication()).getBoxStore();
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        refreshLayout.setEnabled(i == 0);
     }
 
     @Override

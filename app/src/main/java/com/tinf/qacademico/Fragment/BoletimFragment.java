@@ -4,7 +4,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,26 +22,19 @@ import java.util.List;
 import java.util.Objects;
 import io.objectbox.BoxStore;
 
-public class BoletimFragment extends Fragment implements MainActivity.OnPageUpdated {
-    boolean lock_header = true;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
-    }
+public class BoletimFragment extends Fragment {
+    private boolean lock_header = true;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_boletim, container, false);
 
-        setBoletim(view);
+        showBoletim(view);
 
         return view;
     }
 
-    private void setBoletim(View view) {
+    private void showBoletim(View view) {
 
         SingletonWebView webView = SingletonWebView.getInstance();
 
@@ -138,13 +131,8 @@ public class BoletimFragment extends Fragment implements MainActivity.OnPageUpda
         return ((MainActivity) getActivity()).getBox();
     }
 
-    public void lockHeader() {
+    private void lockHeader() {
         lock_header = !lock_header;
-        setBoletim(getView());
-    }
-
-    @Override
-    public void onPageUpdate(List<?> list) {
-        setBoletim(getView());
+        showBoletim(getView());
     }
 }

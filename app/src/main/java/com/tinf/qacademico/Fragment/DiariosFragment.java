@@ -17,37 +17,28 @@ import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
-import java.util.List;
 import java.util.Objects;
 import io.objectbox.BoxStore;
 
-public class DiariosFragment extends Fragment implements MainActivity.OnPageUpdated {
-    DiariosListAdapter adapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
-    }
+public class DiariosFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diarios, container, false);
 
-        setDiarios(view);
+        showDiarios(view);
 
         return view;
     }
 
-    private void setDiarios(View view) {
+    private void showDiarios(View view) {
 
         RecyclerView recyclerViewDiarios = (RecyclerView) view.findViewById(R.id.recycler_diarios);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
 
         SingletonWebView webView = SingletonWebView.getInstance();
 
-        adapter = new DiariosListAdapter(getActivity(), getBox().boxFor(Materia.class).query().order(Materia_.name)
+        DiariosListAdapter adapter = new DiariosListAdapter(getActivity(), getBox().boxFor(Materia.class).query().order(Materia_.name)
                 .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build().find());
 
         recyclerViewDiarios.setAdapter(adapter);
@@ -77,10 +68,5 @@ public class DiariosFragment extends Fragment implements MainActivity.OnPageUpda
 
     private BoxStore getBox() {
         return ((MainActivity) getActivity()).getBox();
-    }
-
-    @Override
-    public void onPageUpdate(List<?> list) {
-
     }
 }

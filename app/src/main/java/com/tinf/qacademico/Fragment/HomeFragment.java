@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
@@ -13,16 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.CalendarioActivity;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
-import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Mes;
 import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
@@ -31,11 +33,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import io.objectbox.BoxStore;
-import static android.view.View.GONE;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.tinf.qacademico.Utilities.Utils.LAST_LOGIN;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
-    CalendarioAdapter adapter;
-    SingletonWebView webView = SingletonWebView.getInstance();
+    private SingletonWebView webView = SingletonWebView.getInstance();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,60 +53,60 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        ((MainActivity) getActivity()).setTitle(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
+
         showHorario(view);
-        showEvents(view);
+        showCalendar(view);
+
+        if (!Utils.isConnected(getContext())) {
+            showOffline(view);
+        }
 
         return view;
     }
 
-    private void showEvents(View view) {
+    private void showOffline(View view) {
+        CardView offline = (CardView) view.findViewById(R.id.home_offline);
+        TextView text = (TextView) view.findViewById(R.id.offline_last_update);
 
-        List<Mes> mesesList = getBox().boxFor(Mes.class).query().equal(Mes_.year,
-                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+        Date date = new Date(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getLong(LAST_LOGIN, new Date().getTime()));
+
+        offline.setVisibility(View.VISIBLE);
+        text.setText(String.format(getResources().getString(R.string.home_last_login), String.valueOf(date)));
+    }
+
+    private void showCalendar(View view) {
+
+        Calendar today = Calendar.getInstance();
+        today.setTime(new Date());
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+
+        Mes mes = getBox().boxFor(Mes.class).query()
+                .equal(Mes_.year, today.get(Calendar.YEAR))
+                .equal(Mes_.month, today.get(Calendar.MONTH))
+                .build().findUnique();
 
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
 
-        if (mesesList.isEmpty()) {
-            recyclerViewCalendario.setVisibility(GONE);
-            return;
+        if (mes == null) {
+            List<Mes> mesList = getBox().boxFor(Mes.class).query().build().find();
+            mes = mesList.get(mesList.size() - 1);
         }
-
-        int month = 0;
-
-        Calendar lastDateMesesList = Calendar.getInstance();
-        lastDateMesesList.set(Calendar.YEAR, mesesList.get(mesesList.size() - 1).getYear());
-        lastDateMesesList.set(Calendar.MONTH, mesesList.get(mesesList.size() - 1).getMonth());
-        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).days.get(0).getDay());
-
-        if (new Date().getTime() < lastDateMesesList.getTimeInMillis()) {
-            lastDateMesesList.setTimeInMillis(new Date().getTime());
-
-            for (int i = 0; i < mesesList.size(); i++) {
-                if (mesesList.get(i).getMonth() == lastDateMesesList.get(Calendar.MONTH)) {
-                    month = i;
-                    break;
-                }
-            }
-        } else {
-            month = mesesList.size() - 1;
-        }
-
-        List<Dia> dias = mesesList.get(month).days.subList(0, 5);
-
-        adapter = new CalendarioAdapter(dias, getActivity());
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
                 false);
 
-        recyclerViewCalendario.setAdapter(adapter);
+        recyclerViewCalendario.setAdapter(new CalendarioAdapter(getActivity(), mes.days, true));
         recyclerViewCalendario.setLayoutManager(layout);
 
         LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
 
         calendario.setOnClickListener(v -> {
             ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
-                            recyclerViewCalendario, Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
+                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerViewCalendario,
+                            Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
             startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
             ((MainActivity)getActivity()).dismissProgressbar();
         });
@@ -132,6 +137,10 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
     @Override
     public void onPageUpdate(List<?> list) {
+        showHorario(getView());
 
+        if (!Utils.isConnected(getContext())) {
+            showOffline(getView());
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.R;
@@ -22,10 +23,12 @@ import java.util.List;
 public class EventosAdapter extends RecyclerView.Adapter {
     private List<Evento> eventos;
     private Context context;
+    private boolean isSubList;
 
-    public EventosAdapter(List<Evento> eventos, Context context) {
+    public EventosAdapter(Context context, List<Evento> eventos, boolean isSubList) {
         this.eventos = eventos;
         this.context = context;
+        this.isSubList = isSubList;
     }
 
     @NonNull
@@ -44,8 +47,8 @@ public class EventosAdapter extends RecyclerView.Adapter {
         holder.header.setBackgroundColor(eventos.get(i).getColor());
 
         //Ednaldo Pereira
-        if ( eventos.get(i).getColor()  == -14606047){ //não sei qual a cor certa peguei pelo inteiro dela
-            holder.header.setBackgroundResource(R.color.grey_50);
+        if ( eventos.get(i).getColor()  == context.getResources().getColor(R.color.colorPrimary)){ //não sei qual a cor certa peguei pelo inteiro dela
+            holder.header.setBackgroundResource(R.color.transparent);
             holder.title.setTextColor(eventos.get(i).getColor());
             holder.description.setTextColor(eventos.get(i).getColor());
             holder.title.setTypeface(null, Typeface.BOLD);
@@ -62,7 +65,12 @@ public class EventosAdapter extends RecyclerView.Adapter {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(i).getColor()));
+        }
 
+        if (eventos.get(i).materia.getTarget() != null && !isSubList) {
+            holder.header.setOnClickListener(v -> {
+                Toast.makeText(context, eventos.get(i).materia.getTarget().getName(), Toast.LENGTH_SHORT).show();
+            });
         }
     }
 

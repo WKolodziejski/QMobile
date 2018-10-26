@@ -35,7 +35,7 @@ public class SingletonWebView {
     private OnPageStarted onPageStarted;
     private OnErrorRecived onErrorRecived;
     private WebView webView;
-    private boolean isLoading, isPaused, isTimeout;
+    private boolean isLoading, isPaused;
     private List<String> queue = new ArrayList<>();
     public boolean[] pg_diarios_loaded = {false},
                      pg_horario_loaded = {false},
@@ -191,7 +191,6 @@ public class SingletonWebView {
 
         javaScriptWebView.setOnPageFinished((url_p, list) -> {
             isLoading = false;
-            isTimeout = false;
             if (url_p.contains(URL + PG_MATERIAIS)) {
                 isPaused = true;
             }
@@ -199,25 +198,27 @@ public class SingletonWebView {
             onPageFinished.onPageFinish(url_p, list);
         });
 
+        javaScriptWebView.setOnErrorRecivedListener(error -> {
+            Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            onErrorRecived.onErrorRecived(error);
+        });
+
         ClientWebView clientWebView = new ClientWebView(context);
 
         clientWebView.setOnPageFinishedListener(url_p -> {
             isLoading = false;
-            isTimeout = false;
             Log.i("Finish", url_p);
             onPageFinished.onPageFinish(url_p, null);
         });
 
         clientWebView.setOnPageStartedListener(url_p -> {
             isLoading = true;
-            isTimeout = true;
             Log.i("Start", url_p);
             onPageStarted.onPageStart(url_p);
         });
 
         clientWebView.setOnErrorRecivedListener(error -> {
             isLoading = false;
-            isTimeout = false;
             webView.stopLoading();
             Log.i("Error", error);
             onErrorRecived.onErrorRecived(error);
@@ -228,7 +229,7 @@ public class SingletonWebView {
     }
 
     public synchronized static void logOut() {
-        singleton = new SingletonWebView();
+        singleton = null;
     }
 
     public void setBoxStore(BoxStore box) {

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
+import com.tinf.qacademico.Class.Calendario.Evento_;
 import com.tinf.qacademico.Class.Calendario.Mes;
 import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.Class.Materias.Diarios;
@@ -25,6 +26,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import io.objectbox.Box;
@@ -61,6 +63,7 @@ public class JavaScriptWebView {
             Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
             SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
             editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
+            editor.putLong(Utils.LAST_LOGIN, new Date().getTime());
             editor.apply();
 
             webView.pg_home_loaded = true;
@@ -116,38 +119,20 @@ public class JavaScriptWebView {
                 nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2, nomeMateria.indexOf("("));
                 nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2);
 
-                List<Materia> materias = materiaBox.query().equal(Materia_.name, nomeMateria).build().find();
+                Materia materia = materiaBox.query()
+                        .equal(Materia_.name, nomeMateria)
+                        .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
+                        .build().findUnique();
 
-                Materia materia = null;
-
-                if (materias.isEmpty()) {
+                if (materia == null) {
                     materia = new Materia(nomeMateria, pickColor(nomeMateria),
                             Integer.valueOf(webView.data_year[webView.year_position]));
-                } else {
-                    boolean isNewMateria = false;
-
-                    for (int i = 0; i < materias.size(); i++) {
-                        if (materias.get(i).getYear() == Integer.valueOf(webView.data_year[webView.year_position])) {
-                            materia = materias.get(i);
-                            isNewMateria = false;
-                            break;
-                        } else {
-                            isNewMateria = true;
-                        }
-                    }
-
-                    if (isNewMateria) {
-                        materia = new Materia(nomeMateria, pickColor(nomeMateria),
-                                Integer.valueOf(webView.data_year[webView.year_position]));
-                    }
                 }
 
-                String nome_etapa;
+                String nome_etapa = "";
 
                 if (nxtElem != null) {
                     nome_etapa = nxtElem.child(0).child(0).ownText();
-                } else {
-                    nome_etapa = "null";
                 }
 
                 while (nome_etapa.contains("Etapa")) {
@@ -186,7 +171,7 @@ public class JavaScriptWebView {
                     if (nxtElem != null) {
                         nome_etapa = nxtElem.child(0).child(0).text();
                     } else {
-                        nome_etapa = "null";
+                        nome_etapa = "";
                     }
 
                     for (int i = 0; i < etapa.diarios.size(); i++) {
@@ -242,7 +227,6 @@ public class JavaScriptWebView {
                 webView.pg_diarios_loaded = new boolean[options.size() - 1];
                 webView.pg_diarios_loaded[0] = true;
             }
-
         }, (result, error) -> {
             if (error == null) {
                 webView.pg_diarios_loaded[webView.year_position] = true;
@@ -301,16 +285,10 @@ public class JavaScriptWebView {
                     String RPSegundaEtapa = trtd_boletim[i][12].trim();
                     String notaFinalSegundaEtapa = trtd_boletim[i][14].trim();
 
-                    List<Materia> materias = materiaBox.query().equal(Materia_.name, nomeMateria).build().find();
-
-                    Materia materia = null;
-
-                    for (int j = 0; j < materias.size(); j++) {
-                        if (materias.get(j).getYear() == Integer.valueOf(webView.data_year[webView.year_position])) {
-                            materia = materias.get(j);
-                            break;
-                        }
-                    }
+                    Materia materia = materiaBox.query()
+                            .equal(Materia_.name, nomeMateria)
+                            .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
+                            .build().findUnique();
 
                     if (materia != null) {
                         materia.setTotalFaltas(tfaltas);
@@ -334,8 +312,10 @@ public class JavaScriptWebView {
                             materia.etapas.removeById(etapa.id);
                             materia.etapas.add(etapa);
                             etapaBox.put(etapa);
+                            Log.v("Box for etapa", "size of " + etapaBox.count());
                         }
                         materiaBox.put(materia);
+                        Log.v("Box for materia", "size of " + materiaBox.count());
                     }
                 }
             }
@@ -461,18 +441,12 @@ public class JavaScriptWebView {
 
             for (int i = 1; i <= 5; i++) {
                 for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
-                        if (!trtd_horario[j][i].equals("")) {
+                    if (!trtd_horario[j][i].equals("")) {
 
-                            List<Materia> materias = materiaBox.query().equal(Materia_.name, trtd_horario[j][i].trim()).build().find();
-
-                            Materia materia = null;
-
-                            for (int k = 0; k < materias.size(); k++) {
-                                if (materias.get(k).getYear() == Integer.valueOf(webView.data_year[webView.year_position])) {
-                                    materia = materias.get(k);
-                                    break;
-                                }
-                            }
+                        Materia materia = materiaBox.query()
+                                .equal(Materia_.name, trtd_horario[j][i].trim())
+                                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
+                                .build().findUnique();
 
                         Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]);
 
@@ -481,6 +455,8 @@ public class JavaScriptWebView {
                             materia.horarios.add(horario);
                             materiaBox.put(materia);
                             horarioBox.put(horario);
+                            Log.v("Box for horario", "size of " + horarioBox.count());
+                            Log.v("Box for materia", "size of " + materiaBox.count());
                         }
                     }
                 }
@@ -622,63 +598,66 @@ public class JavaScriptWebView {
 
             Log.i("JavaScriptWebView", "Calendario handling...");
 
-            Box<Mes> mesesBox = getBox().boxFor(Mes.class);
+            Box<Mes> mesBox = getBox().boxFor(Mes.class);
             Box<Evento> eventoBox = getBox().boxFor(Evento.class);
             Box<Dia> diaBox = getBox().boxFor(Dia.class);
-
-            Log.i("Calendario", "1");
+            Box<Materia> materiaBox = getBox().boxFor(Materia.class);
 
             Document document = Jsoup.parse(html_p);
-
-            Log.i("Calendario", "2");
 
             Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
             //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
-            Log.i("Calendario", "3");
             //webView.data_calendario = trimb(document.getElementsByClass("dado_cabecalho").get(1).text());
 
-            List<Mes> listMeses = mesesBox.query().equal(Mes_.year,
-                    Integer.valueOf(webView.data_year[webView.year_position])).build().find();
-
-            Log.i("Calendario", "4");
+            List<Integer> mesesList = new ArrayList<>();
 
             boolean changeYear = false;
 
-            Log.i("Calendario", "4");
-
             for (int i = 0; i < 12; i++) {
+
                 String nomeMes = meses.get(i).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
 
                 int numMes = -1;
 
-                if (nomeMes.equals("JANEIRO")) {
-                    numMes = Calendar.JANUARY;
-                } else if (nomeMes.equals("FEVEREIRO")) {
-                    numMes = Calendar.FEBRUARY;
-                } else if (nomeMes.equals("MARÇO")) {
-                    numMes = Calendar.MARCH;
-                } else if (nomeMes.equals("ABRIL")) {
-                    numMes = Calendar.APRIL;
-                } else if (nomeMes.equals("MAIO")) {
-                    numMes = Calendar.MAY;
-                } else if (nomeMes.equals("JUNHO")) {
-                    numMes = Calendar.JUNE;
-                } else if (nomeMes.equals("JULHO")) {
-                    numMes = Calendar.JULY;
-                } else if (nomeMes.equals("AGOSTO")) {
-                    numMes = Calendar.AUGUST;
-                } else if (nomeMes.equals("SETEMBRO")) {
-                    numMes = Calendar.SEPTEMBER;
-                } else if (nomeMes.equals("OUTUBRO")) {
-                    numMes = Calendar.OCTOBER;
-                } else if (nomeMes.equals("NOVEMBRO")) {
-                    numMes = Calendar.NOVEMBER;
-                } else if (nomeMes.equals("DEZEMBRO")) {
-                    numMes = Calendar.DECEMBER;
+                switch (nomeMes) {
+                    case "JANEIRO":
+                        numMes = Calendar.JANUARY;
+                        break;
+                    case "FEVEREIRO":
+                        numMes = Calendar.FEBRUARY;
+                        break;
+                    case "MARÇO":
+                        numMes = Calendar.MARCH;
+                        break;
+                    case "ABRIL":
+                        numMes = Calendar.APRIL;
+                        break;
+                    case "MAIO":
+                        numMes = Calendar.MAY;
+                        break;
+                    case "JUNHO":
+                        numMes = Calendar.JUNE;
+                        break;
+                    case "JULHO":
+                        numMes = Calendar.JULY;
+                        break;
+                    case "AGOSTO":
+                        numMes = Calendar.AUGUST;
+                        break;
+                    case "SETEMBRO":
+                        numMes = Calendar.SEPTEMBER;
+                        break;
+                    case "OUTUBRO":
+                        numMes = Calendar.OCTOBER;
+                        break;
+                    case "NOVEMBRO":
+                        numMes = Calendar.NOVEMBER;
+                        break;
+                    case "DEZEMBRO":
+                        numMes = Calendar.DECEMBER;
+                        break;
                 }
-
-                Log.i("Calendario", "5");
 
                 //List<Dia> diaList = new ArrayList<>();
 
@@ -687,14 +666,10 @@ public class JavaScriptWebView {
 
                 String date = document.getElementsByTag("font").get(2).text();
 
-                Log.i("Calendario", "6");
-
                 int year = Integer.parseInt(date.substring(date.lastIndexOf("/") + 1));
 
-                Log.i("Calendario", "7");
-
-                if (listMeses.size() > 1) {
-                    if (numMes < listMeses.get(listMeses.size() - 2).getMonth()) {
+                if (!mesesList.isEmpty()) {
+                    if (numMes < mesesList.get(mesesList.size() - 1)) {
                         changeYear = true;
                     }
                 }
@@ -703,15 +678,9 @@ public class JavaScriptWebView {
                     year++;
                 }
 
-                Log.i("Calendario", "8");
-
                 Mes mes = new Mes(numMes, year);
 
-                Log.i("Calendario", "9");
-
                 Elements arrayEventos = new Elements();
-
-                Log.i("Calendario", "10");
 
                 if ( meses.get(i).nextElementSibling().childNodeSize() > 0) {
                     arrayEventos = meses.get(i).nextElementSibling().child(0).getElementsByTag("tr");
@@ -720,8 +689,6 @@ public class JavaScriptWebView {
                 //Elements arrayEventos = meses.get(i).nextElementSibling().child(0).getElementsByTag("tr");
                 Elements dias = meses.get(i).getElementsByTag("td");
 
-                Log.i("Calendario", "11");
-
                 //no mes (cores)
                 for (int j = 7; j < dias.size(); j++) {
 
@@ -729,88 +696,75 @@ public class JavaScriptWebView {
 
                     String numeroDia = dias.get(j).text();
 
-                    Log.i("Calendario", "12");
-
                     if (!numeroDia.equals("")) {
 
                         Dia dia = new Dia(Integer.parseInt(numeroDia));
-
-                        Log.i("Calendario", "13");
 
                         String corQA = dias.get(j).attr("bgcolor"); // cor original
 
                         if (!corQA.equals("")) {
 
-                            Log.i("Calendario", "14");
-
                             for (int k = 0; k < arrayEventos.size(); k++) {
-
-                                Log.i("Calendario", "15");
 
                                 String diaEvento = arrayEventos.get(k).child(0).text();
 
                                 //Eventos normais
                                 if (diaEvento.equals(numeroDia)) {
 
-                                    Log.i("Calendario", "15");
-
                                     String infos = arrayEventos.get(k).child(1).text();
                                     String description = infos.substring(infos.lastIndexOf(") ") + 1).trim();
                                     String title = infos.substring(0, infos.indexOf(" (") + 1).trim();
                                     //title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
-
-                                    Log.i("Calendario", "16");
 
                                     if (title.equals("")){
                                         title = description;
                                         description = "";
                                     }
 
-                                    Log.i("Calendario", "17");
-
-                                    Log.i("Calendario", "18");
-
                                     int cor = corQA.equals("#F0F0F0") ? pickColor(title) : context.getResources().getColor(R.color.colorPrimary);//pickColor(corQA);
 
-                                    Log.i("Calendario", "19");
+                                    Evento evento = new Evento(title, description, cor, false);
 
-                                    Evento evento = new Evento(title, description, cor);
+                                    Materia materia = materiaBox.query()
+                                            .equal(Materia_.name, title)
+                                            .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
+                                            .build().findUnique();
 
                                     Log.i("Eve", infos + " " + description + " " + numeroDia + "/" + (numMes + 1) + "/" + year);
 
                                     evento.day.setTarget(dia);
                                     dia.eventos.add(evento);
+
+                                    if (materia != null) {
+                                        evento.materia.setTarget(materia);
+                                        materia.eventos.add(evento);
+                                        materiaBox.put(materia);
+                                        Log.v("Box for materia", "size of " + materiaBox.count());
+                                    }
                                     eventoBox.put(evento);
-                                    Log.i("Calendario", "20");
                                 }
 
                                 //Eventos com mais de um day.
                                 if (diaEvento.contains(" ~ ")){
-
-                                    Log.i("Calendario", "21");
                                     String data_inicio = diaEvento.substring(0,diaEvento.indexOf(" ~"));
                                     String data_fim =  diaEvento.substring(diaEvento.indexOf("~ ")+2);
                                     diaEvento = data_inicio.substring(0,data_inicio.indexOf("/"));
 
-                                    Log.i("Calendario", "22");
-
                                     if (diaEvento.equals(numeroDia)) {
-                                        Log.i("Calendario", "23");
                                         String infos = arrayEventos.get(k).child(1).text();
                                         String description =  data_inicio + " - " + data_fim;
-
-                                        Log.i("Calendario", "24");
 
                                         //String title =  infos.substring(infos.lastIndexOf(")") + 1).trim();
                                         //title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
                                         Evento evento = new Evento(infos, description,
-                                                context.getResources().getColor(R.color.colorPrimary), data_inicio, data_fim);
+                                                context.getResources().getColor(R.color.colorPrimary), data_inicio, data_fim, false);
                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
-                                        Log.i("Calendario", "26");
+
                                         evento.day.setTarget(dia);
                                         dia.eventos.add(evento);
                                         eventoBox.put(evento);
+                                        Log.v("Box for eventos", "size of " + eventoBox.count());
 
                                         Log.i("Eve", infos + " " + description + " " + numeroDia + "/" + (numMes + 1) + "/" + year + " " + data_inicio + "~" + data_fim);
                                     }
@@ -820,11 +774,12 @@ public class JavaScriptWebView {
                         dia.mes.setTarget(mes);
                         diaBox.put(dia);
                         mes.days.add(dia);
-                        Log.i("Calendario", "27");
+                        Log.v("Box for dias", "size of " + diaBox.count());
                     }
                 }
-                mesesBox.put(mes);
-                Log.i("Calendario", "28");
+                mesBox.put(mes);
+                mesesList.add(mes.getMonth());
+                Log.v("Box for meses", "size of " + mesBox.count());
             }
         }, (result, error) -> {
             if (error == null) {
@@ -864,7 +819,7 @@ public class JavaScriptWebView {
             color = context.getResources().getColor(R.color.geografia);
         } else if (string.contains("História")) {
             color = context.getResources().getColor(R.color.historia);
-        } else if (string.contains("Português") || string.contains("Portuguesa")) {
+        } else if (string.contains("Portugu")) {
             color = context.getResources().getColor(R.color.portugues);
         } else if (string.contains("Matemática")) {
             color = context.getResources().getColor(R.color.matematica);

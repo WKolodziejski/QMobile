@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,6 +12,58 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         >
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            android:layout_margin="8dp"
+            android:id="@+id/home_offline"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:padding="16dp"
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:srcCompat="@drawable/ic_offline_pin_black_24dp"
+                    android:tint="@color/colorAccent"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Offline"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/main_font_size" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorAccent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="@dimen/main_font_size"
+                    android:id="@+id/offline_last_update"
+                    tools:text="Last update on 22/03/2017" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -53,6 +104,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Horario"
+                        android:layout_gravity="center_vertical"
                         android:layout_marginRight="8dp"
                         android:layout_marginLeft="8dp"
                         android:textSize="@dimen/main_font_size" />
@@ -140,6 +192,7 @@
                         android:text="Calendário"
                         android:layout_marginRight="8dp"
                         android:layout_marginLeft="8dp"
+                        android:layout_gravity="center_vertical"
                         android:textSize="@dimen/main_font_size" />
 
                     <ImageView
@@ -162,6 +215,58 @@
                     android:layout_height="match_parent"
                     android:transitionName="Calendario"
                     android:id="@+id/recycler_home"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            android:layout_margin="8dp"
+            android:id="@+id/home_website"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="bottom"
+                android:padding="16dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                >
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:srcCompat="@drawable/ic_open_in_new_black_24dp"
+                    android:tint="@color/colorAccent"
+                    android:layout_gravity="center_vertical"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Website"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="@dimen/main_font_size" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorAccent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:textSize="@dimen/main_font_size"
+                    android:text="Always check your grades on the QAcadêmico's page." />
 
             </LinearLayout>
 

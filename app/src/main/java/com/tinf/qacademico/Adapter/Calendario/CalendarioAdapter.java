@@ -15,29 +15,31 @@ import java.util.List;
 public class CalendarioAdapter extends RecyclerView.Adapter {
     private List<Dia> calendarioList;
     private Context context;
+    private boolean isSubList;
 
-    public CalendarioAdapter(List<Dia> calendarioList, Context context) {
+    public CalendarioAdapter(Context context, List<Dia> calendarioList, boolean isSubList) {
         this.calendarioList = clearList(calendarioList);
         this.context = context;
+        this.isSubList = isSubList;
     }
 
-    public void update(List<Dia> calendarioList) {
+    /*public void update(List<Dia> calendarioList) {
         if (calendarioList != null) {
             this.calendarioList = clearList(calendarioList);
         } else {
             this.calendarioList = new ArrayList<>();
         }
         notifyDataSetChanged();
-    }
+    }*/
 
     private List<Dia> clearList(List<Dia> list) {
-        List<Dia> clear = new ArrayList<>();
+        List<Dia> clean = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             if (!list.get(i).eventos.isEmpty()) {
-                clear.add(list.get(i));
+                clean.add(list.get(i));
             }
         }
-        return clear;
+        return isSubList ? clean.subList(0, 5) : clean;
     }
 
     public List<Dia> getCalendarioList() {
@@ -56,7 +58,7 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
         final CalendarioViewHolder holder = (CalendarioViewHolder) viewHolder;
 
         holder.dia.setText(String.valueOf(calendarioList.get(position).getDay()));
-        holder.eventos.setAdapter(new EventosAdapter(calendarioList.get(position).eventos, context));
+        holder.eventos.setAdapter(new EventosAdapter(context, calendarioList.get(position).eventos, isSubList));
         holder.eventos.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         holder.layout.setTag(position);
     }
