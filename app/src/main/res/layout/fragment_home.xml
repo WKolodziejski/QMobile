@@ -225,7 +225,6 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="8dp"
             android:layout_margin="8dp"
-            android:id="@+id/home_website"
             >
 
             <LinearLayout
@@ -237,6 +236,7 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
+                android:id="@+id/home_website"
                 >
 
                 <ImageView

@@ -1,6 +1,7 @@
 package com.tinf.qacademico.Fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,9 +29,12 @@ import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import io.objectbox.BoxStore;
 
@@ -38,6 +42,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LAST_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
+import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
+import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
     private SingletonWebView webView = SingletonWebView.getInstance();
@@ -65,6 +71,13 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         if (!Utils.isConnected(getContext())) {
             showOffline(view);
         }
+
+        LinearLayout website = (LinearLayout) view.findViewById(R.id.home_website);
+        website.setOnClickListener(v -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(URL + PG_LOGIN));
+            startActivity(browserIntent);
+        });
     }
 
     private void showOffline(View view) {
@@ -77,7 +90,9 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
             Date date = new Date(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getLong(LAST_LOGIN, new Date().getTime()));
 
-            text.setText(String.format(getResources().getString(R.string.home_last_login), String.valueOf(date)));
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/YYYY HH:mm", Locale.getDefault());
+
+            text.setText(String.format(getResources().getString(R.string.home_last_login), format.format(date)));
         } else {
             offline.setVisibility(View.GONE);
         }

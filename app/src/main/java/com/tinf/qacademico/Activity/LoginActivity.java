@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
-    int num = 1;
+    int num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,11 +120,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
 
                     webView.loadUrl(URL + PG_DIARIOS);
 
+                    num++;
+
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
                             Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
-
-                    num++;
 
                     return;
                 }
@@ -137,11 +137,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             webView.loadUrl(URL + PG_BOLETIM);
             Log.i("LoginActivity", "BOLETIM[0]");
 
+            num++;
+
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
                     Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
-
-            num++;
 
             return;
         } else {
@@ -153,11 +153,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                     webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
                             + webView.data_year[i] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
 
+                    num++;
+
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
                             Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
-
-                    num++;
 
                     return;
                 }
@@ -170,11 +170,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             webView.loadUrl(URL + PG_HORARIO);
             Log.i("LoginActivity", "HORARIO[0]");
 
+            num++;
+
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
                     Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
-
-            num++;
 
             return;
         } else {
@@ -186,11 +186,11 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
                     webView.loadUrl(URL + PG_HORARIO + "&COD_MATRICULA=-1&cmbanos=" +
                             webView.data_year[i] + "&cmbperiodos=1&Exibir=OK");
 
+                    num++;
+
                     loginFragment.textView_loading.setText(String.format(
                             getResources().getString(R.string.text_loading_first_login),
                             Integer.toString(num), Integer.toString(webView.data_year.length  * 3 + 1)));
-
-                    num++;
 
                     return;
                 }
@@ -203,16 +203,14 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             webView.loadUrl(URL + PG_CALENDARIO);
             Log.i("LoginActivity", "CALENDÁRIO");
 
+            num++;
+
             loginFragment.textView_loading.setText(String.format(
                     getResources().getString(R.string.text_loading_first_login),
                     Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
 
-            num++;
-
             return;
         }
-
-        num = 0;
 
         webView.isLoginPage = false;
 
@@ -228,6 +226,8 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             loginFragment.textView_loading.setVisibility(View.INVISIBLE);
             loginFragment.dismissProgressBar();
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+            num = 0;
+            webView.year_position = 0;
         });
     }
 
