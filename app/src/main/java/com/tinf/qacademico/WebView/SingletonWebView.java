@@ -126,8 +126,9 @@ public class SingletonWebView {
         }
     }
 
-    public void downloadMaterial(Context context, String link){
+    public void downloadMaterial(String link){
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            isLoading = false;
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
             context.startActivity(i);
@@ -135,7 +136,7 @@ public class SingletonWebView {
         webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
-    public void changeDate(Context context, int value, int id) {
+    public void changeDate(int value, int id) {
         if (!isLoading) {
             year_position = value;
 
@@ -153,7 +154,7 @@ public class SingletonWebView {
         }
     }
 
-    private String[] loadYears(Context context) {
+    private String[] loadYears() {
         List<String> years = new ArrayList<>();
         String jsonArrayString = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(YEARS, "");
         if (!TextUtils.isEmpty(jsonArrayString)) {
@@ -173,9 +174,9 @@ public class SingletonWebView {
 
     @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
     public void configWebView(Context context) {
-
-        data_year = loadYears(context);
         this.context = context;
+
+        data_year = loadYears();
 
         //queue.add(URL + PG_CALENDARIO);
         //queue.add(URL + PG_HORARIO);

@@ -47,7 +47,7 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
 
         adapter.setOnDowloadListener(link -> {
             Log.i("Materiais", link);
-            SingletonWebView.getInstance().downloadMaterial(getContext(), link);
+            SingletonWebView.getInstance().downloadMaterial(link);
         });
     }
 

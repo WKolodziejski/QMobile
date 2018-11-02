@@ -74,7 +74,6 @@
                 android:singleLine="true"
                 android:hint="@string/text_user"
                 android:id="@+id/user_input_login"
-                android:text="20141INF_i0058"
                 android:inputType="text"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -94,7 +93,6 @@
                 android:singleLine="true"
                 android:hint="@string/text_password"
                 android:id="@+id/password_input_login"
-                android:text="123456"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>

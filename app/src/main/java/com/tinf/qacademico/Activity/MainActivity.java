@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                            webView.changeDate(this, year.getValue(), bottomNav.getSelectedItemId());
+                            webView.changeDate(year.getValue(), bottomNav.getSelectedItemId());
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .show();
