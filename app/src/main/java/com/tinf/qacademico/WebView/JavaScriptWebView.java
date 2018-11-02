@@ -182,17 +182,21 @@ public class JavaScriptWebView {
 
                     for (int i = 0; i < notasLinhas.size(); i++) {
                         String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
+                        String titulo = notasLinhas.eq(i).first().child(1).text();
                         String tipo = context.getResources().getString(R.string.sigla_Avaliacao);
                         int tint = context.getResources().getColor(R.color.diarios_avaliacao);
-                        if (notasLinhas.eq(i).first().child(1).text().contains("Prova")) {
+                        if (titulo.contains("Prova")) {
                             tint = context.getResources().getColor(R.color.diarios_prova);
                             tipo = context.getResources().getString(R.string.sigla_Prova);
-                        } else if (notasLinhas.eq(i).first().child(1).text().contains("Diarios")) {
+                        } else if (titulo.contains("Diarios") || titulo.contains("Trabalho")) {
                             tint = context.getResources().getColor(R.color.diarios_trabalho);
                             tipo = context.getResources().getString(R.string.sigla_Trabalho);
-                        } else if (notasLinhas.eq(i).first().child(1).text().contains("Qualitativa")) {
+                        } else if (titulo.contains("Qualitativa")) {
                             tint = context.getResources().getColor(R.color.diarios_qualitativa);
                             tipo = context.getResources().getString(R.string.sigla_Qualitativa);
+                        } else if (titulo.contains("Exercício")) {
+                            tint = context.getResources().getColor(R.color.diarios_exercicio);
+                            tipo = context.getResources().getString(R.string.sigla_Exercicio);
                         }
 
                         String caps = trimp(trim1(notasLinhas.eq(i).first().child(1).text()));

@@ -121,6 +121,7 @@
     <string name="sigla_Prova">P</string>
     <string name="sigla_Trabalho">T</string>
     <string name="sigla_Qualitativa">Q</string>
+    <string name="sigla_Exercicio">E</string>
 
     <string name="default_notification_channel_id">QAcadêmico</string>
 

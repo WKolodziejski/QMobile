@@ -24,6 +24,7 @@
     <color name="diarios_trabalho">@color/amber_A400</color>
     <color name="diarios_qualitativa">@color/yellow_A400</color>
     <color name="diarios_avaliacao">@color/orange_A700</color>
+    <color name="diarios_exercicio">@color/amber_A700</color>
 
     <color name="materiais_file">@color/colorPrimary</color>
     <color name="materiais_pdf">@color/red_500</color>
