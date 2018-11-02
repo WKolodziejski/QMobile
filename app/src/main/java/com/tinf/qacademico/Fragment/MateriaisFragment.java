@@ -45,6 +45,19 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
 
+        recyclerViewMateriais.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
         adapter.setOnDowloadListener(link -> {
             Log.i("Materiais", link);
             SingletonWebView.getInstance().downloadMaterial(link);

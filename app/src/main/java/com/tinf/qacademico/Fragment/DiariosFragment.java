@@ -46,6 +46,19 @@ public class DiariosFragment extends Fragment {
         recyclerViewDiarios.setAdapter(adapter);
         recyclerViewDiarios.setLayoutManager(layout);
 
+        recyclerViewDiarios.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
                 LinearLayoutManager.VERTICAL);
         recyclerViewDiarios.addItemDecoration(dividerItemDecoration);

@@ -43,8 +43,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'androidx.annotation:annotation:1.0.0'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'com.jakewharton:butterknife:9.0.0-SNAPSHOT'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-SNAPSHOT'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
@@ -54,4 +54,5 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.5'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'com.google.android:flexbox:1.1.0'
+    implementation 'com.github.castorflex.smoothprogressbar:library:1.1.0'
 }

@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.BoxStore;
 
 public class BoletimFragment extends Fragment {
@@ -115,6 +117,19 @@ public class BoletimFragment extends Fragment {
                 .show();
         mLockTableView.getTableScrollView().setPullRefreshEnabled(false);
         mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
+
+        mLockTableView.getTableScrollView().addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         Button lock_header_btn = (Button) view.findViewById(R.id.lock_header);
         lock_header_btn.setOnClickListener(v -> {

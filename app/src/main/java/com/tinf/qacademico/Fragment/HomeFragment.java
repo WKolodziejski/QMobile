@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,7 +30,6 @@ import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import io.objectbox.BoxStore;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LAST_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
@@ -65,12 +64,12 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         ((MainActivity) getActivity()).setTitle(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
 
-        showHorario(view);
-        showCalendar(view);
+        NestedScrollView scrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
-        if (!Utils.isConnected(getContext())) {
-            showOffline(view);
-        }
+        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
+        });
 
         LinearLayout website = (LinearLayout) view.findViewById(R.id.home_website);
         website.setOnClickListener(v -> {
@@ -78,6 +77,13 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
                     Uri.parse(URL + PG_LOGIN));
             startActivity(browserIntent);
         });
+
+        showHorario(view);
+        showCalendar(view);
+
+        if (!Utils.isConnected(getContext())) {
+            showOffline(view);
+        }
     }
 
     private void showOffline(View view) {
