@@ -27,6 +27,7 @@ import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tinf.qacademico.Activity.Settings.AboutActivity;
 import com.tinf.qacademico.Activity.Settings.SettingsActivity;
 import com.tinf.qacademico.App;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
@@ -104,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+            case R.id.action_about:
+                startActivity(new Intent(getApplicationContext(), AboutActivity.class));
                 return true;
             case R.id.action_logout:
                 new AlertDialog.Builder(MainActivity.this)
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                            webView.changeDate(this, year.getValue());
+                            webView.changeDate(this, year.getValue(), bottomNav.getSelectedItemId());
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .show();
@@ -197,9 +198,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
             webView.loadNextUrl();
             refreshLayout.setRefreshing(false);
             dismissProgressbar();
-            if (list != null && list.size() > 0) {
-                onPageUpdated.onPageUpdate(list);
-            }
+            onPageUpdated.onPageUpdate(list);
         });
     }
 

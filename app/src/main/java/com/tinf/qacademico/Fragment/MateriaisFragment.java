@@ -24,7 +24,6 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
 
@@ -54,8 +53,10 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
 
     @Override
     public void onPageUpdate(List<?> list) {
-        if (list.get(0) instanceof MateriaisList) {
-            showMateriais(getView(), (List<MateriaisList>) list);
+        if (list != null && list.size() > 0) {
+            if (list.get(0) instanceof MateriaisList) {
+                showMateriais(getView(), (List<MateriaisList>) list);
+            }
         }
     }
 }

@@ -2,13 +2,13 @@ package com.tinf.qacademico.Fragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.HorarioActivity;
-import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.WebView.SingletonWebView;
@@ -20,14 +20,16 @@ public class HorarioFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_horario, container, false);
-
-        setHorario(view);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_horario, container, false);
     }
 
-    private void setHorario(View view) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        showHorario(view);
+    }
+
+    private void showHorario(View view) {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 

@@ -45,13 +45,17 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         ((MainActivity) getActivity()).setTitle(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
 
@@ -61,18 +65,22 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
         if (!Utils.isConnected(getContext())) {
             showOffline(view);
         }
-
-        return view;
     }
 
     private void showOffline(View view) {
         CardView offline = (CardView) view.findViewById(R.id.home_offline);
-        TextView text = (TextView) view.findViewById(R.id.offline_last_update);
 
-        Date date = new Date(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getLong(LAST_LOGIN, new Date().getTime()));
+        if (!Utils.isConnected(getContext())) {
+            offline.setVisibility(View.VISIBLE);
 
-        offline.setVisibility(View.VISIBLE);
-        text.setText(String.format(getResources().getString(R.string.home_last_login), String.valueOf(date)));
+            TextView text = (TextView) view.findViewById(R.id.offline_last_update);
+
+            Date date = new Date(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getLong(LAST_LOGIN, new Date().getTime()));
+
+            text.setText(String.format(getResources().getString(R.string.home_last_login), String.valueOf(date)));
+        } else {
+            offline.setVisibility(View.GONE);
+        }
     }
 
     private void showCalendar(View view) {
@@ -138,9 +146,6 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     @Override
     public void onPageUpdate(List<?> list) {
         showHorario(getView());
-
-        if (!Utils.isConnected(getContext())) {
-            showOffline(getView());
-        }
+        showOffline(getView());
     }
 }

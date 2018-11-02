@@ -135,14 +135,18 @@ public class SingletonWebView {
         webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
 
-    public void changeDate(Context context, int value) {
+    public void changeDate(Context context, int value, int id) {
         if (!isLoading) {
             year_position = value;
 
             scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
                     + (year_position + 1) + ";document.forms[0].submit();";
 
-            webView.loadUrl(URL + PG_MATERIAIS);
+            if (id == R.id.navigation_materiais) {
+                webView.loadUrl(URL + PG_MATERIAIS);
+            } else {
+                onPageFinished.onPageFinish("", null);
+            }
 
         } else {
             Toast.makeText(context, "Espere terminar de carregar", Toast.LENGTH_SHORT).show();

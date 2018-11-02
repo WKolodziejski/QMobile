@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
-    int num = 0;
+    int num = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,11 +106,7 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
             webView.loadUrl(URL + PG_DIARIOS);
             Log.i("LoginActivity", "DIARIOS[0]");
 
-            loginFragment.textView_loading.setText(String.format(
-                    getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(num), "?"));
-
-            num++;
+            loginFragment.textView_loading.setText(getResources().getString(R.string.login_logging));
 
             return;
         } else {

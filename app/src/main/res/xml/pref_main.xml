@@ -44,10 +44,10 @@
 
     <PreferenceCategory android:title="@string/title_activity_about">
 
-        <Preference
+        <!--<Preference
             android:key="key_send_feedback"
             android:summary="@string/home_bugreport_description"
-            android:title="@string/menu_bug" />
+            android:title="@string/menu_bug" />!-->
 
         <Preference
             android:key="key_about"

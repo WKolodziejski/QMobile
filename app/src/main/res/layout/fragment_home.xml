@@ -40,7 +40,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Offline"
+                    android:text="@string/text_offline"
                     android:layout_marginRight="8dp"
                     android:layout_marginLeft="8dp"
                     android:textStyle="bold"
@@ -103,7 +103,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Horario"
+                        android:text="@string/title_horario"
                         android:layout_gravity="center_vertical"
                         android:layout_marginRight="8dp"
                         android:layout_marginLeft="8dp"
@@ -266,7 +266,7 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginLeft="8dp"
                     android:textSize="@dimen/main_font_size"
-                    android:text="Always check your grades on the QAcadêmico's page." />
+                    android:text="@string/home_footer" />
 
             </LinearLayout>
 

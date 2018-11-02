@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,13 +33,17 @@ import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class LoginFragment extends Fragment {
     public SharedPreferences login_info;
-    ProgressBar progressBar_login;
+    private ProgressBar progressBar_login;
     public TextView textView_loading;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        return inflater.inflate(R.layout.fragment_login, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
 
         EditText user_et = (TextInputEditText) view.findViewById(R.id.user_input_login);
@@ -65,7 +71,6 @@ public class LoginFragment extends Fragment {
             ((LoginActivity) getActivity()).dismissSnackbar();
             ((LoginActivity) getActivity()).webView.loadUrl(URL + PG_LOGIN);
         });
-        return view;
     }
 
     public void dismissProgressBar(){

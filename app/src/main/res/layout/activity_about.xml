@@ -54,7 +54,7 @@
             android:background="@null"
             android:text="@string/app_more"
             android:textColor="@color/colorPrimary"
-            android:onClick="More"/>
+            android:onClick="more"/>
 
     </LinearLayout>
 

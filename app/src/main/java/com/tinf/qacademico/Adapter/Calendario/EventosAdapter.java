@@ -67,11 +67,11 @@ public class EventosAdapter extends RecyclerView.Adapter {
             holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(i).getColor()));
         }
 
-        if (eventos.get(i).materia.getTarget() != null && !isSubList) {
+        /*if (eventos.get(i).materia.getTarget() != null && !isSubList) {
             holder.header.setOnClickListener(v -> {
                 Toast.makeText(context, eventos.get(i).materia.getTarget().getName(), Toast.LENGTH_SHORT).show();
             });
-        }
+        }*/
     }
 
     @Override

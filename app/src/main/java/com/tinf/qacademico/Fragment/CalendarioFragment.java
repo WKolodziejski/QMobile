@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,19 +33,20 @@ import java.util.Objects;
 
 public class CalendarioFragment extends Fragment {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
-    SingletonWebView webView = SingletonWebView.getInstance();
-    CalendarioAdapter adapter;
-    List<Mes> mesesList;
-    int month = 0;
+    private CalendarioAdapter adapter;
+    private List<Mes> mesesList;
+    private int month = 0;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_calendario, container, false);
+        return inflater.inflate(R.layout.fragment_calendario, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         setCalendar(view);
-
-        return view;
     }
 
     private void setCalendar(View view) {
@@ -158,14 +160,21 @@ public class CalendarioFragment extends Fragment {
 
                                     Calendar today = Calendar.getInstance();
                                     today.setTime(new Date());
-                                    today.set(Calendar.HOUR_OF_DAY, 0);
-                                    today.set(Calendar.MINUTE, 0);
-                                    today.set(Calendar.SECOND, 0);
 
                                     for (int k = 0; k < mesesList.get(j).days.size(); k++) {
-                                        if (calendar.getTimeInMillis() < today.getTimeInMillis()) {
+                                        if (calendar.getTimeInMillis() <= today.getTimeInMillis()) {
                                             for (int l = 0; l < mesesList.get(j).days.get(k).eventos.size(); l++) {
-                                                mesesList.get(j).days.get(k).eventos.get(l).setHappened(true);
+                                                if (mesesList.get(j).days.get(k).eventos.get(l).day.getTarget().getDay() <= today.get(Calendar.DAY_OF_MONTH)) {
+
+                                                    mesesList.get(j).days.get(k).eventos.get(l).setHappened(true);
+
+                                                    Box<Evento> eventoBox = getBox().boxFor(Evento.class);
+
+                                                    Evento evento = eventoBox.get(mesesList.get(j).days.get(k).eventos.get(l).id);
+                                                    evento.setHappened(true);
+
+                                                    eventoBox.put(evento);
+                                                }
                                             }
                                         }
                                     }

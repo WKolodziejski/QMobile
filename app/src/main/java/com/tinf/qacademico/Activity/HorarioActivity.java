@@ -27,7 +27,7 @@ public class HorarioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_horario);
 
         setSupportActionBar(findViewById(R.id.toolbar));
-        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario + " . " + SingletonWebView.getInstance().year_position);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportFragmentManager()

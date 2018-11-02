@@ -11,12 +11,13 @@ import android.widget.TextView;
 import com.tinf.qacademico.R;
 
 public class AboutActivity extends AppCompatActivity {
-    String version;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+
+        String version = "";
 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -26,12 +27,11 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         TextView version_txt = (TextView) findViewById(R.id.about_version);
-        version_txt.append(" " + version);
+        version_txt.append(version);
     }
 
-    public void More(View v){
-        Intent more = new Intent(getApplicationContext(), MoreActivity.class);
-        startActivity(more);
+    public void more(View v){
+        startActivity(new Intent(getApplicationContext(), MoreActivity.class));
     }
 
     @Override
@@ -39,5 +39,4 @@ public class AboutActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
 }

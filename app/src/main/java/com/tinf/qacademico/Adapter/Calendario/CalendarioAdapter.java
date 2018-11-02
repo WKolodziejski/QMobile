@@ -10,6 +10,8 @@ import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.ViewHolder.CalendarioViewHolder;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class CalendarioAdapter extends RecyclerView.Adapter {
@@ -18,19 +20,10 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
     private boolean isSubList;
 
     public CalendarioAdapter(Context context, List<Dia> calendarioList, boolean isSubList) {
-        this.calendarioList = clearList(calendarioList);
         this.context = context;
         this.isSubList = isSubList;
+        this.calendarioList = clearList(calendarioList);
     }
-
-    /*public void update(List<Dia> calendarioList) {
-        if (calendarioList != null) {
-            this.calendarioList = clearList(calendarioList);
-        } else {
-            this.calendarioList = new ArrayList<>();
-        }
-        notifyDataSetChanged();
-    }*/
 
     private List<Dia> clearList(List<Dia> list) {
         List<Dia> clean = new ArrayList<>();
@@ -39,7 +32,26 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
                 clean.add(list.get(i));
             }
         }
-        return isSubList ? clean.subList(0, 5) : clean;
+
+        if (isSubList) {
+
+            Calendar today = Calendar.getInstance();
+            today.setTime(new Date());
+
+            int start = 0;
+
+            for (int i = 0; i < clean.size(); i++) {
+                if (clean.get(i).getDay() >= today.get(Calendar.DAY_OF_MONTH)) {
+                    start = i;
+                    break;
+                }
+            }
+
+            return clean.subList(start, clean.size() < 5 ? clean.size() : 5);
+
+        } else {
+            return clean;
+        }
     }
 
     public List<Dia> getCalendarioList() {

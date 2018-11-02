@@ -603,6 +603,10 @@ public class JavaScriptWebView {
             Box<Dia> diaBox = getBox().boxFor(Dia.class);
             Box<Materia> materiaBox = getBox().boxFor(Materia.class);
 
+            mesBox.removeAll();
+            eventoBox.removeAll();
+            diaBox.removeAll();
+
             Document document = Jsoup.parse(html_p);
 
             Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
@@ -611,6 +615,9 @@ public class JavaScriptWebView {
             //webView.data_calendario = trimb(document.getElementsByClass("dado_cabecalho").get(1).text());
 
             List<Integer> mesesList = new ArrayList<>();
+
+            Calendar today = Calendar.getInstance();
+            today.setTime(new Date());
 
             boolean changeYear = false;
 
@@ -711,6 +718,11 @@ public class JavaScriptWebView {
                                 //Eventos normais
                                 if (diaEvento.equals(numeroDia)) {
 
+                                    Calendar ev = Calendar.getInstance();
+                                    ev.set(Calendar.YEAR, mes.getYear());
+                                    ev.set(Calendar.MONTH, mes.getMonth());
+                                    ev.set(Calendar.DAY_OF_MONTH, dia.getDay());
+
                                     String infos = arrayEventos.get(k).child(1).text();
                                     String description = infos.substring(infos.lastIndexOf(") ") + 1).trim();
                                     String title = infos.substring(0, infos.indexOf(" (") + 1).trim();
@@ -724,6 +736,10 @@ public class JavaScriptWebView {
                                     int cor = corQA.equals("#F0F0F0") ? pickColor(title) : context.getResources().getColor(R.color.colorPrimary);//pickColor(corQA);
 
                                     Evento evento = new Evento(title, description, cor, false);
+
+                                    if (ev.getTimeInMillis() <= today.getTimeInMillis()) {
+                                        evento.setHappened(true);
+                                    }
 
                                     Materia materia = materiaBox.query()
                                             .equal(Materia_.name, title)
@@ -760,6 +776,15 @@ public class JavaScriptWebView {
                                         Evento evento = new Evento(infos, description,
                                                 context.getResources().getColor(R.color.colorPrimary), data_inicio, data_fim, false);
                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
+
+                                        Calendar ev = Calendar.getInstance();
+                                        ev.set(Calendar.YEAR, mes.getYear());
+                                        ev.set(Calendar.MONTH, mes.getMonth());
+                                        ev.set(Calendar.DAY_OF_MONTH, dia.getDay());
+
+                                        if (ev.getTimeInMillis() <= today.getTimeInMillis()) {
+                                            evento.setHappened(true);
+                                        }
 
                                         evento.day.setTarget(dia);
                                         dia.eventos.add(evento);
