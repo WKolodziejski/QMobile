@@ -149,7 +149,7 @@ public class SingletonWebView {
             }
 
         } else {
-            Toast.makeText(context, "Espere terminar de carregar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getResources().getString(R.string.text_wait_loading), Toast.LENGTH_SHORT).show();
         }
     }
 

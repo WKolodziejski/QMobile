@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class CalendarioFragment extends Fragment {
-    private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM - yyyy", Locale.getDefault());
+    private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM ― yyyy", Locale.getDefault());
     private CalendarioAdapter adapter;
     private List<Mes> mesesList;
     private int month = 0;
