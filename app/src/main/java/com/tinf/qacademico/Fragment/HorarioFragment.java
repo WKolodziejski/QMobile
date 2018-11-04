@@ -14,9 +14,16 @@ import com.tinf.qacademico.Class.Materias.Materia_;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
+import java.util.Objects;
 import io.objectbox.BoxStore;
 
-public class HorarioFragment extends Fragment {
+public class HorarioFragment extends Fragment implements HorarioActivity.OnPageUpdated {
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,5 +48,10 @@ public class HorarioFragment extends Fragment {
 
     private BoxStore getBox() {
         return ((HorarioActivity) getActivity()).getBox();
+    }
+
+    @Override
+    public void onPageUpdate() {
+        showHorario(getView());
     }
 }

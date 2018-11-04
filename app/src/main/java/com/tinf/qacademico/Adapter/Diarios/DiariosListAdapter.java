@@ -124,7 +124,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                     try {
                         notifyDataSetChanged();
                     } catch (Exception e){
-                        Log.v("Recycler", "catch error notify()");
+                        Log.v("Recycler", e.getMessage());
                     }
                 }
 

@@ -19,9 +19,7 @@ import com.tinf.qacademico.Activity.CalendarioActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Mes;
-import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.R;
-import com.tinf.qacademico.WebView.SingletonWebView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,11 +29,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CalendarioFragment extends Fragment {
+public class CalendarioFragment extends Fragment implements CalendarioActivity.OnPageUpdated {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM ― yyyy", Locale.getDefault());
     private CalendarioAdapter adapter;
     private List<Mes> mesesList;
     private int month = 0;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+    }
 
     @Nullable
     @Override
@@ -46,10 +50,10 @@ public class CalendarioFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setCalendar(view);
+        showCalendar(view);
     }
 
-    private void setCalendar(View view) {
+    private void showCalendar(View view) {
 
         mesesList = getBox().boxFor(Mes.class).query().build().find();
 
@@ -224,5 +228,10 @@ public class CalendarioFragment extends Fragment {
 
     private BoxStore getBox() {
         return ((CalendarioActivity) getActivity()).getBox();
+    }
+
+    @Override
+    public void onPageUpdate() {
+        showCalendar(getView());
     }
 }

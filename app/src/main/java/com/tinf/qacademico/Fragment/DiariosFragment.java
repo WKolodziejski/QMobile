@@ -15,6 +15,7 @@ import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Diarios.DiariosListAdapter;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.Objects;
@@ -74,6 +75,10 @@ public class DiariosFragment extends Fragment {
                 smoothScroller.setTargetPosition(position);
                 layout.startSmoothScroll(smoothScroller);
             }
+        });
+
+        ((NotasFragment) getParentFragment()).setOnTopScrollRequestedDListener(() -> {
+            recyclerViewDiarios.smoothScrollToPosition(0);
         });
 
         ((MainActivity) Objects.requireNonNull(getActivity())).fab_expand.setOnClickListener(v -> {

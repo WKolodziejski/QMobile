@@ -64,22 +64,26 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         ((MainActivity) getActivity()).setTitle(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
 
-        NestedScrollView scrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
+        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
-        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+        ((MainActivity) getActivity()).setOnTopScrollRequestedListener(() -> {
+            nestedScrollView.smoothScrollTo(0,0);
+        });
+
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
         });
 
-        LinearLayout website = (LinearLayout) view.findViewById(R.id.home_website);
-        website.setOnClickListener(v -> {
+        view.findViewById(R.id.home_website).setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(URL + PG_LOGIN));
             startActivity(browserIntent);
         });
 
-        showHorario(view);
         showCalendar(view);
+
+        showHorario(view);
 
         if (!Utils.isConnected(getContext())) {
             showOffline(view);

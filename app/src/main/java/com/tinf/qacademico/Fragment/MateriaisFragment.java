@@ -14,6 +14,7 @@ import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Materiais.MateriaisListAdapter;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.R;
+import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import java.util.Objects;
@@ -58,6 +59,10 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
             }
         });
 
+        ((MainActivity) getActivity()).setOnTopScrollRequestedListener(() -> {
+            recyclerViewMateriais.smoothScrollToPosition(0);
+        });
+
         adapter.setOnDowloadListener(link -> {
             Log.i("Materiais", link);
             SingletonWebView.getInstance().downloadMaterial(link);
@@ -70,6 +75,8 @@ public class MateriaisFragment extends Fragment implements MainActivity.OnPageUp
             if (list.get(0) instanceof MateriaisList) {
                 showMateriais(getView(), (List<MateriaisList>) list);
             }
+        } else {
+            getLayoutInflater().inflate(R.layout.layout_empty,  null);
         }
     }
 }

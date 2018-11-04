@@ -1,6 +1,7 @@
 <com.google.android.material.appbar.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/AppTheme.AppBarOverlay"
@@ -19,7 +20,8 @@
             android:layout_height="?android:attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways|snap"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            tools:title="@string/app_q" />
 
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
@@ -28,13 +30,15 @@
             app:tabMode="fixed"
             app:tabGravity="fill"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            tools:visibility="visible"/>
 
         <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:indeterminate="true"
             android:id="@+id/progressbar_horizontal"
+            android:visibility="gone"
             app:spb_sections_count="3"
             app:spb_color="@color/colorPrimary"
             app:spb_speed="2"
@@ -46,7 +50,8 @@
             app:spb_progressiveStart_activated="false"
             app:spb_progressiveStart_speed="3"
             app:spb_progressiveStop_speed="4"
-            app:layout_constraintBottom_toBottomOf="@id/tabs" />
+            app:layout_constraintBottom_toBottomOf="@id/tabs"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

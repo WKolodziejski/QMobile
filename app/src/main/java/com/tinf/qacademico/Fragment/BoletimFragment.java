@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
 import com.tinf.qacademico.R;
 import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qacademico.WebView.SingletonWebView;
@@ -129,6 +130,10 @@ public class BoletimFragment extends Fragment {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
+        });
+
+        ((NotasFragment) getParentFragment()).setOnTopScrollRequestedBListener(() -> {
+            mLockTableView.getTableScrollView().smoothScrollToPosition(0);
         });
 
         Button lock_header_btn = (Button) view.findViewById(R.id.lock_header);

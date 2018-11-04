@@ -49,14 +49,20 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         SingletonWebView.OnPageStarted, SingletonWebView.OnErrorRecived,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.progressbar_horizontal)      SmoothProgressBar progressBar;
-    @BindView(R.id.fab_expand)           public FloatingActionButton fab_expand;
-    @BindView(R.id.navigation)           public BottomNavigationView bottomNav;
-    @BindView(R.id.tabs)                        TabLayout tabLayout;
-    @BindView(R.id.refresh_layout)       public SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.progressbar_horizontal)
+    SmoothProgressBar progressBar;
+    @BindView(R.id.fab_expand)
+    public FloatingActionButton fab_expand;
+    @BindView(R.id.navigation)
+    public BottomNavigationView bottomNav;
+    @BindView(R.id.tabs)
+    TabLayout tabLayout;
+    @BindView(R.id.refresh_layout)
+    public SwipeRefreshLayout refreshLayout;
     //@BindView(R.id.app_bar_layout)              AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnPageUpdated onPageUpdated;
+    private OnTopScrollRequested onTopScrollRequested;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +82,6 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     }
 
     private void testLogin() {
-        webView.setOnPageFinishedListener(this);
-        webView.setOnPageStartedListener(this);
-        webView.setOnErrorRecivedListener(this);
-
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
             ((App) getApplication()).setLogged(true);
             SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
@@ -169,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     return true;
 
                 case R.id.navigation_materiais:
+                    setTitle(webView.data_year[webView.year_position]);
                     webView.loadUrl(URL + PG_MATERIAIS);
                     if (webView.year_position > 0) {
                         webView.scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
@@ -179,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     hideTabLayout();
                     return true;
             }
+        } else {
+            onTopScrollRequested.onTopScrollRequested();
         }
         return false;
     }
@@ -284,14 +289,17 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     }
 
     private void logOut() {
-        getBox().close();
-        SharedPreferences.Editor editor = getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
-        editor.putString(LOGIN_REGISTRATION, "");
-        editor.putString(LOGIN_PASSWORD, "");
-        editor.putString(LOGIN_NAME, "");
-        editor.putBoolean(LOGIN_VALID, false);
-        editor.apply();
+        ((App) getApplication()).logOut();
         SingletonWebView.logOut();
+
+        getSharedPreferences(LOGIN_INFO, MODE_PRIVATE)
+                .edit()
+                .putString(LOGIN_REGISTRATION, "")
+                .putString(LOGIN_PASSWORD, "")
+                .putString(LOGIN_NAME, "")
+                .putBoolean(LOGIN_VALID, false)
+                .apply();
+
         recreate();
     }
 
@@ -313,6 +321,9 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     public void onStart() {
         super.onStart();
         //appBarLayout.addOnOffsetChangedListener(this);
+        webView.setOnPageFinishedListener(this);
+        webView.setOnPageStartedListener(this);
+        webView.setOnErrorRecivedListener(this);
     }
 
     @Override
@@ -326,6 +337,9 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     protected void onResume() {
         super.onResume();
         //appBarLayout.addOnOffsetChangedListener(this);
+        webView.setOnPageFinishedListener(this);
+        webView.setOnPageStartedListener(this);
+        webView.setOnErrorRecivedListener(this);
     }
 
     @Override
@@ -348,11 +362,19 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         }
     }
 
-    public void setOnPageUpdateListener(OnPageUpdated onPageUpdated){
+    public void setOnPageUpdateListener(OnPageUpdated onPageUpdated) {
         this.onPageUpdated = onPageUpdated;
     }
 
     public interface OnPageUpdated {
         void onPageUpdate(List<?> list);
+    }
+
+    public void setOnTopScrollRequestedListener(OnTopScrollRequested onTopScrollRequested) {
+        this.onTopScrollRequested = onTopScrollRequested;
+    }
+
+    public interface OnTopScrollRequested {
+        void onTopScrollRequested();
     }
 }

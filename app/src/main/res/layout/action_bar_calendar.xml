@@ -1,42 +1,71 @@
-<com.google.android.material.appbar.AppBarLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/AppTheme.AppBarOverlay"
     >
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_calendario"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="?android:attr/actionBarSize"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
+        android:layout_height="wrap_content"
         >
 
-        <TextView
-            android:id="@+id/actionBar_title"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar_calendario"
+            android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:gravity="center_vertical"
-            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-            android:textColor="@color/colorAccent" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            >
 
-    </androidx.appcompat.widget.Toolbar>
+            <TextView
+                android:id="@+id/actionBar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="?android:attr/actionBarSize"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textColor="@color/colorAccent"
+                tools:text="@string/app_q"/>
 
-    <com.github.sundeepk.compactcalendarview.CompactCalendarView
-        android:id="@+id/compactcalendar_view"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
-        app:compactCalendarTargetHeight="250dp"
-        app:compactCalendarTextSize="12sp"
-        app:compactCalendarBackgroundColor="@color/colorPrimaryLight"
-        app:compactCalendarTextColor="@color/colorPrimary"
-        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorSecondary"
-        app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
-        app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <com.github.sundeepk.compactcalendarview.CompactCalendarView
+            android:id="@+id/compactcalendar_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            app:compactCalendarTargetHeight="250dp"
+            app:compactCalendarTextSize="12sp"
+            app:compactCalendarBackgroundColor="@color/colorPrimaryLight"
+            app:compactCalendarTextColor="@color/colorPrimary"
+            app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorSecondary"
+            app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
+            app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_calendario"/>
+
+        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:indeterminate="true"
+            android:id="@+id/progressbar_horizontal_calendar"
+            android:visibility="gone"
+            app:spb_sections_count="3"
+            app:spb_color="@color/colorPrimary"
+            app:spb_speed="2"
+            app:spb_stroke_width="2dp"
+            app:spb_stroke_separator_length="4dp"
+            app:spb_reversed="false"
+            app:spb_mirror_mode="false"
+            app:spb_interpolator="spb_interpolator_accelerate"
+            app:spb_progressiveStart_activated="false"
+            app:spb_progressiveStart_speed="3"
+            app:spb_progressiveStop_speed="4"
+            app:layout_constraintBottom_toBottomOf="@id/compactcalendar_view"
+            tools:visibility="visible"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.appbar.AppBarLayout>

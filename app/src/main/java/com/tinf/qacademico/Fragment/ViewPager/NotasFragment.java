@@ -24,22 +24,24 @@ import java.util.Objects;
 public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, MainActivity.OnPageUpdated {
     private SingletonWebView webView = SingletonWebView.getInstance();
     private int currentFragment;
+    private OnTopScrollRequested onTopScrollRequestedB, onTopScrollRequestedD;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewpager, container, false);
+        return inflater.inflate(R.layout.fragment_viewpager, container, false);
+    }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         showNotas(view);
-
-        return view;
     }
 
     private void showNotas(View view) {
@@ -59,6 +61,11 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         viewPager.addOnPageChangeListener(this);
 
         ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
+
+        ((MainActivity) getActivity()).setOnTopScrollRequestedListener(() -> {
+            onTopScrollRequestedB.onTopScrollRequested();
+            onTopScrollRequestedD.onTopScrollRequested();
+        });
     }
 
     @Override
@@ -81,4 +88,16 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     @Override
     public void onPageScrolled(int i, float v, int i1) {}
+
+    public void setOnTopScrollRequestedBListener(OnTopScrollRequested onTopScrollRequested) {
+        this.onTopScrollRequestedB = onTopScrollRequested;
+    }
+
+    public void setOnTopScrollRequestedDListener(OnTopScrollRequested onTopScrollRequested) {
+        this.onTopScrollRequestedD = onTopScrollRequested;
+    }
+
+    public interface OnTopScrollRequested {
+        void onTopScrollRequested();
+    }
 }
