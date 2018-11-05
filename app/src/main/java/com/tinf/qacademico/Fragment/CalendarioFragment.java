@@ -19,6 +19,7 @@ import com.tinf.qacademico.Activity.CalendarioActivity;
 import com.tinf.qacademico.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Mes;
+import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
 import com.tinf.qacademico.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CalendarioFragment extends Fragment implements CalendarioActivity.OnPageUpdated {
+public class CalendarioFragment extends Fragment implements OnUpdate {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM ― yyyy", Locale.getDefault());
     private CalendarioAdapter adapter;
     private List<Mes> mesesList;
@@ -38,7 +39,7 @@ public class CalendarioFragment extends Fragment implements CalendarioActivity.O
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Nullable
@@ -231,7 +232,12 @@ public class CalendarioFragment extends Fragment implements CalendarioActivity.O
     }
 
     @Override
-    public void onPageUpdate() {
+    public void onUpdate() {
         showCalendar(getView());
+    }
+
+    @Override
+    public void requestScroll() {
+
     }
 }

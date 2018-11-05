@@ -7,9 +7,7 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 import com.tinf.qacademico.Class.Calendario.Dia;
 import com.tinf.qacademico.Class.Calendario.Evento;
-import com.tinf.qacademico.Class.Calendario.Evento_;
 import com.tinf.qacademico.Class.Calendario.Mes;
-import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.Class.Materias.Diarios;
 import com.tinf.qacademico.Class.Materias.Horario;
 import com.tinf.qacademico.Class.Materias.Etapa;
@@ -17,6 +15,7 @@ import com.tinf.qacademico.Class.Materiais.Materiais;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import org.json.JSONArray;
@@ -33,12 +32,12 @@ import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qacademico.Utilities.Utils.MATERIAS;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
 import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
-import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 import static com.tinf.qacademico.Utilities.Utils.YEARS;
 import static com.tinf.qacademico.Utilities.Utils.getRandomColorGenerator;
@@ -46,8 +45,8 @@ import static com.tinf.qacademico.Utilities.Utils.getRandomColorGenerator;
 public class JavaScriptWebView {
     private Context context;
     private SingletonWebView webView = SingletonWebView.getInstance();
-    private OnPageFinished onPageFinish;
-    private OnErrorRecived onErrorRecived;
+    private OnPageLoad.Main onPageLoad;
+    private OnPageLoad.Materiais onMateriaisLoad;
 
     public JavaScriptWebView(Context context) {
         this.context = context;
@@ -69,7 +68,7 @@ public class JavaScriptWebView {
             webView.pg_home_loaded = true;
             Log.i("JavaScriptWebView", "Home handled!");
 
-            onPageFinish.onPageFinish(URL + PG_HOME, null);
+            onPageLoad.onPageFinish(URL + PG_HOME);
 
         }).start();
     }
@@ -235,10 +234,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_diarios_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Diarios handled!");
-                onPageFinish.onPageFinish(URL + PG_DIARIOS, null);
+                onPageLoad.onPageFinish(URL + PG_DIARIOS);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onErrorRecived.onErrorRecived(error.getMessage());
+                onPageLoad.onErrorRecived(error.getMessage());
             }
         });
     }
@@ -333,10 +332,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_boletim_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Boletim handled!");
-                onPageFinish.onPageFinish(URL + PG_BOLETIM, null);
+                onPageLoad.onPageFinish(URL + PG_BOLETIM);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onErrorRecived.onErrorRecived(error.getMessage());
+                onPageLoad.onErrorRecived(error.getMessage());
             }
         });
     }
@@ -475,10 +474,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_horario_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Horario handled!");
-                onPageFinish.onPageFinish(URL + PG_HORARIO, null);
+                onPageLoad.onPageFinish(URL + PG_HORARIO);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onErrorRecived.onErrorRecived(error.getMessage());
+                onPageLoad.onErrorRecived(error.getMessage());
             }
         });
     }
@@ -585,11 +584,12 @@ public class JavaScriptWebView {
                     webView.pg_materiais_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
 
-                    onPageFinish.onPageFinish(URL + PG_MATERIAIS, materiais);
+                    onPageLoad.onPageFinish(URL + MATERIAS);
+                    onMateriaisLoad.onPageFinish(materiais);
 
                 } catch (Exception e) {
                     Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
-                    onErrorRecived.onErrorRecived(e.getMessage());
+                    onPageLoad.onErrorRecived(e.getMessage());
                 }
             }
         }.start();
@@ -814,10 +814,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_calendario_loaded = true;
                 Log.i("JavaScriptWebView", "Calendario handled!");
-                onPageFinish.onPageFinish(URL + PG_CALENDARIO, null);
+                onPageLoad.onPageFinish(URL + PG_CALENDARIO);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onErrorRecived.onErrorRecived(error.getMessage());
+                onPageLoad.onErrorRecived(error.getMessage());
             }
         });
     }
@@ -917,19 +917,11 @@ public class JavaScriptWebView {
         return string;
     }
 
-    public void setOnPageFinished(OnPageFinished onPageFinish) {
-        this.onPageFinish = onPageFinish;
+    public void setOnPageLoadListener(OnPageLoad.Main onPageLoad) {
+        this.onPageLoad = onPageLoad;
     }
 
-    public interface OnPageFinished {
-        void onPageFinish(String url_p, List<?> list);
-    }
-
-    public void setOnErrorRecivedListener(OnErrorRecived onErrorRecived){
-        this.onErrorRecived = onErrorRecived;
-    }
-
-    public interface OnErrorRecived {
-        void onErrorRecived(String error);
+    public void setOnMateriaisLoadListener(OnPageLoad.Materiais onMateriaisLoad) {
+        this.onMateriaisLoad = onMateriaisLoad;
     }
 }

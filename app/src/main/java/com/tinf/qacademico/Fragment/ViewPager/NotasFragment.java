@@ -12,12 +12,12 @@ import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.ViewPagerAdapter;
 import com.tinf.qacademico.Fragment.BoletimFragment;
 import com.tinf.qacademico.Fragment.DiariosFragment;
+import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
-import java.util.List;
 import java.util.Objects;
 
-public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, MainActivity.OnPageUpdated {
+public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
     private int currentFragment;
     private OnTopScrollRequested onTopScrollRequestedB, onTopScrollRequestedD;
@@ -25,7 +25,7 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Nullable
@@ -57,15 +57,6 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         viewPager.addOnPageChangeListener(this);
 
         ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
-
-        ((MainActivity) getActivity()).setOnTopScrollRequestedListener(() -> {
-            switch (currentFragment) {
-                case 0: onTopScrollRequestedD.onTopScrollRequested();
-                    break;
-                case 1: onTopScrollRequestedB.onTopScrollRequested();
-                    break;
-            }
-        });
     }
 
     @Override
@@ -76,11 +67,6 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         } else {
             ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
         }
-    }
-
-    @Override
-    public void onPageUpdate(List<?> list) {
-        showNotas(getView());
     }
 
     @Override
@@ -95,6 +81,21 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     public void setOnTopScrollRequestedDListener(OnTopScrollRequested onTopScrollRequested) {
         this.onTopScrollRequestedD = onTopScrollRequested;
+    }
+
+    @Override
+    public void onUpdate() {
+        showNotas(getView());
+    }
+
+    @Override
+    public void requestScroll() {
+        switch (currentFragment) {
+            case 0: onTopScrollRequestedD.onTopScrollRequested();
+                break;
+            case 1: onTopScrollRequestedB.onTopScrollRequested();
+                break;
+        }
     }
 
     public interface OnTopScrollRequested {

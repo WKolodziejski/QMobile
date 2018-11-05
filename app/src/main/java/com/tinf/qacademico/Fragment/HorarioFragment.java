@@ -11,18 +11,19 @@ import com.alamkanak.weekview.WeekView;
 import com.tinf.qacademico.Activity.HorarioActivity;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
 import java.util.Objects;
 import io.objectbox.BoxStore;
 
-public class HorarioFragment extends Fragment implements HorarioActivity.OnPageUpdated {
+public class HorarioFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
@@ -51,7 +52,10 @@ public class HorarioFragment extends Fragment implements HorarioActivity.OnPageU
     }
 
     @Override
-    public void onPageUpdate() {
+    public void onUpdate() {
         showHorario(getView());
     }
+
+    @Override
+    public void requestScroll() {}
 }

@@ -9,18 +9,14 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
-
 import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
-
 import io.objectbox.BoxStore;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
@@ -30,11 +26,8 @@ import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 import static com.tinf.qacademico.Utilities.Utils.YEARS;
 
-public class SingletonWebView {
+public class SingletonWebView implements OnPageLoad.Main {
     private static SingletonWebView singleton;
-    private OnPageFinished onPageFinished;
-    private OnPageStarted onPageStarted;
-    private OnErrorRecived onErrorRecived;
     private WebView webView;
     private boolean isLoading, isPaused;
     private List<String> queue = new ArrayList<>();
@@ -48,12 +41,16 @@ public class SingletonWebView {
     public String[] data_year = {""};
     public BoxStore box;
     private Context context;
+    private OnPageLoad.Main onPageLoad;
+    private JavaScriptWebView javaScriptWebView;
 
-    /*private OnPageLoad onPageLoad;
-
-    public void setOnPageLoadListener(OnPageLoad onPageLoad) {
+    public void setOnPageLoadListener(OnPageLoad.Main onPageLoad) {
         this.onPageLoad = onPageLoad;
-    }*/
+    }
+
+    public void setOnMateriaisLoadListener(OnPageLoad.Materiais onPageLoad) {
+        javaScriptWebView.setOnMateriaisLoadListener(onPageLoad);
+    }
 
     private SingletonWebView() {}
 
@@ -153,7 +150,7 @@ public class SingletonWebView {
             if (id == R.id.navigation_materiais) {
                 webView.loadUrl(URL + PG_MATERIAIS);
             } else {
-                onPageFinished.onPageFinish("", null);
+                onPageLoad.onPageFinish("");
             }
 
         } else {
@@ -199,42 +196,13 @@ public class SingletonWebView {
         faller.setUseWideViewPort(true);
         faller.setLoadWithOverviewMode(true);
 
-        JavaScriptWebView javaScriptWebView = new JavaScriptWebView(context);
-
-        javaScriptWebView.setOnPageFinished((url_p, list) -> {
-            isLoading = false;
-            if (url_p.contains(URL + PG_MATERIAIS)) {
-                isPaused = true;
-            }
-            Log.i("Finish", url_p);
-            onPageFinished.onPageFinish(url_p, list);
-        });
-
-        javaScriptWebView.setOnErrorRecivedListener(error -> {
-            Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
-            onErrorRecived.onErrorRecived(error);
-        });
+        javaScriptWebView = new JavaScriptWebView(context);
 
         ClientWebView clientWebView = new ClientWebView(context);
 
-        clientWebView.setOnPageFinishedListener(url_p -> {
-            isLoading = false;
-            Log.i("Finish", url_p);
-            onPageFinished.onPageFinish(url_p, null);
-        });
+        javaScriptWebView.setOnPageLoadListener(this);
 
-        clientWebView.setOnPageStartedListener(url_p -> {
-            isLoading = true;
-            Log.i("Start", url_p);
-            onPageStarted.onPageStart(url_p);
-        });
-
-        clientWebView.setOnErrorRecivedListener(error -> {
-            isLoading = false;
-            webView.stopLoading();
-            Log.i("Error", error);
-            onErrorRecived.onErrorRecived(error);
-        });
+        clientWebView.setOnPageLoadListener(this);
 
         webView.setWebViewClient(clientWebView);
         webView.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
@@ -248,27 +216,27 @@ public class SingletonWebView {
         this.box = box;
     }
 
-    public void setOnPageFinishedListener(OnPageFinished onPageFinished){
-        this.onPageFinished = onPageFinished;
+    @Override
+    public void onPageStart() {
+        isLoading = true;
+        onPageLoad.onPageStart();
     }
 
-    public interface OnPageFinished {
-        void onPageFinish(String url_p, List<?> list);
+    @Override
+    public void onPageFinish(String url_p) {
+        isLoading = false;
+        if (url_p.contains(URL + PG_MATERIAIS)) {
+            isPaused = true;
+        }
+        Log.i("Finish", url_p);
+        onPageLoad.onPageFinish(url_p);
     }
 
-    public void setOnPageStartedListener(OnPageStarted onPageStarted){
-        this.onPageStarted = onPageStarted;
-    }
-
-    public interface OnPageStarted {
-        void onPageStart(String url_p);
-    }
-
-    public void setOnErrorRecivedListener(OnErrorRecived onErrorRecived){
-        this.onErrorRecived = onErrorRecived;
-    }
-
-    public interface OnErrorRecived {
-        void onErrorRecived(String error);
+    @Override
+    public void onErrorRecived(String error) {
+        isLoading = false;
+        webView.stopLoading();
+        Log.i("Error", error);
+        onPageLoad.onErrorRecived(error);
     }
 }

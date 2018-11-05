@@ -12,6 +12,8 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
@@ -28,9 +30,7 @@ public class ClientWebView extends WebViewClient {
     private Context context;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private SharedPreferences login_info;
-    private OnPageFinished onPageFinished;
-    private OnPageStarted onPageStarted;
-    private OnRecivedError onRecivedError;
+    private OnPageLoad.Main onPageLoad;
 
     ClientWebView(Context context) {
         this.context = context.getApplicationContext();
@@ -47,7 +47,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        onRecivedError.onErrorRecived(error.getDescription().toString());
+        onPageLoad.onErrorRecived(error.getDescription().toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -56,7 +56,7 @@ public class ClientWebView extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
         if (Utils.isConnected(context)) {
             if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
-                onRecivedError.onErrorRecived(errorResponse.getReasonPhrase());
+                onPageLoad.onErrorRecived(errorResponse.getReasonPhrase());
                 Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -65,7 +65,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url_i, Bitmap favicon) {
         super.onPageStarted(view, URL, favicon);
-        onPageStarted.onPageStart(url_i);
+        onPageLoad.onPageStart();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ClientWebView extends WebViewClient {
 
                 if (webView.isLoginPage) {
                     //webView.isLoginPage = false;
-                    onPageFinished.onPageFinish(URL + PG_LOGIN);
+                    onPageLoad.onPageFinish(URL + PG_LOGIN);
                     Log.i("WebViewClient", "Login done");
                 }
 
@@ -152,7 +152,7 @@ public class ClientWebView extends WebViewClient {
                 Log.i("WebViewClient", "Error");
 
                 if (webView.isLoginPage) {
-                    onPageFinished.onPageFinish(URL + PG_ERRO);
+                    onPageLoad.onPageFinish(URL + PG_ERRO);
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString(Utils.LOGIN_REGISTRATION, "");
                     editor.putString(Utils.LOGIN_PASSWORD, "");
@@ -168,27 +168,7 @@ public class ClientWebView extends WebViewClient {
         }
     }
 
-    public void setOnPageFinishedListener(OnPageFinished onPageFinished){
-        this.onPageFinished = onPageFinished;
-    }
-
-    public interface OnPageFinished {
-        void onPageFinish(String url_p);
-    }
-
-    public void setOnPageStartedListener(OnPageStarted onPageStarted){
-        this.onPageStarted = onPageStarted;
-    }
-
-    public interface OnPageStarted {
-        void onPageStart(String url_p);
-    }
-
-    public void setOnErrorRecivedListener(OnRecivedError onRecivedError){
-        this.onRecivedError = onRecivedError;
-    }
-
-    public interface OnRecivedError {
-        void onErrorRecived(String error);
+    public void setOnPageLoadListener(OnPageLoad.Main onPageLoad) {
+        this.onPageLoad = onPageLoad;
     }
 }

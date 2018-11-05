@@ -26,6 +26,7 @@ import com.tinf.qacademico.Class.Calendario.Mes;
 import com.tinf.qacademico.Class.Calendario.Mes_;
 import com.tinf.qacademico.Class.Materias.Materia;
 import com.tinf.qacademico.Class.Materias.Materia_;
+import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import com.tinf.qacademico.Widget.HorarioView;
@@ -44,13 +45,14 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated {
+public class HomeFragment extends Fragment implements OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
+    private NestedScrollView nestedScrollView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnPageUpdateListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
@@ -64,11 +66,7 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
 
         ((MainActivity) getActivity()).setTitle(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
 
-        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
-
-        ((MainActivity) getActivity()).setOnTopScrollRequestedListener(() -> {
-            nestedScrollView.smoothScrollTo(0,0);
-        });
+        nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -169,8 +167,13 @@ public class HomeFragment extends Fragment implements MainActivity.OnPageUpdated
     }
 
     @Override
-    public void onPageUpdate(List<?> list) {
+    public void onUpdate() {
         showHorario(getView());
         showOffline(getView());
+    }
+
+    @Override
+    public void requestScroll() {
+        nestedScrollView.smoothScrollTo(0,0);
     }
 }

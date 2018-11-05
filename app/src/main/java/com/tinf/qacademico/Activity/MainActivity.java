@@ -28,10 +28,11 @@ import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.HomeFragment;
 import com.tinf.qacademico.Fragment.MateriaisFragment;
 import com.tinf.qacademico.Fragment.ViewPager.NotasFragment;
+import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
+import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
-import java.util.List;
 import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,8 +46,7 @@ import static com.tinf.qacademico.Utilities.Utils.LOGIN_VALID;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class MainActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished,
-        SingletonWebView.OnPageStarted, SingletonWebView.OnErrorRecived,
+public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.progressbar_horizontal)
@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     public SwipeRefreshLayout refreshLayout;
     //@BindView(R.id.app_bar_layout)              AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
-    private OnPageUpdated onPageUpdated;
-    private OnTopScrollRequested onTopScrollRequested;
+    private OnUpdate onUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,13 +182,13 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
                     return true;
             }
         } else {
-            onTopScrollRequested.onTopScrollRequested();
+            onUpdate.requestScroll();
         }
         return false;
     }
 
     @Override
-    public void onPageStart(String url_p) {
+    public void onPageStart() {
         runOnUiThread(() -> {
             if (!refreshLayout.isRefreshing()) {
                 showProgressbar();
@@ -200,12 +199,12 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     }
 
     @Override
-    public void onPageFinish(String url_p, List<?> list) {
+    public void onPageFinish(String url_p) {
         runOnUiThread(() -> {
             webView.loadNextUrl();
             refreshLayout.setRefreshing(false);
             dismissProgressbar();
-            onPageUpdated.onPageUpdate(list);
+            onUpdate.onUpdate();
         });
     }
 
@@ -321,9 +320,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     public void onStart() {
         super.onStart();
         //appBarLayout.addOnOffsetChangedListener(this);
-        webView.setOnPageFinishedListener(this);
-        webView.setOnPageStartedListener(this);
-        webView.setOnErrorRecivedListener(this);
+        webView.setOnPageLoadListener(this);
     }
 
     @Override
@@ -337,9 +334,7 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
     protected void onResume() {
         super.onResume();
         //appBarLayout.addOnOffsetChangedListener(this);
-        webView.setOnPageFinishedListener(this);
-        webView.setOnPageStartedListener(this);
-        webView.setOnErrorRecivedListener(this);
+        webView.setOnPageLoadListener(this);
     }
 
     @Override
@@ -362,19 +357,8 @@ public class MainActivity extends AppCompatActivity implements SingletonWebView.
         }
     }
 
-    public void setOnPageUpdateListener(OnPageUpdated onPageUpdated) {
-        this.onPageUpdated = onPageUpdated;
+    public void setOnUpdateListener(OnUpdate onUpdate) {
+        this.onUpdate = onUpdate;
     }
 
-    public interface OnPageUpdated {
-        void onPageUpdate(List<?> list);
-    }
-
-    public void setOnTopScrollRequestedListener(OnTopScrollRequested onTopScrollRequested) {
-        this.onTopScrollRequested = onTopScrollRequested;
-    }
-
-    public interface OnTopScrollRequested {
-        void onTopScrollRequested();
-    }
 }

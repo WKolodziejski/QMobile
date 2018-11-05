@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.CalendarioFragment;
+import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
+import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
 
@@ -27,11 +29,11 @@ import io.objectbox.BoxStore;
 import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class CalendarioActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnPageStarted {
+public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.Main {
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.progressbar_horizontal_calendar)      SmoothProgressBar progressBar;
     private SingletonWebView webView = SingletonWebView.getInstance();
-    private OnPageUpdated onPageUpdated;
+    private OnUpdate onUpdate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,8 +42,7 @@ public class CalendarioActivity extends AppCompatActivity implements SingletonWe
 
         ButterKnife.bind(this);
 
-        webView.setOnPageFinishedListener(this);
-        webView.setOnPageStartedListener(this);
+        webView.setOnPageLoadListener(this);
 
         setSupportActionBar(findViewById(R.id.toolbar_calendario));
        // Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_calendario);
@@ -76,37 +77,32 @@ public class CalendarioActivity extends AppCompatActivity implements SingletonWe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onPageFinish(String url_p, List<?> list) {
-        runOnUiThread(() -> {
-            progressBar.setVisibility(View.GONE);
-            progressBar.progressiveStop();
-            onPageUpdated.onPageUpdate();
-        });
+    public BoxStore getBox() {
+        return ((App) getApplication()).getBoxStore();
+    }
+
+    public void setOnUpdateListener(OnUpdate onUpdate){
+        this.onUpdate = onUpdate;
     }
 
     @Override
-    public void onPageStart(String url_p) {
+    public void onPageStart() {
         runOnUiThread(() -> {
             progressBar.setVisibility(View.VISIBLE);
             progressBar.progressiveStart();
         });
     }
 
-    public BoxStore getBox() {
-        return ((App) getApplication()).getBoxStore();
-    }
-
-    public void setOnPageUpdateListener(OnPageUpdated onPageUpdated){
-        this.onPageUpdated = onPageUpdated;
+    @Override
+    public void onPageFinish(String url_p) {
+        runOnUiThread(() -> {
+            progressBar.setVisibility(View.GONE);
+            progressBar.progressiveStop();
+            onUpdate.onUpdate();
+        });
     }
 
     @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
+    public void onErrorRecived(String error) {}
 
-    }
-
-    public interface OnPageUpdated {
-        void onPageUpdate();
-    }
 }

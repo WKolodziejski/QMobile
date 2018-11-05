@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.tinf.qacademico.App;
 import com.tinf.qacademico.Fragment.LoginFragment;
+import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 import com.tinf.qacademico.WebView.SingletonWebView;
@@ -26,7 +27,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
-public class LoginActivity extends AppCompatActivity implements SingletonWebView.OnPageFinished, SingletonWebView.OnErrorRecived {
+public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main {
     public SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
@@ -41,31 +42,9 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         loginLayout = (ViewGroup) findViewById(R.id.login_container);
 
         webView.isLoginPage = true;
-        webView.setOnPageFinishedListener(this);
-        webView.setOnErrorRecivedListener(this);
+        webView.setOnPageLoadListener(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment).commit();
-    }
-
-    @Override
-    public void onPageFinish(String url_p, List<?> list) {
-        runOnUiThread(() -> {
-            if (url_p.equals(URL + PG_LOGIN)) {
-                ((App) getApplication()).setLogged(true);
-                SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
-
-            } else if (url_p.equals(URL + PG_ERRO)) {
-                loginFragment.dismissProgressBar();
-                showSnackBar(getResources().getString(R.string.text_invalid_login), false);
-
-            } else if (url_p.contains(URL + PG_HOME)
-                    || url_p.contains(URL + PG_BOLETIM)
-                    || url_p.contains(URL + PG_HORARIO)
-                    || url_p.contains(URL + PG_DIARIOS)
-                    || url_p.contains(URL + PG_CALENDARIO)) {
-                loadData();
-            }
-        });
     }
 
     public void showSnackBar(String message, boolean action) { //Mostra a SnackBar
@@ -220,6 +199,30 @@ public class LoginActivity extends AppCompatActivity implements SingletonWebView
         editor.putBoolean(Utils.LOGIN_VALID, true);
         editor.apply();
         finish();
+    }
+
+    @Override
+    public void onPageStart() {}
+
+    @Override
+    public void onPageFinish(String url_p) {
+        runOnUiThread(() -> {
+            if (url_p.equals(URL + PG_LOGIN)) {
+                ((App) getApplication()).setLogged(true);
+                SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
+
+            } else if (url_p.equals(URL + PG_ERRO)) {
+                loginFragment.dismissProgressBar();
+                showSnackBar(getResources().getString(R.string.text_invalid_login), false);
+
+            } else if (url_p.contains(URL + PG_HOME)
+                    || url_p.contains(URL + PG_BOLETIM)
+                    || url_p.contains(URL + PG_HORARIO)
+                    || url_p.contains(URL + PG_DIARIOS)
+                    || url_p.contains(URL + PG_CALENDARIO)) {
+                loadData();
+            }
+        });
     }
 
     @Override
