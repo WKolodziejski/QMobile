@@ -10,6 +10,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.Utilities.Utils;
 
@@ -47,6 +48,12 @@ public class SingletonWebView {
     public String[] data_year = {""};
     public BoxStore box;
     private Context context;
+
+    /*private OnPageLoad onPageLoad;
+
+    public void setOnPageLoadListener(OnPageLoad onPageLoad) {
+        this.onPageLoad = onPageLoad;
+    }*/
 
     private SingletonWebView() {}
 

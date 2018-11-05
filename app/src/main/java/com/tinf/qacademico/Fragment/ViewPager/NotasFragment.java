@@ -1,23 +1,19 @@
 package com.tinf.qacademico.Fragment.ViewPager;
 
-import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
-
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.ViewPagerAdapter;
 import com.tinf.qacademico.Fragment.BoletimFragment;
 import com.tinf.qacademico.Fragment.DiariosFragment;
 import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -63,8 +59,12 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
 
         ((MainActivity) getActivity()).setOnTopScrollRequestedListener(() -> {
-            onTopScrollRequestedB.onTopScrollRequested();
-            onTopScrollRequestedD.onTopScrollRequested();
+            switch (currentFragment) {
+                case 0: onTopScrollRequestedD.onTopScrollRequested();
+                    break;
+                case 1: onTopScrollRequestedB.onTopScrollRequested();
+                    break;
+            }
         });
     }
 
