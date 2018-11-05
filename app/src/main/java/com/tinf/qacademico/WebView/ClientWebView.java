@@ -47,7 +47,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        onPageLoad.onErrorRecived(error.getDescription().toString());
+        callOnError(error.getDescription().toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -56,7 +56,7 @@ public class ClientWebView extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
         if (Utils.isConnected(context)) {
             if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
-                onPageLoad.onErrorRecived(errorResponse.getReasonPhrase());
+                callOnError(errorResponse.getReasonPhrase());
                 Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
         }
@@ -65,7 +65,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url_i, Bitmap favicon) {
         super.onPageStarted(view, URL, favicon);
-        onPageLoad.onPageStart();
+        callOnStart();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class ClientWebView extends WebViewClient {
 
                 if (webView.isLoginPage) {
                     //webView.isLoginPage = false;
-                    onPageLoad.onPageFinish(URL + PG_LOGIN);
+                    callOnFinish(URL + PG_LOGIN);
                     Log.i("WebViewClient", "Login done");
                 }
 
@@ -152,7 +152,7 @@ public class ClientWebView extends WebViewClient {
                 Log.i("WebViewClient", "Error");
 
                 if (webView.isLoginPage) {
-                    onPageLoad.onPageFinish(URL + PG_ERRO);
+                    callOnFinish(URL + PG_ERRO);
                     SharedPreferences.Editor editor = login_info.edit();
                     editor.putString(Utils.LOGIN_REGISTRATION, "");
                     editor.putString(Utils.LOGIN_PASSWORD, "");
@@ -165,6 +165,24 @@ public class ClientWebView extends WebViewClient {
             }
         } else {
             Log.e("ClientWebView", "Deu pau");
+        }
+    }
+
+    private void callOnFinish(String url_p) {
+        if (onPageLoad != null) {
+            onPageLoad.onPageFinish(url_p);
+        }
+    }
+
+    private void callOnError(String error) {
+        if (onPageLoad != null) {
+            onPageLoad.onErrorRecived(error);
+        }
+    }
+
+    private void callOnStart() {
+        if (onPageLoad != null) {
+            onPageLoad.onPageStart();
         }
     }
 

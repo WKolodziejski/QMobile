@@ -54,23 +54,25 @@ public class JavaScriptWebView {
 
     @JavascriptInterface
     public void handleHome(String html_p) {
-        new Thread(() -> {
+        try {
+            new Thread(() -> {
+                Log.i("JavaScriptWebView", "Home handling...");
 
-            Log.i("JavaScriptWebView", "Home handling...");
+                Document homePage = Jsoup.parse(html_p);
+                Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
+                SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
+                editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
+                editor.putLong(Utils.LAST_LOGIN, new Date().getTime());
+                editor.apply();
 
-            Document homePage = Jsoup.parse(html_p);
-            Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
-            SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
-            editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
-            editor.putLong(Utils.LAST_LOGIN, new Date().getTime());
-            editor.apply();
-
-            webView.pg_home_loaded = true;
-            Log.i("JavaScriptWebView", "Home handled!");
-
-            onPageLoad.onPageFinish(URL + PG_HOME);
-
-        }).start();
+                webView.pg_home_loaded = true;
+                Log.i("JavaScriptWebView", "Home handled!");
+                callOnFinish(URL + PG_HOME);
+            }).start();
+        } catch (Exception e) {
+            Log.e("JavaScriptWebView", "Home error: " + e.getMessage());
+            callOnError(e.getMessage());
+        }
     }
 
     @JavascriptInterface
@@ -234,10 +236,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_diarios_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Diarios handled!");
-                onPageLoad.onPageFinish(URL + PG_DIARIOS);
+                callOnFinish(URL + PG_DIARIOS);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onPageLoad.onErrorRecived(error.getMessage());
+                callOnError(error.getMessage());
             }
         });
     }
@@ -332,10 +334,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_boletim_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Boletim handled!");
-                onPageLoad.onPageFinish(URL + PG_BOLETIM);
+                callOnFinish(URL + PG_BOLETIM);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onPageLoad.onErrorRecived(error.getMessage());
+                callOnError(error.getMessage());
             }
         });
     }
@@ -474,129 +476,123 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_horario_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Horario handled!");
-                onPageLoad.onPageFinish(URL + PG_HORARIO);
+                callOnFinish(URL + PG_HORARIO);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onPageLoad.onErrorRecived(error.getMessage());
+                callOnError(error.getMessage());
             }
         });
     }
 
     @JavascriptInterface
     public void handleMateriais(String html_p) {
+        try {
+            new Thread(() -> {
+                Log.i("JavaScriptWebView", "Materiais handling...");
 
+                Document document = Jsoup.parse(html_p);
+                Element table = document.getElementsByTag("tbody").get(10);
+                Elements rotulos = table.getElementsByClass("rotulo");
 
-                try {
-                    new Thread() {
-                        @Override
-                        public void run() {
+                List<MateriaisList> materiais = new ArrayList<>();
 
-                            Log.i("JavaScriptWebView", "Materiais handling...");
+                for (int i = 1; i < rotulos.size(); i++) {
 
-                    Document document = Jsoup.parse(html_p);
-                    Element table = document.getElementsByTag("tbody").get(10);
-                    Elements rotulos = table.getElementsByClass("rotulo");
+                    String str = rotulos.get(i).text();
+                    str = str.substring(str.indexOf('-') + 2, str.indexOf('('));
+                    str = str.substring(str.indexOf('-') + 2);
+                    String nomeMateria = str;
 
-                    List<MateriaisList> materiais = new ArrayList<>();
+                    Log.i("Materia", "\n\n\n**************************" + nomeMateria + "*********************************\n");
 
-                    for (int i = 1; i < rotulos.size(); i++) {
+                    //parte dos conteudos
+                    String classe = rotulos.get(i).nextElementSibling().className();
+                    Element element = rotulos.get(i).nextElementSibling();
 
-                        String str = rotulos.get(i).text();
-                        str = str.substring(str.indexOf('-') + 2, str.indexOf('('));
-                        str = str.substring(str.indexOf('-') + 2);
-                        String nomeMateria = str;
+                    List<Materiais> material = new ArrayList<>();
 
-                        Log.i("Materia", "\n\n\n**************************" + nomeMateria + "*********************************\n");
+                    while (classe.equals("conteudoTexto")) {
 
-                        //parte dos conteudos
-                        String classe = rotulos.get(i).nextElementSibling().className();
-                        Element element = rotulos.get(i).nextElementSibling();
+                        String data = element.child(0).text();
+                        String link = element.child(1).child(1).attr("href");
+                        String nomeConteudo = element.child(1).child(1).text();
+                        String descricao = "";
+                        String extension = link.substring(link.indexOf("."));
 
-                        List<Materiais> material = new ArrayList<>();
-
-                        while (classe.equals("conteudoTexto")) {
-
-                            String data = element.child(0).text();
-                            String link = element.child(1).child(1).attr("href");
-                            String nomeConteudo = element.child(1).child(1).text();
-                            String descricao = "";
-                            String extension = link.substring(link.indexOf("."));
-
-                            //pode ou nao ter descricao
-                            if (element.child(1).children().size() > 2) {
-                                descricao = element.child(1).child(3).nextSibling().toString();
-                            }
-
-                            int color = context.getResources().getColor(R.color.materiais_file);
-                            Drawable img = context.getResources().getDrawable(R.drawable.ic_file);
-
-                            if (extension.equals(".pdf")) {
-                                color = context.getResources().getColor(R.color.materiais_pdf);
-                                img = context.getResources().getDrawable(R.drawable.ic_pdf);
-                            } else if (extension.equals(".docx") || extension.equals(".doc")
-                                    || extension.equals(".txt") || extension.equals(".rtf")) {
-                                color = context.getResources().getColor(R.color.materiais_doc);
-                                img = context.getResources().getDrawable(R.drawable.ic_docs);
-                            } else if (extension.equals(".csv") || extension.equals(".svg")) {
-                                color = context.getResources().getColor(R.color.materiais_table);
-                                img = context.getResources().getDrawable(R.drawable.ic_table);
-                            } else if (extension.equals(".zip") || extension.equals(".rar")
-                                    || extension.equals(".7z")) {
-                                color = context.getResources().getColor(R.color.materiais_zip);
-                                img = context.getResources().getDrawable(R.drawable.ic_compressed);
-                            } else if (extension.equals(".mp3") || extension.equals(".wav")
-                                    || extension.equals(".wma")) {
-                                color = context.getResources().getColor(R.color.materiais_audio);
-                                img = context.getResources().getDrawable(R.drawable.ic_song);
-                            } else if (extension.equals(".mp4") || extension.equals(".wmv")
-                                    || extension.equals(".avi")) {
-                                color = context.getResources().getColor(R.color.materiais_video);
-                                img = context.getResources().getDrawable(R.drawable.ic_video);
-                            } else if (extension.equals(".jpg") || extension.equals(".png")) {
-                                color = context.getResources().getColor(R.color.materiais_image);
-                                img = context.getResources().getDrawable(R.drawable.ic_picture);
-                            } else if (extension.equals(".jar") || extension.equals(".php")
-                                    || extension.equals(".html") || extension.equals(".css")
-                                    || extension.equals(".js") || extension.equals(".json")
-                                    || extension.equals(".xml")) {
-                                color = context.getResources().getColor(R.color.materiais_script);
-                                img = context.getResources().getDrawable(R.drawable.ic_script);
-                            }
-
-                            material.add(new Materiais(data, nomeConteudo, link, descricao, color, img));
-
-                            Log.i("Materia", "\n\nNome: " + nomeConteudo + "\nData: " + data + "\nLink: " + link + "\nDesc: " + descricao);
-                            if (element.nextElementSibling() != null) {
-                                element = element.nextElementSibling();
-                                classe = element.className();
-                            } else {
-                                classe = "quit";
-                            }
+                        //pode ou nao ter descricao
+                        if (element.child(1).children().size() > 2) {
+                            descricao = element.child(1).child(3).nextSibling().toString();
                         }
-                        materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator(context)));
-                    }
 
-                    Elements options = document.getElementsByTag("option");
+                        int color = context.getResources().getColor(R.color.materiais_file);
+                        Drawable img = context.getResources().getDrawable(R.drawable.ic_file);
 
-                    if (webView.pg_materiais_loaded.length == 1) {
-                        webView.pg_materiais_loaded = new boolean[options.size() - 1];
-                        webView.pg_materiais_loaded[0] = true;
-                    }
-
-                    webView.pg_materiais_loaded[webView.year_position] = true;
-                    Log.i("JavaScriptWebView", "Materiais handled!");
-
-                    onMateriaisLoad.onPageFinish(materiais);
-                    onPageLoad.onPageFinish(URL + MATERIAS);
-
+                        if (extension.equals(".pdf")) {
+                            color = context.getResources().getColor(R.color.materiais_pdf);
+                            img = context.getResources().getDrawable(R.drawable.ic_pdf);
+                        } else if (extension.equals(".docx") || extension.equals(".doc")
+                                || extension.equals(".txt") || extension.equals(".rtf")) {
+                            color = context.getResources().getColor(R.color.materiais_doc);
+                            img = context.getResources().getDrawable(R.drawable.ic_docs);
+                        } else if (extension.equals(".csv") || extension.equals(".svg")) {
+                            color = context.getResources().getColor(R.color.materiais_table);
+                            img = context.getResources().getDrawable(R.drawable.ic_table);
+                        } else if (extension.equals(".zip") || extension.equals(".rar")
+                                || extension.equals(".7z")) {
+                            color = context.getResources().getColor(R.color.materiais_zip);
+                            img = context.getResources().getDrawable(R.drawable.ic_compressed);
+                        } else if (extension.equals(".mp3") || extension.equals(".wav")
+                                || extension.equals(".wma")) {
+                            color = context.getResources().getColor(R.color.materiais_audio);
+                            img = context.getResources().getDrawable(R.drawable.ic_song);
+                        } else if (extension.equals(".mp4") || extension.equals(".wmv")
+                                || extension.equals(".avi")) {
+                            color = context.getResources().getColor(R.color.materiais_video);
+                            img = context.getResources().getDrawable(R.drawable.ic_video);
+                        } else if (extension.equals(".jpg") || extension.equals(".png")) {
+                            color = context.getResources().getColor(R.color.materiais_image);
+                            img = context.getResources().getDrawable(R.drawable.ic_picture);
+                        } else if (extension.equals(".jar") || extension.equals(".php")
+                                || extension.equals(".html") || extension.equals(".css")
+                                || extension.equals(".js") || extension.equals(".json")
+                                || extension.equals(".xml")) {
+                            color = context.getResources().getColor(R.color.materiais_script);
+                            img = context.getResources().getDrawable(R.drawable.ic_script);
                         }
-                    }.start();
 
-                } catch (Exception e) {
-                    Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
-                    onPageLoad.onErrorRecived(e.getMessage());
+                        material.add(new Materiais(data, nomeConteudo, link, descricao, color, img));
+
+                        Log.i("Materia", "\n\nNome: " + nomeConteudo + "\nData: " + data + "\nLink: " + link + "\nDesc: " + descricao);
+                        if (element.nextElementSibling() != null) {
+                            element = element.nextElementSibling();
+                            classe = element.className();
+                        } else {
+                            classe = "quit";
+                        }
+                    }
+                    materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator(context)));
                 }
 
+                Elements options = document.getElementsByTag("option");
+
+                if (webView.pg_materiais_loaded.length == 1) {
+                    webView.pg_materiais_loaded = new boolean[options.size() - 1];
+                    webView.pg_materiais_loaded[0] = true;
+                }
+
+                webView.pg_materiais_loaded[webView.year_position] = true;
+                Log.i("JavaScriptWebView", "Materiais handled!");
+
+                if (onMateriaisLoad != null) {
+                    onMateriaisLoad.onPageFinish(materiais);
+                }
+
+                callOnFinish(URL + MATERIAS);
+            }).start();
+        } catch (Exception e) {
+            Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
+            callOnError(e.getMessage());
+        }
     }
 
     @JavascriptInterface
@@ -818,10 +814,10 @@ public class JavaScriptWebView {
             if (error == null) {
                 webView.pg_calendario_loaded = true;
                 Log.i("JavaScriptWebView", "Calendario handled!");
-                onPageLoad.onPageFinish(URL + PG_CALENDARIO);
+                callOnFinish(URL + PG_CALENDARIO);
             } else {
                 Log.e("BoxStore", error.getMessage());
-                onPageLoad.onErrorRecived(error.getMessage());
+                callOnError(error.getMessage());
             }
         });
     }
@@ -919,6 +915,18 @@ public class JavaScriptWebView {
     private static String trimb(String string) {
         string = string.substring(0, 4);
         return string;
+    }
+
+    private void callOnFinish(String url_p) {
+        if (onPageLoad != null) {
+            onPageLoad.onPageFinish(url_p);
+        }
+    }
+
+    private void callOnError(String error) {
+        if (onPageLoad != null) {
+            onPageLoad.onErrorRecived(error);
+        }
     }
 
     public void setOnPageLoadListener(OnPageLoad.Main onPageLoad) {
