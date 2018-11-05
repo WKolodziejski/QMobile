@@ -22,12 +22,6 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     private int currentFragment;
     private OnTopScrollRequested onTopScrollRequestedB, onTopScrollRequestedD;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -86,6 +80,30 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     @Override
     public void onUpdate() {
         showNotas(getView());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
     }
 
     @Override

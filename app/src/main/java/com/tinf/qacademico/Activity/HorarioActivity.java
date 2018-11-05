@@ -36,11 +36,8 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
 
         ButterKnife.bind(this);
 
-        webView.setOnPageLoadListener(this);
-
-        SingletonWebView webView = SingletonWebView.getInstance();
-
         setSupportActionBar(findViewById(R.id.toolbar));
+
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
                 + " ― " + webView.data_year[webView.year_position]);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -95,4 +92,16 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
 
     @Override
     public void onErrorRecived(String error) {}
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        webView.setOnPageLoadListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        webView.setOnPageLoadListener(this);
+    }
 }

@@ -71,11 +71,8 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         ButterKnife.bind(this);
 
         setSupportActionBar(findViewById(R.id.toolbar));
-        bottomNav.setOnNavigationItemSelectedListener(this);
 
         webView.configWebView(this);
-
-        refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
 
         testLogin();
     }
@@ -321,12 +318,17 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         super.onStart();
         //appBarLayout.addOnOffsetChangedListener(this);
         webView.setOnPageLoadListener(this);
+        refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
+        bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         //appBarLayout.removeOnOffsetChangedListener(this);
+        //webView.setOnPageLoadListener(null);
+        //refreshLayout.setOnRefreshListener(null);
+        //bottomNav.setOnNavigationItemSelectedListener(null);
         dismissProgressbar();
     }
 
@@ -335,12 +337,17 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         super.onResume();
         //appBarLayout.addOnOffsetChangedListener(this);
         webView.setOnPageLoadListener(this);
+        refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
+        bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         //appBarLayout.removeOnOffsetChangedListener(this);
+        //webView.setOnPageLoadListener(null);
+        //refreshLayout.setOnRefreshListener(null);
+        //bottomNav.setOnNavigationItemSelectedListener(null);
         dismissProgressbar();
     }
 

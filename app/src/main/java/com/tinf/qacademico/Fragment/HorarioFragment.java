@@ -21,12 +21,6 @@ import io.objectbox.BoxStore;
 public class HorarioFragment extends Fragment implements OnUpdate {
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_horario, container, false);
     }
@@ -54,6 +48,30 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate() {
         showHorario(getView());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
     }
 
     @Override

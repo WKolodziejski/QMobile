@@ -197,11 +197,9 @@ public class SingletonWebView implements OnPageLoad.Main {
         faller.setLoadWithOverviewMode(true);
 
         javaScriptWebView = new JavaScriptWebView(context);
-
         ClientWebView clientWebView = new ClientWebView(context);
 
         javaScriptWebView.setOnPageLoadListener(this);
-
         clientWebView.setOnPageLoadListener(this);
 
         webView.setWebViewClient(clientWebView);
@@ -235,7 +233,7 @@ public class SingletonWebView implements OnPageLoad.Main {
     @Override
     public void onErrorRecived(String error) {
         isLoading = false;
-        webView.stopLoading();
+        webView.post(() -> webView.stopLoading());
         Log.i("Error", error);
         onPageLoad.onErrorRecived(error);
     }

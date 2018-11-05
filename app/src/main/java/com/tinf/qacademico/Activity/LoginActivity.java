@@ -42,7 +42,6 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         loginLayout = (ViewGroup) findViewById(R.id.login_container);
 
         webView.isLoginPage = true;
-        webView.setOnPageLoadListener(this);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment).commit();
     }
@@ -241,4 +240,15 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         this.moveTaskToBack(true);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        webView.setOnPageLoadListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        webView.setOnPageLoadListener(this);
+    }
 }

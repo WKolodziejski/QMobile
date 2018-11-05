@@ -36,12 +36,6 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     private List<Mes> mesesList;
     private int month = 0;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -237,7 +231,29 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void requestScroll() {
-
+    public void onStart() {
+        super.onStart();
+        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+    }
+
+    @Override
+    public void requestScroll() {}
 }

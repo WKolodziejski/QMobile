@@ -25,13 +25,6 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
     private SingletonWebView webView = SingletonWebView.getInstance();
     private RecyclerView recyclerViewMateriais;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
-        ((MainActivity) getActivity()).setOnUpdateListener(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,11 +64,41 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
 
     @Override
     public void onPageFinish(List<?> list) {
-        if (!list.isEmpty()) {
-            showMateriais(getView(), (List<MateriaisList>) list);
-        } else {
-            getLayoutInflater().inflate(R.layout.layout_empty,  null);
-        }
+        getActivity().runOnUiThread(() -> {
+            if (!list.isEmpty()) {
+                showMateriais(getView(), (List<MateriaisList>) list);
+            } else {
+                getLayoutInflater().inflate(R.layout.layout_empty,  null);
+            }
+        });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+        SingletonWebView.getInstance().setOnMateriaisLoadListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+        SingletonWebView.getInstance().setOnMateriaisLoadListener(null);
     }
 
     @Override

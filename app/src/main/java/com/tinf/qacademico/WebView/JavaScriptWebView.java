@@ -484,13 +484,15 @@ public class JavaScriptWebView {
 
     @JavascriptInterface
     public void handleMateriais(String html_p) {
-        new Thread() {
-            @Override
-            public void run() {
 
-                Log.i("JavaScriptWebView", "Materiais handling...");
 
                 try {
+                    new Thread() {
+                        @Override
+                        public void run() {
+
+                            Log.i("JavaScriptWebView", "Materiais handling...");
+
                     Document document = Jsoup.parse(html_p);
                     Element table = document.getElementsByTag("tbody").get(10);
                     Elements rotulos = table.getElementsByClass("rotulo");
@@ -584,15 +586,17 @@ public class JavaScriptWebView {
                     webView.pg_materiais_loaded[webView.year_position] = true;
                     Log.i("JavaScriptWebView", "Materiais handled!");
 
-                    onPageLoad.onPageFinish(URL + MATERIAS);
                     onMateriaisLoad.onPageFinish(materiais);
+                    onPageLoad.onPageFinish(URL + MATERIAS);
+
+                        }
+                    }.start();
 
                 } catch (Exception e) {
                     Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
                     onPageLoad.onErrorRecived(e.getMessage());
                 }
-            }
-        }.start();
+
     }
 
     @JavascriptInterface

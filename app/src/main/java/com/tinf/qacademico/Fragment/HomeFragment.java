@@ -50,12 +50,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-    }
-
-    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
@@ -170,6 +164,30 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onUpdate() {
         showHorario(getView());
         showOffline(getView());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
     }
 
     @Override

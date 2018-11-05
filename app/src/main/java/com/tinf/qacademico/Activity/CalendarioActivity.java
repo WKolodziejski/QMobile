@@ -42,8 +42,6 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
 
         ButterKnife.bind(this);
 
-        webView.setOnPageLoadListener(this);
-
         setSupportActionBar(findViewById(R.id.toolbar_calendario));
        // Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_calendario);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -105,4 +103,15 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
     @Override
     public void onErrorRecived(String error) {}
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        webView.setOnPageLoadListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        webView.setOnPageLoadListener(this);
+    }
 }
