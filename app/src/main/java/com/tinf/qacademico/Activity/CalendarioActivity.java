@@ -69,7 +69,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            SingletonWebView.getInstance().loadUrl(URL + PG_CALENDARIO);
+            webView.loadUrl(URL + PG_CALENDARIO);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -97,7 +97,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
             progressBar.setVisibility(View.GONE);
             progressBar.progressiveStop();
             if (onUpdate != null) {
-                onUpdate.onUpdate();
+                onUpdate.onUpdate(url_p);
             }
         });
     }

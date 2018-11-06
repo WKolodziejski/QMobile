@@ -2,6 +2,7 @@ package com.tinf.qacademico.Fragment;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +43,9 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qacademico.Utilities.Utils.LAST_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qacademico.Utilities.Utils.LOGIN_NAME;
+import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
+import static com.tinf.qacademico.Utilities.Utils.UPDATE_REQUEST;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class HomeFragment extends Fragment implements OnUpdate {
@@ -65,7 +68,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
-        });
+                });
 
         view.findViewById(R.id.home_website).setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
@@ -161,9 +164,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onUpdate() {
-        showHorario(getView());
-        showOffline(getView());
+    public void onUpdate(String url_p) {
+        if (url_p.equals(URL + PG_HOME) || url_p.equals(UPDATE_REQUEST)) {
+            showHorario(getView());
+            showOffline(getView());
+        }
     }
 
     @Override

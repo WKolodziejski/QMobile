@@ -59,7 +59,7 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            SingletonWebView.getInstance().loadUrl(URL + PG_HORARIO);
+            webView.loadUrl(URL + PG_HORARIO);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -87,7 +87,7 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
             progressBar.setVisibility(View.GONE);
             progressBar.progressiveStop();
             if (onUpdate != null) {
-                onUpdate.onUpdate();
+                onUpdate.onUpdate(url_p);
             }
         });
     }

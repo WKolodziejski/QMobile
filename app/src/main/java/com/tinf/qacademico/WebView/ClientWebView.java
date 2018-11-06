@@ -33,8 +33,8 @@ public class ClientWebView extends WebViewClient {
     private OnPageLoad.Main onPageLoad;
 
     ClientWebView(Context context) {
-        this.context = context.getApplicationContext();
-        this.login_info = this.context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
+        this.context = context;
+        this.login_info = context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
     }
 
     @Override

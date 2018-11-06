@@ -17,6 +17,11 @@ import com.tinf.qacademico.R;
 import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.Objects;
 
+import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
+import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.tinf.qacademico.Utilities.Utils.UPDATE_REQUEST;
+import static com.tinf.qacademico.Utilities.Utils.URL;
+
 public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
     private int currentFragment;
@@ -78,8 +83,10 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    public void onUpdate() {
-        showNotas(getView());
+    public void onUpdate(String url_p) {
+        if (url_p.equals(URL + PG_DIARIOS) || url_p.equals(URL + PG_BOLETIM) || url_p.equals(UPDATE_REQUEST)) {
+            showNotas(getView());
+        }
     }
 
     @Override

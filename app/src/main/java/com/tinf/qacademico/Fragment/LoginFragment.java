@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.tinf.qacademico.Activity.LoginActivity;
 import com.tinf.qacademico.R;
+import com.tinf.qacademico.WebView.SingletonWebView;
 
 import java.util.Objects;
 
@@ -69,7 +70,7 @@ public class LoginFragment extends Fragment {
             editor.apply();
 
             ((LoginActivity) getActivity()).dismissSnackbar();
-            ((LoginActivity) getActivity()).webView.loadUrl(URL + PG_LOGIN);
+            SingletonWebView.getInstance().loadUrl(URL + PG_LOGIN);
         });
     }
 

@@ -910,7 +910,7 @@ public class JavaScriptWebView {
     }
 
     private BoxStore getBox() {
-        return SingletonWebView.getInstance().box;
+        return webView.box;
     }
 
     private static String trimb(String string) {

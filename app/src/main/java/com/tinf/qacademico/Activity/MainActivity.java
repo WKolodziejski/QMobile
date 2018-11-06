@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
@@ -59,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     TabLayout tabLayout;
     @BindView(R.id.refresh_layout)
     public SwipeRefreshLayout refreshLayout;
-    //@BindView(R.id.app_bar_layout)              AppBarLayout appBarLayout;
+    @BindView(R.id.app_bar_layout)
+    public AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnUpdate onUpdate;
 
@@ -198,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
             refreshLayout.setRefreshing(false);
             dismissProgressbar();
             if (onUpdate != null) {
-                onUpdate.onUpdate();
+                onUpdate.onUpdate(url_p);
             }
         });
     }
@@ -307,6 +309,14 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         //appBarLayout.setExpanded(true, true);
     }
 
+    private void reload() {
+        if (Utils.isConnected(getApplicationContext())) {
+            webView.reload(bottomNav.getSelectedItemId());
+        } else {
+            refreshLayout.setRefreshing(false);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -318,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         super.onStart();
         //appBarLayout.addOnOffsetChangedListener(this);
         webView.setOnPageLoadListener(this);
-        refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
+        refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
@@ -353,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         dismissProgressbar();
     }
 
+
     public BoxStore getBox() {
         return ((App) getApplication()).getBoxStore();
     }
@@ -370,4 +381,12 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         this.onUpdate = onUpdate;
     }
 
+    /*@Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            appBarLayout.setElevation(i == 0 ?
+                    (4 * getResources().getDisplayMetrics().density) :
+                    (0 * getResources().getDisplayMetrics().density));
+        }
+    }*/
 }

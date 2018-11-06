@@ -26,6 +26,7 @@ public class Utils {
     public static final String LOGIN_REGISTRATION = ".Matricula";
     public static final String LOGIN_PASSWORD = ".Senha";
     public static final String URL = "http://qacademico.ifsul.edu.br//qacademico/index.asp?t=";
+    public static final String UPDATE_REQUEST = "UPD";
     public static final String PG_LOGIN = "1001";
     public static final String PG_HOME = "2000";
     public static final String PG_DIARIOS = "2071";

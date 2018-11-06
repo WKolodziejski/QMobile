@@ -84,7 +84,7 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
     public void onStart() {
         super.onStart();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-        SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
+        webView.setOnMateriaisLoadListener(this);
         if (materiaisList == null) {
             webView.loadUrl(URL + PG_MATERIAIS);
         }
@@ -94,7 +94,7 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
     public void onResume() {
         super.onResume();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-        SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
+        webView.setOnMateriaisLoadListener(this);
         if (materiaisList == null) {
             webView.loadUrl(URL + PG_MATERIAIS);
         }
@@ -104,21 +104,23 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
     public void onPause() {
         super.onPause();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-        SingletonWebView.getInstance().setOnMateriaisLoadListener(null);
+        webView.setOnMateriaisLoadListener(null);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-        SingletonWebView.getInstance().setOnMateriaisLoadListener(null);
+        webView.setOnMateriaisLoadListener(null);
     }
 
     @Override
-    public void onUpdate() {}
+    public void onUpdate(String url_p) {}
 
     @Override
     public void requestScroll() {
-        recyclerViewMateriais.smoothScrollToPosition(0);
+        if (recyclerViewMateriais != null) {
+            recyclerViewMateriais.smoothScrollToPosition(0);
+        }
     }
 }

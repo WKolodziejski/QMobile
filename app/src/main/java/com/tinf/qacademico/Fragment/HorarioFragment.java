@@ -17,6 +17,9 @@ import com.tinf.qacademico.Widget.HorarioView;
 import com.tinf.qacademico.R;
 import java.util.Objects;
 import io.objectbox.BoxStore;
+import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.tinf.qacademico.Utilities.Utils.UPDATE_REQUEST;
+import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class HorarioFragment extends Fragment implements OnUpdate {
 
@@ -46,8 +49,10 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onUpdate() {
-        showHorario(getView());
+    public void onUpdate(String url_p) {
+        if (url_p.equals(URL + PG_HORARIO) || url_p.equals(UPDATE_REQUEST)) {
+            showHorario(getView());
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 
 public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main {
-    public SingletonWebView webView = SingletonWebView.getInstance();
+    private SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
@@ -208,7 +208,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         runOnUiThread(() -> {
             if (url_p.equals(URL + PG_LOGIN)) {
                 ((App) getApplication()).setLogged(true);
-                SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
+                webView.setBoxStore(((App) getApplication()).getBoxStore());
 
             } else if (url_p.equals(URL + PG_ERRO)) {
                 loginFragment.dismissProgressBar();

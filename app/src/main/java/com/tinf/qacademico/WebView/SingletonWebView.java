@@ -23,6 +23,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qacademico.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
+import static com.tinf.qacademico.Utilities.Utils.UPDATE_REQUEST;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 import static com.tinf.qacademico.Utilities.Utils.YEARS;
 
@@ -150,7 +151,7 @@ public class SingletonWebView implements OnPageLoad.Main {
             if (id == R.id.navigation_materiais) {
                 webView.loadUrl(URL + PG_MATERIAIS);
             } else {
-               callOnFinish("");
+               callOnFinish(UPDATE_REQUEST);
             }
 
         } else {

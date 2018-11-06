@@ -21,6 +21,7 @@ import com.tinf.qacademico.Class.Calendario.Evento;
 import com.tinf.qacademico.Class.Calendario.Mes;
 import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
 import com.tinf.qacademico.R;
+import com.tinf.qacademico.Utilities.Utils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +30,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
+import static com.tinf.qacademico.Utilities.Utils.UPDATE_REQUEST;
 
 public class CalendarioFragment extends Fragment implements OnUpdate {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM ― yyyy", Locale.getDefault());
@@ -226,8 +229,10 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onUpdate() {
-        showCalendar(getView());
+    public void onUpdate(String url_p) {
+        if (url_p.equals(Utils.URL + PG_CALENDARIO) || url_p.equals(UPDATE_REQUEST)) {
+            showCalendar(getView());
+        }
     }
 
     @Override
