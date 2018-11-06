@@ -43,7 +43,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/text_offline"
+                    android:text="Offline"
                     android:layout_marginRight="8dp"
                     android:layout_marginLeft="8dp"
                     android:textStyle="bold"
@@ -127,7 +127,7 @@
                     android:layout_marginHorizontal="8dp"
                     android:background="@color/black_dividers" />
 
-                <com.tinf.qacademico.Widget.HorarioView
+                <com.tinf.qmobile.Widget.HorarioView
                     android:id="@+id/weekView_home"
                     android:layout_width="match_parent"
                     android:layout_height="325dp"
