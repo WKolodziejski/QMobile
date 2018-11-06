@@ -95,18 +95,6 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
     public void requestScroll() {
         switch (currentFragment) {
             case 0: onTopScrollRequestedD.onTopScrollRequested();

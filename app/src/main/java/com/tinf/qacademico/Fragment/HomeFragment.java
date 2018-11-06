@@ -179,18 +179,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
     public void requestScroll() {
         nestedScrollView.smoothScrollTo(0,0);
     }

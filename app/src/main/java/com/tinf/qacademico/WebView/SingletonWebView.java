@@ -150,7 +150,7 @@ public class SingletonWebView implements OnPageLoad.Main {
             if (id == R.id.navigation_materiais) {
                 webView.loadUrl(URL + PG_MATERIAIS);
             } else {
-                onPageLoad.onPageFinish("");
+               callOnFinish("");
             }
 
         } else {
@@ -217,7 +217,7 @@ public class SingletonWebView implements OnPageLoad.Main {
     @Override
     public void onPageStart() {
         isLoading = true;
-        onPageLoad.onPageStart();
+        callOnStart();
     }
 
     @Override
@@ -227,7 +227,7 @@ public class SingletonWebView implements OnPageLoad.Main {
             isPaused = true;
         }
         Log.i("Finish", url_p);
-        onPageLoad.onPageFinish(url_p);
+        callOnFinish(url_p);
     }
 
     @Override
@@ -235,6 +235,24 @@ public class SingletonWebView implements OnPageLoad.Main {
         isLoading = false;
         webView.post(() -> webView.stopLoading());
         Log.i("Error", error);
-        onPageLoad.onErrorRecived(error);
+        callOnError(error);
+    }
+
+    private void callOnFinish(String url_p) {
+        if (onPageLoad != null) {
+            onPageLoad.onPageFinish(url_p);
+        }
+    }
+
+    private void callOnError(String error) {
+        if (onPageLoad != null) {
+            onPageLoad.onErrorRecived(error);
+        }
+    }
+
+    private void callOnStart() {
+        if (onPageLoad != null) {
+            onPageLoad.onPageStart();
+        }
     }
 }

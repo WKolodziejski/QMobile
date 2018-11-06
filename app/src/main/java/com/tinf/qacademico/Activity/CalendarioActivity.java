@@ -96,7 +96,9 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
         runOnUiThread(() -> {
             progressBar.setVisibility(View.GONE);
             progressBar.progressiveStop();
-            onUpdate.onUpdate();
+            if (onUpdate != null) {
+                onUpdate.onUpdate();
+            }
         });
     }
 
@@ -113,5 +115,17 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
     public void onResume() {
         super.onResume();
         webView.setOnPageLoadListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        onUpdate = null;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        onUpdate = null;
     }
 }

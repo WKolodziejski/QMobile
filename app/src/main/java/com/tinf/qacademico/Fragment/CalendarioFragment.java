@@ -243,17 +243,5 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
     public void requestScroll() {}
 }

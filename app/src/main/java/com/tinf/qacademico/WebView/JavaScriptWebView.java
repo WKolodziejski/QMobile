@@ -38,6 +38,7 @@ import static com.tinf.qacademico.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qacademico.Utilities.Utils.PG_HOME;
 import static com.tinf.qacademico.Utilities.Utils.PG_HORARIO;
+import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qacademico.Utilities.Utils.URL;
 import static com.tinf.qacademico.Utilities.Utils.YEARS;
 import static com.tinf.qacademico.Utilities.Utils.getRandomColorGenerator;
@@ -587,7 +588,7 @@ public class JavaScriptWebView {
                     onMateriaisLoad.onPageFinish(materiais);
                 }
 
-                callOnFinish(URL + MATERIAS);
+                callOnFinish(URL + PG_MATERIAIS);
             }).start();
         } catch (Exception e) {
             Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());

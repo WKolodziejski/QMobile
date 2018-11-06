@@ -63,17 +63,5 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-    }
-
-    @Override
     public void requestScroll() {}
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tinf.qacademico.Activity.MainActivity;
 import com.tinf.qacademico.Adapter.Materiais.MateriaisListAdapter;
+import com.tinf.qacademico.Class.Materiais.Materiais;
 import com.tinf.qacademico.Class.Materiais.MateriaisList;
 import com.tinf.qacademico.Interfaces.Fragments.OnUpdate;
 import com.tinf.qacademico.Interfaces.WebView.OnPageLoad;
@@ -21,9 +22,14 @@ import com.tinf.qacademico.WebView.SingletonWebView;
 import java.util.List;
 import java.util.Objects;
 
+import static com.tinf.qacademico.Utilities.Utils.PG_DIARIOS;
+import static com.tinf.qacademico.Utilities.Utils.PG_MATERIAIS;
+import static com.tinf.qacademico.Utilities.Utils.URL;
+
 public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais, OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
     private RecyclerView recyclerViewMateriais;
+    private List<MateriaisList> materiaisList;
 
     @Nullable
     @Override
@@ -31,7 +37,7 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
         return inflater.inflate(R.layout.fragment_materiais, container, false);
     }
 
-    private void showMateriais(View view, List<MateriaisList> materiaisList) {
+    private void showMateriais(View view) {
 
         ((MainActivity) getActivity()).setTitle(webView.data_year[webView.year_position]);
 
@@ -63,10 +69,11 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
     }
 
     @Override
-    public void onPageFinish(List<?> list) {
+    public void onPageFinish(List<MateriaisList> list) {
         getActivity().runOnUiThread(() -> {
             if (!list.isEmpty()) {
-                showMateriais(getView(), (List<MateriaisList>) list);
+                materiaisList = list;
+                showMateriais(getView());
             } else {
                 getLayoutInflater().inflate(R.layout.layout_empty,  null);
             }
@@ -78,6 +85,9 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
         super.onStart();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
         SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
+        if (materiaisList == null) {
+            webView.loadUrl(URL + PG_MATERIAIS);
+        }
     }
 
     @Override
@@ -85,6 +95,9 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
         super.onResume();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
         SingletonWebView.getInstance().setOnMateriaisLoadListener(this);
+        if (materiaisList == null) {
+            webView.loadUrl(URL + PG_MATERIAIS);
+        }
     }
 
     @Override

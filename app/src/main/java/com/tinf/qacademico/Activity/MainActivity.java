@@ -67,13 +67,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
-
         setSupportActionBar(findViewById(R.id.toolbar));
-
         webView.configWebView(this);
-
         testLogin();
     }
 
@@ -87,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
-
         hideExpandBtn();
         dismissProgressbar();
     }
@@ -168,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
 
                 case R.id.navigation_materiais:
                     setTitle(webView.data_year[webView.year_position]);
-                    webView.loadUrl(URL + PG_MATERIAIS);
                     if (webView.year_position > 0) {
                         webView.scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
                                 + (webView.year_position + 1) + ";document.forms[0].submit();";
@@ -179,7 +173,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
                     return true;
             }
         } else {
-            onUpdate.requestScroll();
+            if (onUpdate != null) {
+                onUpdate.requestScroll();
+            }
         }
         return false;
     }
@@ -201,7 +197,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
             webView.loadNextUrl();
             refreshLayout.setRefreshing(false);
             dismissProgressbar();
-            onUpdate.onUpdate();
+            if (onUpdate != null) {
+                onUpdate.onUpdate();
+            }
         });
     }
 
@@ -296,7 +294,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
                 .putBoolean(LOGIN_VALID, false)
                 .apply();
 
-        recreate();
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
     }
 
     private void changeFragment(Fragment fragment) {
@@ -325,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     @Override
     protected void onStop() {
         super.onStop();
+        onUpdate = null;
         //appBarLayout.removeOnOffsetChangedListener(this);
         //webView.setOnPageLoadListener(null);
         //refreshLayout.setOnRefreshListener(null);
@@ -344,6 +345,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     @Override
     protected void onPause() {
         super.onPause();
+        onUpdate = null;
         //appBarLayout.removeOnOffsetChangedListener(this);
         //webView.setOnPageLoadListener(null);
         //refreshLayout.setOnRefreshListener(null);
