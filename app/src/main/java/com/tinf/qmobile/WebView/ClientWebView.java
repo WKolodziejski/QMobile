@@ -18,6 +18,8 @@ import com.crashlytics.android.answers.LoginEvent;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
+
+import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
@@ -94,7 +96,6 @@ public class ClientWebView extends WebViewClient {
                 if (webView.isLoginPage) {
                     //webView.isLoginPage = false;
                     Answers.getInstance().logLogin(new LoginEvent()
-                            .putMethod("LoginActivity")
                             .putSuccess(true));
                     Log.i("WebViewClient", "Login done");
                     callOnFinish(URL + PG_LOGIN);
@@ -157,14 +158,14 @@ public class ClientWebView extends WebViewClient {
                 Log.i("WebViewClient", "Error");
 
                 if (webView.isLoginPage) {
+                    Answers.getInstance().logLogin(new LoginEvent()
+                            .putCustomAttribute("Matricula", login_info.getString(LOGIN_REGISTRATION, ""))
+                            .putSuccess(false));
                     login_info.edit()
                             .putString(Utils.LOGIN_REGISTRATION, "")
                             .putString(Utils.LOGIN_PASSWORD, "")
                             .putBoolean(Utils.LOGIN_VALID, false)
                             .apply();
-                    Answers.getInstance().logLogin(new LoginEvent()
-                            .putMethod("LoginActivity")
-                            .putSuccess(false));
                     callOnFinish(URL + PG_ERRO);
                     Log.i("Login", "Login Inválido");
                 } else {
