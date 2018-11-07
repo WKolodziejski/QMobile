@@ -30,7 +30,7 @@
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
     <string name="menu_bug">Reportar Bug</string>
-    <string name="dialog_yes">Yes</string>
+    <string name="dialog_yes">Sim</string>
     <string name="dialog_no">Não</string>
     <string name="dialog_quit">Sair</string>
     <string name="dialog_quit_msg">Deseja mesmo sair?</string>
