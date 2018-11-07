@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name" translatable="false">QAcadêmico</string>
+    <string name="app_name" translatable="false">Q Mobile</string>
     <string name="app_q" translatable="false">2018 QAcadêmico Mobile</string>
     <string name="app_version">Versão</string>
     <string name="app_tinf">Um Projeto TINF</string>
     <string name="app_more">Mais</string>
-    <string name="title_activity_about">Sobre</string>
-    <string name="title_activity_more">Mais</string>
+    <string name="title_about">Sobre</string>
+    <string name="title_more">Mais</string>
     <string name="title_home">Início</string>
     <string name="title_notas">Notas</string>
     <string name="title_materiais">Materiais</string>
@@ -15,52 +15,30 @@
     <string name="title_boletim">Boletim</string>
     <string name="title_horario">Horário</string>
     <string name="title_graficos">Gráficos</string>
-    <string name="title_activity_login">Login</string>
-    <string name="title_other">Outro</string>
+    <string name="title_settings">Configurações</string>
+    <string name="title_login">Login</string>
     <string name="action_settings">Configurações</string>
-    <string name="action_webview">Versão Web</string>
-    <string name="action_reset">Limpar Dados</string>
-    <string name="action_changes">Últimas Mudanças</string>
     <string name="action_about">Sobre</string>
-    <string name="action_att">Atualizações</string>
-    <string name="text_connection_error">Não foi Possível Carregar a Página</string>
-    <string name="text_connection_timeout">Tempo esgotado</string>
-    <string name="text_connection_no">Sem Conexão com a Internet</string>
+    <string name="action_logout">Sair</string>
+    <string name="text_connection_error">Não foi possível carregar a página</string>
     <string name="text_empty">Não há nada aqui, volte mais tarde</string>
     <string name="text_empty_materiais">Não há materiais disponíveis</string>
-    <string name="title_loading">Carregando</string>
-    <string name="text_loading">Por favor, aguarde…</string>
     <string name="text_retry">Recarregar</string>
-    <string name="text_offline">Offline</string>
-    <string name="text_unavailable">Recurso indisponível nesta versão</string>
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
-    <string name="text_invalid_login">Login Inválido</string>
-    <string name="text_expired_login">Seu Login Expirou</string>
+    <string name="text_invalid_login">Login inválido</string>
     <string name="text_loading_first_login">Carregando %1$s / %2$s</string>
-    <string name="text_login_necessary">É necessário estar logado</string>
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
-    <string name="navigation_drawer_open">Abrir Menu</string>
-    <string name="navigation_drawer_close">Fechar Menu</string>
-    <string name="menu_materiais">Materiais de Aula</string>
-    <string name="menu_calendario">Calendário</string>
-    <string name="menu_documentos">Solicitar Documentos</string>
-    <string name="menu_account">Minha Conta</string>
-    <string name="menu_logout">Sair</string>
-    <string name="menu_resources">Recursos</string>
-    <string name="menu_communication">Comunicação</string>
-    <string name="menu_share">Compartilhar</string>
-    <string name="menu_changes">Sugerir Mudanças</string>
-    <string name="menu_settigs">Configurações</string>
     <string name="menu_bug">Reportar Bug</string>
-    <string name="dialog_quit_yes">Sim</string>
-    <string name="dialog_quit_no">Não</string>
-    <string name="dialog_quit_title">Sair</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">Não</string>
+    <string name="dialog_quit">Sair</string>
     <string name="dialog_quit_msg">Deseja mesmo sair?</string>
     <string name="dialog_date_change">Selecione um ano</string>
     <string name="dialog_confirm">OK</string>
     <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_change">Trocar</string>
     <string name="dialog_close">Fechar</string>
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_logging">Efetuando login</string>
@@ -89,33 +67,17 @@
     <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_footer">Confira suas notas no site</string>
     <string name="home_refresh">Atualizar</string>
-    <string name="fab_expand">Expandir/Recolher</string>
     <string name="action_date">Selecionar Data</string>
-    <string name="action_column">Organizar Tabela</string>
-    <string name="action_header">Travar/Liberar Cabeçalho</string>
     <string name="more_devs">Desenvolvido por:</string>
     <string name="more_free">Código Aberto</string>
     <string name="more_colab">Colabore com este projeto!</string>
-    <string name="more_content">*O conteúdo utilizado não pertence aos criadores do app.</string>
-    <string name="more_site" translatable="false">http://qacademico.ifsul.edu.br</string>
-    <string name="more_copyright" translatable="false">© 2018 Qualidata</string>
-    <string name="more_year" translatable="false">2018</string>
-    <string name="more_emerson" translatable="false">Émerson Philippe Lopes</string>
-    <string name="more_gustavo" translatable="false">Gustavo Hübner Rehbein</string>
-    <string name="more_matheus" translatable="false">Matheus Martins Isquierdo</string>
-    <string name="more_william" translatable="false">William Kolodziejski</string>
-    <string name="download_description">Atualização QAcadêmico Mobile</string>
-    <string name="error_title">Erro</string>
-    <string name="error_title_oops">Ops</string>
-    <string name="success_title">Sucesso</string>
+    <string name="more_content">O conteúdo utilizado pertence ao Qualidata © QAcadêmico</string>
     <string name="message_expanded">Abas expandidas</string>
     <string name="message_collapsed">Abas recolhidas</string>
     <string name="pref_autoload_true">Carregar todas páginas automaticamente</string>
     <string name="pref_autoload_false">Carregar todas páginas individualmente</string>
     <string name="pref_notifications_true">Receber notificações quando novas notas estiverem disponíveis</string>
     <string name="pref_notifications_false">Não receber notificações</string>
-    <string name="pref_changes">Lista de alterações nesta versão</string>
-    <string name="pref_update">Verificar por atualizações</string>
 
     <string name="sigla_Avaliacao">A</string>
     <string name="sigla_Prova">P</string>
@@ -124,10 +86,13 @@
     <string name="sigla_Exercicio">E</string>
 
     <string name="default_notification_channel_id" translatable="false">QAcadêmico</string>
-
-    <string name="toast_nenhuma_atualizacao">Nenhuma atualização encontrada, seu aplicativo já está atualizado.</string>
-    <string name="dialog_att_encontrada">Atualização encontrada. Sua versão: %1$s, versão disponível: %2$s.</string>
-
-    <string name="title_activity_settings">Configurções</string>
+    <string name="git_link" translatable="false"></string>
+    <string name="more_site" translatable="false">http://qacademico.ifsul.edu.br</string>
+    <string name="more_copyright" translatable="false">© 2018 Qualidata</string>
+    <string name="more_year" translatable="false">2018</string>
+    <string name="more_emerson" translatable="false">Émerson Philippe Lopes</string>
+    <string name="more_gustavo" translatable="false">Gustavo Hübner Rehbein</string>
+    <string name="more_matheus" translatable="false">Matheus Martins Isquierdo</string>
+    <string name="more_william" translatable="false">William Kolodziejski</string>
 
 </resources>

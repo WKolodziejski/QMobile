@@ -42,7 +42,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_activity_about">
+    <PreferenceCategory android:title="@string/title_about">
 
         <!--<Preference
             android:key="key_send_feedback"
