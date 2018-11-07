@@ -30,14 +30,12 @@
     <string name="diarios_PrimeiraEtapa">First Stage</string>
     <string name="diarios_SegundaEtapa">Second Stage</string>
     <string name="app_version">Version</string>
-    <string name="more_free">Open Source</string>
     <string name="diarios_Peso">Weight:</string>
     <string name="diarios_Nota">Grade:</string>
     <string name="app_tinf">A TINF Project</string>
     <string name="diarios_Max">Max. Grade:</string>
     <string name="app_more">More</string>
     <string name="more_devs">Developed by:</string>
-    <string name="more_colab">Collaborate with this project!</string>
     <string name="more_content">* The content used does not belong to the creators of the app.</string>
     <string name="diarios_nothing">Nothing Here</string>
     <string name="diarios_cobre">Ask your teacher</string>
