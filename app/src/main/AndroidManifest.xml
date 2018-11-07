@@ -19,6 +19,10 @@
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe"
+            />
         <activity
             android:name="com.tinf.qmobile.Activity.SplashActivity"
             android:theme="@style/SplashTheme">

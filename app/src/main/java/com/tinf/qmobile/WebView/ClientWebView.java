@@ -13,6 +13,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
@@ -91,8 +93,11 @@ public class ClientWebView extends WebViewClient {
 
                 if (webView.isLoginPage) {
                     //webView.isLoginPage = false;
-                    callOnFinish(URL + PG_LOGIN);
+                    Answers.getInstance().logLogin(new LoginEvent()
+                            .putMethod("LoginActivity")
+                            .putSuccess(true));
                     Log.i("WebViewClient", "Login done");
+                    callOnFinish(URL + PG_LOGIN);
                 }
 
                 Log.i("WebViewClient", "Home loaded");
@@ -152,12 +157,15 @@ public class ClientWebView extends WebViewClient {
                 Log.i("WebViewClient", "Error");
 
                 if (webView.isLoginPage) {
+                    login_info.edit()
+                            .putString(Utils.LOGIN_REGISTRATION, "")
+                            .putString(Utils.LOGIN_PASSWORD, "")
+                            .putBoolean(Utils.LOGIN_VALID, false)
+                            .apply();
+                    Answers.getInstance().logLogin(new LoginEvent()
+                            .putMethod("LoginActivity")
+                            .putSuccess(false));
                     callOnFinish(URL + PG_ERRO);
-                    SharedPreferences.Editor editor = login_info.edit();
-                    editor.putString(Utils.LOGIN_REGISTRATION, "");
-                    editor.putString(Utils.LOGIN_PASSWORD, "");
-                    editor.putBoolean(Utils.LOGIN_VALID, false);
-                    editor.apply();
                     Log.i("Login", "Login Inválido");
                 } else {
                     Toast.makeText(context, context.getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();

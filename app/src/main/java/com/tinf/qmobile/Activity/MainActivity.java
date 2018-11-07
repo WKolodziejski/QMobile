@@ -9,7 +9,10 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.crashlytics.android.BuildConfig;
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -70,11 +73,12 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     }
 
     private void configFireBase() {
-        final Fabric fabric = new Fabric.Builder(this)
-                .kits(new Crashlytics())
+        Fabric.with(new Fabric.Builder(this)
+                .kits(new CrashlyticsCore.Builder()
+                        .disabled(BuildConfig.DEBUG) //REMOVER ISSO
+                        .build(), new Answers())
                 .debuggable(true)
-                .build();
-        Fabric.with(fabric);
+                .build());
         Crashlytics.setUserIdentifier(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_REGISTRATION, ""));
     }
 

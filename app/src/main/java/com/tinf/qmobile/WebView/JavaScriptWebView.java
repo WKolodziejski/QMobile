@@ -7,6 +7,8 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.LoginEvent;
 import com.tinf.qmobile.Class.Calendario.Dia;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;

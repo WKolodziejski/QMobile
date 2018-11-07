@@ -47,7 +47,7 @@ public class CalendarioAdapter extends RecyclerView.Adapter {
                 }
             }
 
-            return clean.subList(start, clean.size() < 5 ? clean.size() : 5);
+            return clean.subList(start, clean.size() - start < 5 ? clean.size() : start + 5);
 
         } else {
             return clean;

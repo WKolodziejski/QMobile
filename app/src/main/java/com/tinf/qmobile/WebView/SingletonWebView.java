@@ -9,6 +9,9 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
+
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
@@ -143,6 +146,11 @@ public class SingletonWebView implements OnPageLoad.Main {
 
     public void changeDate(int value, int id) {
         if (!isLoading) {
+            Answers.getInstance().logContentView(new ContentViewEvent()
+                    .putContentName("Change Year")
+                    .putContentId(String.valueOf(id))
+                    .putCustomAttribute("To position", value));
+
             year_position = value;
 
             scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
