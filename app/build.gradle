@@ -1,10 +1,26 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 apply plugin: 'io.objectbox'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId 'com.tinf.qacademico'
+        applicationId 'com.tinf.qmobile'
         minSdkVersion 16
         targetSdkVersion 28
         versionName '1.0.0'
@@ -14,7 +30,7 @@ android {
         versionNameSuffix 'beta-r0'
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [ 'objectbox.debug' : 'true' ]
+                arguments = ['objectbox.debug': 'true']
             }
         }
     }
@@ -37,6 +53,7 @@ dependencies {
     implementation files('libs/jsoup-1.11.2.jar')
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -55,4 +72,8 @@ dependencies {
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'com.google.android:flexbox:1.1.0'
     implementation 'com.github.castorflex.smoothprogressbar:library:1.1.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.6'
+    compile('com.crashlytics.sdk.android:answers:1.4.4@aar') {
+        transitive = true;
+    }
 }

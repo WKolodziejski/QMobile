@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
+
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.Class.Calendario.Dia;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;
@@ -70,6 +72,7 @@ public class JavaScriptWebView {
                 callOnFinish(URL + PG_HOME);
             }).start();
         } catch (Exception e) {
+            Crashlytics.logException(e);
             Log.e("JavaScriptWebView", "Home error: " + e.getMessage());
             callOnError(e.getMessage());
         }
@@ -238,6 +241,7 @@ public class JavaScriptWebView {
                 Log.i("JavaScriptWebView", "Diarios handled!");
                 callOnFinish(URL + PG_DIARIOS);
             } else {
+                Crashlytics.logException(error.getCause());
                 Log.e("BoxStore", error.getMessage());
                 callOnError(error.getMessage());
             }
@@ -336,6 +340,7 @@ public class JavaScriptWebView {
                 Log.i("JavaScriptWebView", "Boletim handled!");
                 callOnFinish(URL + PG_BOLETIM);
             } else {
+                Crashlytics.logException(error.getCause());
                 Log.e("BoxStore", error.getMessage());
                 callOnError(error.getMessage());
             }
@@ -478,6 +483,7 @@ public class JavaScriptWebView {
                 Log.i("JavaScriptWebView", "Horario handled!");
                 callOnFinish(URL + PG_HORARIO);
             } else {
+                Crashlytics.logException(error.getCause());
                 Log.e("BoxStore", error.getMessage());
                 callOnError(error.getMessage());
             }
@@ -590,6 +596,7 @@ public class JavaScriptWebView {
                 callOnFinish(URL + PG_MATERIAIS);
             }).start();
         } catch (Exception e) {
+            Crashlytics.logException(e);
             Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
             callOnError(e.getMessage());
         }
@@ -816,6 +823,7 @@ public class JavaScriptWebView {
                 Log.i("JavaScriptWebView", "Calendario handled!");
                 callOnFinish(URL + PG_CALENDARIO);
             } else {
+                Crashlytics.logException(error.getCause());
                 Log.e("BoxStore", error.getMessage());
                 callOnError(error.getMessage());
             }
