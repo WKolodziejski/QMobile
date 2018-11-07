@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QAcadêmico</string>
+    <string name="app_name" translatable="false">QAcadêmico</string>
     <string name="app_q" translatable="false">2018 QAcadêmico Mobile</string>
     <string name="app_version">Versão</string>
     <string name="app_tinf">Um Projeto TINF</string>
