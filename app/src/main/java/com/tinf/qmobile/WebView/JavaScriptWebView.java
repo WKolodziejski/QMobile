@@ -136,6 +136,7 @@ public class JavaScriptWebView {
                 }
 
                 String nome_etapa = "";
+                int id_nome_etapa = 0;
 
                 if (nxtElem != null) {
                     nome_etapa = nxtElem.child(0).child(0).ownText();
@@ -143,17 +144,17 @@ public class JavaScriptWebView {
 
                 while (nome_etapa.contains("Etapa")) {
                     if (nome_etapa.equals("1a. Etapa") || nome_etapa.equals("1ª Etapa")) {
-                        nome_etapa = context.getResources().getString(R.string.diarios_PrimeiraEtapa);
+                        id_nome_etapa = R.string.diarios_PrimeiraEtapa;
                     } else if (nome_etapa.equals("1a Reavaliação da 1a Etapa") || nome_etapa.equals("1ª Reavaliação da 1ª Etapa")) {
-                        nome_etapa = context.getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
+                        id_nome_etapa = R.string.diarios_RP1_PrimeiraEtapa;
                     } else if (nome_etapa.equals("2a Reavaliação da 1a Etapa") || nome_etapa.equals("2ª Reavaliação da 1ª Etapa")) {
-                        nome_etapa = context.getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
+                        id_nome_etapa =R.string.diarios_RP2_PrimeiraEtapa;
                     } else if (nome_etapa.equals("2a. Etapa") || nome_etapa.equals("2ª Etapa")) {
-                        nome_etapa = context.getResources().getString(R.string.diarios_SegundaEtapa);
+                        id_nome_etapa = R.string.diarios_SegundaEtapa;
                     } else if (nome_etapa.equals("1a Reavaliação da 2a Etapa") || nome_etapa.equals("1ª Reavaliação da 2ª Etapa")) {
-                        nome_etapa = context.getResources().getString(R.string.diarios_RP1_SegundaEtapa);
+                        id_nome_etapa = R.string.diarios_RP1_SegundaEtapa;
                     } else if (nome_etapa.equals("2a Reavaliação da 2a Etapa") || nome_etapa.equals("2ª Reavaliação da 2ª Etapa")) {
-                        nome_etapa = context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
+                        id_nome_etapa = R.string.diarios_RP2_SegundaEtapa;
                     }
 
                     Element tabelaNotas = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
@@ -164,14 +165,14 @@ public class JavaScriptWebView {
                     Etapa etapa = null;
 
                     for (int i = 0; i < etapas.size(); i++) {
-                        if (etapas.get(i).getEtapa().equals(nome_etapa)) {
+                        if (etapas.get(i).getEtapa() == id_nome_etapa) {
                             etapa = etapaBox.get(etapas.get(i).getId());
                             break;
                         }
                     }
 
                     if (etapa == null) {
-                        etapa = new Etapa(nome_etapa);
+                        etapa = new Etapa(id_nome_etapa);
                     }
 
                     if (nxtElem != null) {
@@ -189,20 +190,20 @@ public class JavaScriptWebView {
                     for (int i = 0; i < notasLinhas.size(); i++) {
                         String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
                         String titulo = notasLinhas.eq(i).first().child(1).text();
-                        String tipo = context.getResources().getString(R.string.sigla_Avaliacao);
-                        int tint = context.getResources().getColor(R.color.diarios_avaliacao);
+                        int tipo = R.string.sigla_Avaliacao;
+                        int tint = R.color.diarios_avaliacao;
                         if (titulo.contains("Prova")) {
-                            tint = context.getResources().getColor(R.color.diarios_prova);
-                            tipo = context.getResources().getString(R.string.sigla_Prova);
+                            tint = R.color.diarios_prova;
+                            tipo = R.string.sigla_Prova;
                         } else if (titulo.contains("Diarios") || titulo.contains("Trabalho")) {
-                            tint = context.getResources().getColor(R.color.diarios_trabalho);
-                            tipo = context.getResources().getString(R.string.sigla_Trabalho);
+                            tint = R.color.diarios_trabalho;
+                            tipo = R.string.sigla_Trabalho;
                         } else if (titulo.contains("Qualitativa")) {
-                            tint = context.getResources().getColor(R.color.diarios_qualitativa);
-                            tipo = context.getResources().getString(R.string.sigla_Qualitativa);
+                            tint = R.color.diarios_qualitativa;
+                            tipo = R.string.sigla_Qualitativa;
                         } else if (titulo.contains("Exercício")) {
-                            tint = context.getResources().getColor(R.color.diarios_exercicio);
-                            tipo = context.getResources().getString(R.string.sigla_Exercicio);
+                            tint = R.color.diarios_exercicio;
+                            tipo = R.string.sigla_Exercicio;
                         }
 
                         String caps = trimp(trim1(notasLinhas.eq(i).first().child(1).text()));
@@ -307,12 +308,12 @@ public class JavaScriptWebView {
                         for (int j = 0; j < materia.etapas.size(); j++) {
                             Etapa etapa = materia.etapas.get(j);
 
-                            if (etapa.getEtapa().equals(context.getResources().getString(R.string.diarios_PrimeiraEtapa))) {
+                            if (etapa.getEtapa() == R.string.diarios_PrimeiraEtapa) {
                                 etapa.setNota(notaPrimeiraEtapa);
                                 etapa.setFaltas(faltasPrimeiraEtapa);
                                 etapa.setNotaFinal(notaFinalPrimeiraEtapa);
                                 etapa.setNotaRP(RPPrimeiraEtapa);
-                            } else if (etapa.getEtapa().equals(context.getResources().getString(R.string.diarios_SegundaEtapa))) {
+                            } else if (etapa.getEtapa() == R.string.diarios_SegundaEtapa) {
                                 etapa.setNota(notaSegundaEtapa);
                                 etapa.setFaltas(faltasSegundaEtapa);
                                 etapa.setNotaFinal(notaFinalSegundaEtapa);
@@ -532,40 +533,40 @@ public class JavaScriptWebView {
                             descricao = element.child(1).child(3).nextSibling().toString();
                         }
 
-                        int color = context.getResources().getColor(R.color.materiais_file);
-                        Drawable img = context.getResources().getDrawable(R.drawable.ic_file);
+                        int color = R.color.materiais_file;
+                        int img = R.drawable.ic_file;
 
                         if (extension.equals(".pdf")) {
-                            color = context.getResources().getColor(R.color.materiais_pdf);
-                            img = context.getResources().getDrawable(R.drawable.ic_pdf);
+                            color = R.color.materiais_pdf;
+                            img = R.drawable.ic_pdf;
                         } else if (extension.equals(".docx") || extension.equals(".doc")
                                 || extension.equals(".txt") || extension.equals(".rtf")) {
-                            color = context.getResources().getColor(R.color.materiais_doc);
-                            img = context.getResources().getDrawable(R.drawable.ic_docs);
+                            color = R.color.materiais_doc;
+                            img = R.drawable.ic_docs;
                         } else if (extension.equals(".csv") || extension.equals(".svg")) {
-                            color = context.getResources().getColor(R.color.materiais_table);
-                            img = context.getResources().getDrawable(R.drawable.ic_table);
+                            color = R.color.materiais_table;
+                            img = R.drawable.ic_table;
                         } else if (extension.equals(".zip") || extension.equals(".rar")
                                 || extension.equals(".7z")) {
-                            color = context.getResources().getColor(R.color.materiais_zip);
-                            img = context.getResources().getDrawable(R.drawable.ic_compressed);
+                            color = R.color.materiais_zip;
+                            img = R.drawable.ic_compressed;
                         } else if (extension.equals(".mp3") || extension.equals(".wav")
                                 || extension.equals(".wma")) {
-                            color = context.getResources().getColor(R.color.materiais_audio);
-                            img = context.getResources().getDrawable(R.drawable.ic_song);
+                            color = R.color.materiais_audio;
+                            img = R.drawable.ic_song;
                         } else if (extension.equals(".mp4") || extension.equals(".wmv")
                                 || extension.equals(".avi")) {
-                            color = context.getResources().getColor(R.color.materiais_video);
-                            img = context.getResources().getDrawable(R.drawable.ic_video);
+                            color = R.color.materiais_video;
+                            img = R.drawable.ic_video;
                         } else if (extension.equals(".jpg") || extension.equals(".png")) {
-                            color = context.getResources().getColor(R.color.materiais_image);
-                            img = context.getResources().getDrawable(R.drawable.ic_picture);
+                            color = R.color.materiais_image;
+                            img = R.drawable.ic_picture;
                         } else if (extension.equals(".jar") || extension.equals(".php")
                                 || extension.equals(".html") || extension.equals(".css")
                                 || extension.equals(".js") || extension.equals(".json")
                                 || extension.equals(".xml")) {
-                            color = context.getResources().getColor(R.color.materiais_script);
-                            img = context.getResources().getDrawable(R.drawable.ic_script);
+                            color = R.color.materiais_script;
+                            img = R.drawable.ic_script;
                         }
 
                         material.add(new Materiais(data, nomeConteudo, link, descricao, color, img));
@@ -578,7 +579,7 @@ public class JavaScriptWebView {
                             classe = "quit";
                         }
                     }
-                    materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator(context)));
+                    materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator()));
                 }
 
                 Elements options = document.getElementsByTag("option");
@@ -746,7 +747,7 @@ public class JavaScriptWebView {
                                         description = "";
                                     }
 
-                                    int cor = corQA.equals("#F0F0F0") ? pickColor(title) : context.getResources().getColor(R.color.colorPrimary);//pickColor(corQA);
+                                    int cor = corQA.equals("#F0F0F0") ? pickColor(title) : R.color.colorPrimary;//pickColor(corQA);
 
                                     Evento evento = new Evento(title, description, cor, false);
 
@@ -786,8 +787,7 @@ public class JavaScriptWebView {
                                         //String title =  infos.substring(infos.lastIndexOf(")") + 1).trim();
                                         //title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
-                                        Evento evento = new Evento(infos, description,
-                                                context.getResources().getColor(R.color.colorPrimary), data_inicio, data_fim, false);
+                                        Evento evento = new Evento(infos, description, R.color.colorPrimary, data_inicio, data_fim, false);
                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
 
                                         Calendar ev = Calendar.getInstance();
@@ -847,25 +847,25 @@ public class JavaScriptWebView {
         int color = 0;
 
         if (string.contains("Biologia")) {
-            color = context.getResources().getColor(R.color.biologia);
+            color = R.color.biologia;
         } else if (string.contains("Educação Física")) {
-            color = context.getResources().getColor(R.color.edFisica);
+            color = R.color.edFisica;
         } else if (string.contains("Filosofia")) {
-            color = context.getResources().getColor(R.color.filosofia);
+            color = R.color.filosofia;
         } else if (string.contains("Física")) {
-            color = context.getResources().getColor(R.color.fisica);
+            color = R.color.fisica;
         } else if (string.contains("Geografia")) {
-            color = context.getResources().getColor(R.color.geografia);
+            color = R.color.geografia;
         } else if (string.contains("História")) {
-            color = context.getResources().getColor(R.color.historia);
+            color = R.color.historia;
         } else if (string.contains("Portugu")) {
-            color = context.getResources().getColor(R.color.portugues);
+            color = R.color.portugues;
         } else if (string.contains("Matemática")) {
-            color = context.getResources().getColor(R.color.matematica);
+            color = R.color.matematica;
         } else if (string.contains("Química")) {
-            color = context.getResources().getColor(R.color.quimica);
+            color = R.color.quimica;
         } else if (string.contains("Sociologia")) {
-            color = context.getResources().getColor(R.color.sociologia);
+            color = R.color.sociologia;
         }/* else if (string.equals("#F0F0F0")){//Avaliação
             color = Color.rgb(255, 20, 20);
         } else if (string.equals("#FF0000")){//Feriado Nacional/Feriado Estadual/municipal
@@ -911,7 +911,7 @@ public class JavaScriptWebView {
             }
 
             if (color == 0) {
-                color = Utils.getRandomColorGenerator(context);
+                color = Utils.getRandomColorGenerator();
             }
         }
 

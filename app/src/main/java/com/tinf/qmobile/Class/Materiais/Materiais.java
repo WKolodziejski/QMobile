@@ -10,9 +10,9 @@ public class Materiais implements Serializable {
     private final String link;
     private final String descricao;
     private final int tint;
-    private final Drawable icon;
+    private final int icon;
 
-    public Materiais(String data, String nomeConteudo, String link, String descricao, int tint, Drawable icon) {
+    public Materiais(String data, String nomeConteudo, String link, String descricao, int tint, int icon) {
         this.data = data;
         this.nomeConteudo = nomeConteudo;
         this.link = link;
@@ -41,7 +41,7 @@ public class Materiais implements Serializable {
         return tint;
     }
 
-    public Drawable getIcon() {
+    public int getIcon() {
         return icon;
     }
 }

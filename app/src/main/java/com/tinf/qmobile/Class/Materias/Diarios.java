@@ -12,12 +12,12 @@ public class Diarios implements Serializable {
     private String peso;
     private String max;
     private String nota;
-    private String tipo;
+    private int tipo;
     private String data;
     private int tint;
     public ToOne<Etapa> etapa;
 
-    public Diarios(String nome, String peso, String max, String nota, String tipo, String data, int tint) {
+    public Diarios(String nome, String peso, String max, String nota, int tipo, String data, int tint) {
         this.nome = nome;
         this.peso = peso;
         this.max = max;
@@ -49,7 +49,7 @@ public class Diarios implements Serializable {
         return nota;
     }
 
-    public String getTipo() {
+    public int getTipo() {
         return tipo;
     }
 

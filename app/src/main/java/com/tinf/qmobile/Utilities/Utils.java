@@ -60,37 +60,36 @@ public class Utils {
         return theTitle;
     }
 
-    public static int getRandomColorGenerator(Context context) {
-        Resources res = context.getResources();
+    public static int getRandomColorGenerator() {
         Random rnd = new Random();
         int color = rnd.nextInt(9);
 
         switch (color) {
-            case 0: color = res.getColor(R.color.deep_orange_400);
+            case 0: color = R.color.deep_orange_400;
             break;
 
-            case 1: color = res.getColor(R.color.yellow_A700);
+            case 1: color = R.color.yellow_A700;
             break;
 
-            case 2: color = res.getColor(R.color.lime_A700);
+            case 2: color = R.color.lime_A700;
             break;
 
-            case 3: color = res.getColor(R.color.light_green_400);
+            case 3: color = R.color.light_green_400;
             break;
 
-            case 4: color = res.getColor(R.color.teal_400);
+            case 4: color = R.color.teal_400;
             break;
 
-            case 5: color = res.getColor(R.color.cyan_400);
+            case 5: color = R.color.cyan_400;
             break;
 
-            case 6: color = res.getColor(R.color.light_blue_400);
+            case 6: color = R.color.light_blue_400;
             break;
 
-            case 7: color = res.getColor(R.color.indigo_400);
+            case 7: color = R.color.indigo_400;
             break;
 
-            case 8: color = res.getColor(R.color.dark_purple_400);
+            case 8: color = R.color.dark_purple_400;
             break;
         }
         return color;

@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
-        HorarioView.congifWeekView(weekView,
+        HorarioView.congifWeekView(getContext(), weekView,
                 getBox().boxFor(Materia.class).query().equal(Materia_.year,
                         Integer.valueOf(webView.data_year[webView.year_position])).build().find());
 

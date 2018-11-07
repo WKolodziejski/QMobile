@@ -37,10 +37,10 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(materialList.get(position).getNomeConteudo());
         holder.date.setText((materialList.get(position).getData()));
-        holder.img.setImageDrawable(materialList.get(position).getIcon());
+        holder.img.setImageDrawable(context.getResources().getDrawable(materialList.get(position).getIcon()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable background = context.getResources().getDrawable(R.drawable.layout_bg_round);
-            background.setTint(materialList.get(position).getTint());
+            background.setTint(context.getResources().getColor(materialList.get(position).getTint()));
             holder.img.setBackground(background);
         }
 

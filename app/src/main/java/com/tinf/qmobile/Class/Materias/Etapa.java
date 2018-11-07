@@ -11,7 +11,7 @@ import io.objectbox.relation.ToOne;
 @Entity
 public class Etapa implements Serializable {
     @Id public long id;
-    private String etapa;
+    private int etapa;
     private String nota;
     private String notaRP;
     private String notaFinal;
@@ -22,15 +22,15 @@ public class Etapa implements Serializable {
 
     public Etapa() {}
 
-    public Etapa(String etapa){
-        this.etapa = etapa.trim();
+    public Etapa(int etapa){
+        this.etapa = etapa;
     }
 
     public long getId() {
         return id;
     }
 
-    public String getEtapa() {
+    public int getEtapa() {
         return etapa;
     }
 
@@ -66,7 +66,7 @@ public class Etapa implements Serializable {
         this.faltas = faltas;
     }
 
-    public void setEtapa(String etapa) {
+    public void setEtapa(int etapa) {
         this.etapa = etapa;
     }
 

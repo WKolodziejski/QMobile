@@ -75,15 +75,13 @@ public class BoletimFragment extends Fragment {
                 mRowDatas.add(materias.get(i).getName());
 
                 for(int j = 0; j < materias.get(i).etapas.size(); j++) {
-                    if (materias.get(i).etapas.get(j).getEtapa().equals(
-                            getResources().getString(R.string.diarios_PrimeiraEtapa))) {
+                    if (materias.get(i).etapas.get(j).getEtapa() == R.string.diarios_PrimeiraEtapa) {
 
                         mRowDatas.add(materias.get(i).etapas.get(j).getNota());
                         mRowDatas.add(materias.get(i).etapas.get(j).getFaltas());
                         mRowDatas.add(materias.get(i).etapas.get(j).getNotaRP());
                         mRowDatas.add(materias.get(i).etapas.get(j).getNotaFinal());
-                    } else if ((materias.get(i).etapas.get(j).getEtapa().equals(
-                            getResources().getString(R.string.diarios_SegundaEtapa)))) {
+                    } else if ((materias.get(i).etapas.get(j).getEtapa() == R.string.diarios_SegundaEtapa)) {
 
                         mRowDatas.add(materias.get(i).etapas.get(j).getNota());
                         mRowDatas.add(materias.get(i).etapas.get(j).getFaltas());

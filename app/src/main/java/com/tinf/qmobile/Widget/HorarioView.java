@@ -27,7 +27,7 @@ public class HorarioView extends WeekView {
         super(context, attrs, defStyleAttr);
     }
 
-    public static void congifWeekView(WeekView weekView, List<Materia> materias) {
+    public static void congifWeekView(Context context, WeekView weekView, List<Materia> materias) {
 
         Calendar currentWeek = Calendar.getInstance();
         currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
@@ -53,7 +53,7 @@ public class HorarioView extends WeekView {
                     endTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getEndMinute());
 
                     WeekViewEvent event = new WeekViewEvent(i, materias.get(i).getName(), startTime, endTime);
-                    event.setColor(materias.get(i).getColor());
+                    event.setColor(context.getResources().getColor(materias.get(i).getColor()));
 
                     week.add(event);
 

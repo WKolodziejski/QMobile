@@ -42,13 +42,13 @@ public class EventosAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(eventos.get(i).getTitle());
         holder.description.setText(eventos.get(i).getDescription());
-        holder.header.setBackgroundColor(eventos.get(i).getColor());
+        holder.header.setBackgroundColor(context.getResources().getColor(eventos.get(i).getColor()));
 
         //Ednaldo Pereira
-        if ( eventos.get(i).getColor()  == context.getResources().getColor(R.color.colorPrimary)){ //não sei qual a cor certa peguei pelo inteiro dela
+        if (eventos.get(i).getColor() == R.color.colorPrimary) { //não sei qual a cor certa peguei pelo inteiro dela
             holder.header.setBackgroundResource(R.color.transparent);
-            holder.title.setTextColor(eventos.get(i).getColor());
-            holder.description.setTextColor(eventos.get(i).getColor());
+            holder.title.setTextColor(context.getResources().getColor(eventos.get(i).getColor()));
+            holder.description.setTextColor(context.getResources().getColor(eventos.get(i).getColor()));
             holder.title.setTypeface(null, Typeface.BOLD);
         }
 
@@ -62,7 +62,7 @@ public class EventosAdapter extends RecyclerView.Adapter {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(i).getColor()));
+            holder.point.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(eventos.get(i).getColor())));
         }
 
         /*if (eventos.get(i).materia.getTarget() != null && !isSubList) {
