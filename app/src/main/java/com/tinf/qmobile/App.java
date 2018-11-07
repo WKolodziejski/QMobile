@@ -2,7 +2,9 @@ package com.tinf.qmobile;
 
 import android.app.Application;
 import android.util.Log;
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.Class.MyObjectBox;
+import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
@@ -15,6 +17,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         initBoxStore();
     }
 

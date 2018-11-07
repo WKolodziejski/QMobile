@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,6 +38,7 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_NAME;
@@ -60,9 +63,19 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        configFireBase();
         setSupportActionBar(findViewById(R.id.toolbar));
         webView.configWebView(this);
         testLogin();
+    }
+
+    private void configFireBase() {
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(new Crashlytics())
+                .debuggable(true)
+                .build();
+        Fabric.with(fabric);
+        Crashlytics.setUserIdentifier(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_REGISTRATION, ""));
     }
 
     private void testLogin() {
