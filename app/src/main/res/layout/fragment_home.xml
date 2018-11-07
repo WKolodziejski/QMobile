@@ -192,7 +192,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Calendário"
+                        android:text="@string/title_calendario"
                         android:layout_marginRight="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_gravity="center_vertical"
