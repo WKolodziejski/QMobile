@@ -155,7 +155,6 @@ public class SingletonWebView implements OnPageLoad.Main {
         if (!isLoading) {
             Answers.getInstance().logContentView(new ContentViewEvent()
                     .putContentName("Change Year")
-                    .putContentId(String.valueOf(id))
                     .putCustomAttribute("To position", value));
 
             year_position = value;

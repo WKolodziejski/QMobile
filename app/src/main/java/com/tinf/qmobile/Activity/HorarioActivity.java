@@ -38,7 +38,7 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
 
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.title_horario
+        Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
                 + " ― " + webView.data_year[webView.year_position]);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
