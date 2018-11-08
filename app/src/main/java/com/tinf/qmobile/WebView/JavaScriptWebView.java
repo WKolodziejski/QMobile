@@ -222,16 +222,16 @@ public class JavaScriptWebView {
                         etapa.diarios.add(diario);
                         diariosBox.put(diario);
 
-                        Log.v("Box for Diarios", "size of " + diariosBox.count());
+                        //Log.v("Box for Diarios", "size of " + diariosBox.count());
                     }
 
                     etapa.materia.setTarget(materia);
                     materia.etapas.add(etapa);
                     etapaBox.put(etapa);
-                    Log.v("Box for Etapa", "size of " + etapaBox.count());
+                    //Log.v("Box for Etapa", "size of " + etapaBox.count());
                 }
                 materiaBox.put(materia);
-                Log.v("Box for Materia", "size of " + materiaBox.count());
+                //Log.v("Box for Materia", "size of " + materiaBox.count());
             }
 
             if (webView.pg_diarios_loaded.length == 1) {
@@ -324,10 +324,10 @@ public class JavaScriptWebView {
                             materia.etapas.removeById(etapa.id);
                             materia.etapas.add(etapa);
                             etapaBox.put(etapa);
-                            Log.v("Box for etapa", "size of " + etapaBox.count());
+                            //Log.v("Box for etapa", "size of " + etapaBox.count());
                         }
                         materiaBox.put(materia);
-                        Log.v("Box for materia", "size of " + materiaBox.count());
+                        //Log.v("Box for materia", "size of " + materiaBox.count());
                     }
                 }
             }
@@ -468,8 +468,8 @@ public class JavaScriptWebView {
                             materia.horarios.add(horario);
                             materiaBox.put(materia);
                             horarioBox.put(horario);
-                            Log.v("Box for horario", "size of " + horarioBox.count());
-                            Log.v("Box for materia", "size of " + materiaBox.count());
+                            //Log.v("Box for horario", "size of " + horarioBox.count());
+                            //Log.v("Box for materia", "size of " + materiaBox.count());
                         }
                     }
                 }
@@ -769,7 +769,7 @@ public class JavaScriptWebView {
                                         evento.materia.setTarget(materia);
                                         materia.eventos.add(evento);
                                         materiaBox.put(materia);
-                                        Log.v("Box for materia", "size of " + materiaBox.count());
+                                        //Log.v("Box for materia", "size of " + materiaBox.count());
                                     }
                                     eventoBox.put(evento);
                                 }
@@ -802,7 +802,7 @@ public class JavaScriptWebView {
                                         evento.day.setTarget(dia);
                                         dia.eventos.add(evento);
                                         eventoBox.put(evento);
-                                        Log.v("Box for eventos", "size of " + eventoBox.count());
+                                        //Log.v("Box for eventos", "size of " + eventoBox.count());
 
                                         Log.i("Eve", infos + " " + description + " " + numeroDia + "/" + (numMes + 1) + "/" + year + " " + data_inicio + "~" + data_fim);
                                     }
@@ -812,12 +812,12 @@ public class JavaScriptWebView {
                         dia.mes.setTarget(mes);
                         diaBox.put(dia);
                         mes.days.add(dia);
-                        Log.v("Box for dias", "size of " + diaBox.count());
+                        //Log.v("Box for dias", "size of " + diaBox.count());
                     }
                 }
                 mesBox.put(mes);
                 mesesList.add(mes.getMonth());
-                Log.v("Box for meses", "size of " + mesBox.count());
+                //Log.v("Box for meses", "size of " + mesBox.count());
             }
         }, (result, error) -> {
             if (error == null) {

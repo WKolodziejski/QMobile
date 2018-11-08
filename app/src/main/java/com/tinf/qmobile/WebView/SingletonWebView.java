@@ -94,9 +94,16 @@ public class SingletonWebView implements OnPageLoad.Main {
     public void reload(int id) {
         if (id == R.id.navigation_home) {
            loadUrl(URL + PG_LOGIN);
+
         } else if (id == R.id.navigation_notas) {
+            scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
+                    + (year_position + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
+
             loadUrl(URL + PG_DIARIOS);
-            //loadUrl(URL + PG_BOLETIM);
+
+            addToQueue(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
+                    + data_year[year_position] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
+
         } else if (id == R.id.navigation_materiais) {
             webView.reload();
         }

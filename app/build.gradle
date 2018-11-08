@@ -18,20 +18,29 @@ apply plugin: 'io.objectbox'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'qmobile'
+            keyPassword 'T4UzXGiM'
+            storeFile file('D:/Desktop/Assinatura.jks')
+            storePassword '@AKAdOkD9#'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 16
         targetSdkVersion 28
-        versionName 'DEBUG'
+        versionName '1.0.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 0
+        versionCode 2
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']
             }
         }
+        versionNameSuffix 'alpha-r0'
     }
     buildTypes {
         release {

@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     private void configFireBase() {
         Fabric.with(new Fabric.Builder(this)
                 .kits(new CrashlyticsCore.Builder()
-                        .disabled(BuildConfig.DEBUG) //REMOVER ISSO
+                        //.disabled(BuildConfig.DEBUG) //REMOVER ISSO
                         .build(), new Answers())
                 .debuggable(true)
                 .build());
