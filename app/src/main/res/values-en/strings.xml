@@ -24,6 +24,8 @@
     <string name="boletim_NotaFinal">FG</string>
     <string name="boletim_PrimeiraEtapa">1st</string>
     <string name="boletim_SegundaEtapa">2nd</string>
+    <string name="boletim_Travado">Locked</string>
+    <string name="boletim_Destravado">Unlocked</string>
     <string name="dialog_date_change">Select a year</string>
     <string name="dialog_confirm">OK</string>
     <string name="dialog_cancel">Cancel</string>

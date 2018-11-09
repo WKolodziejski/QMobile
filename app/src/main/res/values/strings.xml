@@ -52,6 +52,8 @@
     <string name="boletim_NotaFinal">NF</string>
     <string name="boletim_PrimeiraEtapa">1ª</string>
     <string name="boletim_SegundaEtapa">2ª</string>
+    <string name="boletim_Travado">Travado</string>
+    <string name="boletim_Destravado">Destravado</string>
     <string name="diarios_PrimeiraEtapa">Primeira Etapa</string>
     <string name="diarios_SegundaEtapa">Segunda Etapa</string>
     <string name="diarios_RP1_PrimeiraEtapa">Primeira Reavaliação da Primeira Etapa</string>
