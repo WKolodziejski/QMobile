@@ -84,7 +84,18 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         holder.table.setTag(i);
 
         holder.recyclerView.setAdapter(new EtapaAdapter(diariosList.get(i).etapas, context));
-        holder.nothing.setVisibility(diariosList.get(i).etapas.isEmpty() ? View.VISIBLE : View.GONE);
+
+        boolean isEmpty = true;
+
+        for (int j = 0; j < diariosList.get(i).etapas.size(); j++) {
+            if (!diariosList.get(i).etapas.get(j).diarios.isEmpty()) {
+                isEmpty = false;
+                break;
+            }
+        }
+
+        holder.nothing.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        holder.recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
 
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
                 RecyclerView.VERTICAL, false));

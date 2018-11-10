@@ -20,8 +20,9 @@
     <string name="action_about">Sobre</string>
     <string name="action_logout">Sair</string>
     <string name="text_connection_error">Não foi possível carregar a página</string>
-    <string name="text_empty">Não há nada aqui, volte mais tarde</string>
     <string name="text_empty_materiais">Não há materiais disponíveis</string>
+    <string name="text_empty">Não há nada aqui, volte mais tarde</string>
+    <string name="text_end_period">Fim do ano letivo</string>
     <string name="text_retry">Recarregar</string>
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>

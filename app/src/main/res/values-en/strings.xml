@@ -51,6 +51,7 @@
     <string name="title_graficos">Graphics</string>
     <string name="text_empty_materiais">No materials available for now</string>
     <string name="text_empty">Nothing here for now, come back later</string>
+    <string name="text_end_period">End of school year</string>
     <string name="text_loading_first_login">Loading %1$s / %2$s</string>
     <string name="dialog_close">Close</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
