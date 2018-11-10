@@ -1,17 +1,15 @@
 package com.tinf.qmobile.Fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.os.Vibrator;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
@@ -22,13 +20,11 @@ import com.tinf.qmobile.WebView.SingletonWebView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.BoxStore;
 
-
 public class BoletimFragment extends Fragment {
-    private boolean lock_header = true;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,14 +73,9 @@ public class BoletimFragment extends Fragment {
                 ArrayList<String> mRowDatas = new ArrayList<>();
                 mRowDatas.add(materias.get(i).getName());
 
-                for(int j = 0; j < materias.get(i).etapas.size(); j++) {
-                    if (materias.get(i).etapas.get(j).getEtapa() == R.string.diarios_PrimeiraEtapa) {
-
-                        mRowDatas.add(materias.get(i).etapas.get(j).getNota());
-                        mRowDatas.add(materias.get(i).etapas.get(j).getFaltas());
-                        mRowDatas.add(materias.get(i).etapas.get(j).getNotaRP());
-                        mRowDatas.add(materias.get(i).etapas.get(j).getNotaFinal());
-                    } else if ((materias.get(i).etapas.get(j).getEtapa() == R.string.diarios_SegundaEtapa)) {
+                for (int j = 0; j < materias.get(i).etapas.size(); j++) {
+                    if (materias.get(i).etapas.get(j).getEtapa() == R.string.diarios_PrimeiraEtapa
+                            || materias.get(i).etapas.get(j).getEtapa() == R.string.diarios_SegundaEtapa) {
 
                         mRowDatas.add(materias.get(i).etapas.get(j).getNota());
                         mRowDatas.add(materias.get(i).etapas.get(j).getFaltas());
@@ -97,18 +88,17 @@ public class BoletimFragment extends Fragment {
             }
         }
 
-
         LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
 
         mLockTableView
-                .setLockFristColumn(lock_header)
+                .setLockFristColumn(true)
                 .setLockFristRow(true)
                 .setMaxColumnWidth(96)
-                .setMinColumnWidth(32)
-                .setMinRowHeight(16)
+                .setMinColumnWidth(24)
+                .setMinRowHeight(32)
                 .setMaxRowHeight(64)
                 .setTextViewSize(15)
-
+                .setCellPadding(8)
                 .setFristRowBackGroudColor(R.color.colorAccent)
                 .setTableHeadTextColor(R.color.white)
                 .setTableContentTextColor(R.color.colorAccent)
@@ -136,30 +126,10 @@ public class BoletimFragment extends Fragment {
         ((NotasFragment) getParentFragment()).setOnTopScrollRequestedBListener(() -> {
             mLockTableView.getTableScrollView().smoothScrollToPosition(0);
         });
-
-        Button lock_header_btn = (Button) view.findViewById(R.id.lock_header);
-        lock_header_btn.setOnClickListener(v -> {
-            Toast toast = Toast.makeText(getContext().getApplicationContext(), getResources().getString(lock_header ? R.string.boletim_Destravado : R.string.boletim_Travado), Toast.LENGTH_SHORT);
-            toast.show();
-            Vibrator vib = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-            vib.vibrate(50);
-            lockHeader();
-        });
-
-        mLockTableView.setTableViewListener((x, y) -> {
-            if (!lock_header) {
-                lock_header_btn.setVisibility(x == 0 ? View.VISIBLE : View.GONE);
-            }
-        });
-
     }
 
     private BoxStore getBox() {
         return ((MainActivity) getActivity()).getBox();
     }
 
-    private void lockHeader() {
-        lock_header = !lock_header;
-        showBoletim(getView());
-    }
 }

@@ -262,75 +262,71 @@ public class JavaScriptWebView {
 
             String[][] trtd_boletim;
             Document document = Jsoup.parse(html_p);
-
-            Element table_boletim = document.select("table").get(6);
-
-            Element table_notas = table_boletim.select("table").get(7);
-
-            Elements tables = table_notas.children();
+            //Element table_notas = document.getElementsByTag("table").get(13).child(0);
+            //O proximo se baseia no form acima da table, pode ser melhor caso eles modifiquem o site e coloquem uma table a mais
+            Element table_notas = document.getElementsByTag("form").get(0).nextElementSibling().nextElementSibling().child(0);
+            int numero_materias = table_notas.childNodeSize();
+            Elements materias = table_notas.getElementsByTag("tr");
 
             Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
             Elements options = ano.select("option");
 
-            for (Element table : tables) {
-                Elements trs = table.select("tr");
-                trtd_boletim = new String[trs.size()][];
-                for (int i = 2; i < trs.size(); i++) {
-                    Elements tds = trs.get(i).select("td");
-                    trtd_boletim[i] = new String[tds.size()];
-                    for (int j = 0; j < tds.size(); j++) {
-                        if (tds.get(j).text().equals("") || tds.get(j).text().startsWith(",")) {
-                            trtd_boletim[i][j] = "-";
-                        } else {
-                            trtd_boletim[i][j] = tds.get(j).text();
+            for (int i = 2; i < numero_materias -1; i++) {
+                String nomeMateria = formatTd(materias.get(i).child(0).text());
+                String tfaltas = formatTd(materias.get(i).child(3).text());
+                String notaPrimeiraEtapa = formatTd(materias.get(i).child(5).text());
+                String faltasPrimeiraEtapa = formatTd(materias.get(i).child(6).text());
+                String RPPrimeiraEtapa = formatTd(materias.get(i).child(7).text());
+                String notaFinalPrimeiraEtapa = formatTd(materias.get(i).child(9).text());
+                String notaSegundaEtapa = formatTd(materias.get(i).child(10).text());
+                String faltasSegundaEtapa = formatTd(materias.get(i).child(11).text());
+                String RPSegundaEtapa = formatTd(materias.get(i).child(12).text());
+                String notaFinalSegundaEtapa = formatTd(materias.get(i).child(14).text());
+
+                Materia materia = materiaBox.query()
+                        .equal(Materia_.name, nomeMateria)
+                        .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
+                        .build().findUnique();
+
+                if (materia != null) {
+                    materia.setTotalFaltas(tfaltas);
+
+                    if (materia.etapas.isEmpty()) {
+                        materia.etapas.add(new Etapa(R.string.diarios_PrimeiraEtapa));
+                        materia.etapas.add(new Etapa(R.string.diarios_SegundaEtapa));
+
+                    } else if (materia.etapas.size() == 2) {
+                        if (materia.etapas.get(1).getEtapa() != R.string.diarios_SegundaEtapa) {
+                            materia.etapas.add(new Etapa(R.string.diarios_SegundaEtapa));
                         }
                     }
 
-                    String nomeMateria = trtd_boletim[i][0].trim();
-                    String tfaltas = trtd_boletim[i][3].trim();
-                    String notaPrimeiraEtapa = trtd_boletim[i][5].trim();
-                    String faltasPrimeiraEtapa = trtd_boletim[i][6].trim();
-                    String RPPrimeiraEtapa = trtd_boletim[i][7].trim();
-                    String notaFinalPrimeiraEtapa = trtd_boletim[i][9].trim();
-                    String notaSegundaEtapa = trtd_boletim[i][10].trim();
-                    String faltasSegundaEtapa = trtd_boletim[i][11].trim();
-                    String RPSegundaEtapa = trtd_boletim[i][12].trim();
-                    String notaFinalSegundaEtapa = trtd_boletim[i][14].trim();
+                    for (int j = 0; j < materia.etapas.size(); j++) {
+                        Etapa etapa = materia.etapas.get(j);
 
-                    Materia materia = materiaBox.query()
-                            .equal(Materia_.name, nomeMateria)
-                            .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
-                            .build().findUnique();
-
-                    if (materia != null) {
-                        materia.setTotalFaltas(tfaltas);
-
-                        for (int j = 0; j < materia.etapas.size(); j++) {
-                            Etapa etapa = materia.etapas.get(j);
-
-                            if (etapa.getEtapa() == R.string.diarios_PrimeiraEtapa) {
-                                etapa.setNota(notaPrimeiraEtapa);
-                                etapa.setFaltas(faltasPrimeiraEtapa);
-                                etapa.setNotaFinal(notaFinalPrimeiraEtapa);
-                                etapa.setNotaRP(RPPrimeiraEtapa);
-                            } else if (etapa.getEtapa() == R.string.diarios_SegundaEtapa) {
-                                etapa.setNota(notaSegundaEtapa);
-                                etapa.setFaltas(faltasSegundaEtapa);
-                                etapa.setNotaFinal(notaFinalSegundaEtapa);
-                                etapa.setNotaRP(RPSegundaEtapa);
-                            }
-
-                            etapa.materia.setTarget(materia);
-                            materia.etapas.removeById(etapa.id);
-                            materia.etapas.add(etapa);
-                            etapaBox.put(etapa);
-                            //Log.v("Box for etapa", "size of " + etapaBox.count());
+                        if (etapa.getEtapa() == R.string.diarios_PrimeiraEtapa) {
+                            etapa.setNota(notaPrimeiraEtapa);
+                            etapa.setFaltas(faltasPrimeiraEtapa);
+                            etapa.setNotaFinal(notaFinalPrimeiraEtapa);
+                            etapa.setNotaRP(RPPrimeiraEtapa);
+                        } else if (etapa.getEtapa() == R.string.diarios_SegundaEtapa) {
+                            etapa.setNota(notaSegundaEtapa);
+                            etapa.setFaltas(faltasSegundaEtapa);
+                            etapa.setNotaFinal(notaFinalSegundaEtapa);
+                            etapa.setNotaRP(RPSegundaEtapa);
                         }
-                        materiaBox.put(materia);
-                        //Log.v("Box for materia", "size of " + materiaBox.count());
+
+                        etapa.materia.setTarget(materia);
+                        //materia.etapas.removeById(etapa.id);
+                        //materia.etapas.add(etapa);
+                        etapaBox.put(etapa);
+                        //Log.v("Box for etapa", "size of " + etapaBox.count());
                     }
+                    materiaBox.put(materia);
+                    //Log.v("Box for materia", "size of " + materiaBox.count());
                 }
             }
+
 
             if (webView.pg_boletim_loaded.length == 1) {
                 webView.pg_boletim_loaded = new boolean[options.size()];
@@ -348,6 +344,10 @@ public class JavaScriptWebView {
                 callOnError(error.getMessage());
             }
         });
+    }
+
+    private String formatTd(String text){
+        return text.startsWith(",") ? "" : text;
     }
 
     @JavascriptInterface

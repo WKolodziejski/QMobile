@@ -74,7 +74,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-SNAPSHOT'
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
     implementation 'com.github.alamkanak:android-week-view:1.2.6'
-    implementation 'com.github.RmondJone:LockTableView:1.1.1'
+    implementation 'com.github.RmondJone:LockTableView:1.1.2'
     implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
     implementation 'org.apache.commons:commons-lang3:3.5'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
