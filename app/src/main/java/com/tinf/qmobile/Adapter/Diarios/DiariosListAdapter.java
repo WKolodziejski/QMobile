@@ -66,6 +66,23 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
                     (int) (0 * context.getResources().getDisplayMetrics().density), (int) (10 * context.getResources().getDisplayMetrics().density));
             holder.table.setLayoutParams(params);
+
+            holder.recyclerView.setAdapter(new EtapaAdapter(diariosList.get(i).etapas, context));
+
+            boolean isEmpty = true;
+
+            for (int j = 0; j < diariosList.get(i).etapas.size(); j++) {
+                if (!diariosList.get(i).etapas.get(j).diarios.isEmpty()) {
+                    isEmpty = false;
+                    break;
+                }
+            }
+
+            holder.nothing.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+            holder.recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+
+            holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
+                    RecyclerView.VERTICAL, false));
         } else {
             holder.arrow.setImageResource(R.drawable.ic_expand_more_black_24dp);
             holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
@@ -82,23 +99,6 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         diariosList.get(i).setAnim(false);
 
         holder.table.setTag(i);
-
-        holder.recyclerView.setAdapter(new EtapaAdapter(diariosList.get(i).etapas, context));
-
-        boolean isEmpty = true;
-
-        for (int j = 0; j < diariosList.get(i).etapas.size(); j++) {
-            if (!diariosList.get(i).etapas.get(j).diarios.isEmpty()) {
-                isEmpty = false;
-                break;
-            }
-        }
-
-        holder.nothing.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        holder.recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
-                RecyclerView.VERTICAL, false));
 
         holder.expandAct.setOnClickListener(v -> {
             holder.expand.toggle();
@@ -149,6 +149,23 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                     params.setMargins((int) (0 * context.getResources().getDisplayMetrics().density), (int) (0 * context.getResources().getDisplayMetrics().density),
                             (int) (0 * context.getResources().getDisplayMetrics().density), (int) (10 * context.getResources().getDisplayMetrics().density));
                     holder.table.setLayoutParams(params);
+
+                    holder.recyclerView.setAdapter(new EtapaAdapter(diariosList.get(i).etapas, context));
+
+                    boolean isEmpty = true;
+
+                    for (int j = 0; j < diariosList.get(i).etapas.size(); j++) {
+                        if (!diariosList.get(i).etapas.get(j).diarios.isEmpty()) {
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+
+                    holder.nothing.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+                    holder.recyclerView.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
+
+                    holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
+                            RecyclerView.VERTICAL, false));
                 } else {
                     holder.expandAct.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
                     holder.text.setTextColor(context.getResources().getColor(R.color.colorPrimary));

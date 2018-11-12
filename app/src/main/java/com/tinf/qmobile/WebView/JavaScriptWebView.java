@@ -63,9 +63,11 @@ public class JavaScriptWebView {
                 Log.i("JavaScriptWebView", "Home handling...");
 
                 Document homePage = Jsoup.parse(html_p);
-                Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
+                String nome = homePage.getElementsByClass("barraRodape").get(1).text();
+
+                //Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
                 SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
-                editor.putString(Utils.LOGIN_NAME, drawer_msg.text().substring(drawer_msg.text().lastIndexOf(",") + 2, drawer_msg.text().indexOf(" !")));
+                editor.putString(Utils.LOGIN_NAME, nome);
                 editor.putLong(Utils.LAST_LOGIN, new Date().getTime());
                 editor.apply();
 

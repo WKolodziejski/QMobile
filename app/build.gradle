@@ -20,10 +20,6 @@ apply plugin: 'com.google.gms.google-services'
 android {
     signingConfigs {
         config {
-            keyAlias 'qmobile'
-            keyPassword 'T4UzXGiM'
-            storeFile file('D:/Desktop/Assinatura.jks')
-            storePassword '@AKAdOkD9#'
         }
     }
     compileSdkVersion 28
@@ -33,14 +29,14 @@ android {
         targetSdkVersion 28
         versionName '1.0.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 3
+        versionCode 4
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']
             }
         }
-        versionNameSuffix 'alpha-r2'
+        versionNameSuffix 'beta-r0'
     }
     buildTypes {
         release {

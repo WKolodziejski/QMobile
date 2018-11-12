@@ -29,10 +29,6 @@ public class Diarios implements Serializable {
 
     public Diarios() {}
 
-    public long getId() {
-        return id;
-    }
-
     public String getNome() {
         return nome;
     }
