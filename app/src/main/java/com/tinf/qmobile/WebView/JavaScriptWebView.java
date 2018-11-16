@@ -58,8 +58,8 @@ public class JavaScriptWebView {
 
     @JavascriptInterface
     public void handleHome(String html_p) {
-        try {
-            new Thread(() -> {
+        new Thread(() -> {
+            try {
                 Log.i("JavaScriptWebView", "Home handling...");
 
                 Document homePage = Jsoup.parse(html_p);
@@ -74,12 +74,12 @@ public class JavaScriptWebView {
                 webView.pg_home_loaded = true;
                 Log.i("JavaScriptWebView", "Home handled!");
                 callOnFinish(URL + PG_HOME);
-            }).start();
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-            Log.e("JavaScriptWebView", "Home error: " + e.getMessage());
-            callOnError(e.getMessage());
-        }
+            } catch (Exception e) {
+                Crashlytics.logException(e.getCause());
+                Crashlytics.log(html_p);
+                callOnError(e.getMessage());
+            }
+        }).start();
     }
 
     @JavascriptInterface
@@ -129,8 +129,9 @@ public class JavaScriptWebView {
 
                 Materia materia = materiaBox.query()
                         .equal(Materia_.name, nomeMateria)
+                        .and()
                         .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
-                        .build().findUnique();
+                        .build().findFirst();
 
                 if (materia == null) {
                     materia = new Materia(nomeMateria, pickColor(nomeMateria),
@@ -184,7 +185,7 @@ public class JavaScriptWebView {
                     }
 
                     for (int i = 0; i < etapa.diarios.size(); i++) {
-                        diariosBox.remove(etapa.diarios.get(i).getId());
+                        diariosBox.remove(etapa.diarios.get(i).id);
                     }
 
                     etapa.diarios.clear();
@@ -247,8 +248,9 @@ public class JavaScriptWebView {
                 callOnFinish(URL + PG_DIARIOS);
             } else {
                 Crashlytics.logException(error.getCause());
-                Log.e("BoxStore", error.getMessage());
-                callOnError(error.getMessage());
+                Crashlytics.log(html_p);
+                Log.e("BoxStore", error.getCause().getMessage());
+                callOnError(error.getCause().getMessage());
             }
         });
     }
@@ -287,8 +289,9 @@ public class JavaScriptWebView {
 
                 Materia materia = materiaBox.query()
                         .equal(Materia_.name, nomeMateria)
+                        .and()
                         .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
-                        .build().findUnique();
+                        .build().findFirst();
 
                 if (materia != null) {
                     materia.setTotalFaltas(tfaltas);
@@ -329,7 +332,6 @@ public class JavaScriptWebView {
                 }
             }
 
-
             if (webView.pg_boletim_loaded.length == 1) {
                 webView.pg_boletim_loaded = new boolean[options.size()];
                 webView.pg_boletim_loaded[0] = true;
@@ -342,8 +344,9 @@ public class JavaScriptWebView {
                 callOnFinish(URL + PG_BOLETIM);
             } else {
                 Crashlytics.logException(error.getCause());
-                Log.e("BoxStore", error.getMessage());
-                callOnError(error.getMessage());
+                Crashlytics.log(html_p);
+                Log.e("BoxStore", error.getCause().getMessage());
+                callOnError(error.getCause().getMessage());
             }
         });
     }
@@ -425,19 +428,14 @@ public class JavaScriptWebView {
 
                             if (((trtd_horario[i][j]).contains("2ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.MONDAY);
-                                Log.v("HORARIO", "MONDAY");
                             } else if (((trtd_horario[i][j]).contains("3ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.TUESDAY);
-                                Log.v("HORARIO", "TUESDAY");
                             } else if (((trtd_horario[i][j]).contains("4ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.WEDNESDAY);
-                                Log.v("HORARIO", "WEDNESDAY");
                             } else if (((trtd_horario[i][j]).contains("5ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.THURSDAY);
-                                Log.v("HORARIO", "THURSDAY");
                             } else if (((trtd_horario[i][j]).contains("6ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.FRIDAY);
-                                Log.v("HORARIO", "FRIDAY");
                             }
                         }
                     }
@@ -460,15 +458,16 @@ public class JavaScriptWebView {
 
                         Materia materia = materiaBox.query()
                                 .equal(Materia_.name, trtd_horario[j][i].trim())
+                                .and()
                                 .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
-                                .build().findUnique();
+                                .build().findFirst();
 
                         Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]);
 
                         if (materia != null) {
                             horario.materia.setTarget(materia);
                             materia.horarios.add(horario);
-                            materiaBox.put(materia);
+                            //materiaBox.put(materia);
                             horarioBox.put(horario);
                             //Log.v("Box for horario", "size of " + horarioBox.count());
                             //Log.v("Box for materia", "size of " + materiaBox.count());
@@ -489,16 +488,19 @@ public class JavaScriptWebView {
                 callOnFinish(URL + PG_HORARIO);
             } else {
                 Crashlytics.logException(error.getCause());
-                Log.e("BoxStore", error.getMessage());
-                callOnError(error.getMessage());
+                Crashlytics.log(html_p);
+                Log.e("BoxStore", error.getCause().getMessage());
+                callOnError(error.getCause().getMessage());
             }
         });
     }
 
     @JavascriptInterface
     public void handleMateriais(String html_p) {
-        try {
-            new Thread(() -> {
+
+        new Thread(() -> {
+
+            try {
                 Log.i("JavaScriptWebView", "Materiais handling...");
 
                 Document document = Jsoup.parse(html_p);
@@ -513,8 +515,6 @@ public class JavaScriptWebView {
                     str = str.substring(str.indexOf('-') + 2, str.indexOf('('));
                     str = str.substring(str.indexOf('-') + 2);
                     String nomeMateria = str;
-
-                    Log.i("Materia", "\n\n\n**************************" + nomeMateria + "*********************************\n");
 
                     //parte dos conteudos
                     String classe = rotulos.get(i).nextElementSibling().className();
@@ -586,12 +586,6 @@ public class JavaScriptWebView {
 
                 Elements options = document.getElementsByTag("option");
 
-                if (webView.pg_materiais_loaded.length == 1) {
-                    webView.pg_materiais_loaded = new boolean[options.size() - 1];
-                    webView.pg_materiais_loaded[0] = true;
-                }
-
-                webView.pg_materiais_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Materiais handled!");
 
                 if (onMateriaisLoad != null) {
@@ -599,12 +593,14 @@ public class JavaScriptWebView {
                 }
 
                 callOnFinish(URL + PG_MATERIAIS);
-            }).start();
-        } catch (Exception e) {
-            Crashlytics.logException(e);
-            Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
-            callOnError(e.getMessage());
-        }
+
+            } catch (Exception e) {
+                Crashlytics.logException(e.getCause());
+                Crashlytics.log(html_p);
+                Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
+                callOnError(e.getMessage());
+            }
+        }).start();
     }
 
     @JavascriptInterface
@@ -759,10 +755,9 @@ public class JavaScriptWebView {
 
                                     Materia materia = materiaBox.query()
                                             .equal(Materia_.name, title)
+                                            .and()
                                             .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
-                                            .build().findUnique();
-
-                                    Log.i("Eve", infos + " " + description + " " + numeroDia + "/" + (numMes + 1) + "/" + year);
+                                            .build().findFirst();
 
                                     evento.day.setTarget(dia);
                                     dia.eventos.add(evento);
@@ -805,8 +800,6 @@ public class JavaScriptWebView {
                                         dia.eventos.add(evento);
                                         eventoBox.put(evento);
                                         //Log.v("Box for eventos", "size of " + eventoBox.count());
-
-                                        Log.i("Eve", infos + " " + description + " " + numeroDia + "/" + (numMes + 1) + "/" + year + " " + data_inicio + "~" + data_fim);
                                     }
                                 }
                             }
@@ -828,8 +821,9 @@ public class JavaScriptWebView {
                 callOnFinish(URL + PG_CALENDARIO);
             } else {
                 Crashlytics.logException(error.getCause());
-                Log.e("BoxStore", error.getMessage());
-                callOnError(error.getMessage());
+                Crashlytics.log(html_p);
+                Log.e("BoxStore", error.getCause().getMessage());
+                callOnError(error.getCause().getMessage());
             }
         });
     }
@@ -906,7 +900,7 @@ public class JavaScriptWebView {
             color = Color.rgb(221, 177, 0);
         }*/
         else {
-            Materia materia = getBox().boxFor(Materia.class).query().equal(Materia_.name, string).build().findUnique();
+            Materia materia = getBox().boxFor(Materia.class).query().equal(Materia_.name, string).build().findFirst();
 
             if (materia != null) {
                 color = materia.getColor();

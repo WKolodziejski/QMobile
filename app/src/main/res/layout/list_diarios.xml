@@ -14,7 +14,7 @@
     >
 
     <LinearLayout
-        android:layout_width="40dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
         >
@@ -32,7 +32,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="4dp"
@@ -92,9 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_poll_black_24dp"
-                    android:tint="@color/colorPrimaryDark"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginStart="4dp"/>
+                    android:tint="@color/colorPrimaryDark"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -105,7 +103,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:id="@+id/diarios_peso"/>
+                    android:id="@+id/diarios_peso"
+                    tools:text="10.0" />
 
             </LinearLayout>
 
@@ -122,9 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_multiline_chart_black_24dp"
-                    android:tint="@color/colorPrimaryDark"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"/>
+                    android:tint="@color/colorPrimaryDark"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -135,7 +132,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:id="@+id/diarios_max"/>
+                    android:id="@+id/diarios_max"
+                    tools:text="10.0" />
 
             </LinearLayout>
 
@@ -151,9 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_functions_black_24dp"
-                    android:tint="@color/colorPrimaryDark"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"/>
+                    android:tint="@color/colorPrimaryDark"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -167,7 +163,8 @@
                     android:layout_marginEnd="8dp"
                     android:textStyle="bold"
                     android:id="@+id/diarios_nota"
-                    android:layout_marginRight="8dp" />
+                    android:layout_marginRight="8dp"
+                    tools:text="10.0" />
 
             </LinearLayout>
 

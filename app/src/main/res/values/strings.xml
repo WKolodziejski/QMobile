@@ -27,7 +27,7 @@
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
     <string name="text_invalid_login">Login inválido</string>
-    <string name="text_loading_first_login">Carregando %1$s / %2$s</string>
+    <string name="text_loading_first_login">Carregando %1$s %2$s/%3$s</string>
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
     <string name="menu_bug">Reportar Bug</string>
@@ -62,7 +62,7 @@
     <string name="diarios_RP2_PrimeiraEtapa">Segunda Reavaliação da Primeira Etapa</string>
     <string name="diarios_RP2_SegundaEtapa">Segunda Reavaliação da Segunda Etapa</string>
     <string name="diarios_Peso">Peso:</string>
-    <string name="diarios_Max">Nota Máxima:</string>
+    <string name="diarios_Max">Máximo:</string>
     <string name="diarios_Nota">Nota:</string>
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>

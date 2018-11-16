@@ -37,8 +37,7 @@ public class SingletonWebView implements OnPageLoad.Main {
     private List<String> queue = new ArrayList<>();
     public boolean[] pg_diarios_loaded = {false},
                      pg_horario_loaded = {false},
-                     pg_boletim_loaded = {false},
-                     pg_materiais_loaded = {false};
+                     pg_boletim_loaded = {false};
     public boolean isLoginPage, pg_calendario_loaded, pg_home_loaded;
     public String scriptDiario = "", scriptMateriais = "";
     public int year_position;

@@ -2,6 +2,7 @@ package com.tinf.qmobile.Activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.provider.Settings;
 
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tinf.qmobile.App;
@@ -35,7 +37,6 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
     ViewGroup loginLayout;
-    int num = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +52,11 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
 
     public void showSnackBar(String message, boolean action) { //Mostra a SnackBar
         snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
-        //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
+        snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
 
-        /*View view = snackBar.getView();
-        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-        tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));*/
+        View view = snackBar.getView();
+        TextView tv = (TextView) view.findViewById(R.id.snackbar_text);
+        tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
 
         //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
         //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
@@ -87,13 +88,11 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
             webView.loadUrl(URL + PG_DIARIOS);
             Log.i("LoginActivity", "DIARIOS[0]");
 
-            loginFragment.textView_loading.setText(String.format(
-                    getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+            setLoadingText(R.string.title_diarios, 0, 0);
 
             return;
         } else {
-            for (int i = 1; i < webView.data_year.length; i++) {
+            for (int i = 1; i < webView.pg_diarios_loaded.length; i++) {
                 if (!webView.pg_diarios_loaded[i]) {
                     Log.i("LoginActivity", "DIARIOS[" + i + "]");
                     webView.year_position = i;
@@ -103,11 +102,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
 
                     webView.loadUrl(URL + PG_DIARIOS);
 
-                    num++;
-
-                    loginFragment.textView_loading.setText(String.format(
-                            getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+                    setLoadingText(R.string.title_diarios, i, webView.data_year.length);
 
                     return;
                 }
@@ -120,15 +115,11 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
             webView.loadUrl(URL + PG_BOLETIM);
             Log.i("LoginActivity", "BOLETIM[0]");
 
-            num++;
-
-            loginFragment.textView_loading.setText(String.format(
-                    getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+            setLoadingText(R.string.title_boletim, 0, webView.data_year.length);
 
             return;
         } else {
-            for (int i = 1; i < webView.data_year.length; i++) {
+            for (int i = 1; i < webView.pg_boletim_loaded.length; i++) {
                 if (!webView.pg_boletim_loaded[i]) {
                     Log.i("LoginActivity", "BOLETIM[" + i + "]");
                     webView.year_position = i;
@@ -136,11 +127,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
                     webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
                             + webView.data_year[i] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
 
-                    num++;
-
-                    loginFragment.textView_loading.setText(String.format(
-                            getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+                    setLoadingText(R.string.title_boletim, i, webView.data_year.length);
 
                     return;
                 }
@@ -153,15 +140,11 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
             webView.loadUrl(URL + PG_HORARIO);
             Log.i("LoginActivity", "HORARIO[0]");
 
-            num++;
-
-            loginFragment.textView_loading.setText(String.format(
-                    getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+            setLoadingText(R.string.title_horario, 0, webView.data_year.length);
 
             return;
         } else {
-            for (int i = 1; i < webView.data_year.length; i++) {
+            for (int i = 1; i < webView.pg_horario_loaded.length; i++) {
                 if (!webView.pg_horario_loaded[i]) {
                     Log.i("LoginActivity", "HORARIO[" + i + "]");
                     webView.year_position = i;
@@ -169,11 +152,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
                     webView.loadUrl(URL + PG_HORARIO + "&COD_MATRICULA=-1&cmbanos=" +
                             webView.data_year[i] + "&cmbperiodos=1&Exibir=OK");
 
-                    num++;
-
-                    loginFragment.textView_loading.setText(String.format(
-                            getResources().getString(R.string.text_loading_first_login),
-                            Integer.toString(num), Integer.toString(webView.data_year.length  * 3 + 1)));
+                    setLoadingText(R.string.title_horario, i, webView.data_year.length);
 
                     return;
                 }
@@ -186,11 +165,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
             webView.loadUrl(URL + PG_CALENDARIO);
             Log.i("LoginActivity", "CALENDÁRIO");
 
-            num++;
-
-            loginFragment.textView_loading.setText(String.format(
-                    getResources().getString(R.string.text_loading_first_login),
-                    Integer.toString(num), Integer.toString(webView.data_year.length * 3 + 1)));
+            setLoadingText(R.string.title_calendario, 0, 1);
 
             return;
         }
@@ -233,9 +208,29 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
             loginFragment.textView_loading.setVisibility(View.INVISIBLE);
             loginFragment.dismissProgressBar();
             Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-            num = 0;
+            ((App) getApplication()).setLogged(false);
             webView.year_position = 0;
+            webView.pg_calendario_loaded = false;
+            webView.pg_home_loaded = false;
+
+            for(int i = 0; i < webView.pg_diarios_loaded.length; i++) {
+                webView.pg_diarios_loaded[i] = false;
+            }
+
+            for(int i = 0; i < webView.pg_boletim_loaded.length; i++) {
+                webView.pg_boletim_loaded[i] = false;
+            }
+
+            for(int i = 0; i < webView.pg_horario_loaded.length; i++) {
+                webView.pg_horario_loaded[i] = false;
+            }
         });
+    }
+
+    private void setLoadingText(int pg, int i, int t) {
+        loginFragment.textView_loading.setText(String.format(
+                getResources().getString(R.string.text_loading_first_login),
+                getResources().getString(pg), Integer.toString(i + 1), Integer.toString(t)));
     }
 
     @Override
