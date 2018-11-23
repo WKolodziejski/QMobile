@@ -76,25 +76,21 @@ public class HomeFragment extends Fragment implements OnUpdate {
         });
 
         showCalendar(view);
-
         showHorario(view);
-
-        if (!Utils.isConnected(getContext())) {
-            showOffline(view);
-        }
+        showOffline(view);
     }
 
     private void showOffline(View view) {
         CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
-        if (!Utils.isConnected(getContext())) {
+        if (!Utils.isConnected()) {
             offline.setVisibility(View.VISIBLE);
 
             TextView text = (TextView) view.findViewById(R.id.offline_last_update);
 
             Date date = new Date(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getLong(LAST_LOGIN, new Date().getTime()));
 
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/YYYY HH:mm", Locale.getDefault());
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
             text.setText(String.format(getResources().getString(R.string.home_last_login), format.format(date)));
         } else {

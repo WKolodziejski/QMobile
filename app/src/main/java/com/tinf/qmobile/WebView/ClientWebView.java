@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
@@ -38,7 +39,7 @@ public class ClientWebView extends WebViewClient {
 
     ClientWebView(Context context) {
         this.context = context;
-        this.login_info = context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
+        login_info = context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
-        if (Utils.isConnected(context)) {
+        if (Utils.isConnected()) {
             if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
                 callOnError(errorResponse.getReasonPhrase());
                 Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
@@ -74,7 +75,7 @@ public class ClientWebView extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
-        if (Utils.isConnected(context) && !url_i.equals("")) {
+        if (Utils.isConnected() && !url_i.isEmpty()) {
 
             if (url_i.equals(URL + PG_LOGIN)) {
 

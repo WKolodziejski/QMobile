@@ -20,11 +20,11 @@
     <color name="happy">@color/green_500</color>
     <color name="sad">@color/amber_500</color>
 
-    <color name="diarios_prova">@color/orange_A400</color>
-    <color name="diarios_trabalho">@color/amber_A400</color>
-    <color name="diarios_qualitativa">@color/yellow_A400</color>
-    <color name="diarios_avaliacao">@color/orange_A700</color>
-    <color name="diarios_exercicio">@color/amber_A700</color>
+    <color name="diarios_prova">@color/colorAccent</color>
+    <color name="diarios_trabalho">@color/colorAccent</color>
+    <color name="diarios_qualitativa">@color/colorAccent</color>
+    <color name="diarios_avaliacao">@color/colorAccent</color>
+    <color name="diarios_exercicio">@color/colorAccent</color>
 
     <color name="materiais_file">@color/colorPrimary</color>
     <color name="materiais_pdf">@color/red_500</color>

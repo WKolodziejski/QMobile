@@ -39,10 +39,6 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         holder.nota.setText(diarios.get(position).getNota());
         holder.tipo.setText(diarios.get(position).getTipo());
         holder.data.setText(diarios.get(position).getData());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.tipo.setTextColor(context.getResources().getColor(diarios.get(position).getTint()));
-        }
     }
 
     @Override

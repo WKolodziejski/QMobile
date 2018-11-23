@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment).commit();
     }
 
-    public void showSnackBar(String message, boolean action) { //Mostra a SnackBar
+    public void showSnackBar(String message) { //Mostra a SnackBar
         snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
         snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
 
@@ -61,14 +61,6 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
         //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
         //  Mas aí fica por cima do botão entrar, tem q deixar mais espaço em branco embaixo.
-
-
-        if (action) {
-            snackBar.setAction(R.string.button_wifi, view1 -> {
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                snackBar.dismiss();
-            });
-        }
         snackBar.show();
     }
 
@@ -190,7 +182,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
 
             } else if (url_p.equals(URL + PG_ERRO)) {
                 loginFragment.dismissProgressBar();
-                showSnackBar(getResources().getString(R.string.text_invalid_login), false);
+                showSnackBar(getResources().getString(R.string.text_invalid_login));
 
             } else if (url_p.contains(URL + PG_HOME)
                     || url_p.contains(URL + PG_BOLETIM)

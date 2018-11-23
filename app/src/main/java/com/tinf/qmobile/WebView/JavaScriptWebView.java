@@ -9,6 +9,7 @@ import android.webkit.JavascriptInterface;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Dia;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;
@@ -194,18 +195,18 @@ public class JavaScriptWebView {
                         String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
                         String titulo = notasLinhas.eq(i).first().child(1).text();
                         int tipo = R.string.sigla_Avaliacao;
-                        int tint = R.color.diarios_avaliacao;
+                        int tint = R.color.colorAccent;
                         if (titulo.contains("Prova")) {
-                            tint = R.color.diarios_prova;
+                            //tint = R.color.diarios_prova;
                             tipo = R.string.sigla_Prova;
                         } else if (titulo.contains("Diarios") || titulo.contains("Trabalho")) {
-                            tint = R.color.diarios_trabalho;
+                            //tint = R.color.diarios_trabalho;
                             tipo = R.string.sigla_Trabalho;
                         } else if (titulo.contains("Qualitativa")) {
-                            tint = R.color.diarios_qualitativa;
+                            //tint = R.color.diarios_qualitativa;
                             tipo = R.string.sigla_Qualitativa;
                         } else if (titulo.contains("Exercício")) {
-                            tint = R.color.diarios_exercicio;
+                            //tint = R.color.diarios_exercicio;
                             tipo = R.string.sigla_Exercicio;
                         }
 

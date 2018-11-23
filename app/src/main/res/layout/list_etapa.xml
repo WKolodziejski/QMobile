@@ -12,17 +12,16 @@
         android:textSize="@dimen/main_font_size"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryLight"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorAccent"
         android:id="@+id/etapa"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_diarios_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

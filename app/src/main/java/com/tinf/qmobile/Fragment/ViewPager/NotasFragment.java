@@ -24,7 +24,8 @@ import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
-    private int currentFragment;
+    private int currentFragment = 0;
+    private ViewPager viewPager;
     private OnTopScrollRequested onTopScrollRequestedB, onTopScrollRequestedD;
 
     @Nullable
@@ -48,12 +49,10 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         adapter.addFragment(new DiariosFragment(), getString(R.string.title_diarios));
         adapter.addFragment(new BoletimFragment(), getString(R.string.title_boletim));
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
 
         viewPager.setCurrentItem(currentFragment);
-
-        viewPager.addOnPageChangeListener(this);
 
         ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
     }
@@ -90,18 +89,6 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-    }
-
-    @Override
     public void requestScroll() {
         switch (currentFragment) {
             case 0: onTopScrollRequestedD.onTopScrollRequested();
@@ -109,6 +96,34 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
             case 1: onTopScrollRequestedB.onTopScrollRequested();
                 break;
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        viewPager.addOnPageChangeListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewPager.addOnPageChangeListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        viewPager.addOnPageChangeListener(null);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        viewPager.addOnPageChangeListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
     }
 
     public interface OnTopScrollRequested {

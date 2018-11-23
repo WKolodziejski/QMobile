@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     }
 
     private void reload() {
-        if (Utils.isConnected(getApplicationContext())) {
+        if (Utils.isConnected()) {
             webView.reload(bottomNav.getSelectedItemId());
         } else {
             refreshLayout.setRefreshing(false);

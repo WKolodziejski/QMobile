@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import java.util.Objects;
 import java.util.Random;
@@ -36,9 +38,9 @@ public class Utils {
     public static final String PG_CALENDARIO = "2020";
     public static final String PG_ERRO = "1";
 
-    public static boolean isConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (null != cm) {
+    public static boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager) App.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
             NetworkInfo info = cm.getActiveNetworkInfo();
             return (info != null && info.isConnected());
         }

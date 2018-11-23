@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
@@ -69,7 +70,7 @@ public class SingletonWebView implements OnPageLoad.Main {
     }
 
     public void loadUrl(String pg) {
-        if (Utils.isConnected(context)) {
+        if (Utils.isConnected()) {
             if (!pg.contains("javascript")) {
                 Log.i("Client", "Não contém java script");
                 if (!isLoading) {
@@ -145,7 +146,7 @@ public class SingletonWebView implements OnPageLoad.Main {
             isLoading = false;
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse(url));
-            context.startActivity(i);
+            App.getAppContext().startActivity(i);
         });
         webView.loadUrl("javascript:document.querySelector(\"a[href='" + link + "']\").click();");
     }
@@ -168,13 +169,13 @@ public class SingletonWebView implements OnPageLoad.Main {
             }
 
         } else {
-            Toast.makeText(context, context.getResources().getString(R.string.text_wait_loading), Toast.LENGTH_SHORT).show();
+            Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_wait_loading), Toast.LENGTH_SHORT).show();
         }
     }
 
     private String[] loadYears() {
         List<String> years = new ArrayList<>();
-        String jsonArrayString = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(YEARS, "");
+        String jsonArrayString = App.getAppContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(YEARS, "");
         if (!TextUtils.isEmpty(jsonArrayString)) {
             try {
                 JSONArray jsonArray = new JSONArray(jsonArrayString);
