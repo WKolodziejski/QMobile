@@ -1,9 +1,10 @@
 package com.tinf.qmobile.Adapter.Diarios;
 
 import android.content.Context;
-import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -30,15 +31,18 @@ public class DiariosAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
 
-        holder.max.setText(diarios.get(position).getMax());
-        holder.nome.setText(diarios.get(position).getNome());
-        holder.peso.setText(diarios.get(position).getPeso());
-        holder.nota.setText(diarios.get(position).getNota());
-        holder.tipo.setText(diarios.get(position).getTipo());
-        holder.data.setText(diarios.get(position).getData());
+        holder.title.setText(diarios.get(i).getNome());
+        holder.type.setText(diarios.get(i).getTipo());
+        holder.date.setText(diarios.get(i).getData());
+        holder.type.setTextColor(context.getResources().getColor(diarios.get(i).etapa.getTarget().materia.getTarget().getColor()));
+        holder.weight.setText(String.format(context.getResources().getString(
+                R.string.diarios_Peso), diarios.get(i).getPeso()));
+        holder.grade.setText(String.format(context.getResources().getString(
+                R.string.diarios_Nota), diarios.get(i).getNota(), diarios.get(i).getMax()));
+
     }
 
     @Override

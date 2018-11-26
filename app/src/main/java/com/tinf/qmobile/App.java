@@ -37,6 +37,9 @@ public class App extends Application {
     }
 
     private void initBoxStore() {
+        if (boxStore != null) {
+            boxStore.close();
+        }
         if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false) || isLogged) {
             boxStore = MyObjectBox
                     .builder()

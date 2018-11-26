@@ -1,5 +1,6 @@
 package com.tinf.qmobile.Fragment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,8 +45,12 @@ public class DiariosFragment extends Fragment {
         DiariosListAdapter adapter = new DiariosListAdapter(getActivity(), getBox().boxFor(Materia.class).query().order(Materia_.name)
                 .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build().find());
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
+                LinearLayoutManager.VERTICAL);
+
         recyclerViewDiarios.setAdapter(adapter);
         recyclerViewDiarios.setLayoutManager(layout);
+        recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
 
         recyclerViewDiarios.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
@@ -60,11 +65,8 @@ public class DiariosFragment extends Fragment {
             }
         });
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
-                LinearLayoutManager.VERTICAL);
-        recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
-
         adapter.setOnExpandListener(position -> {
+
             RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
                 @Override
                 protected int getVerticalSnapPreference() {

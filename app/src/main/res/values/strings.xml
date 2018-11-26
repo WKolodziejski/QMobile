@@ -61,9 +61,9 @@
     <string name="diarios_RP1_SegundaEtapa">Primeira Reavaliação da Segunda Etapa</string>
     <string name="diarios_RP2_PrimeiraEtapa">Segunda Reavaliação da Primeira Etapa</string>
     <string name="diarios_RP2_SegundaEtapa">Segunda Reavaliação da Segunda Etapa</string>
-    <string name="diarios_Peso">Peso:</string>
-    <string name="diarios_Max">Máx:</string>
-    <string name="diarios_Nota">Nota:</string>
+    <string name="diarios_Peso">・Peso: %1$s</string>
+    <string name="diarios_Max">Máx: %1$s</string>
+    <string name="diarios_Nota">Nota: <b>%1$s/%2$s</b></string>
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>
     <string name="home_last_login">Última atualização em %1s</string>

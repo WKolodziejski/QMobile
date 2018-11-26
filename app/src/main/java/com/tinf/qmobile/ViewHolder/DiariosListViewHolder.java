@@ -15,13 +15,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DiariosListViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.list_text)               public TextView text;
+    @BindView(R.id.list_title)              public TextView title;
     @BindView(R.id.expandable_layout_list)  public ExpandableLayout expand;
-    @BindView(R.id.list_arrow)              public ImageView arrow;
-    @BindView(R.id.open_list)               public LinearLayout expandAct;
-    @BindView(R.id.list_nothing)            public ConstraintLayout nothing;
+    @BindView(R.id.headerIndicator)         public ImageView arrow;
+    @BindView(R.id.open_list)               public ConstraintLayout expandAct;
     @BindView(R.id.recycler_list_diarios)   public RecyclerView recyclerView;
-    @BindView(R.id.table_list)              public LinearLayout table;
+    @BindView(R.id.diarios_nothing)         public View nothing;
 
     public DiariosListViewHolder(View view) {
         super(view);
