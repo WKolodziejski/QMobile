@@ -102,14 +102,14 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     public void onStart() {
         super.onStart();
         viewPager.addOnPageChangeListener(this);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        //((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         viewPager.addOnPageChangeListener(this);
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        //((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override

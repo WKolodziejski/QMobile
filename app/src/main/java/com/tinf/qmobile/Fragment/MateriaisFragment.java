@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -40,11 +41,14 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
 
         recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewMateriais.getContext(),
+                LinearLayoutManager.VERTICAL);
 
         MateriaisListAdapter adapter = new MateriaisListAdapter(materiaisList, getActivity());
 
         recyclerViewMateriais.setAdapter(adapter);
         recyclerViewMateriais.setLayoutManager(layout);
+        recyclerViewMateriais.addItemDecoration(dividerItemDecoration);
 
         recyclerViewMateriais.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override

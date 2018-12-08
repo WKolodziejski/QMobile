@@ -19,12 +19,12 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             tools:title="@string/app_name" />
 
         <com.google.android.material.tabs.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/TabLayout"
             android:id="@+id/tabs"
             app:tabMode="fixed"
             app:tabGravity="fill"

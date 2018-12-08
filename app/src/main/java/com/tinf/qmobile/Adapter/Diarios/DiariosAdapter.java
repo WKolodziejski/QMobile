@@ -4,11 +4,21 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+import io.objectbox.android.AndroidScheduler;
+import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscriptionList;
+import io.objectbox.relation.ToOne;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.tinf.qmobile.Class.Materias.Diarios;
+import com.tinf.qmobile.Class.Materias.Diarios_;
+import com.tinf.qmobile.Class.Materias.Etapa;
+import com.tinf.qmobile.Class.Materias.Etapa_;
+import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosViewHolder;
 
@@ -21,6 +31,15 @@ public class DiariosAdapter extends RecyclerView.Adapter {
     public DiariosAdapter(List<Diarios> diarios, Context context) {
         this.diarios = diarios;
         this.context = context;
+
+
+
+        /*DataSubscriptionList subscriptions = new DataSubscriptionList();
+
+        diariosBox.query().build().subscribe(subscriptions).on(AndroidScheduler.mainThread()).observer(data -> {
+            this.diarios = data;
+            notifyDataSetChanged();
+        });*/
     }
 
     @NonNull
@@ -42,7 +61,6 @@ public class DiariosAdapter extends RecyclerView.Adapter {
                 R.string.diarios_Peso), diarios.get(i).getPeso()));
         holder.grade.setText(String.format(context.getResources().getString(
                 R.string.diarios_Nota), diarios.get(i).getNota(), diarios.get(i).getMax()));
-
     }
 
     @Override

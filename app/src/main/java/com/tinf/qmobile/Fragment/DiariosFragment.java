@@ -12,8 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
+import com.tinf.qmobile.Class.Calendario.Dia;
+import com.tinf.qmobile.Class.Materias.Diarios;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Fragment.ViewPager.NotasFragment;
@@ -42,8 +46,7 @@ public class DiariosFragment extends Fragment {
 
         SingletonWebView webView = SingletonWebView.getInstance();
 
-        DiariosListAdapter adapter = new DiariosListAdapter(getActivity(), getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build().find());
+        DiariosListAdapter adapter = new DiariosListAdapter(getBox(), getActivity());
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
                 LinearLayoutManager.VERTICAL);

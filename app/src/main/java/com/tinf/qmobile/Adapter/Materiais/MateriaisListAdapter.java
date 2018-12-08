@@ -53,11 +53,6 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(layout);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.recyclerView.getContext(),
-                LinearLayoutManager.VERTICAL);
-
-        holder.recyclerView.addItemDecoration(dividerItemDecoration);
-
         adapter.setOnDownloadListener(link -> {
             onDownloadRepassListener.onDownload(link);
         });

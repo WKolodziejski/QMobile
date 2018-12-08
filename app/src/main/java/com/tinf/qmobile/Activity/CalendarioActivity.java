@@ -50,11 +50,11 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
                 .commit();
     }
 
-    @Override
+    /*@Override
     public void setTitle(CharSequence text) {
         TextView title = (TextView) findViewById(R.id.actionBar_title);
         title.setText(text);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

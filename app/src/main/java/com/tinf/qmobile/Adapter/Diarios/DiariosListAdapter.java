@@ -4,6 +4,11 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.objectbox.Box;
+import io.objectbox.BoxStore;
+import io.objectbox.query.Query;
+import io.objectbox.reactive.DataSubscriptionList;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +16,40 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Toast;
+
+import com.tinf.qmobile.Class.Materias.Diarios;
+import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosListViewHolder;
+import com.tinf.qmobile.WebView.SingletonWebView;
+
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Random;
 
 public class DiariosListAdapter extends RecyclerView.Adapter {
     private List<Materia> diariosList;
+    private BoxStore box;
     private Context context;
     private OnExpandListener onExpandListener;
 
-    public DiariosListAdapter(Context context, List<Materia> diariosList) {
-        this.diariosList = diariosList;
+    public DiariosListAdapter(BoxStore box, Context context) {
+        SingletonWebView webView = SingletonWebView.getInstance();
+
+        this.box = box;
+
+        Query<Materia> query = box.boxFor(Materia.class).query().order(Materia_.name)
+                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build();
+
+        query.subscribe(new DataSubscriptionList()).observer(data -> {
+            this.diariosList = data;
+        });
+
+        //this.diariosList = query.find();
         this.context = context;
     }
 
@@ -37,6 +63,18 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
          final DiariosListViewHolder holder = (DiariosListViewHolder) viewHolder;
+
+         holder.add.setOnClickListener(v -> {
+             Etapa e = diariosList.get(i).etapas.get(diariosList.get(0).etapas.size() - 1);
+
+             if (e != null) {
+                 Diarios d = new Diarios("A", "10", "10", "5", R.string.sigla_Avaliacao, "2018", R.color.colorAccent);
+
+                 d.etapa.setTarget(e);
+                 e.diarios.add(d);
+                 box.boxFor(Diarios.class).put(d);
+             }
+         });
 
          RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
          rotate.setDuration(250);
