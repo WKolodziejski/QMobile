@@ -52,12 +52,12 @@ import static com.tinf.qmobile.Utilities.Utils.LOGIN_VALID;
 public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         BottomNavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.progressbar_horizontal)   SmoothProgressBar progressBar;
+    //@BindView(R.id.progressbar_horizontal)   SmoothProgressBar progressBar;
     @BindView(R.id.fab_expand)        public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.tabs)                     TabLayout tabLayout;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
+    //@BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnUpdate onUpdate;
 
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         ButterKnife.bind(this);
         configFireBase();
         setSupportActionBar(findViewById(R.id.toolbar));
-        webView.configWebView(this);
         testLogin();
     }
 
@@ -271,13 +270,15 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     }
 
     protected void showProgressbar() {
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.progressiveStart();
+        //progressBar.setVisibility(View.VISIBLE);
+        //progressBar.progressiveStart();
+        refreshLayout.setRefreshing(true);
     }
 
     public void dismissProgressbar() {
-        progressBar.setVisibility(View.GONE);
-        progressBar.progressiveStop();
+        refreshLayout.setRefreshing(false);
+        //progressBar.setVisibility(View.GONE);
+        //progressBar.progressiveStop();
 
     }
 
