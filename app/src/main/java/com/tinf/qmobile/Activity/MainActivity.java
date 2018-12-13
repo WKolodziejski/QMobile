@@ -151,6 +151,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        Fragment fragment = null;
+
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
             dismissProgressbar();
             webView.resumeQueue();
@@ -158,15 +161,15 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    changeFragment(new HomeFragment());
+                    fragment = new HomeFragment();
                     hideTabLayout();
                     hideExpandBtn();
-                    return true;
+                    break;
 
                 case R.id.navigation_notas:
-                    changeFragment(new NotasFragment());
+                    fragment =  new NotasFragment();
                     showExpandBtn();
-                    return true;
+                    break;
 
                 case R.id.navigation_materiais:
                     setTitle(webView.data_year[webView.year_position]);
@@ -174,17 +177,17 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
                         webView.scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
                                 + (webView.year_position + 1) + ";document.forms[0].submit();";
                     }
-                    changeFragment(new MateriaisFragment());
+                    fragment = new MateriaisFragment();
                     hideExpandBtn();
                     hideTabLayout();
-                    return true;
+                    break;
             }
         } else {
             if (onUpdate != null) {
                 onUpdate.requestScroll();
             }
         }
-        return false;
+        return changeFragment(fragment);
     }
 
     @Override
@@ -233,19 +236,20 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
 
     @SuppressLint("RestrictedApi")
     public void showExpandBtn() {
-        if (fab_expand.getAnimation() == null) {
+        fab_expand.show();
+        /*if (fab_expand.getAnimation() == null) {
             Animation open_linear = AnimationUtils.loadAnimation(this, R.anim.fab_open_pop);
             fab_expand.startAnimation(open_linear);
         }
         if ((fab_expand.getAnimation() != null)) {
             fab_expand.getAnimation().setFillAfter(true);
         }
-        fab_expand.setVisibility(View.VISIBLE);
+        fab_expand.setVisibility(View.VISIBLE);*/
     }
 
     @SuppressLint("RestrictedApi")
     public void hideExpandBtn() { //Esconde os FloatingActionButtons
-        if (fab_expand.getAnimation() != null) {
+        /*if (fab_expand.getAnimation() != null) {
             Animation close_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close_pop);
             fab_expand.startAnimation(close_linear);
             fab_expand.getAnimation().setAnimationListener(new Animation.AnimationListener() {
@@ -266,7 +270,8 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         if ((fab_expand.getAnimation() != null)) {
             fab_expand.getAnimation().setFillAfter(false);
         }
-        fab_expand.setVisibility(View.INVISIBLE);
+        fab_expand.setVisibility(View.INVISIBLE);*/
+        fab_expand.hide();
     }
 
     protected void showProgressbar() {
@@ -303,17 +308,19 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
                 .putBoolean(LOGIN_VALID, false)
                 .apply();
 
-        Intent intent = getIntent();
         finish();
-        startActivity(intent);
+        startActivity(getIntent());
     }
 
-    private void changeFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.main_fragment, fragment)
-                .commit();
-        //appBarLayout.setExpanded(true, true);
+    private boolean changeFragment(Fragment fragment) {
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_fragment, fragment)
+                    .commit();
+            return true;
+        }
+        return false;
     }
 
     private void reload() {
