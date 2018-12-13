@@ -32,15 +32,9 @@ import static com.tinf.qmobile.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class ClientWebView extends WebViewClient {
-    private Context context;
-    private SingletonWebView webView = SingletonWebView.getInstance();
-    private SharedPreferences login_info;
     private OnPageLoad.Main onPageLoad;
 
-    ClientWebView(Context context) {
-        this.context = context;
-        login_info = context.getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
-    }
+    ClientWebView() {}
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -62,7 +56,7 @@ public class ClientWebView extends WebViewClient {
         if (Utils.isConnected()) {
             if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
                 callOnError(errorResponse.getReasonPhrase());
-                Toast.makeText(context, errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(App.getAppContext(), errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -76,6 +70,9 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onPageFinished(WebView view, String url_i) { //Chama as funções ao terminar de carregar uma página
         if (Utils.isConnected() && !url_i.isEmpty()) {
+
+            SingletonWebView webView = SingletonWebView.getInstance();
+            SharedPreferences login_info = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
 
             if (url_i.equals(URL + PG_LOGIN)) {
 
@@ -170,7 +167,7 @@ public class ClientWebView extends WebViewClient {
                     callOnFinish(URL + PG_ERRO);
                     Log.i("Login", "Login Inválido");
                 } else {
-                    Toast.makeText(context, context.getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
                 }
             }
         } else {

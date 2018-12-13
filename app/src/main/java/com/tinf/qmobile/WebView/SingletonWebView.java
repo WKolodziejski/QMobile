@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.BoxStore;
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
@@ -44,7 +45,6 @@ public class SingletonWebView implements OnPageLoad.Main {
     public int year_position;
     public String[] data_year = {""};
     public BoxStore box;
-    private Context context;
     private OnPageLoad.Main onPageLoad;
     private JavaScriptWebView javaScriptWebView;
 
@@ -56,7 +56,32 @@ public class SingletonWebView implements OnPageLoad.Main {
         javaScriptWebView.setOnMateriaisLoadListener(onPageLoad);
     }
 
-    private SingletonWebView() {}
+    private SingletonWebView() {
+        data_year = loadYears();
+
+        //queue.add(URL + PG_CALENDARIO);
+        //queue.add(URL + PG_HORARIO);
+        queue.add(URL + PG_BOLETIM);
+        queue.add(URL + PG_DIARIOS);
+        //queue.add(URL + PG_HOME);
+
+        webView = new WebView(App.getAppContext());
+        WebSettings faller = webView.getSettings();
+        faller.setJavaScriptEnabled(true);
+        faller.setDomStorageEnabled(true);
+        faller.setLoadsImagesAutomatically(false);
+        faller.setUseWideViewPort(true);
+        faller.setLoadWithOverviewMode(true);
+
+        javaScriptWebView = new JavaScriptWebView();
+        ClientWebView clientWebView = new ClientWebView();
+
+        javaScriptWebView.setOnPageLoadListener(this);
+        clientWebView.setOnPageLoadListener(this);
+
+        webView.setWebViewClient(clientWebView);
+        webView.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
+    }
 
     public synchronized static SingletonWebView getInstance() {
         if (singleton == null) {
@@ -145,6 +170,7 @@ public class SingletonWebView implements OnPageLoad.Main {
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             isLoading = false;
             Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setFlags(FLAG_ACTIVITY_NEW_TASK);
             i.setData(Uri.parse(url));
             App.getAppContext().startActivity(i);
         });
@@ -189,36 +215,6 @@ public class SingletonWebView implements OnPageLoad.Main {
             }
         }
         return years.toArray(new String[0]);
-    }
-
-    @SuppressLint({"AddJavascriptInterface", "SetJavaScriptEnabled"})
-    public void configWebView(Context context) {
-        this.context = context;
-
-        data_year = loadYears();
-
-        //queue.add(URL + PG_CALENDARIO);
-        //queue.add(URL + PG_HORARIO);
-        queue.add(URL + PG_BOLETIM);
-        queue.add(URL + PG_DIARIOS);
-        //queue.add(URL + PG_HOME);
-
-        webView = new WebView(context);
-        WebSettings faller = webView.getSettings();
-        faller.setJavaScriptEnabled(true);
-        faller.setDomStorageEnabled(true);
-        faller.setLoadsImagesAutomatically(false);
-        faller.setUseWideViewPort(true);
-        faller.setLoadWithOverviewMode(true);
-
-        javaScriptWebView = new JavaScriptWebView(context);
-        ClientWebView clientWebView = new ClientWebView(context);
-
-        javaScriptWebView.setOnPageLoadListener(this);
-        clientWebView.setOnPageLoadListener(this);
-
-        webView.setWebViewClient(clientWebView);
-        webView.addJavascriptInterface(javaScriptWebView, "HtmlHandler");
     }
 
     public synchronized static void logOut() {

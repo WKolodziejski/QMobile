@@ -48,26 +48,25 @@ import static com.tinf.qmobile.Utilities.Utils.YEARS;
 import static com.tinf.qmobile.Utilities.Utils.getRandomColorGenerator;
 
 public class JavaScriptWebView {
-    private Context context;
-    private SingletonWebView webView = SingletonWebView.getInstance();
     private OnPageLoad.Main onPageLoad;
     private OnPageLoad.Materiais onMateriaisLoad;
 
-    public JavaScriptWebView(Context context) {
-        this.context = context;
-    }
+    public JavaScriptWebView() {}
 
     @JavascriptInterface
     public void handleHome(String html_p) {
         new Thread(() -> {
             try {
+
                 Log.i("JavaScriptWebView", "Home handling...");
+
+                SingletonWebView webView = SingletonWebView.getInstance();
 
                 Document homePage = Jsoup.parse(html_p);
                 String nome = homePage.getElementsByClass("barraRodape").get(1).text();
 
                 //Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
-                SharedPreferences.Editor editor = context.getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
                 editor.putString(Utils.LOGIN_NAME, nome);
                 editor.putLong(Utils.LAST_LOGIN, new Date().getTime());
                 editor.apply();
@@ -89,6 +88,8 @@ public class JavaScriptWebView {
 
             Log.i("JavaScriptWebView", "DiariosList handling...");
 
+            SingletonWebView webView = SingletonWebView.getInstance();
+
             Box<Materia> materiaBox = getBox().boxFor(Materia.class);
             Box<Etapa> etapaBox = getBox().boxFor(Etapa.class);
             Box<Diarios> diariosBox = getBox().boxFor(Diarios.class);
@@ -109,7 +110,7 @@ public class JavaScriptWebView {
                 webView.data_year[i] = trimb(options.get(i + 1).text());
             }
 
-            SharedPreferences.Editor editor = context.getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
             JSONArray jsonArray = new JSONArray();
 
             for (String z : webView.data_year) {
@@ -244,6 +245,7 @@ public class JavaScriptWebView {
             }
         }, (result, error) -> {
             if (error == null) {
+                SingletonWebView webView = SingletonWebView.getInstance();
                 webView.pg_diarios_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Diarios handled!");
                 callOnFinish(URL + PG_DIARIOS);
@@ -261,6 +263,8 @@ public class JavaScriptWebView {
         getBox().runInTxAsync(() -> {
 
             Log.i("JavaScriptWebView", "Boletim handling...");
+
+            SingletonWebView webView = SingletonWebView.getInstance();
 
             Box<Materia> materiaBox = getBox().boxFor(Materia.class);
             Box<Etapa> etapaBox = getBox().boxFor(Etapa.class);
@@ -340,6 +344,7 @@ public class JavaScriptWebView {
 
         }, (result, error) -> {
             if (error == null) {
+                SingletonWebView webView = SingletonWebView.getInstance();
                 webView.pg_boletim_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Boletim handled!");
                 callOnFinish(URL + PG_BOLETIM);
@@ -361,6 +366,8 @@ public class JavaScriptWebView {
         getBox().runInTxAsync(() -> {
 
             Log.i("JavaScriptWebView", "Horario handling...");
+
+            SingletonWebView webView = SingletonWebView.getInstance();
 
             Box<Materia> materiaBox = getBox().boxFor(Materia.class);
             Box<Horario> horarioBox = getBox().boxFor(Horario.class);
@@ -484,6 +491,7 @@ public class JavaScriptWebView {
 
         }, (result, error) -> {
             if (error == null) {
+                SingletonWebView webView = SingletonWebView.getInstance();
                 webView.pg_horario_loaded[webView.year_position] = true;
                 Log.i("JavaScriptWebView", "Horario handled!");
                 callOnFinish(URL + PG_HORARIO);
@@ -610,6 +618,8 @@ public class JavaScriptWebView {
         getBox().runInTxAsync(() -> {
 
             Log.i("JavaScriptWebView", "Calendario handling...");
+
+            SingletonWebView webView = SingletonWebView.getInstance();
 
             Box<Mes> mesBox = getBox().boxFor(Mes.class);
             Box<Evento> eventoBox = getBox().boxFor(Evento.class);
@@ -817,6 +827,7 @@ public class JavaScriptWebView {
             }
         }, (result, error) -> {
             if (error == null) {
+                SingletonWebView webView = SingletonWebView.getInstance();
                 webView.pg_calendario_loaded = true;
                 Log.i("JavaScriptWebView", "Calendario handled!");
                 callOnFinish(URL + PG_CALENDARIO);
@@ -916,7 +927,7 @@ public class JavaScriptWebView {
     }
 
     private BoxStore getBox() {
-        return webView.box;
+        return SingletonWebView.getInstance().box;
     }
 
     private static String trimb(String string) {
