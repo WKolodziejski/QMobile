@@ -33,6 +33,7 @@ import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import static android.content.Context.MODE_PRIVATE;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
@@ -73,7 +74,7 @@ public class JavaScriptWebView {
             } catch (Exception e) {
                 Crashlytics.logException(e.getCause());
                 Crashlytics.log(html_p);
-                callOnError(e.getMessage());
+                callOnError(URL + PG_HOME, e.getMessage());
             }
         }).start();
     }
@@ -249,7 +250,7 @@ public class JavaScriptWebView {
                 Crashlytics.logException(error.getCause());
                 Crashlytics.log(html_p);
                 Log.e("BoxStore", error.getCause().getMessage());
-                callOnError(error.getCause().getMessage());
+                callOnError(URL + PG_DIARIOS, error.getCause().getMessage());
             }
         });
     }
@@ -348,7 +349,7 @@ public class JavaScriptWebView {
                 Crashlytics.logException(error.getCause());
                 Crashlytics.log(html_p);
                 Log.e("BoxStore", error.getCause().getMessage());
-                callOnError(error.getCause().getMessage());
+                callOnError(URL + PG_BOLETIM, error.getCause().getMessage());
             }
         });
     }
@@ -495,7 +496,7 @@ public class JavaScriptWebView {
                 Crashlytics.logException(error.getCause());
                 Crashlytics.log(html_p);
                 Log.e("BoxStore", error.getCause().getMessage());
-                callOnError(error.getCause().getMessage());
+                callOnError(URL + PG_HORARIO, error.getCause().getMessage());
             }
         });
     }
@@ -603,7 +604,7 @@ public class JavaScriptWebView {
                 Crashlytics.logException(e.getCause());
                 Crashlytics.log(html_p);
                 Log.e("JavaScriptWebView", "Materiais error: " + e.getMessage());
-                callOnError(e.getMessage());
+                callOnError(URL + PG_MATERIAIS, e.getMessage());
             }
         }).start();
     }
@@ -831,9 +832,39 @@ public class JavaScriptWebView {
                 Crashlytics.logException(error.getCause());
                 Crashlytics.log(html_p);
                 Log.e("BoxStore", error.getCause().getMessage());
-                callOnError(error.getCause().getMessage());
+                callOnError(URL + PG_CALENDARIO, error.getCause().getMessage());
             }
         });
+    }
+
+    @JavascriptInterface
+    public void handleAcessoNegado(String html_p) {
+        new Thread(() -> {
+            try {
+
+                Log.i("JavaScriptWebView", "Home handling...");
+
+                SingletonWebView webView = SingletonWebView.getInstance();
+
+                //Document accessPage = Jsoup.parse(html_p);
+
+                String msg = "User inactive";
+
+                /*SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
+                editor.putString(Utils.LOGIN_REGISTRATION, "")
+                        .putString(Utils.LOGIN_PASSWORD, "")
+                        .putBoolean(Utils.LOGIN_VALID, false)
+                        .apply();*/
+
+                Log.i("JavaScriptWebView", "Acesso Negado handled!");
+
+                callOnError(URL + PG_ACESSO_NEGADO, msg);
+            } catch (Exception e) {
+                Crashlytics.logException(e.getCause());
+                Crashlytics.log(html_p);
+                callOnError(URL + PG_ACESSO_NEGADO, e.getMessage());
+            }
+        }).start();
     }
 
     private String trimp(String string) {
@@ -937,9 +968,9 @@ public class JavaScriptWebView {
         }
     }
 
-    private void callOnError(String error) {
+    private void callOnError(String url_p, String error) {
         if (onPageLoad != null) {
-            onPageLoad.onErrorRecived(error);
+            onPageLoad.onErrorRecived(url_p, error);
         }
     }
 

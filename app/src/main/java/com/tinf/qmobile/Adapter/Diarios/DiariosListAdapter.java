@@ -66,7 +66,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
          final DiariosListViewHolder holder = (DiariosListViewHolder) viewHolder;
          
-         RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+         RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
          rotate.setDuration(250);
          rotate.setInterpolator(new LinearInterpolator());
 
@@ -81,12 +81,23 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
          holder.expandAct.setOnLongClickListener(v -> {
              Integer pos = (Integer) holder.expandAct.getTag();
+             boolean isEmpty = true;
 
-             Intent intent = new Intent(context, MateriaActivity.class);
-             intent.putExtra("NAME", diariosList.get(pos).getName());
-             intent.putExtra("YEAR", diariosList.get(pos).getYear());
+             for (int j = 0; j < diariosList.get(pos).etapas.size(); j++) {
+                 if (!diariosList.get(pos).etapas.get(j).diarios.isEmpty()) {
+                     isEmpty = false;
+                     break;
+                 }
+             }
 
-             context.startActivity(intent);
+             if (!isEmpty) {
+                 Intent intent = new Intent(context, MateriaActivity.class);
+                 intent.putExtra("NAME", diariosList.get(pos).getName());
+                 intent.putExtra("YEAR", diariosList.get(pos).getYear());
+                 context.startActivity(intent);
+             } else {
+                 Toast.makeText(context, R.string.message_empty, Toast.LENGTH_SHORT).show();
+             }
              return true;
          });
 
@@ -157,7 +168,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         int a = 0;
         int f = 0;
         for (int i = 0; i < diariosList.size(); i++) {
-            if (diariosList.get(i).etapas.size() > 0) {
+            if (!diariosList.get(i).etapas.get(diariosList.get(i).etapas.size() - 1).diarios.isEmpty()) {
                 if (diariosList.get(i).isExpanded()) {
                     a++;
                 } else {
@@ -177,7 +188,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             Toast.makeText(context, R.string.message_collapsed, Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < diariosList.size(); i++) {
-                if (diariosList.get(i).etapas.size() > 0) {
+                if (!diariosList.get(i).etapas.get(diariosList.get(i).etapas.size() - 1).diarios.isEmpty()) {
                     if (diariosList.get(i).isExpanded()) {
                         diariosList.get(i).setAnim(false);
                     } else {

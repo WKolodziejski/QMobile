@@ -48,6 +48,8 @@ import static com.tinf.qmobile.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_PASSWORD;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_VALID;
+import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
+import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         BottomNavigationView.OnNavigationItemSelectedListener {
@@ -214,11 +216,24 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
     }
 
     @Override
-    public void onErrorRecived(String error) {
+    public void onErrorRecived(String url_p, String error) {
         runOnUiThread(() -> {
             dismissProgressbar();
             refreshLayout.setRefreshing(false);
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
+            if (url_p.equals(URL + PG_ACESSO_NEGADO)) {
+                /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle(getResources().getString(R.string.dialog_access_denied));
+                builder.setMessage("Deu ruim");
+                builder.setCancelable(false);
+                builder.setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> {
+                    logOut();
+                });
+                builder.create().show();*/
+            } else {
+                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

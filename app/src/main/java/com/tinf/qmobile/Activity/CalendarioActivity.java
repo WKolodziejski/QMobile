@@ -101,7 +101,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
     }
 
     @Override
-    public void onErrorRecived(String error) {}
+    public void onErrorRecived(String url_p, String error) {}
 
     @Override
     public void onStart() {

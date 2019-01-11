@@ -93,7 +93,7 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
     }
 
     @Override
-    public void onErrorRecived(String error) {}
+    public void onErrorRecived(String url_p, String error) {}
 
     @Override
     public void onStart() {

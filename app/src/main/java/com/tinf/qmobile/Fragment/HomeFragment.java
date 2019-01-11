@@ -161,8 +161,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(String url_p) {
         if (url_p.equals(URL + PG_HOME) || url_p.equals(UPDATE_REQUEST)) {
-            showHorario(getView());
-            showOffline(getView());
+            if (getView() != null) {
+                showHorario(getView());
+                showOffline(getView());
+            }
         }
     }
 

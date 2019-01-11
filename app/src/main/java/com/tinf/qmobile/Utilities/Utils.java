@@ -37,6 +37,7 @@ public class Utils {
     public static final String PG_MATERIAIS = "2061";
     public static final String PG_CALENDARIO = "2020";
     public static final String PG_ERRO = "1";
+    public static final String PG_ACESSO_NEGADO = "3";
 
     public static boolean isConnected() {
         ConnectivityManager cm = (ConnectivityManager) App.getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);

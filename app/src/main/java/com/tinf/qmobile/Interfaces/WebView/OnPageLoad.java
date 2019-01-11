@@ -12,6 +12,6 @@ public interface OnPageLoad {
     interface Main {
         void onPageStart();
         void onPageFinish(String url_p);
-        void onErrorRecived(String error);
+        void onErrorRecived(String url_p, String error);
     }
 }

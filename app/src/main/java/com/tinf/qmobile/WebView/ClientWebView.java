@@ -21,6 +21,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
 
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
+import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
@@ -46,7 +47,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        callOnError(error.getDescription().toString());
+        callOnError(request.getUrl().toString(), error.getDescription().toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -55,8 +56,8 @@ public class ClientWebView extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
         if (Utils.isConnected()) {
             if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
-                callOnError(errorResponse.getReasonPhrase());
-                Toast.makeText(App.getAppContext(), errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
+                callOnError(request.getUrl().toString(), errorResponse.getReasonPhrase());
+                //Toast.makeText(App.getAppContext(), errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -128,6 +129,7 @@ public class ClientWebView extends WebViewClient {
 
                 webView.loadUrl("javascript:window.HtmlHandler.handleHorario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
                 Log.i("WebViewClient", "Horario loaded");
 
             } else if (url_i.contains(URL + PG_MATERIAIS)) {
@@ -151,6 +153,8 @@ public class ClientWebView extends WebViewClient {
                 webView.loadUrl("javascript:window.HtmlHandler.handleCalendario"
                         + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
+                Log.i("WebViewClient", "Calendario loaded");
+
             } else if (url_i.equals(URL + PG_ERRO)) {
 
                 Log.i("WebViewClient", "Error");
@@ -167,10 +171,16 @@ public class ClientWebView extends WebViewClient {
                     callOnFinish(URL + PG_ERRO);
                     Log.i("Login", "Login Inválido");
                 } else {
-                    Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
+                    callOnError(url_i, App.getAppContext().getResources().getString(R.string.text_connection_error));
+                    //Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
+            } else if (url_i.equals(URL + PG_ACESSO_NEGADO)) {
+
+                webView.loadUrl("javascript:window.HtmlHandler.handleAcessoNegado"
+                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
+                Log.i("WebViewClient", "Acesso Negado");
+
             }
         } else {
             Log.e("ClientWebView", "Deu pau");
@@ -183,9 +193,9 @@ public class ClientWebView extends WebViewClient {
         }
     }
 
-    private void callOnError(String error) {
+    private void callOnError(String url_p, String error) {
         if (onPageLoad != null) {
-            onPageLoad.onErrorRecived(error);
+            onPageLoad.onErrorRecived(url_p, error);
         }
     }
 

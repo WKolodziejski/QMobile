@@ -1,5 +1,6 @@
 package com.tinf.qmobile.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -9,6 +10,8 @@ import android.provider.Settings;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.LoginEvent;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +26,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.WebView.SingletonWebView;
 
+import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
@@ -36,6 +40,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     private SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
+    private AlertDialog alertDialog;
     ViewGroup loginLayout;
 
     @Override
@@ -68,6 +73,22 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         if (null != snackBar) {
             snackBar.dismiss();
             snackBar = null;
+        }
+    }
+
+    private void showAlertDialog(String msg) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(getResources().getString(R.string.dialog_access_denied));
+        builder.setMessage(msg);
+        builder.setCancelable(true);
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void dismissAlertDialog() {
+        if (alertDialog != null) {
+            alertDialog.dismiss();
         }
     }
 
@@ -195,11 +216,11 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     }
 
     @Override
-    public void onErrorRecived(String error) {
+    public void onErrorRecived(String url_p, String error) {
         runOnUiThread(() -> {
             loginFragment.textView_loading.setVisibility(View.INVISIBLE);
             loginFragment.dismissProgressBar();
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
             ((App) getApplication()).setLogged(false);
             webView.year_position = 0;
             webView.pg_calendario_loaded = false;
@@ -215,6 +236,12 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
 
             for(int i = 0; i < webView.pg_horario_loaded.length; i++) {
                 webView.pg_horario_loaded[i] = false;
+            }
+
+            if (url_p.equals(URL + PG_ACESSO_NEGADO)) {
+                showAlertDialog(error);
+            } else {
+                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -240,5 +267,17 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     public void onResume() {
         super.onResume();
         webView.setOnPageLoadListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        dismissAlertDialog();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        dismissAlertDialog();
     }
 }
