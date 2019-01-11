@@ -15,14 +15,14 @@ public class Materia implements Serializable {
     @Id public long id;
     private int color;
     private String name;
-    private String totalFaltas;
+    private String faltas;
     @Transient private boolean isExpanded;
     @Transient private boolean anim;
     private int year;
     @Backlink(to = "materia") public ToMany<Etapa> etapas;
     @Backlink(to = "materia") public ToMany<Horario> horarios;
     @Backlink(to = "materia") public ToMany<Evento> eventos;
-    public ToOne<Infos> infos;
+    @Backlink(to = "materia") public ToOne<Infos> infos;
 
     public Materia() {}
 
@@ -56,12 +56,12 @@ public class Materia implements Serializable {
         this.name = name;
     }
 
-    public String getTotalFaltas() {
-        return totalFaltas;
+    public String getFaltas() {
+        return faltas;
     }
 
-    public void setTotalFaltas(String totalFaltas) {
-        this.totalFaltas = totalFaltas;
+    public void setFaltas(String faltas) {
+        this.faltas = faltas;
     }
 
     public boolean isExpanded() {

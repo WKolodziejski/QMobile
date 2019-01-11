@@ -14,19 +14,17 @@ public class Infos implements Serializable {
     private int total_aulas;
     private int aulas_ministradas;
     private int auals_restantes;
-    private int faltas;
     private int presenca_prevista;
     private int presenca_obrigatoria;
     @Unique private int cod;
     private String professor;
     private ToOne<Materia> materia;
 
-    public Infos(int carga_horaria, int total_aulas, int aulas_ministradas, int auals_restantes, int faltas, int presenca_prevista, int presenca_obrigatoria, int cod, String professor) {
+    public Infos(int carga_horaria, int total_aulas, int aulas_ministradas, int auals_restantes, int presenca_prevista, int presenca_obrigatoria, int cod, String professor) {
         this.carga_horaria = carga_horaria;
         this.total_aulas = total_aulas;
         this.aulas_ministradas = aulas_ministradas;
         this.auals_restantes = auals_restantes;
-        this.faltas = faltas;
         this.presenca_prevista = presenca_prevista;
         this.presenca_obrigatoria = presenca_obrigatoria;
         this.cod = cod;
@@ -73,14 +71,6 @@ public class Infos implements Serializable {
 
     public void setAuals_restantes(int auals_restantes) {
         this.auals_restantes = auals_restantes;
-    }
-
-    public int getFaltas() {
-        return faltas;
-    }
-
-    public void setFaltas(int faltas) {
-        this.faltas = faltas;
     }
 
     public int getPresenca_prevista() {

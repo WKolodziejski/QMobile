@@ -8,7 +8,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.tinf.qmobile.R;
 
-public class EventosViewHolder extends RecyclerView.ViewHolder{
+public class EventosViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.calendario_title)      public TextView title;
     @BindView(R.id.caledario_description) public TextView description;
     @BindView(R.id.calendario_point)      public View point;

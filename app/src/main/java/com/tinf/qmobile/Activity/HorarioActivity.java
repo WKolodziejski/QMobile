@@ -25,7 +25,7 @@ import static com.tinf.qmobile.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class HorarioActivity extends AppCompatActivity implements OnPageLoad, OnPageLoad.Main {
-    @BindView(R.id.progressbar_horizontal) SmoothProgressBar progressBar;
+    //@BindView(R.id.progressbar_horizontal) SmoothProgressBar progressBar;
     private SingletonWebView webView = SingletonWebView.getInstance();
     private OnUpdate onUpdate;
 
@@ -76,16 +76,16 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
     @Override
     public void onPageStart() {
         runOnUiThread(() -> {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.progressiveStart();
+            //progressBar.setVisibility(View.VISIBLE);
+            //progressBar.progressiveStart();
         });
     }
 
     @Override
     public void onPageFinish(String url_p) {
         runOnUiThread(() -> {
-            progressBar.setVisibility(View.GONE);
-            progressBar.progressiveStop();
+            //progressBar.setVisibility(View.GONE);
+            //progressBar.progressiveStop();
             if (onUpdate != null) {
                 onUpdate.onUpdate(url_p);
             }

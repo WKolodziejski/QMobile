@@ -169,6 +169,8 @@ public class ClientWebView extends WebViewClient {
                 } else {
                     Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e("ClientWebView", "Deu pau");

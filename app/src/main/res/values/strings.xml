@@ -19,6 +19,7 @@
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
     <string name="action_logout">Sair</string>
+    <string name="text_page_error">Houve um erro, verifique no site web</string>
     <string name="text_connection_error">Não foi possível carregar a página</string>
     <string name="text_empty_materiais">Não há materiais disponíveis</string>
     <string name="text_empty">Não há nada aqui, volte mais tarde</string>
@@ -63,7 +64,7 @@
     <string name="diarios_RP2_SegundaEtapa">Segunda Reavaliação da Segunda Etapa</string>
     <string name="diarios_Peso">・Peso: %1$s</string>
     <string name="diarios_Max">Máx: %1$s</string>
-    <string name="diarios_Nota">Nota: <b>%1$s/%2$s</b></string>
+    <string name="diarios_Nota">Nota: <b>%1$s</b>/%2$s</string>
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>
     <string name="home_last_login">Última atualização em %1s</string>

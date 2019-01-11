@@ -11,17 +11,9 @@
         android:layout_width="match_parent"
         layout="@layout/action_bar"/>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/horario_container"
-        >
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/horario_fragment"/>
-
-    </LinearLayout>
+        android:id="@+id/horario_fragment"/>
 
 </LinearLayout>

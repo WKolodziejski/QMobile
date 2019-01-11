@@ -1,14 +1,10 @@
 package com.tinf.qmobile.WebView;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.LoginEvent;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Dia;
 import com.tinf.qmobile.Class.Calendario.Evento;
@@ -299,7 +295,7 @@ public class JavaScriptWebView {
                         .build().findFirst();
 
                 if (materia != null) {
-                    materia.setTotalFaltas(tfaltas);
+                    materia.setFaltas(tfaltas);
 
                     if (materia.etapas.isEmpty()) {
                         materia.etapas.add(new Etapa(R.string.diarios_PrimeiraEtapa));

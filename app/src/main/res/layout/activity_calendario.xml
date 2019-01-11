@@ -12,19 +12,10 @@
         android:layout_width="match_parent"
         layout="@layout/action_bar_calendar"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/calendario_container"
-        android:nestedScrollingEnabled="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/calendario_fragment"/>
-
-    </LinearLayout>
+            android:id="@+id/calendario_fragment"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

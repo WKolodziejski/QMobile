@@ -67,13 +67,6 @@
             android:id="@+id/recycler_list_diarios"
             android:overScrollMode="never" />
 
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|bottom"
-            android:text="ADD"
-            android:id="@+id/diarios_add"/>
-
         <include layout="@layout/layout_nothing"
             android:id="@+id/diarios_nothing" />
 

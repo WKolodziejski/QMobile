@@ -9,6 +9,7 @@ import io.objectbox.BoxStore;
 import io.objectbox.query.Query;
 import io.objectbox.reactive.DataSubscriptionList;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 
+import com.tinf.qmobile.Activity.MateriaActivity;
 import com.tinf.qmobile.Class.Materias.Diarios;
 import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
@@ -63,19 +65,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
          final DiariosListViewHolder holder = (DiariosListViewHolder) viewHolder;
-
-         holder.add.setOnClickListener(v -> {
-             Etapa e = diariosList.get(i).etapas.get(diariosList.get(0).etapas.size() - 1);
-
-             if (e != null) {
-                 Diarios d = new Diarios("A", "10", "10", "5", R.string.sigla_Avaliacao, "2018", R.color.colorAccent);
-
-                 d.etapa.setTarget(e);
-                 e.diarios.add(d);
-                 box.boxFor(Diarios.class).put(d);
-             }
-         });
-
+         
          RotateAnimation rotate = new RotateAnimation(0, 180, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
          rotate.setDuration(250);
          rotate.setInterpolator(new LinearInterpolator());
@@ -88,6 +78,17 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
          diariosList.get(i).setAnim(false);
 
          holder.expandAct.setTag(i);
+
+         holder.expandAct.setOnLongClickListener(v -> {
+             Integer pos = (Integer) holder.expandAct.getTag();
+
+             Intent intent = new Intent(context, MateriaActivity.class);
+             intent.putExtra("NAME", diariosList.get(pos).getName());
+             intent.putExtra("YEAR", diariosList.get(pos).getYear());
+
+             context.startActivity(intent);
+             return true;
+         });
 
          holder.expandAct.setOnClickListener(v -> {
              holder.expand.toggle();

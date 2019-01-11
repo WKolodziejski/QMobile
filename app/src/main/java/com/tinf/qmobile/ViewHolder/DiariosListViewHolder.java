@@ -22,7 +22,6 @@ public class DiariosListViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.open_list)               public ConstraintLayout expandAct;
     @BindView(R.id.recycler_list_diarios)   public RecyclerView recyclerView;
     @BindView(R.id.diarios_nothing)         public View nothing;
-    @BindView(R.id.diarios_add)             public Button add;
 
     public DiariosListViewHolder(View view) {
         super(view);
