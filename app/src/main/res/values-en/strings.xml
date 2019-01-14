@@ -83,4 +83,7 @@
     <string name="dialog_no">No</string>
     <string name="dialog_quit">Logout</string>
     <string name="dialog_change">Change</string>
+    <string name="text_page_error">An error occurred, check the website</string>
+    <string name="dialog_access_denied">Access Denied</string>
+    <string name="message_empty">There are no journals available</string>
 </resources>
