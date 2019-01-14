@@ -21,6 +21,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Utils;
 
 import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
+import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
@@ -46,7 +47,7 @@ public class ClientWebView extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        callOnError(error.getDescription().toString());
+        callOnError(request.getUrl().toString(), error.getDescription().toString());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -55,8 +56,8 @@ public class ClientWebView extends WebViewClient {
         super.onReceivedHttpError(view, request, errorResponse);
         if (Utils.isConnected()) {
             if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
-                callOnError(errorResponse.getReasonPhrase());
-                Toast.makeText(App.getAppContext(), errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
+                callOnError(request.getUrl().toString(), errorResponse.getReasonPhrase());
+                //Toast.makeText(App.getAppContext(), errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -88,8 +89,7 @@ public class ClientWebView extends WebViewClient {
 
             } else if (url_i.equals(URL + PG_HOME)) {
 
-                webView.loadUrl("javascript:window.HtmlHandler.handleHome"
-                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                callHandler("handleHome");
 
                 if (webView.isLoginPage) {
                     //webView.isLoginPage = false;
@@ -99,14 +99,9 @@ public class ClientWebView extends WebViewClient {
                     callOnFinish(URL + PG_LOGIN);
                 }
 
-                Log.i("WebViewClient", "Home loaded");
-
             } else if (url_i.contains(URL + PG_BOLETIM)) {
 
-                webView.loadUrl("javascript:window.HtmlHandler.handleBoletim"
-                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-
-                Log.i("WebViewClient", "Boletim loaded");
+                callHandler("handleBoletim");
 
             } else if (url_i.contains(URL + PG_DIARIOS)) {
 
@@ -117,18 +112,12 @@ public class ClientWebView extends WebViewClient {
                     webView.scriptDiario = "";
 
                 } else {
-
-                    webView.loadUrl("javascript:window.HtmlHandler.handleDiarios"
-                            + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-
-                    Log.i("WebViewClient", "DiariosList loaded");
+                    callHandler("handleDiarios");
                 }
 
             } else if (url_i.contains(URL + PG_HORARIO)) {
 
-                webView.loadUrl("javascript:window.HtmlHandler.handleHorario"
-                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-                Log.i("WebViewClient", "Horario loaded");
+                callHandler("handleHorario");
 
             } else if (url_i.contains(URL + PG_MATERIAIS)) {
 
@@ -139,40 +128,47 @@ public class ClientWebView extends WebViewClient {
                     webView.scriptMateriais = "";
 
                 } else {
-
-                    webView.loadUrl("javascript:window.HtmlHandler.handleMateriais"
-                            + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-
-                    Log.i("WebViewClient", "Materiais loaded");
-
+                    callHandler("handleMateriais");
                 }
             } else if(url_i.equals(URL + PG_CALENDARIO)) {
 
-                webView.loadUrl("javascript:window.HtmlHandler.handleCalendario"
-                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                callHandler("handleCalendario");
 
             } else if (url_i.equals(URL + PG_ERRO)) {
 
                 Log.i("WebViewClient", "Error");
 
                 if (webView.isLoginPage) {
+
                     Answers.getInstance().logLogin(new LoginEvent()
                             .putCustomAttribute("Matricula", login_info.getString(LOGIN_REGISTRATION, ""))
                             .putSuccess(false));
+
                     login_info.edit()
                             .putString(Utils.LOGIN_REGISTRATION, "")
                             .putString(Utils.LOGIN_PASSWORD, "")
                             .putBoolean(Utils.LOGIN_VALID, false)
                             .apply();
-                    callOnFinish(URL + PG_ERRO);
+
                     Log.i("Login", "Login Inválido");
+
+                    callOnFinish(URL + PG_ERRO);
+
                 } else {
-                    Toast.makeText(App.getAppContext(), App.getAppContext().getResources().getString(R.string.text_connection_error), Toast.LENGTH_SHORT).show();
+                    callOnError(url_i, App.getAppContext().getResources().getString(R.string.text_connection_error));
                 }
+            } else if (url_i.equals(URL + PG_ACESSO_NEGADO)) {
+                callHandler("handleAcessoNegado");
             }
-        } else {
-            Log.e("ClientWebView", "Deu pau");
         }
+    }
+
+    private void callHandler(String name) {
+        SingletonWebView
+                .getInstance()
+                .loadUrl("javascript:window.HtmlHandler." + name + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+
+        Log.i("WebViewClient", name);
     }
 
     private void callOnFinish(String url_p) {
@@ -181,9 +177,9 @@ public class ClientWebView extends WebViewClient {
         }
     }
 
-    private void callOnError(String error) {
+    private void callOnError(String url_p, String error) {
         if (onPageLoad != null) {
-            onPageLoad.onErrorRecived(error);
+            onPageLoad.onErrorRecived(url_p, error);
         }
     }
 

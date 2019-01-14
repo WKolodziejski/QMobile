@@ -36,6 +36,7 @@ public class LoginFragment extends Fragment {
     public SharedPreferences login_info;
     private ProgressBar progressBar_login;
     public TextView textView_loading;
+    public Button login_btn;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class LoginFragment extends Fragment {
         EditText password_et = (TextInputEditText) view.findViewById(R.id.password_input_login);
         progressBar_login = (ProgressBar) view.findViewById(R.id.login_progressbar);
         textView_loading = (TextView) view.findViewById(R.id.login_textLoading);
-        Button login_btn = (Button) view.findViewById(R.id.btn_login);
+        login_btn = (Button) view.findViewById(R.id.btn_login);
 
         login_btn.setOnClickListener(v -> {
             View vi = getActivity().getCurrentFocus();
@@ -63,6 +64,7 @@ public class LoginFragment extends Fragment {
             }
 
             progressBar_login.setVisibility(VISIBLE);
+            login_btn.setClickable(false);
 
             SharedPreferences.Editor editor = login_info.edit();
             editor.putString(LOGIN_REGISTRATION, user_et.getText().toString().toUpperCase());

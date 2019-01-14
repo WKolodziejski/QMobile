@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Class.Materias.Materia;
@@ -83,7 +82,7 @@ public class BoletimFragment extends Fragment {
                         mRowDatas.add(materias.get(i).etapas.get(j).getNotaFinal());
                     }
                 }
-                mRowDatas.add(materias.get(i).getTotalFaltas());
+                mRowDatas.add(materias.get(i).getFaltas());
                 mTableDatas.add(mRowDatas);
             }
         }

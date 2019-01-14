@@ -1,43 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/table_list"
-    android:orientation="vertical"
-    android:elevation="4dp"
-    android:background="@color/colorPrimaryLight"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/open_list"
+    app:layout_optimizationLevel="standard|dimensions|chains"
+    android:foreground="?android:attr/selectableItemBackground"
     >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:id="@+id/open_list"
-        android:background="@color/colorPrimaryLight"
-        android:gravity="center_vertical"
-        >
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/list_title"
+        android:textSize="@dimen/main_font_size"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/expandable_layout_list"
+        app:layout_constraintEnd_toStartOf="@id/headerIndicator"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constrainedWidth="true"
+        tools:text="Biologia"
+        tools:textColor="@color/biologia" />
 
-        <ImageView
-            android:layout_margin="16dp"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/list_arrow"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_expand_more_black_24dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="16dp"
-            android:layout_marginRight="8dp"
-            android:id="@+id/list_text"
-            android:textSize="@dimen/main_font_size"
-            android:textStyle="bold"
-            android:layout_marginEnd="8dp" />
-
-    </LinearLayout>
+    <ImageView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_margin="16dp"
+        android:adjustViewBounds="true"
+        android:id="@+id/headerIndicator"
+        app:srcCompat="@drawable/ic_expand_more_black_24dp"
+        android:tint="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/expandable_layout_list"
+        />
 
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_layout_list"
@@ -45,20 +50,45 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:el_duration="250"
-        app:el_expanded="true"
         app:el_parallax="0"
+        app:layout_constraintTop_toBottomOf="@id/list_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constrainedHeight="true"
+        tools:el_expanded="true"
         >
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_list_diarios"
-            android:overScrollMode="never"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
 
-        <include layout="@layout/layout_nothing"
-            android:id="@+id/list_nothing"
-            android:visibility="gone"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:id="@+id/recycler_list_diarios"
+                android:overScrollMode="never" />
+
+            <include layout="@layout/layout_nothing"
+                android:id="@+id/diarios_nothing"
+                tools:visibility="gone"/>
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center|bottom"
+                android:id="@+id/diarios_open"
+                app:srcCompat="@drawable/ic_unfold_more_black_24dp"
+                android:background="@color/transparent"/>
+
+        </LinearLayout>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -56,4 +56,8 @@ public class Diarios implements Serializable {
     public int getTint() {
         return tint;
     }
+
+    public Etapa getEtapa() {
+        return etapa.getTarget();
+    }
 }

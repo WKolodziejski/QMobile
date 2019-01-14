@@ -32,10 +32,10 @@
     <string name="diarios_PrimeiraEtapa">First Stage</string>
     <string name="diarios_SegundaEtapa">Second Stage</string>
     <string name="app_version">Version </string>
-    <string name="diarios_Peso">Weight:</string>
-    <string name="diarios_Nota">Grade:</string>
+    <string name="diarios_Peso">・Weight: %1$s</string>
+    <string name="diarios_Nota">Grade: <b>%1$s</b>/%2$s</string>
     <string name="app_tinf">A TINF Project</string>
-    <string name="diarios_Max">Max:</string>
+    <string name="diarios_Max">Max: %1$s</string>
     <string name="app_more">More</string>
     <string name="more_devs">Developed by:</string>
     <string name="more_content">* The content used belongs to Qualidata © QAcadêmico</string>
@@ -83,4 +83,7 @@
     <string name="dialog_no">No</string>
     <string name="dialog_quit">Logout</string>
     <string name="dialog_change">Change</string>
+    <string name="text_page_error">An error occurred, check the website</string>
+    <string name="dialog_access_denied">Access Denied</string>
+    <string name="message_empty">There are no journals available</string>
 </resources>

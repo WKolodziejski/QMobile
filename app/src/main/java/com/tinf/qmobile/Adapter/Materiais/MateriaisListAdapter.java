@@ -2,7 +2,6 @@ package com.tinf.qmobile.Adapter.Materiais;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +28,7 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View view = LayoutInflater.from(context)
-                .inflate(R.layout.list_materias, parent, false);
+                .inflate(R.layout.list_materiais, parent, false);
         return new MateriaisListViewHolder(view);
     }
 
@@ -52,11 +51,6 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
 
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(layout);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(holder.recyclerView.getContext(),
-                LinearLayoutManager.VERTICAL);
-
-        holder.recyclerView.addItemDecoration(dividerItemDecoration);
 
         adapter.setOnDownloadListener(link -> {
             onDownloadRepassListener.onDownload(link);

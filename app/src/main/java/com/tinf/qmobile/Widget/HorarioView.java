@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Utilities.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;

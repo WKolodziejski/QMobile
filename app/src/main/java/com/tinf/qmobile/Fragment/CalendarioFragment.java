@@ -90,7 +90,6 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         ((CalendarioActivity) getActivity()).setTitle(dateFormatForMonth.format(lastDateMesesList.getTime()));
 
-
         RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_calendario);
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,

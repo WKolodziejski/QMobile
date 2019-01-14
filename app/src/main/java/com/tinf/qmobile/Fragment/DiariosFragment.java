@@ -1,5 +1,6 @@
 package com.tinf.qmobile.Fragment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,8 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
+import com.tinf.qmobile.Class.Calendario.Dia;
+import com.tinf.qmobile.Class.Materias.Diarios;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Fragment.ViewPager.NotasFragment;
@@ -41,11 +46,14 @@ public class DiariosFragment extends Fragment {
 
         SingletonWebView webView = SingletonWebView.getInstance();
 
-        DiariosListAdapter adapter = new DiariosListAdapter(getActivity(), getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build().find());
+        DiariosListAdapter adapter = new DiariosListAdapter(getBox(), getActivity());
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
+                LinearLayoutManager.VERTICAL);
 
         recyclerViewDiarios.setAdapter(adapter);
         recyclerViewDiarios.setLayoutManager(layout);
+        recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
 
         recyclerViewDiarios.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
@@ -60,11 +68,8 @@ public class DiariosFragment extends Fragment {
             }
         });
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewDiarios.getContext(),
-                LinearLayoutManager.VERTICAL);
-        recyclerViewDiarios.addItemDecoration(dividerItemDecoration);
-
         adapter.setOnExpandListener(position -> {
+
             RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
                 @Override
                 protected int getVerticalSnapPreference() {

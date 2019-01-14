@@ -1,55 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/colorPrimaryLight"
-    android:gravity="center_vertical"
+    android:layout_height="wrap_content"
     android:id="@+id/materiais_header"
+    app:layout_optimizationLevel="standard|dimensions|chains"
+    android:foreground="?android:attr/selectableItemBackground"
     >
 
     <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        tools:srcCompat="@drawable/ic_file"
-        android:id="@+id/materiais_tipo"
-        android:background="@drawable/layout_bg_round"
-        android:padding="12dp"
-        android:tint="@color/colorPrimaryLight"
-        tools:backgroundTint="@color/green" />
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_margin="16dp"
+        android:id="@+id/materiais_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:src="@drawable/ic_pdf"
+        tools:tint="@color/materiais_audio"/>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/materiais_type"
+        app:layout_constraintEnd_toStartOf="@id/materiais_date"
+        app:layout_constraintHorizontal_bias="0"
         >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
             android:id="@+id/materiais_title"
-            tools:text="Rev Industrial de 2046"/>
+            app:layout_constraintBottom_toTopOf="@id/materiais_description"
+            tools:text="Paisagens Brasileiras" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textSize="@dimen/main_font_size"
-            android:id="@+id/materiais_date"
-            tools:text="11/06/2018"/>
+            android:id="@+id/materiais_description"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/materiais_title"
+            tools:text="A resolução de alguns dos exercícios"
+            tools:visibility="visible"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/materiais_date"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="@tools:sample/date/ddmmyy" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,5 @@
-<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,19 +16,19 @@
             android:id="@+id/toolbar_calendario"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            >
+            tools:title="@string/title_calendario" >
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/actionBar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="?android:attr/actionBarSize"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:gravity="center_vertical"
-                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:textColor="@color/colorAccent"
-                tools:text="@string/app_q"/>
+                tools:text="@string/app_name"/>!-->
+
 
         </androidx.appcompat.widget.Toolbar>
 

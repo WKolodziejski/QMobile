@@ -110,7 +110,6 @@ public class SingletonWebView implements OnPageLoad.Main {
                     addToQueue(pg);
                 }
             } else {
-                Log.i("Client", "Contém java script");
                 webView.loadUrl(pg);
             }
         }
@@ -242,11 +241,11 @@ public class SingletonWebView implements OnPageLoad.Main {
     }
 
     @Override
-    public void onErrorRecived(String error) {
+    public void onErrorRecived(String url_p, String error) {
         isLoading = false;
         webView.post(() -> webView.stopLoading());
         Log.i("Error", error);
-        callOnError(error);
+        callOnError(url_p, error);
     }
 
     private void callOnFinish(String url_p) {
@@ -255,9 +254,9 @@ public class SingletonWebView implements OnPageLoad.Main {
         }
     }
 
-    private void callOnError(String error) {
+    private void callOnError(String url_p, String error) {
         if (onPageLoad != null) {
-            onPageLoad.onErrorRecived(error);
+            onPageLoad.onErrorRecived(url_p, error);
         }
     }
 
