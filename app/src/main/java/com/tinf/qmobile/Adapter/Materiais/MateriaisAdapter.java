@@ -1,7 +1,7 @@
 package com.tinf.qmobile.Adapter.Materiais;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,11 +37,13 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(materialList.get(position).getNomeConteudo());
         holder.date.setText((materialList.get(position).getData()));
-        holder.img.setImageDrawable(context.getResources().getDrawable(materialList.get(position).getIcon()));
+        holder.type.setImageDrawable(context.getResources().getDrawable(materialList.get(position).getIcon()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Drawable background = context.getResources().getDrawable(R.drawable.layout_bg_round);
-            background.setTint(context.getResources().getColor(materialList.get(position).getTint()));
-            holder.img.setBackground(background);
+            holder.type.setImageTintList(ColorStateList.valueOf(context.getResources().getColor(materialList.get(position).getTint())));
+        }
+        if (!materialList.get(position).getDescricao().isEmpty()) {
+            holder.description.setText(materialList.get(position).getDescricao());
+            holder.description.setVisibility(View.VISIBLE);
         }
 
         holder.title.setTag(position);

@@ -20,7 +20,6 @@
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <!-- New MaterialComponents attributes. -->
         <item name="snackbarButtonStyle">?attr/borderlessButtonStyle</item>
-        <item name="alertDialogTheme">@style/Theme.MaterialComponents.Light.Dialog</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">

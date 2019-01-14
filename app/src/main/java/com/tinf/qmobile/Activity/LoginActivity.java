@@ -23,6 +23,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.LoginFragment;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.Design;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.WebView.SingletonWebView;
 
@@ -40,7 +41,6 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     private SingletonWebView webView = SingletonWebView.getInstance();
     LoginFragment loginFragment = new LoginFragment();
     public Snackbar snackBar;
-    private AlertDialog alertDialog;
     ViewGroup loginLayout;
 
     @Override
@@ -77,20 +77,13 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     }
 
     private void showAlertDialog(String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle(getResources().getString(R.string.dialog_access_denied));
-        builder.setMessage(msg);
-        builder.setCancelable(true);
-        alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    private void dismissAlertDialog() {
-        if (alertDialog != null) {
-            alertDialog.dismiss();
+        new android.app.AlertDialog.Builder(LoginActivity.this)
+                .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
+                .setMessage(msg)
+                .setCancelable(true)
+                .create()
+                .show();
         }
-    }
 
     private void loadData() {
         Log.i("LoginActivity", "FirstLogin()");
@@ -203,6 +196,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
 
             } else if (url_p.equals(URL + PG_ERRO)) {
                 loginFragment.dismissProgressBar();
+                loginFragment.login_btn.setClickable(true);
                 showSnackBar(getResources().getString(R.string.text_invalid_login));
 
             } else if (url_p.contains(URL + PG_HOME)
@@ -220,6 +214,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         runOnUiThread(() -> {
             loginFragment.textView_loading.setVisibility(View.INVISIBLE);
             loginFragment.dismissProgressBar();
+            loginFragment.login_btn.setClickable(true);
 
             ((App) getApplication()).setLogged(false);
             webView.year_position = 0;
@@ -267,17 +262,5 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     public void onResume() {
         super.onResume();
         webView.setOnPageLoadListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        dismissAlertDialog();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        dismissAlertDialog();
     }
 }

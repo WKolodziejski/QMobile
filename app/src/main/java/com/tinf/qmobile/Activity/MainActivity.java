@@ -51,13 +51,11 @@ import static com.tinf.qmobile.Utilities.Utils.LOGIN_VALID;
 import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.URL;
 
-public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
-        BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, BottomNavigationView.OnNavigationItemSelectedListener {
 
-    //@BindView(R.id.progressbar_horizontal)   SmoothProgressBar progressBar;
     @BindView(R.id.fab_expand)        public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
-    @BindView(R.id.tabs)                     TabLayout tabLayout;
+    @BindView(R.id.tabs)              private TabLayout tabLayout;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
     //@BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
@@ -88,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
             SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
             setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
             changeFragment(new HomeFragment());
+            hideTabLayout();
+            hideExpandBtn();
+            bottomNav.setSelectedItemId(R.id.navigation_home);
             webView.loadNextUrl();
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
                         .setMessage(R.string.dialog_quit_msg)
                         .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
                         .setNegativeButton(R.string.dialog_cancel, null)
+                        .create()
                         .show();
                 return true;
 
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
                             webView.changeDate(year.getValue(), bottomNav.getSelectedItemId());
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
+                        .create()
                         .show();
                 return true;
         }
@@ -222,15 +225,15 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
             refreshLayout.setRefreshing(false);
 
             if (url_p.equals(URL + PG_ACESSO_NEGADO)) {
-                /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-                builder.setTitle(getResources().getString(R.string.dialog_access_denied));
-                builder.setMessage("Deu ruim");
-                builder.setCancelable(false);
-                builder.setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> {
-                    logOut();
-                });
-                builder.create().show();*/
+                new android.app.AlertDialog.Builder(MainActivity.this)
+                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
+                        .setMessage(error)
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> {
+                            logOut();
+                        })
+                        .create()
+                        .show();
             } else {
                 Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
             }
@@ -249,57 +252,20 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main,
         snackBar.show();
     }
 
-    @SuppressLint("RestrictedApi")
     public void showExpandBtn() {
         fab_expand.show();
-        /*if (fab_expand.getAnimation() == null) {
-            Animation open_linear = AnimationUtils.loadAnimation(this, R.anim.fab_open_pop);
-            fab_expand.startAnimation(open_linear);
-        }
-        if ((fab_expand.getAnimation() != null)) {
-            fab_expand.getAnimation().setFillAfter(true);
-        }
-        fab_expand.setVisibility(View.VISIBLE);*/
     }
 
-    @SuppressLint("RestrictedApi")
-    public void hideExpandBtn() { //Esconde os FloatingActionButtons
-        /*if (fab_expand.getAnimation() != null) {
-            Animation close_linear = AnimationUtils.loadAnimation(MainActivity.this, R.anim.fab_close_pop);
-            fab_expand.startAnimation(close_linear);
-            fab_expand.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    fab_expand.setAnimation(null);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-        }
-        if ((fab_expand.getAnimation() != null)) {
-            fab_expand.getAnimation().setFillAfter(false);
-        }
-        fab_expand.setVisibility(View.INVISIBLE);*/
+    public void hideExpandBtn() {
         fab_expand.hide();
     }
 
     protected void showProgressbar() {
-        //progressBar.setVisibility(View.VISIBLE);
-        //progressBar.progressiveStart();
         refreshLayout.setRefreshing(true);
     }
 
     public void dismissProgressbar() {
         refreshLayout.setRefreshing(false);
-        //progressBar.setVisibility(View.GONE);
-        //progressBar.progressiveStop();
-
     }
 
     public void hideTabLayout() {

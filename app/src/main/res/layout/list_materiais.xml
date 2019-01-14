@@ -17,22 +17,29 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
-        android:id="@+id/etapa_title"
+        android:id="@+id/material_text"
         android:textSize="@dimen/main_font_size"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/recycler_list_materiais"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constrainedWidth="true"
-        tools:text="Biologia"
-        tools:textColor="@color/biologia" />
+        tools:text="Biologia" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:id="@+id/recycler_etapas"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:id="@+id/recycler_list_materiais"
         android:overScrollMode="never"
-        app:layout_constraintTop_toBottomOf="@id/etapa_title"/>
+        app:layout_constraintTop_toBottomOf="@id/material_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constrainedHeight="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

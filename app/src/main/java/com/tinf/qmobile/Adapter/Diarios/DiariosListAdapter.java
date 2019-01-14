@@ -79,9 +79,15 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
          holder.expandAct.setTag(i);
 
-         holder.expandAct.setOnLongClickListener(v -> {
+         holder.open.setOnClickListener(v -> {
              Integer pos = (Integer) holder.expandAct.getTag();
-             boolean isEmpty = true;
+
+             Intent intent = new Intent(context, MateriaActivity.class);
+             intent.putExtra("NAME", diariosList.get(pos).getName());
+             intent.putExtra("YEAR", diariosList.get(pos).getYear());
+             context.startActivity(intent);
+
+             /*boolean isEmpty = true;
 
              for (int j = 0; j < diariosList.get(pos).etapas.size(); j++) {
                  if (!diariosList.get(pos).etapas.get(j).diarios.isEmpty()) {
@@ -97,8 +103,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                  context.startActivity(intent);
              } else {
                  Toast.makeText(context, R.string.message_empty, Toast.LENGTH_SHORT).show();
-             }
-             return true;
+             }*/
          });
 
          holder.expandAct.setOnClickListener(v -> {
@@ -144,10 +149,12 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
             if (diariosList.get(i).etapas.get(diariosList.get(i).etapas.size() - 1).diarios.isEmpty()) {
                 holder.nothing.setVisibility(View.VISIBLE);
+                holder.open.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.GONE);
             } else {
                 holder.nothing.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.VISIBLE);
+                holder.open.setVisibility(View.VISIBLE);
                 holder.recyclerView.setAdapter(new DiariosAdapter(diariosList.get(i).etapas.get(diariosList.get(i).etapas.size() - 1).diarios, context));
                 holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
                         RecyclerView.VERTICAL, false));

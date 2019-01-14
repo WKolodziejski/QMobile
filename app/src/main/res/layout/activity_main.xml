@@ -7,8 +7,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
-    tools:context="com.tinf.qmobile.Activity.MainActivity"
     android:fitsSystemWindows="true"
+    app:layout_optimizationLevel="standard|dimensions|chains"
+    tools:context="com.tinf.qmobile.Activity.MainActivity"
     >
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

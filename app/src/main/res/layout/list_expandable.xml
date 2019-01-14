@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/open_list"
+    app:layout_optimizationLevel="standard|dimensions|chains"
     android:foreground="?android:attr/selectableItemBackground"
     >
 
@@ -57,18 +58,36 @@
         tools:el_expanded="true"
         >
 
-        <androidx.recyclerview.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
-            android:id="@+id/recycler_list_diarios"
-            android:overScrollMode="never" />
+            android:orientation="vertical"
+            >
 
-        <include layout="@layout/layout_nothing"
-            android:id="@+id/diarios_nothing" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
+                android:id="@+id/recycler_list_diarios"
+                android:overScrollMode="never" />
+
+            <include layout="@layout/layout_nothing"
+                android:id="@+id/diarios_nothing"
+                tools:visibility="gone"/>
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center|bottom"
+                android:id="@+id/diarios_open"
+                app:srcCompat="@drawable/ic_unfold_more_black_24dp"
+                android:background="@color/transparent"/>
+
+        </LinearLayout>
 
     </net.cachapa.expandablelayout.ExpandableLayout>
 

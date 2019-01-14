@@ -530,15 +530,15 @@ public class JavaScriptWebView {
 
                     while (classe.equals("conteudoTexto")) {
 
-                        String data = element.child(0).text();
+                        String data = element.child(0).text().trim();
                         String link = element.child(1).child(1).attr("href");
-                        String nomeConteudo = element.child(1).child(1).text();
+                        String nomeConteudo = element.child(1).child(1).text().trim();
                         String descricao = "";
                         String extension = link.substring(link.indexOf("."));
 
                         //pode ou nao ter descricao
                         if (element.child(1).children().size() > 2) {
-                            descricao = element.child(1).child(3).nextSibling().toString();
+                            descricao = element.child(1).child(3).nextSibling().toString().trim();
                         }
 
                         int color = R.color.materiais_file;
@@ -844,17 +844,15 @@ public class JavaScriptWebView {
 
                 Log.i("JavaScriptWebView", "Home handling...");
 
-                SingletonWebView webView = SingletonWebView.getInstance();
+                Document accessPage = Jsoup.parse(html_p);
 
-                //Document accessPage = Jsoup.parse(html_p);
+                String msg = accessPage.getElementsByClass("conteudoTexto").first().text().trim();
 
-                String msg = "User inactive";
-
-                /*SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
                 editor.putString(Utils.LOGIN_REGISTRATION, "")
                         .putString(Utils.LOGIN_PASSWORD, "")
                         .putBoolean(Utils.LOGIN_VALID, false)
-                        .apply();*/
+                        .apply();
 
                 Log.i("JavaScriptWebView", "Acesso Negado handled!");
 
