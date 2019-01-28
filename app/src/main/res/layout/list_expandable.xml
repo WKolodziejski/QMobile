@@ -66,13 +66,14 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
                 android:id="@+id/recycler_list_diarios"
-                android:overScrollMode="never" />
+                android:overScrollMode="never"
+                android:transitionName="Diarios" />
 
             <include layout="@layout/layout_nothing"
                 android:id="@+id/diarios_nothing"

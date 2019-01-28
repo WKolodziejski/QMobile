@@ -27,7 +27,7 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         TextView version_txt = (TextView) findViewById(R.id.about_version);
-        version_txt.append(version);
+        version_txt.append(" " + version);
     }
 
     public void more(View v){

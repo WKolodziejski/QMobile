@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import android.util.Log;
+import android.webkit.CookieManager;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -18,9 +19,11 @@ import com.crashlytics.android.answers.LoginEvent;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
+import static com.tinf.qmobile.Utilities.User.PASSWORD;
+import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
@@ -35,13 +38,7 @@ import static com.tinf.qmobile.Utilities.Utils.URL;
 public class ClientWebView extends WebViewClient {
     private OnPageLoad.Main onPageLoad;
 
-    ClientWebView() {}
-
-    @Override
-    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        view.loadUrl(url);
-        return true;
-    }
+    public ClientWebView() {}
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -55,9 +52,8 @@ public class ClientWebView extends WebViewClient {
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
         if (Utils.isConnected()) {
-            if (!errorResponse.getReasonPhrase().equals("Not Found")) {// ignora o erro not found
+            if (!errorResponse.getReasonPhrase().equals("Not Found")) {
                 callOnError(request.getUrl().toString(), errorResponse.getReasonPhrase());
-                //Toast.makeText(App.getAppContext(), errorResponse.getReasonPhrase(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -73,15 +69,14 @@ public class ClientWebView extends WebViewClient {
         if (Utils.isConnected() && !url_i.isEmpty()) {
 
             SingletonWebView webView = SingletonWebView.getInstance();
-            SharedPreferences login_info = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, Context.MODE_PRIVATE);
 
             if (url_i.equals(URL + PG_LOGIN)) {
 
                 webView.loadUrl("javascript:var uselessvar = document.getElementById('txtLogin').value='"
-                        + login_info.getString(Utils.LOGIN_REGISTRATION, "") + "';");
+                        + User.getCredential(App.getAppContext(), REGISTRATION) + "';");
 
                 webView.loadUrl("javascript:var uselessvar = document.getElementById('txtSenha').value='"
-                        + login_info.getString(Utils.LOGIN_PASSWORD, "") + "';");
+                        + User.getCredential(App.getAppContext(), PASSWORD) + "';");
 
                 webView.loadUrl("javascript:document.getElementById('btnOk').click();");
 
@@ -141,14 +136,10 @@ public class ClientWebView extends WebViewClient {
                 if (webView.isLoginPage) {
 
                     Answers.getInstance().logLogin(new LoginEvent()
-                            .putCustomAttribute("Matricula", login_info.getString(LOGIN_REGISTRATION, ""))
+                            .putCustomAttribute("Matricula", User.getCredential(App.getAppContext(), REGISTRATION))
                             .putSuccess(false));
 
-                    login_info.edit()
-                            .putString(Utils.LOGIN_REGISTRATION, "")
-                            .putString(Utils.LOGIN_PASSWORD, "")
-                            .putBoolean(Utils.LOGIN_VALID, false)
-                            .apply();
+                    User.clearInfos(App.getAppContext());
 
                     Log.i("Login", "Login Inválido");
 
@@ -164,9 +155,9 @@ public class ClientWebView extends WebViewClient {
     }
 
     private void callHandler(String name) {
-        SingletonWebView
-                .getInstance()
-                .loadUrl("javascript:window.HtmlHandler." + name + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+        SingletonWebView.getInstance()
+                .loadUrl("javascript:window.HtmlHandler."
+                        + name + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
 
         Log.i("WebViewClient", name);
     }

@@ -23,7 +23,7 @@ import java.util.List;
 import io.objectbox.BoxStore;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qmobile.Utilities.User.INFO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qmobile.Utilities.Utils.PG_LOGIN;
@@ -200,7 +200,7 @@ public class SingletonWebView implements OnPageLoad.Main {
 
     private String[] loadYears() {
         List<String> years = new ArrayList<>();
-        String jsonArrayString = App.getAppContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(YEARS, "");
+        String jsonArrayString = App.getAppContext().getSharedPreferences(INFO, MODE_PRIVATE).getString(YEARS, "");
         if (!TextUtils.isEmpty(jsonArrayString)) {
             try {
                 JSONArray jsonArray = new JSONArray(jsonArrayString);

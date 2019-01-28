@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <!--<item
+    <item
         android:id="@+id/action_settings"
         android:title="@string/action_settings"
-        app:showAsAction="never"/>!-->
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_about"
@@ -22,6 +22,15 @@
         android:id="@+id/action_date"
         android:title="@string/action_date"
         android:icon="@drawable/ic_date_range_black_24dp"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1"/>
+
+    <!--<item
+        android:id="@+id/action_messages"
+        android:title="Mensagens"
+        android:icon="@drawable/ic_inbox_black_24dp"
+        app:showAsAction="ifRoom"
+        app:actionLayout="@layout/custom_action_item_badge"
+        android:orderInCategory="0"/>!-->
 
 </menu>

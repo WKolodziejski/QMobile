@@ -1,10 +1,16 @@
 package com.tinf.qmobile.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,21 +19,36 @@ import com.crashlytics.android.BuildConfig;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
+import com.firebase.jobdispatcher.Trigger;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.NumberPicker;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.tinf.qmobile.Activity.Settings.AboutActivity;
+import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
@@ -35,6 +56,8 @@ import com.tinf.qmobile.Fragment.ViewPager.NotasFragment;
 import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Service.BackgroundCheck;
+import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.WebView.SingletonWebView;
 import java.util.Objects;
@@ -43,19 +66,21 @@ import butterknife.ButterKnife;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_NAME;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_PASSWORD;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_VALID;
+
+import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
+import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qmobile.Utilities.Utils.URL;
+import static com.tinf.qmobile.Utilities.Utils.VERSION;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, BottomNavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.fab_expand)        public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
-    @BindView(R.id.tabs)              private TabLayout tabLayout;
+    @BindView(R.id.tabs)                     TabLayout tabLayout;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
     //@BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
     private SingletonWebView webView = SingletonWebView.getInstance();
@@ -66,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        configFireBase();
         setSupportActionBar(findViewById(R.id.toolbar));
+        configFireBase();
         testLogin();
     }
 
@@ -77,19 +102,28 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
                         .build(), new Answers())
                 .debuggable(true)
                 .build());
-        Crashlytics.setUserIdentifier(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_REGISTRATION, ""));
+        Crashlytics.setUserIdentifier(User.getCredential(getApplicationContext(), REGISTRATION));
     }
 
     private void testLogin() {
-        if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false)) {
+        if (User.isValid(getApplicationContext())) {
             ((App) getApplication()).setLogged(true);
             SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
-            setTitle(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
-            changeFragment(new HomeFragment());
-            hideTabLayout();
-            hideExpandBtn();
-            bottomNav.setSelectedItemId(R.id.navigation_home);
-            webView.loadNextUrl();
+            /*if (!getPreferences(MODE_PRIVATE).getBoolean(VERSION, false)) {
+                Utils.cancellAllJobs(getApplicationContext());
+                getPreferences(MODE_PRIVATE).edit().putBoolean(VERSION, true).apply();
+                getBox().close();
+                getBox().deleteAllFiles();
+                logOut();
+            } else {*/
+                Utils.scheduleJob(getApplicationContext());
+                setTitle(User.getName(getApplicationContext()));
+                changeFragment(new HomeFragment());
+                hideTabLayout();
+                hideExpandBtn();
+                bottomNav.setSelectedItemId(R.id.navigation_home);
+                webView.loadNextUrl();
+            //}
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
@@ -100,15 +134,45 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar, menu);
+
+        /*final MenuItem menuMsgs = menu.findItem(R.id.action_messages);
+
+        FrameLayout layout = (FrameLayout) menu.findItem(R.id.action_messages).getActionView();
+
+        TextView badge = (TextView) layout.findViewById(R.id.messages_badge);
+
+        int count = 3;
+
+        if (badge != null) {
+            if (count == 0) {
+                if (badge.getVisibility() != View.GONE) {
+                    badge.setVisibility(View.GONE);
+                }
+            } else {
+                badge.setText(String.valueOf(Math.min(count, 99)));
+                if (badge.getVisibility() != View.VISIBLE) {
+                    badge.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        layout.setOnClickListener(v -> onOptionsItemSelected(menuMsgs));*/
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case R.id.action_about:
 
                 startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                return true;
+
+            case R.id.action_settings:
+
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 return true;
 
             case R.id.action_logout:
@@ -167,13 +231,10 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     fragment = new HomeFragment();
-                    hideTabLayout();
-                    hideExpandBtn();
                     break;
 
                 case R.id.navigation_notas:
-                    fragment =  new NotasFragment();
-                    showExpandBtn();
+                    fragment = new NotasFragment();
                     break;
 
                 case R.id.navigation_materiais:
@@ -280,23 +341,14 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     private void logOut() {
         ((App) getApplication()).logOut();
         SingletonWebView.logOut();
-
-        getSharedPreferences(LOGIN_INFO, MODE_PRIVATE)
-                .edit()
-                .putString(LOGIN_REGISTRATION, "")
-                .putString(LOGIN_PASSWORD, "")
-                .putString(LOGIN_NAME, "")
-                .putBoolean(LOGIN_VALID, false)
-                .apply();
-
+        User.clearInfos(getApplicationContext());
         finish();
         startActivity(getIntent());
     }
 
     private boolean changeFragment(Fragment fragment) {
         if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment, fragment)
                     .commit();
             return true;
@@ -365,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
 
     @Override
     public void onBackPressed() {
-        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
+        if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             super.onBackPressed();

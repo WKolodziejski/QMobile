@@ -1,28 +1,14 @@
 package com.tinf.qmobile.Adapter.Diarios;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import io.objectbox.Box;
-import io.objectbox.BoxStore;
-import io.objectbox.android.AndroidScheduler;
-import io.objectbox.reactive.DataObserver;
-import io.objectbox.reactive.DataSubscriptionList;
-import io.objectbox.relation.ToOne;
-
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import com.tinf.qmobile.Class.Materias.Diarios;
-import com.tinf.qmobile.Class.Materias.Diarios_;
-import com.tinf.qmobile.Class.Materias.Etapa;
-import com.tinf.qmobile.Class.Materias.Etapa_;
-import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosViewHolder;
-
 import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class DiariosAdapter extends RecyclerView.Adapter {
     private List<Diarios> diarios;
@@ -54,8 +40,8 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
 
         holder.title.setText(diarios.get(i).getNome());
-        holder.type.setText(diarios.get(i).getTipo());
         holder.date.setText(diarios.get(i).getData());
+        holder.type.setText(context.getResources().getString(diarios.get(i).getTipoID()));
         holder.type.setTextColor(context.getResources().getColor(diarios.get(i).etapa.getTarget().materia.getTarget().getColor()));
         holder.weight.setText(String.format(context.getResources().getString(
                 R.string.diarios_Peso), diarios.get(i).getPeso()));
@@ -66,5 +52,10 @@ public class DiariosAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return diarios.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return diarios.get(position).hashCode();
     }
 }

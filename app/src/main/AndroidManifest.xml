@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name="com.tinf.qmobile.App"
@@ -14,8 +15,7 @@
         android:roundIcon="@drawable/icon_launcher_round_black"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:fullBackupContent="@xml/backup_descriptor"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
@@ -24,7 +24,7 @@
             android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe"
             />
         <activity
-            android:name="com.tinf.qmobile.Activity.SplashActivity"
+            android:name=".Activity.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,64 +32,75 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.MainActivity"
-            android:configChanges="orientation|screenSize">
+            android:name=".Activity.MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.LoginActivity"
+            android:name=".Activity.LoginActivity"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.Settings.AboutActivity">
+            android:name=".Activity.Settings.AboutActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.Settings.MoreActivity">
+            android:name=".Activity.Settings.MoreActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.HorarioActivity">
+            android:name=".Activity.HorarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.CalendarioActivity"
+            android:name=".Activity.CalendarioActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.CalendarioActivity2">
+            android:name=".Activity.CalendarioActivity2">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.MateriaActivity">
+            android:name=".Activity.MateriaActivity"
+            android:parentActivityName=".Activity.MainActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tinf.qmobile.Activity.Settings.SettingsActivity"
+            android:name=".Activity.Settings.SettingsActivity"
             android:label="@string/title_settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.Activity.MainActivity" />
         </activity>
+
+        <service
+            android:exported="false"
+            android:name=".Service.BackgroundCheck">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
 
         <meta-data
             android:name="io.fabric.ApiKey"

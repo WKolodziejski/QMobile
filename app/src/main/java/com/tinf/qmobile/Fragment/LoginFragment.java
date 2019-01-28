@@ -15,25 +15,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.tinf.qmobile.Activity.LoginActivity;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.WebView.SingletonWebView;
-
-import java.util.Objects;
-
 import static android.content.Context.INPUT_METHOD_SERVICE;
-import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_PASSWORD;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
+import static com.tinf.qmobile.Utilities.User.PASSWORD;
+import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 import static com.tinf.qmobile.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class LoginFragment extends Fragment {
-    public SharedPreferences login_info;
     private ProgressBar progressBar_login;
     public TextView textView_loading;
     public Button login_btn;
@@ -46,7 +40,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        login_info = Objects.requireNonNull(getActivity()).getSharedPreferences(LOGIN_INFO, MODE_PRIVATE);
 
         EditText user_et = (TextInputEditText) view.findViewById(R.id.user_input_login);
         EditText password_et = (TextInputEditText) view.findViewById(R.id.password_input_login);
@@ -66,10 +59,8 @@ public class LoginFragment extends Fragment {
             progressBar_login.setVisibility(VISIBLE);
             login_btn.setClickable(false);
 
-            SharedPreferences.Editor editor = login_info.edit();
-            editor.putString(LOGIN_REGISTRATION, user_et.getText().toString().toUpperCase());
-            editor.putString(LOGIN_PASSWORD, password_et.getText().toString());
-            editor.apply();
+            User.setCredential(getContext(), REGISTRATION, user_et.getText().toString().toUpperCase());
+            User.setCredential(getContext(), PASSWORD, password_et.getText().toString());
 
             ((LoginActivity) getActivity()).dismissSnackbar();
             SingletonWebView.getInstance().loadUrl(URL + PG_LOGIN);

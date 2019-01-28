@@ -4,6 +4,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +25,22 @@ import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, OnUpdate {
+    private static String TAG = "NotasFragment";
     private SingletonWebView webView = SingletonWebView.getInstance();
     private int currentFragment = 0;
     private ViewPager viewPager;
     private OnTopScrollRequested onTopScrollRequestedB, onTopScrollRequestedD;
+    private ViewPagerAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.v(TAG, "New instace created");
+
+        adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(new DiariosFragment(), getString(R.string.title_diarios));
+        adapter.addFragment(new BoletimFragment(), getString(R.string.title_boletim));
+    }
 
     @Nullable
     @Override
@@ -37,6 +51,7 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.v(TAG, "View created");
         showNotas(view);
     }
 
@@ -44,14 +59,8 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
         ((MainActivity) getActivity()).setTitle(webView.data_year[webView.year_position]);
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-
-        adapter.addFragment(new DiariosFragment(), getString(R.string.title_diarios));
-        adapter.addFragment(new BoletimFragment(), getString(R.string.title_boletim));
-
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
-
         viewPager.setCurrentItem(currentFragment);
 
         ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
@@ -83,7 +92,8 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     @Override
     public void onUpdate(String url_p) {
-        if (url_p.equals(URL + PG_DIARIOS) || url_p.equals(URL + PG_BOLETIM) || url_p.equals(UPDATE_REQUEST)) {
+        if (url_p.equals(UPDATE_REQUEST)) {
+            onCreate(null);
             showNotas(getView());
         }
     }
@@ -102,14 +112,14 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     public void onStart() {
         super.onStart();
         viewPager.addOnPageChangeListener(this);
-        //((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         viewPager.addOnPageChangeListener(this);
-        //((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override

@@ -31,15 +31,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             addPreferencesFromResource(R.xml.pref_main);
 
-            bindPreferenceSummaryToValue(findPreference("key_autoload"));
+            bindPreferenceSummaryToValue(findPreference("key_check_diarios"));
 
-            bindPreferenceSummaryToValue(findPreference("key_notification"));
+            bindPreferenceSummaryToValue(findPreference("key_mobile_data"));
 
-            Preference feedback = findPreference("key_send_feedback");
-            feedback.setOnPreferenceClickListener(preference -> {
-                //SendEmail.openGmail(getActivity());
-                return true;
-            });
+            bindPreferenceSummaryToValue(findPreference("key_alert_mode"));
+
+            bindPreferenceSummaryToValue(findPreference("key_notify_diarios"));
 
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {

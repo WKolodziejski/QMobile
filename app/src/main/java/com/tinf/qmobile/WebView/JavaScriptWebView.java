@@ -1,6 +1,13 @@
 package com.tinf.qmobile.WebView;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
@@ -10,6 +17,7 @@ import com.tinf.qmobile.Class.Calendario.Dia;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;
 import com.tinf.qmobile.Class.Materias.Diarios;
+import com.tinf.qmobile.Class.Materias.Diarios_;
 import com.tinf.qmobile.Class.Materias.Horario;
 import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materiais.Materiais;
@@ -17,7 +25,9 @@ import com.tinf.qmobile.Class.Materiais.MateriaisList;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
+import com.tinf.qmobile.Network.NetworkSingleton;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 import org.json.JSONArray;
 import org.jsoup.Jsoup;
@@ -29,10 +39,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import static android.content.Context.MODE_PRIVATE;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
+import static com.tinf.qmobile.Utilities.User.INFO;
 import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
 import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
@@ -41,6 +54,7 @@ import static com.tinf.qmobile.Utilities.Utils.PG_HOME;
 import static com.tinf.qmobile.Utilities.Utils.PG_HORARIO;
 import static com.tinf.qmobile.Utilities.Utils.PG_MATERIAIS;
 import static com.tinf.qmobile.Utilities.Utils.URL;
+import static com.tinf.qmobile.Utilities.Utils.VERSION;
 import static com.tinf.qmobile.Utilities.Utils.YEARS;
 import static com.tinf.qmobile.Utilities.Utils.getRandomColorGenerator;
 
@@ -60,13 +74,10 @@ public class JavaScriptWebView {
                 SingletonWebView webView = SingletonWebView.getInstance();
 
                 Document homePage = Jsoup.parse(html_p);
-                String nome = homePage.getElementsByClass("barraRodape").get(1).text();
+                String name = homePage.getElementsByClass("barraRodape").get(1).text();
 
-                //Element drawer_msg = homePage.getElementsByClass("titulo").get(1);
-                SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
-                editor.putString(Utils.LOGIN_NAME, nome);
-                editor.putLong(Utils.LAST_LOGIN, new Date().getTime());
-                editor.apply();
+                User.setName(App.getAppContext(), name);
+                User.setLastLogin(App.getAppContext(), new Date().getTime());
 
                 webView.pg_home_loaded = true;
                 Log.i("JavaScriptWebView", "Home handled!");
@@ -107,7 +118,7 @@ public class JavaScriptWebView {
                 webView.data_year[i] = trimb(options.get(i + 1).text());
             }
 
-            SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).edit();
+            /*SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(INFO, MODE_PRIVATE).edit();
             JSONArray jsonArray = new JSONArray();
 
             for (String z : webView.data_year) {
@@ -115,7 +126,9 @@ public class JavaScriptWebView {
             }
 
             editor.putString(YEARS, jsonArray.toString());
-            editor.apply();
+            editor.apply();*/
+
+            NetworkSingleton.setYears(App.getAppContext(), webView.data_year);
 
             for (int y = 0; y < numMaterias; y++) {
                 if (table_diarios.select("table.conteudoTexto").eq(y).parents().eq(0).parents().eq(0).next().eq(0) != null) {
@@ -183,29 +196,29 @@ public class JavaScriptWebView {
                         nome_etapa = "";
                     }
 
-                    for (int i = 0; i < etapa.diarios.size(); i++) {
+                    /*for (int i = 0; i < etapa.diarios.size(); i++) {
                         diariosBox.remove(etapa.diarios.get(i).id);
                     }
 
-                    etapa.diarios.clear();
+                    etapa.diarios.clear();*/
 
                     for (int i = 0; i < notasLinhas.size(); i++) {
                         String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
                         String titulo = notasLinhas.eq(i).first().child(1).text();
-                        int tipo = R.string.sigla_Avaliacao;
+                        int tipo = Diarios.Tipo.AVALIACAO.getInt();
                         int tint = R.color.colorAccent;
                         if (titulo.contains("Prova")) {
                             //tint = R.color.diarios_prova;
-                            tipo = R.string.sigla_Prova;
+                            tipo = Diarios.Tipo.PROVA.getInt();
                         } else if (titulo.contains("Diarios") || titulo.contains("Trabalho")) {
                             //tint = R.color.diarios_trabalho;
-                            tipo = R.string.sigla_Trabalho;
+                            tipo = Diarios.Tipo.TRABALHO.getInt();
                         } else if (titulo.contains("Qualitativa")) {
                             //tint = R.color.diarios_qualitativa;
-                            tipo = R.string.sigla_Qualitativa;
+                            tipo = Diarios.Tipo.QUALITATIVA.getInt();
                         } else if (titulo.contains("Exercício")) {
                             //tint = R.color.diarios_exercicio;
-                            tipo = R.string.sigla_Exercicio;
+                            tipo = Diarios.Tipo.EXERCICIO.getInt();
                         }
 
                         String caps = trimp(trim1(notasLinhas.eq(i).first().child(1).text()));
@@ -218,12 +231,18 @@ public class JavaScriptWebView {
                             nota = " -";
                         }
 
-                        Diarios diario = new Diarios(nome, peso, max, nota, tipo, data, tint);
+                        Diarios new_diario = new Diarios(nome, peso, max, nota, tipo, data, tint);
 
-                        diario.etapa.setTarget(etapa);
-                        etapa.diarios.add(diario);
-                        diariosBox.put(diario);
+                        Diarios search = diariosBox.query().equal(Diarios_.nome, nome).and()
+                                    .equal(Diarios_.data, data).and().equal(Diarios_.tipo, tipo).and()
+                                    .equal(Diarios_.nota, nota).build().findFirst();
 
+                        if (search == null) {
+                            new_diario.etapa.setTarget(etapa);
+                            etapa.diarios.add(new_diario);
+                            diariosBox.put(new_diario);
+                            Log.i("new Diario", new_diario.getNome() + new_diario.getTipo());
+                        }
                         //Log.v("Box for Diarios", "size of " + diariosBox.count());
                     }
 
@@ -290,8 +309,7 @@ public class JavaScriptWebView {
                 String notaFinalSegundaEtapa = formatTd(materias.get(i).child(14).text());
 
                 Materia materia = materiaBox.query()
-                        .equal(Materia_.name, nomeMateria)
-                        .and()
+                        .equal(Materia_.name, nomeMateria).and()
                         .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position]))
                         .build().findFirst();
 
@@ -848,11 +866,7 @@ public class JavaScriptWebView {
 
                 String msg = accessPage.getElementsByClass("conteudoTexto").first().text().trim();
 
-                SharedPreferences.Editor editor = App.getAppContext().getSharedPreferences(Utils.LOGIN_INFO, MODE_PRIVATE).edit();
-                editor.putString(Utils.LOGIN_REGISTRATION, "")
-                        .putString(Utils.LOGIN_PASSWORD, "")
-                        .putBoolean(Utils.LOGIN_VALID, false)
-                        .apply();
+                User.clearInfos(App.getAppContext());
 
                 Log.i("JavaScriptWebView", "Acesso Negado handled!");
 
@@ -873,6 +887,11 @@ public class JavaScriptWebView {
 
     private String trim1(String string) {
         string = string.substring(string.indexOf(", ") + 2);
+        return string;
+    }
+
+    private static String trimb(String string) {
+        string = string.substring(0, 4);
         return string;
     }
 
@@ -953,11 +972,6 @@ public class JavaScriptWebView {
 
     private BoxStore getBox() {
         return SingletonWebView.getInstance().box;
-    }
-
-    private static String trimb(String string) {
-        string = string.substring(0, 4);
-        return string;
     }
 
     private void callOnFinish(String url_p) {

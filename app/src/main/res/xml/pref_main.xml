@@ -2,47 +2,121 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title=""></PreferenceCategory>
     <PreferenceCategory android:title=""></PreferenceCategory>
-    <PreferenceCategory android:title="Geral">
 
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="key_autoload"
-            android:summaryOn="@string/pref_autoload_true"
-            android:summaryOff="@string/pref_autoload_false"
-            android:title="Autocarregar" />
-
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="key_savedata"
-            android:summaryOn="Salvar"
-            android:summaryOff="Não Salvar"
-            android:title="Offline" />
+    <PreferenceCategory android:title="Serviços">
 
         <SwitchPreference
+            android:title="Verificar"
+            android:key="key_check"
             android:defaultValue="true"
-            android:key="key_notification"
-            android:summaryOn="@string/pref_notifications_true"
-            android:summaryOff="@string/pref_notifications_false"
-            android:title="Notificações" />
+            android:summary="Verificar por novidades automaticamnte"
+            android:disableDependentsState="false" />
 
-        <!--<CheckBoxPreference
+        <CheckBoxPreference
+            android:title="Diarios"
+            android:key="key_check_diarios"
             android:defaultValue="true"
-            android:key="@string/key_upload_over_wifi"
-            android:summary="@string/summary_upload_over_wifi"
-            android:title="@string/title_auto_upload" />
+            android:summary="Verificar por novos diários"
+            android:dependency="key_check" />
 
-        <ListPreference
-            android:defaultValue="3"
-            android:dialogTitle="@string/title_upload_quality"
-            android:entries="@array/pref_upload_quality_entries"
-            android:entryValues="@array/pref_upload_quality_values"
-            android:key="@string/key_upload_quality"
-            android:summary="@string/summary_upload_video_quality"
-            android:title="@string/title_upload_quality" />!-->
+        <CheckBoxPreference
+            android:title="Boletins"
+            android:key="key_check_boletins"
+            android:defaultValue="true"
+            android:summary="Verificar por novos boletins"
+            android:dependency="key_check" />
+
+        <CheckBoxPreference
+            android:title="Horário"
+            android:key="key_check_horario"
+            android:defaultValue="true"
+            android:summary="Verificar por alterações no horário"
+            android:dependency="key_check" />
+
+        <CheckBoxPreference
+            android:title="Materiais"
+            android:key="key_check_materiais"
+            android:defaultValue="true"
+            android:summary="Verificar por novos materiais"
+            android:dependency="key_check" />
+
+        <CheckBoxPreference
+            android:title="Mensagens"
+            android:key="key_check_mensagens"
+            android:defaultValue="true"
+            android:summary="Verificar por novas mensagens"
+            android:dependency="key_check" />
+
+        <SwitchPreference
+            android:title="Baixar materiais"
+            android:key="key_download_materiais"
+            android:defaultValue="false"
+            android:summary="Faer download dos materiais automaticamente"
+            android:dependency="key_check_materiais"/>
+
+        <SwitchPreference
+            android:title="Redes móveis"
+            android:key="key_mobile_data"
+            android:defaultValue="false"
+            android:summary="Verificar utilizando redes móveis"
+            android:dependency="key_check" />
+
+        <SwitchPreference
+            android:title="Modo alerta"
+            android:key="key_alert_mode"
+            android:defaultValue="false"
+            android:summary="Verficiar notas mais frequentemente"
+            android:dependency="key_check" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/title_about">
+    <PreferenceCategory android:title="Notficações">
+
+        <SwitchPreference
+            android:title="Notificações"
+            android:key="key_notifications"
+            android:defaultValue="true"
+            android:summary="Receber notificações"
+            android:disableDependentsState="false"/>
+
+        <CheckBoxPreference
+            android:title="Diarios"
+            android:key="key_notify_diarios"
+            android:summary="Receber notificações sobre novas notas"
+            android:defaultValue="true"
+            android:dependency="key_notifications"/>
+
+        <CheckBoxPreference
+            android:title="Boletins"
+            android:key="key_notify_diarios"
+            android:summary="Receber notificações sobre novas notas"
+            android:defaultValue="true"
+            android:dependency="key_notifications"/>
+
+        <CheckBoxPreference
+            android:title="Horario"
+            android:key="key_notify_diarios"
+            android:summary="Receber notificações sobre novas notas"
+            android:defaultValue="false"
+            android:dependency="key_notifications"/>
+
+        <CheckBoxPreference
+            android:title="Materiais"
+            android:key="key_notify_diarios"
+            android:summary="Receber notificações sobre novas notas"
+            android:defaultValue="true"
+            android:dependency="key_notifications"/>
+
+        <CheckBoxPreference
+            android:title="Mensagens"
+            android:key="key_notify_diarios"
+            android:summary="Receber notificações sobre novas notas"
+            android:defaultValue="true"
+            android:dependency="key_notifications"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Sobre">
 
         <!--<Preference
             android:key="key_send_feedback"

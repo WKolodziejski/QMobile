@@ -72,13 +72,13 @@ public class MateriaActivity extends AppCompatActivity {
                 .show();
     }
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     public BoxStore getBox() {
         return ((App) getApplication()).getBoxStore();

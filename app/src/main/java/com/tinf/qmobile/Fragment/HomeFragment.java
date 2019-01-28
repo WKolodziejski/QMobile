@@ -27,6 +27,7 @@ import com.tinf.qmobile.Class.Calendario.Mes_;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
+import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.WebView.SingletonWebView;
 import com.tinf.qmobile.Widget.HorarioView;
@@ -39,9 +40,6 @@ import java.util.Locale;
 import java.util.Objects;
 import io.objectbox.BoxStore;
 import static android.content.Context.MODE_PRIVATE;
-import static com.tinf.qmobile.Utilities.Utils.LAST_LOGIN;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_NAME;
 import static com.tinf.qmobile.Utilities.Utils.PG_HOME;
 import static com.tinf.qmobile.Utilities.Utils.PG_LOGIN;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
@@ -50,6 +48,30 @@ import static com.tinf.qmobile.Utilities.Utils.URL;
 public class HomeFragment extends Fragment implements OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
     private NestedScrollView nestedScrollView;
+    private CalendarioAdapter calendarioAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Calendar today = Calendar.getInstance();
+        today.setTime(new Date());
+        today.set(Calendar.HOUR_OF_DAY, 0);
+        today.set(Calendar.MINUTE, 0);
+        today.set(Calendar.SECOND, 0);
+
+        Mes mes = getBox().boxFor(Mes.class).query()
+                .equal(Mes_.year, today.get(Calendar.YEAR))
+                .equal(Mes_.month, today.get(Calendar.MONTH))
+                .build().findUnique();
+
+        if (mes == null) {
+            List<Mes> mesList = getBox().boxFor(Mes.class).query().build().find();
+            mes = mesList.get(mesList.size() - 1);
+        }
+
+        calendarioAdapter = new CalendarioAdapter(getActivity(), mes.days, true);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,7 +82,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity) getActivity()).setTitle(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getString(LOGIN_NAME, ""));
+        ((MainActivity) getActivity()).hideExpandBtn();
+        ((MainActivity) getActivity()).setTitle(User.getName(getContext()));
+        ((MainActivity) getActivity()).hideTabLayout();
 
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
@@ -81,57 +105,46 @@ public class HomeFragment extends Fragment implements OnUpdate {
     }
 
     private void showOffline(View view) {
-        CardView offline = (CardView) view.findViewById(R.id.home_offline);
+        view.post(() -> {
 
-        if (!Utils.isConnected()) {
-            offline.setVisibility(View.VISIBLE);
+            CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
-            TextView text = (TextView) view.findViewById(R.id.offline_last_update);
+            if (!Utils.isConnected()) {
+                offline.setVisibility(View.VISIBLE);
 
-            Date date = new Date(getContext().getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getLong(LAST_LOGIN, new Date().getTime()));
+                TextView text = (TextView) view.findViewById(R.id.offline_last_update);
 
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+                Date date = new Date(User.getLastLogin(getContext()));
 
-            text.setText(String.format(getResources().getString(R.string.home_last_login), format.format(date)));
-        } else {
-            offline.setVisibility(View.GONE);
-        }
+                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
+                text.setText(String.format(getResources().getString(R.string.home_last_login), format.format(date)));
+            } else {
+                offline.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void showCalendar(View view) {
+        view.post(() -> {
 
-        Calendar today = Calendar.getInstance();
-        today.setTime(new Date());
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
+            RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
 
-        Mes mes = getBox().boxFor(Mes.class).query()
-                .equal(Mes_.year, today.get(Calendar.YEAR))
-                .equal(Mes_.month, today.get(Calendar.MONTH))
-                .build().findUnique();
+            RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
+                    false);
 
-        RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
+            recyclerViewCalendario.setAdapter(calendarioAdapter);
+            recyclerViewCalendario.setLayoutManager(layout);
 
-        if (mes == null) {
-            List<Mes> mesList = getBox().boxFor(Mes.class).query().build().find();
-            mes = mesList.get(mesList.size() - 1);
-        }
+            LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
 
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
-                false);
-
-        recyclerViewCalendario.setAdapter(new CalendarioAdapter(getActivity(), mes.days, true));
-        recyclerViewCalendario.setLayoutManager(layout);
-
-        LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
-
-        calendario.setOnClickListener(v -> {
-            ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerViewCalendario,
-                            Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
-            startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
-            ((MainActivity)getActivity()).dismissProgressbar();
+            calendario.setOnClickListener(v -> {
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerViewCalendario,
+                                Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
+                startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
+                ((MainActivity)getActivity()).dismissProgressbar();
+            });
         });
     }
 

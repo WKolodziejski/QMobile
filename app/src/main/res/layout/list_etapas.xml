@@ -29,10 +29,11 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="8dp"
         android:id="@+id/recycler_etapas"
         android:overScrollMode="never"
+        android:transitionName="Diarios"
         app:layout_constraintTop_toBottomOf="@id/etapa_title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

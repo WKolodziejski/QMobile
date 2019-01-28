@@ -2,11 +2,11 @@ package com.tinf.qmobile.Adapter.Diarios;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.ViewHolder.DiariosViewHolder;
 import com.tinf.qmobile.ViewHolder.EtapasViewHolder;
 
 import androidx.annotation.NonNull;
@@ -34,6 +34,10 @@ public class EtapasAdapter extends RecyclerView.Adapter {
         final EtapasViewHolder holder = (EtapasViewHolder) viewHolder;
 
         holder.title.setText(context.getResources().getString(materia.etapas.get(i).getEtapa()));
+        holder.recyclerView.setHasFixedSize(true);
+        holder.recyclerView.setItemViewCacheSize(20);
+        holder.recyclerView.setDrawingCacheEnabled(true);
+        holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         holder.recyclerView.setAdapter(new DiariosAdapter(materia.etapas.get(i).diarios, context));
     }

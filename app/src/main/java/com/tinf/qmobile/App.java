@@ -4,12 +4,14 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;
+import com.squareup.leakcanary.LeakCanary;
 import com.tinf.qmobile.Class.MyObjectBox;
+import com.tinf.qmobile.Utilities.User;
+
 import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_INFO;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_REGISTRATION;
-import static com.tinf.qmobile.Utilities.Utils.LOGIN_VALID;
+
+import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
 public class App extends Application {
     private BoxStore boxStore;
@@ -19,6 +21,13 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.i("Application", "Initialized");
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         Fabric.with(this, new Crashlytics());
         App.context = getApplicationContext();
         initBoxStore();
@@ -40,12 +49,11 @@ public class App extends Application {
         if (boxStore != null) {
             boxStore.close();
         }
-        if (getSharedPreferences(LOGIN_INFO, MODE_PRIVATE).getBoolean(LOGIN_VALID, false) || isLogged) {
+        if (User.isValid(context) || isLogged) {
             boxStore = MyObjectBox
                     .builder()
                     .androidContext(App.this)
-                    .name(getSharedPreferences(LOGIN_INFO, MODE_PRIVATE)
-                            .getString(LOGIN_REGISTRATION, ""))
+                    .name(User.getCredential(App.getAppContext(), REGISTRATION))
                     .build();
         }
     }

@@ -24,6 +24,7 @@ import com.tinf.qmobile.Fragment.LoginFragment;
 import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Design;
+import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.WebView.SingletonWebView;
 
@@ -178,9 +179,7 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
 
         webView.isLoginPage = false;
 
-        SharedPreferences.Editor editor = loginFragment.login_info.edit();
-        editor.putBoolean(Utils.LOGIN_VALID, true);
-        editor.apply();
+        User.setValid(getApplicationContext(), true);
         finish();
     }
 
