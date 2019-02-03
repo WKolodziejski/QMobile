@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name="com.tinf.qmobile.App"
@@ -15,7 +14,9 @@
         android:roundIcon="@drawable/icon_launcher_round_black"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        android:usesCleartextTraffic="true"
+        android:allowBackup="false"
+        tools:ignore="GoogleAppIndexingWarning">
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />

@@ -9,6 +9,10 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.Utils;
+
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
@@ -24,6 +28,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MainPreferenceFragment()).commit();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        Utils.scheduleJob(getApplicationContext(), false);
+    }
+
     public static class MainPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
@@ -31,13 +41,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             addPreferencesFromResource(R.xml.pref_main);
 
-            bindPreferenceSummaryToValue(findPreference("key_check_diarios"));
+            bindPreferenceSummaryToValue(findPreference("key_check"));
 
             bindPreferenceSummaryToValue(findPreference("key_mobile_data"));
 
             bindPreferenceSummaryToValue(findPreference("key_alert_mode"));
 
-            bindPreferenceSummaryToValue(findPreference("key_notify_diarios"));
+            bindPreferenceSummaryToValue(findPreference("key_notifications"));
 
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {
@@ -64,27 +74,23 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         .getBoolean(preference.getKey(), true));
     }
 
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            String stringValue = newValue.toString();
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, newValue) -> {
+        String stringValue = newValue.toString();
 
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
+        if (preference instanceof ListPreference) {
+            // For list preferences, look up the correct display value in
+            // the preference's 'entries' list.
+            ListPreference listPreference = (ListPreference) preference;
+            int index = listPreference.findIndexOfValue(stringValue);
 
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
+            // Set the summary to reflect the new value.
+            preference.setSummary(
+                    index >= 0
+                            ? listPreference.getEntries()[index]
+                            : null);
 
-            } else {
-                preference.setSummary(stringValue);
-            }
-            return true;
         }
+        return true;
     };
+
 }

@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
                 getBox().deleteAllFiles();
                 logOut();
             } else {*/
-                Utils.scheduleJob(getApplicationContext());
+                Utils.scheduleJob(getApplicationContext(), false);
                 setTitle(User.getName(getApplicationContext()));
                 changeFragment(new HomeFragment());
                 hideTabLayout();
@@ -164,11 +164,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
-            case R.id.action_about:
-
-                startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-                return true;
 
             case R.id.action_settings:
 
@@ -339,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     }
 
     private void logOut() {
+        new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext())).cancelAll();
         ((App) getApplication()).logOut();
         SingletonWebView.logOut();
         User.clearInfos(getApplicationContext());

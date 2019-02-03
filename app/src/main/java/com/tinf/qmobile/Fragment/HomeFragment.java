@@ -12,27 +12,37 @@ import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
+import com.alamkanak.weekview.WeekViewDisplayable;
+import com.alamkanak.weekview.WeekViewEvent;
+import com.alamkanak.weekview.WeekViewLoader;
 import com.tinf.qmobile.Activity.CalendarioActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qmobile.Class.Calendario.Mes;
 import com.tinf.qmobile.Class.Calendario.Mes_;
+import com.tinf.qmobile.Class.Materias.Horario;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.WebView.SingletonWebView;
-import com.tinf.qmobile.Widget.HorarioView;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -49,10 +59,15 @@ public class HomeFragment extends Fragment implements OnUpdate {
     private SingletonWebView webView = SingletonWebView.getInstance();
     private NestedScrollView nestedScrollView;
     private CalendarioAdapter calendarioAdapter;
+    private List<Materia> materias;
+    private int firstHour = 24;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        materias = getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
 
         Calendar today = Calendar.getInstance();
         today.setTime(new Date());
@@ -99,9 +114,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
             startActivity(browserIntent);
         });
 
-        showCalendar(view);
-        showHorario(view);
         showOffline(view);
+        showHorario(view);
+        showCalendar(view);
     }
 
     private void showOffline(View view) {
@@ -150,21 +165,58 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     private void showHorario(View view) {
 
-        WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
+            WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
+            weekView.setEnabled(false);
 
-        HorarioView.congifWeekView(getContext(), weekView,
-                getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                        Integer.valueOf(webView.data_year[webView.year_position])).build().find());
+            weekView.setMonthChangeListener((startDate, endDate) -> {
 
-        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
+                List<WeekViewDisplayable> weekHorario = new ArrayList<>();
 
-        horario.setOnClickListener(v -> {
-            ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
-                            weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
-            startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
-            ((MainActivity)getActivity()).dismissProgressbar();
-        });
+                for (int i = 0; i < materias.size(); i++) {
+                    for (int j = 0; j < materias.get(i).horarios.size(); j++) {
+                        Calendar startTime = Calendar.getInstance();
+                        startTime.set(Calendar.MONTH, startDate.get(Calendar.MONTH));
+                        startTime.set(Calendar.DAY_OF_WEEK, materias.get(i).horarios.get(j).getDay());
+                        startTime.set(Calendar.HOUR_OF_DAY, materias.get(i).horarios.get(j).getStartHour());
+                        startTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getStartMinute());
+
+                        Calendar endTime = (Calendar) startTime.clone();
+                        endTime.set(Calendar.HOUR_OF_DAY, materias.get(i).horarios.get(j).getEndHour());
+                        endTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getEndMinute());
+
+                        WeekViewEvent event = new WeekViewEvent(materias.get(i).horarios.get(j).id, materias.get(i).getName(), startTime, endTime);
+                        event.setColor(getResources().getColor(materias.get(i).getColor()));
+
+                        weekHorario.add(event);
+
+                        if (startTime.get(Calendar.HOUR_OF_DAY) < firstHour) {
+                            firstHour = startTime.get(Calendar.HOUR_OF_DAY);
+                        }
+                    }
+                }
+
+                Calendar currentWeek = Calendar.getInstance();
+                currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                currentWeek.set(Calendar.HOUR_OF_DAY, firstHour);
+                currentWeek.set(Calendar.MINUTE, 30);
+                weekView.goToDate(currentWeek);
+                weekView.goToHour(firstHour);
+
+                return weekHorario;
+            });
+
+            weekView.notifyDataSetChanged();
+
+            LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
+
+            horario.setOnClickListener(v -> {
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
+                                weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
+                startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
+                ((MainActivity)getActivity()).dismissProgressbar();
+            });
+
     }
 
     private BoxStore getBox() {
@@ -173,6 +225,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onUpdate(String url_p) {
+        if (url_p.equals(UPDATE_REQUEST)) {
+            materias = getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                    Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+        }
         if (url_p.equals(URL + PG_HOME) || url_p.equals(UPDATE_REQUEST)) {
             if (getView() != null) {
                 showHorario(getView());

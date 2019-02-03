@@ -196,11 +196,11 @@ public class JavaScriptWebView {
                         nome_etapa = "";
                     }
 
-                    /*for (int i = 0; i < etapa.diarios.size(); i++) {
+                    for (int i = 0; i < etapa.diarios.size(); i++) {
                         diariosBox.remove(etapa.diarios.get(i).id);
                     }
 
-                    etapa.diarios.clear();*/
+                    etapa.diarios.clear();
 
                     for (int i = 0; i < notasLinhas.size(); i++) {
                         String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
@@ -233,16 +233,16 @@ public class JavaScriptWebView {
 
                         Diarios new_diario = new Diarios(nome, peso, max, nota, tipo, data, tint);
 
-                        Diarios search = diariosBox.query().equal(Diarios_.nome, nome).and()
+                        /*Diarios search = diariosBox.query().equal(Diarios_.nome, nome).and()
                                     .equal(Diarios_.data, data).and().equal(Diarios_.tipo, tipo).and()
-                                    .equal(Diarios_.nota, nota).build().findFirst();
+                                    .equal(Diarios_.nota, nota).build().findFirst();*/
 
-                        if (search == null) {
+                        //if (search == null) {
                             new_diario.etapa.setTarget(etapa);
                             etapa.diarios.add(new_diario);
                             diariosBox.put(new_diario);
                             Log.i("new Diario", new_diario.getNome() + new_diario.getTipo());
-                        }
+                        //}
                         //Log.v("Box for Diarios", "size of " + diariosBox.count());
                     }
 

@@ -3,16 +3,16 @@
     <PreferenceCategory android:title=""></PreferenceCategory>
     <PreferenceCategory android:title=""></PreferenceCategory>
 
-    <PreferenceCategory android:title="Serviços">
+    <PreferenceCategory android:title="@string/pref_services">
 
         <SwitchPreference
-            android:title="Verificar"
+            android:title="@string/pref_check"
             android:key="key_check"
             android:defaultValue="true"
-            android:summary="Verificar por novidades automaticamnte"
+            android:summary="@string/pref_check_sum"
             android:disableDependentsState="false" />
 
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
             android:title="Diarios"
             android:key="key_check_diarios"
             android:defaultValue="true"
@@ -52,34 +52,34 @@
             android:key="key_download_materiais"
             android:defaultValue="false"
             android:summary="Faer download dos materiais automaticamente"
-            android:dependency="key_check_materiais"/>
+            android:dependency="key_check_materiais"/>!-->
 
         <SwitchPreference
-            android:title="Redes móveis"
+            android:title="@string/pref_mobile"
             android:key="key_mobile_data"
             android:defaultValue="false"
-            android:summary="Verificar utilizando redes móveis"
+            android:summary="@string/pref_mobile_sum"
             android:dependency="key_check" />
 
         <SwitchPreference
-            android:title="Modo alerta"
+            android:title="@string/pref_alert"
             android:key="key_alert_mode"
             android:defaultValue="false"
-            android:summary="Verficiar notas mais frequentemente"
+            android:summary="@string/pref_alert_sum"
             android:dependency="key_check" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Notficações">
+    <PreferenceCategory android:title="@string/pref_notifications">
 
         <SwitchPreference
-            android:title="Notificações"
+            android:title="@string/pref_notifications"
             android:key="key_notifications"
             android:defaultValue="true"
-            android:summary="Receber notificações"
+            android:summary="@string/pref_notifications_sum"
             android:disableDependentsState="false"/>
 
-        <CheckBoxPreference
+        <!--<CheckBoxPreference
             android:title="Diarios"
             android:key="key_notify_diarios"
             android:summary="Receber notificações sobre novas notas"
@@ -112,11 +112,11 @@
             android:key="key_notify_diarios"
             android:summary="Receber notificações sobre novas notas"
             android:defaultValue="true"
-            android:dependency="key_notifications"/>
+            android:dependency="key_notifications"/>!-->
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Sobre">
+    <PreferenceCategory android:title="@string/title_about">
 
         <!--<Preference
             android:key="key_send_feedback"

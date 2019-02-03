@@ -33,13 +33,15 @@ public class DiariosParser extends AsyncTask<Void, Void, Void> {
     private final WeakReference<Context> context;
     private String page;
     private int year;
+    private boolean notify;
     private BoxStore boxStore;
     private OnResponse onResponse;
 
-    public DiariosParser(Context context, String page, int year, BoxStore boxStore, OnResponse onResponse) {
+    public DiariosParser(Context context, String page, int year, boolean notify, BoxStore boxStore, OnResponse onResponse) {
         this.context = new WeakReference<>(context);
         this.page = page;
         this.year = year;
+        this.notify = notify;
         this.boxStore = boxStore;
         this.onResponse = onResponse;
     }
@@ -187,9 +189,10 @@ public class DiariosParser extends AsyncTask<Void, Void, Void> {
                             intent.putExtra("NAME", materia.getName());
                             intent.putExtra("YEAR", materia.getYear());
 
-                            Utils.displayNotification(context.get(), materia.getName(), new_diario.getNome(), "Diarios", (int) new_diario.id, intent.getExtras());
-
-                            Log.i("Diarios", "novo");
+                            if (notify) {
+                                Utils.displayNotification(context.get(), materia.getName(), new_diario.getNome(),
+                                        context.get().getResources().getString(R.string.title_diarios), (int) new_diario.id, intent.getExtras());
+                            }
                         }
                         //Log.v("Box for Diarios", "size of " + diariosBox.count());
                     }
@@ -214,7 +217,7 @@ public class DiariosParser extends AsyncTask<Void, Void, Void> {
             } else {
                 Log.e("BoxStore", error.getCause().getMessage());
                 Crashlytics.logException(error.getCause());
-                onResponse.OnFinish("", error.getCause().getMessage());
+                onResponse.OnError("", null);
             }
         });
         return null;
