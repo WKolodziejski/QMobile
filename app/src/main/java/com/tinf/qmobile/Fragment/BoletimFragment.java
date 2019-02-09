@@ -11,21 +11,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.tinf.qmobile.Activity.MainActivity;
-import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Fragment.ViewPager.NotasFragment;
 import com.tinf.qmobile.R;
 import com.rmondjone.locktableview.LockTableView;
-import com.tinf.qmobile.WebView.SingletonWebView;
+import com.tinf.qmobile.Utilities.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
-import io.objectbox.BoxStore;
 import io.objectbox.query.Query;
-import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscriptionList;
 
 public class BoletimFragment extends Fragment {
@@ -72,10 +70,8 @@ public class BoletimFragment extends Fragment {
 
         view.post(() -> {
 
-            SingletonWebView webView = SingletonWebView.getInstance();
-
-            Query<Materia> query = getBox().boxFor(Materia.class).query().order(Materia_.name)
-                    .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build();
+            Query<Materia> query = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
+                    .equal(Materia_.year, User.getYear(0)).build();
 
             ArrayList<ArrayList<String>> mTableDatas = new ArrayList<>();
 
@@ -89,8 +85,8 @@ public class BoletimFragment extends Fragment {
                         mRowDatas.add(data.get(i).getName());
 
                         for (int j = 0; j < data.get(i).etapas.size(); j++) {
-                            if (data.get(i).etapas.get(j).getEtapa() == R.string.diarios_PrimeiraEtapa
-                                    || data.get(i).etapas.get(j).getEtapa() == R.string.diarios_SegundaEtapa) {
+                            if (data.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.PRIMEIRA.getInt()
+                                    || data.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.SEGUNDA.getInt()) {
 
                                 mRowDatas.add(data.get(i).etapas.get(j).getNota());
                                 mRowDatas.add(data.get(i).etapas.get(j).getFaltas());
@@ -146,10 +142,6 @@ public class BoletimFragment extends Fragment {
                 mLockTableView.getTableScrollView().smoothScrollToPosition(0);
             });
         });
-    }
-
-    private BoxStore getBox() {
-        return ((MainActivity) getActivity()).getBox();
     }
 
 }

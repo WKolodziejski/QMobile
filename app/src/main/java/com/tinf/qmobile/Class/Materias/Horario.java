@@ -18,7 +18,6 @@ public class Horario implements Serializable {
     public Horario(int day, String time) {
         this.day = day;
         this.time = time;
-        Log.v("New Horário", day + time);
     }
 
     public Horario() {}

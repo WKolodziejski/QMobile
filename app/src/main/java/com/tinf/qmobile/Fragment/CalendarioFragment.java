@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
-import io.objectbox.BoxStore;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +17,12 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.Activity.CalendarioActivity;
 import com.tinf.qmobile.Adapter.Calendario.CalendarioAdapter;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.Utils;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,7 +31,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
+
+import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
+import static com.tinf.qmobile.Network.Client.URL;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class CalendarioFragment extends Fragment implements OnUpdate {
@@ -53,7 +56,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
     private void showCalendar(View view) {
 
-        mesesList = getBox().boxFor(Mes.class).query().build().find();
+        mesesList = App.getBox().boxFor(Mes.class).query().build().find();
 
         CompactCalendarView calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
         calendarView.removeAllEvents();
@@ -169,7 +172,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
                                                     mesesList.get(j).days.get(k).eventos.get(l).setHappened(true);
 
-                                                    Box<Evento> eventoBox = getBox().boxFor(Evento.class);
+                                                    Box<Evento> eventoBox = App.getBox().boxFor(Evento.class);
 
                                                     Evento evento = eventoBox.get(mesesList.get(j).days.get(k).eventos.get(l).id);
                                                     evento.setHappened(true);
@@ -223,13 +226,9 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         return events;
     }
 
-    private BoxStore getBox() {
-        return ((CalendarioActivity) getActivity()).getBox();
-    }
-
     @Override
-    public void onUpdate(String url_p) {
-        if (url_p.equals(Utils.URL + PG_CALENDARIO) || url_p.equals(UPDATE_REQUEST)) {
+    public void onUpdate(int pg) {
+        if (pg == PG_CALENDARIO || pg == UPDATE_REQUEST) {
             showCalendar(getView());
         }
     }

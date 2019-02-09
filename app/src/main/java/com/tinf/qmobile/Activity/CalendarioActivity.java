@@ -7,30 +7,26 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Materiais.MateriaisList;
 import com.tinf.qmobile.Fragment.CalendarioFragment;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
-import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
+import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.WebView.SingletonWebView;
 
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import io.objectbox.BoxStore;
 
-import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
-import static com.tinf.qmobile.Utilities.Utils.URL;
 
-public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.Main {
+public class CalendarioActivity extends AppCompatActivity implements OnResponse {
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
     @BindView(R.id.progressbar_horizontal_calendar)      SmoothProgressBar progressBar;
-    private SingletonWebView webView = SingletonWebView.getInstance();
     private OnUpdate onUpdate;
 
     @Override
@@ -67,14 +63,10 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            webView.loadUrl(URL + PG_CALENDARIO);
+            //webView.loadUrl(URL + PG_CALENDARIO);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public BoxStore getBox() {
-        return ((App) getApplication()).getBoxStore();
     }
 
     public void setOnUpdateListener(OnUpdate onUpdate){
@@ -82,37 +74,15 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
     }
 
     @Override
-    public void onPageStart() {
-        runOnUiThread(() -> {
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.progressiveStart();
-        });
-    }
-
-    @Override
-    public void onPageFinish(String url_p) {
-        runOnUiThread(() -> {
-            progressBar.setVisibility(View.GONE);
-            progressBar.progressiveStop();
-            if (onUpdate != null) {
-                onUpdate.onUpdate(url_p);
-            }
-        });
-    }
-
-    @Override
-    public void onErrorRecived(String url_p, String error) {}
-
-    @Override
     public void onStart() {
         super.onStart();
-        webView.setOnPageLoadListener(this);
+        //webView.setOnPageLoadListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        webView.setOnPageLoadListener(this);
+        //webView.setOnPageLoadListener(this);
     }
 
     @Override
@@ -125,5 +95,35 @@ public class CalendarioActivity extends AppCompatActivity implements OnPageLoad.
     protected void onPause() {
         super.onPause();
         onUpdate = null;
+    }
+
+
+    @Override
+    public void onStart(String url, int year) {
+        runOnUiThread(() -> {
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.progressiveStart();
+        });
+    }
+
+    @Override
+    public void onFinish(int pg, int year) {
+        runOnUiThread(() -> {
+            progressBar.setVisibility(View.GONE);
+            progressBar.progressiveStop();
+            if (onUpdate != null) {
+                onUpdate.onUpdate(pg);
+            }
+        });
+    }
+
+    @Override
+    public void onError(int pg, String error) {
+
+    }
+
+    @Override
+    public void onAccessDenied(int pg, String message) {
+
     }
 }

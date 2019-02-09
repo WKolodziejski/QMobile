@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.Utils;
 
 import java.util.prefs.PreferenceChangeEvent;
@@ -31,7 +32,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     public void finish() {
         super.finish();
-        Utils.scheduleJob(getApplicationContext(), false);
+        Jobs.scheduleJob(false);
     }
 
     public static class MainPreferenceFragment extends PreferenceFragment {

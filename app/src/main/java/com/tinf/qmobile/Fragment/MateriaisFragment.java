@@ -14,18 +14,15 @@ import android.view.ViewGroup;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Materiais.MateriaisListAdapter;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
-import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
+import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.WebView.SingletonWebView;
+import com.tinf.qmobile.Utilities.User;
+
 import java.util.List;
 import java.util.Objects;
 
-import static com.tinf.qmobile.Utilities.Utils.PG_MATERIAIS;
-import static com.tinf.qmobile.Utilities.Utils.URL;
-
-public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais, OnUpdate {
-    private SingletonWebView webView = SingletonWebView.getInstance();
+public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUpdate {
     private RecyclerView recyclerViewMateriais;
     private List<MateriaisList> materiaisList;
 
@@ -37,7 +34,7 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
 
     private void showMateriais(View view) {
 
-        ((MainActivity) getActivity()).setTitle(webView.data_year[webView.year_position]);
+        ((MainActivity) getActivity()).setTitle(User.getYears()[0]);
 
         recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
@@ -65,12 +62,58 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
 
         adapter.setOnDowloadListener(link -> {
             Log.i("Materiais", link);
-            SingletonWebView.getInstance().downloadMaterial(link);
+            //SingletonWebView.get().downloadMaterial(link);
         });
     }
 
     @Override
-    public void onPageFinish(List<MateriaisList> list) {
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        //webView.setOnMateriaisLoadListener(this);
+        if (materiaisList == null) {
+            //webView.loadUrl(URL + PG_MATERIAIS);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        //webView.setOnMateriaisLoadListener(this);
+        if (materiaisList == null) {
+            //webView.loadUrl(URL + PG_MATERIAIS);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+        //webView.setOnMateriaisLoadListener(null);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+        //webView.setOnMateriaisLoadListener(null);
+    }
+
+    @Override
+    public void onUpdate(int pg) {
+
+    }
+
+    @Override
+    public void requestScroll() {
+        if (recyclerViewMateriais != null) {
+            recyclerViewMateriais.smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onMateriaisLoad(List<MateriaisList> list) {
         getActivity().runOnUiThread(() -> {
             if (!list.isEmpty()) {
                 materiaisList = list;
@@ -79,49 +122,5 @@ public class MateriaisFragment extends Fragment implements OnPageLoad.Materiais,
                 getLayoutInflater().inflate(R.layout.layout_empty,  null);
             }
         });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-        webView.setOnMateriaisLoadListener(this);
-        if (materiaisList == null) {
-            webView.loadUrl(URL + PG_MATERIAIS);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
-        webView.setOnMateriaisLoadListener(this);
-        if (materiaisList == null) {
-            webView.loadUrl(URL + PG_MATERIAIS);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-        webView.setOnMateriaisLoadListener(null);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
-        webView.setOnMateriaisLoadListener(null);
-    }
-
-    @Override
-    public void onUpdate(String url_p) {}
-
-    @Override
-    public void requestScroll() {
-        if (recyclerViewMateriais != null) {
-            recyclerViewMateriais.smoothScrollToPosition(0);
-        }
     }
 }

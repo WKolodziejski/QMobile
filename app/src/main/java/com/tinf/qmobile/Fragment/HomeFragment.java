@@ -12,34 +12,26 @@ import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.alamkanak.weekview.MonthLoader;
 import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewDisplayable;
 import com.alamkanak.weekview.WeekViewEvent;
-import com.alamkanak.weekview.WeekViewLoader;
 import com.tinf.qmobile.Activity.CalendarioActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Calendario.CalendarioAdapter;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Mes;
 import com.tinf.qmobile.Class.Calendario.Mes_;
-import com.tinf.qmobile.Class.Materias.Horario;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
-import com.tinf.qmobile.WebView.SingletonWebView;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,15 +40,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import io.objectbox.BoxStore;
-import static android.content.Context.MODE_PRIVATE;
-import static com.tinf.qmobile.Utilities.Utils.PG_HOME;
-import static com.tinf.qmobile.Utilities.Utils.PG_LOGIN;
+
+import static com.tinf.qmobile.Network.Client.PG_HOME;
+import static com.tinf.qmobile.Network.Client.PG_LOGIN;
+import static com.tinf.qmobile.Network.Client.URL;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
-import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class HomeFragment extends Fragment implements OnUpdate {
-    private SingletonWebView webView = SingletonWebView.getInstance();
     private NestedScrollView nestedScrollView;
     private CalendarioAdapter calendarioAdapter;
     private List<Materia> materias;
@@ -66,8 +56,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        materias = getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+        materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                User.getYear(0)).build().find();
 
         Calendar today = Calendar.getInstance();
         today.setTime(new Date());
@@ -75,13 +65,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
         today.set(Calendar.MINUTE, 0);
         today.set(Calendar.SECOND, 0);
 
-        Mes mes = getBox().boxFor(Mes.class).query()
+        Mes mes = App.getBox().boxFor(Mes.class).query()
                 .equal(Mes_.year, today.get(Calendar.YEAR))
                 .equal(Mes_.month, today.get(Calendar.MONTH))
                 .build().findUnique();
 
         if (mes == null) {
-            List<Mes> mesList = getBox().boxFor(Mes.class).query().build().find();
+            List<Mes> mesList = App.getBox().boxFor(Mes.class).query().build().find();
             mes = mesList.get(mesList.size() - 1);
         }
 
@@ -98,7 +88,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
 
         ((MainActivity) getActivity()).hideExpandBtn();
-        ((MainActivity) getActivity()).setTitle(User.getName(getContext()));
+        ((MainActivity) getActivity()).setTitle(User.getName());
         ((MainActivity) getActivity()).hideTabLayout();
 
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
@@ -129,7 +119,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                 TextView text = (TextView) view.findViewById(R.id.offline_last_update);
 
-                Date date = new Date(User.getLastLogin(getContext()));
+                Date date = new Date(User.getLastLogin());
 
                 SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
@@ -196,9 +186,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 }
 
                 Calendar currentWeek = Calendar.getInstance();
-                currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-                currentWeek.set(Calendar.HOUR_OF_DAY, firstHour);
-                currentWeek.set(Calendar.MINUTE, 30);
+                currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
                 weekView.goToDate(currentWeek);
                 weekView.goToHour(firstHour);
 
@@ -219,17 +207,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     }
 
-    private BoxStore getBox() {
-        return ((MainActivity) getActivity()).getBox();
-    }
-
     @Override
-    public void onUpdate(String url_p) {
-        if (url_p.equals(UPDATE_REQUEST)) {
-            materias = getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                    Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+    public void onUpdate(int pg) {
+        if (pg == UPDATE_REQUEST) {
+            materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                    User.getYear(0)).build().find();
         }
-        if (url_p.equals(URL + PG_HOME) || url_p.equals(UPDATE_REQUEST)) {
+        if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {
             if (getView() != null) {
                 showHorario(getView());
                 showOffline(getView());

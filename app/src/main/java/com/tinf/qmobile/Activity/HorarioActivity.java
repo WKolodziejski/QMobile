@@ -3,30 +3,22 @@ package com.tinf.qmobile.Activity;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import io.objectbox.BoxStore;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.HorarioFragment;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
-import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
+import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.WebView.SingletonWebView;
 
 import java.util.Objects;
 
-import static com.tinf.qmobile.Utilities.Utils.PG_HORARIO;
-import static com.tinf.qmobile.Utilities.Utils.URL;
 
-public class HorarioActivity extends AppCompatActivity implements OnPageLoad, OnPageLoad.Main {
-    //@BindView(R.id.progressbar_horizontal) SmoothProgressBar progressBar;
-    private SingletonWebView webView = SingletonWebView.getInstance();
+public class HorarioActivity extends AppCompatActivity implements OnResponse {
+    //@BindView(R.id.progressbar_horizontal) SmoothProgressBar progressBar
     private OnUpdate onUpdate;
 
     @Override
@@ -39,7 +31,7 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
         setSupportActionBar(findViewById(R.id.toolbar));
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
-                + " ― " + webView.data_year[webView.year_position]);
+                + " ― " + 0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportFragmentManager()
@@ -59,14 +51,10 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            webView.loadUrl(URL + PG_HORARIO);
+            //webView.loadUrl(URL + PG_HORARIO);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public BoxStore getBox() {
-        return ((App) getApplication()).getBoxStore();
     }
 
     public void setOnUpdateListener(OnUpdate onUpdate){
@@ -74,37 +62,15 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
     }
 
     @Override
-    public void onPageStart() {
-        runOnUiThread(() -> {
-            //progressBar.setVisibility(View.VISIBLE);
-            //progressBar.progressiveStart();
-        });
-    }
-
-    @Override
-    public void onPageFinish(String url_p) {
-        runOnUiThread(() -> {
-            //progressBar.setVisibility(View.GONE);
-            //progressBar.progressiveStop();
-            if (onUpdate != null) {
-                onUpdate.onUpdate(url_p);
-            }
-        });
-    }
-
-    @Override
-    public void onErrorRecived(String url_p, String error) {}
-
-    @Override
     public void onStart() {
         super.onStart();
-        webView.setOnPageLoadListener(this);
+        //webView.setOnPageLoadListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        webView.setOnPageLoadListener(this);
+        //webView.setOnPageLoadListener(this);
     }
 
     @Override
@@ -117,5 +83,34 @@ public class HorarioActivity extends AppCompatActivity implements OnPageLoad, On
     protected void onPause() {
         super.onPause();
         onUpdate = null;
+    }
+
+    @Override
+    public void onStart(String url, int year) {
+
+    }
+
+    @Override
+    public void onFinish(int pg, int year) {
+        runOnUiThread(() -> {
+            //progressBar.setVisibility(View.GONE);
+            //progressBar.progressiveStop();
+            if (onUpdate != null) {
+                onUpdate.onUpdate(pg);
+            }
+        });
+    }
+
+    @Override
+    public void onError(int pg, String error) {
+        runOnUiThread(() -> {
+            //progressBar.setVisibility(View.VISIBLE);
+            //progressBar.progressiveStart();
+        });
+    }
+
+    @Override
+    public void onAccessDenied(int pg, String message) {
+
     }
 }

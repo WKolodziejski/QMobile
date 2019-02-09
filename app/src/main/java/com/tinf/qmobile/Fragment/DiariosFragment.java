@@ -1,15 +1,11 @@
 package com.tinf.qmobile.Fragment;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -23,27 +19,21 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Activity.MateriaActivity;
-import com.tinf.qmobile.Adapter.Diarios.DiariosAdapter;
 import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
-import com.tinf.qmobile.Class.Calendario.Dia;
-import com.tinf.qmobile.Class.Materias.Diarios;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Fragment.ViewPager.NotasFragment;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.WebView.SingletonWebView;
+import com.tinf.qmobile.Utilities.User;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
 import java.util.Objects;
-import io.objectbox.BoxStore;
+
 import io.objectbox.query.Query;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscriptionList;
@@ -143,10 +133,10 @@ public class DiariosFragment extends Fragment {
 
     private void showDiarios(View view) {
 
-        SingletonWebView webView = SingletonWebView.getInstance();
+        //SingletonWebView webView = SingletonWebView.get();
 
-        Query<Materia> query = getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, Integer.valueOf(webView.data_year[webView.year_position])).build();
+        Query<Materia> query = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
+                .equal(Materia_.year, User.getYear(0)).build();
 
         query.subscribe(new DataSubscriptionList()).observer(observer);
 
@@ -205,7 +195,4 @@ public class DiariosFragment extends Fragment {
         });
     }
 
-    private BoxStore getBox() {
-        return ((MainActivity) getActivity()).getBox();
-    }
 }

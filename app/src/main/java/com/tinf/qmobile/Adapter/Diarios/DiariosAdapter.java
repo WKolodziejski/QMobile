@@ -17,15 +17,6 @@ public class DiariosAdapter extends RecyclerView.Adapter {
     public DiariosAdapter(List<Diarios> diarios, Context context) {
         this.diarios = diarios;
         this.context = context;
-
-
-
-        /*DataSubscriptionList subscriptions = new DataSubscriptionList();
-
-        diariosBox.query().build().subscribe(subscriptions).on(AndroidScheduler.mainThread()).observer(data -> {
-            this.diarios = data;
-            notifyDataSetChanged();
-        });*/
     }
 
     @NonNull
@@ -41,7 +32,7 @@ public class DiariosAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(diarios.get(i).getNome());
         holder.date.setText(diarios.get(i).getData());
-        holder.type.setText(context.getResources().getString(diarios.get(i).getTipoID()));
+        holder.type.setText(diarios.get(i).getTipoString(context));
         holder.type.setTextColor(context.getResources().getColor(diarios.get(i).etapa.getTarget().materia.getTarget().getColor()));
         holder.weight.setText(String.format(context.getResources().getString(
                 R.string.diarios_Peso), diarios.get(i).getPeso()));

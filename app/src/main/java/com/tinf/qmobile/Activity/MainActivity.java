@@ -1,89 +1,48 @@
 package com.tinf.qmobile.Activity;
 
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.crashlytics.android.BuildConfig;
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.core.CrashlyticsCore;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
-import com.firebase.jobdispatcher.Trigger;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
-
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
 import android.view.*;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.NumberPicker;
-import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
-import com.tinf.qmobile.Activity.Settings.AboutActivity;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
-import com.tinf.qmobile.Fragment.ViewPager.NotasFragment;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
-import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
+import com.tinf.qmobile.Fragment.NotasFragment;
+import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Service.BackgroundCheck;
+import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
-import com.tinf.qmobile.WebView.SingletonWebView;
 import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import io.fabric.sdk.android.Fabric;
-import io.objectbox.BoxStore;
 
-import static com.tinf.qmobile.Utilities.User.REGISTRATION;
-import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
-import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
-import static com.tinf.qmobile.Utilities.Utils.URL;
-import static com.tinf.qmobile.Utilities.Utils.VERSION;
-import static java.util.concurrent.TimeUnit.DAYS;
-import static java.util.concurrent.TimeUnit.HOURS;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
-public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
 
     @BindView(R.id.fab_expand)        public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.tabs)                     TabLayout tabLayout;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
     //@BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
-    private SingletonWebView webView = SingletonWebView.getInstance();
     private OnUpdate onUpdate;
 
     @Override
@@ -92,43 +51,23 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(findViewById(R.id.toolbar));
-        configFireBase();
         testLogin();
     }
 
-    private void configFireBase() {
-        Fabric.with(new Fabric.Builder(this)
-                .kits(new CrashlyticsCore.Builder()
-                        .build(), new Answers())
-                .debuggable(true)
-                .build());
-        Crashlytics.setUserIdentifier(User.getCredential(getApplicationContext(), REGISTRATION));
-    }
-
     private void testLogin() {
-        if (User.isValid(getApplicationContext())) {
+        hideExpandBtn();
+        dismissProgressbar();
+        if (User.isValid()) {
             ((App) getApplication()).setLogged(true);
-            SingletonWebView.getInstance().setBoxStore(((App) getApplication()).getBoxStore());
-            /*if (!getPreferences(MODE_PRIVATE).getBoolean(VERSION, false)) {
-                Utils.cancellAllJobs(getApplicationContext());
-                getPreferences(MODE_PRIVATE).edit().putBoolean(VERSION, true).apply();
-                getBox().close();
-                getBox().deleteAllFiles();
-                logOut();
-            } else {*/
-                Utils.scheduleJob(getApplicationContext(), false);
-                setTitle(User.getName(getApplicationContext()));
+                Jobs.scheduleJob(false);
+                setTitle(User.getName());
                 changeFragment(new HomeFragment());
                 hideTabLayout();
                 hideExpandBtn();
                 bottomNav.setSelectedItemId(R.id.navigation_home);
-                webView.loadNextUrl();
-            //}
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
-        hideExpandBtn();
-        dismissProgressbar();
     }
 
     @Override
@@ -188,9 +127,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
                 final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
 
                 year.setMinValue(0);
-                year.setMaxValue(webView.data_year.length - 1);
-                year.setValue(webView.year_position);
-                year.setDisplayedValues(webView.data_year);
+                year.setMaxValue(User.getYears().length - 1);
+                year.setValue(Client.get().year);
+                year.setDisplayedValues(User.getYears());
                 year.setWrapSelectorWheel(false);
 
                 new AlertDialog.Builder(MainActivity.this)
@@ -202,7 +141,8 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                            webView.changeDate(year.getValue(), bottomNav.getSelectedItemId());
+                            Client.get().year = year.getValue();
+                            onUpdate.onUpdate(UPDATE_REQUEST);
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
@@ -220,8 +160,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
 
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
             dismissProgressbar();
-            webView.resumeQueue();
-            webView.loadNextUrl();
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
@@ -233,11 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
                     break;
 
                 case R.id.navigation_materiais:
-                    setTitle(webView.data_year[webView.year_position]);
-                    if (webView.year_position > 0) {
-                        webView.scriptMateriais = "javascript: document.getElementById(\"ANO_PERIODO\").selectedIndex ="
-                                + (webView.year_position + 1) + ";document.forms[0].submit();";
-                    }
+                    setTitle(User.getYears()[0]);
                     fragment = new MateriaisFragment();
                     hideExpandBtn();
                     hideTabLayout();
@@ -249,51 +183,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
             }
         }
         return changeFragment(fragment);
-    }
-
-    @Override
-    public void onPageStart() {
-        runOnUiThread(() -> {
-            if (!refreshLayout.isRefreshing()) {
-                showProgressbar();
-            } else {
-                dismissProgressbar();
-            }
-        });
-    }
-
-    @Override
-    public void onPageFinish(String url_p) {
-        runOnUiThread(() -> {
-            webView.loadNextUrl();
-            refreshLayout.setRefreshing(false);
-            dismissProgressbar();
-            if (onUpdate != null) {
-                onUpdate.onUpdate(url_p);
-            }
-        });
-    }
-
-    @Override
-    public void onErrorRecived(String url_p, String error) {
-        runOnUiThread(() -> {
-            dismissProgressbar();
-            refreshLayout.setRefreshing(false);
-
-            if (url_p.equals(URL + PG_ACESSO_NEGADO)) {
-                new android.app.AlertDialog.Builder(MainActivity.this)
-                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
-                        .setMessage(error)
-                        .setCancelable(false)
-                        .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> {
-                            logOut();
-                        })
-                        .create()
-                        .show();
-            } else {
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     protected void showSnackBar(String message, boolean action) {
@@ -334,10 +223,9 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     }
 
     private void logOut() {
-        new FirebaseJobDispatcher(new GooglePlayDriver(getApplicationContext())).cancelAll();
+        Jobs.cancellAllJobs();
         ((App) getApplication()).logOut();
-        SingletonWebView.logOut();
-        User.clearInfos(getApplicationContext());
+        User.clearInfos();
         finish();
         startActivity(getIntent());
     }
@@ -354,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
 
     private void reload() {
         if (Utils.isConnected()) {
-            webView.reload(bottomNav.getSelectedItemId());
+            //webView.reload(bottomNav.getSelectedItemId());
         } else {
             refreshLayout.setRefreshing(false);
         }
@@ -370,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     public void onStart() {
         super.onStart();
         //appBarLayout.addOnOffsetChangedListener(this);
-        webView.setOnPageLoadListener(this);
+        //webView.setOnPageLoadListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
@@ -390,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
     protected void onResume() {
         super.onResume();
         //appBarLayout.addOnOffsetChangedListener(this);
-        webView.setOnPageLoadListener(this);
-        refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
+        //webView.setOnPageLoadListener(this);
+        //refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
@@ -406,11 +294,6 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
         dismissProgressbar();
     }
 
-
-    public BoxStore getBox() {
-        return ((App) getApplication()).getBoxStore();
-    }
-
     @Override
     public void onBackPressed() {
         if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
@@ -422,6 +305,50 @@ public class MainActivity extends AppCompatActivity implements OnPageLoad.Main, 
 
     public void setOnUpdateListener(OnUpdate onUpdate) {
         this.onUpdate = onUpdate;
+    }
+
+    @Override
+    public void onStart(String url, int year) {
+        runOnUiThread(() -> {
+            if (!refreshLayout.isRefreshing()) {
+                showProgressbar();
+            } else {
+                dismissProgressbar();
+            }
+        });
+    }
+
+    @Override
+    public void onFinish(int pg, int year) {
+        runOnUiThread(() -> {
+            refreshLayout.setRefreshing(false);
+            dismissProgressbar();
+        });
+    }
+
+    @Override
+    public void onError(int pg, String error) {
+        runOnUiThread(() -> {
+            dismissProgressbar();
+            refreshLayout.setRefreshing(false);
+            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    @Override
+    public void onAccessDenied(int pg, String message) {
+        dismissProgressbar();
+        refreshLayout.setRefreshing(false);
+
+        new android.app.AlertDialog.Builder(MainActivity.this)
+                .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> {
+                    logOut();
+                })
+                .create()
+                .show();
     }
 
     /*@Override

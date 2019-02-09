@@ -11,6 +11,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 
 import com.tinf.qmobile.Activity.MainActivity;
+import com.tinf.qmobile.Class.Materias.Diarios;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosListViewHolder;
@@ -76,12 +77,14 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             holder.arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
             holder.title.setTextColor(context.getResources().getColor(materiaList.get(i).getColor()));
 
-            if (materiaList.get(i).etapas.get(materiaList.get(i).etapas.size() - 1).diarios.isEmpty()) {
+            List<Diarios> diarios = materiaList.get(i).etapas.get(getLast(i)).diarios;
+
+            if (diarios.isEmpty()) {
                 holder.nothing.setVisibility(View.VISIBLE);
                 holder.open.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.GONE);
             } else {
-                DiariosAdapter adapter = new DiariosAdapter(materiaList.get(i).etapas.get(materiaList.get(i).etapas.size() - 1).diarios, context);
+                DiariosAdapter adapter = new DiariosAdapter(diarios, context);
                 adapter.setHasStableIds(true);
                 holder.nothing.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.VISIBLE);
@@ -98,6 +101,16 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             holder.title.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             holder.recyclerView.removeAllViewsInLayout();
         }
+    }
+
+    private int getLast(int i) {
+        int k = 0;
+        for (int j = 0; j < materiaList.get(i).etapas.size(); j++) {
+            if (!materiaList.get(i).etapas.get(j).diarios.isEmpty()) {
+                k = j;
+            }
+        }
+        return k;
     }
 
     public void update(List<Materia> materiaList){
@@ -119,7 +132,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         int a = 0;
         int f = 0;
         for (int i = 0; i < materiaList.size(); i++) {
-            if (!materiaList.get(i).etapas.get(materiaList.get(i).etapas.size() - 1).diarios.isEmpty()) {
+            if (!materiaList.get(i).etapas.get(getLast(i)).diarios.isEmpty()) {
                 if (materiaList.get(i).isExpanded()) {
                     a++;
                 } else {
@@ -139,7 +152,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             Toast.makeText(context, R.string.message_collapsed, Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < materiaList.size(); i++) {
-                if (!materiaList.get(i).etapas.get(materiaList.get(i).etapas.size() - 1).diarios.isEmpty()) {
+                if (!materiaList.get(i).etapas.get(getLast(i)).diarios.isEmpty()) {
                     if (materiaList.get(i).isExpanded()) {
                         materiaList.get(i).setAnim(false);
                     } else {

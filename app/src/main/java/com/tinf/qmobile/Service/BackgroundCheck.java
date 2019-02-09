@@ -2,22 +2,15 @@ package com.tinf.qmobile.Service;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
-import com.android.volley.VolleyError;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.Interfaces.Network.OnResponse;
-import com.tinf.qmobile.Network.NetworkSingleton;
-import com.tinf.qmobile.Parsers.DiariosParser;
+import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.Utils;
+import com.tinf.qmobile.Utilities.Jobs;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
-import static com.tinf.qmobile.Utilities.Utils.URL;
+import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
+import static com.tinf.qmobile.Network.Client.PG_LOGIN;
 
 public class BackgroundCheck extends JobService {
     private boolean errorOcurred;
@@ -25,57 +18,47 @@ public class BackgroundCheck extends JobService {
     @Override
     public boolean onStartJob(JobParameters job) {
 
-        NetworkSingleton.getInstance(getApplicationContext()).setOnResponseListener(new OnResponse() {
+        Client.get().login();
+
+        Client.get().setOnResponseListener(new OnResponse() {
             @Override
-            public void OnFinish(String url, String response1) {
+            public void onStart(String url, int year) {
+                //TODO adicionar Log ou notificação pra DeBug
+            }
 
-                Document accessPage = Jsoup.parse(response1);
-                String msg = accessPage.getElementsByTag("strong").first().text().trim();
+            @Override
+            public void onFinish(int pg, int year) {
 
-                if (msg.contains("Negado")) {
+                if (pg == PG_LOGIN) {
+                    Client.get().checkChanges(PG_DIARIOS);
+                }
+
+                if (pg == PG_DIARIOS) {
                     errorOcurred = false;
-                    Utils.displayNotification(getApplicationContext(), getResources().getString(R.string.dialog_access_denied),
-                            getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, null);
                     onStopJob(job);
-                } else {
-                    NetworkSingleton.getInstance(getApplicationContext()).createRequest(URL + PG_DIARIOS,
-                            response2 -> {
-                                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-                                new DiariosParser(getApplicationContext(), response2, Integer.valueOf(NetworkSingleton.getYears(getApplicationContext())[0]),
-                                        prefs.getBoolean("key_notifications", true), ((App) getApplication()).getBoxStore(), new OnResponse() {
-                                    @Override
-                                    public void OnFinish(String url, String response) {
-                                        errorOcurred = false;
-                                        onStopJob(job);
-                                    }
-
-                                    @Override
-                                    public void OnError(String url, VolleyError error) {
-                                        errorOcurred = true;
-                                        onStopJob(job);
-                                    }
-                                }).execute();
-
-                            }, error -> {
-                                errorOcurred = true;
-                                onStopJob(job);
-                            });
                 }
             }
 
             @Override
-            public void OnError(String url, VolleyError error) {
+            public void onError(int pg, String error) {
                 errorOcurred = true;
                 onStopJob(job);
             }
+
+            @Override
+            public void onAccessDenied(int pg, String message) {
+                Jobs.displayNotification(getResources().getString(R.string.dialog_access_denied),
+                        getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, null);
+                onStopJob(job);
+            }
         });
+
         return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters job) {
-        Utils.scheduleJob(getApplicationContext(), errorOcurred);
+        Jobs.scheduleJob(errorOcurred);
         return false;
     }
 }

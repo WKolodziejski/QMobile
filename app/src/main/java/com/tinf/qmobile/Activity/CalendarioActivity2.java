@@ -75,7 +75,4 @@ public class CalendarioActivity2 extends AppCompatActivity {
         title.setText(text);
     }
 
-    public BoxStore getBox() {
-        return ((App) getApplication()).getBoxStore();
-    }
 }

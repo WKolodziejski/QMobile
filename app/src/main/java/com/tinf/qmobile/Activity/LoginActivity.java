@@ -1,62 +1,47 @@
 package com.tinf.qmobile.Activity;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.provider.Settings;
-
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.LoginEvent;
 import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.LoginFragment;
-import com.tinf.qmobile.Interfaces.WebView.OnPageLoad;
+import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.Design;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
-import com.tinf.qmobile.WebView.SingletonWebView;
 
-import static com.tinf.qmobile.Utilities.Utils.PG_ACESSO_NEGADO;
-import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
-import static com.tinf.qmobile.Utilities.Utils.PG_CALENDARIO;
-import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
-import static com.tinf.qmobile.Utilities.Utils.PG_ERRO;
-import static com.tinf.qmobile.Utilities.Utils.PG_HOME;
-import static com.tinf.qmobile.Utilities.Utils.PG_HORARIO;
-import static com.tinf.qmobile.Utilities.Utils.PG_LOGIN;
-import static com.tinf.qmobile.Utilities.Utils.URL;
+import static com.tinf.qmobile.Network.Client.PG_ACESSO_NEGADO;
+import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
+import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
+import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
+import static com.tinf.qmobile.Network.Client.PG_HORARIO;
+import static com.tinf.qmobile.Network.Client.PG_LOGIN;
 
-public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main {
-    private SingletonWebView webView = SingletonWebView.getInstance();
-    LoginFragment loginFragment = new LoginFragment();
-    public Snackbar snackBar;
-    ViewGroup loginLayout;
+public class LoginActivity extends AppCompatActivity implements OnResponse {
+    private static String TAG = "LoginActivity";
+    OnResponse onResponse;
+    Snackbar snackBar;
+    int pages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginLayout = (ViewGroup) findViewById(R.id.login_container);
-
-        webView.isLoginPage = true;
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.login_fragment, loginFragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.login_fragment, new LoginFragment())
+                .commit();
     }
 
     public void showSnackBar(String message) { //Mostra a SnackBar
+        ViewGroup loginLayout = (ViewGroup) findViewById(R.id.login_container);
         snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
         snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
 
@@ -77,173 +62,82 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
         }
     }
 
-    private void showAlertDialog(String msg) {
-        new android.app.AlertDialog.Builder(LoginActivity.this)
-                .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
-                .setMessage(msg)
-                .setCancelable(true)
-                .create()
-                .show();
+    @Override
+    public void onFinish(int pg, int year) {
+        if (pg == PG_LOGIN) {
+            ((App) getApplication()).setLogged(true);
+            Client.get().load(PG_DIARIOS);
         }
 
-    private void loadData() {
-        Log.i("LoginActivity", "FirstLogin()");
+        if (pg == PG_DIARIOS) {
 
-        loginFragment.textView_loading.setVisibility(View.VISIBLE);
-
-        if (!webView.pg_diarios_loaded[0]) {
-            webView.loadUrl(URL + PG_DIARIOS);
-            Log.i("LoginActivity", "DIARIOS[0]");
-
-            setLoadingText(R.string.title_diarios, 0, 0);
-
-            return;
-        } else {
-            for (int i = 1; i < webView.pg_diarios_loaded.length; i++) {
-                if (!webView.pg_diarios_loaded[i]) {
-                    Log.i("LoginActivity", "DIARIOS[" + i + "]");
-                    webView.year_position = i;
-
-                    webView.scriptDiario = "javascript: var option = document.getElementsByTagName('option'); option["
-                            + (webView.year_position + 1) + "].selected = true; document.forms['frmConsultar'].submit();";
-
-                    webView.loadUrl(URL + PG_DIARIOS);
-
-                    setLoadingText(R.string.title_diarios, i, webView.data_year.length);
-
-                    return;
+            if (year == 0) {
+                for (int i = 1; i < User.getYears().length; i++) {
+                    Client.get().load(PG_DIARIOS, i);
                 }
             }
+
+            Client.get().load(PG_BOLETIM, year);
+            Client.get().load(PG_HORARIO, year);
+            Client.get().load(PG_CALENDARIO, year);
+
+            pages++;
         }
 
-        webView.year_position = 0;
-
-        if (!webView.pg_boletim_loaded[0]) {
-            webView.loadUrl(URL + PG_BOLETIM);
-            Log.i("LoginActivity", "BOLETIM[0]");
-
-            setLoadingText(R.string.title_boletim, 0, webView.data_year.length);
-
-            return;
-        } else {
-            for (int i = 1; i < webView.pg_boletim_loaded.length; i++) {
-                if (!webView.pg_boletim_loaded[i]) {
-                    Log.i("LoginActivity", "BOLETIM[" + i + "]");
-                    webView.year_position = i;
-
-                    webView.loadUrl(URL + PG_BOLETIM + "&COD_MATRICULA=-1&cmbanos="
-                            + webView.data_year[i] + "&cmbperiodos=1&Exibir=Exibir+Boletim");
-
-                    setLoadingText(R.string.title_boletim, i, webView.data_year.length);
-
-                    return;
-                }
-            }
+        if (pg == PG_BOLETIM) {
+            pages++;
         }
 
-        webView.year_position = 0;
-
-        if (!webView.pg_horario_loaded[0]) {
-            webView.loadUrl(URL + PG_HORARIO);
-            Log.i("LoginActivity", "HORARIO[0]");
-
-            setLoadingText(R.string.title_horario, 0, webView.data_year.length);
-
-            return;
-        } else {
-            for (int i = 1; i < webView.pg_horario_loaded.length; i++) {
-                if (!webView.pg_horario_loaded[i]) {
-                    Log.i("LoginActivity", "HORARIO[" + i + "]");
-                    webView.year_position = i;
-
-                    webView.loadUrl(URL + PG_HORARIO + "&COD_MATRICULA=-1&cmbanos=" +
-                            webView.data_year[i] + "&cmbperiodos=1&Exibir=OK");
-
-                    setLoadingText(R.string.title_horario, i, webView.data_year.length);
-
-                    return;
-                }
-            }
+        if (pg == PG_HORARIO) {
+            pages++;
         }
 
-        webView.year_position = 0;
-
-        if (!webView.pg_calendario_loaded) {
-            webView.loadUrl(URL + PG_CALENDARIO);
-            Log.i("LoginActivity", "CALENDÁRIO");
-
-            setLoadingText(R.string.title_calendario, 0, 1);
-
-            return;
+        if (pg == PG_CALENDARIO) {
+            pages++;
         }
 
-        webView.isLoginPage = false;
+        if (pages == User.getYears().length * 3 + 1) {
+            User.setValid(true);
+            finish();
+        }
 
-        User.setValid(getApplicationContext(), true);
-        finish();
+        onResponse.onFinish(pg, year);
+
+        Log.v(TAG, "Finished loading");
     }
 
     @Override
-    public void onPageStart() {}
+    public void onError(int pg, String error) {
+        ((App) getApplication()).setLogged(false);
 
-    @Override
-    public void onPageFinish(String url_p) {
-        runOnUiThread(() -> {
-            if (url_p.equals(URL + PG_LOGIN)) {
-                ((App) getApplication()).setLogged(true);
-                webView.setBoxStore(((App) getApplication()).getBoxStore());
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 
-            } else if (url_p.equals(URL + PG_ERRO)) {
-                loginFragment.dismissProgressBar();
-                loginFragment.login_btn.setClickable(true);
-                showSnackBar(getResources().getString(R.string.text_invalid_login));
+        onResponse.onError(pg, error);
 
-            } else if (url_p.contains(URL + PG_HOME)
-                    || url_p.contains(URL + PG_BOLETIM)
-                    || url_p.contains(URL + PG_HORARIO)
-                    || url_p.contains(URL + PG_DIARIOS)
-                    || url_p.contains(URL + PG_CALENDARIO)) {
-                loadData();
-            }
-        });
+        Log.e(TAG, error);
     }
 
     @Override
-    public void onErrorRecived(String url_p, String error) {
-        runOnUiThread(() -> {
-            loginFragment.textView_loading.setVisibility(View.INVISIBLE);
-            loginFragment.dismissProgressBar();
-            loginFragment.login_btn.setClickable(true);
+    public void onAccessDenied(int pg, String message) {
 
-            ((App) getApplication()).setLogged(false);
-            webView.year_position = 0;
-            webView.pg_calendario_loaded = false;
-            webView.pg_home_loaded = false;
+        if (pg == PG_LOGIN) {
+            showSnackBar(getResources().getString(R.string.text_invalid_login));
 
-            for(int i = 0; i < webView.pg_diarios_loaded.length; i++) {
-                webView.pg_diarios_loaded[i] = false;
-            }
+        } else if (pg == PG_ACESSO_NEGADO) {
+            new android.app.AlertDialog.Builder(LoginActivity.this)
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
+                    .setMessage(message)
+                    .setCancelable(true)
+                    .create()
+                    .show();
+        } else {
+            //TODO mensagem de acesso negado bizarro
+            Toast.makeText(getApplicationContext(), "Ocorreu algo muito errado", Toast.LENGTH_LONG).show();
+        }
 
-            for(int i = 0; i < webView.pg_boletim_loaded.length; i++) {
-                webView.pg_boletim_loaded[i] = false;
-            }
+        onResponse.onAccessDenied(pg, message);
 
-            for(int i = 0; i < webView.pg_horario_loaded.length; i++) {
-                webView.pg_horario_loaded[i] = false;
-            }
-
-            if (url_p.equals(URL + PG_ACESSO_NEGADO)) {
-                showAlertDialog(error);
-            } else {
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void setLoadingText(int pg, int i, int t) {
-        loginFragment.textView_loading.setText(String.format(
-                getResources().getString(R.string.text_loading_first_login),
-                getResources().getString(pg), Integer.toString(i + 1), Integer.toString(t)));
+        Log.v(TAG, "Access denied");
     }
 
     @Override
@@ -252,14 +146,26 @@ public class LoginActivity extends AppCompatActivity implements OnPageLoad.Main 
     }
 
     @Override
+    public void onStart(String url, int year) {
+        onResponse.onStart(url, year);
+
+        Log.v(TAG, "Started loading");
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        webView.setOnPageLoadListener(this);
+        Client.get().setOnResponseListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        webView.setOnPageLoadListener(this);
+        Client.get().setOnResponseListener(this);
     }
+
+    public void setOnResponsListener(OnResponse onResponse) {
+        this.onResponse = onResponse;
+    }
+
 }

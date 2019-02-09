@@ -1,5 +1,6 @@
 package com.tinf.qmobile.Class.Materias;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.tinf.qmobile.R;
@@ -76,6 +77,10 @@ public class Diarios implements Serializable {
         } else if (tipo == Tipo.QUALITATIVA.getInt()) {
             return R.string.sigla_Qualitativa;
         } else return tipo;
+    }
+
+    public String getTipoString(Context context) {
+        return context.getResources().getString(getTipoID());
     }
 
     public int getTipo() {

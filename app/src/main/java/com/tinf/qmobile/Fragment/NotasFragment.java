@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Fragment.ViewPager;
+package com.tinf.qmobile.Fragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,19 +14,16 @@ import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.ViewPagerAdapter;
 import com.tinf.qmobile.Fragment.BoletimFragment;
 import com.tinf.qmobile.Fragment.DiariosFragment;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
+import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.WebView.SingletonWebView;
+import com.tinf.qmobile.Utilities.User;
+
 import java.util.Objects;
 
-import static com.tinf.qmobile.Utilities.Utils.PG_BOLETIM;
-import static com.tinf.qmobile.Utilities.Utils.PG_DIARIOS;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
-import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener, OnUpdate {
     private static String TAG = "NotasFragment";
-    private SingletonWebView webView = SingletonWebView.getInstance();
     private int currentFragment = 0;
     private ViewPager viewPager;
     private OnTopScrollRequested onTopScrollRequestedB, onTopScrollRequestedD;
@@ -57,8 +54,7 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     private void showNotas(View view) {
 
-        ((MainActivity) getActivity()).setTitle(webView.data_year[webView.year_position]);
-
+        ((MainActivity) getActivity()).setTitle(User.getYears()[0]);
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(currentFragment);
@@ -91,8 +87,8 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     }
 
     @Override
-    public void onUpdate(String url_p) {
-        if (url_p.equals(UPDATE_REQUEST)) {
+    public void onUpdate(int pg) {
+        if (pg == UPDATE_REQUEST) {
             onCreate(null);
             showNotas(getView());
         }

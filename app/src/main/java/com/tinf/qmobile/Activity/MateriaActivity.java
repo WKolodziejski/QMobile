@@ -1,7 +1,6 @@
 package com.tinf.qmobile.Activity;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,14 +8,11 @@ import io.objectbox.BoxStore;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Fragment.HorarioFragment;
 import com.tinf.qmobile.Fragment.MateriaFragment;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.WebView.SingletonWebView;
 
 import java.util.Objects;
 
@@ -37,7 +33,7 @@ public class MateriaActivity extends AppCompatActivity {
             int year = bundle.getInt("YEAR");
             String name = bundle.getString("NAME");
 
-            Materia materia = getBox().boxFor(Materia.class).query().equal(Materia_.year, year)
+            Materia materia = App.getBox().boxFor(Materia.class).query().equal(Materia_.year, year)
                     .and().equal(Materia_.name, name).build().findFirst();
 
             if (materia != null) {
@@ -80,7 +76,4 @@ public class MateriaActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }*/
 
-    public BoxStore getBox() {
-        return ((App) getApplication()).getBoxStore();
-    }
 }

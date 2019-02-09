@@ -11,23 +11,20 @@ import com.alamkanak.weekview.WeekView;
 import com.alamkanak.weekview.WeekViewDisplayable;
 import com.alamkanak.weekview.WeekViewEvent;
 import com.tinf.qmobile.Activity.HorarioActivity;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Interfaces.Fragments.OnUpdate;
-import com.tinf.qmobile.WebView.SingletonWebView;
+import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
-
+import com.tinf.qmobile.Utilities.User;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import io.objectbox.BoxStore;
-import static com.tinf.qmobile.Utilities.Utils.PG_HORARIO;
+import static com.tinf.qmobile.Network.Client.PG_HORARIO;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
-import static com.tinf.qmobile.Utilities.Utils.URL;
 
 public class HorarioFragment extends Fragment implements OnUpdate {
-    private SingletonWebView webView = SingletonWebView.getInstance();
     private List<Materia> materias;
     private int firstHour = 24;
 
@@ -35,8 +32,8 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        materias = getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+        materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                User.getYear(0)).build().find();
     }
 
     @Override
@@ -82,9 +79,7 @@ public class HorarioFragment extends Fragment implements OnUpdate {
             }
 
             Calendar currentWeek = Calendar.getInstance();
-            currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-            currentWeek.set(Calendar.HOUR_OF_DAY, firstHour);
-            currentWeek.set(Calendar.MINUTE, 30);
+            currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
             weekView.goToDate(currentWeek);
             weekView.goToHour(firstHour);
 
@@ -94,15 +89,11 @@ public class HorarioFragment extends Fragment implements OnUpdate {
         weekView.notifyDataSetChanged();
     }
 
-    private BoxStore getBox() {
-        return ((HorarioActivity) getActivity()).getBox();
-    }
-
     @Override
-    public void onUpdate(String url_p) {
-        if (url_p.equals(URL + PG_HORARIO) || url_p.equals(UPDATE_REQUEST)) {
-            materias = getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                    Integer.valueOf(webView.data_year[webView.year_position])).build().find();
+    public void onUpdate(int pg) {
+        if (pg == PG_HORARIO || pg == UPDATE_REQUEST) {
+            materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
+                    User.getYear(0)).build().find();
             showHorario(getView());
         }
     }
