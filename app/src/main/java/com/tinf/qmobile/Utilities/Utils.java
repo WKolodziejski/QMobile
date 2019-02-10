@@ -25,15 +25,6 @@ public class Utils {
     public static final String VERSION = ".v1.0.0-r8";
     public static final String VERSION_INFO = ".Version";
 
-    public static boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            return (info != null && info.isConnected());
-        }
-        return false;
-    }
-
     public static View customAlertTitle(Context context, int img, int txt, int color) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View theTitle = Objects.requireNonNull(inflater).inflate(R.layout.dialog_title, null);

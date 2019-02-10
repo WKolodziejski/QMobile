@@ -30,6 +30,7 @@ import com.tinf.qmobile.Class.Calendario.Mes_;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.R;
@@ -114,7 +115,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
-            if (!Utils.isConnected()) {
+            if (!Client.isConnected()) {
                 offline.setVisibility(View.VISIBLE);
 
                 TextView text = (TextView) view.findViewById(R.id.offline_last_update);

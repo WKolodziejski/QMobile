@@ -30,10 +30,10 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
-import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.Network.Client.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -112,7 +112,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
             case R.id.action_logout:
 
                 new AlertDialog.Builder(MainActivity.this)
-                        .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_exit_to_app_black_24dp, R.string.dialog_quit, R.color.colorPrimary))
+                        .setCustomTitle(
+                                Utils.customAlertTitle(
+                                        getApplicationContext(),
+                                        R.drawable.ic_exit_to_app_black_24dp,
+                                        R.string.dialog_quit, R.color.colorPrimary))
                         .setMessage(R.string.dialog_quit_msg)
                         .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -136,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                         .setView(view)
                         .setCustomTitle(
                                 Utils.customAlertTitle(
-                                        Objects.requireNonNull(getApplicationContext()),
+                                        getApplicationContext(),
                                         R.drawable.ic_date_range_black_24dp,
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
@@ -241,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     }
 
     private void reload() {
-        if (Utils.isConnected()) {
+        if (Client.isConnected()) {
             //webView.reload(bottomNav.getSelectedItemId());
         } else {
             refreshLayout.setRefreshing(false);
@@ -308,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     }
 
     @Override
-    public void onStart(String url, int year) {
+    public void onStart(int pg, int year) {
         runOnUiThread(() -> {
             if (!refreshLayout.isRefreshing()) {
                 showProgressbar();
@@ -340,15 +344,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         dismissProgressbar();
         refreshLayout.setRefreshing(false);
 
-        new android.app.AlertDialog.Builder(MainActivity.this)
-                .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> {
-                    logOut();
-                })
-                .create()
-                .show();
+        if (pg == PG_ACESSO_NEGADO) {
+            new android.app.AlertDialog.Builder(MainActivity.this)
+                    .setCustomTitle(
+                            Utils.customAlertTitle(
+                                    getApplicationContext(),
+                                    R.drawable.ic_error_black_24dp,
+                                    R.string.dialog_access_denied, R.color.error))
+                    .setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
+                    .create()
+                    .show();
+        }
     }
 
     /*@Override

@@ -86,7 +86,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onStart(String url, int year) {
+    public void onStart(int pg, int year) {
 
     }
 

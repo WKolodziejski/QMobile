@@ -3,12 +3,8 @@ package com.tinf.qmobile;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.tinf.qmobile.Class.MyObjectBox;
 import com.tinf.qmobile.Utilities.User;
-import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 

@@ -24,11 +24,10 @@ import com.tinf.qmobile.Utilities.User;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.Network.Client.GERADOR;
 import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
 import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
+import static com.tinf.qmobile.Network.Client.PG_GERADOR;
 import static com.tinf.qmobile.Network.Client.PG_LOGIN;
-import static com.tinf.qmobile.Network.Client.VALIDA;
 import static com.tinf.qmobile.Utilities.User.PASSWORD;
 import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
@@ -85,27 +84,27 @@ public class LoginFragment extends Fragment implements OnResponse {
     }
 
     @Override
-    public void onStart(String url, int year) {
+    public void onStart(int pg, int year) {
         progressBar.setVisibility(VISIBLE);
         textView.setVisibility(View.VISIBLE);
         btn.setClickable(false);
 
         //TODO colocar textos
 
-        if (url.equals(GERADOR)) {
+        if (pg == PG_GERADOR) {
             textView.setText("Obtendo tokens");
 
-        } else if (url.equals(VALIDA)) {
+        } else if (pg == PG_LOGIN) {
             textView.setText("Autenticando");
 
-        } else if (url.contains(String.valueOf(PG_DIARIOS))) {
+        } else if (pg ==  PG_DIARIOS) {
             if (year != 0) {
                 textView.setText("Carregando Diários 201X");
             } else {
                 textView.setText("Carregando Diários");
             }
 
-        } else if (url.contains(String.valueOf(PG_BOLETIM))) {
+        } else if (pg == PG_BOLETIM) {
             textView.setText("Carregando Boletim 201X");
 
         }
@@ -133,7 +132,6 @@ public class LoginFragment extends Fragment implements OnResponse {
         btn.setClickable(true);
         user.setError("Inválido");
         password.setError("Inválido");
-        //showAlertDialog(error);
         Log.v(TAG, "Access denied");
     }
 

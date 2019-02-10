@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,7 +31,6 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
-import static com.tinf.qmobile.Network.Client.URL;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class CalendarioFragment extends Fragment implements OnUpdate {

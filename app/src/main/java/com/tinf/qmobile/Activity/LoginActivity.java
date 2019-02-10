@@ -146,8 +146,8 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onStart(String url, int year) {
-        onResponse.onStart(url, year);
+    public void onStart(int pg, int year) {
+        onResponse.onStart(pg, year);
 
         Log.v(TAG, "Started loading");
     }

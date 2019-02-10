@@ -1,9 +1,11 @@
 package com.tinf.qmobile.Network;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -17,13 +19,19 @@ import com.tinf.qmobile.Parsers.BoletimParser;
 import com.tinf.qmobile.Parsers.CalendarioParser;
 import com.tinf.qmobile.Parsers.DiariosParser;
 import com.tinf.qmobile.Parsers.HorarioParser;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.RequestHelper;
 import com.tinf.qmobile.Utilities.User;
+import com.tinf.qmobile.Utilities.Utils;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import androidx.annotation.Nullable;
 
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
@@ -31,8 +39,8 @@ import static com.android.volley.Request.Method.POST;
 public class Client {
     private static final String TAG = "NetworkSingleton";
     public static final String URL = "http://qacademico.ifsul.edu.br//qacademico/index.asp?t=";
-    public static final String GERADOR = "http://qacademico.ifsul.edu.br//qacademico/lib/rsa/gerador_chaves_rsa.asp";
-    public static final String VALIDA = "http://qacademico.ifsul.edu.br/qacademico/lib/validalogin.asp";
+    private static final String GERADOR = "http://qacademico.ifsul.edu.br//qacademico/lib/rsa/gerador_chaves_rsa.asp";
+    private static final String VALIDA = "http://qacademico.ifsul.edu.br/qacademico/lib/validalogin.asp";
     public static final int PG_LOGIN = 1001;
     public static final int PG_HOME = 2000;
     public static final int PG_DIARIOS = 2071;
@@ -41,18 +49,20 @@ public class Client {
     public static final int PG_MATERIAIS = 2061;
     public static final int PG_CALENDARIO = 2020;
     public static final int PG_ERRO = 1;
+    public static final int PG_GERADOR = 2;
     public static final int PG_ACESSO_NEGADO = 3;
+    private List<RequestHelper> queue;
     private static Client singleton;
     private OnResponse onResponse;
-    private RequestQueue requestQueue;
+    private RequestQueue request;
     private String COOKIE;
     private String KEY_A;
     private String KEY_B;
     public int year = 0;
-    private boolean isValid;
 
     private Client() {
-        requestQueue = Volley.newRequestQueue(App.getContext());
+        request = Volley.newRequestQueue(App.getContext());
+        queue = new ArrayList<>();
         Log.v(TAG, "New instace created");
     }
 
@@ -67,8 +77,11 @@ public class Client {
         addRequest(new StringRequest(method, URL + pg + url,
                 response -> {
                     if (wasDenied(response)) {
-                        isValid = false;
-                        //TODO colocar este request na fila e fazer login
+                        queue.add(new RequestHelper(pg, url, year, method, form, notify));
+
+                        //TODO add msg
+                        onResponse.onAccessDenied(pg, "Seção Expirada");
+                        login();
                     } else {
                         if (pg == PG_DIARIOS) {
                             new DiariosParser(year, notify, onResponse).execute(response);
@@ -83,7 +96,7 @@ public class Client {
                             new CalendarioParser(notify, onResponse).execute(response);
                         }
                     }
-                }, error ->  onResponse.onError(pg, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
+                }, error ->  onError(pg, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
 
                     @Override
                     public Map<String, String> getHeaders() {
@@ -96,7 +109,7 @@ public class Client {
                     protected Map<String, String> getParams() throws AuthFailureError {
                         return !form.isEmpty() ? form : super.getParams();
                     }
-        }, year);
+        }, pg, year);
     }
 
     public void load(int pg) {
@@ -136,22 +149,68 @@ public class Client {
         createRequest(pg, "", 0, GET, new HashMap<>(), prefs.getBoolean("key_notifications", true));
     }
 
-    private <T> void addRequest(Request<T> request, int year) {
-        onResponse.onStart(request.getUrl(), year);
-        requestQueue.add(request);
-        Log.v(TAG, "Added to queue: " + request.toString());
+    private <T> void addRequest(Request<T> request, int pg, int year) {
+        if (isConnected()) {
+            onResponse.onStart(pg, year);
+            this.request.add(request);
+            Log.v(TAG, "Added to queue: " + request.toString());
+        } else {
+            onError(pg, App.getContext().getResources().getString(R.string.text_no_connection));
+        }
     }
 
     public void login() {
-        fetchParams(response -> {
-            addRequest(loginRequest(), 0);
-        }, error -> {
-            //TODO servidor indisponível ou sem conexão
-            onResponse.onError(PG_LOGIN, "SERVIDOR INDISPONÍVEL");
+        fetchParams(sucess -> {
+            addRequest(new StringRequest(POST, VALIDA,
+                    response -> {
+                        if (wasDenied(response)) {
+
+                            //TODO adiconar mensagem de acesso negado
+                            onResponse.onAccessDenied(PG_LOGIN, App.getContext().getResources().getString(R.string.text_invalid_login));
+                        } else {
+                            Document page = Jsoup.parse(response);
+                            String name = page.getElementsByClass("barraRodape").get(1).text();
+                            User.setName(name);
+                            User.setLastLogin(new Date().getTime());
+
+                            checkQueue();
+
+                            onResponse.onFinish(PG_LOGIN, 0);
+                        }
+                    }, error -> onError(PG_LOGIN, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
+
+                        @Override
+                        public Map<String, String> getHeaders() {
+                            Map<String,String> params = new HashMap<>();
+                            params.put("Cookie", COOKIE);
+                            return params;
+                        }
+
+                        @Override
+                        protected Map<String, String> getParams() {
+                            return User.getLoginParams(KEY_A, KEY_B);
+                        }
+
+                        @Override
+                        public Priority getPriority() {
+                            return Priority.IMMEDIATE;
+                        }
+
+            }, PG_LOGIN, 0);
         });
     }
 
-    private void fetchParams( Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
+    private void checkQueue() {
+        if (queue != null && !queue.isEmpty()) {
+            for (int i = 0; i < queue.size(); i++) {
+                RequestHelper helper = queue.get(i);
+                createRequest(helper.pg, helper.url, helper.year, helper.method, helper.form, helper.notify);
+                queue.remove(i);
+            }
+        }
+    }
+
+    private void fetchParams( Response.Listener<String> listener) {
         addRequest(new StringRequest(GET, GERADOR,
                 response ->  {
                     String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));;
@@ -164,9 +223,9 @@ public class Client {
 
                     Log.v(TAG, "Keys fetched");
 
-                    listener.onResponse("");
+                    listener.onResponse(response);
 
-                }, errorListener::onErrorResponse) {
+                }, error -> onError(PG_GERADOR, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -189,53 +248,37 @@ public class Client {
                         return Priority.IMMEDIATE;
                     }
 
-        }, 0);
+        }, PG_GERADOR,0);
     }
 
-    private StringRequest loginRequest() {
-        return new StringRequest(POST, VALIDA,
-                response -> {
-                    if (wasDenied(response)) {
-                        isValid = false;
+    private void onError(int pg, String msg) {
+        //TODO mensagens de erro
+        if (!isConnected()) {
+            msg = App.getContext().getResources().getString(R.string.text_no_connection);
+        } else {
+            if (pg == PG_GERADOR) {
+                msg = "Servidor indisponível";
+            }
+        }
 
-                        //TODO adiconar mensagem de acesso negado
-                        onResponse.onAccessDenied(PG_LOGIN, "");
-                    } else {
-                        isValid = true;
+        Log.e(TAG, msg);
 
-                        Document page = Jsoup.parse(response);
-                        String name = page.getElementsByClass("barraRodape").get(1).text();
-                        User.setName(name);
-                        User.setLastLogin(new Date().getTime());
-
-                        //TODO verificar se existe outro request pendente senão chamar o listener abaixo
-                                                                    onResponse.onFinish(PG_LOGIN, 0);
-                    }
-                }, error ->  onResponse.onError(PG_LOGIN, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
-
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String,String> params = new HashMap<>();
-                        params.put("Cookie", COOKIE);
-                        return params;
-                    }
-
-                    @Override
-                    protected Map<String, String> getParams() {
-                        return User.getLoginParams(KEY_A, KEY_B);
-                    }
-
-                    @Override
-                    public Priority getPriority() {
-                        return Priority.IMMEDIATE;
-                    }
-        };
+        onResponse.onError(pg, msg);
     }
 
     private boolean wasDenied(String response) {
         Document page = Jsoup.parse(response);
         String msg = page.getElementsByTag("strong").first().text().trim();
         return msg.contains("Negado");
+    }
+
+    public static boolean isConnected() {
+        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo info = cm.getActiveNetworkInfo();
+            return (info != null && info.isConnected());
+        }
+        return false;
     }
 
     public void setOnResponseListener(OnResponse onResponse) {
