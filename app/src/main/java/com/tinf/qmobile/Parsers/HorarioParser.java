@@ -8,6 +8,7 @@ import com.tinf.qmobile.Class.Materias.Horario;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 
 import org.jsoup.Jsoup;
@@ -22,18 +23,19 @@ import java.util.Objects;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
+import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
 import static com.tinf.qmobile.Network.Client.PG_HORARIO;
 
 public class HorarioParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "HorarioParser";
+    private OnFinish onFinish;
     private int year;
     private boolean notify;
-    private OnResponse onResponse;
 
-    public HorarioParser(int year, boolean notify, OnResponse onResponse) {
+    public HorarioParser(int year, boolean notify, OnFinish onFinish) {
         this.year = year;
         this.notify = notify;
-        this.onResponse = onResponse;
+        this.onFinish = onFinish;
 
         Log.i(TAG, "New instance");
     }
@@ -167,6 +169,10 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onResponse.onFinish(PG_HORARIO, year);
+        onFinish.onFinish(PG_HORARIO, year);
+    }
+
+    public interface OnFinish {
+        void onFinish(int pg, int year);
     }
 }

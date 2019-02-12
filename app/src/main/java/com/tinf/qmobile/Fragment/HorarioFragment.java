@@ -15,6 +15,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class HorarioFragment extends Fragment implements OnUpdate {
         super.onCreate(savedInstanceState);
 
         materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                User.getYear(0)).build().find();
+                Client.getYear()).build().find();
     }
 
     @Override
@@ -93,7 +94,7 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     public void onUpdate(int pg) {
         if (pg == PG_HORARIO || pg == UPDATE_REQUEST) {
             materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                    User.getYear(0)).build().find();
+                    Client.getYear()).build().find();
             showHorario(getView());
         }
     }

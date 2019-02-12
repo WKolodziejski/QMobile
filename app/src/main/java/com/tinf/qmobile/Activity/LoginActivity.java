@@ -26,7 +26,6 @@ import static com.tinf.qmobile.Network.Client.PG_LOGIN;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private static String TAG = "LoginActivity";
-    OnResponse onResponse;
     Snackbar snackBar;
     int pages;
 
@@ -101,8 +100,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             finish();
         }
 
-        onResponse.onFinish(pg, year);
-
         Log.v(TAG, "Finished loading");
     }
 
@@ -112,8 +109,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 
-        onResponse.onError(pg, error);
-
         Log.e(TAG, error);
     }
 
@@ -121,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     public void onAccessDenied(int pg, String message) {
 
         if (pg == PG_LOGIN) {
-            showSnackBar(getResources().getString(R.string.text_invalid_login));
+            showSnackBar(getResources().getString(R.string.login_invalid));
 
         } else if (pg == PG_ACESSO_NEGADO) {
             new android.app.AlertDialog.Builder(LoginActivity.this)
@@ -130,12 +125,11 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                     .setCancelable(true)
                     .create()
                     .show();
-        } else {
-            //TODO mensagem de acesso negado bizarro
-            Toast.makeText(getApplicationContext(), "Ocorreu algo muito errado", Toast.LENGTH_LONG).show();
-        }
 
-        onResponse.onAccessDenied(pg, message);
+        } else {
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.client_error), Toast.LENGTH_LONG).show();
+            Log.wtf(TAG, "Somehow this come to happen");
+        }
 
         Log.v(TAG, "Access denied");
     }
@@ -147,25 +141,34 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onStart(int pg, int year) {
-        onResponse.onStart(pg, year);
-
         Log.v(TAG, "Started loading");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Client.get().setOnResponseListener(this);
+        Log.v(TAG, "onStart");
+        Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Client.get().setOnResponseListener(this);
+        Log.v(TAG, "onResume");
+        Client.get().addOnResponseListener(this);
     }
 
-    public void setOnResponsListener(OnResponse onResponse) {
-        this.onResponse = onResponse;
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.v(TAG, "onStop");
+        Client.get().removeOnResponseListener(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause");
+        Client.get().removeOnResponseListener(this);
+    }
 }

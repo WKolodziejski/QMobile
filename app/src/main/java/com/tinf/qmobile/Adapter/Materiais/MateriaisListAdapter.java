@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tinf.qmobile.Class.Materiais.Materiais;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.MateriaisListViewHolder;
@@ -52,8 +53,8 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(layout);
 
-        adapter.setOnDownloadListener(link -> {
-            onDownloadRepassListener.onDownload(link);
+        adapter.setOnDownloadListener(material -> {
+            onDownloadRepassListener.onDownload(material);
         });
     }
 
@@ -67,7 +68,7 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     }
 
     public interface OnDownloadRepassListener {
-        void onDownload(String link);
+        void onDownload(Materiais material);
     }
 
 }

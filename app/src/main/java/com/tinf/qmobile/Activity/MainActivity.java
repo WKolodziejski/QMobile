@@ -2,11 +2,14 @@ package com.tinf.qmobile.Activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -15,6 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -34,15 +38,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.Network.Client.PG_ACESSO_NEGADO;
+import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
+import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
+import static com.tinf.qmobile.Network.Client.PG_LOGIN;
+import static com.tinf.qmobile.Network.Client.PG_MATERIAIS;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
-
+    private static final String TAG = "MainActivity";
     @BindView(R.id.fab_expand)        public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.tabs)                     TabLayout tabLayout;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
-    //@BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
+    @BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
     private OnUpdate onUpdate;
 
     @Override
@@ -58,13 +66,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         hideExpandBtn();
         dismissProgressbar();
         if (User.isValid()) {
+            Client.get().login();
+            Client.get().load(PG_DIARIOS);
+            Client.get().load(PG_BOLETIM);
             ((App) getApplication()).setLogged(true);
-                Jobs.scheduleJob(false);
-                setTitle(User.getName());
-                changeFragment(new HomeFragment());
-                hideTabLayout();
-                hideExpandBtn();
-                bottomNav.setSelectedItemId(R.id.navigation_home);
+            Jobs.scheduleJob(false);
+            setTitle(User.getName());
+            changeFragment(new HomeFragment());
+            hideTabLayout();
+            hideExpandBtn();
+            bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
         }
@@ -145,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                            Client.get().year = year.getValue();
+                            Client.year = year.getValue();
                             onUpdate.onUpdate(UPDATE_REQUEST);
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                     break;
 
                 case R.id.navigation_materiais:
-                    setTitle(User.getYears()[0]);
+                    setTitle(String.valueOf(Client.getYear()));
                     fragment = new MateriaisFragment();
                     hideExpandBtn();
                     hideTabLayout();
@@ -227,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     }
 
     private void logOut() {
+        Client.get().logOut();
         Jobs.cancellAllJobs();
         ((App) getApplication()).logOut();
         User.clearInfos();
@@ -246,9 +258,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
     private void reload() {
         if (Client.isConnected()) {
-            //webView.reload(bottomNav.getSelectedItemId());
+            switch (bottomNav.getSelectedItemId()) {
+                case R.id.navigation_home: Client.get().load(PG_LOGIN);
+                    break;
+                case R.id.navigation_notas: Client.get().load(PG_DIARIOS);
+                                            Client.get().load(PG_BOLETIM);
+                    break;
+                case R.id.navigation_materiais: Client.get().load(PG_MATERIAIS);
+                    break;
+            }
         } else {
-            refreshLayout.setRefreshing(false);
+            dismissProgressbar();
         }
     }
 
@@ -261,8 +281,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     @Override
     public void onStart() {
         super.onStart();
+        Log.v(TAG, "onStart");
         //appBarLayout.addOnOffsetChangedListener(this);
-        //webView.setOnPageLoadListener(this);
+        Client.get().addOnResponseListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
@@ -270,31 +291,30 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     @Override
     protected void onStop() {
         super.onStop();
+        Log.v(TAG, "onStop");
         onUpdate = null;
-        //appBarLayout.removeOnOffsetChangedListener(this);
-        //webView.setOnPageLoadListener(null);
-        //refreshLayout.setOnRefreshListener(null);
-        //bottomNav.setOnNavigationItemSelectedListener(null);
+        Client.get().removeOnResponseListener(this);
+        //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.v(TAG, "onResume");
         //appBarLayout.addOnOffsetChangedListener(this);
-        //webView.setOnPageLoadListener(this);
-        //refreshLayout.setOnRefreshListener(() -> webView.reload(bottomNav.getSelectedItemId()));
+        refreshLayout.setOnRefreshListener(this::reload);
+        Client.get().addOnResponseListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Log.v(TAG, "onPause");
         onUpdate = null;
-        //appBarLayout.removeOnOffsetChangedListener(this);
-        //webView.setOnPageLoadListener(null);
-        //refreshLayout.setOnRefreshListener(null);
-        //bottomNav.setOnNavigationItemSelectedListener(null);
+        Client.get().removeOnResponseListener(this);
+        //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
 
@@ -313,36 +333,27 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
     @Override
     public void onStart(int pg, int year) {
-        runOnUiThread(() -> {
-            if (!refreshLayout.isRefreshing()) {
-                showProgressbar();
-            } else {
-                dismissProgressbar();
-            }
-        });
+        if (!refreshLayout.isRefreshing()) {
+            showProgressbar();
+        } else {
+            dismissProgressbar();
+        }
     }
 
     @Override
     public void onFinish(int pg, int year) {
-        runOnUiThread(() -> {
-            refreshLayout.setRefreshing(false);
-            dismissProgressbar();
-        });
+        dismissProgressbar();
     }
 
     @Override
     public void onError(int pg, String error) {
-        runOnUiThread(() -> {
-            dismissProgressbar();
-            refreshLayout.setRefreshing(false);
-            Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-        });
+        dismissProgressbar();
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         dismissProgressbar();
-        refreshLayout.setRefreshing(false);
 
         if (pg == PG_ACESSO_NEGADO) {
             new android.app.AlertDialog.Builder(MainActivity.this)
@@ -356,6 +367,27 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                     .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
                     .create()
                     .show();
+
+        } else {
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 

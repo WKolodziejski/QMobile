@@ -186,7 +186,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
                         }
                     }
                 } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.text_end_period), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.calendar_end_period), Toast.LENGTH_SHORT).show();
                     if (direction == 1) {
                         calendarView.scrollRight();
                         calendarView.scrollLeft();

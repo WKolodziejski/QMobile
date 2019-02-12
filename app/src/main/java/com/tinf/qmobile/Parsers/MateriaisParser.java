@@ -1,7 +1,9 @@
 package com.tinf.qmobile.Parsers;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.tinf.qmobile.Class.Materiais.Materiais;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
@@ -80,7 +82,7 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
                         || extension.equals(".txt") || extension.equals(".rtf")) {
                     color = R.color.materiais_doc;
                     img = R.drawable.ic_docs;
-                } else if (extension.equals(".csv") || extension.equals(".svg")) {
+                } else if (extension.equals(".csv") || extension.equals(".svg") | extension.equals(".xls")) {
                     color = R.color.materiais_table;
                     img = R.drawable.ic_table;
                 } else if (extension.equals(".zip") || extension.equals(".rar")
@@ -101,7 +103,7 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
                 } else if (extension.equals(".jar") || extension.equals(".php")
                         || extension.equals(".html") || extension.equals(".css")
                         || extension.equals(".js") || extension.equals(".json")
-                        || extension.equals(".xml")) {
+                        || extension.equals(".xml") || extension.equals(".c")) {
                     color = R.color.materiais_script;
                     img = R.drawable.ic_script;
                 }

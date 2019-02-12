@@ -1,7 +1,5 @@
 package com.tinf.qmobile.Service;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.tinf.qmobile.Interfaces.OnResponse;
@@ -20,9 +18,9 @@ public class BackgroundCheck extends JobService {
 
         Client.get().login();
 
-        Client.get().setOnResponseListener(new OnResponse() {
+        Client.get().addOnResponseListener(new OnResponse() {
             @Override
-            public void onStart(String url, int year) {
+            public void onStart(int pg, int year) {
                 //TODO adicionar Log ou notificação pra DeBug
             }
 
@@ -35,6 +33,7 @@ public class BackgroundCheck extends JobService {
 
                 if (pg == PG_DIARIOS) {
                     errorOcurred = false;
+                    Client.get().removeOnResponseListener(this);
                     onStopJob(job);
                 }
             }
@@ -42,6 +41,7 @@ public class BackgroundCheck extends JobService {
             @Override
             public void onError(int pg, String error) {
                 errorOcurred = true;
+                Client.get().removeOnResponseListener(this);
                 onStopJob(job);
             }
 
@@ -49,6 +49,7 @@ public class BackgroundCheck extends JobService {
             public void onAccessDenied(int pg, String message) {
                 Jobs.displayNotification(getResources().getString(R.string.dialog_access_denied),
                         getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, null);
+                Client.get().removeOnResponseListener(this);
                 onStopJob(job);
             }
         });

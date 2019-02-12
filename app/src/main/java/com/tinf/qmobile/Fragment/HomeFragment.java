@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onCreate(savedInstanceState);
 
         materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                User.getYear(0)).build().find();
+                Client.getYear()).build().find();
 
         Calendar today = Calendar.getInstance();
         today.setTime(new Date());
@@ -212,7 +212,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onUpdate(int pg) {
         if (pg == UPDATE_REQUEST) {
             materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                    User.getYear(0)).build().find();
+                    Client.getYear()).build().find();
         }
         if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {
             if (getView() != null) {

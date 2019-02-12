@@ -26,6 +26,7 @@ import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 
@@ -136,7 +137,7 @@ public class DiariosFragment extends Fragment {
         //SingletonWebView webView = SingletonWebView.get();
 
         Query<Materia> query = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, User.getYear(0)).build();
+                .equal(Materia_.year, Client.getYear()).build();
 
         query.subscribe(new DataSubscriptionList()).observer(observer);
 

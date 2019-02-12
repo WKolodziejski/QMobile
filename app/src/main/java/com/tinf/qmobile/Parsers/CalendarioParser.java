@@ -9,6 +9,7 @@ import com.tinf.qmobile.Class.Calendario.Mes;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
@@ -22,15 +23,16 @@ import java.util.List;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
+import static com.tinf.qmobile.Utilities.Utils.pickColor;
 
 public class CalendarioParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";
+    private OnFinish onFinish;
     private boolean notify;
-    private OnResponse onResponse;
 
-    public CalendarioParser(boolean notify, OnResponse onResponse) {
+    public CalendarioParser(boolean notify, OnFinish onFinish) {
         this.notify = notify;
-        this.onResponse = onResponse;
+        this.onFinish = onFinish;
 
         Log.i(TAG, "New instance");
     }
@@ -187,7 +189,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     Materia materia = materiaBox.query()
                                             .equal(Materia_.name, title)
                                             .and()
-                                            .equal(Materia_.year, User.getYear(0))
+                                            .equal(Materia_.year, Client.getYear())
                                             .build().findFirst();
 
                                     evento.day.setTarget(dia);
@@ -253,82 +255,11 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onResponse.onFinish(PG_CALENDARIO, 0);
+        onFinish.onFinish(PG_CALENDARIO, 0);
     }
 
-    private int pickColor(String string){
-        int color = 0;
-
-        if (string.contains("Biologia")) {
-            color = R.color.biologia;
-        } else if (string.contains("Educação Física")) {
-            color = R.color.edFisica;
-        } else if (string.contains("Filosofia")) {
-            color = R.color.filosofia;
-        } else if (string.contains("Física")) {
-            color = R.color.fisica;
-        } else if (string.contains("Geografia")) {
-            color = R.color.geografia;
-        } else if (string.contains("História")) {
-            color = R.color.historia;
-        } else if (string.contains("Portugu")) {
-            color = R.color.portugues;
-        } else if (string.contains("Matemática")) {
-            color = R.color.matematica;
-        } else if (string.contains("Química")) {
-            color = R.color.quimica;
-        } else if (string.contains("Sociologia")) {
-            color = R.color.sociologia;
-        }/* else if (string.equals("#F0F0F0")){//Avaliação
-            color = Color.rgb(255, 20, 20);
-        } else if (string.equals("#FF0000")){//Feriado Nacional/Feriado Estadual/municipal
-            color = Color.rgb(219, 161, 26);
-        } else if (string.equals("#008080")){//Férias/Dia não letivo
-            color = Color.rgb(255, 212, 0);
-        } else if (string.equals("#FFFF00")){//Datas Acadêmicas
-            color = Color.rgb(255, 208, 0);
-        } else if (string.equals("#000080")){//Início/Fim das aulas
-            color = Color.rgb(6, 0, 137);
-        } else if (string.equals("#A62A2A")){//Recesso Escolar
-            color = Color.rgb(178, 62, 62);
-        } else if (string.equals("#800000")){//Reunião CCS
-            color = Color.rgb(178, 62, 62);
-        } else if (string.equals("#008000")){//Ponto Facultativo/Ajustes de matrícula
-            color = Color.rgb(0, 79, 1);
-        } else if (string.equals("#CD7F32")){//Paralisação
-            color = Color.rgb(255, 89, 0);
-        } else if (string.equals("#00FF00")){//Rematrícula/Matriculas/Domingo Letivo
-            color = Color.rgb(16, 255, 0);
-        } else if (string.equals("#A6CAF0")){//Conselho de Classe
-            color = Color.rgb(110, 163, 156);
-        } else if (string.equals("#C0DCC0")){//Sábado letivo
-            color = Color.rgb(29, 255, 0);
-        } else if (string.equals("#D98719")){//Jogos Intermédios
-            color = Color.rgb(199, 255, 68);
-        } else if (string.equals("#A6CAF0")){//Fim de Etapa
-            color = Color.rgb(51, 107, 95);
-        } else if (string.equals("#238E23")){//Início de Etapa
-            color = Color.rgb(70, 147, 131);
-        } else if (string.equals("#C0DCC0")){//início de semestre
-            color = Color.rgb(79, 168, 149);
-        } else if (string.equals("#808080")){//Planejamento Docente
-            color = Color.rgb(145, 145, 145);
-        } else if (string.equals("#FFFF00")){//Capacitação de Servidores
-            color = Color.rgb(221, 177, 0);
-        }*/
-        else {
-            Materia materia = App.getBox().boxFor(Materia.class).query().equal(Materia_.name, string).build().findFirst();
-
-            if (materia != null) {
-                color = materia.getColor();
-            }
-
-            if (color == 0) {
-                color = Utils.getRandomColorGenerator();
-            }
-        }
-
-        return color;
+    public interface OnFinish {
+        void onFinish(int pg, int year);
     }
 
 }

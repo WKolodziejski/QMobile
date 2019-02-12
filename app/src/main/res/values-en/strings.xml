@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="menu_bug">Bug Report</string>
     <string name="action_about">About</string>
-    <string name="text_no_connection">No Internet connection available</string>
+    <string name="client_no_connection">No Internet connection available</string>
     <string name="text_password">Password</string>
-    <string name="text_invalid_login">Invalid login or password</string>
+    <string name="login_invalid">Invalid login</string>
     <string name="button_login">Log in</string>
     <string name="button_wifi">Enable Wi-Fi</string>
     <string name="text_user">Registration</string>
@@ -15,7 +14,6 @@
     <string name="dialog_quit_msg">Are you sure?</string>
     <string name="text_retry">Reload</string>
     <string name="title_horario">Schedule</string>
-    <string name="text_connection_error">Unable to load page</string>
     <string name="boletim_TFaltas">TA</string>
     <string name="boletim_Faltas">A</string>
     <string name="boletim_Nota">G</string>
@@ -49,21 +47,18 @@
     <string name="title_calendario">Calendar</string>
     <string name="title_documentos">Documents</string>
     <string name="title_graficos">Graphics</string>
-    <string name="text_empty_materiais">No materials available for now</string>
-    <string name="text_empty">Nothing here for now, come back later</string>
-    <string name="text_end_period">End of school year</string>
-    <string name="text_loading_first_login">Loading %1$s %2$s/%3$s</string>
+    <string name="materiais_empty">No materials available for now</string>
+    <string name="calendar_end_period">End of school year</string>
     <string name="dialog_close">Close</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
     <string name="login_logging">Logging In</string>
-    <string name="text_wait_loading">Wait until the loading is complete</string>
     <string name="boletim_Materia">Subject</string>
     <string name="home_last_login">The last update was in %1s</string>
     <string name="home_footer">Check your grades on the website</string>
     <string name="home_refresh">Refresh</string>
     <string name="action_date">Select Date</string>
-    <string name="message_expanded">Tabs expanded</string>
-    <string name="message_collapsed">Tabs closed</string>
+    <string name="diarios_expanded">Tabs expanded</string>
+    <string name="diarios_collapsed">Tabs closed</string>
     <string name="sigla_Exercicio">E</string>
     <string name="sigla_Trabalho">W</string>
     <string name="sigla_Prova">T</string>
@@ -79,9 +74,8 @@
     <string name="dialog_no">No</string>
     <string name="dialog_quit">Logout</string>
     <string name="dialog_change">Change</string>
-    <string name="text_page_error">An error occurred, check the website</string>
+    <string name="client_error">Something unexpected happened, try again later</string>
     <string name="dialog_access_denied">Access Denied</string>
-    <string name="message_empty">There are no journals available</string>
     <string name="pref_check">Check</string>
     <string name="pref_notifications">Notifications</string>
     <string name="pref_services">Services</string>
@@ -92,4 +86,7 @@
     <string name="pref_mobile_sum">Check even using mobile data</string>
     <string name="pref_alert_sum">Check news more often</string>
     <string name="dialog_check_login">Check your credentials</string>
+    <string name="diarios_empty">No journals available</string>
+    <string name="login_expired">Session expired</string>
+    <string name="client_host">Unreachable server</string>
 </resources>

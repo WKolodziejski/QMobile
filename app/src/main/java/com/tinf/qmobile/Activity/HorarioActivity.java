@@ -12,6 +12,7 @@ import com.tinf.qmobile.Fragment.HorarioFragment;
 import com.tinf.qmobile.Interfaces.OnResponse;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
         setSupportActionBar(findViewById(R.id.toolbar));
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
-                + " ― " + 0);
+                + " ― " + Client.getYear());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportFragmentManager()

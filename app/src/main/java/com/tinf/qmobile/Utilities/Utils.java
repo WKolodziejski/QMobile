@@ -1,8 +1,6 @@
 package com.tinf.qmobile.Utilities;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,13 +12,8 @@ import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.R;
 import java.util.Objects;
 import java.util.Random;
-import io.objectbox.BoxStore;
 
 public class Utils {
-    public static final String CALENDARIO = ".Calendario";
-    public static final String MATERIAS = ".Materias";
-    public static final String ETAPAS = ".Etapas";
-    public static final String HORARIO = ".Horario";
     public static final int UPDATE_REQUEST = 0;
     public static final String VERSION = ".v1.0.0-r8";
     public static final String VERSION_INFO = ".Version";
@@ -71,7 +64,7 @@ public class Utils {
         return color;
     }
 
-    public static int pickColor(String string, BoxStore boxStore){
+    public static int pickColor(String string) {
         int color = 0;
 
         if (string.contains("Biologia")) {
@@ -95,7 +88,7 @@ public class Utils {
         } else if (string.contains("Sociologia")) {
             color = R.color.sociologia;
         } else {
-            Materia materia = boxStore.boxFor(Materia.class).query().equal(Materia_.name, string).build().findFirst();
+            Materia materia = App.getBox().boxFor(Materia.class).query().equal(Materia_.name, string).build().findFirst();
 
             if (materia != null) {
                 color = materia.getColor();

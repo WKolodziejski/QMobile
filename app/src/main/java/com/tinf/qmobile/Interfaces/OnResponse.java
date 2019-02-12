@@ -6,4 +6,5 @@ public interface OnResponse {
     void onFinish(int pg, int year);
     void onError(int pg, String error);
     void onAccessDenied(int pg, String message);
+
 }

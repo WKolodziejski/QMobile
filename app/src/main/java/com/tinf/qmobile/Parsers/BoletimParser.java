@@ -8,6 +8,7 @@ import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import org.jsoup.Jsoup;
@@ -17,17 +18,18 @@ import org.jsoup.select.Elements;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
+import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
 
 public class BoletimParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "BoletimParser";
+    private OnFinish onFinish;
     private int year;
     private boolean notify;
-    private OnResponse onResponse;
 
-    public BoletimParser(int year, boolean notify, OnResponse onResponse) {
+    public BoletimParser(int year, boolean notify, OnFinish onFinish) {
         this.year = year;
         this.notify = notify;
-        this.onResponse = onResponse;
+        this.onFinish = onFinish;
 
         Log.i(TAG, "New instance");
     }
@@ -115,7 +117,11 @@ public class BoletimParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onResponse.onFinish(PG_BOLETIM, year);
+        onFinish.onFinish(PG_BOLETIM, year);
+    }
+
+    public interface OnFinish {
+        void onFinish(int pg, int year);
     }
 
     private String formatTd(String text){

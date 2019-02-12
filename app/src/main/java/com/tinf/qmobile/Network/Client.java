@@ -1,46 +1,61 @@
 package com.tinf.qmobile.Network;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Materiais.Materiais;
+import com.tinf.qmobile.Class.Materiais.MateriaisList;
+import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
 import com.tinf.qmobile.Interfaces.OnResponse;
 import com.tinf.qmobile.Parsers.BoletimParser;
 import com.tinf.qmobile.Parsers.CalendarioParser;
 import com.tinf.qmobile.Parsers.DiariosParser;
 import com.tinf.qmobile.Parsers.HorarioParser;
+import com.tinf.qmobile.Parsers.MateriaisParser;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.RequestHelper;
 import com.tinf.qmobile.Utilities.User;
-import com.tinf.qmobile.Utilities.Utils;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
+import static com.tinf.qmobile.App.getContext;
 
 public class Client {
     private static final String TAG = "NetworkSingleton";
-    public static final String URL = "http://qacademico.ifsul.edu.br//qacademico/index.asp?t=";
-    private static final String GERADOR = "http://qacademico.ifsul.edu.br//qacademico/lib/rsa/gerador_chaves_rsa.asp";
-    private static final String VALIDA = "http://qacademico.ifsul.edu.br/qacademico/lib/validalogin.asp";
+    public static final String URL = "http://qacademico.ifsul.edu.br";
+    public static final String INDEX = "/qacademico/index.asp?t=";
+    private static final String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
+    private static final String VALIDA = "/qacademico/lib/validalogin.asp";
     public static final int PG_LOGIN = 1001;
     public static final int PG_HOME = 2000;
     public static final int PG_DIARIOS = 2071;
@@ -53,15 +68,22 @@ public class Client {
     public static final int PG_ACESSO_NEGADO = 3;
     private List<RequestHelper> queue;
     private static Client singleton;
-    private OnResponse onResponse;
-    private RequestQueue request;
+    private List<OnResponse> listeners;
+    private RequestQueue requests;
+    private OnMateriaisLoad onMateriaisLoad;
     private String COOKIE;
     private String KEY_A;
     private String KEY_B;
-    public int year = 0;
+    public static int year = 0;
+    private boolean isValid;
+    private boolean isLogging;
+
+    public enum Resp {
+        OK, HOST, DENIED, EGRESS
+    }
 
     private Client() {
-        request = Volley.newRequestQueue(App.getContext());
+        requests = Volley.newRequestQueue(getContext(), new HurlStack());
         queue = new ArrayList<>();
         Log.v(TAG, "New instace created");
     }
@@ -74,51 +96,64 @@ public class Client {
     }
 
     private void createRequest(int pg, String url, int year, int method, Map<String, String> form, boolean notify) {
-        addRequest(new StringRequest(method, URL + pg + url,
-                response -> {
-                    if (wasDenied(response)) {
-                        queue.add(new RequestHelper(pg, url, year, method, form, notify));
+        if (!isValid) {
+            if (!isLogging) {
+                login();
+            }
+            addToQueue(pg, url, year, method, form, notify);
+        } else {
+            Log.i(TAG, "Request for: " + pg);
+            addRequest(new StringRequest(method, URL + url,
+                    response -> {
+                        Resp r = testResponse(response);
 
-                        //TODO add msg
-                        onResponse.onAccessDenied(pg, "Seção Expirada");
-                        login();
-                    } else {
-                        if (pg == PG_DIARIOS) {
-                            new DiariosParser(year, notify, onResponse).execute(response);
+                        if (r == Resp.DENIED) {
+                            addToQueue(pg, url, year, method, form, notify);
+                            login();
 
-                        } else if (pg == PG_BOLETIM) {
-                            new BoletimParser(year, notify, onResponse).execute(response);
+                        } else if (r == Resp.OK) {
+                            if (pg == PG_DIARIOS) {
+                                new DiariosParser(year, notify, this::callOnFinish).execute(response);
 
-                        } else if (pg == PG_HORARIO) {
-                            new HorarioParser(year, notify, onResponse).execute(response);
+                            } else if (pg == PG_BOLETIM) {
+                                new BoletimParser(year, notify, this::callOnFinish).execute(response);
 
-                        } else if (pg == PG_CALENDARIO) {
-                            new CalendarioParser(notify, onResponse).execute(response);
+                            } else if (pg == PG_HORARIO) {
+                                new HorarioParser(year, notify, this::callOnFinish).execute(response);
+
+                            } else if (pg == PG_CALENDARIO) {
+                                new CalendarioParser(notify, this::callOnFinish).execute(response);
+
+                            } else if (pg == PG_MATERIAIS) {
+                                new MateriaisParser(notify, this::callOnMateriaisLoad).execute(response);
+
+                            }
                         }
-                    }
-                }, error ->  onError(pg, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
+                    }, error -> onError(pg, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String,String> params = new HashMap<>();
-                        params.put("Cookie", COOKIE);
-                        return params;
-                    }
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Cookie", COOKIE);
+                    return params;
+                }
 
-                    @Override
-                    protected Map<String, String> getParams() throws AuthFailureError {
-                        return !form.isEmpty() ? form : super.getParams();
-                    }
-        }, pg, year);
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    return !form.isEmpty() ? form : super.getParams();
+                }
+            }, pg, year);
+        }
     }
 
     public void load(int pg) {
-        createRequest(pg, "", 0, GET, new HashMap<>(), false);
+        load(pg, year);
+        //createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), false);
     }
 
     public void load(int pg, int year) {
         int method = GET;
-        String url = "";
+        String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
 
         if (year != 0) {
@@ -128,11 +163,11 @@ public class Client {
                     break;
 
                 case PG_BOLETIM: method = GET;
-                    url = "&cmbanos=" + User.getYears()[year];
+                    url = url.concat("&cmbanos=" + User.getYears()[year]);
                     break;
 
                 case PG_HORARIO: method = GET;
-                    url = "&cmbanos=" + User.getYears()[year];
+                    url = url.concat("&cmbanos=" + User.getYears()[year]);
                     break;
 
                 case PG_MATERIAIS: method = POST;
@@ -145,39 +180,42 @@ public class Client {
     }
 
     public void checkChanges(int pg) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-        createRequest(pg, "", 0, GET, new HashMap<>(), prefs.getBoolean("key_notifications", true));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean("key_notifications", true));
     }
 
     private <T> void addRequest(Request<T> request, int pg, int year) {
         if (isConnected()) {
-            onResponse.onStart(pg, year);
-            this.request.add(request);
-            Log.v(TAG, "Added to queue: " + request.toString());
+            callOnStart(pg, year);
+            if (requests == null) {
+                requests = Volley.newRequestQueue(getContext(), new HurlStack());
+            }
+            requests.add(request);
+            Log.v(TAG, "Loading: " + request);
         } else {
-            onError(pg, App.getContext().getResources().getString(R.string.text_no_connection));
+            onError(pg, getContext().getResources().getString(R.string.client_no_connection));
         }
     }
 
     public void login() {
+        isLogging = true;
         fetchParams(sucess -> {
-            addRequest(new StringRequest(POST, VALIDA,
+            addRequest(new StringRequest(POST, URL + VALIDA,
                     response -> {
-                        if (wasDenied(response)) {
+                        if (testResponse(response) == Resp.OK) {
+                            isValid = true;
 
-                            //TODO adiconar mensagem de acesso negado
-                            onResponse.onAccessDenied(PG_LOGIN, App.getContext().getResources().getString(R.string.text_invalid_login));
-                        } else {
                             Document page = Jsoup.parse(response);
                             String name = page.getElementsByClass("barraRodape").get(1).text();
+
                             User.setName(name);
                             User.setLastLogin(new Date().getTime());
 
-                            checkQueue();
+                            isLogging = false;
 
-                            onResponse.onFinish(PG_LOGIN, 0);
+                            callOnFinish(PG_LOGIN, 0);
                         }
-                    }, error -> onError(PG_LOGIN, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
+                    }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
                         @Override
                         public Map<String, String> getHeaders() {
@@ -200,6 +238,40 @@ public class Client {
         });
     }
 
+    private Resp testResponse(String response) {
+        Document document = Jsoup.parse(response);
+
+        Element strong = document.getElementsByTag("strong").first();
+
+        if (strong != null) {
+            String s = strong.text().trim();
+
+            if (s.contains("Negado")) {
+                String msg = document.getElementsByClass("conteudoTexto").first().text().trim();
+
+                if (msg.contains("inativo")) {
+                    callOnAccessDenied(PG_ACESSO_NEGADO, msg);
+                    return Resp.EGRESS;
+
+                } else {
+                    callOnAccessDenied(PG_LOGIN, getContext().getResources().getString(R.string.login_expired));
+                    return Resp.DENIED;
+                }
+            }
+        } else {
+            Element p = document.getElementsByTag("p").first();
+
+            if (p != null) {
+                if (p.text().contains("inacessível")) {
+                    callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
+                    return Resp.HOST;
+                }
+            }
+        }
+
+        return Resp.OK;
+    }
+
     private void checkQueue() {
         if (queue != null && !queue.isEmpty()) {
             for (int i = 0; i < queue.size(); i++) {
@@ -210,8 +282,19 @@ public class Client {
         }
     }
 
+    private void addToQueue(int pg, String url, int year, int method, Map<String, String> form, boolean notify) {
+        if (queue == null) {
+            queue = new ArrayList<>();
+        }
+        RequestHelper request = new RequestHelper(pg, url, year, method, form, notify);
+        if (!queue.contains(request)) {
+            queue.add(request);
+            Log.i(TAG, "Queued: " + pg);
+        }
+    }
+
     private void fetchParams( Response.Listener<String> listener) {
-        addRequest(new StringRequest(GET, GERADOR,
+        addRequest(new StringRequest(GET, URL + GERADOR,
                 response ->  {
                     String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));;
                     keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
@@ -225,7 +308,7 @@ public class Client {
 
                     listener.onResponse(response);
 
-                }, error -> onError(PG_GERADOR, error.getMessage() == null ? "Erro desconhecido" : error.getMessage())) {
+                }, error -> onError(PG_GERADOR, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -251,29 +334,35 @@ public class Client {
         }, PG_GERADOR,0);
     }
 
+    public void logOut() {
+        Log.i(TAG, "Logout");
+        queue.clear();
+        requests.cancelAll(request -> true);
+        KEY_A = "";
+        KEY_B = "";
+        COOKIE = "";
+        year = 0;
+    }
+
     private void onError(int pg, String msg) {
-        //TODO mensagens de erro
         if (!isConnected()) {
-            msg = App.getContext().getResources().getString(R.string.text_no_connection);
+            msg = getContext().getResources().getString(R.string.client_no_connection);
         } else {
             if (pg == PG_GERADOR) {
-                msg = "Servidor indisponível";
+                msg = getContext().getResources().getString(R.string.client_host);
+            } else if (pg == PG_LOGIN) {
+                isLogging = false;
+                isValid = false;
             }
         }
 
         Log.e(TAG, msg);
 
-        onResponse.onError(pg, msg);
-    }
-
-    private boolean wasDenied(String response) {
-        Document page = Jsoup.parse(response);
-        String msg = page.getElementsByTag("strong").first().text().trim();
-        return msg.contains("Negado");
+        callOnError(pg, msg);
     }
 
     public static boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager) App.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
             NetworkInfo info = cm.getActiveNetworkInfo();
             return (info != null && info.isConnected());
@@ -281,8 +370,92 @@ public class Client {
         return false;
     }
 
-    public void setOnResponseListener(OnResponse onResponse) {
-        this.onResponse = onResponse;
+    public void addOnResponseListener(OnResponse onResponse) {
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
+
+        if (onResponse != null && !listeners.contains(onResponse)) {
+            this.listeners.add(onResponse);
+            Log.i(TAG, "Added listener from " + onResponse);
+        }
+    }
+
+    public void removeOnResponseListener(OnResponse onResponse) {
+        if (listeners != null && onResponse != null) {
+            listeners.remove(onResponse);
+            Log.i(TAG, "Removed listener from " + onResponse);
+        }
+    }
+
+    private void callOnError(int pg, String error) {
+        Log.v(TAG, pg + ": " + error);
+        isLogging = false;
+        isValid = false;
+        if (listeners != null) {
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).onError(pg, error);
+            }
+        }
+    }
+
+    private void callOnStart(int pg, int year) {
+        Log.v(TAG, "Start: " + pg);
+        if (listeners != null) {
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).onStart(pg, year);
+            }
+        }
+    }
+
+    private void callOnFinish(int pg, int year) {
+        Log.v(TAG, "Finish: " + pg);
+        if (listeners != null) {
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).onFinish(pg, year);
+            }
+        }
+        checkQueue();
+    }
+
+    private void callOnAccessDenied(int pg, String message) {
+        Log.v(TAG, pg + ": " + message);
+        isValid = false;
+        isLogging = false;
+        if (listeners != null) {
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).onAccessDenied(pg, message);
+            }
+        }
+    }
+
+    public DownloadManager.Request download(Materiais material) {
+        Uri uri = Uri.parse(URL + material.getLink());
+
+        return new DownloadManager.Request(uri)
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                        DownloadManager.Request.NETWORK_MOBILE)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setAllowedOverRoaming(false)
+                .addRequestHeader("Cookie", COOKIE)
+                .setTitle(material.getNomeConteudo())
+                .setDescription(material.getData())
+                .setDestinationInExternalPublicDir("/Download/QMobile/2018",
+                        material.getNomeConteudo() + material.getExtension());
+    }
+
+    public void setOnMateriaisLoadListener(OnMateriaisLoad onMateriaisLoad) {
+        this.onMateriaisLoad = onMateriaisLoad;
+    }
+
+    private void callOnMateriaisLoad(List<MateriaisList> list) {
+        if (onMateriaisLoad != null) {
+            onMateriaisLoad.onMateriaisLoad(list);
+        }
+    }
+
+    public static int getYear() {
+        return User.getYear(year);
     }
 
 }

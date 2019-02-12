@@ -11,6 +11,7 @@ import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
@@ -27,17 +28,18 @@ import io.objectbox.Box;
 import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
+import static com.tinf.qmobile.Utilities.Utils.pickColor;
 
 public class DiariosParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DiariosParser";
+    private OnFinish onFinish;
     private int year;
     private boolean notify;
-    private OnResponse onResponse;
 
-    public DiariosParser(int year, boolean notify, OnResponse onResponse) {
+    public DiariosParser(int year, boolean notify, OnFinish onFinish) {
         this.year = year;
         this.notify = notify;
-        this.onResponse = onResponse;
+        this.onFinish = onFinish;
 
         Log.i(TAG, "New instance");
     }
@@ -86,7 +88,7 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
                         .build().findFirst();
 
                 if (materia == null) {
-                    materia = new Materia(nomeMateria, Utils.pickColor(nomeMateria, App.getBox()), User.getYear(year));
+                    materia = new Materia(nomeMateria, pickColor(nomeMateria), User.getYear(year));
                     for (int i = 0; i < Etapa.Tipo.values().length; i++) {
                         Etapa etapa = new Etapa(Etapa.Tipo.values()[i].getInt());
                         etapa.materia.setTarget(materia);
@@ -123,10 +125,6 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
 
                     List<Etapa> etapas = materia.etapas;
 
-                    for (int a = 0; a < etapas.size(); a++) {
-                        Log.v(etapas.get(a).getEtapaName(App.getContext()), String.valueOf(etapas.get(a).id));
-                    }
-
                     Etapa etapa = null;
 
                     for (int i = 0; i < etapas.size(); i++) {
@@ -136,9 +134,9 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
                         }
                     }
 
-                    /*if (etapa == null) {
+                    if (etapa == null) {
                         etapa = new Etapa(id_nome_etapa);
-                    }*/
+                    }
 
                     if (nxtElem != null) {
                         nome_etapa = nxtElem.child(0).child(0).text();
@@ -225,7 +223,11 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onResponse.onFinish(PG_DIARIOS, year);
+        onFinish.onFinish(PG_DIARIOS, year);
+    }
+
+    public interface OnFinish {
+        void onFinish(int pg, int year);
     }
 
     private String trimp(String string) {
@@ -243,4 +245,5 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
         string = string.substring(0, 4);
         return string;
     }
+
 }

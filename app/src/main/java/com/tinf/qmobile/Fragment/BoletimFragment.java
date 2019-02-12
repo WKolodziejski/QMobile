@@ -15,6 +15,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qmobile.Utilities.User;
@@ -71,7 +72,7 @@ public class BoletimFragment extends Fragment {
         view.post(() -> {
 
             Query<Materia> query = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                    .equal(Materia_.year, User.getYear(0)).build();
+                    .equal(Materia_.year, Client.getYear()).build();
 
             ArrayList<ArrayList<String>> mTableDatas = new ArrayList<>();
 

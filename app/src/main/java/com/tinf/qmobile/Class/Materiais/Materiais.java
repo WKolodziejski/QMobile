@@ -44,4 +44,8 @@ public class Materiais implements Serializable {
     public int getIcon() {
         return icon;
     }
+
+    public String getExtension() {
+        return link.substring(link.lastIndexOf("."));
+    }
 }

@@ -3,6 +3,7 @@
     <string name="app_version">Versão </string>
     <string name="app_tinf">Um Projeto TINF</string>
     <string name="app_more">Mais</string>
+
     <string name="title_about">Sobre</string>
     <string name="title_more">Mais</string>
     <string name="title_home">Início</string>
@@ -16,22 +17,28 @@
     <string name="title_graficos">Gráficos</string>
     <string name="title_settings">Configurações</string>
     <string name="title_login">Login</string>
+
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
     <string name="action_logout">Sair</string>
-    <string name="text_page_error">Houve um erro, verifique no site web</string>
-    <string name="text_connection_error">Não foi possível carregar a página</string>
-    <string name="text_empty_materiais">Não há materiais disponíveis</string>
-    <string name="text_empty">Não há nada aqui, volte mais tarde</string>
-    <string name="text_end_period">Fim do ano letivo</string>
+    <string name="action_date">Selecionar Data</string>
+
+    <string name="client_no_connection">Sem conexão com a Internet</string>
+    <string name="client_host">Servidor inalcançável</string>
+    <string name="client_error">Algo inesperado ocorreu, tente novamente mais tarde</string>
+
+    <string name="materiais_empty">Não há materiais disponíveis</string>
+
+    <string name="calendar_end_period">Fim do ano letivo</string>
+
     <string name="text_retry">Recarregar</string>
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
-    <string name="text_invalid_login">Login inválido</string>
-    <string name="text_loading_first_login">Carregando %1$s %2$s/%3$s</string>
+    <string name="text_empty">Vazio</string>
+
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
-    <string name="menu_bug">Reportar Bug</string>
+
     <string name="dialog_yes">Sim</string>
     <string name="dialog_no">Não</string>
     <string name="dialog_quit">Sair</string>
@@ -43,10 +50,15 @@
     <string name="dialog_close">Fechar</string>
     <string name="dialog_access_denied">Acesso Negado</string>
     <string name="dialog_check_login">Verifique suas credenciais</string>
+
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
-    <string name="login_logging">Efetuando login</string>
-    <string name="text_no_connection">Sem conexão com a Internet</string>
-    <string name="text_wait_loading">Espere o fim do carregamento das páginas</string>
+    <string name="login_checking">Obtendo informações</string>
+    <string name="login_invalid">Login inválido</string>
+    <string name="login_expired">Sessão expirada</string>
+    <string name="login_token">Obtendo tokens</string>
+    <string name="login_validating">Autenticando</string>
+    <string name="login_loading">Carregando dados de %1$s</string>
+
     <string name="boletim_TFaltas">TF</string>
     <string name="boletim_Nota">N</string>
     <string name="boletim_Materia">Materia</string>
@@ -58,6 +70,7 @@
     <string name="boletim_SegundaEtapa">2ª</string>
     <string name="boletim_Travado">Travado</string>
     <string name="boletim_Destravado">Destravado</string>
+
     <string name="diarios_PrimeiraEtapa">Primeira Etapa</string>
     <string name="diarios_SegundaEtapa">Segunda Etapa</string>
     <string name="diarios_RP1_PrimeiraEtapa">Primeira Reavaliação da Primeira Etapa</string>
@@ -69,15 +82,14 @@
     <string name="diarios_Nota">Nota: <b>%1$s</b>/%2$s</string>
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>
+    <string name="diarios_expanded">Abas expandidas</string>
+    <string name="diarios_collapsed">Abas recolhidas</string>
+    <string name="diarios_empty">Não há diários disponíveis</string>
+
     <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_footer">Confira suas notas no site</string>
     <string name="home_refresh">Atualizar</string>
-    <string name="action_date">Selecionar Data</string>
-    <string name="more_devs">Desenvolvido por:</string>
-    <string name="more_content">O conteúdo utilizado pertence ao Qualidata © QAcadêmico</string>
-    <string name="message_expanded">Abas expandidas</string>
-    <string name="message_collapsed">Abas recolhidas</string>
-    <string name="message_empty">Não há diários disponíveis</string>
+
     <string name="pref_services">Serviços</string>
     <string name="pref_check">Verificar</string>
     <string name="pref_check_sum">Verificar por novidades automaticamente</string>
@@ -101,7 +113,7 @@
     <string name="more_gustavo" translatable="false">Gustavo Hübner Rehbein</string>
     <string name="more_matheus" translatable="false">Matheus Martins Isquierdo</string>
     <string name="more_william" translatable="false">William Kolodziejski</string>
-
-
+    <string name="more_devs">Desenvolvido por:</string>
+    <string name="more_content">O conteúdo utilizado pertence ao Qualidata © QAcadêmico</string>
 
 </resources>

@@ -15,6 +15,7 @@ import com.tinf.qmobile.Adapter.ViewPagerAdapter;
 import com.tinf.qmobile.Fragment.BoletimFragment;
 import com.tinf.qmobile.Fragment.DiariosFragment;
 import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 
@@ -54,7 +55,7 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     private void showNotas(View view) {
 
-        ((MainActivity) getActivity()).setTitle(User.getYears()[0]);
+        ((MainActivity) getActivity()).setTitle(String.valueOf(Client.getYear()));
         viewPager = (ViewPager) view.findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(currentFragment);
@@ -121,14 +122,14 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
     @Override
     public void onStop() {
         super.onStop();
-        viewPager.addOnPageChangeListener(null);
+        viewPager.removeOnPageChangeListener(this);
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        viewPager.addOnPageChangeListener(this);
+        viewPager.removeOnPageChangeListener(this);
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
     }
 

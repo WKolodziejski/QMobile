@@ -52,7 +52,7 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
             Integer pos = (Integer) holder.title.getTag();
 
-            onDownloadListener.onDownload(materialList.get(pos).getLink());
+            onDownloadListener.onDownload(materialList.get(pos));
         });
     }
 
@@ -66,6 +66,6 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
     }
 
     public interface OnDownloadListener {
-        void onDownload(String link);
+        void onDownload(Materiais material);
     }
 }

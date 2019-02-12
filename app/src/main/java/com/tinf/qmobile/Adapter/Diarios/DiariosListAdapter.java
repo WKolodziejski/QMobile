@@ -149,7 +149,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                 }
                 materiaList.get(i).setExpanded(false);
             }
-            Toast.makeText(context, R.string.message_collapsed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.diarios_collapsed, Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < materiaList.size(); i++) {
                 if (!materiaList.get(i).etapas.get(getLast(i)).diarios.isEmpty()) {
@@ -161,7 +161,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                     materiaList.get(i).setExpanded(true);
                 }
             }
-            Toast.makeText(context, R.string.message_expanded, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();
         }
         notifyDataSetChanged();
     }
