@@ -51,7 +51,6 @@
     <string name="calendar_end_period">End of school year</string>
     <string name="dialog_close">Close</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
-    <string name="login_logging">Logging In</string>
     <string name="boletim_Materia">Subject</string>
     <string name="home_last_login">The last update was in %1s</string>
     <string name="home_footer">Check your grades on the website</string>
@@ -89,4 +88,9 @@
     <string name="diarios_empty">No journals available</string>
     <string name="login_expired">Session expired</string>
     <string name="client_host">Unreachable server</string>
+    <string name="text_empty">Empty</string>
+    <string name="login_token">Fetching tokens</string>
+    <string name="login_validating">Authenticating</string>
+    <string name="login_loading">Loading data for %1$s</string>
+    <string name="login_checking">Getting information</string>
 </resources>
