@@ -73,7 +73,6 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:hint="@string/text_user"
-                android:text="20151INF_i0136"
                 android:id="@+id/user_input_login"
                 android:inputType="text"/>
 
@@ -93,7 +92,6 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:hint="@string/text_password"
-                android:text="Cleberroberto"
                 android:id="@+id/password_input_login"
                 android:inputType="textPassword"/>
 
