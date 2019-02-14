@@ -444,6 +444,7 @@ public class Client {
         if (onMateriaisLoad != null) {
             onMateriaisLoad.onMateriaisLoad(list);
         }
+        callOnFinish(PG_MATERIAIS, year);
     }
 
     public static int getYear() {

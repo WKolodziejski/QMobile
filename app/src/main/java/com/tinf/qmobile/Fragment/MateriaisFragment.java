@@ -47,6 +47,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     private RecyclerView recyclerViewMateriais;
     private List<MateriaisList> materiaisList;
     private String name, mime;
+    private boolean isLoading;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,8 +125,9 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         super.onStart();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
         Client.get().setOnMateriaisLoadListener(this);
-        if (materiaisList == null) {
+        if (materiaisList == null && !isLoading) {
             Client.get().load(PG_MATERIAIS);
+            isLoading = true;
         }
     }
 
@@ -134,8 +136,9 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         super.onResume();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
         Client.get().setOnMateriaisLoadListener(this);
-        if (materiaisList == null) {
+        if (materiaisList == null && !isLoading) {
             Client.get().load(PG_MATERIAIS);
+            isLoading = true;
         }
     }
 
@@ -144,6 +147,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         super.onPause();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
         Client.get().setOnMateriaisLoadListener(null);
+        isLoading = false;
     }
 
     @Override
@@ -151,16 +155,19 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         super.onStop();
         ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
         Client.get().setOnMateriaisLoadListener(null);
+        isLoading = false;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(onComplete);
+        isLoading = false;
     }
 
     @Override
     public void onUpdate(int pg) {
+        isLoading = true;
         Client.get().load(PG_MATERIAIS);
     }
 
@@ -173,6 +180,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
 
     @Override
     public void onMateriaisLoad(List<MateriaisList> list) {
+        isLoading = false;
         if (!list.isEmpty()) {
             materiaisList = list;
             showMateriais(getView());

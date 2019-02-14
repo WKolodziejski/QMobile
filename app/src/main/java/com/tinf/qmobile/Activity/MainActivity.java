@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         Fragment fragment = null;
 
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
-            dismissProgressbar();
+            //dismissProgressbar();
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:
@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     private void reload() {
         if (Client.isConnected()) {
             switch (bottomNav.getSelectedItemId()) {
-                case R.id.navigation_home: Client.get().load(PG_LOGIN);
+                case R.id.navigation_home: Client.get().login();
                     break;
                 case R.id.navigation_notas: Client.get().load(PG_DIARIOS);
                                             Client.get().load(PG_BOLETIM);
@@ -343,9 +343,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     public void onStart(int pg, int year) {
         if (!refreshLayout.isRefreshing()) {
             showProgressbar();
-        } else {
+        } /*else {
             dismissProgressbar();
-        }
+        }*/
     }
 
     @Override
