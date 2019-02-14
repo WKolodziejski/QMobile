@@ -16,6 +16,10 @@ import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
+    public static final String CHECK = "key_check";
+    public static final String MOBILE = "key_mobile_data";
+    public static final String ALERT = "key_alert_mode";
+    public static final String NOTIFY = "key_notifications";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +46,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             addPreferencesFromResource(R.xml.pref_main);
 
-            bindPreferenceSummaryToValue(findPreference("key_check"));
+            bindPreferenceSummaryToValue(findPreference(CHECK));
 
-            bindPreferenceSummaryToValue(findPreference("key_mobile_data"));
+            bindPreferenceSummaryToValue(findPreference(MOBILE));
 
-            bindPreferenceSummaryToValue(findPreference("key_alert_mode"));
+            bindPreferenceSummaryToValue(findPreference(ALERT));
 
-            bindPreferenceSummaryToValue(findPreference("key_notifications"));
+            bindPreferenceSummaryToValue(findPreference(NOTIFY));
 
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {

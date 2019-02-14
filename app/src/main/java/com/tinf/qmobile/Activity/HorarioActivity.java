@@ -9,17 +9,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tinf.qmobile.Fragment.HorarioFragment;
-import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 
 import java.util.Objects;
 
+import static com.tinf.qmobile.Network.Client.PG_HORARIO;
+
 
 public class HorarioActivity extends AppCompatActivity implements OnResponse {
-    //@BindView(R.id.progressbar_horizontal) SmoothProgressBar progressBar
     private OnUpdate onUpdate;
 
     @Override
@@ -52,7 +52,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            //webView.loadUrl(URL + PG_HORARIO);
+            Client.get().load(PG_HORARIO);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -65,24 +65,26 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
     @Override
     public void onStart() {
         super.onStart();
-        //webView.setOnPageLoadListener(this);
+        Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //webView.setOnPageLoadListener(this);
+        Client.get().addOnResponseListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        Client.get().removeOnResponseListener(this);
         onUpdate = null;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        Client.get().removeOnResponseListener(this);
         onUpdate = null;
     }
 
@@ -93,21 +95,13 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onFinish(int pg, int year) {
-        runOnUiThread(() -> {
-            //progressBar.setVisibility(View.GONE);
-            //progressBar.progressiveStop();
-            if (onUpdate != null) {
-                onUpdate.onUpdate(pg);
-            }
-        });
+        if (onUpdate != null) {
+            onUpdate.onUpdate(pg);
+        }
     }
 
     @Override
     public void onError(int pg, String error) {
-        runOnUiThread(() -> {
-            //progressBar.setVisibility(View.VISIBLE);
-            //progressBar.progressiveStart();
-        });
     }
 
     @Override

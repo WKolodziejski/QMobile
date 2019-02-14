@@ -1,11 +1,8 @@
 package com.tinf.qmobile.Class.Materias;
 
 import android.content.Context;
-
 import com.tinf.qmobile.R;
-
 import java.io.Serializable;
-
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -34,7 +31,7 @@ public class Etapa implements Serializable {
     private String notaRP;
     private String notaFinal;
     private String faltas;
-    public ToOne<Materia> materia;
+    @Backlink(to = "materia") public ToOne<Materia> materia;
     @Backlink public ToMany<Diarios> diarios;
     @Backlink public ToMany<Aula> aulas;
 

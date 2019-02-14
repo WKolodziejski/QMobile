@@ -9,14 +9,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.tinf.qmobile.Class.Materiais.MateriaisList;
 import com.tinf.qmobile.Fragment.CalendarioFragment;
-import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
 import com.tinf.qmobile.R;
 
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;

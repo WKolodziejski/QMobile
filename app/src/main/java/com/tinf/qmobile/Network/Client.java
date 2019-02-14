@@ -6,25 +6,19 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materiais.Materiais;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
-import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
-import com.tinf.qmobile.Interfaces.OnResponse;
 import com.tinf.qmobile.Parsers.BoletimParser;
 import com.tinf.qmobile.Parsers.CalendarioParser;
 import com.tinf.qmobile.Parsers.DiariosParser;
@@ -37,17 +31,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
+import static com.tinf.qmobile.Activity.Settings.SettingsActivity.NOTIFY;
 import static com.tinf.qmobile.App.getContext;
 
 public class Client {
@@ -181,7 +173,7 @@ public class Client {
 
     public void checkChanges(int pg) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean("key_notifications", true));
+        createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean(NOTIFY, true));
     }
 
     private <T> void addRequest(Request<T> request, int pg, int year) {
@@ -456,6 +448,10 @@ public class Client {
 
     public static int getYear() {
         return User.getYear(year);
+    }
+
+    public boolean isValid() {
+        return isValid;
     }
 
 }

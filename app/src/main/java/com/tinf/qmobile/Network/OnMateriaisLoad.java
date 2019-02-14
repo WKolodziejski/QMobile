@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Interfaces;
+package com.tinf.qmobile.Network;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
 
 import java.util.List;

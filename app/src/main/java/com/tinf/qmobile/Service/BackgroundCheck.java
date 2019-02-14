@@ -2,7 +2,7 @@ package com.tinf.qmobile.Service;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;

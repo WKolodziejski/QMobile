@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +29,7 @@ import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
 import com.tinf.qmobile.Fragment.NotasFragment;
 import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
@@ -66,9 +67,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         hideExpandBtn();
         dismissProgressbar();
         if (User.isValid()) {
-            Client.get().login();
-            Client.get().load(PG_DIARIOS);
-            Client.get().load(PG_BOLETIM);
+            if (!Client.get().isValid()) {
+                Client.get().login();
+                Client.get().load(PG_DIARIOS);
+                Client.get().load(PG_BOLETIM);
+            }
             ((App) getApplication()).setLogged(true);
             Jobs.scheduleJob(false);
             setTitle(User.getName());
@@ -114,6 +117,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
+            case android.R.id.home:
+
+                onBackPressed();
+                return true;
 
             case R.id.action_settings:
 
@@ -320,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
     @Override
     public void onBackPressed() {
-        if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             super.onBackPressed();

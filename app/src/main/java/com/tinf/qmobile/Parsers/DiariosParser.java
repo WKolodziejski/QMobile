@@ -10,22 +10,18 @@ import com.tinf.qmobile.Class.Materias.Diarios_;
 import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Interfaces.OnResponse;
-import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
-import com.tinf.qmobile.Utilities.Utils;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Objects;
 import io.objectbox.Box;
-import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
 import static com.tinf.qmobile.Utilities.Utils.pickColor;
@@ -144,12 +140,6 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
                         nome_etapa = "";
                     }
 
-                /*for (int i = 0; i < etapa.diarios.size(); i++) {
-                    diariosBox.remove(etapa.diarios.get(i).id);
-                }
-
-                etapa.diarios.clear();*/
-
                     for (int i = 0; i < notasLinhas.size(); i++) {
                         String data = notasLinhas.eq(i).first().child(1).text().substring(0, 10);
                         String titulo = notasLinhas.eq(i).first().child(1).text();
@@ -176,7 +166,7 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
                         String nota = trimp(notasLinhas.eq(i).first().child(4).text());
 
                         if (nota.equals("")) {
-                            nota = " -";
+                            nota = "-";
                         }
 
                         Diarios new_diario = new Diarios(nome, peso, max, nota, tipo, data, tint);
@@ -190,31 +180,23 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
                             etapa.diarios.add(new_diario);
                             diariosBox.put(new_diario);
 
-                            Intent intent = new Intent();
-                            intent.putExtra("NAME", materia.getName());
-                            intent.putExtra("YEAR", materia.getYear());
-
                             if (notify) {
+                                Intent intent = new Intent();
+                                intent.putExtra("NAME", materia.getName());
+                                intent.putExtra("YEAR", materia.getYear());
+
                                 Jobs.displayNotification(materia.getName(), new_diario.getNome(),
                                         App.getContext().getResources().getString(R.string.title_diarios), (int) new_diario.id, intent.getExtras());
                             }
                         }
-                        //Log.v("Box for Diarios", "size of " + diariosBox.count());
                     }
 
                     etapa.materia.setTarget(materia);
                     materia.etapas.add(etapa);
                     etapaBox.put(etapa);
-                    //Log.v("Box for Etapa", "size of " + etapaBox.count());
                 }
                 materiaBox.put(materia);
-                //Log.v("Box for Materia", "size of " + materiaBox.count());
             }
-
-        /*if (webView.pg_diarios_loaded.length == 1) {
-            webView.pg_diarios_loaded = new boolean[options.size() - 1];
-            webView.pg_diarios_loaded[0] = true;
-        }*/
         });
 
         return null;

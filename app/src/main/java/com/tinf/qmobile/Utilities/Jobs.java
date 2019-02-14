@@ -27,15 +27,19 @@ import com.tinf.qmobile.Service.BackgroundCheck;
 import androidx.core.app.NotificationCompat;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.tinf.qmobile.Activity.Settings.SettingsActivity.ALERT;
+import static com.tinf.qmobile.Activity.Settings.SettingsActivity.CHECK;
+import static com.tinf.qmobile.Activity.Settings.SettingsActivity.MOBILE;
 import static java.util.concurrent.TimeUnit.HOURS;
 
 public class Jobs {
+    private final static String TAG = "JobScheduler";
 
     public static void scheduleJob(boolean retryError) {
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(App.getContext()));
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
-        if (prefs.getBoolean("key_check", true)) {
+        if (prefs.getBoolean(CHECK, true)) {
             Job.Builder diarios = dispatcher.newJobBuilder()
                     .setService(BackgroundCheck.class)
                     .setTag("Diarios")
@@ -45,30 +49,30 @@ public class Jobs {
                     .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                     .setConstraints(Constraint.ON_UNMETERED_NETWORK);
 
-            if (prefs.getBoolean("key_mobile_data", false)) {
+            if (prefs.getBoolean(MOBILE, false)) {
                 diarios.addConstraint(Constraint.ON_ANY_NETWORK);
-                Log.i("JobScheduler", "Mobile data on");
+                Log.i(TAG, "Mobile data on");
             }
 
             if (retryError) {
                 diarios.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(1), (int) HOURS.toSeconds(2)));
-                Log.i("JobScheduler", "Retry");
+                Log.i(TAG, "Retry");
             } else {
-                if (prefs.getBoolean("key_alert_mode", false)) {
+                if (prefs.getBoolean(ALERT, false)) {
                     diarios.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(3), (int) HOURS.toSeconds(5)));
-                    Log.i("JobScheduler", "Alert mode");
+                    Log.i(TAG, "Alert mode");
                 } else {
                     diarios.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(20), (int) HOURS.toSeconds(24)));
-                    Log.i("JobScheduler", "Normal mode");
+                    Log.i(TAG, "Normal mode");
                 }
             }
             dispatcher.cancelAll();
             dispatcher.schedule(diarios.build());
-            Log.i("JobScheduler", "Job scheduled");
+            Log.i(TAG, "Job scheduled");
 
         } else {
             dispatcher.cancelAll();
-            Log.i("JobScheduler", "All jobs cancelled");
+            Log.i(TAG, "All jobs cancelled");
         }
     }
 

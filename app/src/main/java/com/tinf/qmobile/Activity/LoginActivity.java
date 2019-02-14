@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.LoginFragment;
-import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;

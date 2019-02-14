@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Interfaces;
+package com.tinf.qmobile.Network;
 
 public interface OnResponse {
 

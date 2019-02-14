@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.io.Serializable;
 
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -13,11 +14,13 @@ public class Horario implements Serializable {
     @Id public long id;
     private int day;
     private String time;
+    private boolean isFromSite;
     public ToOne<Materia> materia;
 
-    public Horario(int day, String time) {
+    public Horario(int day, String time, boolean isFromSite) {
         this.day = day;
         this.time = time;
+        this.isFromSite = isFromSite;
     }
 
     public Horario() {}
@@ -48,6 +51,10 @@ public class Horario implements Serializable {
 
     public String getTime() {
         return time;
+    }
+
+    public boolean isFromSite() {
+        return isFromSite;
     }
 
     private int trimh(String string) {

@@ -64,6 +64,7 @@ public class BoletimFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "View created");
+
         showBoletim(view);
     }
 

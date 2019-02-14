@@ -1,14 +1,11 @@
 package com.tinf.qmobile.Parsers;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import com.tinf.qmobile.Class.Materiais.Materiais;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
-import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
-import com.tinf.qmobile.Interfaces.OnResponse;
+import com.tinf.qmobile.Network.OnMateriaisLoad;
 import com.tinf.qmobile.R;
 
 import org.jsoup.Jsoup;
@@ -18,8 +15,6 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.Utilities.Utils.getRandomColorGenerator;
 
@@ -53,7 +48,6 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
             str = str.substring(str.indexOf('-') + 2);
             String nomeMateria = str;
 
-            //parte dos conteudos
             String classe = rotulos.get(i).nextElementSibling().className();
             Element element = rotulos.get(i).nextElementSibling();
 
@@ -67,7 +61,6 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
                 String descricao = "";
                 String extension = link.substring(link.indexOf("."));
 
-                //pode ou nao ter descricao
                 if (element.child(1).children().size() > 2) {
                     descricao = element.child(1).child(3).nextSibling().toString().trim();
                 }
@@ -110,20 +103,16 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
 
                 material.add(new Materiais(data, nomeConteudo, link, descricao, color, img));
 
-                Log.i("Materia", "\n\nNome: " + nomeConteudo + "\nData: " + data + "\nLink: " + link + "\nDesc: " + descricao);
                 if (element.nextElementSibling() != null) {
                     element = element.nextElementSibling();
                     classe = element.className();
                 } else {
-                    classe = "quit";
+                    classe = "";
                 }
             }
             materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator()));
         }
 
-        Elements options = document.getElementsByTag("option");
-
-        Log.i("JavaScriptWebView", "Materiais handled!");
         return materiais;
     }
 

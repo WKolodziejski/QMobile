@@ -29,10 +29,10 @@ import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Materiais.MateriaisListAdapter;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
 import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Interfaces.OnMateriaisLoad;
+import com.tinf.qmobile.Network.OnMateriaisLoad;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.User;
+
 import java.io.File;
 import java.util.List;
 import java.util.Objects;

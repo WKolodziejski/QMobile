@@ -7,8 +7,8 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Horario;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Interfaces.OnResponse;
-import com.tinf.qmobile.Network.Client;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
 
 import org.jsoup.Jsoup;
@@ -16,14 +16,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
 import io.objectbox.Box;
-import io.objectbox.BoxStore;
 
-import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
 import static com.tinf.qmobile.Network.Client.PG_HORARIO;
 
 public class HorarioParser extends AsyncTask<String, Void, Void> {
@@ -44,38 +43,19 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... page) {
         App.getBox().runInTx(() -> {
 
-            Log.i(TAG, "Parsing");
+            Log.i(TAG, "Parsing " + User.getYear(year));
 
             Box<Materia> materiaBox = App.getBox().boxFor(Materia.class);
             Box<Horario> horarioBox = App.getBox().boxFor(Horario.class);
 
-            String[][] trtd_horario = null;
-            String[] code = null;
             Document document = Jsoup.parse(page[0]);
 
-            //Element table_horario = document.select("table").get(11).getElementsByTag("tbody").get(0);
             Element table_horario = document.select("table").eq(11).first();
 
             Element table_codes = document.select("table").get(12);
             Elements codes = table_codes.children();
 
-            //Document ano = Jsoup.parse(document.select("#cmbanos").first().toString());
-            //Elements options = ano.select("option");
-
-                  /*webView.infos.data_horario = new String[options_ano.size()];
-
-                            for (int i = 0; i < options_ano.size(); i++) {
-                                webView.infos.data_horario[i] = options_ano.get(i).text();
-                            }
-
-                            Document periodo = Jsoup.parse(document.select("#cmbperiodos").first().toString());
-                            Elements options_periodo = periodo.select("option");
-
-                            webView.infos.periodo_horario = new String[options_periodo.size()];
-
-                            for (int i = 0; i < options_periodo.size(); i++) {
-                                webView.infos.periodo_horario[i] = options_periodo.get(i).text();
-                            }*/
+            String[] code = null;
 
             for (Element table : codes) {
                 Elements trs = table.select("tr");
@@ -86,6 +66,8 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
             }
 
             Elements tables = table_horario.children();
+
+            String[][] trtd_horario = null;
 
             for (Element table : tables) {
                 Elements trs = table.select("tr");
@@ -127,18 +109,25 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                 }
             }
 
+            List<Horario> olds = new ArrayList<>();
+            List<Horario> news = new ArrayList<>();
+
             List<Materia> materialist = materiaBox.query().equal(Materia_.year,
                     User.getYear(year)).build().find();
 
-            for (int i = 0; i < materialist.size(); i++) {
-                for (int j = 0; j < materialist.get(i).horarios.size(); j++) {
-                    horarioBox.remove(materialist.get(i).horarios.get(j).getId());
+                for (int i = 0; i < materialist.size(); i++) {
+                    for (int j = 0; j < materialist.get(i).horarios.size(); j++) {
+                        Horario h = materialist.get(i).horarios.get(j);
+                        if (h.isFromSite()) {
+                            olds.add(h);
+                            horarioBox.remove(h.id);
+                        }
+                    }
+                    materialist.get(i).horarios.clear();
                 }
-                materialist.get(i).horarios.clear();
-            }
 
             for (int i = 1; i <= 5; i++) {
-                for (int j = 1; j < Objects.requireNonNull(trtd_horario).length; j++) {
+                for (int j = 1; j < trtd_horario.length; j++) {
                     if (!trtd_horario[j][i].equals("")) {
 
                         Materia materia = materiaBox.query()
@@ -147,22 +136,43 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                                 .equal(Materia_.year, User.getYear(year))
                                 .build().findFirst();
 
-                        Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0]);
+                        Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], true);
+                        news.add(horario);
 
                         if (materia != null) {
                             horario.materia.setTarget(materia);
                             materia.horarios.add(horario);
-                            //materiaBox.put(materia);
                             horarioBox.put(horario);
-                            //Log.v("Box for horario", "size of " + horarioBox.count());
-                            //Log.v("Box for materia", "size of " + materiaBox.count());
                         }
                     }
                 }
             }
 
-        });
+            boolean hasChanged = false;
+            int s = 0;
 
+            if (olds.size() == news.size()) {
+                for (int i = 0; i < olds.size(); i++) {
+                    for (int j = 0; j < news.size(); j++) {
+                        if (olds.get(i).getDay() == news.get(j).getDay()
+                                && olds.get(i).getTime().equals(news.get(j).getTime())) {
+                            s++;
+                        }
+                    }
+                }
+                if (s != olds.size()) {
+                    hasChanged = true;
+                }
+            } else {
+                hasChanged = true;
+            }
+
+            if (hasChanged && notify) {
+                //TODO notificção
+                /*Jobs.displayNotification(materia.getName(), new_diario.getNome(),
+                        App.getContext().getResources().getString(R.string.title_diarios), (int) new_diario.id, intent.getExtras());*/
+            }
+        });
         return null;
     }
 
