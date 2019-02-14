@@ -134,7 +134,6 @@
                     android:layout_marginHorizontal="8dp"
                     android:background="@color/black_dividers" />
 
-
                 <com.alamkanak.weekview.WeekView
                     android:id="@+id/weekView_home"
                     android:layout_width="match_parent"

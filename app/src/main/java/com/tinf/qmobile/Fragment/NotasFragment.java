@@ -10,6 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.ViewPagerAdapter;
 import com.tinf.qmobile.Fragment.BoletimFragment;
@@ -60,16 +63,19 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(currentFragment);
 
-        ((MainActivity)Objects.requireNonNull(getActivity())).setupTabLayoutWithViewPager(viewPager);
+        TabLayout tab = (TabLayout) getActivity().findViewById(R.id.tabs);
+        tab.setVisibility(View.VISIBLE);
+        tab.setupWithViewPager(viewPager);
     }
 
     @Override
     public void onPageSelected(int i) {
         currentFragment = i;
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_expand);
         if (i == 0) {
-            ((MainActivity) Objects.requireNonNull(getActivity())).showExpandBtn();
+            fab.show();
         } else {
-            ((MainActivity) Objects.requireNonNull(getActivity())).hideExpandBtn();
+            fab.hide();
         }
     }
 
@@ -135,5 +141,12 @@ public class NotasFragment extends Fragment implements ViewPager.OnPageChangeLis
 
     public interface OnTopScrollRequested {
         void onTopScrollRequested();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        TabLayout tab = (TabLayout) getActivity().findViewById(R.id.tabs);
+        tab.setVisibility(View.GONE);
     }
 }

@@ -9,13 +9,14 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,9 @@ import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.HomeFragment;
@@ -41,17 +45,13 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.Network.Client.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
 import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
-import static com.tinf.qmobile.Network.Client.PG_LOGIN;
 import static com.tinf.qmobile.Network.Client.PG_MATERIAIS;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
-    @BindView(R.id.fab_expand)        public FloatingActionButton fab_expand;
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
-    @BindView(R.id.tabs)                     TabLayout tabLayout;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.app_bar_layout)    public AppBarLayout appBarLayout;
     private OnUpdate onUpdate;
 
     @Override
@@ -60,11 +60,29 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(findViewById(R.id.toolbar));
+
+        /*FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        Log.d(TAG, token);
+                        //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });*/
+
         testLogin();
     }
 
     private void testLogin() {
-        hideExpandBtn();
         dismissProgressbar();
         if (User.isValid()) {
             if (!Client.get().isValid()) {
@@ -76,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
             Jobs.scheduleJob(false);
             setTitle(User.getName());
             changeFragment(new HomeFragment());
-            hideTabLayout();
-            hideExpandBtn();
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
@@ -120,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
             case android.R.id.home:
 
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 onBackPressed();
                 return true;
 
@@ -165,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                             Client.year = year.getValue();
-                            onUpdate.onUpdate(UPDATE_REQUEST);
+                            if (onUpdate != null) {
+                                onUpdate.onUpdate(UPDATE_REQUEST);
+                            }
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
@@ -182,9 +201,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         Fragment fragment = null;
 
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
-            //dismissProgressbar();
 
             switch (item.getItemId()) {
+
                 case R.id.navigation_home:
                     fragment = new HomeFragment();
                     break;
@@ -196,8 +215,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                 case R.id.navigation_materiais:
                     setTitle(String.valueOf(Client.getYear()));
                     fragment = new MateriaisFragment();
-                    hideExpandBtn();
-                    hideTabLayout();
                     break;
             }
         } else {
@@ -220,29 +237,12 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         snackBar.show();
     }
 
-    public void showExpandBtn() {
-        fab_expand.show();
-    }
-
-    public void hideExpandBtn() {
-        fab_expand.hide();
-    }
-
     protected void showProgressbar() {
         refreshLayout.setRefreshing(true);
     }
 
     public void dismissProgressbar() {
         refreshLayout.setRefreshing(false);
-    }
-
-    public void hideTabLayout() {
-        tabLayout.setVisibility(View.GONE);
-    }
-
-    public void setupTabLayoutWithViewPager(ViewPager viewPager) {
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setVisibility(View.VISIBLE);
     }
 
     private void logOut() {
@@ -256,6 +256,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
     private boolean changeFragment(Fragment fragment) {
         if (fragment != null) {
+            getSupportFragmentManager().popBackStackImmediate();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment, fragment)
                     .commit();
@@ -328,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
     @Override
     public void onBackPressed() {
-        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
+        if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             super.onBackPressed();

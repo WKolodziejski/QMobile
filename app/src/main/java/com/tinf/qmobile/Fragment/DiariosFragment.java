@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -20,6 +21,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Activity.MateriaActivity;
 import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
@@ -64,19 +66,18 @@ public class DiariosFragment extends Fragment {
             intent.putExtra("NAME", materiaList.get(pos).getName());
             intent.putExtra("YEAR", materiaList.get(pos).getYear());
 
-            startActivity(intent);
+            /*startActivity(intent);*/
 
-                /*Fragment fragment = new MateriaFragment();
-                fragment.setArguments(intent.getExtras());
+            Fragment fragment = new MateriaFragment();
+            fragment.setArguments(intent.getExtras());
 
-                ((FragmentActivity) view1.getContext()).getSupportFragmentManager()
-                        .beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.main_fragment, fragment)
-                        .commit();
+            ((FragmentActivity) view1.getContext()).getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.main_fragment, fragment)
+                    .commit();
 
-                ((MainActivity) getActivity()).hideTabLayout();
-                ((MainActivity) getActivity()).hideExpandBtn();*/
+            ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         };
 
         expand = view2 -> {
@@ -112,7 +113,7 @@ public class DiariosFragment extends Fragment {
         observer = data -> {
             materiaList = data;
             if (adapter == null) {
-                adapter = new DiariosListAdapter(getActivity(), materiaList, open, expand);
+                adapter = new DiariosListAdapter(getContext(), materiaList, open, expand);
                 adapter.setHasStableIds(true);
             } else {
                 adapter.update(materiaList);
@@ -188,12 +189,20 @@ public class DiariosFragment extends Fragment {
                 recyclerView.smoothScrollToPosition(0);
             });
 
-            ((MainActivity) Objects.requireNonNull(getActivity())).fab_expand.setOnClickListener(v -> {
+            FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_expand);
+
+            fab.setOnClickListener(v -> {
                 adapter.toggleAll();
             });
 
-            ((MainActivity) getActivity()).showExpandBtn();
+            fab.show();
         });
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_expand);
+        fab.hide();
+    }
 }

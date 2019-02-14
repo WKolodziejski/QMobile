@@ -1,5 +1,6 @@
 package com.tinf.qmobile.Fragment;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +54,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
     private CalendarioAdapter calendarioAdapter;
     private List<Materia> materias;
-    private int firstHour = 24;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,9 +90,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity) getActivity()).hideExpandBtn();
         ((MainActivity) getActivity()).setTitle(User.getName());
-        ((MainActivity) getActivity()).hideTabLayout();
 
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
@@ -132,9 +132,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
     }
 
     private void showCalendar(View view) {
-        view.post(() -> {
 
             RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
+
+            recyclerViewCalendario.post(() -> {
 
             RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
                     false);
@@ -149,17 +150,19 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerViewCalendario,
                                 Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
                 startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
-                ((MainActivity)getActivity()).dismissProgressbar();
             });
         });
     }
 
     private void showHorario(View view) {
 
-            WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
-            weekView.setEnabled(false);
+        WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
+
+        weekView.post(() -> {
 
             weekView.setMonthChangeListener((startDate, endDate) -> {
+
+                int firstHour = 24;
 
                 List<WeekViewDisplayable> weekHorario = new ArrayList<>();
 
@@ -203,9 +206,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
                                 weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
                 startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
-                ((MainActivity)getActivity()).dismissProgressbar();
             });
-
+        });
     }
 
     @Override
