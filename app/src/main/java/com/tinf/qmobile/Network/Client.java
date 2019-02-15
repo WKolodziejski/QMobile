@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -30,7 +29,6 @@ import com.tinf.qmobile.Utilities.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,23 +39,21 @@ import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.Activity.Settings.SettingsActivity.NOTIFY;
 import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.Network.OnResponse.INDEX;
+import static com.tinf.qmobile.Network.OnResponse.PG_ACESSO_NEGADO;
+import static com.tinf.qmobile.Network.OnResponse.PG_BOLETIM;
+import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
+import static com.tinf.qmobile.Network.OnResponse.PG_DIARIOS;
+import static com.tinf.qmobile.Network.OnResponse.PG_GERADOR;
+import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
+import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
+import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
+import static com.tinf.qmobile.Network.OnResponse.URL;
 
 public class Client {
-    private static final String TAG = "NetworkSingleton";
-    public static final String URL = "http://qacademico.ifsul.edu.br";
-    public static final String INDEX = "/qacademico/index.asp?t=";
-    private static final String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
-    private static final String VALIDA = "/qacademico/lib/validalogin.asp";
-    public static final int PG_LOGIN = 1001;
-    public static final int PG_HOME = 2000;
-    public static final int PG_DIARIOS = 2071;
-    public static final int PG_BOLETIM = 2032;
-    public static final int PG_HORARIO = 2010;
-    public static final int PG_MATERIAIS = 2061;
-    public static final int PG_CALENDARIO = 2020;
-    public static final int PG_ERRO = 1;
-    public static final int PG_GERADOR = 2;
-    public static final int PG_ACESSO_NEGADO = 3;
+    private final static String TAG = "NetworkSingleton";
+    private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
+    private final static String VALIDA = "/qacademico/lib/validalogin.asp";
     private List<RequestHelper> queue;
     private static Client singleton;
     private List<OnResponse> listeners;
@@ -242,6 +238,7 @@ public class Client {
                 String msg = document.getElementsByClass("conteudoTexto").first().text().trim();
 
                 if (msg.contains("inativo")) {
+                    User.clearInfos();
                     callOnAccessDenied(PG_ACESSO_NEGADO, msg);
                     return Resp.EGRESS;
 
@@ -281,7 +278,7 @@ public class Client {
         RequestHelper request = new RequestHelper(pg, url, year, method, form, notify);
         if (!queue.contains(request)) {
             queue.add(request);
-            Log.i(TAG, "Queued: " + pg);
+            Log.i(TAG, "Queued: " + pg + " for " + User.getYear(year));
         }
     }
 
@@ -382,6 +379,7 @@ public class Client {
 
     private void callOnError(int pg, String error) {
         Log.v(TAG, pg + ": " + error);
+        requests.cancelAll(request -> true);
         isLogging = false;
         isValid = false;
         if (listeners != null) {

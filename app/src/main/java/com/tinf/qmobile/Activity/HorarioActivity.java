@@ -4,20 +4,14 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
-
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.tinf.qmobile.Fragment.HorarioFragment;
 import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-
 import java.util.Objects;
-
-import static com.tinf.qmobile.Network.Client.PG_HORARIO;
-
 
 public class HorarioActivity extends AppCompatActivity implements OnResponse {
     private OnUpdate onUpdate;

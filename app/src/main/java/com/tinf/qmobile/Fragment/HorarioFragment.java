@@ -17,12 +17,12 @@ import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.User;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import static com.tinf.qmobile.Network.Client.PG_HORARIO;
+
+import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class HorarioFragment extends Fragment implements OnUpdate {
@@ -112,5 +112,5 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void requestScroll() {}
+    public void onScrollRequest() {}
 }

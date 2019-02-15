@@ -70,7 +70,7 @@ public class Etapa implements Serializable {
     }
 
     public String getNota() {
-        return nota;
+        return nota == null ? "" : nota;
     }
 
     public void setNota(String nota) {
@@ -78,7 +78,7 @@ public class Etapa implements Serializable {
     }
 
     public String getNotaRP() {
-        return notaRP;
+        return notaRP == null ? "" : notaRP;
     }
 
     public void setNotaRP(String notaRP) {
@@ -86,7 +86,7 @@ public class Etapa implements Serializable {
     }
 
     public String getNotaFinal() {
-        return notaFinal;
+        return notaFinal == null ? "" : notaFinal;
     }
 
     public void setNotaFinal(String notaFinal) {
@@ -94,7 +94,7 @@ public class Etapa implements Serializable {
     }
 
     public String getFaltas() {
-        return faltas;
+        return faltas == null ? "" : faltas;
     }
 
     public void setFaltas(String faltas) {

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +14,22 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.rmondjone.locktableview.LockTableView;
-import com.tinf.qmobile.Utilities.User;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
-import io.objectbox.query.Query;
-import io.objectbox.reactive.DataSubscriptionList;
 
-public class BoletimFragment extends Fragment {
+import static com.tinf.qmobile.Network.OnResponse.PG_BOLETIM;
+
+public class BoletimFragment extends Fragment implements OnUpdate {
     private static String TAG = "BoletimFragment";
     private ArrayList<String> mfristData;
+    private LockTableView mLockTableView;
+    private ArrayList<ArrayList<String>> mTableDatas;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +53,37 @@ public class BoletimFragment extends Fragment {
         };
 
         mfristData.addAll(Arrays.asList(header));
+
+        loadData();
+    }
+
+    private void loadData() {
+        List<Materia> materiaList = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
+                .equal(Materia_.year, Client.getYear()).build().find();
+
+        mTableDatas = new ArrayList<>();
+
+        mTableDatas.add(mfristData);
+
+        for (int i = 0; i < materiaList.size(); i++) {
+            if (materiaList.get(i).etapas != null) {
+                ArrayList<String> mRowDatas = new ArrayList<>();
+                mRowDatas.add(materiaList.get(i).getName());
+
+                for (int j = 0; j < materiaList.get(i).etapas.size(); j++) {
+                    if (materiaList.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.PRIMEIRA.getInt()
+                            || materiaList.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.SEGUNDA.getInt()) {
+
+                        mRowDatas.add(materiaList.get(i).etapas.get(j).getNota());
+                        mRowDatas.add(materiaList.get(i).etapas.get(j).getFaltas());
+                        mRowDatas.add(materiaList.get(i).etapas.get(j).getNotaRP());
+                        mRowDatas.add(materiaList.get(i).etapas.get(j).getNotaFinal());
+                    }
+                }
+                mRowDatas.add(materiaList.get(i).getFaltas());
+                mTableDatas.add(mRowDatas);
+            }
+        }
     }
 
     @Override
@@ -72,39 +103,9 @@ public class BoletimFragment extends Fragment {
 
         view.post(() -> {
 
-            Query<Materia> query = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                    .equal(Materia_.year, Client.getYear()).build();
-
-            ArrayList<ArrayList<String>> mTableDatas = new ArrayList<>();
-
-            query.subscribe(new DataSubscriptionList()).observer(data -> {
-
-                mTableDatas.add(mfristData);
-
-                for (int i = 0; i < data.size(); i++) {
-                    if (data.get(i).etapas != null) {
-                        ArrayList<String> mRowDatas = new ArrayList<>();
-                        mRowDatas.add(data.get(i).getName());
-
-                        for (int j = 0; j < data.get(i).etapas.size(); j++) {
-                            if (data.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.PRIMEIRA.getInt()
-                                    || data.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.SEGUNDA.getInt()) {
-
-                                mRowDatas.add(data.get(i).etapas.get(j).getNota());
-                                mRowDatas.add(data.get(i).etapas.get(j).getFaltas());
-                                mRowDatas.add(data.get(i).etapas.get(j).getNotaRP());
-                                mRowDatas.add(data.get(i).etapas.get(j).getNotaFinal());
-                            }
-                        }
-                        mRowDatas.add(data.get(i).getFaltas());
-                        mTableDatas.add(mRowDatas);
-                    }
-                }
-            });
-
             LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
-            LockTableView mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
+            mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
 
             mLockTableView
                     .setLockFristColumn(true)
@@ -139,11 +140,47 @@ public class BoletimFragment extends Fragment {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
-
-            ((NotasFragment) getParentFragment()).setOnTopScrollRequestedBListener(() -> {
-                mLockTableView.getTableScrollView().smoothScrollToPosition(0);
-            });
         });
     }
 
+    @Override
+    public void onUpdate(int pg) {
+        if (pg == PG_BOLETIM || pg == UPDATE_REQUEST) {
+            if (getView() != null) {
+                loadData();
+                showBoletim(getView());
+            }
+        }
+    }
+
+    @Override
+    public void onScrollRequest() {
+        if (mLockTableView != null) {
+            mLockTableView.getTableScrollView().smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+    }
 }

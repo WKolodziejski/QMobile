@@ -3,7 +3,6 @@ package com.tinf.qmobile.Parsers;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Diarios;
 import com.tinf.qmobile.Class.Materias.Diarios_;
@@ -13,17 +12,15 @@ import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.List;
 import java.util.Objects;
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
+import static com.tinf.qmobile.Network.OnResponse.PG_DIARIOS;
 import static com.tinf.qmobile.Utilities.Utils.pickColor;
 
 public class DiariosParser extends AsyncTask<String, Void, Void> {

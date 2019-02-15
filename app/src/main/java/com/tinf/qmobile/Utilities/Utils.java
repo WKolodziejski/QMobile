@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class Utils {
     public static final int UPDATE_REQUEST = 0;
-    public static final String VERSION = ".v1.0.0-r8";
+    public static final String VERSION = ".v1.0.0-r9";
     public static final String VERSION_INFO = ".Version";
 
     public static View customAlertTitle(Context context, int img, int txt, int color) {

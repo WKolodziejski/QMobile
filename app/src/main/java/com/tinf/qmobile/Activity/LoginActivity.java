@@ -17,13 +17,6 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 
-import static com.tinf.qmobile.Network.Client.PG_ACESSO_NEGADO;
-import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
-import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
-import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
-import static com.tinf.qmobile.Network.Client.PG_HORARIO;
-import static com.tinf.qmobile.Network.Client.PG_LOGIN;
-
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private static String TAG = "LoginActivity";
     Snackbar snackBar;

@@ -24,9 +24,6 @@ import com.tinf.qmobile.Utilities.User;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
-import static com.tinf.qmobile.Network.Client.PG_GERADOR;
-import static com.tinf.qmobile.Network.Client.PG_LOGIN;
 import static com.tinf.qmobile.Utilities.User.PASSWORD;
 import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 import static com.tinf.qmobile.Utilities.User.getYear;
@@ -98,11 +95,12 @@ public class LoginFragment extends Fragment implements OnResponse {
         } else if (pg ==  PG_DIARIOS) {
             if (year == 0) {
                 textView.setText(getResources().getString(R.string.login_checking));
-            } else {
-                textView.setText(String.format(
-                        getResources().getString(R.string.login_loading),
-                        String.valueOf(getYear(year))));
             }
+
+        } else {
+            textView.setText(String.format(
+                    getResources().getString(R.string.login_loading),
+                    String.valueOf(getYear(year))));
         }
 
         Log.v(TAG, "Started loading");

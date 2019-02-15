@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
+import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class CalendarioFragment extends Fragment implements OnUpdate {
@@ -243,5 +243,5 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void requestScroll() {}
+    public void onScrollRequest() {}
 }

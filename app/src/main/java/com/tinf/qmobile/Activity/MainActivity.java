@@ -8,25 +8,15 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.HomeFragment;
@@ -39,20 +29,18 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
+import java.util.ArrayList;
+import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.Network.Client.PG_ACESSO_NEGADO;
-import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
-import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
-import static com.tinf.qmobile.Network.Client.PG_MATERIAIS;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
-    private OnUpdate onUpdate;
+    private List<OnUpdate> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
             }
             ((App) getApplication()).setLogged(true);
             Jobs.scheduleJob(false);
-            setTitle(User.getName());
             changeFragment(new HomeFragment());
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
@@ -182,9 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
                             Client.year = year.getValue();
-                            if (onUpdate != null) {
-                                onUpdate.onUpdate(UPDATE_REQUEST);
-                            }
+                            callOnUpdate(UPDATE_REQUEST);
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
@@ -213,14 +198,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                     break;
 
                 case R.id.navigation_materiais:
-                    setTitle(String.valueOf(Client.getYear()));
                     fragment = new MateriaisFragment();
                     break;
             }
         } else {
-            if (onUpdate != null) {
-                onUpdate.requestScroll();
-            }
+            callOnScrollRequest();
         }
         return changeFragment(fragment);
     }
@@ -256,8 +238,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
     private boolean changeFragment(Fragment fragment) {
         if (fragment != null) {
-            getSupportFragmentManager().popBackStackImmediate();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            //getSupportFragmentManager().popBackStackImmediate();
+            //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            if (fragment instanceof HomeFragment) {
+                setTitle(User.getName());
+            } else {
+                setTitle(String.valueOf(Client.getYear()));
+            }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment, fragment)
                     .commit();
@@ -302,7 +289,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     protected void onStop() {
         super.onStop();
         Log.v(TAG, "onStop");
-        onUpdate = null;
         Client.get().removeOnResponseListener(this);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
@@ -322,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     protected void onPause() {
         super.onPause();
         Log.v(TAG, "onPause");
-        onUpdate = null;
         Client.get().removeOnResponseListener(this);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
@@ -337,10 +322,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         }
     }
 
-    public void setOnUpdateListener(OnUpdate onUpdate) {
-        this.onUpdate = onUpdate;
-    }
-
     @Override
     public void onStart(int pg, int year) {
         if (!refreshLayout.isRefreshing()) {
@@ -353,6 +334,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     @Override
     public void onFinish(int pg, int year) {
         dismissProgressbar();
+        callOnUpdate(pg);
     }
 
     @Override
@@ -391,12 +373,49 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                 } else {
-                    Toast.makeText(getApplicationContext(), "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
                 }
+            }
+        }
+    }
+
+    public void addOnUpdateListener(OnUpdate onUpdate) {
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
+
+        if (onUpdate != null && !listeners.contains(onUpdate)) {
+            this.listeners.add(onUpdate);
+            Log.i(TAG, "Added listener from " + onUpdate);
+        }
+    }
+
+    public void removeOnUpdateListener(OnUpdate onUpdate) {
+        if (listeners != null && onUpdate != null) {
+            listeners.remove(onUpdate);
+            Log.i(TAG, "Removed listener from " + onUpdate);
+        }
+    }
+
+    private void callOnUpdate(int pg) {
+        Log.v(TAG, "Update: " + pg);
+
+        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
+            setTitle(String.valueOf(Client.getYear()));
+        }
+
+        if (listeners != null) {
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).onUpdate(pg);
+            }
+        }
+    }
+
+    private void callOnScrollRequest() {
+        if (listeners != null) {
+            for (int i = 0; i < listeners.size(); i++) {
+                listeners.get(i).onScrollRequest();
             }
         }
     }

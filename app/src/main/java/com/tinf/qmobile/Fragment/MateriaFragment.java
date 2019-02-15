@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tinf.qmobile.Activity.MainActivity;
+import com.tinf.qmobile.Activity.MateriaActivity;
 import com.tinf.qmobile.Adapter.Diarios.EtapasAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
@@ -38,7 +39,7 @@ public class MateriaFragment extends Fragment {
 
             adapter = new EtapasAdapter(materia, getContext());
 
-            ((MainActivity) getActivity()).setTitle(materia.getName());
+            ((MateriaActivity) getActivity()).setTitle(materia.getName());
         }
     }
 

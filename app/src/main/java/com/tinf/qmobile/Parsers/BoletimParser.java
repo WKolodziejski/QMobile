@@ -6,8 +6,6 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Etapa;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,7 +13,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.Network.Client.PG_BOLETIM;
+import static com.tinf.qmobile.Network.OnResponse.PG_BOLETIM;
 
 public class BoletimParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "BoletimParser";

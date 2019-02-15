@@ -10,7 +10,6 @@ import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -20,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.Network.Client.PG_CALENDARIO;
+import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.pickColor;
 
 public class CalendarioParser extends AsyncTask<String, Void, Void> {

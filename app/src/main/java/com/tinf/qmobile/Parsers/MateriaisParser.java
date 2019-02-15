@@ -57,7 +57,7 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
 
                 String data = element.child(0).text().trim();
                 String link = element.child(1).child(1).attr("href");
-                String nomeConteudo = element.child(1).child(1).text().trim();
+                String nomeConteudo = formatTd(element.child(1).child(1).text().trim());
                 String descricao = "";
                 String extension = link.substring(link.indexOf("."));
 
@@ -121,4 +121,9 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
         super.onPostExecute(materiaisLists);
         onMateriaisLoad.onMateriaisLoad(materiaisLists);
     }
+
+    private String formatTd(String text){
+        return text.replace("/", "-");
+    }
+
 }

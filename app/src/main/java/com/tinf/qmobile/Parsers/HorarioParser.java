@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.Network.Client.PG_HORARIO;
+import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 
 public class HorarioParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "HorarioParser";

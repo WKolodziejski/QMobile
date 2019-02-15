@@ -45,9 +45,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static com.tinf.qmobile.Network.Client.PG_HOME;
-import static com.tinf.qmobile.Network.Client.PG_LOGIN;
-import static com.tinf.qmobile.Network.Client.URL;
+import static com.tinf.qmobile.Network.OnResponse.INDEX;
+import static com.tinf.qmobile.Network.OnResponse.PG_HOME;
+import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
+import static com.tinf.qmobile.Network.OnResponse.URL;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class HomeFragment extends Fragment implements OnUpdate {
@@ -90,8 +91,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity) getActivity()).setTitle(User.getName());
-
         nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
@@ -101,7 +100,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         view.findViewById(R.id.home_website).setOnClickListener(v -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(URL + PG_LOGIN));
+                    Uri.parse(URL + INDEX + PG_LOGIN));
             startActivity(browserIntent);
         });
 
@@ -158,8 +157,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
-        weekView.post(() -> {
-
             weekView.setMonthChangeListener((startDate, endDate) -> {
 
                 int firstHour = 24;
@@ -207,7 +204,14 @@ public class HomeFragment extends Fragment implements OnUpdate {
                                 weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
                 startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
             });
-        });
+
+    }
+
+    @Override
+    public void onScrollRequest() {
+        if (nestedScrollView != null) {
+            nestedScrollView.smoothScrollTo(0, 0);
+        }
     }
 
     @Override
@@ -227,17 +231,25 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
     }
 
     @Override
-    public void requestScroll() {
-        nestedScrollView.smoothScrollTo(0,0);
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+    }
+
 }

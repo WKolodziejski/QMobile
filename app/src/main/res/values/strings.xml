@@ -35,6 +35,7 @@
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
     <string name="text_empty">Vazio</string>
+    <string name="text_permission_denied">A permissão é necessária para baixar materiais</string>
 
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>

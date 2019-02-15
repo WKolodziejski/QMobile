@@ -35,16 +35,15 @@ import com.tinf.qmobile.R;
 
 import java.io.File;
 import java.util.List;
-import java.util.Objects;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
-import static com.tinf.qmobile.Network.Client.PG_MATERIAIS;
+import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 
 public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUpdate {
-    private RecyclerView recyclerViewMateriais;
+    private RecyclerView recyclerView;
     private List<MateriaisList> materiaisList;
     private String name, mime;
     private boolean isLoading;
@@ -64,20 +63,18 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
 
     private void showMateriais(View view) {
 
-        ((MainActivity) getActivity()).setTitle(String.valueOf(Client.getYear()));
-
-        recyclerViewMateriais = (RecyclerView) view.findViewById(R.id.recycler_materiais);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_materiais);
         RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerViewMateriais.getContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
                 LinearLayoutManager.VERTICAL);
 
         MateriaisListAdapter adapter = new MateriaisListAdapter(materiaisList, getActivity());
 
-        recyclerViewMateriais.setAdapter(adapter);
-        recyclerViewMateriais.setLayoutManager(layout);
-        recyclerViewMateriais.addItemDecoration(dividerItemDecoration);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layout);
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
-        recyclerViewMateriais.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
@@ -123,7 +120,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
         Client.get().setOnMateriaisLoadListener(this);
         if (materiaisList == null && !isLoading) {
             Client.get().load(PG_MATERIAIS);
@@ -134,7 +131,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
         Client.get().setOnMateriaisLoadListener(this);
         if (materiaisList == null && !isLoading) {
             Client.get().load(PG_MATERIAIS);
@@ -145,7 +142,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
         Client.get().setOnMateriaisLoadListener(null);
         isLoading = false;
     }
@@ -153,7 +150,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(null);
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
         Client.get().setOnMateriaisLoadListener(null);
         isLoading = false;
     }
@@ -167,14 +164,16 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
 
     @Override
     public void onUpdate(int pg) {
-        isLoading = true;
-        Client.get().load(PG_MATERIAIS);
+        if (pg == UPDATE_REQUEST) {
+            isLoading = true;
+            Client.get().load(PG_MATERIAIS);
+        }
     }
 
     @Override
-    public void requestScroll() {
-        if (recyclerViewMateriais != null) {
-            recyclerViewMateriais.smoothScrollToPosition(0);
+    public void onScrollRequest() {
+        if (recyclerView != null) {
+            recyclerView.smoothScrollToPosition(0);
         }
     }
 

@@ -7,8 +7,8 @@ import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 
-import static com.tinf.qmobile.Network.Client.PG_DIARIOS;
-import static com.tinf.qmobile.Network.Client.PG_LOGIN;
+import static com.tinf.qmobile.Network.OnResponse.PG_DIARIOS;
+import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
 
 public class BackgroundCheck extends JobService {
     private boolean errorOcurred;

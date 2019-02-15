@@ -3,10 +3,18 @@ package com.tinf.qmobile;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.tinf.qmobile.Class.MyObjectBox;
 import com.tinf.qmobile.Utilities.User;
+import com.tinf.qmobile.Utilities.Utils;
+
+import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.Utilities.User.REGISTRATION;
+import static com.tinf.qmobile.Utilities.Utils.VERSION_INFO;
 
 public class App extends Application {
     private static BoxStore boxStore;
@@ -20,21 +28,21 @@ public class App extends Application {
 
         context = getApplicationContext();
 
-        /*Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
 
-        /*Fabric.with(new Fabric.Builder(this)
-                .kits(new CrashlyticsCore.Builder().build(), new Answers())
+        Fabric.with(new Fabric.Builder(this)
+                .kits(new CrashlyticsCore.Builder().build())
                 .debuggable(true)
                 .build());
 
-        Crashlytics.setUserIdentifier(User.getCredential(REGISTRATION));*/
+        Crashlytics.setUserIdentifier(User.getCredential(REGISTRATION));
 
-        /*if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
-            if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(getApplicationContext(), REGISTRATION))) {
+        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
+            if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
                 getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
-                User.clearInfos(getApplicationContext());
+                User.clearInfos();
             }
-        }*/
+        }
 
         initBoxStore();
     }
