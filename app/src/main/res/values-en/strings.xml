@@ -94,4 +94,5 @@
     <string name="login_loading">Loading data for %1$s</string>
     <string name="login_checking">Getting information</string>
     <string name="text_permission_denied">Permission is required to download materials</string>
+    <string name="pref_privacy">Privacy Policy</string>
 </resources>

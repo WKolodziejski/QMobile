@@ -1,6 +1,7 @@
 package com.tinf.qmobile.Activity.Settings;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -57,6 +58,14 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {
                 startActivity(new Intent(getActivity(), AboutActivity.class));
+                return true;
+            });
+
+            Preference privacy = findPreference("key_privacy");
+            privacy.setOnPreferenceClickListener(preference -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://sites.google.com/view/qmobileapp"));
+                startActivity(browserIntent);
                 return true;
             });
         }

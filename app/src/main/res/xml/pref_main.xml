@@ -127,6 +127,10 @@
             android:key="key_about"
             android:title="@string/action_about" />
 
+        <Preference
+            android:key="key_privacy"
+            android:title="@string/pref_privacy" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
