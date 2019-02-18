@@ -96,11 +96,6 @@ public class BoletimFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "View created");
 
-        showBoletim(view);
-    }
-
-    private void showBoletim(View view) {
-
         view.post(() -> {
 
             LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
@@ -146,10 +141,8 @@ public class BoletimFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(int pg) {
         if (pg == PG_BOLETIM || pg == UPDATE_REQUEST) {
-            if (getView() != null) {
-                loadData();
-                showBoletim(getView());
-            }
+            loadData();
+            mLockTableView.setTableDatas(mTableDatas);
         }
     }
 

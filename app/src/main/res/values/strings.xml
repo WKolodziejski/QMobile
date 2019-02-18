@@ -5,18 +5,14 @@
     <string name="app_more">Mais</string>
 
     <string name="title_about">Sobre</string>
-    <string name="title_more">Mais</string>
     <string name="title_home">Início</string>
     <string name="title_notas">Notas</string>
     <string name="title_materiais">Materiais</string>
     <string name="title_calendario">Calendário</string>
-    <string name="title_documentos">Documentos</string>
     <string name="title_diarios">Diários</string>
     <string name="title_boletim">Boletim</string>
     <string name="title_horario">Horário</string>
-    <string name="title_graficos">Gráficos</string>
     <string name="title_settings">Configurações</string>
-    <string name="title_login">Login</string>
 
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
@@ -31,7 +27,6 @@
 
     <string name="calendar_end_period">Fim do ano letivo</string>
 
-    <string name="text_retry">Recarregar</string>
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
     <string name="text_empty">Vazio</string>
@@ -40,15 +35,11 @@
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
 
-    <string name="dialog_yes">Sim</string>
-    <string name="dialog_no">Não</string>
     <string name="dialog_quit">Sair</string>
     <string name="dialog_quit_msg">Deseja mesmo sair?</string>
     <string name="dialog_date_change">Selecione um ano</string>
     <string name="dialog_confirm">OK</string>
     <string name="dialog_cancel">Cancelar</string>
-    <string name="dialog_change">Trocar</string>
-    <string name="dialog_close">Fechar</string>
     <string name="dialog_access_denied">Acesso Negado</string>
     <string name="dialog_check_login">Verifique suas credenciais</string>
 
@@ -65,12 +56,9 @@
     <string name="boletim_Materia">Materia</string>
     <string name="boletim_Faltas">F</string>
     <string name="boletim_RP">RP</string>
-    <string name="boletim_Etapa">E</string>
     <string name="boletim_NotaFinal">NF</string>
     <string name="boletim_PrimeiraEtapa">1ª</string>
     <string name="boletim_SegundaEtapa">2ª</string>
-    <string name="boletim_Travado">Travado</string>
-    <string name="boletim_Destravado">Destravado</string>
 
     <string name="diarios_PrimeiraEtapa">Primeira Etapa</string>
     <string name="diarios_SegundaEtapa">Segunda Etapa</string>
@@ -79,13 +67,11 @@
     <string name="diarios_RP2_PrimeiraEtapa">Segunda Reavaliação da Primeira Etapa</string>
     <string name="diarios_RP2_SegundaEtapa">Segunda Reavaliação da Segunda Etapa</string>
     <string name="diarios_Peso">・Peso: %1$s</string>
-    <string name="diarios_Max">Máx: %1$s</string>
     <string name="diarios_Nota">Nota: <b>%1$s</b>/%2$s</string>
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>
     <string name="diarios_expanded">Abas expandidas</string>
     <string name="diarios_collapsed">Abas recolhidas</string>
-    <string name="diarios_empty">Não há diários disponíveis</string>
 
     <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_footer">Confira suas notas no site</string>
@@ -101,6 +87,7 @@
     <string name="pref_notifications">Notificações</string>
     <string name="pref_notifications_sum">Receber notificações quando houver novidades</string>
     <string name="pref_privacy">Política de Privacidade</string>
+    <string name="pref_license">Licença de Uso</string>
 
     <string name="sigla_Avaliacao">A</string>
     <string name="sigla_Prova">P</string>
@@ -108,7 +95,6 @@
     <string name="sigla_Qualitativa">Q</string>
     <string name="sigla_Exercicio">E</string>
 
-    <string name="default_notification_channel_id" translatable="false">Q Mobile</string>
     <string name="more_site" translatable="false">http://qacademico.ifsul.edu.br</string>
     <string name="more_copyright" translatable="false">© 2018 Qualidata</string>
     <string name="more_emerson" translatable="false">Émerson Philippe Lopes</string>

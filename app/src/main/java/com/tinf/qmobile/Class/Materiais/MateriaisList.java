@@ -25,4 +25,5 @@ public class MateriaisList implements Serializable{
     public int getColor() {
         return color;
     }
+
 }

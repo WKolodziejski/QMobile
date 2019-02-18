@@ -74,7 +74,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
     private void setView(DiariosListViewHolder holder, int i) {
         if (materiaList.get(i).isExpanded()) {
-            holder.arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
+            holder.arrow.setImageResource(R.drawable.ic_less);
             holder.title.setTextColor(context.getResources().getColor(materiaList.get(i).getColor()));
 
             List<Diarios> diarios = materiaList.get(i).etapas.get(getLast(i)).diarios;
@@ -97,7 +97,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                 holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
             }
         } else {
-            holder.arrow.setImageResource(R.drawable.ic_expand_more_black_24dp);
+            holder.arrow.setImageResource(R.drawable.ic_more);
             holder.title.setTextColor(context.getResources().getColor(R.color.colorPrimary));
             holder.recyclerView.removeAllViewsInLayout();
         }

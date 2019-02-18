@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                         .setCustomTitle(
                                 Utils.customAlertTitle(
                                         getApplicationContext(),
-                                        R.drawable.ic_exit_to_app_black_24dp,
+                                        R.drawable.ic_exit,
                                         R.string.dialog_quit, R.color.colorPrimary))
                         .setMessage(R.string.dialog_quit_msg)
                         .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                         .setCustomTitle(
                                 Utils.customAlertTitle(
                                         getApplicationContext(),
-                                        R.drawable.ic_date_range_black_24dp,
+                                        R.drawable.ic_date,
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                     .setCustomTitle(
                             Utils.customAlertTitle(
                                     getApplicationContext(),
-                                    R.drawable.ic_error_black_24dp,
+                                    R.drawable.ic_error,
                                     R.string.dialog_access_denied, R.color.error))
                     .setMessage(message)
                     .setCancelable(false)

@@ -9,6 +9,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+
+import com.tinf.qmobile.Activity.WebViewActivity;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.Utils;
@@ -63,9 +65,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             Preference privacy = findPreference("key_privacy");
             privacy.setOnPreferenceClickListener(preference -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Intent intent = new Intent(Intent.ACTION_VIEW,
                         Uri.parse("https://sites.google.com/view/qmobileapp"));
-                startActivity(browserIntent);
+                startActivity(intent);
+                return true;
+            });
+
+            Preference license = findPreference("key_license");
+            license.setOnPreferenceClickListener(preference -> {
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("URL", "file:///android_asset/icons_license.html");
+                startActivity(intent);
                 return true;
             });
         }

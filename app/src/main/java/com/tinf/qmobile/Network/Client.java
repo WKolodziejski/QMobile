@@ -51,7 +51,7 @@ import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 import static com.tinf.qmobile.Network.OnResponse.URL;
 
 public class Client {
-    private final static String TAG = "NetworkSingleton";
+    private final static String TAG = "Network Client";
     private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
     private List<RequestHelper> queue;
@@ -234,7 +234,7 @@ public class Client {
         if (strong != null) {
             String s = strong.text().trim();
 
-            if (s.contains("Negado")) {
+            if (s.contains("Negado") || s.contains("negado")) {
                 String msg = document.getElementsByClass("conteudoTexto").first().text().trim();
 
                 if (msg.contains("inativo")) {

@@ -12,35 +12,36 @@
     <color name="colorPrimaryLight">#f7ebe8</color>
     <color name="colorAccent">#e54b4b</color>!-->
 
-    <color name="check">@color/blue_500</color>
-    <color name="ok">@color/green_500</color>
     <color name="error">#B00020</color>
-    <color name="warning">@color/amber_500</color>
 
-    <color name="happy">@color/green_500</color>
-    <color name="sad">@color/amber_500</color>
-
-    <color name="diarios_prova">@color/colorAccent</color>
-    <color name="diarios_trabalho">@color/colorAccent</color>
-    <color name="diarios_qualitativa">@color/colorAccent</color>
-    <color name="diarios_avaliacao">@color/colorAccent</color>
-    <color name="diarios_exercicio">@color/colorAccent</color>
-
-    <color name="materiais_file">@color/colorPrimary</color>
-    <color name="materiais_pdf">@color/red_500</color>
-    <color name="materiais_doc">@color/blue_500</color>
-    <color name="materiais_table">@color/green_500</color>
-    <color name="materiais_zip">@color/yellow_500</color>
-    <color name="materiais_audio">@color/pink_500</color>
-    <color name="materiais_video">@color/purple_500</color>
-    <color name="materiais_image">@color/orange_500</color>
-    <color name="materiais_script">@color/blue_grey_500</color>
-
-    <color name="sug_stars">@color/amber_400</color>
-    <color name="sug_dialog">@color/pink_400</color>
-    <color name="sug_guide">@color/pink_500</color>
-
-    <color name="changes_dialog">@color/light_blue_A400</color>
+    <color name="materiais_file">@color/colorAccent</color>
+    <color name="materiais_ai">#556080</color>
+    <color name="materiais_avi">#d75e72</color>
+    <color name="materiais_css">#0096e6</color>
+    <color name="materiais_csv">#f36fa0</color>
+    <color name="materiais_dbf">#cc4b4c</color>
+    <color name="materiais_doc">#0096e6</color>
+    <color name="materiais_dwg">#8697cb</color>
+    <color name="materiais_exe">#9777a8</color>
+    <color name="materiais_fla">#ce3c3b</color>
+    <color name="materiais_html">#ec6630</color>
+    <color name="materiais_iso">#91cda0</color>
+    <color name="materiais_js">#eeaf4b</color>
+    <color name="materiais_jpg">#659c35</color>
+    <color name="materiais_json">#9777a8</color>
+    <color name="materiais_mp3">#7d6599</color>
+    <color name="materiais_mp4">#ff5364</color>
+    <color name="materiais_pdf">#e96360</color>
+    <color name="materiais_png">#14a085</color>
+    <color name="materiais_psd">#5889c4</color>
+    <color name="materiais_ppt">#f29c1f</color>
+    <color name="materiais_rtf">#90bae1</color>
+    <color name="materiais_svg">#e57e25</color>
+    <color name="materiais_txt">#95a5a5</color>
+    <color name="materiais_xls">#71c285</color>
+    <color name="materiais_xml">#f6712e</color>
+    <color name="materiais_zip">#ffc14f</color>
+    <color name="materiais_comp">#653e66</color>
 
     <color name="biologia">@color/green_400</color>
     <color name="edFisica">@color/blue_grey_400</color>

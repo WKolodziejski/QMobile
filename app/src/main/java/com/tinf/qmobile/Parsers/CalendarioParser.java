@@ -63,7 +63,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
             boolean changeYear = false;
 
-            for (int i = 0; i < 12; i++) {
+            for (int i = 0; i < meses.size(); i++) {
 
                 String nomeMes = meses.get(i).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
 

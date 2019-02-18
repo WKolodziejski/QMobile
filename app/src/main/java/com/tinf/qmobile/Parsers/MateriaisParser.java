@@ -59,49 +59,13 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
                 String link = element.child(1).child(1).attr("href");
                 String nomeConteudo = formatTd(element.child(1).child(1).text().trim());
                 String descricao = "";
-                String extension = link.substring(link.indexOf("."));
+                String extension = link.substring(link.lastIndexOf("."));
 
                 if (element.child(1).children().size() > 2) {
                     descricao = element.child(1).child(3).nextSibling().toString().trim();
                 }
 
-                int color = R.color.materiais_file;
-                int img = R.drawable.ic_file;
-
-                if (extension.equals(".pdf")) {
-                    color = R.color.materiais_pdf;
-                    img = R.drawable.ic_pdf;
-                } else if (extension.equals(".docx") || extension.equals(".doc")
-                        || extension.equals(".txt") || extension.equals(".rtf")) {
-                    color = R.color.materiais_doc;
-                    img = R.drawable.ic_docs;
-                } else if (extension.equals(".csv") || extension.equals(".svg") | extension.equals(".xls")) {
-                    color = R.color.materiais_table;
-                    img = R.drawable.ic_table;
-                } else if (extension.equals(".zip") || extension.equals(".rar")
-                        || extension.equals(".7z")) {
-                    color = R.color.materiais_zip;
-                    img = R.drawable.ic_compressed;
-                } else if (extension.equals(".mp3") || extension.equals(".wav")
-                        || extension.equals(".wma")) {
-                    color = R.color.materiais_audio;
-                    img = R.drawable.ic_song;
-                } else if (extension.equals(".mp4") || extension.equals(".wmv")
-                        || extension.equals(".avi")) {
-                    color = R.color.materiais_video;
-                    img = R.drawable.ic_video;
-                } else if (extension.equals(".jpg") || extension.equals(".png")) {
-                    color = R.color.materiais_image;
-                    img = R.drawable.ic_picture;
-                } else if (extension.equals(".jar") || extension.equals(".php")
-                        || extension.equals(".html") || extension.equals(".css")
-                        || extension.equals(".js") || extension.equals(".json")
-                        || extension.equals(".xml") || extension.equals(".c")) {
-                    color = R.color.materiais_script;
-                    img = R.drawable.ic_script;
-                }
-
-                material.add(new Materiais(data, nomeConteudo, link, descricao, color, img));
+                material.add(new Materiais(data, nomeConteudo, link, descricao, extension, getIcon(extension)));
 
                 if (element.nextElementSibling() != null) {
                     element = element.nextElementSibling();
@@ -112,7 +76,6 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
             }
             materiais.add(new MateriaisList(nomeMateria, material, getRandomColorGenerator()));
         }
-
         return materiais;
     }
 
@@ -124,6 +87,67 @@ public class MateriaisParser extends AsyncTask<String, Void, List<MateriaisList>
 
     private String formatTd(String text){
         return text.replace("/", "-");
+    }
+
+    private int getIcon(String extension) {
+        int icon = R.drawable.ic_file;
+
+        if (extension.equalsIgnoreCase(".pdf")) {
+            icon = R.drawable.ic_pdf;
+        } else if (extension.equalsIgnoreCase(".doc") || extension.equalsIgnoreCase(".docx")) {
+            icon = R.drawable.ic_doc;
+        } else if (extension.equalsIgnoreCase(".ppt") || extension.equalsIgnoreCase(".pptx")) {
+            icon = R.drawable.ic_ppt;
+        } else if (extension.equalsIgnoreCase(".xls") || extension.equalsIgnoreCase(".xlsx")) {
+            icon = R.drawable.ic_xls;
+        } else if (extension.equalsIgnoreCase(".zip")) {
+            icon = R.drawable.ic_zip;
+        } else if (extension.equalsIgnoreCase(".rtf")) {
+            icon = R.drawable.ic_rtf;
+        } else if (extension.equalsIgnoreCase(".txt")) {
+            icon = R.drawable.ic_txt;
+        } else if (extension.equalsIgnoreCase(".csv")) {
+            icon = R.drawable.ic_csv;
+        } else if (extension.equalsIgnoreCase(".svg")) {
+            icon = R.drawable.ic_svg;
+        } else if (extension.equalsIgnoreCase(".rar") || extension.equalsIgnoreCase(".7z")) {
+            icon = R.drawable.ic_comp;
+        } else if (extension.equalsIgnoreCase(".css")) {
+            icon = R.drawable.ic_css;
+        } else if (extension.equalsIgnoreCase(".dbf")) {
+            icon = R.drawable.ic_dbf;
+        } else if (extension.equalsIgnoreCase(".dwg")) {
+            icon = R.drawable.ic_dwg;
+        } else if (extension.equalsIgnoreCase(".exe")) {
+            icon = R.drawable.ic_exe;
+        } else if (extension.equalsIgnoreCase(".fla")) {
+            icon = R.drawable.ic_fla;
+        } else if (extension.equalsIgnoreCase(".html")) {
+            icon = R.drawable.ic_html;
+        } else if (extension.equalsIgnoreCase(".xml")) {
+            icon = R.drawable.ic_xml;
+        } else if (extension.equalsIgnoreCase(".iso")) {
+            icon = R.drawable.ic_iso;
+        } else if (extension.equalsIgnoreCase(".js")) {
+            icon = R.drawable.ic_js;
+        } else if (extension.equalsIgnoreCase(".jpg")) {
+            icon = R.drawable.ic_jpg;
+        } else if (extension.equalsIgnoreCase(".json")) {
+            icon = R.drawable.ic_json;
+        } else if (extension.equalsIgnoreCase(".mp3")) {
+            icon = R.drawable.ic_mp3;
+        } else if (extension.equalsIgnoreCase(".mp4")) {
+            icon = R.drawable.ic_mp4;
+        } else if (extension.equalsIgnoreCase(".ai")) {
+            icon = R.drawable.ic_ai;
+        } else if (extension.equalsIgnoreCase(".avi")) {
+            icon = R.drawable.ic_avi;
+        } else if (extension.equalsIgnoreCase(".png")) {
+            icon = R.drawable.ic_png;
+        } else if (extension.equalsIgnoreCase(".psd")) {
+            icon = R.drawable.ic_psd;
+        }
+        return icon;
     }
 
 }

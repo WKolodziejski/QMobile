@@ -55,12 +55,12 @@ public class CalendarioActivity2 extends AppCompatActivity {
         // Set current date to today
         setCurrentDate(new Date());
 
-        RelativeLayout datePickerButton = findViewById(R.id.date_picker_button);
+        /*RelativeLayout datePickerButton = findViewById(R.id.date_picker_button);
 
         datePickerButton.setOnClickListener(v -> {
             isExpanded = !isExpanded;
             appBarLayout.setExpanded(isExpanded, true);
-        });
+        });*/
     }
 
     private void setCurrentDate(Date date) {

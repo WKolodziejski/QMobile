@@ -37,7 +37,7 @@
         android:layout_margin="16dp"
         android:adjustViewBounds="true"
         android:id="@+id/headerIndicator"
-        app:srcCompat="@drawable/ic_expand_more_black_24dp"
+        app:srcCompat="@drawable/ic_more"
         android:tint="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -85,7 +85,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_gravity="center|bottom"
                 android:id="@+id/diarios_open"
-                app:srcCompat="@drawable/ic_unfold_more_black_24dp"
+                app:srcCompat="@drawable/ic_unfold"
                 android:background="@color/transparent"/>
 
         </LinearLayout>

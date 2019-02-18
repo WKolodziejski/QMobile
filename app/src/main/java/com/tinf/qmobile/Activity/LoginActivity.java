@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         } else if (pg == PG_ACESSO_NEGADO) {
             new android.app.AlertDialog.Builder(LoginActivity.this)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error_black_24dp, R.string.dialog_access_denied, R.color.error))
+                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error, R.string.dialog_access_denied, R.color.error))
                     .setMessage(message)
                     .setCancelable(true)
                     .create()

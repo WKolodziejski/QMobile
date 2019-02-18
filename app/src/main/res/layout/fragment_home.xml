@@ -40,7 +40,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:srcCompat="@drawable/ic_offline_pin_black_24dp"
+                    app:srcCompat="@drawable/ic_offline"
                     android:tint="@color/colorAccent"
                     android:layout_gravity="center_vertical"/>
 
@@ -106,7 +106,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        app:srcCompat="@drawable/ic_access_alarm_black_24dp"
+                        app:srcCompat="@drawable/ic_alarm"
                         android:tint="@color/colorAccent"
                         android:layout_gravity="center_vertical"/>
 
@@ -122,7 +122,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        app:srcCompat="@drawable/ic_navigate_next_black_24dp"
+                        app:srcCompat="@drawable/ic_next"
                         android:tint="@color/colorAccent"
                         android:layout_gravity="center_vertical"/>
 
@@ -145,7 +145,6 @@
                     app:numberOfVisibleDays="5"
                     app:horizontalScrollingEnabled="false"
                     app:horizontalFlingEnabled="false"
-                    app:nowLineDotColor="@color/red"
                     app:eventCornerRadius="5dp"
                     app:textSize="12sp"
                     app:hourHeight="60dp"
@@ -194,7 +193,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        app:srcCompat="@drawable/ic_event_note_black_24dp"
+                        app:srcCompat="@drawable/ic_calendar"
                         android:tint="@color/colorAccent"
                         android:layout_gravity="center_vertical"/>
 
@@ -210,7 +209,7 @@
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        app:srcCompat="@drawable/ic_navigate_next_black_24dp"
+                        app:srcCompat="@drawable/ic_next"
                         android:tint="@color/colorAccent"
                         android:layout_gravity="center_vertical"/>
 
@@ -257,7 +256,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    app:srcCompat="@drawable/ic_open_in_new_black_24dp"
+                    app:srcCompat="@drawable/ic_external"
                     android:tint="@color/colorAccent"
                     android:layout_gravity="center_vertical"/>
 

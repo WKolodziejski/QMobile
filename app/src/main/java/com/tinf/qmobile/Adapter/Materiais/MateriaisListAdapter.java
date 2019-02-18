@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tinf.qmobile.Class.Materiais.Materiais;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
+import com.tinf.qmobile.Fragment.MateriaisFragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.MateriaisListViewHolder;
 
@@ -18,11 +19,12 @@ import java.util.List;
 public class MateriaisListAdapter extends RecyclerView.Adapter {
     private List<MateriaisList> materiaisList;
     private Context context;
-    private OnDownloadRepassListener onDownloadRepassListener;
+    private MateriaisFragment.OnDownloadListener onDownloadListener;
 
-    public MateriaisListAdapter(List<MateriaisList> materiais, Context context) {
-        this.materiaisList = materiais;
+    public MateriaisListAdapter(Context context, List<MateriaisList> materiais, MateriaisFragment.OnDownloadListener onDownloadListener) {
         this.context = context;
+        this.materiaisList = materiais;
+        this.onDownloadListener = onDownloadListener;
     }
 
     @NonNull
@@ -37,25 +39,15 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final MateriaisListViewHolder holder = (MateriaisListViewHolder) viewHolder;
 
-        //holder.header.setBackgroundColor(materiaisList.get(i).getColor());
         holder.materia.setText(materiaisList.get(i).getTitle());
+        holder.materia.setTag(i);
 
-        MateriaisAdapter adapter = new MateriaisAdapter(materiaisList.get(i).getMateriais(), context);
+        MateriaisAdapter adapter = new MateriaisAdapter(context, materiaisList.get(i).getMateriais(), onDownloadListener);
 
-        /*FlexboxLayoutManager layout = new FlexboxLayoutManager(context);
-        layout.setFlexDirection(FlexDirection.ROW);
-        layout.setFlexWrap(FlexWrap.WRAP);
-        layout.setJustifyContent(JustifyContent.FLEX_START);*/
-
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(context,
-                RecyclerView.VERTICAL, false);
-
+        holder.recyclerView.setHasFixedSize(true);
         holder.recyclerView.setAdapter(adapter);
-        holder.recyclerView.setLayoutManager(layout);
-
-        adapter.setOnDownloadListener(material -> {
-            onDownloadRepassListener.onDownload(material);
-        });
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context,
+                RecyclerView.VERTICAL, false));
     }
 
     @Override
@@ -63,12 +55,9 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
         return materiaisList.size();
     }
 
-    public void setOnDowloadListener(OnDownloadRepassListener onDownloadRepassListener){
-        this.onDownloadRepassListener = onDownloadRepassListener;
-    }
-
-    public interface OnDownloadRepassListener {
-        void onDownload(Materiais material);
+    public void update(List<MateriaisList> materiaisList){
+        this.materiaisList = materiaisList;
+        notifyDataSetChanged();
     }
 
 }

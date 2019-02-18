@@ -96,6 +96,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.Activity.MainActivity" />
         </activity>
+        <activity
+            android:name=".Activity.WebViewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tinf.qmobile.Activity.MainActivity" />
+        </activity>
 
         <service
             android:exported="false"

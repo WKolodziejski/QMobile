@@ -25,7 +25,7 @@
             android:layout_height="9dp"
             android:layout_centerInParent="true"
             android:id="@+id/calendario_point"
-            android:background="@drawable/ic_brightness_1_black_24dp" />
+            android:background="@drawable/ic_dot" />
 
         <View
             android:layout_width="1dp"

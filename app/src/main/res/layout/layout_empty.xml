@@ -4,14 +4,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:id="@+id/empty"
         android:orientation="vertical"
         >
 
         <ImageView
             android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:src="@mipmap/gnome"/>
+            android:layout_height="250dp"/>
 
         <TextView
             android:layout_width="wrap_content"

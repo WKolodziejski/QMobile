@@ -19,6 +19,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,15 +30,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Materiais.MateriaisListAdapter;
+import com.tinf.qmobile.Class.Materiais.Materiais;
 import com.tinf.qmobile.Class.Materiais.MateriaisList;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.OnMateriaisLoad;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -43,51 +46,19 @@ import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 
 public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUpdate {
-    private RecyclerView recyclerView;
+    private static String TAG = "MateriaisFragment";
     private List<MateriaisList> materiaisList;
+    private MateriaisListAdapter adapter;
     private String name, mime;
     private boolean isLoading;
+    @BindView(R.id.recycler_materiais) RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-        //listFilesForFolder();
-    }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_materiais, container, false);
-    }
-
-    private void showMateriais(View view) {
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_materiais);
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
-                LinearLayoutManager.VERTICAL);
-
-        MateriaisListAdapter adapter = new MateriaisListAdapter(materiaisList, getActivity());
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layout);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
-            }
-
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
-
-        adapter.setOnDowloadListener(material -> {
+        OnDownloadListener onDownloadListener = material -> {
             if (checkPermission()) {
                 DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
                 name = material.getNomeConteudo() + material.getExtension();
@@ -99,6 +70,46 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
                         1);
             }
+        };
+
+        adapter = new MateriaisListAdapter(getContext(), new ArrayList<>(), onDownloadListener);
+        //adapter.setHasStableIds(true);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_materiais, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.v(TAG, "View created");
+
+        view.post(() -> {
+
+            RecyclerView.LayoutManager layout = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+            DividerItemDecoration decoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+
+            recyclerView.setLayoutManager(layout);
+            recyclerView.addItemDecoration(decoration);
+            recyclerView.setAdapter(adapter);
+
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                }
+
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+            });
         });
     }
 
@@ -182,7 +193,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         isLoading = false;
         if (!list.isEmpty()) {
             materiaisList = list;
-            showMateriais(getView());
+            adapter.update(materiaisList);
         } else {
             getLayoutInflater().inflate(R.layout.layout_empty,  null);
         }
@@ -220,5 +231,9 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
             }
         }
     };
+
+    public interface OnDownloadListener {
+        void onDownload(Materiais material);
+    }
 
 }

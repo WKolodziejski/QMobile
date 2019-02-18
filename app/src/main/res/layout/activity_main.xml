@@ -53,7 +53,7 @@
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginBottom="16dp"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_clear_all_black_24dp"
+            app:srcCompat="@drawable/ic_expand"
             android:background="@color/colorAccent"
             android:tint="@color/colorPrimaryLight"/>
 

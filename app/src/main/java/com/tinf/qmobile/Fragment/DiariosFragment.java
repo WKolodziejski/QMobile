@@ -101,9 +101,9 @@ public class DiariosFragment extends Fragment implements OnUpdate {
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     if (materiaList.get(pos).isExpanded()) {
-                        arrow.setImageResource(R.drawable.ic_expand_less_black_24dp);
+                        arrow.setImageResource(R.drawable.ic_less);
                     } else {
-                        arrow.setImageResource(R.drawable.ic_expand_more_black_24dp);
+                        arrow.setImageResource(R.drawable.ic_more);
                     }
                 }
 
@@ -149,13 +149,10 @@ public class DiariosFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "View created");
-        showDiarios(view);
-    }
 
-    private void showDiarios(View view) {
         view.post(() -> {
 
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+            DividerItemDecoration decoration = new DividerItemDecoration(getContext(),
                     LinearLayoutManager.VERTICAL);
 
             recyclerView.setHasFixedSize(true);
@@ -163,7 +160,7 @@ public class DiariosFragment extends Fragment implements OnUpdate {
             recyclerView.setDrawingCacheEnabled(true);
             recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
             recyclerView.setLayoutManager(layout);
-            recyclerView.addItemDecoration(dividerItemDecoration);
+            recyclerView.addItemDecoration(decoration);
             recyclerView.setAdapter(adapter);
 
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){

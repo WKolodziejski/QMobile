@@ -9,15 +9,16 @@ public class Materiais implements Serializable {
     private final String nomeConteudo;
     private final String link;
     private final String descricao;
-    private final int tint;
+    private final String extension;
     private final int icon;
+    private boolean isOffline;
 
-    public Materiais(String data, String nomeConteudo, String link, String descricao, int tint, int icon) {
+    public Materiais(String data, String nomeConteudo, String link, String descricao, String extension, int icon) {
         this.data = data;
         this.nomeConteudo = nomeConteudo;
         this.link = link;
         this.descricao = descricao;
-        this.tint = tint;
+        this.extension = extension;
         this.icon = icon;
     }
 
@@ -37,15 +38,19 @@ public class Materiais implements Serializable {
         return descricao;
     }
 
-    public int getTint() {
-        return tint;
-    }
-
     public int getIcon() {
         return icon;
     }
 
     public String getExtension() {
-        return link.substring(link.lastIndexOf("."));
+        return extension;
+    }
+
+    public boolean isOffline() {
+        return isOffline;
+    }
+
+    public void setOffline(boolean isoffline) {
+        this.isOffline = isoffline;
     }
 }
