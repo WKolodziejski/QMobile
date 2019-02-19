@@ -16,8 +16,7 @@
         app:numberOfVisibleDays="5"
         app:horizontalScrollingEnabled="false"
         app:horizontalFlingEnabled="false"
-        app:nowLineDotColor="@color/red"
-        app:eventCornerRadius="2dp"
+        app:eventCornerRadius="5dp"
         app:textSize="12sp"
         app:hourHeight="60dp"
         app:headerRowPadding="12dp"
@@ -25,7 +24,7 @@
         app:eventTextColor="@color/colorPrimaryLight"
         app:headerRowBackgroundColor="@color/white_dividers"
         app:dayBackgroundColor="@color/colorPrimaryLight"
-        app:todayBackgroundColor="@color/blue_50"/>
+        app:todayBackgroundColor="@color/blue_50" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

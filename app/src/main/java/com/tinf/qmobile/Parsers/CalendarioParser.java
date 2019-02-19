@@ -10,6 +10,8 @@ import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -19,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import io.objectbox.Box;
 
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
 import static com.tinf.qmobile.Utilities.Utils.pickColor;
 
@@ -184,9 +187,9 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     }
 
                                     Materia materia = materiaBox.query()
-                                            .equal(Materia_.name, title)
-                                            .and()
-                                            .equal(Materia_.year, Client.getYear())
+                                            .equal(Materia_.name, title).and()
+                                            .equal(Materia_.year, User.getPeriod(pos)).and()
+                                            .equal(Materia_.period, User.getPeriod(pos))
                                             .build().findFirst();
 
                                     evento.day.setTarget(dia);

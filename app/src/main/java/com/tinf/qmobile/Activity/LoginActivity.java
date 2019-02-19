@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onFinish(int pg, int year) {
+    public void onFinish(int pg, int pos) {
         if (pg == PG_LOGIN) {
             ((App) getApplication()).setLogged(true);
             Client.get().load(PG_DIARIOS);
@@ -63,15 +63,15 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         if (pg == PG_DIARIOS) {
 
-            if (year == 0) {
+            if (pos == 0) {
                 for (int i = 1; i < User.getYears().length; i++) {
                     Client.get().load(PG_DIARIOS, i);
                 }
             }
 
-            Client.get().load(PG_BOLETIM, year);
-            Client.get().load(PG_HORARIO, year);
-            Client.get().load(PG_CALENDARIO, year);
+            Client.get().load(PG_BOLETIM, pos);
+            Client.get().load(PG_HORARIO, pos);
+            Client.get().load(PG_CALENDARIO, pos);
 
             pages++;
         }
@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int year) {
+    public void onStart(int pg, int pos) {
         Log.v(TAG, "Started loading");
     }
 
@@ -155,13 +155,21 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     protected void onStop() {
         super.onStop();
         Log.v(TAG, "onStop");
-        Client.get().removeOnResponseListener(this);
+        //Client.get().removeOnResponseListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Log.v(TAG, "onPause");
+        //Client.get().removeOnResponseListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy");
         Client.get().removeOnResponseListener(this);
     }
+
 }

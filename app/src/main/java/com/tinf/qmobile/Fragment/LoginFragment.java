@@ -81,7 +81,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int year) {
+    public void onStart(int pg, int pos) {
         progressBar.setVisibility(VISIBLE);
         textView.setVisibility(View.VISIBLE);
         btn.setClickable(false);
@@ -93,21 +93,21 @@ public class LoginFragment extends Fragment implements OnResponse {
             textView.setText(getResources().getString(R.string.login_validating));
 
         } else if (pg ==  PG_DIARIOS) {
-            if (year == 0) {
+            if (pos == 0) {
                 textView.setText(getResources().getString(R.string.login_checking));
             }
 
         } else {
             textView.setText(String.format(
                     getResources().getString(R.string.login_loading),
-                    String.valueOf(getYear(year))));
+                    String.valueOf(getYear(pos))));
         }
 
         Log.v(TAG, "Started loading");
     }
 
     @Override
-    public void onFinish(int pg, int year) {
+    public void onFinish(int pg, int pos) {
         Log.v(TAG, "Finished loading");
     }
 

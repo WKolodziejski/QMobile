@@ -8,6 +8,7 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.tinf.qmobile.Class.MyObjectBox;
+import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.Utilities.Utils;
 
@@ -45,6 +46,8 @@ public class App extends Application {
         }
 
         initBoxStore();
+
+        Jobs.scheduleJob(false);
     }
 
     public void setLogged(boolean logged) {

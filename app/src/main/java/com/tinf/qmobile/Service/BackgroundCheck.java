@@ -20,12 +20,12 @@ public class BackgroundCheck extends JobService {
 
         Client.get().addOnResponseListener(new OnResponse() {
             @Override
-            public void onStart(int pg, int year) {
+            public void onStart(int pg, int pos) {
                 //TODO adicionar Log ou notificação pra DeBug
             }
 
             @Override
-            public void onFinish(int pg, int year) {
+            public void onFinish(int pg, int pos) {
 
                 if (pg == PG_LOGIN) {
                     Client.get().checkChanges(PG_DIARIOS);

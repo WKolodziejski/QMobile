@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -49,6 +50,7 @@ import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 import static com.tinf.qmobile.Network.OnResponse.URL;
+import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -62,7 +64,7 @@ public class Client {
     private String COOKIE;
     private String KEY_A;
     private String KEY_B;
-    public static int year = 0;
+    public static int pos = 0;
     private boolean isValid;
     private boolean isLogging;
 
@@ -83,12 +85,12 @@ public class Client {
         return singleton;
     }
 
-    private void createRequest(int pg, String url, int year, int method, Map<String, String> form, boolean notify) {
+    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify) {
         if (!isValid) {
             if (!isLogging) {
                 login();
             }
-            addToQueue(pg, url, year, method, form, notify);
+            addToQueue(pg, url, pos, method, form, notify);
         } else {
             Log.i(TAG, "Request for: " + pg);
             addRequest(new StringRequest(method, URL + url,
@@ -96,18 +98,18 @@ public class Client {
                         Resp r = testResponse(response);
 
                         if (r == Resp.DENIED) {
-                            addToQueue(pg, url, year, method, form, notify);
+                            addToQueue(pg, url, pos, method, form, notify);
                             login();
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_DIARIOS) {
-                                new DiariosParser(year, notify, this::callOnFinish).execute(response);
+                                new DiariosParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_BOLETIM) {
-                                new BoletimParser(year, notify, this::callOnFinish).execute(response);
+                                new BoletimParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_HORARIO) {
-                                new HorarioParser(year, notify, this::callOnFinish).execute(response);
+                                new HorarioParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_CALENDARIO) {
                                 new CalendarioParser(notify, this::callOnFinish).execute(response);
@@ -130,41 +132,40 @@ public class Client {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     return !form.isEmpty() ? form : super.getParams();
                 }
-            }, pg, year);
+            }, pg, pos);
         }
     }
 
     public void load(int pg) {
-        load(pg, year);
-        //createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), false);
+        load(pg, pos);
     }
 
-    public void load(int pg, int year) {
+    public void load(int pg, int pos) {
         int method = GET;
         String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
 
-        if (year != 0) {
+        if (pos != 0) {
             switch (pg) {
                 case PG_DIARIOS: method = POST;
-                    form.put("ANO_PERIODO2", User.getYear(year) + "_1");
+                    form.put("ANO_PERIODO2", User.getYear(pos) + "_" + User.getPeriod(pos));
                     break;
 
                 case PG_BOLETIM: method = GET;
-                    url = url.concat("&cmbanos=" + User.getYears()[year]);
+                    url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
                     break;
 
                 case PG_HORARIO: method = GET;
-                    url = url.concat("&cmbanos=" + User.getYears()[year]);
+                    url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
                     break;
 
                 case PG_MATERIAIS: method = POST;
-                    form.put("ANO_PERIODO", User.getYear(year) + "_1");
+                    form.put("ANO_PERIODO", User.getYear(pos) + "_" + User.getPeriod(pos));
                     break;
             }
         }
 
-        createRequest(pg, url, year, method, form, false);
+        createRequest(pg, url, pos, method, form, false);
     }
 
     public void checkChanges(int pg) {
@@ -172,9 +173,9 @@ public class Client {
         createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean(NOTIFY, true));
     }
 
-    private <T> void addRequest(Request<T> request, int pg, int year) {
+    private <T> void addRequest(Request<T> request, int pg, int pos) {
         if (isConnected()) {
-            callOnStart(pg, year);
+            callOnStart(pg, pos);
             if (requests == null) {
                 requests = Volley.newRequestQueue(getContext(), new HurlStack());
             }
@@ -265,20 +266,20 @@ public class Client {
         if (queue != null && !queue.isEmpty()) {
             for (int i = 0; i < queue.size(); i++) {
                 RequestHelper helper = queue.get(i);
-                createRequest(helper.pg, helper.url, helper.year, helper.method, helper.form, helper.notify);
+                createRequest(helper.pg, helper.url, helper.pos, helper.method, helper.form, helper.notify);
                 queue.remove(i);
             }
         }
     }
 
-    private void addToQueue(int pg, String url, int year, int method, Map<String, String> form, boolean notify) {
+    private void addToQueue(int pg, String url, int pos, int method, Map<String, String> form, boolean notify) {
         if (queue == null) {
             queue = new ArrayList<>();
         }
-        RequestHelper request = new RequestHelper(pg, url, year, method, form, notify);
+        RequestHelper request = new RequestHelper(pg, url, pos, method, form, notify);
         if (!queue.contains(request)) {
             queue.add(request);
-            Log.i(TAG, "Queued: " + pg + " for " + User.getYear(year));
+            Log.i(TAG, "Queued: " + pg + " for " + User.getYear(pos));
         }
     }
 
@@ -330,7 +331,7 @@ public class Client {
         KEY_A = "";
         KEY_B = "";
         COOKIE = "";
-        year = 0;
+        pos = 0;
     }
 
     private void onError(int pg, String msg) {
@@ -389,20 +390,20 @@ public class Client {
         }
     }
 
-    private void callOnStart(int pg, int year) {
+    private void callOnStart(int pg, int pos) {
         Log.v(TAG, "Start: " + pg);
         if (listeners != null) {
             for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onStart(pg, year);
+                listeners.get(i).onStart(pg, pos);
             }
         }
     }
 
-    private void callOnFinish(int pg, int year) {
+    private void callOnFinish(int pg, int pos) {
         Log.v(TAG, "Finish: " + pg);
         if (listeners != null) {
             for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onFinish(pg, year);
+                listeners.get(i).onFinish(pg, pos);
             }
         }
         checkQueue();
@@ -430,7 +431,7 @@ public class Client {
                 .addRequestHeader("Cookie", COOKIE)
                 .setTitle(material.getNomeConteudo())
                 .setDescription(material.getData())
-                .setDestinationInExternalPublicDir("/Download/QMobile/2018",
+                .setDestinationInExternalPublicDir("/Download" + "/QMobile/" + User.getCredential(REGISTRATION) + "/2018",
                         material.getNomeConteudo() + material.getExtension());
     }
 
@@ -442,11 +443,7 @@ public class Client {
         if (onMateriaisLoad != null) {
             onMateriaisLoad.onMateriaisLoad(list);
         }
-        callOnFinish(PG_MATERIAIS, year);
-    }
-
-    public static int getYear() {
-        return User.getYear(year);
+        callOnFinish(PG_MATERIAIS, pos);
     }
 
     public boolean isValid() {

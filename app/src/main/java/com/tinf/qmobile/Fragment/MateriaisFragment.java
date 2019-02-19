@@ -36,6 +36,8 @@ import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.OnMateriaisLoad;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
+import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
 public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUpdate {
     private static String TAG = "MateriaisFragment";
@@ -52,6 +55,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     private String name, mime;
     private boolean isLoading;
     @BindView(R.id.recycler_materiais) RecyclerView recyclerView;
+    @BindView(R.id.materiais_empty) View empty;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +68,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
                 name = material.getNomeConteudo() + material.getExtension();
                 long lastDownloadL = manager.enqueue(Client.get().download(material));
                 mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
+                Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
 
             } else {
                 ActivityCompat.requestPermissions(getActivity(),
@@ -194,8 +199,11 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         if (!list.isEmpty()) {
             materiaisList = list;
             adapter.update(materiaisList);
+            recyclerView.setVisibility(View.VISIBLE);
+            empty.setVisibility(View.GONE);
         } else {
-            getLayoutInflater().inflate(R.layout.layout_empty,  null);
+            recyclerView.setVisibility(View.GONE);
+            empty.setVisibility(View.VISIBLE);
         }
     }
 
@@ -216,18 +224,16 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
             i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + "/QMobile/2018/" + name);
+                    + "/QMobile/" + User.getCredential(REGISTRATION) + "/2018/" + name);
 
             Uri uri = FileProvider.getUriForFile(getContext(), APPLICATION_ID, file);
-
-            Log.d("URI", uri.toString());
 
             i.setDataAndType(uri, mime);
 
             try {
                 startActivity(i);
             } catch (ActivityNotFoundException e) {
-                Toast.makeText(getContext(), "No handler for this type of file.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
             }
         }
     };

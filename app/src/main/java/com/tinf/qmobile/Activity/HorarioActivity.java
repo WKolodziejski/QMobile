@@ -11,7 +11,11 @@ import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
+
 import java.util.Objects;
+
+import static com.tinf.qmobile.Network.Client.pos;
 
 public class HorarioActivity extends AppCompatActivity implements OnResponse {
     private OnUpdate onUpdate;
@@ -26,7 +30,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
         setSupportActionBar(findViewById(R.id.toolbar));
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
-                + " ― " + Client.getYear());
+                + " ― " + User.getYears()[pos]);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportFragmentManager()
@@ -83,12 +87,12 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int year) {
+    public void onStart(int pg, int pos) {
 
     }
 
     @Override
-    public void onFinish(int pg, int year) {
+    public void onFinish(int pg, int pos) {
         if (onUpdate != null) {
             onUpdate.onUpdate(pg);
         }

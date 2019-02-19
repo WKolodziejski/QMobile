@@ -18,11 +18,14 @@ import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.rmondjone.locktableview.LockTableView;
+import com.tinf.qmobile.Utilities.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_BOLETIM;
 
 public class BoletimFragment extends Fragment implements OnUpdate {
@@ -59,7 +62,9 @@ public class BoletimFragment extends Fragment implements OnUpdate {
 
     private void loadData() {
         List<Materia> materiaList = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, Client.getYear()).build().find();
+                .equal(Materia_.year, User.getYear(pos)).and()
+                .equal(Materia_.period, User.getPeriod(pos))
+                .build().find();
 
         mTableDatas = new ArrayList<>();
 

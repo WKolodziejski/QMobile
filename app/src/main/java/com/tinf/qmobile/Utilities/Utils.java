@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class Utils {
     public static final int UPDATE_REQUEST = 0;
-    public static final String VERSION = ".v1.0.0-r9";
+    public static final String VERSION = ".v1.0.0-r10";
     public static final String VERSION_INFO = ".Version";
 
     public static View customAlertTitle(Context context, int img, int txt, int color) {
@@ -35,33 +35,33 @@ public class Utils {
 
         switch (color) {
             case 0: color = R.color.deep_orange_400;
-            break;
+                break;
 
             case 1: color = R.color.yellow_A700;
-            break;
+                break;
 
             case 2: color = R.color.lime_A700;
-            break;
+                break;
 
             case 3: color = R.color.light_green_400;
-            break;
+                break;
 
             case 4: color = R.color.teal_400;
-            break;
+                break;
 
             case 5: color = R.color.cyan_400;
-            break;
+                break;
 
             case 6: color = R.color.light_blue_400;
-            break;
+                break;
 
             case 7: color = R.color.indigo_400;
-            break;
+                break;
 
             case 8: color = R.color.dark_purple_400;
-            break;
+                break;
         }
-        return color;
+        return color;//App.getContext().getResources().getColor(color);
     }
 
     public static int pickColor(String string) {

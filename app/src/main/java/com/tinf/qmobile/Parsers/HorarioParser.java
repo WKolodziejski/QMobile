@@ -7,8 +7,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Horario;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.Jobs;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 
 import org.jsoup.Jsoup;
@@ -28,11 +27,11 @@ import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 public class HorarioParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "HorarioParser";
     private OnFinish onFinish;
-    private int year;
+    private int pos;
     private boolean notify;
 
-    public HorarioParser(int year, boolean notify, OnFinish onFinish) {
-        this.year = year;
+    public HorarioParser(int pos, boolean notify, OnFinish onFinish) {
+        this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
 
@@ -43,7 +42,7 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... page) {
         App.getBox().runInTx(() -> {
 
-            Log.i(TAG, "Parsing " + User.getYear(year));
+            Log.i(TAG, "Parsing " + User.getYear(pos));
 
             Box<Materia> materiaBox = App.getBox().boxFor(Materia.class);
             Box<Horario> horarioBox = App.getBox().boxFor(Horario.class);
@@ -80,7 +79,7 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                     for (int j = 0; j < tds.size(); j++) {
                         trtd_horario[i][j] = tds.get(j).text();
 
-                        for (int k = 1; k < Objects.requireNonNull(code).length; k++) {
+                        for (int k = 1; k < code.length; k++) {
                             String sub = code[k].substring(0, code[k].indexOf("-") + 1);
                             sub = sub.substring(0, sub.lastIndexOf(" ") + 1);
 
@@ -112,8 +111,10 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
             List<Horario> olds = new ArrayList<>();
             List<Horario> news = new ArrayList<>();
 
-            List<Materia> materialist = materiaBox.query().equal(Materia_.year,
-                    User.getYear(year)).build().find();
+            List<Materia> materialist = materiaBox.query()
+                    .equal(Materia_.year, User.getYear(pos)).and()
+                    .equal(Materia_.period, User.getPeriod(pos))
+                    .build().find();
 
                 for (int i = 0; i < materialist.size(); i++) {
                     for (int j = 0; j < materialist.get(i).horarios.size(); j++) {
@@ -131,9 +132,9 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                     if (!trtd_horario[j][i].equals("")) {
 
                         Materia materia = materiaBox.query()
-                                .equal(Materia_.name, trtd_horario[j][i].trim())
-                                .and()
-                                .equal(Materia_.year, User.getYear(year))
+                                .equal(Materia_.name, trtd_horario[j][i].trim()).and()
+                                .equal(Materia_.year, User.getYear(pos)).and()
+                                .equal(Materia_.period, User.getPeriod(pos))
                                 .build().findFirst();
 
                         Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], true);
@@ -179,7 +180,7 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_HORARIO, year);
+        onFinish.onFinish(PG_HORARIO, pos);
     }
 
     public interface OnFinish {

@@ -111,7 +111,11 @@ public class User {
     }
 
     public static int getYear(int i) {
-        return Integer.valueOf(getYears()[i]);
+        return Integer.valueOf(getYears()[i].substring(0, 4));
+    }
+
+    public static int getPeriod(int i) {
+        return Integer.valueOf(getYears()[i].substring(7));
     }
 
     private static String encrypt(String value, String KEY_A, String KEY_B) {

@@ -28,11 +28,14 @@ import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
+
 import net.cachapa.expandablelayout.ExpandableLayout;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_DIARIOS;
 
 public class DiariosFragment extends Fragment implements OnUpdate {
@@ -67,6 +70,7 @@ public class DiariosFragment extends Fragment implements OnUpdate {
             Intent intent = new Intent(getContext(), MateriaActivity.class);
             intent.putExtra("NAME", materiaList.get(pos).getName());
             intent.putExtra("YEAR", materiaList.get(pos).getYear());
+            intent.putExtra("PERIOD", materiaList.get(pos).getPeriod());
 
             startActivity(intent);
 
@@ -135,7 +139,9 @@ public class DiariosFragment extends Fragment implements OnUpdate {
 
     private void loadData() {
         materiaList = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, Client.getYear()).build().find();
+                .equal(Materia_.year, User.getYear(pos)).and()
+                .equal(Materia_.period, User.getPeriod(pos))
+                .build().find();
     }
 
     @Override

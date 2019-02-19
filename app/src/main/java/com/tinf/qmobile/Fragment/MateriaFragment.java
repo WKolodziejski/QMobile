@@ -12,6 +12,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Materia;
 import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
 
 import java.util.Objects;
 
@@ -20,6 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static com.tinf.qmobile.Network.Client.pos;
 
 public class MateriaFragment extends Fragment {
     private EtapasAdapter adapter;
@@ -33,9 +36,14 @@ public class MateriaFragment extends Fragment {
         if (bundle != null) {
 
             int year = bundle.getInt("YEAR");
+            int period = bundle.getInt("PERIOD");
             String name = bundle.getString("NAME");
 
-            Materia materia = App.getBox().boxFor(Materia.class).query().equal(Materia_.year, year).and().equal(Materia_.name, name).build().findFirst();
+            Materia materia = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
+                    .equal(Materia_.name, name).and()
+                    .equal(Materia_.year, year).and()
+                    .equal(Materia_.period, period)
+                    .build().findFirst();
 
             adapter = new EtapasAdapter(materia, getContext());
 

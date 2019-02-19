@@ -1,6 +1,5 @@
 package com.tinf.qmobile.Fragment;
 
-import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +33,6 @@ import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
-import com.tinf.qmobile.Utilities.Utils;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,11 +42,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.INDEX;
-import static com.tinf.qmobile.Network.OnResponse.PG_HOME;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.Network.OnResponse.URL;
-import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
@@ -60,8 +56,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                Client.getYear()).build().find();
+        materias = App.getBox().boxFor(Materia.class).query()
+                .equal(Materia_.year, User.getYear(pos)).and()
+                .equal(Materia_.period, User.getPeriod(pos))
+                .build().find();
 
         Calendar today = Calendar.getInstance();
         today.setTime(new Date());
@@ -217,8 +215,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(int pg) {
         if (pg == UPDATE_REQUEST) {
-            materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                    Client.getYear()).build().find();
+            materias = App.getBox().boxFor(Materia.class).query()
+                    .equal(Materia_.year, User.getYear(pos)).and()
+                    .equal(Materia_.period, User.getPeriod(pos))
+                    .build().find();
         }
         if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {
             if (getView() != null) {

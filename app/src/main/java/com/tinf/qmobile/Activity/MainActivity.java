@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,8 @@ import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.HomeFragment;
@@ -34,6 +37,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -49,29 +53,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         ButterKnife.bind(this);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        /*FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-                        Log.d(TAG, token);
-                        //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "getInstanceId failed", task.getException());
+                        return;
                     }
-                });*/
+                    Log.d(TAG, task.getResult().getToken());
+                });
 
         testLogin();
     }
 
     private void testLogin() {
-        dismissProgressbar();
         if (User.isValid()) {
             if (!Client.get().isValid()) {
                 Client.get().login();
@@ -79,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                 Client.get().load(PG_BOLETIM);
             }
             ((App) getApplication()).setLogged(true);
-            Jobs.scheduleJob(false);
             changeFragment(new HomeFragment());
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
@@ -155,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
                 year.setMinValue(0);
                 year.setMaxValue(User.getYears().length - 1);
-                year.setValue(Client.get().year);
+                year.setValue(Client.pos);
                 year.setDisplayedValues(User.getYears());
                 year.setWrapSelectorWheel(false);
 
@@ -168,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                                         R.string.dialog_date_change, R.color.colorPrimary))
                         .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
 
-                            Client.year = year.getValue();
+                            Client.pos = year.getValue();
                             callOnUpdate(UPDATE_REQUEST);
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
@@ -243,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
             if (fragment instanceof HomeFragment) {
                 setTitle(User.getName());
             } else {
-                setTitle(String.valueOf(Client.getYear()));
+                setTitle(User.getYears()[pos]);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment, fragment)
@@ -323,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     }
 
     @Override
-    public void onStart(int pg, int year) {
+    public void onStart(int pg, int pos) {
         if (!refreshLayout.isRefreshing()) {
             showProgressbar();
         } /*else {
@@ -332,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     }
 
     @Override
-    public void onFinish(int pg, int year) {
+    public void onFinish(int pg, int pos) {
         dismissProgressbar();
         callOnUpdate(pg);
     }
@@ -402,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         Log.v(TAG, "Update: " + pg);
 
         if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
-            setTitle(String.valueOf(Client.getYear()));
+            setTitle(User.getYears()[pos]);
         }
 
         if (listeners != null) {

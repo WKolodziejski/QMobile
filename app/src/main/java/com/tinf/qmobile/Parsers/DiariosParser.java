@@ -26,11 +26,11 @@ import static com.tinf.qmobile.Utilities.Utils.pickColor;
 public class DiariosParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "DiariosParser";
     private OnFinish onFinish;
-    private int year;
+    private int pos;
     private boolean notify;
 
-    public DiariosParser(int year, boolean notify, OnFinish onFinish) {
-        this.year = year;
+    public DiariosParser(int pos, boolean notify, OnFinish onFinish) {
+        this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
 
@@ -60,7 +60,7 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
             String[] years = new String[options.size() - 1];
 
             for (int i = 0; i < options.size() - 1; i++) {
-                years[i] = trimb(options.get(i + 1).text());
+                years[i] = options.get(i + 1).text();
             }
 
             User.setYears(years);
@@ -75,13 +75,13 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
                 nomeMateria = nomeMateria.substring(nomeMateria.indexOf("-") + 2);
 
                 Materia materia = materiaBox.query()
-                        .equal(Materia_.name, nomeMateria)
-                        .and()
-                        .equal(Materia_.year, User.getYear(year))
+                        .equal(Materia_.name, nomeMateria).and()
+                        .equal(Materia_.year, User.getYear(pos)).and()
+                        .equal(Materia_.period, User.getPeriod(pos))
                         .build().findFirst();
 
                 if (materia == null) {
-                    materia = new Materia(nomeMateria, pickColor(nomeMateria), User.getYear(year));
+                    materia = new Materia(nomeMateria, pickColor(nomeMateria), User.getYear(pos), User.getPeriod(pos));
                     for (int i = 0; i < Etapa.Tipo.values().length; i++) {
                         Etapa etapa = new Etapa(Etapa.Tipo.values()[i].getInt());
                         etapa.materia.setTarget(materia);
@@ -202,7 +202,7 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_DIARIOS, year);
+        onFinish.onFinish(PG_DIARIOS, pos);
     }
 
     public interface OnFinish {
@@ -220,9 +220,9 @@ public class DiariosParser extends AsyncTask<String, Void, Void> {
         return string;
     }
 
-    private String trimb(String string) {
+    /*private String trimb(String string) {
         string = string.substring(0, 4);
         return string;
-    }
+    }*/
 
 }

@@ -14,8 +14,8 @@ public interface OnResponse {
     int PG_GERADOR = 2;
     int PG_ACESSO_NEGADO = 3;
 
-    void onStart(int pg, int year);
-    void onFinish(int pg, int year);
+    void onStart(int pg, int pos);
+    void onFinish(int pg, int pos);
     void onError(int pg, String error);
     void onAccessDenied(int pg, String message);
 

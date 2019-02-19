@@ -17,13 +17,15 @@ import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.Utilities.User;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
-import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class HorarioFragment extends Fragment implements OnUpdate {
     private List<Materia> materias;
@@ -33,8 +35,10 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                Client.getYear()).build().find();
+        materias = App.getBox().boxFor(Materia.class).query()
+                .equal(Materia_.year, User.getYear(pos)).and()
+                .equal(Materia_.period, User.getPeriod(pos))
+                .build().find();
     }
 
     @Override
@@ -93,8 +97,10 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(int pg) {
         if (pg == PG_HORARIO || pg == UPDATE_REQUEST) {
-            materias = App.getBox().boxFor(Materia.class).query().equal(Materia_.year,
-                    Client.getYear()).build().find();
+            materias = App.getBox().boxFor(Materia.class).query()
+                    .equal(Materia_.year, User.getYear(pos)).and()
+                    .equal(Materia_.period, User.getPeriod(pos))
+                    .build().find();
             showHorario(getView());
         }
     }

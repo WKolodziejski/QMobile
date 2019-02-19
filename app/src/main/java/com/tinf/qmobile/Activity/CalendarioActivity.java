@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qmobile.Fragment.CalendarioFragment;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
@@ -62,6 +63,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnResponse 
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
             //webView.loadUrl(URL + PG_CALENDARIO);
+            Client.get().load(PG_CALENDARIO);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -97,7 +99,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnResponse 
 
 
     @Override
-    public void onStart(int pg, int year) {
+    public void onStart(int pg, int pos) {
         runOnUiThread(() -> {
             progressBar.setVisibility(View.VISIBLE);
             progressBar.progressiveStart();
@@ -105,7 +107,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnResponse 
     }
 
     @Override
-    public void onFinish(int pg, int year) {
+    public void onFinish(int pg, int pos) {
         runOnUiThread(() -> {
             progressBar.setVisibility(View.GONE);
             progressBar.progressiveStop();

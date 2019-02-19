@@ -1,7 +1,6 @@
 package com.tinf.qmobile.Class.Materias;
 
 import com.tinf.qmobile.Class.Calendario.Evento;
-
 import java.io.Serializable;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
@@ -19,6 +18,7 @@ public class Materia implements Serializable {
     @Transient private boolean isExpanded;
     @Transient private boolean anim;
     private int year;
+    private int period;
     @Backlink(to = "materia") public ToMany<Etapa> etapas;
     @Backlink(to = "materia") public ToMany<Horario> horarios;
     @Backlink(to = "materia") public ToMany<Evento> eventos;
@@ -26,38 +26,27 @@ public class Materia implements Serializable {
 
     public Materia() {}
 
-    public Materia(String name, int color, int year) {
+    public Materia(String name, int color, int year, int period) {
         this.name = name.trim();
         this.color = color;
         this.year = year;
+        this.period = period;
     }
 
     public int getYear() {
         return year;
     }
 
-    public void setYear(int year) {
-        this.year = year;
-    }
-
     public int getColor() {
         return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     public String getName() {
         return name.trim();
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getFaltas() {
-        return faltas;
+        return faltas == null ? "" : faltas;
     }
 
     public void setFaltas(String faltas) {
@@ -80,7 +69,8 @@ public class Materia implements Serializable {
         this.anim = anim;
     }
 
-    public long getId(){
-        return id;
+    public int getPeriod() {
+        return period;
     }
+
 }
