@@ -20,8 +20,8 @@
     <string name="boletim_NotaFinal">FG</string>
     <string name="boletim_PrimeiraEtapa">1st</string>
     <string name="boletim_SegundaEtapa">2nd</string>
-    <string name="dialog_date_change">Select a pos</string>
-    <string name="dialog_confirm">OK</string>
+    <string name="dialog_date_change">Select a year</string>
+    <string name="dialog_date_confirm">Change</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="diarios_PrimeiraEtapa">First Stage</string>
     <string name="diarios_SegundaEtapa">Second Stage</string>
@@ -41,7 +41,7 @@
     <string name="title_notas">Grades</string>
     <string name="title_calendario">Calendar</string>
     <string name="materiais_empty">No materials available for now</string>
-    <string name="calendar_end_period">End of school pos</string>
+    <string name="calendar_end_period">End of school year</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
     <string name="boletim_Materia">Subject</string>
     <string name="home_last_login">The last update was in %1s</string>
@@ -84,4 +84,11 @@
     <string name="pref_license">Use License</string>
     <string name="text_no_handler">No handler for this type of file</string>
     <string name="materiais_downloading">Starting Download</string>
+    <string name="dialog_access_changed">Cannot access your account. Did you change your password?</string>
+    <string name="dialog_try_again">Try again</string>
+    <string name="dialog_renewal_txt">Renew your registration for the next period.</string>
+    <string name="dialog_renewal_title">Renewal Registration</string>
+    <string name="dialog_open_site">Open Website</string>
+    <string name="dialog_later">Later</string>
+    <string name="dialog_continue_offline">Stay offline</string>
 </resources>

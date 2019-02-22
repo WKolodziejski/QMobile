@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.EventosViewHolder;
@@ -42,13 +43,12 @@ public class EventosAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(eventos.get(i).getTitle());
         holder.description.setText(eventos.get(i).getDescription());
-        holder.header.setBackgroundColor(context.getResources().getColor(eventos.get(i).getColor()));
+        holder.header.setBackgroundColor(eventos.get(i).getColor());
 
-        //Ednaldo Pereira
-        if (eventos.get(i).getColor() == R.color.colorPrimary) { //não sei qual a cor certa peguei pelo inteiro dela
-            holder.header.setBackgroundResource(R.color.transparent);
-            holder.title.setTextColor(context.getResources().getColor(eventos.get(i).getColor()));
-            holder.description.setTextColor(context.getResources().getColor(eventos.get(i).getColor()));
+        if (eventos.get(i).getColor() == context.getResources().getColor(R.color.colorAccent)) { //não sei qual a cor certa peguei pelo inteiro dela
+            holder.header.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
+            holder.title.setTextColor(eventos.get(i).getColor());
+            holder.description.setTextColor(eventos.get(i).getColor());
             holder.title.setTypeface(null, Typeface.BOLD);
         }
 
@@ -62,7 +62,7 @@ public class EventosAdapter extends RecyclerView.Adapter {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.point.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(eventos.get(i).getColor())));
+            holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(i).getColor()));
         }
 
         /*if (eventos.get(i).materia.getTarget() != null && !isSubList) {

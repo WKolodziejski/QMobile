@@ -157,4 +157,29 @@ public class LoginFragment extends Fragment implements OnResponse {
         Client.get().removeOnResponseListener(this);
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("user", user.getText().toString());
+        outState.putString("pass", password.getText().toString());
+        outState.putInt("pgr", progressBar.getVisibility());
+        outState.putBoolean("btn", btn.isClickable());
+        outState.putCharSequence("txt_txt", textView.getText());
+        outState.putInt("txt_vis", textView.getVisibility());
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            user.setText(savedInstanceState.getString("user"));
+            password.setText(savedInstanceState.getString("pass"));
+            progressBar.setVisibility(savedInstanceState.getInt("pgr"));
+            btn.setClickable(savedInstanceState.getBoolean("btn"));
+            textView.setText(savedInstanceState.getCharSequence("txt_txt"));
+            textView.setVisibility(savedInstanceState.getInt("txt_vis"));
+        }
+    }
+
 }

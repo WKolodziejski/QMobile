@@ -6,6 +6,8 @@ import android.util.Log;
 import com.tinf.qmobile.R;
 
 import java.io.Serializable;
+
+import androidx.annotation.ColorInt;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;

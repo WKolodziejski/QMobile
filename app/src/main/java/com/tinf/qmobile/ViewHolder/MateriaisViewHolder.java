@@ -22,6 +22,7 @@ public class MateriaisViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.materiais_date)          public TextView date;
     @BindView(R.id.materiais_description)   public TextView description;
     @BindView(R.id.materiais_header)        public ConstraintLayout header;
+    @BindView(R.id.materiais_offline)       public ImageView offline;
 
     public MateriaisViewHolder(@NonNull View view) {
         super(view);

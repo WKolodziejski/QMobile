@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
-            if (!Client.isConnected()) {
+            if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
                 offline.setVisibility(View.VISIBLE);
 
                 TextView text = (TextView) view.findViewById(R.id.offline_last_update);
@@ -174,7 +174,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         endTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getEndMinute());
 
                         WeekViewEvent event = new WeekViewEvent(materias.get(i).horarios.get(j).id, materias.get(i).getName(), startTime, endTime);
-                        event.setColor(getResources().getColor(materias.get(i).getColor()));
+                        event.setColor(materias.get(i).getColor());
 
                         weekHorario.add(event);
 

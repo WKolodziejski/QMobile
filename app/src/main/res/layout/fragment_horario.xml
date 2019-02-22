@@ -17,7 +17,7 @@
         app:horizontalScrollingEnabled="false"
         app:horizontalFlingEnabled="false"
         app:eventCornerRadius="5dp"
-        app:textSize="12sp"
+        app:eventTextSize="12sp"
         app:hourHeight="60dp"
         app:headerRowPadding="12dp"
         app:columnGap="8dp"

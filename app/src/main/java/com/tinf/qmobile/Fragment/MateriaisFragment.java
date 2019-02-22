@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.Box;
 
 import android.os.Environment;
 import android.util.Log;
@@ -30,10 +31,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Materiais.MateriaisListAdapter;
-import com.tinf.qmobile.Class.Materiais.Materiais;
-import com.tinf.qmobile.Class.Materiais.MateriaisList;
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Materiais.Material;
+import com.tinf.qmobile.Class.Materiais.Material_;
+import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Class.Materias.Materia_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Network.OnMateriaisLoad;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
@@ -45,15 +48,16 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
+import static com.tinf.qmobile.Network.Client.isConnected;
+import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
-public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUpdate {
+public class MateriaisFragment extends Fragment implements OnUpdate {
     private static String TAG = "MateriaisFragment";
-    private List<MateriaisList> materiaisList;
+    private List<Materia> materiaList;
     private MateriaisListAdapter adapter;
-    private String name, mime;
-    private boolean isLoading;
+    private String name, mime, path;
     @BindView(R.id.recycler_materiais) RecyclerView recyclerView;
     @BindView(R.id.materiais_empty) View empty;
 
@@ -62,23 +66,76 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         super.onCreate(savedInstanceState);
         getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        OnDownloadListener onDownloadListener = material -> {
-            if (checkPermission()) {
-                DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
-                name = material.getNomeConteudo() + material.getExtension();
-                long lastDownloadL = manager.enqueue(Client.get().download(material));
-                mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
-                Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
+        Client.get().load(PG_MATERIAIS);
 
+        loadData();
+
+        adapter = new MateriaisListAdapter(getContext(), materiaList, material -> {
+            if (checkPermission()) {
+
+                if (material.isDownloaded()) {
+                    openFile(material.getFileName(), material.getPath(), material.getMime());
+
+                } else {
+                    if (isConnected()) {
+                        DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
+
+                        name = material.getFileName();
+                        path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
+
+                        long lastDownloadL = manager.enqueue(Client.get().download(material, path, name));
+
+                        mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
+
+                        Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
+                        material.setMime(mime);
+                        material.setPath(path);
+                        materiaisBox.put(material);
+
+                        Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                    }
+                }
             } else {
                 ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                        1);
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
-        };
+        });
+    }
 
-        adapter = new MateriaisListAdapter(getContext(), new ArrayList<>(), onDownloadListener);
-        //adapter.setHasStableIds(true);
+    private void loadData() {
+        path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
+
+        List<Materia> materias = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
+                .equal(Materia_.year, User.getYear(pos)).and()
+                .equal(Materia_.period, User.getPeriod(pos))
+                .build().find();
+
+        materiaList = new ArrayList<>();
+
+        for (int i = 0; i < materias.size(); i++) {
+            if (!materias.get(i).materiais.isEmpty()) {
+                materiaList.add(materias.get(i));
+            }
+        }
+
+        File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + path);
+
+        if (folder.exists()) {
+            File[] files = folder.listFiles();
+            for (File file : files) {
+                for (int i = 0; i < materiaList.size(); i++) {
+                    for (int j = 0; j < materiaList.get(i).materiais.size(); j++) {
+                        if (materiaList.get(i).materiais.get(j).getFileName().equals(file.getName())) {
+                            materiaList.get(i).materiais.get(j).setDownloaded(true);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Nullable
@@ -96,7 +153,7 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
 
         view.post(() -> {
 
-            RecyclerView.LayoutManager layout = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+            RecyclerView.LayoutManager layout = new LinearLayoutManager(getContext());
             DividerItemDecoration decoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
 
             recyclerView.setLayoutManager(layout);
@@ -118,71 +175,23 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
         });
     }
 
-    private void listFilesForFolder() {
-        File path = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/QMobile/2018");
-
-        if (!path.exists()) {
-            path.mkdir();
-        }
-
-        Log.d("Files", "Path: " + path);
-        File[] files = path.listFiles();
-        Log.d("Files", "Size: "+ files.length);
-        for (File file : files) {
-            Log.d("Files", "FileName:" + file.getName());
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
-        Client.get().setOnMateriaisLoadListener(this);
-        if (materiaisList == null && !isLoading) {
-            Client.get().load(PG_MATERIAIS);
-            isLoading = true;
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
-        Client.get().setOnMateriaisLoadListener(this);
-        if (materiaisList == null && !isLoading) {
-            Client.get().load(PG_MATERIAIS);
-            isLoading = true;
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
-        Client.get().setOnMateriaisLoadListener(null);
-        isLoading = false;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
-        Client.get().setOnMateriaisLoadListener(null);
-        isLoading = false;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        getActivity().unregisterReceiver(onComplete);
-        isLoading = false;
-    }
-
     @Override
     public void onUpdate(int pg) {
         if (pg == UPDATE_REQUEST) {
-            isLoading = true;
             Client.get().load(PG_MATERIAIS);
+        }
+
+        if (pg == PG_MATERIAIS || pg == UPDATE_REQUEST) {
+            loadData();
+            adapter.update(materiaList);
+
+            if (!materiaList.isEmpty()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                empty.setVisibility(View.GONE);
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                empty.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -190,20 +199,6 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
     public void onScrollRequest() {
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
-        }
-    }
-
-    @Override
-    public void onMateriaisLoad(List<MateriaisList> list) {
-        isLoading = false;
-        if (!list.isEmpty()) {
-            materiaisList = list;
-            adapter.update(materiaisList);
-            recyclerView.setVisibility(View.VISIBLE);
-            empty.setVisibility(View.GONE);
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            empty.setVisibility(View.VISIBLE);
         }
     }
 
@@ -219,27 +214,61 @@ public class MateriaisFragment extends Fragment implements OnMateriaisLoad, OnUp
 
     private BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context ctxt, Intent intent) {
-            Intent i = new Intent(ACTION_VIEW);
-            i.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + "/QMobile/" + User.getCredential(REGISTRATION) + "/2018/" + name);
-
-            Uri uri = FileProvider.getUriForFile(getContext(), APPLICATION_ID, file);
-
-            i.setDataAndType(uri, mime);
-
-            try {
-                startActivity(i);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
-            }
+            openFile(name, path, mime);
         }
     };
 
+    private void openFile(String name, String path, String mime) {
+        Intent i = new Intent(ACTION_VIEW);
+        i.setFlags(FLAG_ACTIVITY_NEW_TASK);
+        i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + path + "/" + name);
+
+        Uri uri = FileProvider.getUriForFile(getContext(), APPLICATION_ID, file);
+
+        i.setDataAndType(uri, mime);
+
+        try {
+            startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
+        }
+    }
+
     public interface OnDownloadListener {
-        void onDownload(Materiais material);
+        void onDownload(Material material);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity) getActivity()).addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(onComplete);
     }
 
 }

@@ -73,7 +73,9 @@
                 android:layout_marginEnd="8dp"
                 android:id="@+id/recycler_list_diarios"
                 android:overScrollMode="never"
-                android:transitionName="Diarios" />
+                android:transitionName="Diarios"
+                tools:listitem="@layout/list_diarios"
+                tools:layout_height="200dp" />
 
             <include layout="@layout/layout_nothing"
                 android:id="@+id/diarios_nothing"
@@ -83,10 +85,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_marginTop="8dp"
-                android:layout_gravity="center|bottom"
+                android:layout_gravity="center"
                 android:id="@+id/diarios_open"
                 app:srcCompat="@drawable/ic_unfold"
-                android:background="@color/transparent"/>
+                android:background="@color/transparent" />
 
         </LinearLayout>
 

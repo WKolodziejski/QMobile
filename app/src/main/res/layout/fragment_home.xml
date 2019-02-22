@@ -146,7 +146,7 @@
                     app:horizontalScrollingEnabled="false"
                     app:horizontalFlingEnabled="false"
                     app:eventCornerRadius="5dp"
-                    app:textSize="12sp"
+                    app:eventTextSize="12sp"
                     app:hourHeight="60dp"
                     app:headerRowPadding="12dp"
                     app:columnGap="8dp"
@@ -162,11 +162,11 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/black_dividers"
             app:strokeWidth="1dp"
-            android:layout_margin="8dp"
             >
 
             <LinearLayout

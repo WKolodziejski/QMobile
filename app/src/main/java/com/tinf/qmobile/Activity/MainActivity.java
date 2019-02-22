@@ -1,14 +1,14 @@
 package com.tinf.qmobile.Activity;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.fragment.app.Fragment;
@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
@@ -26,6 +25,7 @@ import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
 import com.tinf.qmobile.Fragment.NotasFragment;
 import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Network.OnEvent;
 import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
@@ -53,31 +53,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         ButterKnife.bind(this);
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "getInstanceId failed", task.getException());
-                        return;
-                    }
-                    Log.d(TAG, task.getResult().getToken());
-                });
+        changeFragment(new HomeFragment());
 
-        testLogin();
-    }
-
-    private void testLogin() {
-        if (User.isValid()) {
-            if (!Client.get().isValid()) {
-                Client.get().login();
-                Client.get().load(PG_DIARIOS);
-                Client.get().load(PG_BOLETIM);
-            }
-            ((App) getApplication()).setLogged(true);
-            changeFragment(new HomeFragment());
-            bottomNav.setSelectedItemId(R.id.navigation_home);
-        } else {
-            startActivityForResult(new Intent(getApplicationContext(), LoginActivity.class), 0);
-        }
+        Client.get().load(PG_DIARIOS);
+        Client.get().load(PG_BOLETIM);
     }
 
     @Override
@@ -128,11 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
             case R.id.action_logout:
 
                 new AlertDialog.Builder(MainActivity.this)
-                        .setCustomTitle(
-                                Utils.customAlertTitle(
-                                        getApplicationContext(),
-                                        R.drawable.ic_exit,
-                                        R.string.dialog_quit, R.color.colorPrimary))
+                        .setTitle(getResources().getString(R.string.dialog_quit))
                         .setMessage(R.string.dialog_quit_msg)
                         .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -154,12 +129,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
 
                 new AlertDialog.Builder(MainActivity.this)
                         .setView(view)
-                        .setCustomTitle(
-                                Utils.customAlertTitle(
-                                        getApplicationContext(),
-                                        R.drawable.ic_date,
-                                        R.string.dialog_date_change, R.color.colorPrimary))
-                        .setPositiveButton(R.string.dialog_confirm, (dialog, which) -> {
+                        .setTitle(getResources().getString(R.string.dialog_date_change))
+                        .setPositiveButton(R.string.dialog_date_confirm, (dialog, which) -> {
 
                             Client.pos = year.getValue();
                             callOnUpdate(UPDATE_REQUEST);
@@ -200,18 +171,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         return changeFragment(fragment);
     }
 
-    protected void showSnackBar(String message, boolean action) {
-        Snackbar snackBar = Snackbar.make((ViewGroup) findViewById(R.id.main_container), message, Snackbar.LENGTH_INDEFINITE);
-        snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
-        if (action) {
-            snackBar.setAction(R.string.button_wifi, view1 -> {
-                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                snackBar.dismiss();
-            });
-        }
-        snackBar.show();
-    }
-
     protected void showProgressbar() {
         refreshLayout.setRefreshing(true);
     }
@@ -225,8 +184,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         Jobs.cancellAllJobs();
         ((App) getApplication()).logOut();
         User.clearInfos();
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
-        startActivity(getIntent());
     }
 
     private boolean changeFragment(Fragment fragment) {
@@ -263,17 +222,12 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        testLogin();
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         Log.v(TAG, "onStart");
         //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
+        Client.get().setOnEventListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
@@ -283,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         super.onStop();
         Log.v(TAG, "onStop");
         Client.get().removeOnResponseListener(this);
+        Client.get().setOnEventListener(null);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
@@ -294,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         //appBarLayout.addOnOffsetChangedListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         Client.get().addOnResponseListener(this);
+        Client.get().setOnEventListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
 
@@ -302,6 +258,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
         super.onPause();
         Log.v(TAG, "onPause");
         Client.get().removeOnResponseListener(this);
+        Client.get().setOnEventListener(null);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
@@ -340,13 +297,20 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
     public void onAccessDenied(int pg, String message) {
         dismissProgressbar();
 
-        if (pg == PG_ACESSO_NEGADO) {
-            new android.app.AlertDialog.Builder(MainActivity.this)
-                    .setCustomTitle(
-                            Utils.customAlertTitle(
-                                    getApplicationContext(),
-                                    R.drawable.ic_error,
-                                    R.string.dialog_access_denied, R.color.error))
+        if (pg == PG_LOGIN) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_access_denied))
+                    .setMessage(getResources().getString(R.string.dialog_access_changed))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.dialog_try_again), (dialogInterface, i) -> Client.get().login())
+                    .setNegativeButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
+                    .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
+                    .create()
+                    .show();
+
+        } else if (pg == PG_ACESSO_NEGADO) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(message)
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
@@ -411,6 +375,27 @@ public class MainActivity extends AppCompatActivity implements OnResponse, Botto
                 listeners.get(i).onScrollRequest();
             }
         }
+    }
+
+    @Override
+    public void onMessage(int count) {
+
+    }
+
+    @Override
+    public void onRenewalAvailable() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(getResources().getString(R.string.dialog_renewal_title))
+                .setMessage(getResources().getString(R.string.dialog_renewal_txt))
+                .setCancelable(true)
+                .setPositiveButton(getResources().getString(R.string.dialog_open_site), (dialogInterface, i) -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(URL + INDEX + PG_LOGIN));
+                    startActivity(browserIntent);
+                })
+                .setNegativeButton(getResources().getString(R.string.dialog_later), null)
+                .create()
+                .show();
     }
 
     /*@Override

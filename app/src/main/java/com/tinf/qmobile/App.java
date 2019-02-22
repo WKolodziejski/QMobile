@@ -29,25 +29,7 @@ public class App extends Application {
 
         context = getApplicationContext();
 
-        Fabric.with(this, new Crashlytics());
-
-        Fabric.with(new Fabric.Builder(this)
-                .kits(new CrashlyticsCore.Builder().build())
-                .debuggable(true)
-                .build());
-
-        Crashlytics.setUserIdentifier(User.getCredential(REGISTRATION));
-
-        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
-            if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
-                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
-                User.clearInfos();
-            }
-        }
-
         initBoxStore();
-
-        Jobs.scheduleJob(false);
     }
 
     public void setLogged(boolean logged) {

@@ -1,7 +1,11 @@
 package com.tinf.qmobile.Class.Materias;
 
 import com.tinf.qmobile.Class.Calendario.Evento;
+import com.tinf.qmobile.Class.Materiais.Material;
+
 import java.io.Serializable;
+
+import androidx.annotation.ColorInt;
 import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -12,7 +16,7 @@ import io.objectbox.relation.ToOne;
 @Entity
 public class Materia implements Serializable {
     @Id public long id;
-    private int color;
+    @ColorInt private int color;
     private String name;
     private String faltas;
     @Transient private boolean isExpanded;
@@ -22,6 +26,7 @@ public class Materia implements Serializable {
     @Backlink(to = "materia") public ToMany<Etapa> etapas;
     @Backlink(to = "materia") public ToMany<Horario> horarios;
     @Backlink(to = "materia") public ToMany<Evento> eventos;
+    @Backlink(to = "materia") public ToMany<Material> materiais;
     @Backlink(to = "materia") public ToOne<Infos> infos;
 
     public Materia() {}

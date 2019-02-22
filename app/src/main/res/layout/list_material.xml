@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@drawable/ic_pdf"
-        tools:tint="@color/materiais_pdf"/>
+        tools:tint="@color/materiais_pdf" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"

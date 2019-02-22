@@ -62,10 +62,10 @@ public class DiariosFragment extends Fragment implements OnUpdate {
         rotate.setDuration(250);
         rotate.setInterpolator(new LinearInterpolator());
 
-        View.OnClickListener open, expand;
+        loadData();
 
-        open = view1 -> {
-            Integer pos = (Integer) view1.getTag();
+        adapter = new DiariosListAdapter(getContext(), materiaList, view -> {
+            Integer pos = (Integer) view.getTag();
 
             Intent intent = new Intent(getContext(), MateriaActivity.class);
             intent.putExtra("NAME", materiaList.get(pos).getName());
@@ -84,17 +84,15 @@ public class DiariosFragment extends Fragment implements OnUpdate {
                     .commit();
 
             ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-        };
-
-        expand = view2 -> {
-            ConstraintLayout expandAct = (ConstraintLayout) view2;
+        }, view -> {
+            ConstraintLayout expandAct = (ConstraintLayout) view;
             ExpandableLayout expandableLayout = (ExpandableLayout) expandAct.getChildAt(2);
             ImageView arrow = (ImageView) expandAct.getChildAt(1);
 
             expandableLayout.toggle();
             arrow.startAnimation(rotate);
 
-            Integer pos = (Integer) view2.getTag();
+            Integer pos = (Integer) view.getTag();
 
             materiaList.get(pos).setExpanded(!materiaList.get(pos).isExpanded());
 
@@ -114,10 +112,8 @@ public class DiariosFragment extends Fragment implements OnUpdate {
                 @Override
                 public void onAnimationRepeat(Animation animation) {}
             });
-        };
+        });
 
-        loadData();
-        adapter = new DiariosListAdapter(getContext(), materiaList, open, expand);
         adapter.setHasStableIds(true);
 
         layout = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);

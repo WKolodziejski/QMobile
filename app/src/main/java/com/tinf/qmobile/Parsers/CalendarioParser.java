@@ -55,9 +55,6 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
             Document document = Jsoup.parse(page[0]);
 
             Elements meses = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
-            //Elements infos = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
-
-            //webView.data_calendario = trimb(document.getElementsByClass("dado_cabecalho").get(1).text());
 
             List<Integer> mesesList = new ArrayList<>();
 
@@ -134,7 +131,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
                 Elements arrayEventos = new Elements();
 
-                if ( meses.get(i).nextElementSibling().childNodeSize() > 0) {
+                if (meses.get(i).nextElementSibling().childNodeSize() > 0) {
                     arrayEventos = meses.get(i).nextElementSibling().child(0).getElementsByTag("tr");
                 }
 
@@ -178,7 +175,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                         description = "";
                                     }
 
-                                    int cor = corQA.equals("#F0F0F0") ? pickColor(title) : R.color.colorPrimary;//pickColor(corQA);
+                                    int cor = corQA.equals("#F0F0F0") ? pickColor(title) : App.getContext().getResources().getColor(R.color.colorAccent);
 
                                     Evento evento = new Evento(title, description, cor, false);
 
@@ -217,7 +214,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                         //String title =  infos.substring(infos.lastIndexOf(")") + 1).trim();
                                         //title = title.substring(0 , title.lastIndexOf(" ") + 1).trim();
 
-                                        Evento evento = new Evento(infos, description, R.color.colorPrimary, data_inicio, data_fim, false);
+                                        Evento evento = new Evento(infos, description, App.getContext().getResources().getColor(R.color.colorAccent), data_inicio, data_fim, false);
                                         //Color.argb(255, 0, 255, 0),data_inicio,data_fim);
 
                                         Calendar ev = Calendar.getInstance();

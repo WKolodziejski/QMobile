@@ -33,7 +33,7 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         holder.title.setText(diarios.get(i).getNome());
         holder.date.setText(diarios.get(i).getData());
         holder.type.setText(diarios.get(i).getTipoString(context));
-        holder.type.setTextColor(context.getResources().getColor(diarios.get(i).etapa.getTarget().materia.getTarget().getColor()));
+        holder.type.setTextColor(diarios.get(i).etapa.getTarget().materia.getTarget().getColor());
         holder.weight.setText(String.format(context.getResources().getString(
                 R.string.diarios_Peso), diarios.get(i).getPeso()));
         holder.grade.setText(String.format(context.getResources().getString(

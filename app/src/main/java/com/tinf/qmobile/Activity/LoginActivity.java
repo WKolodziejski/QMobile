@@ -1,9 +1,13 @@
 package com.tinf.qmobile.Activity;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,7 @@ import com.tinf.qmobile.Utilities.Utils;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private static String TAG = "LoginActivity";
+    Fragment fragment;
     Snackbar snackBar;
     int pages;
 
@@ -27,15 +32,21 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if (savedInstanceState != null) {
+            fragment = getSupportFragmentManager().getFragment(savedInstanceState, "loginFragment");
+        } else {
+            fragment = new LoginFragment();
+        }
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.login_fragment, new LoginFragment())
+                .replace(R.id.login_fragment, fragment)
                 .commit();
     }
 
     public void showSnackBar(String message) { //Mostra a SnackBar
         ViewGroup loginLayout = (ViewGroup) findViewById(R.id.login_container);
-        snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
-        snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
+
+        //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
 
         View view = snackBar.getView();
         TextView tv = (TextView) view.findViewById(R.id.snackbar_text);
@@ -44,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
         //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
         //  Mas aí fica por cima do botão entrar, tem q deixar mais espaço em branco embaixo.
+        snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
         snackBar.show();
     }
 
@@ -90,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         if (pages == User.getYears().length * 3 + 1) {
             User.setValid(true);
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         }
 
@@ -112,8 +125,8 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             showSnackBar(getResources().getString(R.string.login_invalid));
 
         } else if (pg == PG_ACESSO_NEGADO) {
-            new android.app.AlertDialog.Builder(LoginActivity.this)
-                    .setCustomTitle(Utils.customAlertTitle(this, R.drawable.ic_error, R.string.dialog_access_denied, R.color.error))
+            new AlertDialog.Builder(LoginActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(message)
                     .setCancelable(true)
                     .create()
@@ -125,11 +138,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         }
 
         Log.v(TAG, "Access denied");
-    }
-
-    @Override
-    public void onBackPressed(){
-        this.moveTaskToBack(true);
     }
 
     @Override
@@ -172,4 +180,16 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         Client.get().removeOnResponseListener(this);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pages", pages);
+        getSupportFragmentManager().putFragment(outState, "loginFragment", fragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        pages = savedInstanceState.getInt("pages");
+    }
 }

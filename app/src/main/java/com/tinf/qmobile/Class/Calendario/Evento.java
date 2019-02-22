@@ -3,6 +3,8 @@ package com.tinf.qmobile.Class.Calendario;
 import com.tinf.qmobile.Class.Materias.Materia;
 
 import java.io.Serializable;
+
+import androidx.annotation.ColorInt;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -12,7 +14,7 @@ public class Evento implements Serializable {
     @Id public long id;
     private String description;
     private String title;
-    private int color;
+    @ColorInt private int color;
     private String inicio;
     private String fim;
     private boolean happened;

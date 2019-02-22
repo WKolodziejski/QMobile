@@ -73,7 +73,7 @@ public class HorarioFragment extends Fragment implements OnUpdate {
                     endTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getEndMinute());
 
                     WeekViewEvent event = new WeekViewEvent(materias.get(i).horarios.get(j).id, materias.get(i).getName(), startTime, endTime);
-                    event.setColor(getResources().getColor(materias.get(i).getColor()));
+                    event.setColor(materias.get(i).getColor());
 
                     weekHorario.add(event);
 

@@ -40,10 +40,17 @@
     <string name="dialog_quit">Sair</string>
     <string name="dialog_quit_msg">Deseja mesmo sair?</string>
     <string name="dialog_date_change">Selecione um ano</string>
-    <string name="dialog_confirm">OK</string>
+    <string name="dialog_date_confirm">Trocar</string>
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_access_denied">Acesso Negado</string>
     <string name="dialog_check_login">Verifique suas credenciais</string>
+    <string name="dialog_access_changed">Não foi possível acessar sua conta. Você alterou sua senha?</string>
+    <string name="dialog_try_again">Tentar novamente</string>
+    <string name="dialog_open_site">Abrir site</string>
+    <string name="dialog_later">Depois</string>
+    <string name="dialog_renewal_title">Renovação de Matrícula</string>
+    <string name="dialog_renewal_txt">Renove sua matrícula para o próximo período.</string>
+    <string name="dialog_continue_offline">Continuar offline</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>

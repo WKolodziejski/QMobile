@@ -18,18 +18,6 @@ public class Utils {
     public static final String VERSION = ".v1.0.0-r10";
     public static final String VERSION_INFO = ".Version";
 
-    public static View customAlertTitle(Context context, int img, int txt, int color) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View theTitle = Objects.requireNonNull(inflater).inflate(R.layout.dialog_title, null);
-        ImageView title_img = (ImageView) theTitle.findViewById(R.id.dialog_img);
-        TextView title_txt = (TextView) theTitle.findViewById(R.id.dialog_txt);
-        LinearLayout title_bckg = (LinearLayout) theTitle.findViewById(R.id.dialog_bckg);
-        title_img.setImageResource(img);
-        title_bckg.setBackgroundColor(context.getResources().getColor(color));
-        title_txt.setText(txt);
-        return theTitle;
-    }
-
     public static int getRandomColorGenerator() {
         int color = new Random().nextInt(9);
 
@@ -61,7 +49,7 @@ public class Utils {
             case 8: color = R.color.dark_purple_400;
                 break;
         }
-        return color;//App.getContext().getResources().getColor(color);
+        return App.getContext().getResources().getColor(color);
     }
 
     public static int pickColor(String string) {
@@ -95,9 +83,11 @@ public class Utils {
             }
 
             if (color == 0) {
-                color = Utils.getRandomColorGenerator();
+                color = getRandomColorGenerator();
             }
+
+            return color;
         }
-        return color;
+        return App.getContext().getResources().getColor(color);
     }
 }

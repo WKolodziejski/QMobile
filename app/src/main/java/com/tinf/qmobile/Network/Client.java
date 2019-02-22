@@ -17,8 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.tinf.qmobile.Class.Materiais.Materiais;
-import com.tinf.qmobile.Class.Materiais.MateriaisList;
+import com.tinf.qmobile.Class.Materiais.Material;
 import com.tinf.qmobile.Parsers.BoletimParser;
 import com.tinf.qmobile.Parsers.CalendarioParser;
 import com.tinf.qmobile.Parsers.DiariosParser;
@@ -50,7 +49,6 @@ import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 import static com.tinf.qmobile.Network.OnResponse.URL;
-import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -60,7 +58,7 @@ public class Client {
     private static Client singleton;
     private List<OnResponse> listeners;
     private RequestQueue requests;
-    private OnMateriaisLoad onMateriaisLoad;
+    private OnEvent onEvent;
     private String COOKIE;
     private String KEY_A;
     private String KEY_B;
@@ -100,6 +98,7 @@ public class Client {
                         if (r == Resp.DENIED) {
                             addToQueue(pg, url, pos, method, form, notify);
                             login();
+                            callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_DIARIOS) {
@@ -111,11 +110,11 @@ public class Client {
                             } else if (pg == PG_HORARIO) {
                                 new HorarioParser(pos, notify, this::callOnFinish).execute(response);
 
+                            } else if (pg == PG_MATERIAIS) {
+                                new MateriaisParser(pos, notify, this::callOnFinish).execute(response);
+
                             } else if (pg == PG_CALENDARIO) {
                                 new CalendarioParser(notify, this::callOnFinish).execute(response);
-
-                            } else if (pg == PG_MATERIAIS) {
-                                new MateriaisParser(notify, this::callOnMateriaisLoad).execute(response);
 
                             }
                         }
@@ -191,11 +190,16 @@ public class Client {
         fetchParams(sucess -> {
             addRequest(new StringRequest(POST, URL + VALIDA,
                     response -> {
-                        if (testResponse(response) == Resp.OK) {
+                        Resp r = testResponse(response);
+
+                        if (r == Resp.DENIED) {
+                            callOnAccessDenied(PG_LOGIN, "");
+
+                        } else if (r == Resp.OK) {
                             isValid = true;
 
-                            Document page = Jsoup.parse(response);
-                            String name = page.getElementsByClass("barraRodape").get(1).text();
+                            Document document = Jsoup.parse(response);
+                            String name = document.getElementsByClass("barraRodape").get(1).text();
 
                             User.setName(name);
                             User.setLastLogin(new Date().getTime());
@@ -203,6 +207,12 @@ public class Client {
                             isLogging = false;
 
                             callOnFinish(PG_LOGIN, 0);
+
+                            String renewal = document.getElementsByClass("conteudoLink").get(2).text();
+
+                            if (renewal.contains("matrícula")) {
+                                callOnRenewalAvailable();
+                            }
                         }
                     }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
@@ -244,7 +254,6 @@ public class Client {
                     return Resp.EGRESS;
 
                 } else {
-                    callOnAccessDenied(PG_LOGIN, getContext().getResources().getString(R.string.login_expired));
                     return Resp.DENIED;
                 }
             }
@@ -420,34 +429,35 @@ public class Client {
         }
     }
 
-    public DownloadManager.Request download(Materiais material) {
+    public DownloadManager.Request download(Material material, String path, String name) {
         Uri uri = Uri.parse(URL + material.getLink());
 
         return new DownloadManager.Request(uri)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
-                        DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setAllowedOverRoaming(false)
                 .addRequestHeader("Cookie", COOKIE)
-                .setTitle(material.getNomeConteudo())
-                .setDescription(material.getData())
-                .setDestinationInExternalPublicDir("/Download" + "/QMobile/" + User.getCredential(REGISTRATION) + "/2018",
-                        material.getNomeConteudo() + material.getExtension());
+                .setTitle(material.getTitle())
+                .setDescription(material.getDate())
+                .setDestinationInExternalPublicDir("/Download" + path, name);
     }
 
-    public void setOnMateriaisLoadListener(OnMateriaisLoad onMateriaisLoad) {
-        this.onMateriaisLoad = onMateriaisLoad;
+    public void setOnEventListener(OnEvent onEvent) {
+        this.onEvent = onEvent;
     }
 
-    private void callOnMateriaisLoad(List<MateriaisList> list) {
-        if (onMateriaisLoad != null) {
-            onMateriaisLoad.onMateriaisLoad(list);
+    private void callOnRenewalAvailable() {
+        if (onEvent != null) {
+            onEvent.onRenewalAvailable();
         }
-        callOnFinish(PG_MATERIAIS, pos);
     }
 
     public boolean isValid() {
         return isValid;
+    }
+
+    public boolean isLogging() {
+        return isLogging;
     }
 
 }

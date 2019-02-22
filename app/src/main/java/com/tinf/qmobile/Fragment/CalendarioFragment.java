@@ -217,7 +217,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         for (int i = 0; i < mesesList.get(j).days.get(day).eventos.size(); i++) {
             Evento e = mesesList.get(j).days.get(day).eventos.get(i);
-            events.add(new Event(getResources().getColor(e.getColor()), timeInMillis, null));
+            events.add(new Event(e.getColor(), timeInMillis, null));
         }
 
         return events;
