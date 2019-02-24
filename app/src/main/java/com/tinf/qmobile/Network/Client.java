@@ -246,16 +246,20 @@ public class Client {
             String s = strong.text().trim();
 
             if (s.contains("Negado") || s.contains("negado")) {
-                String msg = document.getElementsByClass("conteudoTexto").first().text().trim();
+                Element div = document.getElementsByClass("conteudoTexto").first();
 
-                if (msg.contains("inativo")) {
-                    User.clearInfos();
-                    callOnAccessDenied(PG_ACESSO_NEGADO, msg);
-                    return Resp.EGRESS;
+                if (div != null) {
+                    String msg = div.text().trim();
 
-                } else {
-                    return Resp.DENIED;
+                    if (msg.contains("inativo")) {
+                        User.clearInfos();
+                        callOnAccessDenied(PG_ACESSO_NEGADO, msg);
+                        return Resp.EGRESS;
+
+                    }
                 }
+
+                return Resp.DENIED;
             }
         } else {
             Element p = document.getElementsByTag("p").first();
@@ -267,7 +271,6 @@ public class Client {
                 }
             }
         }
-
         return Resp.OK;
     }
 

@@ -38,7 +38,7 @@ public class App extends Application {
     }
 
     public static BoxStore getBox() {
-        if (!isLogged || boxStore == null) {
+        if (!isLogged || boxStore == null || boxStore.isClosed()) {
             initBoxStore();
         }
         return boxStore;
