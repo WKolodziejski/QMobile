@@ -73,8 +73,7 @@
                 android:singleLine="true"
                 android:hint="@string/text_user"
                 android:id="@+id/user_input_login"
-                android:inputType="text"
-                android:text="20151INF_i0136"/>
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,8 +92,7 @@
                 android:singleLine="true"
                 android:hint="@string/text_password"
                 android:id="@+id/password_input_login"
-                android:inputType="textPassword"
-                android:text="Cleberroberto"/>
+                android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

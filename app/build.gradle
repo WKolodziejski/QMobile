@@ -27,16 +27,16 @@ android {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 16
         targetSdkVersion 28
-        versionName '1.0.0'
+        versionName '1.0.2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 15
+        versionCode 18
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']
             }
         }
-        versionNameSuffix 'beta-r11'
+        versionNameSuffix 'beta-r12'
     }
     buildTypes {
         release {

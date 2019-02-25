@@ -17,7 +17,6 @@ import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -28,7 +27,6 @@ import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 
 public class HorarioFragment extends Fragment implements OnUpdate {
     private List<Matter> matters;
-    private int firstHour = 24;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,21 +55,16 @@ public class HorarioFragment extends Fragment implements OnUpdate {
 
         weekView.setMonthChangeListener((startDate, endDate) -> {
 
+            int firstHour = 24;
+
             List<WeekViewDisplayable> weekHorario = new ArrayList<>();
 
             for (int i = 0; i < matters.size(); i++) {
-                for (int j = 0; j < matters.get(i).horarios.size(); j++) {
-                    Calendar startTime = Calendar.getInstance();
-                    startTime.set(Calendar.MONTH, startDate.get(Calendar.MONTH));
-                    startTime.set(Calendar.DAY_OF_WEEK, matters.get(i).horarios.get(j).getDay());
-                    startTime.set(Calendar.HOUR_OF_DAY, matters.get(i).horarios.get(j).getStartHour());
-                    startTime.set(Calendar.MINUTE, matters.get(i).horarios.get(j).getStartMinute());
+                for (int j = 0; j < matters.get(i).schedules.size(); j++) {
+                    Calendar startTime = matters.get(i).schedules.get(j).getStartTime(startDate.get(Calendar.MONTH));
+                    Calendar endTime =  matters.get(i).schedules.get(j).getEndTime(startDate.get(Calendar.MONTH));
 
-                    Calendar endTime = (Calendar) startTime.clone();
-                    endTime.set(Calendar.HOUR_OF_DAY, matters.get(i).horarios.get(j).getEndHour());
-                    endTime.set(Calendar.MINUTE, matters.get(i).horarios.get(j).getEndMinute());
-
-                    WeekViewEvent event = new WeekViewEvent(matters.get(i).horarios.get(j).id, matters.get(i).getTitle(), startTime, endTime);
+                    WeekViewEvent event = new WeekViewEvent(matters.get(i).schedules.get(j).id, matters.get(i).getTitle(), startTime, endTime);
                     event.setColor(matters.get(i).getColor());
 
                     weekHorario.add(event);

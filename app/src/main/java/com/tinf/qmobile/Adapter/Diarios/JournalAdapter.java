@@ -10,11 +10,11 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class DiariosAdapter extends RecyclerView.Adapter {
+public class JournalAdapter extends RecyclerView.Adapter {
     private List<Journal> journals;
     private Context context;
 
-    public DiariosAdapter(Context context, List<Journal> journals) {
+    public JournalAdapter(Context context, List<Journal> journals) {
         this.context = context;
         this.journals = journals;
     }
@@ -35,11 +35,9 @@ public class DiariosAdapter extends RecyclerView.Adapter {
         holder.type.setText(journals.get(i).getTypeString(context));
         holder.type.setTextColor(journals.get(i).getColor());
         holder.weight.setText(String.format(context.getResources().getString(
-                R.string.diarios_Peso), journals.get(i).getWeight() == -1 ? "-" : String.valueOf(journals.get(i).getWeight())));
+                R.string.diarios_Peso), journals.get(i).getWeightString()));
         holder.grade.setText(String.format(context.getResources().getString(
-                R.string.diarios_Nota),
-                journals.get(i).getGrade() == -1 ? "-" : String.valueOf(journals.get(i).getGrade()),
-                journals.get(i).getMax() == -1 ? "-" : String.valueOf(journals.get(i).getMax())));
+                R.string.diarios_Nota), journals.get(i).getGradeString(), journals.get(i).getMaxString()));
     }
 
     @Override

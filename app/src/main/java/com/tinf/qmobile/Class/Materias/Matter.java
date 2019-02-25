@@ -20,9 +20,9 @@ public class Matter {
     private int year;
     private int period;
     public ToMany<Period> periods;
-    public ToMany<Horario> horarios;
+    public ToMany<Schedule> schedules;
     public ToMany<Evento> eventos;
-    public ToMany<Material> materiais;
+    public ToMany<Material> materials;
     public ToOne<Infos> infos;
 
     public Matter(String title, int color, int year, int period) {
@@ -30,6 +30,10 @@ public class Matter {
         this.color = color;
         this.year = year;
         this.period = period;
+    }
+
+    public String getAbsencesString() {
+        return absences == -1 ? "" : String.valueOf(absences);
     }
 
     /*

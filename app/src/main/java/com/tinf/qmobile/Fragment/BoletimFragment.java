@@ -78,13 +78,13 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                     Period period = materiaList.get(i).periods.get(j);
                     if (period.getTitle() == Period.Type.PRIMEIRA.get() || period.getTitle() == Period.Type.SEGUNDA.get()) {
 
-                        mRowDatas.add(period.getGrade() == -1 ? "" : String.valueOf(period.getGrade()));
-                        mRowDatas.add(period.getAbsences() == -1 ? "" : String.valueOf(period.getAbsences()));
-                        mRowDatas.add(period.getGradeRP() == -1 ? "" : String.valueOf(period.getGradeRP()));
-                        mRowDatas.add(period.getGradeFinal() == -1 ? "" : String.valueOf(period.getGradeFinal()));
+                        mRowDatas.add(period.getGradeString());
+                        mRowDatas.add(period.getAbsencesString());
+                        mRowDatas.add(period.getGradeRPString());
+                        mRowDatas.add(period.getGradeFinalString());
                     }
                 }
-                mRowDatas.add((materiaList.get(i).getAbsences() == -1 ? "" : String.valueOf(materiaList.get(i).getAbsences())));
+                mRowDatas.add((materiaList.get(i).getAbsencesString()));
                 mTableDatas.add(mRowDatas);
             }
         }

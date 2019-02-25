@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Materias.Horario;
+import com.tinf.qmobile.Class.Materias.Schedule;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Utilities.User;
@@ -43,7 +43,7 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
             Log.i(TAG, "Parsing " + User.getYear(pos));
 
             Box<Matter> materiaBox = App.getBox().boxFor(Matter.class);
-            Box<Horario> horarioBox = App.getBox().boxFor(Horario.class);
+            Box<Schedule> horarioBox = App.getBox().boxFor(Schedule.class);
 
             Document document = Jsoup.parse(page[0]);
 
@@ -106,8 +106,8 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                 }
             }
 
-            List<Horario> olds = new ArrayList<>();
-            List<Horario> news = new ArrayList<>();
+            List<Schedule> olds = new ArrayList<>();
+            List<Schedule> news = new ArrayList<>();
 
             List<Matter> materialist = materiaBox.query()
                     .equal(Matter_.year, User.getYear(pos)).and()
@@ -115,14 +115,14 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                     .build().find();
 
                 for (int i = 0; i < materialist.size(); i++) {
-                    for (int j = 0; j < materialist.get(i).horarios.size(); j++) {
-                        Horario h = materialist.get(i).horarios.get(j);
+                    for (int j = 0; j < materialist.get(i).schedules.size(); j++) {
+                        Schedule h = materialist.get(i).schedules.get(j);
                         if (h.isFromSite()) {
                             olds.add(h);
                             horarioBox.remove(h.id);
                         }
                     }
-                    materialist.get(i).horarios.clear();
+                    materialist.get(i).schedules.clear();
                 }
 
             for (int i = 1; i <= 5; i++) {
@@ -135,12 +135,12 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                                 .equal(Matter_.period, User.getPeriod(pos))
                                 .build().findFirst();
 
-                        Horario horario = new Horario(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], true);
+                        Schedule horario = new Schedule(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], true);
                         news.add(horario);
 
                         if (materia != null) {
-                            horario.materia.setTarget(materia);
-                            materia.horarios.add(horario);
+                            horario.matter.setTarget(materia);
+                            materia.schedules.add(horario);
                             horarioBox.put(horario);
                             materiaBox.put(materia);
                         }

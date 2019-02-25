@@ -116,12 +116,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 offline.setVisibility(View.VISIBLE);
 
                 TextView text = (TextView) view.findViewById(R.id.offline_last_update);
-
-                Date date = new Date(User.getLastLogin());
-
-                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-
-                text.setText(String.format(getResources().getString(R.string.home_last_login), format.format(date)));
+                text.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
             } else {
                 offline.setVisibility(View.GONE);
             }
@@ -130,22 +125,19 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     private void showCalendar(View view) {
 
-            RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_home);
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_home);
 
-            recyclerViewCalendario.post(() -> {
+            recyclerView.post(() -> {
 
-            RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
-                    false);
-
-            recyclerViewCalendario.setAdapter(calendarioAdapter);
-            recyclerViewCalendario.setLayoutManager(layout);
+            recyclerView.setAdapter(calendarioAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
             LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
 
             calendario.setOnClickListener(v -> {
                 ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerViewCalendario,
-                                Objects.requireNonNull(ViewCompat.getTransitionName(recyclerViewCalendario)));
+                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerView,
+                                Objects.requireNonNull(ViewCompat.getTransitionName(recyclerView)));
                 startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
             });
         });
@@ -162,18 +154,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 List<WeekViewDisplayable> weekHorario = new ArrayList<>();
 
                 for (int i = 0; i < matters.size(); i++) {
-                    for (int j = 0; j < matters.get(i).horarios.size(); j++) {
-                        Calendar startTime = Calendar.getInstance();
-                        startTime.set(Calendar.MONTH, startDate.get(Calendar.MONTH));
-                        startTime.set(Calendar.DAY_OF_WEEK, matters.get(i).horarios.get(j).getDay());
-                        startTime.set(Calendar.HOUR_OF_DAY, matters.get(i).horarios.get(j).getStartHour());
-                        startTime.set(Calendar.MINUTE, matters.get(i).horarios.get(j).getStartMinute());
+                    for (int j = 0; j < matters.get(i).schedules.size(); j++) {
+                        Calendar startTime = matters.get(i).schedules.get(j).getStartTime(startDate.get(Calendar.MONTH));
+                        Calendar endTime =  matters.get(i).schedules.get(j).getEndTime(startDate.get(Calendar.MONTH));
 
-                        Calendar endTime = (Calendar) startTime.clone();
-                        endTime.set(Calendar.HOUR_OF_DAY, matters.get(i).horarios.get(j).getEndHour());
-                        endTime.set(Calendar.MINUTE, matters.get(i).horarios.get(j).getEndMinute());
-
-                        WeekViewEvent event = new WeekViewEvent(matters.get(i).horarios.get(j).id, matters.get(i).getTitle(), startTime, endTime);
+                        WeekViewEvent event = new WeekViewEvent(matters.get(i).schedules.get(j).id, matters.get(i).getTitle(), startTime, endTime);
                         event.setColor(matters.get(i).getColor());
 
                         weekHorario.add(event);

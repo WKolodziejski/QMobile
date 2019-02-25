@@ -108,7 +108,7 @@ public class Material {
     }
 
     /*
-     * Auto-generated methods
+     * Required methods
      */
 
     public Material() {}

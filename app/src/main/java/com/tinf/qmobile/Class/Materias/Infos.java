@@ -8,7 +8,7 @@ import io.objectbox.annotation.Unique;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class Infos implements Serializable {
+public class Infos {
     @Id public long id;
     private int carga_horaria;
     private int total_aulas;
@@ -18,7 +18,7 @@ public class Infos implements Serializable {
     private int presenca_obrigatoria;
     @Unique private int cod;
     private String professor;
-    private ToOne<Matter> materia;
+    public ToOne<Matter> matter;
 
     public Infos(int carga_horaria, int total_aulas, int aulas_ministradas, int auals_restantes, int presenca_prevista, int presenca_obrigatoria, int cod, String professor) {
         this.carga_horaria = carga_horaria;
@@ -32,10 +32,6 @@ public class Infos implements Serializable {
     }
 
     public Infos() {}
-
-    public ToOne<Matter> getMateria() {
-        return materia;
-    }
 
     public long getId() {
         return id;

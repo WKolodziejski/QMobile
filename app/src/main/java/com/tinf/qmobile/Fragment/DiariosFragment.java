@@ -67,7 +67,7 @@ public class DiariosFragment extends Fragment implements OnUpdate {
             Integer pos = (Integer) view.getTag();
 
             Intent intent = new Intent(getContext(), MateriaActivity.class);
-            intent.putExtra("NAME", materiaList.get(pos).getTitle());
+            intent.putExtra("TITLE", materiaList.get(pos).getTitle());
             intent.putExtra("YEAR", materiaList.get(pos).getYear());
             intent.putExtra("PERIOD", materiaList.get(pos).getPeriod());
 

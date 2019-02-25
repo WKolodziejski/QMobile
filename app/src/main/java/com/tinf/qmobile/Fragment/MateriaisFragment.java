@@ -91,7 +91,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
         materiaList = new ArrayList<>();
 
         for (int i = 0; i < matters.size(); i++) {
-            if (!matters.get(i).materiais.isEmpty()) {
+            if (!matters.get(i).materials.isEmpty()) {
                 materiaList.add(matters.get(i));
             }
         }
@@ -104,9 +104,9 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
                 File[] files = folder.listFiles();
                 for (File file : files) {
                     for (int i = 0; i < materiaList.size(); i++) {
-                        for (int j = 0; j < materiaList.get(i).materiais.size(); j++) {
-                            if (materiaList.get(i).materiais.get(j).getFileName().equals(file.getName())) {
-                                materiaList.get(i).materiais.get(j).isDownloaded = true;
+                        for (int j = 0; j < materiaList.get(i).materials.size(); j++) {
+                            if (materiaList.get(i).materials.get(j).getFileName().equals(file.getName())) {
+                                materiaList.get(i).materials.get(j).isDownloaded = true;
                                 break;
                             }
                         }

@@ -37,7 +37,7 @@
             android:title="Materiais"
             android:key="key_check_materiais"
             android:defaultValue="true"
-            android:summary="Verificar por novos materiais"
+            android:summary="Verificar por novos materials"
             android:dependency="key_check" />
 
         <CheckBoxPreference
@@ -48,10 +48,10 @@
             android:dependency="key_check" />
 
         <SwitchPreference
-            android:title="Baixar materiais"
+            android:title="Baixar materials"
             android:key="key_download_materiais"
             android:defaultValue="false"
-            android:summary="Faer download dos materiais automaticamente"
+            android:summary="Faer download dos materials automaticamente"
             android:dependency="key_check_materiais"/>!-->
 
         <SwitchPreference

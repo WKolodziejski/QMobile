@@ -48,9 +48,9 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
 
-        View view = snackBar.getView();
-        TextView tv = (TextView) view.findViewById(R.id.snackbar_text);
-        tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
+        //View view = snackBar.getView();
+        //TextView tv = (TextView) view.findViewById(R.id.snackbar_text);
+        //tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
 
         //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
         //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.

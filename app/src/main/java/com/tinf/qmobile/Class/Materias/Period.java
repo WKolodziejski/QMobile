@@ -10,6 +10,7 @@ import io.objectbox.relation.ToOne;
 
 @Entity
 public class Period {
+
     public enum Type {
         PRIMEIRA(0), PRIMEIRA_RP1(1), PRIMEIRA_RP2(2), SEGUNDA(3), SEGUNDA_RP1(4), SEGUNDA_RP2(5);
 
@@ -54,8 +55,24 @@ public class Period {
         } else return "?";
     }
 
+    public String getGradeString() {
+        return grade == -1 ? "" : String.valueOf(grade);
+    }
+
+    public String getGradeRPString() {
+        return gradeRP == -1 ? "" : String.valueOf(gradeRP);
+    }
+
+    public String getGradeFinalString() {
+        return gradeFinal == -1 ? "" : String.valueOf(gradeFinal);
+    }
+
+    public String getAbsencesString() {
+        return absences == -1 ? "" : String.valueOf(absences);
+    }
+
     /*
-     * Auto-generated methods
+     * Required methods
      */
 
     public Period() {}

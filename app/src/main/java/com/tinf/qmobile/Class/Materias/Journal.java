@@ -49,6 +49,18 @@ public class Journal {
         this.type = type;
     }
 
+    public String getGradeString() {
+        return grade == -1 ? "-" : String.valueOf(grade);
+    }
+
+    public String getWeightString() {
+        return weight == -1 ? "-" : String.valueOf(weight);
+    }
+
+    public String getMaxString() {
+        return max == -1 ? "-" : String.valueOf(max);
+    }
+
     public String getTypeString(Context context) {
         if (type == AVALIACAO.get()) {
             return context.getResources().getString(R.string.sigla_Avaliacao);
@@ -78,7 +90,7 @@ public class Journal {
     }
 
     /*
-     * Auto-generated methods
+     * Required methods
      */
 
     public Journal() {}

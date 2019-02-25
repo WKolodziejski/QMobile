@@ -41,7 +41,7 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
         holder.materia.setText(materiaList.get(i).getTitle());
         holder.materia.setTag(i);
         holder.recyclerView.setHasFixedSize(true);
-        holder.recyclerView.setAdapter(new MateriaisAdapter(context, materiaList.get(i).materiais, onDownloadListener));
+        holder.recyclerView.setAdapter(new MateriaisAdapter(context, materiaList.get(i).materials, onDownloadListener));
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 

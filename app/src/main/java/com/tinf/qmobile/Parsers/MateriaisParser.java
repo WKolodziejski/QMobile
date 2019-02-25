@@ -82,7 +82,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
                     if (search == null) {
                         material.matter.setTarget(materia);
-                        materia.materiais.add(material);
+                        materia.materials.add(material);
                         materiaisBox.put(material);
 
                         if (notify) {

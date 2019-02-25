@@ -22,8 +22,6 @@ public class Evento implements Serializable {
     public ToOne<Dia> day;
     public ToOne<Matter> materia;
 
-    public Evento(){};
-
     public Evento(String title, String description, int color, boolean userEvent) {
         this.title = title;
         this.description = description;
@@ -39,6 +37,12 @@ public class Evento implements Serializable {
         this.fim = fim;
         this.userEvent = userEvent;
     }
+
+    /*
+     * Required methods
+     */
+
+    public Evento() {}
 
     public String getDescription() {
         return description;

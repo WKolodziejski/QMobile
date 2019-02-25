@@ -15,18 +15,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class User {
     private final static String TAG = "User";
     public static final String REGISTRATION = ".Reg";
     public static final String PASSWORD = ".Pass";
-    public static final String INFO = ".Info";
+    private static final String INFO = ".Info";
     private static final String VALID = ".Valid";
     private static final String NAME = ".Name";
     private static final String LAST = ".Last";
@@ -56,8 +58,10 @@ public class User {
         getEditor().putString(TAG, cred).apply();
     }
 
-    public static long getLastLogin() {
-        return getInfo().getLong(LAST, new Date().getTime());
+    public static String getLastLogin() {
+        Date date = new Date(getInfo().getLong(LAST, new Date().getTime()));
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        return format.format(date);
     }
 
     public static void setLastLogin(Long date) {
