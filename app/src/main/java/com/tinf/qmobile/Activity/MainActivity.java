@@ -330,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    callOnUpdate(UPDATE_REQUEST);
+                    callOnUpdate(PG_MATERIAIS);
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
                 }

@@ -75,16 +75,16 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 mRowDatas.add(materiaList.get(i).getTitle());
 
                 for (int j = 0; j < materiaList.get(i).periods.size(); j++) {
-                    if (materiaList.get(i).periods.get(j).getTitle() == Period.Type.PRIMEIRA.get()
-                            || materiaList.get(i).periods.get(j).getTitle() == Period.Type.SEGUNDA.get()) {
+                    Period period = materiaList.get(i).periods.get(j);
+                    if (period.getTitle() == Period.Type.PRIMEIRA.get() || period.getTitle() == Period.Type.SEGUNDA.get()) {
 
-                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getGrade()));
-                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getAbsences()));
-                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getGradeRP()));
-                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getGradeFinal()));
+                        mRowDatas.add(period.getGrade() == -1 ? "" : String.valueOf(period.getGrade()));
+                        mRowDatas.add(period.getAbsences() == -1 ? "" : String.valueOf(period.getAbsences()));
+                        mRowDatas.add(period.getGradeRP() == -1 ? "" : String.valueOf(period.getGradeRP()));
+                        mRowDatas.add(period.getGradeFinal() == -1 ? "" : String.valueOf(period.getGradeFinal()));
                     }
                 }
-                mRowDatas.add(String.valueOf(materiaList.get(i).getAbsences()));
+                mRowDatas.add((materiaList.get(i).getAbsences() == -1 ? "" : String.valueOf(materiaList.get(i).getAbsences())));
                 mTableDatas.add(mRowDatas);
             }
         }

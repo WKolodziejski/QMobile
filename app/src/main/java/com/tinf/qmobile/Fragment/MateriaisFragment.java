@@ -221,7 +221,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     }
 
     private BroadcastReceiver onComplete = new BroadcastReceiver() {
-        public void onReceive(Context ctxt, Intent intent) {
+        public void onReceive(Context context, Intent intent) {
             openFile(name, path, mime);
         }
     };
