@@ -5,21 +5,18 @@ import android.util.Log;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materiais.Material;
 import com.tinf.qmobile.Class.Materiais.Material_;
-import com.tinf.qmobile.Class.Materias.Horario;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Utilities.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.List;
-
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
-import static com.tinf.qmobile.Utilities.User.REGISTRATION;
+import static com.tinf.qmobile.Utilities.Utils.getDate;
 
 public class MateriaisParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "MateriaisParser";
@@ -40,7 +37,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
         Log.i(TAG, "Parsing");
 
-        Box<Materia> materiaBox = App.getBox().boxFor(Materia.class);
+        Box<Matter> materiaBox = App.getBox().boxFor(Matter.class);
         Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
 
         Document document = Jsoup.parse(page[0]);
@@ -54,10 +51,10 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
             str = str.substring(str.indexOf('-') + 2);
             String nomeMateria = str;
 
-            Materia materia = materiaBox.query()
-                    .equal(Materia_.name, nomeMateria).and()
-                    .equal(Materia_.year, User.getYear(pos)).and()
-                    .equal(Materia_.period, User.getPeriod(pos))
+            Matter materia = materiaBox.query()
+                    .equal(Matter_.title, nomeMateria).and()
+                    .equal(Matter_.year, User.getYear(pos)).and()
+                    .equal(Matter_.period, User.getPeriod(pos))
                     .build().findFirst();
 
             if (materia != null) {
@@ -66,7 +63,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
                 while (classe.equals("conteudoTexto")) {
 
-                    String data = element.child(0).text().trim();
+                    String dataString = element.child(0).text().trim();
                     String link = element.child(1).child(1).attr("href");
                     String title = element.child(1).child(1).text().trim();
                     String descricao = "";
@@ -75,14 +72,16 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                         descricao = element.child(1).child(3).nextSibling().toString().trim();
                     }
 
-                    Material material = new Material(title, data, descricao, link);
+                    long date = getDate(dataString);
+
+                    Material material = new Material(title, date, descricao, link);
 
                     Material search = materiaisBox.query().equal(Material_.title, title).and()
-                            .equal(Material_.date, data).and()
+                            .between(Material_.date, date, date).and()
                             .equal(Material_.link, link).build().findFirst();
 
                     if (search == null) {
-                        material.materia.setTarget(materia);
+                        material.matter.setTarget(materia);
                         materia.materiais.add(material);
                         materiaisBox.put(material);
 

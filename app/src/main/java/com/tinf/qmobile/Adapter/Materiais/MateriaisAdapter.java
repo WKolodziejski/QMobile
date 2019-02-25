@@ -14,13 +14,13 @@ import com.tinf.qmobile.ViewHolder.MateriaisViewHolder;
 import java.util.List;
 
 public class MateriaisAdapter extends RecyclerView.Adapter {
-    private List<Material> materialList;
+    private List<Material> materials;
     private Context context;
     private MateriaisFragment.OnDownloadListener onDownloadListener;
 
-    public MateriaisAdapter(Context context, List<Material> materialList, MateriaisFragment.OnDownloadListener onDownloadListener) {
+    public MateriaisAdapter(Context context, List<Material> materials, MateriaisFragment.OnDownloadListener onDownloadListener) {
         this.context = context;
-        this.materialList = materialList;
+        this.materials = materials;
         this.onDownloadListener = onDownloadListener;
     }
 
@@ -35,12 +35,12 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final MateriaisViewHolder holder = (MateriaisViewHolder) viewHolder;
 
-        holder.title.setText(materialList.get(i).getTitle());
-        holder.date.setText((materialList.get(i).getDate()));
-        holder.type.setImageDrawable(context.getResources().getDrawable(materialList.get(i).getIcon()));
-        holder.offline.setVisibility(materialList.get(i).isDownloaded() ? View.VISIBLE : View.GONE);
-        if (!materialList.get(i).getDescription().isEmpty()) {
-            holder.description.setText(materialList.get(i).getDescription());
+        holder.title.setText(materials.get(i).getTitle());
+        holder.date.setText((materials.get(i).getDateString()));
+        holder.type.setImageDrawable(context.getResources().getDrawable(materials.get(i).getIcon()));
+        holder.offline.setVisibility(materials.get(i).isDownloaded ? View.VISIBLE : View.GONE);
+        if (!materials.get(i).getDescription().isEmpty()) {
+            holder.description.setText(materials.get(i).getDescription());
             holder.description.setVisibility(View.VISIBLE);
         }
 
@@ -50,13 +50,13 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
             Integer pos = (Integer) holder.title.getTag();
 
-            onDownloadListener.onDownload(materialList.get(pos));
+            onDownloadListener.onDownload(materials.get(pos));
         });
     }
 
     @Override
     public int getItemCount() {
-        return materialList.size();
+        return materials.size();
     }
 
 }

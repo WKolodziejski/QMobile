@@ -18,9 +18,9 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.Class.Materiais.Material;
-import com.tinf.qmobile.Parsers.BoletimParser;
+import com.tinf.qmobile.Parsers.ReportParser;
 import com.tinf.qmobile.Parsers.CalendarioParser;
-import com.tinf.qmobile.Parsers.DiariosParser;
+import com.tinf.qmobile.Parsers.JournalParser;
 import com.tinf.qmobile.Parsers.HorarioParser;
 import com.tinf.qmobile.Parsers.MateriaisParser;
 import com.tinf.qmobile.R;
@@ -102,10 +102,10 @@ public class Client {
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_DIARIOS) {
-                                new DiariosParser(pos, notify, this::callOnFinish).execute(response);
+                                new JournalParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_BOLETIM) {
-                                new BoletimParser(pos, notify, this::callOnFinish).execute(response);
+                                new ReportParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_HORARIO) {
                                 new HorarioParser(pos, notify, this::callOnFinish).execute(response);
@@ -441,7 +441,7 @@ public class Client {
                 .setAllowedOverRoaming(false)
                 .addRequestHeader("Cookie", COOKIE)
                 .setTitle(material.getTitle())
-                .setDescription(material.getDate())
+                .setDescription(material.getDateString())
                 .setDestinationInExternalPublicDir("/Download" + path, name);
     }
 

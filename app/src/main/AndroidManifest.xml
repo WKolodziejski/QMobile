@@ -19,13 +19,15 @@
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
         tools:ignore="GoogleAppIndexingWarning">
+
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe"
-            />
+            android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe" />
+
         <activity
             android:name=".Activity.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -34,6 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.MainActivity"
             android:configChanges="orientation|screenSize"
@@ -43,6 +46,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.LoginActivity"
             android:windowSoftInputMode="adjustResize">
@@ -50,24 +54,28 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.Settings.AboutActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.Settings.MoreActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.HorarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.CalendarioActivity"
             android:label="">
@@ -75,12 +83,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.CalendarioActivity2">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.MateriaActivity"
             android:parentActivityName=".Activity.MainActivity"
@@ -89,15 +99,19 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activity.Settings.SettingsActivity"
             android:label="@string/title_settings">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.Activity.MainActivity" />
         </activity>
+
         <activity
             android:name=".Activity.WebViewActivity">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.Activity.MainActivity" />
@@ -111,15 +125,12 @@
             </intent-filter>
         </service>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">
+
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/external_files"/>

@@ -1,10 +1,7 @@
 package com.tinf.qmobile.Class.Materias;
 
-import android.util.Log;
-
 import java.io.Serializable;
 
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -15,7 +12,7 @@ public class Horario implements Serializable {
     private int day;
     private String time;
     private boolean isFromSite;
-    public ToOne<Materia> materia;
+    public ToOne<Matter> materia;
 
     public Horario(int day, String time, boolean isFromSite) {
         this.day = day;

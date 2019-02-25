@@ -6,9 +6,8 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Dia;
 import com.tinf.qmobile.Class.Calendario.Evento;
 import com.tinf.qmobile.Class.Calendario.Mes;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
-import com.tinf.qmobile.Network.Client;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 
@@ -46,7 +45,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
             Box<Mes> mesBox = App.getBox().boxFor(Mes.class);
             Box<Evento> eventoBox = App.getBox().boxFor(Evento.class);
             Box<Dia> diaBox = App.getBox().boxFor(Dia.class);
-            Box<Materia> materiaBox = App.getBox().boxFor(Materia.class);
+            Box<Matter> materiaBox = App.getBox().boxFor(Matter.class);
 
             mesBox.removeAll();
             eventoBox.removeAll();
@@ -183,10 +182,10 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                         evento.setHappened(true);
                                     }
 
-                                    Materia materia = materiaBox.query()
-                                            .equal(Materia_.name, title).and()
-                                            .equal(Materia_.year, User.getPeriod(pos)).and()
-                                            .equal(Materia_.period, User.getPeriod(pos))
+                                    Matter materia = materiaBox.query()
+                                            .equal(Matter_.title, title).and()
+                                            .equal(Matter_.year, User.getPeriod(pos)).and()
+                                            .equal(Matter_.period, User.getPeriod(pos))
                                             .build().findFirst();
 
                                     evento.day.setTarget(dia);
@@ -196,7 +195,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                         evento.materia.setTarget(materia);
                                         materia.eventos.add(evento);
                                         materiaBox.put(materia);
-                                        //Log.v("Box for materia", "size of " + materiaBox.count());
+                                        //Log.v("Box for matter", "size of " + materiaBox.count());
                                     }
                                     eventoBox.put(evento);
                                 }

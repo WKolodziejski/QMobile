@@ -1,24 +1,19 @@
 package com.tinf.qmobile.Utilities;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.R;
-import java.util.Objects;
+
+import java.util.Calendar;
 import java.util.Random;
 
 public class Utils {
     public static final int UPDATE_REQUEST = 0;
-    public static final String VERSION = ".v1.0.0-r10";
+    public static final String VERSION = ".v1.0.0-r12";
     public static final String VERSION_INFO = ".Version";
 
-    public static int getRandomColorGenerator() {
+    private static int getRandomColorGenerator() {
         int color = new Random().nextInt(9);
 
         switch (color) {
@@ -76,10 +71,10 @@ public class Utils {
         } else if (string.contains("Sociologia")) {
             color = R.color.sociologia;
         } else {
-            Materia materia = App.getBox().boxFor(Materia.class).query().equal(Materia_.name, string).build().findFirst();
+            Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.title, string).build().findFirst();
 
-            if (materia != null) {
-                color = materia.getColor();
+            if (matter != null) {
+                color = matter.getColor();
             }
 
             if (color == 0) {
@@ -90,4 +85,29 @@ public class Utils {
         }
         return App.getContext().getResources().getColor(color);
     }
+
+    public static long getDate(String date) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.YEAR, getYear(date));
+        cal.set(Calendar.MONTH, getMonth(date));
+        cal.set(Calendar.DAY_OF_MONTH,getDay(date));
+        return cal.getTimeInMillis();
+    }
+
+    private static int getDay(String date) {
+        return Integer.parseInt(date.substring(0, date.indexOf("/")));
+    }
+
+    private static int getMonth(String date) {
+        return Integer.parseInt(date.substring(date.indexOf("/") + 1, date.lastIndexOf("/")));
+    }
+
+    private static int getYear(String date) {
+        return Integer.parseInt(date.substring(date.lastIndexOf("/") + 1));
+    }
+
 }

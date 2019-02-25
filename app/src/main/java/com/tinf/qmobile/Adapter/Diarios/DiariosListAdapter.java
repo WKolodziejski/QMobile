@@ -1,18 +1,13 @@
 package com.tinf.qmobile.Adapter.Diarios;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 
-import com.tinf.qmobile.Activity.MainActivity;
-import com.tinf.qmobile.Class.Materias.Diarios;
-import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Class.Materias.Journal;
+import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosListViewHolder;
 
@@ -23,18 +18,16 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import io.objectbox.BoxStore;
-import io.objectbox.reactive.DataSubscriptionList;
 
 public class DiariosListAdapter extends RecyclerView.Adapter {
-    private List<Materia> materiaList;
+    private List<Matter> matters;
     private Context context;
     private OnExpandListener onExpandListener;
     private View.OnClickListener open, expand;
 
-    public DiariosListAdapter(Context context, List<Materia> materiaList, View.OnClickListener open, View.OnClickListener expand) {
+    public DiariosListAdapter(Context context, List<Matter> matters, View.OnClickListener open, View.OnClickListener expand) {
         this.context = context;
-        this.materiaList = materiaList;
+        this.matters = matters;
         this.open = open;
         this.expand = expand;
     }
@@ -50,8 +43,8 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
          final DiariosListViewHolder holder = (DiariosListViewHolder) viewHolder;
 
-         holder.title.setText(materiaList.get(i).getName());
-         holder.expand.setExpanded(materiaList.get(i).isExpanded(), materiaList.get(i).isAnim());
+         holder.title.setText(matters.get(i).getTitle());
+         holder.expand.setExpanded(matters.get(i).isExpanded, matters.get(i).shouldAnimate);
 
          setView(holder, i);
 
@@ -66,25 +59,25 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             Integer pos = (Integer) holder.open.getTag();
             setView(holder, pos);
 
-            if (state == ExpandableLayout.State.EXPANDED && materiaList.get(pos).isExpanded()) {
+            if (state == ExpandableLayout.State.EXPANDED && matters.get(pos).isExpanded) {
                 onExpandListener.onExpand(pos);
             }
         });
     }
 
     private void setView(DiariosListViewHolder holder, int i) {
-        if (materiaList.get(i).isExpanded()) {
+        if (matters.get(i).isExpanded) {
             holder.arrow.setImageResource(R.drawable.ic_less);
-            holder.title.setTextColor(materiaList.get(i).getColor());
+            holder.title.setTextColor(matters.get(i).getColor());
 
-            List<Diarios> diarios = materiaList.get(i).etapas.get(getLast(i)).diarios;
+            List<Journal> diarios = matters.get(i).periods.get(getLast(i)).journals;
 
             if (diarios.isEmpty()) {
                 holder.nothing.setVisibility(View.VISIBLE);
                 holder.open.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.GONE);
             } else {
-                DiariosAdapter adapter = new DiariosAdapter(diarios, context);
+                DiariosAdapter adapter = new DiariosAdapter(context, diarios);
                 adapter.setHasStableIds(true);
                 holder.nothing.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.VISIBLE);
@@ -105,35 +98,35 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
     private int getLast(int i) {
         int k = 0;
-        for (int j = 0; j < materiaList.get(i).etapas.size(); j++) {
-            if (!materiaList.get(i).etapas.get(j).diarios.isEmpty()) {
+        for (int j = 0; j < matters.get(i).periods.size(); j++) {
+            if (!matters.get(i).periods.get(j).journals.isEmpty()) {
                 k = j;
             }
         }
         return k;
     }
 
-    public void update(List<Materia> materiaList){
-        this.materiaList = materiaList;
+    public void update(List<Matter> materiaList){
+        this.matters = materiaList;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return materiaList.size();
+        return matters.size();
     }
 
     @Override
     public long getItemId(int position) {
-        return materiaList.get(position).hashCode();
+        return matters.get(position).hashCode();
     }
 
     public void toggleAll(){
         int a = 0;
         int f = 0;
-        for (int i = 0; i < materiaList.size(); i++) {
-            if (!materiaList.get(i).etapas.get(getLast(i)).diarios.isEmpty()) {
-                if (materiaList.get(i).isExpanded()) {
+        for (int i = 0; i < matters.size(); i++) {
+            if (!matters.get(i).periods.get(getLast(i)).journals.isEmpty()) {
+                if (matters.get(i).isExpanded) {
                     a++;
                 } else {
                     f++;
@@ -141,24 +134,16 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             }
         }
         if (a > f) {
-            for (int i = 0; i < materiaList.size(); i++) {
-                if (materiaList.get(i).isExpanded()) {
-                    materiaList.get(i).setAnim(true);
-                } else {
-                    materiaList.get(i).setAnim(false);
-                }
-                materiaList.get(i).setExpanded(false);
+            for (int i = 0; i < matters.size(); i++) {
+                matters.get(i).shouldAnimate = matters.get(i).isExpanded;
+                matters.get(i).isExpanded = false;
             }
             Toast.makeText(context, R.string.diarios_collapsed, Toast.LENGTH_SHORT).show();
         } else {
-            for (int i = 0; i < materiaList.size(); i++) {
-                if (!materiaList.get(i).etapas.get(getLast(i)).diarios.isEmpty()) {
-                    if (materiaList.get(i).isExpanded()) {
-                        materiaList.get(i).setAnim(false);
-                    } else {
-                        materiaList.get(i).setAnim(true);
-                    }
-                    materiaList.get(i).setExpanded(true);
+            for (int i = 0; i < matters.size(); i++) {
+                if (!matters.get(i).periods.get(getLast(i)).journals.isEmpty()) {
+                    matters.get(i).shouldAnimate = !matters.get(i).isExpanded;
+                    matters.get(i).isExpanded = true;
                 }
             }
             Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();

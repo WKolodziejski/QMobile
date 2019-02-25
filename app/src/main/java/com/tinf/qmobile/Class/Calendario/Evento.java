@@ -1,6 +1,6 @@
 package com.tinf.qmobile.Class.Calendario;
 
-import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Class.Materias.Matter;
 
 import java.io.Serializable;
 
@@ -12,15 +12,15 @@ import io.objectbox.relation.ToOne;
 @Entity
 public class Evento implements Serializable {
     @Id public long id;
-    private String description;
     private String title;
+    private String description;
     @ColorInt private int color;
     private String inicio;
     private String fim;
     private boolean happened;
     public boolean userEvent;
     public ToOne<Dia> day;
-    public ToOne<Materia> materia;
+    public ToOne<Matter> materia;
 
     public Evento(){};
 

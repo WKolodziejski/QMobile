@@ -12,7 +12,7 @@ public class Aula {
     private int aulas_dadas;
     private String faltas;
     private String conteudo;
-    private ToOne<Etapa> etapa;
+    private ToOne<Period> etapa;
 
     public Aula(String data, String horario, int aulas_dadas, String faltas, String conteudo) {
         this.data = data;
@@ -24,7 +24,7 @@ public class Aula {
 
     public Aula() {}
 
-    public ToOne<Etapa> getEtapa() {
+    public ToOne<Period> getEtapa() {
         return etapa;
     }
 

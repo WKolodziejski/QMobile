@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tinf.qmobile.Class.Materias.Etapa;
-import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Class.Materias.Period;
+import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.EtapasViewHolder;
 
@@ -18,15 +18,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class EtapasAdapter extends RecyclerView.Adapter {
-    private List<Etapa> etapas;
+    private List<Period> etapas;
     private Context context;
 
-    public EtapasAdapter(Materia materia, Context context) {
+    public EtapasAdapter(Matter materia, Context context) {
         etapas = new ArrayList<>();
 
-        for (int i = 0; i < materia.etapas.size(); i++) {
-            if (!materia.etapas.get(i).diarios.isEmpty()) {
-                etapas.add(materia.etapas.get(i));
+        for (int i = 0; i < materia.periods.size(); i++) {
+            if (!materia.periods.get(i).journals.isEmpty()) {
+                etapas.add(materia.periods.get(i));
             }
         }
 
@@ -44,13 +44,13 @@ public class EtapasAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final EtapasViewHolder holder = (EtapasViewHolder) viewHolder;
 
-        holder.title.setText(etapas.get(i).getEtapaName(context));
+        holder.title.setText(etapas.get(i).getTitle(context));
         holder.recyclerView.setHasFixedSize(true);
         holder.recyclerView.setItemViewCacheSize(20);
         holder.recyclerView.setDrawingCacheEnabled(true);
         holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
-        holder.recyclerView.setAdapter(new DiariosAdapter(etapas.get(i).diarios, context));
+        holder.recyclerView.setAdapter(new DiariosAdapter(context, etapas.get(i).journals));
     }
 
     @Override

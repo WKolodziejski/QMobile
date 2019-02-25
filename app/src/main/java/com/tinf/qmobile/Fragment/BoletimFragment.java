@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Materias.Etapa;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Period;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qmobile.Utilities.User;
@@ -61,9 +60,9 @@ public class BoletimFragment extends Fragment implements OnUpdate {
     }
 
     private void loadData() {
-        List<Materia> materiaList = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, User.getYear(pos)).and()
-                .equal(Materia_.period, User.getPeriod(pos))
+        List<Matter> materiaList = App.getBox().boxFor(Matter.class).query().order(Matter_.title)
+                .equal(Matter_.year, User.getYear(pos)).and()
+                .equal(Matter_.period, User.getPeriod(pos))
                 .build().find();
 
         mTableDatas = new ArrayList<>();
@@ -71,21 +70,21 @@ public class BoletimFragment extends Fragment implements OnUpdate {
         mTableDatas.add(mfristData);
 
         for (int i = 0; i < materiaList.size(); i++) {
-            if (materiaList.get(i).etapas != null) {
+            if (materiaList.get(i).periods != null) {
                 ArrayList<String> mRowDatas = new ArrayList<>();
-                mRowDatas.add(materiaList.get(i).getName());
+                mRowDatas.add(materiaList.get(i).getTitle());
 
-                for (int j = 0; j < materiaList.get(i).etapas.size(); j++) {
-                    if (materiaList.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.PRIMEIRA.getInt()
-                            || materiaList.get(i).etapas.get(j).getEtapa() == Etapa.Tipo.SEGUNDA.getInt()) {
+                for (int j = 0; j < materiaList.get(i).periods.size(); j++) {
+                    if (materiaList.get(i).periods.get(j).getTitle() == Period.Type.PRIMEIRA.get()
+                            || materiaList.get(i).periods.get(j).getTitle() == Period.Type.SEGUNDA.get()) {
 
-                        mRowDatas.add(materiaList.get(i).etapas.get(j).getNota());
-                        mRowDatas.add(materiaList.get(i).etapas.get(j).getFaltas());
-                        mRowDatas.add(materiaList.get(i).etapas.get(j).getNotaRP());
-                        mRowDatas.add(materiaList.get(i).etapas.get(j).getNotaFinal());
+                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getGrade()));
+                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getAbsences()));
+                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getGradeRP()));
+                        mRowDatas.add(String.valueOf(materiaList.get(i).periods.get(j).getGradeFinal()));
                     }
                 }
-                mRowDatas.add(materiaList.get(i).getFaltas());
+                mRowDatas.add(String.valueOf(materiaList.get(i).getAbsences()));
                 mTableDatas.add(mRowDatas);
             }
         }

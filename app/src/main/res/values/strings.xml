@@ -32,7 +32,7 @@
     <string name="text_password">Senha</string>
     <string name="text_empty">Vazio</string>
     <string name="text_permission_denied">A permissão é necessária para baixar materiais</string>
-    <string name="text_no_handler">Não foi possível abrir esse tipo de arquivo</string>
+    <string name="text_no_handler">Não foi possível abrir esse type de arquivo</string>
 
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>

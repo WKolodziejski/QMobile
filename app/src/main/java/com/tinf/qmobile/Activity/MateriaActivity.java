@@ -1,16 +1,13 @@
 package com.tinf.qmobile.Activity;
 
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import io.objectbox.BoxStore;
-
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Fragment.MateriaFragment;
 import com.tinf.qmobile.R;
 
@@ -31,13 +28,15 @@ public class MateriaActivity extends AppCompatActivity {
         if (bundle != null) {
 
             int year = bundle.getInt("YEAR");
-            String name = bundle.getString("NAME");
+            String title = bundle.getString("TITLE");
+            int period = bundle.getInt("PERIOD");
 
-            Materia materia = App.getBox().boxFor(Materia.class).query().equal(Materia_.year, year)
-                    .and().equal(Materia_.name, name).build().findFirst();
+            Matter materia = App.getBox().boxFor(Matter.class).query().equal(Matter_.year, year)
+                    .and().equal(Matter_.title, title).and()
+                    .equal(Matter_.period, period).build().findFirst();
 
             if (materia != null) {
-                Objects.requireNonNull(getSupportActionBar()).setTitle(materia.getName());
+                Objects.requireNonNull(getSupportActionBar()).setTitle(materia.getTitle());
 
                 Fragment fragment = new MateriaFragment();
                 fragment.setArguments(bundle);

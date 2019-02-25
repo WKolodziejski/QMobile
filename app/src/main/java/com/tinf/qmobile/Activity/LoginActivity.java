@@ -113,6 +113,8 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     public void onError(int pg, String error) {
         ((App) getApplication()).setLogged(false);
 
+        pages = 0;
+
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 
         Log.e(TAG, error);
@@ -120,6 +122,8 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onAccessDenied(int pg, String message) {
+
+        pages = 0;
 
         if (pg == PG_LOGIN) {
             showSnackBar(getResources().getString(R.string.login_invalid));

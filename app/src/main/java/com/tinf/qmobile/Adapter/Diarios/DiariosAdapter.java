@@ -3,7 +3,7 @@ package com.tinf.qmobile.Adapter.Diarios;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import com.tinf.qmobile.Class.Materias.Diarios;
+import com.tinf.qmobile.Class.Materias.Journal;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosViewHolder;
 import java.util.List;
@@ -11,12 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class DiariosAdapter extends RecyclerView.Adapter {
-    private List<Diarios> diarios;
+    private List<Journal> journals;
     private Context context;
 
-    public DiariosAdapter(List<Diarios> diarios, Context context) {
-        this.diarios = diarios;
+    public DiariosAdapter(Context context, List<Journal> journals) {
         this.context = context;
+        this.journals = journals;
     }
 
     @NonNull
@@ -30,23 +30,24 @@ public class DiariosAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
 
-        holder.title.setText(diarios.get(i).getNome());
-        holder.date.setText(diarios.get(i).getData());
-        holder.type.setText(diarios.get(i).getTipoString(context));
-        holder.type.setTextColor(diarios.get(i).etapa.getTarget().materia.getTarget().getColor());
+        holder.title.setText(journals.get(i).getTitle());
+        holder.date.setText(journals.get(i).getDateString());
+        holder.type.setText(journals.get(i).getTypeString(context));
+        holder.type.setTextColor(journals.get(i).getColor());
         holder.weight.setText(String.format(context.getResources().getString(
-                R.string.diarios_Peso), diarios.get(i).getPeso()));
+                R.string.diarios_Peso), journals.get(i).getWeight()));
         holder.grade.setText(String.format(context.getResources().getString(
-                R.string.diarios_Nota), diarios.get(i).getNota(), diarios.get(i).getMax()));
+                R.string.diarios_Nota), journals.get(i).getGrade(), journals.get(i).getMax()));
     }
 
     @Override
     public int getItemCount() {
-        return diarios.size();
+        return journals.size();
     }
 
+    //Returns hashCode because adapter is set to stableID
     @Override
     public long getItemId(int position) {
-        return diarios.get(position).hashCode();
+        return journals.get(position).hashCode();
     }
 }

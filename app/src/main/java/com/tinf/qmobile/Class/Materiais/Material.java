@@ -1,53 +1,45 @@
 package com.tinf.qmobile.Class.Materiais;
 
-import com.tinf.qmobile.Class.Materias.Materia;
+import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.R;
-import io.objectbox.annotation.Backlink;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
 @Entity
 public class Material {
+    @Transient public boolean isDownloaded;
     @Id public long id;
-    private String date;
     private String title;
     private String link;
     private String description;
-    transient private boolean isDownloaded;
-    private String fileName;
+    private long date;
     private String path;
     private String mime;
-    @Backlink(to = "materia") public ToOne<Materia> materia;
+    public ToOne<Matter> matter;
 
-    public Material() {};
-
-    public Material(String title, String date, String description, String link) {
+    public Material(String title, long date, String description, String link) {
         this.title = title;
         this.date = date;
         this.description = description;
         this.link = link;
-        this.fileName = format(title) + link.substring(link.lastIndexOf(".")).toLowerCase();
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public String getDescription() {
-        return description;
+    public String getDateString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return format.format(new Date(getDate()));
     }
 
     public int getIcon() {
         return getIcon(link.substring(link.lastIndexOf(".")).toLowerCase());
+    }
+
+    public String getFileName() {
+        return format(title) + link.substring(link.lastIndexOf(".")).toLowerCase();
     }
 
     private int getIcon(String extension) {
@@ -111,16 +103,30 @@ public class Material {
         return icon;
     }
 
-    public boolean isDownloaded() {
-        return isDownloaded;
+    private String format(String input) {
+        return input.replaceAll("[:\\\\/*\"%?|<>'.]", "-");
     }
 
-    public void setDownloaded(boolean downloaded) {
-        isDownloaded = downloaded;
+    /*
+     * Auto-generated methods
+     */
+
+    public Material() {}
+
+    public long getDate() {
+        return date;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getTitle() {
+        return title;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getPath() {
@@ -139,7 +145,4 @@ public class Material {
         this.mime = mime;
     }
 
-    private String format(String input) {
-        return input.replaceAll("[:\\\\/*\"%?|<>'.]", "-");
-    }
 }

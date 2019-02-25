@@ -28,8 +28,8 @@ import com.tinf.qmobile.Adapter.Calendario.CalendarioAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Mes;
 import com.tinf.qmobile.Class.Calendario.Mes_;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
@@ -50,15 +50,15 @@ import static com.tinf.qmobile.Network.OnResponse.URL;
 public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
     private CalendarioAdapter calendarioAdapter;
-    private List<Materia> materias;
+    private List<Matter> matters;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        materias = App.getBox().boxFor(Materia.class).query()
-                .equal(Materia_.year, User.getYear(pos)).and()
-                .equal(Materia_.period, User.getPeriod(pos))
+        matters = App.getBox().boxFor(Matter.class).query()
+                .equal(Matter_.year, User.getYear(pos)).and()
+                .equal(Matter_.period, User.getPeriod(pos))
                 .build().find();
 
         Calendar today = Calendar.getInstance();
@@ -161,20 +161,20 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                 List<WeekViewDisplayable> weekHorario = new ArrayList<>();
 
-                for (int i = 0; i < materias.size(); i++) {
-                    for (int j = 0; j < materias.get(i).horarios.size(); j++) {
+                for (int i = 0; i < matters.size(); i++) {
+                    for (int j = 0; j < matters.get(i).horarios.size(); j++) {
                         Calendar startTime = Calendar.getInstance();
                         startTime.set(Calendar.MONTH, startDate.get(Calendar.MONTH));
-                        startTime.set(Calendar.DAY_OF_WEEK, materias.get(i).horarios.get(j).getDay());
-                        startTime.set(Calendar.HOUR_OF_DAY, materias.get(i).horarios.get(j).getStartHour());
-                        startTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getStartMinute());
+                        startTime.set(Calendar.DAY_OF_WEEK, matters.get(i).horarios.get(j).getDay());
+                        startTime.set(Calendar.HOUR_OF_DAY, matters.get(i).horarios.get(j).getStartHour());
+                        startTime.set(Calendar.MINUTE, matters.get(i).horarios.get(j).getStartMinute());
 
                         Calendar endTime = (Calendar) startTime.clone();
-                        endTime.set(Calendar.HOUR_OF_DAY, materias.get(i).horarios.get(j).getEndHour());
-                        endTime.set(Calendar.MINUTE, materias.get(i).horarios.get(j).getEndMinute());
+                        endTime.set(Calendar.HOUR_OF_DAY, matters.get(i).horarios.get(j).getEndHour());
+                        endTime.set(Calendar.MINUTE, matters.get(i).horarios.get(j).getEndMinute());
 
-                        WeekViewEvent event = new WeekViewEvent(materias.get(i).horarios.get(j).id, materias.get(i).getName(), startTime, endTime);
-                        event.setColor(materias.get(i).getColor());
+                        WeekViewEvent event = new WeekViewEvent(matters.get(i).horarios.get(j).id, matters.get(i).getTitle(), startTime, endTime);
+                        event.setColor(matters.get(i).getColor());
 
                         weekHorario.add(event);
 
@@ -215,9 +215,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(int pg) {
         if (pg == UPDATE_REQUEST) {
-            materias = App.getBox().boxFor(Materia.class).query()
-                    .equal(Materia_.year, User.getYear(pos)).and()
-                    .equal(Materia_.period, User.getPeriod(pos))
+            matters = App.getBox().boxFor(Matter.class).query()
+                    .equal(Matter_.year, User.getYear(pos)).and()
+                    .equal(Matter_.period, User.getPeriod(pos))
                     .build().find();
         }
         if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {

@@ -29,7 +29,14 @@ public class App extends Application {
 
         context = getApplicationContext();
 
-        initBoxStore();
+        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
+            if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
+                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
+                User.clearInfos();
+            }
+        } else {
+            initBoxStore();
+        }
     }
 
     public void setLogged(boolean logged) {

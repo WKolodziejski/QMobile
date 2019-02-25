@@ -18,7 +18,7 @@ public class Infos implements Serializable {
     private int presenca_obrigatoria;
     @Unique private int cod;
     private String professor;
-    private ToOne<Materia> materia;
+    private ToOne<Matter> materia;
 
     public Infos(int carga_horaria, int total_aulas, int aulas_ministradas, int auals_restantes, int presenca_prevista, int presenca_obrigatoria, int cod, String professor) {
         this.carga_horaria = carga_horaria;
@@ -33,7 +33,7 @@ public class Infos implements Serializable {
 
     public Infos() {}
 
-    public ToOne<Materia> getMateria() {
+    public ToOne<Matter> getMateria() {
         return materia;
     }
 

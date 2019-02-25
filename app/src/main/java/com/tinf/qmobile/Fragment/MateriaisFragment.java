@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.Box;
-
 import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,14 +32,12 @@ import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.Materiais.MateriaisListAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materiais.Material;
-import com.tinf.qmobile.Class.Materiais.Material_;
-import com.tinf.qmobile.Class.Materias.Materia;
-import com.tinf.qmobile.Class.Materias.Materia_;
+import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +52,7 @@ import static com.tinf.qmobile.Utilities.User.REGISTRATION;
 
 public class MateriaisFragment extends Fragment implements OnUpdate {
     private static String TAG = "MateriaisFragment";
-    private List<Materia> materiaList;
+    private List<Matter> materiaList;
     private MateriaisListAdapter adapter;
     private String name, mime, path;
     @BindView(R.id.recycler_materiais) RecyclerView recyclerView;
@@ -72,35 +69,13 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
 
         adapter = new MateriaisListAdapter(getContext(), materiaList, material -> {
             if (checkPermission()) {
-
-                if (material.isDownloaded()) {
+                if (material.isDownloaded) {
                     openFile(material.getFileName(), material.getPath(), material.getMime());
-
                 } else {
-                    if (isConnected()) {
-                        DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
-
-                        name = material.getFileName();
-                        path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
-
-                        long lastDownloadL = manager.enqueue(Client.get().download(material, path, name));
-
-                        mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
-
-                        Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
-                        material.setMime(mime);
-                        material.setPath(path);
-                        materiaisBox.put(material);
-
-                        Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-
-                    } else {
-                        Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
-                    }
+                    downloadFile(material);
                 }
             } else {
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                requestPermission();
             }
         });
     }
@@ -108,33 +83,61 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private void loadData() {
         path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
 
-        List<Materia> materias = App.getBox().boxFor(Materia.class).query().order(Materia_.name)
-                .equal(Materia_.year, User.getYear(pos)).and()
-                .equal(Materia_.period, User.getPeriod(pos))
+        List<Matter> matters = App.getBox().boxFor(Matter.class).query().order(Matter_.title)
+                .equal(Matter_.year, User.getYear(pos)).and()
+                .equal(Matter_.period, User.getPeriod(pos))
                 .build().find();
 
         materiaList = new ArrayList<>();
 
-        for (int i = 0; i < materias.size(); i++) {
-            if (!materias.get(i).materiais.isEmpty()) {
-                materiaList.add(materias.get(i));
+        for (int i = 0; i < matters.size(); i++) {
+            if (!matters.get(i).materiais.isEmpty()) {
+                materiaList.add(matters.get(i));
             }
         }
 
-        File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + path);
+        if (checkPermission()) {
 
-        if (folder.exists()) {
-            File[] files = folder.listFiles();
-            for (File file : files) {
-                for (int i = 0; i < materiaList.size(); i++) {
-                    for (int j = 0; j < materiaList.get(i).materiais.size(); j++) {
-                        if (materiaList.get(i).materiais.get(j).getFileName().equals(file.getName())) {
-                            materiaList.get(i).materiais.get(j).setDownloaded(true);
-                            break;
+            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + path);
+
+            if (folder.exists()) {
+                File[] files = folder.listFiles();
+                for (File file : files) {
+                    for (int i = 0; i < materiaList.size(); i++) {
+                        for (int j = 0; j < materiaList.get(i).materiais.size(); j++) {
+                            if (materiaList.get(i).materiais.get(j).getFileName().equals(file.getName())) {
+                                materiaList.get(i).materiais.get(j).isDownloaded = true;
+                                break;
+                            }
                         }
                     }
                 }
             }
+        } else {
+            requestPermission();
+        }
+    }
+
+    private void downloadFile(Material material) {
+        if (isConnected()) {
+            DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
+
+            name = material.getFileName();
+            path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
+
+            long lastDownloadL = manager.enqueue(Client.get().download(material, path, name));
+
+            mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
+
+            Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
+            material.setMime(mime);
+            material.setPath(path);
+            materiaisBox.put(material);
+
+            Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -210,6 +213,11 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
         } else {
             return false;
         }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
     }
 
     private BroadcastReceiver onComplete = new BroadcastReceiver() {
