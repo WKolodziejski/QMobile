@@ -4,16 +4,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import io.objectbox.Box;
+import me.jlurena.revolvingweekview.WeekView;
+import me.jlurena.revolvingweekview.WeekViewEvent;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewDisplayable;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Calendario.Event;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
+import com.tinf.qmobile.Class.Materias.Schedule;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import java.util.ArrayList;
@@ -45,10 +49,10 @@ public class HorarioFragment extends Fragment implements OnUpdate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showHorario(view);
+        showHorario2(view);
     }
 
-    private void showHorario(View view) {
+    /*private void showHorario(View view) {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
@@ -83,6 +87,33 @@ public class HorarioFragment extends Fragment implements OnUpdate {
         });
 
         weekView.notifyDataSetChanged();
+    }*/
+
+    private void showHorario2(View view) {
+        WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
+
+        weekView.setWeekViewLoader(() -> {
+            int firstHour = 24;
+
+            List<WeekViewEvent> events = new ArrayList<>();
+
+            for (Matter matter : matters) {
+                for (Schedule schedule : matter.schedules) {
+                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), matter.getTitle(),
+                            schedule.getStartTime(), schedule.getEndTime());
+                    event.setColor(matter.getColor());
+                    events.add(event);
+
+                    if (event.getStartTime().getHour() < firstHour) {
+                        firstHour = event.getStartTime().getHour();
+                    }
+                }
+            }
+
+            weekView.goToHour(firstHour + 0.5);
+
+            return events;
+        });
     }
 
     @Override
@@ -92,7 +123,7 @@ public class HorarioFragment extends Fragment implements OnUpdate {
                     .equal(Matter_.year, User.getYear(pos)).and()
                     .equal(Matter_.period, User.getPeriod(pos))
                     .build().find();
-            showHorario(getView());
+            showHorario2(getView());
         }
     }
 

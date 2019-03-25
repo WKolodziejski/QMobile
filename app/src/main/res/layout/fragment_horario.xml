@@ -6,25 +6,28 @@
     android:layout_height="match_parent"
     >
 
-    <com.alamkanak.weekview.WeekView
-        android:id="@+id/weekView_horario"
+    <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="8dp"
-        android:layout_marginEnd="8dp"
         android:transitionName="Horario"
-        app:numberOfVisibleDays="5"
-        app:horizontalScrollingEnabled="false"
-        app:horizontalFlingEnabled="false"
+        android:id="@+id/weekView_horario"
+        app:headerColumnPadding="8dp"
+        app:noOfVisibleDays="5"
         app:eventCornerRadius="5dp"
         app:eventTextSize="12sp"
         app:hourHeight="60dp"
         app:headerRowPadding="12dp"
         app:columnGap="8dp"
+        app:firstDayOfWeek="monday"
+        app:horizontalFlingEnabled="false"
+        app:xScrollingSpeed="0"
+        app:showFirstDayOfWeekFirst="true"
+        app:zoomFocusPointEnabled="false"
+        app:headerColumnBackground="@color/colorPrimary"
+        app:headerColumnTextColor="@color/colorPrimary"
         app:eventTextColor="@color/colorPrimaryLight"
         app:headerRowBackgroundColor="@color/white_dividers"
-        app:dayBackgroundColor="@color/colorPrimaryLight"
-        app:todayBackgroundColor="@color/blue_50" />
+        app:nowLineColor="@color/colorPrimary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

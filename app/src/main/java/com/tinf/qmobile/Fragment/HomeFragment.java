@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import me.jlurena.revolvingweekview.WeekView;
+import me.jlurena.revolvingweekview.WeekViewEvent;
 
 import android.util.Log;
 import android.util.Pair;
@@ -22,9 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewDisplayable;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.tinf.qmobile.Activity.CalendarioActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
@@ -38,6 +37,7 @@ import com.tinf.qmobile.Class.Calendario.Month;
 import com.tinf.qmobile.Class.Calendario.Month_;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
+import com.tinf.qmobile.Class.Materias.Schedule;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.R;
@@ -119,6 +119,12 @@ public class HomeFragment extends Fragment implements OnUpdate {
         showOffline(view);
         showHorario(view);
         showCalendar(view);
+
+        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
+
+        horario.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), HorarioActivity.class));
+        });
     }
 
     private void showOffline(View view) {
@@ -170,46 +176,37 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
-            weekView.setMonthChangeListener((startDate, endDate) -> {
+        weekView.setWeekViewLoader(() -> {
+            int firstHour = 24;
 
-                int firstHour = 24;
+            List<WeekViewEvent> events = new ArrayList<>();
 
-                List<WeekViewDisplayable> weekHorario = new ArrayList<>();
+            for (Matter matter : matters) {
+                for (Schedule schedule : matter.schedules) {
+                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), matter.getTitle(),
+                            schedule.getStartTime(), schedule.getEndTime());
+                    event.setColor(matter.getColor());
+                    events.add(event);
 
-                for (int i = 0; i < matters.size(); i++) {
-                    for (int j = 0; j < matters.get(i).schedules.size(); j++) {
-                        Calendar startTime = matters.get(i).schedules.get(j).getStartTime(startDate.get(Calendar.MONTH));
-                        Calendar endTime =  matters.get(i).schedules.get(j).getEndTime(startDate.get(Calendar.MONTH));
-
-                        WeekViewEvent event = new WeekViewEvent(matters.get(i).schedules.get(j).id, matters.get(i).getTitle(), startTime, endTime);
-                        event.setColor(matters.get(i).getColor());
-
-                        weekHorario.add(event);
-
-                        if (startTime.get(Calendar.HOUR_OF_DAY) < firstHour) {
-                            firstHour = startTime.get(Calendar.HOUR_OF_DAY);
-                        }
+                    if (event.getStartTime().getHour() < firstHour) {
+                        firstHour = event.getStartTime().getHour();
                     }
                 }
+            }
 
-                Calendar currentWeek = Calendar.getInstance();
-                currentWeek.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                weekView.goToDate(currentWeek);
-                weekView.goToHour(firstHour);
+            weekView.goToHour(firstHour + 0.5);
 
-                return weekHorario;
-            });
+            return events;
+        });
 
-            weekView.notifyDataSetChanged();
+        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 
-            LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
-
-            horario.setOnClickListener(v -> {
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
-                                weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
-                startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
-            });
+        horario.setOnClickListener(v -> {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
+                            weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
+            startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
+        });
 
     }
 

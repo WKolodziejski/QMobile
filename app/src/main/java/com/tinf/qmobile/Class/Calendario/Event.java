@@ -1,12 +1,15 @@
 package com.tinf.qmobile.Class.Calendario;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.ColorInt;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
@@ -69,6 +72,7 @@ public class Event extends com.github.sundeepk.compactcalendarview.domain.Event 
         return startTime;
     }
 
+    @ColorInt
     @Override
     public int getColor() {
         if (color != 0) {
@@ -77,7 +81,7 @@ public class Event extends com.github.sundeepk.compactcalendarview.domain.Event 
         } else if (matter.getTargetId() != 0) {
             return matter.getTarget().getColor();
 
-        } else return 0;
+        } else return App.getContext().getResources().getColor(R.color.colorPrimary);
     }
 
     @Override

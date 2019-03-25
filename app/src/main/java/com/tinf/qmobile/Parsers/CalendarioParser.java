@@ -160,7 +160,6 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     if (search == null) {
 
                                         Event event = new Event(title, date, true);
-                                        event.setColor(App.getContext().getResources().getColor(R.color.colorPrimary));
 
                                         if (hasDescription) {
                                             event.setDescription(description);
@@ -204,7 +203,6 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
                                             Event event = new Event(title, start, true);
                                             event.setEndTime(end);
-                                            event.setColor(App.getContext().getResources().getColor(R.color.colorPrimary));
 
                                             eventBox.put(event);
                                             month.events.add(event);
