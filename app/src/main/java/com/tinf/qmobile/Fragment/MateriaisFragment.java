@@ -34,7 +34,6 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materiais.Material;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
-import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;

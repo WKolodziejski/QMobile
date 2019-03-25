@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.tinf.qmobile.Fragment.HorarioFragment;
 import com.tinf.qmobile.Network.OnResponse;
-import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Fragment.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;

@@ -13,10 +13,6 @@ import android.view.ViewGroup;
 import com.tinf.qmobile.Activity.WebViewActivity;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
-import com.tinf.qmobile.Utilities.Utils;
-
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String CHECK = "key_check";
@@ -28,7 +24,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getLayoutInflater().inflate(R.layout.action_bar, (ViewGroup) findViewById(android.R.id.content));
+        getLayoutInflater().inflate(R.layout.action_bar_main, (ViewGroup) findViewById(android.R.id.content));
         androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

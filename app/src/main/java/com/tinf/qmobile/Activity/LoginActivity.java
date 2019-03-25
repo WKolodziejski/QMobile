@@ -79,11 +79,12 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                 for (int i = 1; i < User.getYears().length; i++) {
                     Client.get().load(PG_DIARIOS, i);
                 }
+
+                Client.get().load(PG_CALENDARIO, pos);
             }
 
             Client.get().load(PG_BOLETIM, pos);
             Client.get().load(PG_HORARIO, pos);
-            Client.get().load(PG_CALENDARIO, pos);
 
             pages++;
         }

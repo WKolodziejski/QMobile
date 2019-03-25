@@ -82,7 +82,7 @@ public class Journal {
 
     public String getDateString() {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return format.format(new Date(getDate()));
+        return format.format(new Date(date));
     }
 
     public int getColor() {

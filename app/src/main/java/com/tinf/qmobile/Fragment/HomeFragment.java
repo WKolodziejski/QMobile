@@ -1,5 +1,7 @@
 package com.tinf.qmobile.Fragment;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,22 +28,24 @@ import com.alamkanak.weekview.WeekViewEvent;
 import com.tinf.qmobile.Activity.CalendarioActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
-import com.tinf.qmobile.Adapter.Calendario.CalendarioAdapter;
+import com.tinf.qmobile.Activity.Settings.EventActivity;
+import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.Mes;
-import com.tinf.qmobile.Class.Calendario.Mes_;
+import com.tinf.qmobile.Class.Calendario.CalendarBase;
+import com.tinf.qmobile.Class.Calendario.Event;
+import com.tinf.qmobile.Class.Calendario.Event_;
+import com.tinf.qmobile.Class.Calendario.Month;
+import com.tinf.qmobile.Class.Calendario.Month_;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
-import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.R;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static com.tinf.qmobile.Network.Client.pos;
@@ -49,35 +55,38 @@ import static com.tinf.qmobile.Network.OnResponse.URL;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
-    private CalendarioAdapter calendarioAdapter;
+    private EventosAdapter calendarioAdapter;
     private List<Matter> matters;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), EventActivity.class));
+        });
+
         matters = App.getBox().boxFor(Matter.class).query()
                 .equal(Matter_.year, User.getYear(pos)).and()
                 .equal(Matter_.period, User.getPeriod(pos))
                 .build().find();
 
-        Calendar today = Calendar.getInstance();
-        today.setTime(new Date());
-        today.set(Calendar.HOUR_OF_DAY, 0);
-        today.set(Calendar.MINUTE, 0);
-        today.set(Calendar.SECOND, 0);
+        Calendar current = Calendar.getInstance();
+        current.setTime(new Date());
+        current.set(Calendar.HOUR_OF_DAY, 0);
+        current.set(Calendar.MINUTE, 0);
+        current.set(Calendar.SECOND, 0);
+        current.set(Calendar.MILLISECOND, 0);
 
-        Mes mes = App.getBox().boxFor(Mes.class).query()
-                .equal(Mes_.year, today.get(Calendar.YEAR))
-                .equal(Mes_.month, today.get(Calendar.MONTH))
-                .build().findUnique();
+        List<Event> events = App.getBox().boxFor(Event.class).query()
+                .greater(Event_.startTime, current.getTimeInMillis() - 1).build().find(0 ,5);
 
-        if (mes == null) {
-            List<Mes> mesList = App.getBox().boxFor(Mes.class).query().build().find();
-            mes = mesList.get(mesList.size() - 1);
+        if (events.size() < 5) {
+            events = App.getBox().boxFor(Event.class).query().build().find();
+            events = events.subList(events.size() - 5, events.size());
         }
 
-        calendarioAdapter = new CalendarioAdapter(getActivity(), mes.days, true);
+        calendarioAdapter = new EventosAdapter(getActivity(), events);
     }
 
     @Override
@@ -100,6 +109,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(URL + INDEX + PG_LOGIN));
             startActivity(browserIntent);
+        });
+
+        view.post(() -> {
+            ((MainActivity) getActivity()).fab.setImageResource(R.drawable.ic_add);
+            ((MainActivity) getActivity()).fab.show();
         });
 
         showOffline(view);
@@ -135,10 +149,19 @@ public class HomeFragment extends Fragment implements OnUpdate {
             LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
 
             calendario.setOnClickListener(v -> {
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), recyclerView,
-                                Objects.requireNonNull(ViewCompat.getTransitionName(recyclerView)));
+                /*ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), ((MainActivity) getActivity()).fab,
+                                Objects.requireNonNull(ViewCompat.getTransitionName(((MainActivity) getActivity()).fab)));*/
+
+                ActivityOptions options = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                    Pair statusAnim = Pair.create(recyclerView, recyclerView.getTransitionName());
+                    Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
+                    options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
+                }
+
                 startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
+
             });
         });
     }
@@ -237,4 +260,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
         ((MainActivity) getActivity()).removeOnUpdateListener(this);
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        //((MainActivity) getActivity()).fab.hide();
+    }
 }

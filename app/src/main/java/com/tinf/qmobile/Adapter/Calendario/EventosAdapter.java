@@ -1,79 +1,71 @@
 package com.tinf.qmobile.Adapter.Calendario;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.Evento;
+import com.tinf.qmobile.Class.Calendario.CalendarBase;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.ViewHolder.EventosViewHolder;
+import com.tinf.qmobile.ViewHolder.Calendar.CalendarioViewHolder;
+import com.tinf.qmobile.ViewHolder.Calendar.EventDefaultViewHolder;
+import com.tinf.qmobile.ViewHolder.Calendar.EventImageViewHolder;
+import com.tinf.qmobile.ViewHolder.Calendar.EventSimpleViewHolder;
+import com.tinf.qmobile.ViewHolder.Calendar.MonthViewHolder;
 
 import java.util.List;
 
-public class EventosAdapter extends RecyclerView.Adapter {
-    private List<Evento> eventos;
+public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
+    private List<? extends CalendarBase> events;
     private Context context;
-    private boolean isSubList;
 
-    public EventosAdapter(Context context, List<Evento> eventos, boolean isSubList) {
-        this.eventos = eventos;
+    public EventosAdapter(Context context, List<? extends CalendarBase> events) {
         this.context = context;
-        this.isSubList = isSubList;
+        this.events = events;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        return new EventosViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.list_eventos, parent, false));
+    public CalendarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        switch (viewType) {
+            case CalendarBase.ViewType.DEFAULT:
+                return new EventDefaultViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.list_event_default, parent, false));
+
+            case CalendarBase.ViewType.SIMPLE:
+                return new EventSimpleViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.list_event_simple, parent, false));
+
+            case CalendarBase.ViewType.IMAGE:
+                return new EventImageViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.list_event_image, parent, false));
+
+            case CalendarBase.ViewType.MONTH:
+                return new MonthViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.list_event_month, parent, false));
+
+        }
+
+        return null;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        final EventosViewHolder holder = (EventosViewHolder) viewHolder;
+    public int getItemViewType(int i) {
+        return events.get(i).getItemType();
+    }
 
-        holder.title.setText(eventos.get(i).getTitle());
-        holder.description.setText(eventos.get(i).getDescription());
-        holder.header.setBackgroundColor(eventos.get(i).getColor());
-
-        if (eventos.get(i).getColor() == context.getResources().getColor(R.color.colorAccent)) { //não sei qual a cor certa peguei pelo inteiro dela
-            holder.header.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
-            holder.title.setTextColor(eventos.get(i).getColor());
-            holder.description.setTextColor(eventos.get(i).getColor());
-            holder.title.setTypeface(null, Typeface.BOLD);
-        }
-
-        if (eventos.get(i).getDescription().isEmpty()) {
-            holder.description.setVisibility(View.GONE);
-        }
-
-        if (eventos.get(i).getHappened()) {
-            holder.title.setPaintFlags(holder.title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.description.setPaintFlags(holder.description.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.point.setBackgroundTintList(ColorStateList.valueOf(eventos.get(i).getColor()));
-        }
-
-        /*if (eventos.get(i).matter.getTarget() != null && !isSubList) {
-            holder.header.setOnClickListener(v -> {
-                Toast.makeText(context, eventos.get(i).matter.getTarget().getTitle(), Toast.LENGTH_SHORT).show();
-            });
-        }*/
+    @Override
+    public void onBindViewHolder(@NonNull CalendarioViewHolder holder, int i) {
+        holder.bind(events.get(i));
     }
 
     @Override
     public int getItemCount() {
-        return eventos.size();
+        return events.size();
     }
+
 }

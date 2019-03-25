@@ -13,18 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.Adapter.ViewPagerAdapter;
-import com.tinf.qmobile.Fragment.BoletimFragment;
-import com.tinf.qmobile.Fragment.DiariosFragment;
-import com.tinf.qmobile.Interfaces.OnUpdate;
-import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.Utilities.User;
-
-import java.util.Objects;
-
-import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class NotasFragment extends Fragment implements ViewPager.OnPageChangeListener {
     private static String TAG = "NotasFragment";

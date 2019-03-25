@@ -13,9 +13,9 @@
         >
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_calendario"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
+            android:id="@+id/toolbar_calendario"
             tools:title="@string/title_calendario" >
 
             <!--<TextView
@@ -46,26 +46,6 @@
             app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
             app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary"
             app:layout_constraintTop_toBottomOf="@id/toolbar_calendario"/>
-
-        <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:indeterminate="true"
-            android:id="@+id/progressbar_horizontal_calendar"
-            android:visibility="gone"
-            app:spb_sections_count="3"
-            app:spb_color="@color/colorPrimary"
-            app:spb_speed="2"
-            app:spb_stroke_width="2dp"
-            app:spb_stroke_separator_length="4dp"
-            app:spb_reversed="false"
-            app:spb_mirror_mode="false"
-            app:spb_interpolator="spb_interpolator_accelerate"
-            app:spb_progressiveStart_activated="false"
-            app:spb_progressiveStart_speed="3"
-            app:spb_progressiveStop_speed="4"
-            app:layout_constraintBottom_toBottomOf="@id/compactcalendar_view"
-            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

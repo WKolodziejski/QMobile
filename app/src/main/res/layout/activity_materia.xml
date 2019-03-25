@@ -9,7 +9,7 @@
     <include
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        layout="@layout/action_bar_materia"/>
+        layout="@layout/action_bar_default"/>
 
     <FrameLayout
         android:layout_width="match_parent"

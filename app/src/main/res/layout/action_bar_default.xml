@@ -1,6 +1,5 @@
 <com.google.android.material.appbar.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,7 +10,6 @@
         android:id="@+id/toolbar_materia"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        tools:title="@string/boletim_Materia"
-        />
+        tools:title="@string/app_name" />
 
 </com.google.android.material.appbar.AppBarLayout>

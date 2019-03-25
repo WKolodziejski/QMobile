@@ -117,8 +117,8 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public long getItemId(int position) {
-        return matters.get(position).hashCode();
+    public long getItemId(int i) {
+        return matters.get(i).hashCode();
     }
 
     public void toggleAll(){

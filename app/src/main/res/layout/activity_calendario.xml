@@ -8,8 +8,8 @@
     >
 
     <include
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         layout="@layout/action_bar_calendar"/>
 
         <FrameLayout

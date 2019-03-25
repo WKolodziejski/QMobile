@@ -16,31 +16,31 @@ public class Utils {
         int color = new Random().nextInt(9);
 
         switch (color) {
-            case 0: color = R.color.deep_orange_400;
+            case 0: color = R.color.deep_orange_500;
                 break;
 
-            case 1: color = R.color.yellow_A700;
+            case 1: color = R.color.yellow_a700;
                 break;
 
-            case 2: color = R.color.lime_A700;
+            case 2: color = R.color.lime_a700;
                 break;
 
-            case 3: color = R.color.light_green_400;
+            case 3: color = R.color.light_green_500;
                 break;
 
-            case 4: color = R.color.teal_400;
+            case 4: color = R.color.teal_500;
                 break;
 
-            case 5: color = R.color.cyan_400;
+            case 5: color = R.color.cyan_500;
                 break;
 
-            case 6: color = R.color.light_blue_400;
+            case 6: color = R.color.light_blue_500;
                 break;
 
-            case 7: color = R.color.indigo_400;
+            case 7: color = R.color.indigo_500;
                 break;
 
-            case 8: color = R.color.dark_purple_400;
+            case 8: color = R.color.deep_purple_500;
                 break;
         }
         return App.getContext().getResources().getColor(color);
@@ -92,7 +92,7 @@ public class Utils {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.YEAR, getYear(date));
-        cal.set(Calendar.MONTH, getMonth(date));
+        cal.set(Calendar.MONTH, getMonth(date) - 1);
         cal.set(Calendar.DAY_OF_MONTH,getDay(date));
         return cal.getTimeInMillis();
     }

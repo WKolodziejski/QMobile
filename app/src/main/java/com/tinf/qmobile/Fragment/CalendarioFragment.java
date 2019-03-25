@@ -1,5 +1,6 @@
 package com.tinf.qmobile.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -7,37 +8,194 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
-import io.objectbox.Box;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.oushangfeng.pinnedsectionitemdecoration.PinnedHeaderItemDecoration;
 import com.tinf.qmobile.Activity.CalendarioActivity;
-import com.tinf.qmobile.Adapter.Calendario.CalendarioAdapter;
+import com.tinf.qmobile.Activity.Settings.EventActivity;
+import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
+import com.tinf.qmobile.Class.Calendario.CalendarBase;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.Evento;
-import com.tinf.qmobile.Class.Calendario.Mes;
-import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Class.Calendario.Event;
+import com.tinf.qmobile.Class.Calendario.Event_;
+import com.tinf.qmobile.Class.Calendario.Month;
+import com.tinf.qmobile.Class.Calendario.Month_;
 import com.tinf.qmobile.R;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
 import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
-import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class CalendarioFragment extends Fragment implements OnUpdate {
-    private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMM ― yyyy", Locale.getDefault());
-    private CalendarioAdapter adapter;
-    private List<Mes> mesesList;
-    private int month = 0;
+    private CompactCalendarView calendarView;
+    private LinearLayoutManager layout;
+    private EventosAdapter adapter;
+    //private CalendarAdapterTEST adapter;
+    private List<CalendarBase> events;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_START;
+            }
+        };
+
+        layout = new LinearLayoutManager(getContext());
+
+        Calendar startOfMonth = (Calendar) Calendar.getInstance();
+        Calendar endOfMonth = (Calendar) Calendar.getInstance();
+
+        Date date = new Date();
+        startOfMonth.setTime(date);
+        endOfMonth.setTime(date);
+        endOfMonth.add(Calendar.MONTH, 1);
+
+        setTitle(date.getTime());
+
+        calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
+
+        calendarView.removeAllEvents();
+        calendarView.setCurrentDate(date);
+        calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
+        calendarView.setUseThreeLetterAbbreviation(true);
+        calendarView.shouldDrawIndicatorsBelowSelectedDays(true);
+
+        calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+
+            @Override
+            public void onDayClick(Date day) {
+                int p = events.size() - 1;
+
+                for (int i = 0; i < events.size(); i++) {
+                    if (events.get(i) instanceof Event) {
+                        if (((Event) events.get(i)).getStartTime() >= day.getTime()) {
+                            p = i;
+                            break;
+                        }
+                    }
+                }
+
+                smoothScroller.setTargetPosition(p);
+                layout.startSmoothScroll(smoothScroller);
+            }
+
+            @Override
+            public void onMonthScroll(Date month) {
+                setTitle(month.getTime());
+
+                startOfMonth.setTime(month);
+                endOfMonth.setTime(month);
+                endOfMonth.add(Calendar.MONTH, 1);
+
+                int p = events.size() - 1;
+
+                for (int i = 0; i < events.size(); i++) {
+                    if (events.get(i) instanceof Month) {
+                        if (((Month) events.get(i)).getDate() >= month.getTime()) {
+                            p = i;
+                            break;
+                        }
+                    }
+                }
+
+                smoothScroller.setTargetPosition(p);
+                layout.startSmoothScroll(smoothScroller);
+            }
+        });
+
+        loadData();
+
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i) instanceof Event) {
+                Event event = (Event) events.get(i);
+
+                if (event.getEndTime() != 0) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(event.getStartTime());
+
+                    long originalTime = event.getStartTime();
+
+                    while (calendar.getTimeInMillis() <= event.getEndTime()) {
+                        calendarView.addEvent(event);
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        event.setStartTime(calendar.getTimeInMillis());
+                    }
+
+                    event.setStartTime(originalTime);
+                } else {
+                    calendarView.addEvent(event);
+                }
+            }
+        }
+
+        int p = events.size() - 1;
+
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i) instanceof Month) {
+                if (((Month) events.get(i)).getDate() >= date.getTime()) {
+                    p = i;
+                    break;
+                }
+            }
+        }
+
+        layout.scrollToPosition(p);
+
+        adapter = new EventosAdapter(getContext(), events);
+
+
+        /*List<CalendarTEST> test = new ArrayList<>();
+
+        for (MultiItemEntity item : events) {
+            if (item.getItemType() == CalendarBase.ViewType.MONTH) {
+                test.add(new CalendarTEST(true, ((Month) ((MultiItemEntity) item)).getMonth()));
+            } else {
+                test.add(new CalendarTEST(item));
+            }
+        }
+
+        adapter = new CalendarAdapterTEST(test);*/
+
+    }
+
+
+
+    private void loadData() {
+        List<Month> months = App.getBox().boxFor(Month.class).query().order(Month_.date).build().find();
+
+        events = new ArrayList<>();
+
+        for (int i = 0; i < months.size(); i++) {
+            int j = i == months.size() - 1 ? i : i + 1;
+            events.add(months.get(i));
+            if (i == months.size() - 1) {
+                events.addAll(App.getBox().boxFor(Event.class).query()
+                        .greater(Event_.startTime, months.get(i).getDate() - 1).build().find());
+            } else {
+                events.addAll(App.getBox().boxFor(Event.class).query()
+                        .between(Event_.startTime, months.get(i).getDate() - 1, months.get(j).getDate() - 1).build().find());
+            }
+        }
+
+        /*for (Month month : months) {
+            events.add(month);
+            events.addAll(month.events);
+        }*/
+
+    }
 
     @Nullable
     @Override
@@ -48,197 +206,78 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        showCalendar(view);
-    }
 
-    private void showCalendar(View view) {
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_calendario);
 
-        mesesList = App.getBox().boxFor(Mes.class).query().build().find();
+        recyclerView.post(() -> {
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(20);
+            recyclerView.setDrawingCacheEnabled(true);
+            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+            recyclerView.setLayoutManager(layout);
+            recyclerView.setAdapter(adapter);
 
-        CompactCalendarView calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
-        calendarView.removeAllEvents();
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    int i = layout.findFirstVisibleItemPosition();
 
-        for (int i = 0; i < mesesList.size(); i++) {
-            addEvents(calendarView, i);
-        }
-
-        Calendar lastDateMesesList = Calendar.getInstance();
-        lastDateMesesList.set(Calendar.YEAR, mesesList.get(mesesList.size() - 1).getYear());
-        lastDateMesesList.set(Calendar.MONTH, mesesList.get(mesesList.size() - 1).getMonth());
-        lastDateMesesList.set(Calendar.DAY_OF_MONTH, mesesList.get(mesesList.size() - 1).days.get(0).getDay());
-
-        if (new Date().getTime() < lastDateMesesList.getTimeInMillis()) {
-            lastDateMesesList.setTimeInMillis(new Date().getTime());
-
-            for (int i = 0; i < mesesList.size(); i++) {
-                if (mesesList.get(i).getMonth() == lastDateMesesList.get(Calendar.MONTH)) {
-                    month = i;
-                    break;
-                }
-            }
-        } else {
-            month = mesesList.size() - 1;
-        }
-
-        adapter = new CalendarioAdapter(getActivity(), mesesList.get(month).days, false);
-
-        calendarView.setCurrentDate(lastDateMesesList.getTime());
-
-        calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
-        calendarView.setUseThreeLetterAbbreviation(true);
-        calendarView.shouldDrawIndicatorsBelowSelectedDays(true);
-
-        ((CalendarioActivity) getActivity()).setTitle(dateFormatForMonth.format(lastDateMesesList.getTime()));
-
-        RecyclerView recyclerViewCalendario = (RecyclerView) view.findViewById(R.id.recycler_calendario);
-
-        RecyclerView.LayoutManager layout = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL,
-                false);
-
-        recyclerViewCalendario.setAdapter(adapter);
-        recyclerViewCalendario.setLayoutManager(layout);
-
-        calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
-
-            @Override
-            public void onDayClick(Date date) {
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(date.getTime());
-
-                for (int i = 0; i < adapter.getCalendarioList().size(); i++) {
-                    if (adapter.getCalendarioList().get(i).getDay() == calendar.get(Calendar.DAY_OF_MONTH)) {
-
-                        RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(Objects.requireNonNull(getActivity())) {
-                            @Override
-                            protected int getVerticalSnapPreference() {
-                                return LinearSmoothScroller.SNAP_TO_START;
-                            }
-                        };
-
-                        smoothScroller.setTargetPosition(i);
-                        layout.startSmoothScroll(smoothScroller);
-                        break;
+                    if (events.get(i) instanceof Month) {
+                        calendarView.setCurrentDate(new Date(((Month) events.get(i)).getDate()));
+                        setTitle(((Month) events.get(i)).getDate());
                     }
                 }
-            }
-
-            @Override
-            public void onMonthScroll(Date date) {
-
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(date.getTime());
-
-                boolean isInRange = false;
-                int direction = 0; // 1 Direita      -1 Esquerda
-
-                for (int i = 0; i < mesesList.size(); i++) {
-                    if (calendar.get(Calendar.MONTH) == mesesList.get(i).getMonth()
-                            && calendar.get(Calendar.YEAR) == mesesList.get(i).getYear()) {
-                        isInRange = true;
-                        break;
-                    } else {
-                        if (calendar.get(Calendar.YEAR) == mesesList.get(i).getYear()) {
-                            direction = -1;
-                        } else {
-                            direction = 1;
-                        }
-                        isInRange = false;
-                    }
-                }
-
-                if (isInRange) {
-
-                    ((CalendarioActivity) getActivity()).setTitle(dateFormatForMonth.format(date));
-
-                    for (int i = 0; i < mesesList.size(); i++) {
-                        if (mesesList.get(i).getYear() == calendar.get(Calendar.YEAR)) {
-                            for (int j = i; j < mesesList.size(); j++) {
-                                if (mesesList.get(j).getMonth() == calendar.get(Calendar.MONTH)) {
-                                    adapter = new CalendarioAdapter(getActivity(), mesesList.get(j).days, false);
-                                    recyclerViewCalendario.setAdapter(adapter);
-                                    month = j;
-
-                                    Calendar today = Calendar.getInstance();
-                                    today.setTime(new Date());
-
-                                    for (int k = 0; k < mesesList.get(j).days.size(); k++) {
-                                        if (calendar.getTimeInMillis() <= today.getTimeInMillis()) {
-                                            for (int l = 0; l < mesesList.get(j).days.get(k).eventos.size(); l++) {
-                                                if (mesesList.get(j).days.get(k).eventos.get(l).day.getTarget().getDay() <= today.get(Calendar.DAY_OF_MONTH)) {
-
-                                                    mesesList.get(j).days.get(k).eventos.get(l).setHappened(true);
-
-                                                    Box<Evento> eventoBox = App.getBox().boxFor(Evento.class);
-
-                                                    Evento evento = eventoBox.get(mesesList.get(j).days.get(k).eventos.get(l).id);
-                                                    evento.setHappened(true);
-
-                                                    eventoBox.put(evento);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                    }
-                } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.calendar_end_period), Toast.LENGTH_SHORT).show();
-                    if (direction == 1) {
-                        calendarView.scrollRight();
-                        calendarView.scrollLeft();
-                    } else if (direction == -1) {
-                        calendarView.scrollLeft();
-                        calendarView.scrollRight();
-                    }
-                }
-            }
+            });
         });
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_calendar);
+        fab.setOnClickListener(v -> {
+
+            startActivity(new Intent(getActivity(), EventActivity.class));
+
+            /*Event event = new Event("TESTE", new Date().getTime(), false);
+            event.setColor(Color.RED);
+            App.getBox().boxFor(Event.class).put(event);
+
+            loadData();
+
+            int p = events.size() - 1;
+
+            for (int i = 0; i < events.size(); i++) {
+                if (events.get(i).getStartTime() == event.getStartTime()
+                        && events.get(i).getTitle().equals(event.getTitle())) {
+                    p = i;
+                }
+            }*/
+
+            //adapter.addItems(p, event);
+        });
+
     }
 
-    private void addEvents(CompactCalendarView calendarView, int j) {
-        for (int i = 0; i < mesesList.get(j).days.size(); i++) {
-            Calendar date = Calendar.getInstance(Locale.getDefault());
-
-            date.set(Calendar.MONTH, mesesList.get(j).getMonth());
-            date.set(Calendar.ERA, GregorianCalendar.AD);
-            date.set(Calendar.YEAR, mesesList.get(j).getYear());
-            date.set(Calendar.DAY_OF_MONTH, i + 1);
-
-            calendarView.addEvents(getEvents(date.getTimeInMillis(), j, i));
-        }
-    }
-
-    private List<Event> getEvents(long timeInMillis, int j, int day) {
-        List<Event> events = new ArrayList<>();
-
-        for (int i = 0; i < mesesList.get(j).days.get(day).eventos.size(); i++) {
-            Evento e = mesesList.get(j).days.get(day).eventos.get(i);
-            events.add(new Event(e.getColor(), timeInMillis, null));
-        }
-
-        return events;
+    private void setTitle(long date) {
+        ((CalendarioActivity) getActivity()).setTitle(new SimpleDateFormat("MMM ― yyyy", Locale.getDefault()).format(date));
     }
 
     @Override
     public void onUpdate(int pg) {
         if (pg == PG_CALENDARIO || pg == UPDATE_REQUEST) {
-            showCalendar(getView());
+
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
         ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
         ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 

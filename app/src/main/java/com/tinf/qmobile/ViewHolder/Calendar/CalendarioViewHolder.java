@@ -1,20 +1,22 @@
-package com.tinf.qmobile.ViewHolder;
+package com.tinf.qmobile.ViewHolder.Calendar;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tinf.qmobile.Class.Calendario.Event;
 import com.tinf.qmobile.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CalendarioViewHolder extends RecyclerView.ViewHolder{
-    @BindView(R.id.calendario_dia)    public TextView dia;
-    @BindView(R.id.recyvler_eventos)  public RecyclerView eventos;
-    @BindView(R.id.calendario_layout) public LinearLayout layout;
+public abstract class CalendarioViewHolder<T> extends RecyclerView.ViewHolder {
 
     public CalendarioViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
     }
+
+    public abstract void bind(T calendar);
+
 }

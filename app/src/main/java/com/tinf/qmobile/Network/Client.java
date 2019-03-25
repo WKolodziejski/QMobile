@@ -114,7 +114,7 @@ public class Client {
                                 new MateriaisParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_CALENDARIO) {
-                                new CalendarioParser(notify, this::callOnFinish).execute(response);
+                                new CalendarioParser(pos, notify, this::callOnFinish).execute(response);
 
                             }
                         }

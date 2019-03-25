@@ -25,7 +25,6 @@ import com.tinf.qmobile.Adapter.Diarios.DiariosListAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
-import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 
@@ -41,7 +40,6 @@ public class DiariosFragment extends Fragment implements OnUpdate {
     private static String TAG = "DiariosFragment";
     private DiariosListAdapter adapter;
     private List<Matter> materiaList;
-    private FloatingActionButton fab;
     private RecyclerView.LayoutManager layout;
     @BindView(R.id.recycler_diarios) RecyclerView recyclerView;
 
@@ -51,9 +49,7 @@ public class DiariosFragment extends Fragment implements OnUpdate {
 
         Log.v(TAG, "New instace created");
 
-        fab = (FloatingActionButton) getActivity().findViewById(R.id.fab_expand);
-
-        fab.setOnClickListener(v -> {
+        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
             adapter.toggleAll();
         });
 
@@ -177,14 +173,16 @@ public class DiariosFragment extends Fragment implements OnUpdate {
                 }
             });
 
-            fab.show();
+            ((MainActivity) getActivity()).fab.setImageResource(R.drawable.ic_expand);
+            ((MainActivity) getActivity()).fab.show();
+
         });
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        fab.hide();
+        //((MainActivity) getActivity()).fab.hide();
     }
 
     @Override

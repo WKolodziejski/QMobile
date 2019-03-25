@@ -8,9 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:fitsSystemWindows="true"
-    app:layout_optimizationLevel="standard|dimensions|chains"
-    tools:context="com.tinf.qmobile.Activity.MainActivity"
-    >
+    app:layout_optimizationLevel="standard|dimensions|chains">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -22,7 +20,7 @@
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/action_bar" />
+            layout="@layout/action_bar_main" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
@@ -46,16 +44,18 @@
             android:id="@+id/fab_expand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:fabSize="normal"
-            app:borderWidth="0dp"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginBottom="16dp"
             android:visibility="invisible"
-            app:srcCompat="@drawable/ic_expand"
+            android:transitionName="Fab"
             android:background="@color/colorAccent"
-            android:tint="@color/colorPrimaryLight"/>
+            android:tint="@color/colorPrimaryLight"
+            app:srcCompat="@drawable/ic_expand"
+            app:fabSize="normal"
+            app:borderWidth="0dp"
+            tools:visibility="visible"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -67,6 +67,6 @@
         app:itemIconTint="@color/colorAccent"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

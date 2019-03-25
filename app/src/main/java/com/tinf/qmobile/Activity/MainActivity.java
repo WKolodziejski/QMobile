@@ -3,14 +3,13 @@ package com.tinf.qmobile.Activity;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,20 +17,22 @@ import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-import com.google.firebase.iid.FirebaseInstanceId;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.Fragment.DiariosFragment;
 import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
 import com.tinf.qmobile.Fragment.NotasFragment;
-import com.tinf.qmobile.Interfaces.OnUpdate;
+import com.tinf.qmobile.Fragment.OnUpdate;
 import com.tinf.qmobile.Network.OnEvent;
 import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
-import com.tinf.qmobile.Utilities.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.fab_expand)        public FloatingActionButton fab;
     private List<OnUpdate> listeners;
 
     @Override
@@ -55,8 +57,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         changeFragment(new HomeFragment());
 
-        Client.get().load(PG_DIARIOS);
-        Client.get().load(PG_BOLETIM);
+        if (Client.get().isLogging()) {
+            Client.get().load(PG_DIARIOS);
+            Client.get().load(PG_BOLETIM);
+        }
     }
 
     @Override
@@ -200,6 +204,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.main_fragment, fragment)
                     .commit();
+            if (!(fragment instanceof HomeFragment) || !(fragment instanceof DiariosFragment)) {
+                fab.hide();
+            }
             return true;
         }
         return false;
@@ -327,9 +334,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     callOnUpdate(PG_MATERIAIS);
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();

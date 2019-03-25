@@ -183,15 +183,15 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                             if (notify) {
                                 Intent intent = new Intent();
-                                intent.putExtra("NAME", matter.getTitle());
+                                intent.putExtra("TITLE", matter.getTitle());
                                 intent.putExtra("YEAR", matter.getYear());
+                                intent.putExtra("PERIOD", matter.getPeriod());
 
                                 Jobs.displayNotification(matter.getTitle(), newJournal.getTitle(),
                                         App.getContext().getResources().getString(R.string.title_diarios), (int) newJournal.id, intent.getExtras());
                             }
                         }
                     }
-
                     period.matter.setTarget(matter);
                     matter.periods.add(period);
                     periodBox.put(period);

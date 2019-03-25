@@ -18,7 +18,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         android:allowBackup="false"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup"
+        >
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -63,6 +65,14 @@
         </activity>
 
         <activity
+            android:name=".Activity.Settings.EventActivity"
+            android:label="">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".Activity.Settings.MoreActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
@@ -77,8 +87,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.CalendarioActivity"
-            android:label="">
+            android:name=".Activity.CalendarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

@@ -43,15 +43,15 @@
     <color name="materiais_zip">#ffc14f</color>
     <color name="materiais_comp">#653e66</color>
 
-    <color name="biologia">@color/green_400</color>
-    <color name="edFisica">@color/blue_grey_400</color>
-    <color name="filosofia">@color/grey_400</color>
-    <color name="fisica">@color/amber_400</color>
-    <color name="geografia">@color/blue_400</color>
-    <color name="historia">@color/red_400</color>
-    <color name="portugues">@color/pink_400</color>
-    <color name="matematica">@color/brown_400</color>
-    <color name="quimica">@color/orange_400</color>
-    <color name="sociologia">@color/purple_400</color>
+    <color name="biologia">@color/green_500</color>
+    <color name="edFisica">@color/blue_grey_500</color>
+    <color name="filosofia">@color/grey_500</color>
+    <color name="fisica">@color/amber_500</color>
+    <color name="geografia">@color/blue_500</color>
+    <color name="historia">@color/red_500</color>
+    <color name="portugues">@color/pink_500</color>
+    <color name="matematica">@color/brown_500</color>
+    <color name="quimica">@color/orange_500</color>
+    <color name="sociologia">@color/purple_500</color>
 
 </resources>

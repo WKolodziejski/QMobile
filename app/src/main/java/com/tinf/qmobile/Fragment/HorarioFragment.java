@@ -14,7 +14,6 @@ import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
-import com.tinf.qmobile.Interfaces.OnUpdate;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import java.util.ArrayList;

@@ -6,12 +6,26 @@
     android:layout_height="match_parent"
     >
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorAccent"
+        android:tint="@color/colorPrimaryLight"
+        android:transitionName="Fab"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_add" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/recycler_calendario"
         android:transitionName="Calendario"
-        android:overScrollMode="never"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
