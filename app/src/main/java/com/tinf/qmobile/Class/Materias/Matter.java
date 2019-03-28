@@ -1,6 +1,8 @@
 package com.tinf.qmobile.Class.Materias;
 
-import com.tinf.qmobile.Class.Calendario.Event;
+import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
+import com.tinf.qmobile.Class.Calendario.Base.EventBase;
+import com.tinf.qmobile.Class.Calendario.EventQ;
 import com.tinf.qmobile.Class.Materiais.Material;
 import androidx.annotation.ColorInt;
 import io.objectbox.annotation.Entity;
@@ -21,7 +23,7 @@ public class Matter {
     private int period;
     public ToMany<Period> periods;
     public ToMany<Schedule> schedules;
-    public ToMany<Event> events;
+    public ToMany<EventQ> events;
     public ToMany<Material> materials;
     public ToOne<Infos> infos;
 

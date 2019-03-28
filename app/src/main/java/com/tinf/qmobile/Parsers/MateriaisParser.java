@@ -72,7 +72,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                         descricao = element.child(1).child(3).nextSibling().toString().trim();
                     }
 
-                    long date = getDate(dataString);
+                    long date = getDate(dataString, false);
 
                     Material material = new Material(title, date, descricao, link);
 

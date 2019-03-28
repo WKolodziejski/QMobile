@@ -42,20 +42,30 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:textSize="@dimen/alt_font_size"
                 android:id="@+id/calendar_default_title"
                 android:textColor="@color/colorPrimaryLight"
-                tools:text="Matemática"/>
+                tools:text="Matemática"
+                tools:visibility="visible"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/main_font_size"
                 android:textStyle="bold"
-                android:layout_marginTop="8dp"
                 android:id="@+id/caledar_default_description"
                 android:textColor="@color/colorPrimaryLight"
                 tools:text="Prova de trigonometria" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/alt_font_size"
+                android:id="@+id/calendar_user_description"
+                android:textColor="@color/colorPrimaryLight"
+                tools:text="Conteúdo no drive"/>
 
         </LinearLayout>
 

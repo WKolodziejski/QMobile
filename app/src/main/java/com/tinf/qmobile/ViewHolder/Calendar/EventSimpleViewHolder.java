@@ -1,16 +1,19 @@
 package com.tinf.qmobile.ViewHolder.Calendar;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.tinf.qmobile.Class.Calendario.Event;
+import com.tinf.qmobile.Class.Calendario.EventSimple;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.ViewHolder.Calendar.CalendarioViewHolder;
 
-public class EventSimpleViewHolder extends CalendarioViewHolder<Event> {
-    @BindView(R.id.calendario_simple_dia)         public TextView dia;
-    @BindView(R.id.calendario_simple_title)       public TextView title;
+public class EventSimpleViewHolder extends CalendarioViewHolder<EventSimple> {
+    @BindView(R.id.calendar_simple_title)       public TextView title;
+    @BindView(R.id.calendar_simple_header)        public FrameLayout header;
 
     public EventSimpleViewHolder(View view) {
         super(view);
@@ -18,9 +21,9 @@ public class EventSimpleViewHolder extends CalendarioViewHolder<Event> {
     }
 
     @Override
-    public void bind(Event event) {
-        dia.setText(event.getDay());
+    public void bind(EventSimple event, Context context) {
         title.setText(event.getTitle());
+        CalendarioViewHolder.setHeader(header, event, context);
     }
 
 }

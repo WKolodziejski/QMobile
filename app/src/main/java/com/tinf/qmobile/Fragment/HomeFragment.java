@@ -1,6 +1,5 @@
 package com.tinf.qmobile.Fragment;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,10 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,27 +25,30 @@ import android.widget.TextView;
 import com.tinf.qmobile.Activity.CalendarioActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
-import com.tinf.qmobile.Activity.Settings.EventActivity;
+import com.tinf.qmobile.Activity.EventActivity;
 import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.CalendarBase;
-import com.tinf.qmobile.Class.Calendario.Event;
-import com.tinf.qmobile.Class.Calendario.Event_;
-import com.tinf.qmobile.Class.Calendario.Month;
-import com.tinf.qmobile.Class.Calendario.Month_;
+import com.tinf.qmobile.Class.Calendario.Base.EventBase;
+import com.tinf.qmobile.Class.Calendario.EventImage;
+import com.tinf.qmobile.Class.Calendario.EventImage_;
+import com.tinf.qmobile.Class.Calendario.EventQ;
+import com.tinf.qmobile.Class.Calendario.EventQ_;
+import com.tinf.qmobile.Class.Calendario.EventSimple;
+import com.tinf.qmobile.Class.Calendario.EventSimple_;
+import com.tinf.qmobile.Class.Calendario.EventUser;
+import com.tinf.qmobile.Class.Calendario.EventUser_;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Class.Materias.Schedule;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.R;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.INDEX;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
@@ -78,12 +79,33 @@ public class HomeFragment extends Fragment implements OnUpdate {
         current.set(Calendar.SECOND, 0);
         current.set(Calendar.MILLISECOND, 0);
 
-        List<Event> events = App.getBox().boxFor(Event.class).query()
-                .greater(Event_.startTime, current.getTimeInMillis() - 1).build().find(0 ,5);
+        Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
+        Box<EventQ> eventQBox = App.getBox().boxFor(EventQ.class);
+        Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
+        Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
+
+        List<EventBase> events = new ArrayList<>();
+
+        events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventQBox.query().greater(EventQ_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
+
+        Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
         if (events.size() < 5) {
-            events = App.getBox().boxFor(Event.class).query().build().find();
+            events = new ArrayList<>();
+
+            events.addAll(eventUserBox.query().build().find());
+            events.addAll(eventQBox.query().build().find());
+            events.addAll(eventImageBox.query().build().find());
+            events.addAll(eventSimpleBox.query().build().find());
+
+            Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
             events = events.subList(events.size() - 5, events.size());
+        } else {
+            events = events.subList(0, 5);
         }
 
         calendarioAdapter = new EventosAdapter(getActivity(), events);
@@ -129,7 +151,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     private void showOffline(View view) {
         view.post(() -> {
-
             CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
             if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
@@ -155,17 +176,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
             LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
 
             calendario.setOnClickListener(v -> {
-                /*ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()), ((MainActivity) getActivity()).fab,
-                                Objects.requireNonNull(ViewCompat.getTransitionName(((MainActivity) getActivity()).fab)));*/
+                Pair statusAnim = Pair.create(recyclerView, recyclerView.getTransitionName());
+                Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
 
-                ActivityOptions options = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                    Pair statusAnim = Pair.create(recyclerView, recyclerView.getTransitionName());
-                    Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
-                    options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
-                }
-
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
                 startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
 
             });
@@ -195,6 +209,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             }
 
             weekView.goToHour(firstHour + 0.5);
+            weekView.goToDay(1);
 
             return events;
         });

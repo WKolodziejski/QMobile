@@ -85,15 +85,15 @@ public class Utils {
         return App.getContext().getResources().getColor(color);
     }
 
-    public static long getDate(String date) {
+    public static long getDate(String date, boolean isMonth) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR, 0);
+        cal.set(Calendar.HOUR_OF_DAY, isMonth ? 0 : 12);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.YEAR, getYear(date));
         cal.set(Calendar.MONTH, getMonth(date) - 1);
-        cal.set(Calendar.DAY_OF_MONTH,getDay(date));
+        cal.set(Calendar.DAY_OF_MONTH, getDay(date));
         return cal.getTimeInMillis();
     }
 

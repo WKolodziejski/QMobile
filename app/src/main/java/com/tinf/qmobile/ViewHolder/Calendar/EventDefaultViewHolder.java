@@ -1,21 +1,25 @@
 package com.tinf.qmobile.ViewHolder.Calendar;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tinf.qmobile.Class.Calendario.Event;
+import com.tinf.qmobile.Class.Calendario.Base.EventBase;
+import com.tinf.qmobile.Class.Calendario.EventQ;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.ViewHolder.Calendar.CalendarioViewHolder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventDefaultViewHolder extends CalendarioViewHolder<Event> {
-    @BindView(R.id.calendario_default_dia)         public TextView dia;
-    @BindView(R.id.calendario_default_title)       public TextView title;
-    @BindView(R.id.caledario_default_description)  public TextView description;
-    @BindView(R.id.calendario_default_header)      public LinearLayout header;
+public class EventDefaultViewHolder extends CalendarioViewHolder<EventBase> {
+    @BindView(R.id.calendar_default_title)       public TextView title;
+    @BindView(R.id.caledar_default_description)  public TextView description;
+    @BindView(R.id.calendar_default_card)        public LinearLayout card;
+    @BindView(R.id.calendar_default_header)      public FrameLayout header;
 
     public EventDefaultViewHolder(View view) {
         super(view);
@@ -23,11 +27,11 @@ public class EventDefaultViewHolder extends CalendarioViewHolder<Event> {
     }
 
     @Override
-    public void bind(Event event) {
-        dia.setText(event.getDay());
+    public void bind(EventBase event, Context context) {
         title.setText(event.getTitle());
         description.setText(event.getDescription());
-        header.setBackgroundColor(event.getColor());
+        card.setBackgroundColor(event.getColor());
+        CalendarioViewHolder.setHeader(header, event, context);
     }
 
 }

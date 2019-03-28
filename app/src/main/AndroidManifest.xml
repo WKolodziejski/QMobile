@@ -65,7 +65,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.Settings.EventActivity"
+            android:name=".Activity.EventActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />

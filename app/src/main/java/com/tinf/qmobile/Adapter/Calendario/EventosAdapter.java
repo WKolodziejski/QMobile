@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.tinf.qmobile.Class.Calendario.CalendarBase;
+import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.Calendar.CalendarioViewHolder;
 import com.tinf.qmobile.ViewHolder.Calendar.EventDefaultViewHolder;
@@ -30,7 +30,6 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
     @NonNull
     @Override
     public CalendarioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         switch (viewType) {
             case CalendarBase.ViewType.DEFAULT:
                 return new EventDefaultViewHolder(LayoutInflater.from(context)
@@ -46,10 +45,8 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
 
             case CalendarBase.ViewType.MONTH:
                 return new MonthViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.list_event_month, parent, false));
-
+                        .inflate(R.layout.header_month, parent, false));
         }
-
         return null;
     }
 
@@ -60,7 +57,7 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CalendarioViewHolder holder, int i) {
-        holder.bind(events.get(i));
+        holder.bind(events.get(i), context);
     }
 
     @Override

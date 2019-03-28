@@ -1,42 +1,31 @@
 package com.tinf.qmobile.Class.Calendario;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
 
 @Entity
 public class Month implements CalendarBase {
-
     @Id public long id;
-    private long date;
-    public ToMany<Event> events;
+    private long time;
 
-    public Month(long date) {
-        this.date = date;
+    public Month(long time) {
+        this.time = time;
     }
 
     public String getMonth() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        return new SimpleDateFormat("MMMM", Locale.getDefault()).format(calendar.getTime());
+        return new SimpleDateFormat("MMMM", Locale.getDefault()).format(time);
     }
 
     public String getYear() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        return new SimpleDateFormat("yyyy", Locale.getDefault()).format(calendar.getTime());
-    }
-
-    @Override
-    public int getItemType() {
-        return CalendarBase.ViewType.MONTH;
+        return new SimpleDateFormat("yyyy", Locale.getDefault()).format(time);
     }
 
     /*
@@ -45,8 +34,18 @@ public class Month implements CalendarBase {
 
     public Month() {}
 
-    public long getDate() {
-        return date;
+    public long getTime() {
+        return time;
+    }
+
+    @Override
+    public int getItemType() {
+        return CalendarBase.ViewType.MONTH;
+    }
+
+    @Override
+    public Date getDate() {
+        return new Date(time);
     }
 
 }

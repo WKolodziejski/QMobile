@@ -4,24 +4,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.Event;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Class.Materias.Schedule;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.User;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -111,6 +107,7 @@ public class HorarioFragment extends Fragment implements OnUpdate {
             }
 
             weekView.goToHour(firstHour + 0.5);
+            weekView.goToDay(1);
 
             return events;
         });

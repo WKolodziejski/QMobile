@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="40dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_marginStart="16dp"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/calendario_image_range"
+        android:textColor="@color/colorAccent"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:id="@+id/calendar_header_day_start"
+        android:textAlignment="center"
+        tools:text="7" />
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_more_vert"
+        android:backgroundTint="@color/colorAccent"
+        android:id="@+id/calendario_image_range"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/calendario_image_range"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/colorAccent"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:id="@+id/calendar_header_day_end"
+        android:textAlignment="center"
+        tools:text="10" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

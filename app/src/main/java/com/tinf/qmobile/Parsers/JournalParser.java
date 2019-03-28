@@ -168,7 +168,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                         max = maxString.isEmpty() ? -1 : Float.parseFloat(maxString);
 
-                        date = getDate(dateString);
+                        date = getDate(dateString, false);
 
                         Journal newJournal = new Journal(title, grade, weight, max, date, type);
 

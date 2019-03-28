@@ -8,27 +8,30 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import io.objectbox.Box;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.oushangfeng.pinnedsectionitemdecoration.PinnedHeaderItemDecoration;
 import com.tinf.qmobile.Activity.CalendarioActivity;
-import com.tinf.qmobile.Activity.Settings.EventActivity;
+import com.tinf.qmobile.Activity.EventActivity;
 import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
-import com.tinf.qmobile.Class.Calendario.CalendarBase;
+import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.Event;
-import com.tinf.qmobile.Class.Calendario.Event_;
+import com.tinf.qmobile.Class.Calendario.Base.EventBase;
+import com.tinf.qmobile.Class.Calendario.EventImage;
+import com.tinf.qmobile.Class.Calendario.EventQ;
+import com.tinf.qmobile.Class.Calendario.EventSimple;
+import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Calendario.Month;
-import com.tinf.qmobile.Class.Calendario.Month_;
 import com.tinf.qmobile.R;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -80,8 +83,8 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
                 int p = events.size() - 1;
 
                 for (int i = 0; i < events.size(); i++) {
-                    if (events.get(i) instanceof Event) {
-                        if (((Event) events.get(i)).getStartTime() >= day.getTime()) {
+                    if (events.get(i) instanceof EventBase) {
+                        if (((EventBase) events.get(i)).getStartTime() >= day.getTime()) {
                             p = i;
                             break;
                         }
@@ -104,7 +107,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
                 for (int i = 0; i < events.size(); i++) {
                     if (events.get(i) instanceof Month) {
-                        if (((Month) events.get(i)).getDate() >= month.getTime()) {
+                        if (((Month) events.get(i)).getTime() >= month.getTime()) {
                             p = i;
                             break;
                         }
@@ -119,22 +122,18 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         loadData();
 
         for (int i = 0; i < events.size(); i++) {
-            if (events.get(i) instanceof Event) {
-                Event event = (Event) events.get(i);
+            if (events.get(i) instanceof EventBase) {
+                EventBase event = (EventBase) events.get(i);
 
                 if (event.getEndTime() != 0) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(event.getStartTime());
 
-                    long originalTime = event.getStartTime();
-
                     while (calendar.getTimeInMillis() <= event.getEndTime()) {
-                        calendarView.addEvent(event);
+                        calendarView.addEvent(new Event(event.getColor(), calendar.getTimeInMillis()));
                         calendar.add(Calendar.DAY_OF_MONTH, 1);
-                        event.setStartTime(calendar.getTimeInMillis());
                     }
 
-                    event.setStartTime(originalTime);
                 } else {
                     calendarView.addEvent(event);
                 }
@@ -145,7 +144,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         for (int i = 0; i < events.size(); i++) {
             if (events.get(i) instanceof Month) {
-                if (((Month) events.get(i)).getDate() >= date.getTime()) {
+                if (((Month) events.get(i)).getTime() >= date.getTime()) {
                     p = i;
                     break;
                 }
@@ -155,46 +154,24 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         layout.scrollToPosition(p);
 
         adapter = new EventosAdapter(getContext(), events);
-
-
-        /*List<CalendarTEST> test = new ArrayList<>();
-
-        for (MultiItemEntity item : events) {
-            if (item.getItemType() == CalendarBase.ViewType.MONTH) {
-                test.add(new CalendarTEST(true, ((Month) ((MultiItemEntity) item)).getMonth()));
-            } else {
-                test.add(new CalendarTEST(item));
-            }
-        }
-
-        adapter = new CalendarAdapterTEST(test);*/
-
     }
 
-
-
     private void loadData() {
-        List<Month> months = App.getBox().boxFor(Month.class).query().order(Month_.date).build().find();
+        Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
+        Box<EventQ> eventQBox = App.getBox().boxFor(EventQ.class);
+        Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
+        Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
+        Box<Month> monthBox = App.getBox().boxFor(Month.class);
 
         events = new ArrayList<>();
 
-        for (int i = 0; i < months.size(); i++) {
-            int j = i == months.size() - 1 ? i : i + 1;
-            events.add(months.get(i));
-            if (i == months.size() - 1) {
-                events.addAll(App.getBox().boxFor(Event.class).query()
-                        .greater(Event_.startTime, months.get(i).getDate() - 1).build().find());
-            } else {
-                events.addAll(App.getBox().boxFor(Event.class).query()
-                        .between(Event_.startTime, months.get(i).getDate() - 1, months.get(j).getDate() - 1).build().find());
-            }
-        }
+        events.addAll(eventUserBox.query().build().find());
+        events.addAll(eventQBox.query().build().find());
+        events.addAll(eventImageBox.query().build().find());
+        events.addAll(eventSimpleBox.query().build().find());
+        events.addAll(monthBox.query().build().find());
 
-        /*for (Month month : months) {
-            events.add(month);
-            events.addAll(month.events);
-        }*/
-
+        Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
     }
 
     @Nullable
@@ -224,8 +201,8 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
                     int i = layout.findFirstVisibleItemPosition();
 
                     if (events.get(i) instanceof Month) {
-                        calendarView.setCurrentDate(new Date(((Month) events.get(i)).getDate()));
-                        setTitle(((Month) events.get(i)).getDate());
+                        calendarView.setCurrentDate(events.get(i).getDate());
+                        setTitle(((Month) events.get(i)).getTime());
                     }
                 }
             });
@@ -233,25 +210,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_calendar);
         fab.setOnClickListener(v -> {
-
             startActivity(new Intent(getActivity(), EventActivity.class));
-
-            /*Event event = new Event("TESTE", new Date().getTime(), false);
-            event.setColor(Color.RED);
-            App.getBox().boxFor(Event.class).put(event);
-
-            loadData();
-
-            int p = events.size() - 1;
-
-            for (int i = 0; i < events.size(); i++) {
-                if (events.get(i).getStartTime() == event.getStartTime()
-                        && events.get(i).getTitle().equals(event.getTitle())) {
-                    p = i;
-                }
-            }*/
-
-            //adapter.addItems(p, event);
         });
 
     }

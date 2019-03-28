@@ -51,6 +51,13 @@
     <string name="dialog_renewal_title">Renovação de Matrícula</string>
     <string name="dialog_renewal_txt">Renove sua matrícula para o próximo período.</string>
     <string name="dialog_continue_offline">Continuar offline</string>
+    <string name="dialog_discart_changes_title">Descartar mudanças</string>
+    <string name="dialog_discart_changes_txt">Tem certeza que deseja descartar esse evento?</string>
+    <string name="dialog_discart">Descartar</string>
+    <string name="dialog_keep_editing">Continuar editando</string>
+    <string name="dialog_choose_color">Selecione uma cor</string>
+    <string name="dialog_choose_matter">Selecione a matéria</string>
+    <string name="dialog_select">Selecionar</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>
@@ -81,6 +88,13 @@
     <string name="diarios_cobre">Peça a seu professor</string>
     <string name="diarios_expanded">Abas expandidas</string>
     <string name="diarios_collapsed">Abas recolhidas</string>
+
+    <string name="event_none">Nenhum</string>
+    <string name="event_custom">Customizado</string>
+    <string name="event_default">Padrão</string>
+    <string name="event_title">Digite o título</string>
+    <string name="event_hint">Adicionar nota</string>
+    <string name="event_added">Evento adicionado</string>
 
     <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_footer">Confira suas notas no site</string>

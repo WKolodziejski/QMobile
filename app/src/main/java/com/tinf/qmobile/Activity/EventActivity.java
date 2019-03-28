@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Activity.Settings;
+package com.tinf.qmobile.Activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -15,7 +15,6 @@ import butterknife.ButterKnife;
 
 public class EventActivity extends AppCompatActivity {
     @BindView(R.id.event_add)   public Button add;
-    @BindView(R.id.event_title) public EditText title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,8 +22,6 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
 
         ButterKnife.bind(this);
-
-        title.requestFocus();
 
         setSupportActionBar(findViewById(R.id.toolbar_events));
 
@@ -50,11 +47,11 @@ public class EventActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(EventActivity.this)
-                .setTitle("Discart changes")
-                .setMessage("Are you sure you want to discart this event?")
+                .setTitle(getString(R.string.dialog_discart_changes_title))
+                .setMessage(getString(R.string.dialog_discart_changes_txt))
                 .setCancelable(true)
-                .setNegativeButton("Dsicart", (dialogInterface, i) -> finish())
-                .setPositiveButton("Keep editing", null)
+                .setNegativeButton(getString(R.string.dialog_discart), (dialogInterface, i) -> finish())
+                .setPositiveButton(getString(R.string.dialog_keep_editing), null)
                 .create()
                 .show();
     }

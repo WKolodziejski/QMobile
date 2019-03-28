@@ -1,20 +1,25 @@
 package com.tinf.qmobile.ViewHolder.Calendar;
 
+import android.content.Context;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tinf.qmobile.Class.Calendario.Event;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.ViewHolder.Calendar.CalendarioViewHolder;
 
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Calendario.EventImage;
+import com.tinf.qmobile.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventImageViewHolder extends CalendarioViewHolder<Event> {
-    @BindView(R.id.calendario_image_image) public ImageView image;
-    @BindView(R.id.calendario_image_start) public TextView start;
-    @BindView(R.id.calendario_image_end)   public TextView end;
-    @BindView(R.id.calendario_image_title) public TextView title;
+public class EventImageViewHolder extends CalendarioViewHolder<EventImage> {
+    @BindView(R.id.calendar_image_image) public ImageView image;
+    @BindView(R.id.calendar_image_title) public TextView title;
+    @BindView(R.id.calendar_image_header) public FrameLayout header;
 
     public EventImageViewHolder(View view) {
         super(view);
@@ -22,10 +27,9 @@ public class EventImageViewHolder extends CalendarioViewHolder<Event> {
     }
 
     @Override
-    public void bind(Event event) {
+    public void bind(EventImage event, Context context) {
         image.setImageResource(event.getImage());
         title.setText(event.getTitle());
-        start.setText(event.getDay());
-        end.setText(event.getEndDay());
+        CalendarioViewHolder.setHeader(header, event, context);
     }
 }
