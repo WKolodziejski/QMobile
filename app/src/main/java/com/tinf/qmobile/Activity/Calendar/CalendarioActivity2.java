@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Activity;
+package com.tinf.qmobile.Activity.Calendar;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;

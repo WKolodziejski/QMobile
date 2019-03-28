@@ -24,7 +24,7 @@ public abstract class CalendarioViewHolder<T extends CalendarBase> extends Recyc
     public abstract void bind(T calendar, Context context);
 
     public static void setHeader(FrameLayout header, EventBase event, Context context) {
-        final boolean isRanged = event.getEndTime() != 0;
+        final boolean isRanged = event.isRanged();
 
         final int layout = isRanged ? R.layout.header_range_day : R.layout.header_single_day;
 

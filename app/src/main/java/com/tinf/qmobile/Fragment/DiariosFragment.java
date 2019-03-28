@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -46,8 +49,9 @@ public class DiariosFragment extends Fragment implements OnUpdate {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.v(TAG, "New instace created");
+
+        setHasOptionsMenu(true);
 
         ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
             adapter.toggleAll();
@@ -63,9 +67,7 @@ public class DiariosFragment extends Fragment implements OnUpdate {
             Integer pos = (Integer) view.getTag();
 
             Intent intent = new Intent(getContext(), MateriaActivity.class);
-            intent.putExtra("TITLE", materiaList.get(pos).getTitle());
-            intent.putExtra("YEAR", materiaList.get(pos).getYear());
-            intent.putExtra("PERIOD", materiaList.get(pos).getPeriod());
+            intent.putExtra("ID", materiaList.get(pos).id);
 
             startActivity(intent);
 
@@ -172,11 +174,16 @@ public class DiariosFragment extends Fragment implements OnUpdate {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
-
             ((MainActivity) getActivity()).fab.setImageResource(R.drawable.ic_expand);
             ((MainActivity) getActivity()).fab.show();
-
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.grades, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_column);
     }
 
     @Override
@@ -223,4 +230,5 @@ public class DiariosFragment extends Fragment implements OnUpdate {
         super.onStop();
         ((MainActivity) getActivity()).removeOnUpdateListener(this);
     }
+
 }

@@ -16,8 +16,8 @@ import android.view.ViewGroup;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.tinf.qmobile.Activity.CalendarioActivity;
-import com.tinf.qmobile.Activity.EventActivity;
+import com.tinf.qmobile.Activity.Calendar.CalendarioActivity;
+import com.tinf.qmobile.Activity.Calendar.CreateEventActivity;
 import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
 import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.App;
@@ -125,7 +125,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
             if (events.get(i) instanceof EventBase) {
                 EventBase event = (EventBase) events.get(i);
 
-                if (event.getEndTime() != 0) {
+                if (event.isRanged()) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(event.getStartTime());
 
@@ -210,7 +210,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_calendar);
         fab.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), EventActivity.class));
+            startActivity(new Intent(getActivity(), CreateEventActivity.class));
         });
 
     }

@@ -1,7 +1,10 @@
 package com.tinf.qmobile.Class.Calendario;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
 import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.R;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
 
@@ -23,7 +26,10 @@ public class EventUser extends EventBase {
 
     @Override
     public int getColor() {
-        if (matter.getTargetId() != 0) {
+        if (super.getColor() != App.getContext().getResources().getColor(R.color.colorAccent)) {
+            return super.getColor();
+
+        } else if (matter.getTargetId() != 0) {
             return matter.getTarget().getColor();
 
         } else return super.getColor();

@@ -1,17 +1,15 @@
 package com.tinf.qmobile.ViewHolder.Calendar;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.content.Intent;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import com.tinf.qmobile.Activity.Calendar.CreateEventActivity;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
-import com.tinf.qmobile.Class.Calendario.EventQ;
+import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.R;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -32,6 +30,14 @@ public class EventDefaultViewHolder extends CalendarioViewHolder<EventBase> {
         description.setText(event.getDescription());
         card.setBackgroundColor(event.getColor());
         CalendarioViewHolder.setHeader(header, event, context);
+
+        if (event instanceof EventUser) {
+            card.setOnClickListener(v -> {
+                Intent intent = new Intent(context, CreateEventActivity.class);
+                intent.putExtra("ID", event.id);
+                context.startActivity(intent);
+            });
+        }
     }
 
 }

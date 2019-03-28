@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
-import com.tinf.qmobile.Activity.WebViewActivity;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 
@@ -19,6 +18,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String MOBILE = "key_mobile_data";
     public static final String ALERT = "key_alert_mode";
     public static final String NOTIFY = "key_notifications";
+    public static final String SCHEDULE_HOUR = "schedule_first_hour";
+    public static final String SCHEDULE_DAYS = "schedule_days";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,17 +99,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         String stringValue = newValue.toString();
 
         if (preference instanceof ListPreference) {
-            // For list preferences, look up the correct display value in
-            // the preference's 'entries' list.
             ListPreference listPreference = (ListPreference) preference;
             int index = listPreference.findIndexOfValue(stringValue);
 
-            // Set the summary to reflect the new value.
             preference.setSummary(
                     index >= 0
                             ? listPreference.getEntries()[index]
                             : null);
-
         }
         return true;
     };

@@ -5,26 +5,23 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.*;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.Fragment.BoletimFragment;
 import com.tinf.qmobile.Fragment.DiariosFragment;
 import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
-import com.tinf.qmobile.Fragment.NotasFragment;
 import com.tinf.qmobile.Fragment.OnUpdate;
 import com.tinf.qmobile.Network.OnEvent;
 import com.tinf.qmobile.Network.OnResponse;
@@ -32,12 +29,10 @@ import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
-
 import java.util.ArrayList;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
@@ -143,6 +138,18 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                         .create()
                         .show();
                 return true;
+
+            case R.id.action_grades:
+
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+
+                if (fragment instanceof DiariosFragment) {
+                    return changeFragment(new BoletimFragment());
+
+                } else if (fragment instanceof BoletimFragment) {
+                    return changeFragment(new DiariosFragment());
+
+                } else return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -162,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     break;
 
                 case R.id.navigation_notas:
-                    fragment = new NotasFragment();
+                    fragment = new DiariosFragment();
                     break;
 
                 case R.id.navigation_materiais:
@@ -194,19 +201,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private boolean changeFragment(Fragment fragment) {
         if (fragment != null) {
-            //getSupportFragmentManager().popBackStackImmediate();
-            //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
             if (fragment instanceof HomeFragment) {
                 setTitle(User.getName());
             } else {
                 setTitle(User.getYears()[pos]);
             }
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_fragment, fragment)
-                    .commit();
-            if (!(fragment instanceof HomeFragment) || !(fragment instanceof DiariosFragment)) {
-                fab.hide();
-            }
+
+            transaction.replace(R.id.main_fragment, fragment).commit();
+
+            fab.hide();
             return true;
         }
         return false;

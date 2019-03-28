@@ -22,10 +22,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.tinf.qmobile.Activity.CalendarioActivity;
+import com.tinf.qmobile.Activity.Calendar.CalendarioActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
-import com.tinf.qmobile.Activity.EventActivity;
+import com.tinf.qmobile.Activity.Calendar.CreateEventActivity;
 import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
@@ -43,6 +43,9 @@ import com.tinf.qmobile.Class.Materias.Schedule;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.Utilities.User;
 import com.tinf.qmobile.R;
+
+import org.threeten.bp.DayOfWeek;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -64,7 +67,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onCreate(savedInstanceState);
 
         ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), EventActivity.class));
+            startActivity(new Intent(getActivity(), CreateEventActivity.class));
         });
 
         matters = App.getBox().boxFor(Matter.class).query()
@@ -120,37 +123,31 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
-
-        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
-                });
-
-        view.findViewById(R.id.home_website).setOnClickListener(v -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(URL + INDEX + PG_LOGIN));
-            startActivity(browserIntent);
-        });
+        showHorario(view);
 
         view.post(() -> {
+            nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
+
+            nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                    (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                        ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
+                    });
+
+            showOffline(view);
+            showCalendar(view);
+
+            view.findViewById(R.id.home_website).setOnClickListener(v -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(URL + INDEX + PG_LOGIN));
+                startActivity(browserIntent);
+            });
             ((MainActivity) getActivity()).fab.setImageResource(R.drawable.ic_add);
             ((MainActivity) getActivity()).fab.show();
-        });
-
-        showOffline(view);
-        showHorario(view);
-        showCalendar(view);
-
-        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
-
-        horario.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), HorarioActivity.class));
         });
     }
 
     private void showOffline(View view) {
-        view.post(() -> {
+
             CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
             if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
@@ -161,14 +158,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
             } else {
                 offline.setVisibility(View.GONE);
             }
-        });
     }
 
     private void showCalendar(View view) {
 
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_home);
-
-            recyclerView.post(() -> {
 
             recyclerView.setAdapter(calendarioAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -181,9 +175,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
                 startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
-
             });
-        });
+
     }
 
     private void showHorario(View view) {
@@ -208,8 +201,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 }
             }
 
+            weekView.goToDate(DayOfWeek.MONDAY);
             weekView.goToHour(firstHour + 0.5);
-            weekView.goToDay(1);
 
             return events;
         });
@@ -217,12 +210,12 @@ public class HomeFragment extends Fragment implements OnUpdate {
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 
         horario.setOnClickListener(v -> {
-            ActivityOptionsCompat options = ActivityOptionsCompat.
-                    makeSceneTransitionAnimation(Objects.requireNonNull(getActivity()),
-                            weekView, Objects.requireNonNull(ViewCompat.getTransitionName(weekView)));
+            Pair statusAnim = Pair.create(weekView, weekView.getTransitionName());
+            Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
+
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
             startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
         });
-
     }
 
     @Override

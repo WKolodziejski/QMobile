@@ -67,27 +67,34 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
     private void setView(DiariosListViewHolder holder, int i) {
         if (matters.get(i).isExpanded) {
-            holder.arrow.setImageResource(R.drawable.ic_less);
-            holder.title.setTextColor(matters.get(i).getColor());
-
             List<Journal> diarios = matters.get(i).periods.get(getLast(i)).journals;
 
             if (diarios.isEmpty()) {
+                holder.arrow.setImageResource(R.drawable.ic_less);
+                holder.title.setTextColor(matters.get(i).getColor());
                 holder.nothing.setVisibility(View.VISIBLE);
                 holder.open.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.GONE);
             } else {
-                JournalAdapter adapter = new JournalAdapter(context, diarios);
-                adapter.setHasStableIds(true);
-                holder.nothing.setVisibility(View.GONE);
-                holder.recyclerView.setVisibility(View.VISIBLE);
-                holder.open.setVisibility(View.VISIBLE);
-                holder.recyclerView.setHasFixedSize(true);
-                holder.recyclerView.setItemViewCacheSize(20);
-                holder.recyclerView.setDrawingCacheEnabled(true);
-                holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-                holder.recyclerView.setAdapter(adapter);
-                holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                holder.recyclerView.post(() -> {
+                    JournalAdapter adapter = new JournalAdapter(context, diarios);
+                    adapter.setHasStableIds(true);
+
+                    holder.nothing.setVisibility(View.GONE);
+
+                    holder.open.setVisibility(View.VISIBLE);
+
+                    holder.recyclerView.setHasFixedSize(true);
+                    holder.recyclerView.setItemViewCacheSize(20);
+                    holder.recyclerView.setDrawingCacheEnabled(true);
+                    holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+                    holder.recyclerView.setAdapter(adapter);
+                    holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                    holder.recyclerView.setVisibility(View.VISIBLE);
+
+                    holder.arrow.setImageResource(R.drawable.ic_less);
+                    holder.title.setTextColor(matters.get(i).getColor());
+                });
             }
         } else {
             holder.arrow.setImageResource(R.drawable.ic_more);
@@ -137,6 +144,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
             for (int i = 0; i < matters.size(); i++) {
                 matters.get(i).shouldAnimate = matters.get(i).isExpanded;
                 matters.get(i).isExpanded = false;
+                notifyItemChanged(i);
             }
             Toast.makeText(context, R.string.diarios_collapsed, Toast.LENGTH_SHORT).show();
         } else {
@@ -144,11 +152,12 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                 if (!matters.get(i).periods.get(getLast(i)).journals.isEmpty()) {
                     matters.get(i).shouldAnimate = !matters.get(i).isExpanded;
                     matters.get(i).isExpanded = true;
+                    notifyItemChanged(i);
                 }
             }
             Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();
         }
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     public void setOnExpandListener(OnExpandListener onExpandListener){
@@ -158,4 +167,5 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
     public interface OnExpandListener {
         void onExpand(int position);
     }
+
 }

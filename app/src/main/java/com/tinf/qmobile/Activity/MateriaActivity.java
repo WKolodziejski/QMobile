@@ -25,32 +25,13 @@ public class MateriaActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        if (bundle != null) {
+        Fragment fragment = new MateriaFragment();
+        fragment.setArguments(bundle);
 
-            int year = bundle.getInt("YEAR");
-            String title = bundle.getString("TITLE");
-            int period = bundle.getInt("PERIOD");
-
-            Matter materia = App.getBox().boxFor(Matter.class).query().equal(Matter_.year, year)
-                    .and().equal(Matter_.title, title).and()
-                    .equal(Matter_.period, period).build().findFirst();
-
-            if (materia != null) {
-                Objects.requireNonNull(getSupportActionBar()).setTitle(materia.getTitle());
-
-                Fragment fragment = new MateriaFragment();
-                fragment.setArguments(bundle);
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.materia_fragment, fragment)
-                        .commit();
-            } else {
-                finish();
-            }
-        } else {
-            finish();
-        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.materia_fragment, fragment)
+                .commit();
     }
 
     private void changeColor() {

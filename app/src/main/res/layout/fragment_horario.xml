@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     >
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fab_add_schedule"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorAccent"
+        android:tint="@color/colorPrimaryLight"
+        android:transitionName="Fab"
+        app:borderWidth="0dp"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_add" />
+
     <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,11 +32,6 @@
         app:hourHeight="60dp"
         app:headerRowPadding="12dp"
         app:columnGap="8dp"
-        app:firstDayOfWeek="monday"
-        app:horizontalFlingEnabled="false"
-        app:xScrollingSpeed="0"
-        app:showFirstDayOfWeekFirst="true"
-        app:zoomFocusPointEnabled="false"
         app:headerColumnBackground="@color/colorPrimary"
         app:headerColumnTextColor="@color/colorPrimary"
         app:eventTextColor="@color/colorPrimaryLight"

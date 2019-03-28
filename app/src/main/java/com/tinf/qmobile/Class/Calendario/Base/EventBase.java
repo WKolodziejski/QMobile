@@ -57,6 +57,17 @@ public abstract class EventBase extends Event implements CalendarBase {
         return String.valueOf(calendar.get(Calendar.MONTH));
     }
 
+    public boolean isRanged() {
+        if (endTime == 0 || endTime == startTime)
+            return false;
+        else {
+            Date s = new Date(startTime);
+            Date e = new Date(endTime);
+
+            return s.getDay() != e.getDay();
+        }
+    }
+
     @Override
     public Date getDate() {
         return new Date(startTime);

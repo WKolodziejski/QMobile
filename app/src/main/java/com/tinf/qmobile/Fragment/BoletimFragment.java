@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -36,6 +38,8 @@ public class BoletimFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "New instace created");
+
+        setHasOptionsMenu(true);
 
         mfristData = new ArrayList<>();
 
@@ -139,6 +143,13 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 }
             });
         });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.grades, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_list);
     }
 
     @Override

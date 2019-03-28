@@ -26,20 +26,13 @@ public class MateriaFragment extends Fragment {
         Bundle bundle = getArguments();
 
         if (bundle != null) {
-
-            int year = bundle.getInt("YEAR");
-            int period = bundle.getInt("PERIOD");
-            String name = bundle.getString("TITLE");
-
-            Matter materia = App.getBox().boxFor(Matter.class).query().order(Matter_.title)
-                    .equal(Matter_.title, name).and()
-                    .equal(Matter_.year, year).and()
-                    .equal(Matter_.period, period)
-                    .build().findFirst();
+            Matter materia = App.getBox().boxFor(Matter.class).get(bundle.getLong("ID"));
 
             adapter = new EtapasAdapter(materia, getContext());
 
             ((MateriaActivity) getActivity()).setTitle(materia.getTitle());
+        } else {
+            ((MateriaActivity) getActivity()).finish();
         }
     }
 

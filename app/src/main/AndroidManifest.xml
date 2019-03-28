@@ -31,7 +31,7 @@
             android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe" />
 
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".Activity.Settings.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,7 +65,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.EventActivity"
+            android:name=".Activity.Calendar.CreateEventActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -87,14 +87,14 @@
         </activity>
 
         <activity
-            android:name=".Activity.CalendarioActivity">
+            android:name=".Activity.Calendar.CalendarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".Activity.CalendarioActivity2">
+            android:name=".Activity.Calendar.CalendarioActivity2">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -119,7 +119,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.WebViewActivity">
+            android:name=".Activity.Settings.WebViewActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

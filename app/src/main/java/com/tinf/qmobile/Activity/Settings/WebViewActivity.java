@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Activity;
+package com.tinf.qmobile.Activity.Settings;
 
 import android.os.Bundle;
 import android.webkit.WebView;

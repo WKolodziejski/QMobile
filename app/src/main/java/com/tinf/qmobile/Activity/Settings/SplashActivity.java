@@ -1,4 +1,4 @@
-package com.tinf.qmobile.Activity;
+package com.tinf.qmobile.Activity.Settings;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,8 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tinf.qmobile.Activity.LoginActivity;
+import com.tinf.qmobile.Activity.MainActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.Network.Client;

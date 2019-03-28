@@ -8,7 +8,8 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryLight"
     android:fitsSystemWindows="true"
-    app:layout_optimizationLevel="standard|dimensions|chains">
+    app:layout_optimizationLevel="standard|dimensions|chains"
+    >
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -48,14 +49,12 @@
             android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_marginBottom="16dp"
-            android:visibility="invisible"
             android:transitionName="Fab"
             android:background="@color/colorAccent"
             android:tint="@color/colorPrimaryLight"
-            app:srcCompat="@drawable/ic_expand"
+            app:srcCompat="@drawable/ic_add"
             app:fabSize="normal"
-            app:borderWidth="0dp"
-            tools:visibility="visible"/>
+            app:borderWidth="0dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
