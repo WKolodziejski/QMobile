@@ -7,9 +7,9 @@
     >
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_materia"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
+        android:id="@+id/toolbar_default"
         tools:title="@string/app_name" />
 
 </com.google.android.material.appbar.AppBarLayout>

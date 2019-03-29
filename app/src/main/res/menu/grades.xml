@@ -6,8 +6,7 @@
 
     <item
         android:id="@+id/action_grades"
-        android:title="@string/action_date"
-        android:icon="@drawable/ic_column"
+        android:title="@string/action_grade"
         app:showAsAction="ifRoom" />
 
 </menu>

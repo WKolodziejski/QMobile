@@ -20,7 +20,8 @@ public class MateriaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_materia);
 
-        setSupportActionBar(findViewById(R.id.toolbar_materia));
+        setSupportActionBar(findViewById(R.id.toolbar_default));
+
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();

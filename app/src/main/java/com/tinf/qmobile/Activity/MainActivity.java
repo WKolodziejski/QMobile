@@ -47,8 +47,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
-        setSupportActionBar(findViewById(R.id.toolbar));
+
+        setSupportActionBar(findViewById(R.id.toolbar_main));
 
         changeFragment(new HomeFragment());
 

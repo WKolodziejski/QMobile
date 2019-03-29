@@ -28,7 +28,7 @@ public class CalendarioActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendario);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar_default);
         setSupportActionBar(toolbar);
 
         appBarLayout = findViewById(R.id.app_bar_layout);

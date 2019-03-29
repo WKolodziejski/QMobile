@@ -18,6 +18,9 @@
     <string name="action_about">Sobre</string>
     <string name="action_logout">Sair</string>
     <string name="action_date">Selecionar Data</string>
+    <string name="action_delete">Apagar</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_grade">Alterar visualização</string>
 
     <string name="client_no_connection">Sem conexão com a Internet</string>
     <string name="client_host">Servidor inalcançável</string>
@@ -58,6 +61,8 @@
     <string name="dialog_choose_color">Selecione uma cor</string>
     <string name="dialog_choose_matter">Selecione a matéria</string>
     <string name="dialog_select">Selecionar</string>
+    <string name="dialog_delete_txt">Deletar esse evento?</string>
+    <string name="dialog_delete">Deletar</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>
@@ -95,6 +100,7 @@
     <string name="event_title">Digite o título</string>
     <string name="event_hint">Adicionar nota</string>
     <string name="event_added">Evento adicionado</string>
+    <string name="event_no_title">(Sem título)</string>
 
     <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_footer">Confira suas notas no site</string>

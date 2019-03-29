@@ -12,6 +12,7 @@ import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.DEFAU
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.IMAGE;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.MONTH;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.SIMPLE;
+import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.USER;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.LOCAL_VARIABLE;
 import static java.lang.annotation.ElementType.METHOD;
@@ -20,13 +21,14 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public interface CalendarBase {
 
-    @IntDef({DEFAULT, IMAGE, SIMPLE, MONTH})
+    @IntDef({DEFAULT, IMAGE, SIMPLE, MONTH, USER})
     @Retention(RetentionPolicy.SOURCE)
     @interface ViewType {
         int DEFAULT = 100;
         int IMAGE = 200;
         int SIMPLE = 300;
         int MONTH = 400;
+        int USER = 500;
     }
 
     @Retention(RetentionPolicy.SOURCE)

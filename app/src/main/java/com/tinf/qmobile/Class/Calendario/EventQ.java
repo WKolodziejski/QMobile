@@ -25,6 +25,10 @@ public class EventQ extends EventBase {
         } else return super.getColor();
     }
 
+    public String getMatter() {
+        return matter.getTargetId() != 0 ? matter.getTarget().getTitle() : "";
+    }
+
     /*
      * Required methods
      */

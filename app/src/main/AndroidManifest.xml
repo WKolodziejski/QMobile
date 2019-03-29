@@ -65,7 +65,16 @@
         </activity>
 
         <activity
-            android:name=".Activity.Calendar.CreateEventActivity"
+            android:name=".Activity.Calendar.EventCreateActivity"
+            android:label="">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name=".Activity.EventViewActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />

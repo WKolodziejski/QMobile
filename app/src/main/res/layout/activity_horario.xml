@@ -9,11 +9,11 @@
     <include
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        layout="@layout/action_bar_main"/>
+        layout="@layout/action_bar_default"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/horario_fragment"/>
+        android:id="@+id/schedule_fragment"/>
 
 </LinearLayout>

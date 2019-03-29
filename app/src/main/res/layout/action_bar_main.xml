@@ -3,16 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/AppTheme.AppBarOverlay"
     android:id="@+id/app_bar_layout"
+    style="@style/AppTheme.AppBarOverlay"
     tools:showIn="@layout/activity_main"
     >
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        tools:title="@string/app_name"
-        />
+        android:id="@+id/toolbar_main"
+        tools:title="@string/app_name" />
 
 </com.google.android.material.appbar.AppBarLayout>

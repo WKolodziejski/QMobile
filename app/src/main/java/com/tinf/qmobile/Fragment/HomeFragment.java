@@ -7,10 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
@@ -23,9 +21,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tinf.qmobile.Activity.Calendar.CalendarioActivity;
+import com.tinf.qmobile.Activity.Calendar.EventCreateActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.Activity.MainActivity;
-import com.tinf.qmobile.Activity.Calendar.CreateEventActivity;
 import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
@@ -51,7 +49,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
+
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.INDEX;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
@@ -67,7 +65,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onCreate(savedInstanceState);
 
         ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), CreateEventActivity.class));
+            startActivity(new Intent(getActivity(), EventCreateActivity.class));
         });
 
         matters = App.getBox().boxFor(Matter.class).query()

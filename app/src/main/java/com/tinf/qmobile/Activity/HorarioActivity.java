@@ -27,7 +27,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar_default));
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
                 + " ― " + User.getYears()[pos]);
@@ -35,7 +35,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.horario_fragment, new HorarioFragment())
+                .replace(R.id.schedule_fragment, new HorarioFragment())
                 .commit();
     }
 

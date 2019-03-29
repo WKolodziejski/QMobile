@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.tinf.qmobile.Activity.Calendar.CreateEventActivity;
+import com.tinf.qmobile.Activity.Calendar.EventCreateActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Materias.Matter;
@@ -36,24 +36,25 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.Box;
 
-public class EventFragment extends Fragment {
-    @BindView(R.id.event_start_day)     TextView startDate_txt;
-    @BindView(R.id.event_start_time)    TextView startTime_txt;
-    @BindView(R.id.event_end_day)       TextView endDate_txt;
-    @BindView(R.id.event_end_time)      TextView endTime_txt;
-    @BindView(R.id.event_color_text)    TextView color_txt;
-    @BindView(R.id.event_matter_text)   TextView matter_txt;
-    @BindView(R.id.event_description)   EditText description_edt;
-    @BindView(R.id.event_title)         EditText title_edt;
-    @BindView(R.id.event_color_layout)  LinearLayout color_btn;
-    @BindView(R.id.event_matter_layout) LinearLayout matter_btn;
-    @BindView(R.id.event_color_img)     ImageView color_img;
+public class EventCreateFragment extends Fragment {
+    @BindView(R.id.event_create_start_day)     TextView startDate_txt;
+    @BindView(R.id.event_create_start_time)    TextView startTime_txt;
+    @BindView(R.id.event_create_end_day)       TextView endDate_txt;
+    @BindView(R.id.event_create_end_time)      TextView endTime_txt;
+    @BindView(R.id.event_create_color_text)    TextView color_txt;
+    @BindView(R.id.event_create_matter_text)   TextView matter_txt;
+    @BindView(R.id.event_create_notification_text) TextView alarm_txt;
+    @BindView(R.id.event_create_description)   EditText description_edt;
+    @BindView(R.id.event_create_title)         EditText title_edt;
+    @BindView(R.id.event_create_color_layout)  LinearLayout color_btn;
+    @BindView(R.id.event_create_matter_layout) LinearLayout matter_btn;
+    @BindView(R.id.event_create_color_img)     ImageView color_img;
     private Calendar start, end;
     private boolean isRanged;
     private int color, matter;
     private List<Matter> matters;
-    private String title;
-    private long id;
+    private String title, description;
+    private long id, alarm;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,10 +87,13 @@ public class EventFragment extends Fragment {
                 id = event.id;
                 title = event.getTitle();
                 color = event.getColor();
+                description = event.getDescription();
 
                 start.setTimeInMillis(event.getStartTime());
 
                 isRanged = event.isRanged();
+
+                alarm = event.getAlarm();
 
                 if (isRanged)
                     end.setTimeInMillis(event.getEndTime());
@@ -103,7 +107,7 @@ public class EventFragment extends Fragment {
                     }
                 }
             } else {
-                ((CreateEventActivity) getActivity()).finish();
+                ((EventCreateActivity) getActivity()).finish();
             }
         } else {
             title = "";
@@ -114,7 +118,7 @@ public class EventFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event, container, false);
+        View view = inflater.inflate(R.layout.fragment_event_create, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -125,6 +129,8 @@ public class EventFragment extends Fragment {
 
         title_edt.setText(title);
         title_edt.requestFocus();
+
+        description_edt.setText(description);
 
         updateText();
 
@@ -242,7 +248,7 @@ public class EventFragment extends Fragment {
                     .create().show();
         });
 
-        ((CreateEventActivity) getActivity()).add.setOnClickListener(v -> {
+        ((EventCreateActivity) getActivity()).add.setOnClickListener(v -> {
 
             if (end.getTimeInMillis() == start.getTimeInMillis()) {
                 end.setTimeInMillis(0);
@@ -265,7 +271,7 @@ public class EventFragment extends Fragment {
             Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
             eventBox.put(event);
 
-            ((CreateEventActivity) getActivity()).finish();
+            ((EventCreateActivity) getActivity()).finish();
 
             Toast.makeText(getContext(), getString(R.string.event_added), Toast.LENGTH_SHORT).show();
         });
@@ -280,6 +286,12 @@ public class EventFragment extends Fragment {
         endDate_txt.setText(date.format(end.getTimeInMillis()));
         endTime_txt.setText(time.format(end.getTimeInMillis()));
         color_img.setImageTintList(ColorStateList.valueOf(color));
+
+        if (alarm == 0) {
+            alarm_txt.setText(getString(R.string.event_none));
+        } else {
+            alarm_txt.setText(date.format(alarm) + " " + time.format(alarm));
+        }
 
         if (matter > 0) {
             matter_txt.setText(matters.get(matter - 1).getTitle());

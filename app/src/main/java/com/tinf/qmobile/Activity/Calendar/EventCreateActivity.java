@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.tinf.qmobile.Fragment.EventFragment;
+import com.tinf.qmobile.Fragment.EventCreateFragment;
 import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CreateEventActivity extends AppCompatActivity {
+public class EventCreateActivity extends AppCompatActivity {
     @BindView(R.id.event_add)   public Button add;
 
     @Override
@@ -29,13 +29,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_cancel));
 
-        Fragment fragment = new EventFragment();
+        Fragment fragment = new EventCreateFragment();
 
         fragment.setArguments(getIntent().getExtras());
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.event_fragment, fragment)
+                .replace(R.id.event_create_fragment, fragment)
                 .commit();
     }
 
@@ -50,7 +50,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(CreateEventActivity.this)
+        new AlertDialog.Builder(EventCreateActivity.this)
                 .setTitle(getString(R.string.dialog_discart_changes_title))
                 .setMessage(getString(R.string.dialog_discart_changes_txt))
                 .setCancelable(true)

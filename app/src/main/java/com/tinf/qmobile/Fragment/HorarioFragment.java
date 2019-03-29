@@ -1,6 +1,5 @@
 package com.tinf.qmobile.Fragment;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.tinf.qmobile.Activity.Calendar.CreateEventActivity;
 import com.tinf.qmobile.Activity.HorarioActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Matter;
@@ -30,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.tinf.qmobile.Activity.Settings.SettingsActivity.SCHEDULE_HOUR;
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 
