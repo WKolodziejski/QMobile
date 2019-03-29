@@ -21,10 +21,12 @@ import java.util.List;
 public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
     private List<? extends CalendarBase> events;
     private Context context;
+    private boolean enableOnClick;
 
-    public EventosAdapter(Context context, List<? extends CalendarBase> events) {
+    public EventosAdapter(Context context, List<? extends CalendarBase> events, boolean enableOnClick) {
         this.context = context;
         this.events = events;
+        this.enableOnClick = enableOnClick;
     }
 
     @NonNull
@@ -33,7 +35,7 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
         switch (viewType) {
             case CalendarBase.ViewType.DEFAULT:
                 return new EventDefaultViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.list_event_default, parent, false));
+                        .inflate(R.layout.list_event_journal, parent, false));
 
             case CalendarBase.ViewType.SIMPLE:
                 return new EventSimpleViewHolder(LayoutInflater.from(context)
@@ -57,7 +59,7 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull CalendarioViewHolder holder, int i) {
-        holder.bind(events.get(i), context);
+        holder.bind(events.get(i), context, enableOnClick);
     }
 
     @Override

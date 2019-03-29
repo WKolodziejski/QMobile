@@ -49,6 +49,10 @@ public class Journal {
         this.type = type;
     }
 
+    public String getMatter() {
+        return period.getTarget().matter.getTarget().getTitle();
+    }
+
     public String getGradeString() {
         return grade == -1 ? "-" : String.valueOf(grade);
     }

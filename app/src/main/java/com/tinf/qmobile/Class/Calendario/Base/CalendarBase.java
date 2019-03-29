@@ -10,7 +10,9 @@ import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ImageType.RECE
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ImageType.VACATION;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.DEFAULT;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.IMAGE;
+import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.JOURNAL;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.MONTH;
+import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.Q;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.SIMPLE;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.USER;
 import static java.lang.annotation.ElementType.FIELD;
@@ -21,7 +23,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public interface CalendarBase {
 
-    @IntDef({DEFAULT, IMAGE, SIMPLE, MONTH, USER})
+    @IntDef({DEFAULT, IMAGE, SIMPLE, MONTH, USER, JOURNAL, Q})
     @Retention(RetentionPolicy.SOURCE)
     @interface ViewType {
         int DEFAULT = 100;
@@ -29,6 +31,8 @@ public interface CalendarBase {
         int SIMPLE = 300;
         int MONTH = 400;
         int USER = 500;
+        int JOURNAL = 600;
+        int Q = 700;
     }
 
     @Retention(RetentionPolicy.SOURCE)

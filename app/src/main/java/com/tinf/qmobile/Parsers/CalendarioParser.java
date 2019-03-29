@@ -4,18 +4,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
-import com.tinf.qmobile.Class.Calendario.Base.EventBase;
 import com.tinf.qmobile.Class.Calendario.EventImage;
 import com.tinf.qmobile.Class.Calendario.EventImage_;
-import com.tinf.qmobile.Class.Calendario.EventQ;
-import com.tinf.qmobile.Class.Calendario.EventQ_;
+import com.tinf.qmobile.Class.Calendario.EventJournal;
+import com.tinf.qmobile.Class.Calendario.EventJournal_;
 import com.tinf.qmobile.Class.Calendario.EventSimple;
 import com.tinf.qmobile.Class.Calendario.EventSimple_;
 import com.tinf.qmobile.Class.Calendario.Month;
 import com.tinf.qmobile.Class.Calendario.Month_;
-import com.tinf.qmobile.Class.Materias.Matter;
-import com.tinf.qmobile.Class.Materias.Matter_;
-import com.tinf.qmobile.Utilities.User;
+import com.tinf.qmobile.Class.Materias.Journal;
+import com.tinf.qmobile.Class.Materias.Journal_;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -44,11 +43,9 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
             Log.i(TAG, "Parsing");
 
-            //Box<EventBase> eventBox = App.getBox().boxFor(EventBase.class);
-            Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
             Box<Month> monthBox = App.getBox().boxFor(Month.class);
-
-            Box<EventQ> eventQBox = App.getBox().boxFor(EventQ.class);
+            Box<Journal> journalBox = App.getBox().boxFor(Journal.class);
+            Box<EventJournal> eventJournalBox = App.getBox().boxFor(EventJournal.class);
             Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
             Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
 
@@ -147,18 +144,18 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     long date = getDate(day + "/" + monthCurrent + "/" + year, false);
 
                                     String infos = events.get(k).child(1).text();
-                                    String description = infos.substring(infos.lastIndexOf(") ") + 1).trim();
-                                    String title = infos.substring(0, infos.indexOf(" (") + 1).trim();
+                                    String title = getValidTitle(infos.substring(infos.lastIndexOf(") ") + 1).trim());
+                                    String matter = infos.substring(0, infos.indexOf(" (") + 1).trim();
 
-                                    boolean hasDescription = true;
+                                    boolean isJournal = true;
 
-                                    if (title.isEmpty()){
-                                        title = description;
-                                        hasDescription = false;
+                                    if (matter.isEmpty()){
+                                        //matter = title;
+                                        isJournal = false;
                                     }
 
-                                    EventQ search1 = eventQBox.query().equal(EventQ_.title, title).and()
-                                            .between(EventQ_.startTime, date, date).build().findFirst();
+                                    EventJournal search1 = eventJournalBox.query().equal(EventJournal_.title, title).and()
+                                            .between(EventJournal_.startTime, date, date).build().findFirst();
 
                                     EventSimple search2 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
                                             .between(EventSimple_.startTime, date, date).build().findFirst();
@@ -168,23 +165,20 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
                                     if (search1 == null && search2 == null && search3 == null) {
 
-                                        if (hasDescription) {
-                                            EventQ event = new EventQ(title, date);
-                                            event.setDescription(description);
+                                        if (isJournal) {
+                                            Journal journal = journalBox.query().equal(Journal_.title, title).and()
+                                                    .between(Journal_.date, date, date).build().findFirst();
 
-                                            Matter matter = matterBox.query()
-                                                    .equal(Matter_.title, title).and()
-                                                    .equal(Matter_.year, User.getYear(pos)).and()
-                                                    .equal(Matter_.period, User.getPeriod(pos))
-                                                    .build().findFirst();
+                                            EventJournal event;
 
-                                            if (matter != null) {
-                                                event.matter.setTarget(matter);
-                                                matter.events.add(event);
-                                                matterBox.put(matter);
+                                            if (journal != null) {
+                                                event = new EventJournal(journal);
+                                            } else {
+                                                event = new EventJournal(title, date);
+                                                event.setDescription(matter);
                                             }
 
-                                            eventQBox.put(event);
+                                            eventJournalBox.put(event);
 
                                         } else {
                                             int img = 0;
@@ -200,13 +194,10 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
                                             } else if (title.equals("Recesso Escolar")) {
                                                 img = CalendarBase.ImageType.RECESS;
-
                                             }
 
                                             if (img != 0) {
                                                 eventImageBox.put(new EventImage(title, date, img));
-                                                Log.d("IMAGE EVENT", title);
-                                                Log.d("OUTTER CLASS", String.valueOf(img));
                                             } else {
                                                 eventSimpleBox.put(new EventSimple(title, date));
                                             }
@@ -226,19 +217,15 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                         long start = getDate(startTime + "/" + year, false);
                                         long end = getDate(endTime + "/" + year, false);
 
-                                        EventQ search1 = eventQBox.query().equal(EventQ_.title, title).and()
-                                                .between(EventQ_.startTime, start, start).and()
-                                                .between(EventQ_.endTime, end, end).build().findFirst();
-
-                                        EventSimple search2 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
+                                        EventSimple search1 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
                                                 .between(EventSimple_.startTime, start, start).and()
                                                 .between(EventSimple_.endTime, end, end).build().findFirst();
 
-                                        EventImage search3 = eventImageBox.query().equal(EventImage_.title, title).and()
+                                        EventImage search2 = eventImageBox.query().equal(EventImage_.title, title).and()
                                                 .between(EventImage_.startTime, start, start).and()
                                                 .between(EventImage_.endTime, end, end).build().findFirst();
 
-                                        if (search1 == null && search2 == null && search3 == null) {
+                                        if (search1 == null && search2 == null) {
 
                                             int img = 0;
 
@@ -253,12 +240,10 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
                                             } else if (title.equals("Recesso Escolar")) {
                                                 img = CalendarBase.ImageType.RECESS;
-
                                             }
 
                                             if (img != 0) {
                                                 eventImageBox.put(new EventImage(title, start, end, img));
-                                                Log.d("IMAGE EVENT", title);
                                             } else {
                                                 eventSimpleBox.put(new EventSimple(title, start, end));
                                             }
@@ -289,6 +274,14 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
     public interface OnFinish {
         void onFinish(int pg, int year);
+    }
+
+    private String getValidTitle(String d) {
+        if (d.contains("'")) {
+            return d.substring(d.indexOf("'") + 1, d.lastIndexOf("'"));
+        } else {
+            return d;
+        }
     }
 
 }

@@ -15,20 +15,16 @@ import android.widget.TextView;
 import com.tinf.qmobile.Activity.Calendar.EventCreateActivity;
 import com.tinf.qmobile.Activity.EventViewActivity;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
-import com.tinf.qmobile.Class.Calendario.EventQ;
 import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static android.view.View.GONE;
 
 public class EventViewFragment extends Fragment {
@@ -42,7 +38,6 @@ public class EventViewFragment extends Fragment {
     @BindView(R.id.event_view_description_layout)  LinearLayout description_layout;
     @BindView(R.id.event_view_notification_layout) LinearLayout notification_layout;
     private long id;
-    private int type;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +47,6 @@ public class EventViewFragment extends Fragment {
 
         if (bundle != null) {
             id = bundle.getLong("ID");
-            type = bundle.getInt("TYPE");
         }
     }
 
@@ -68,52 +62,41 @@ public class EventViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (type == CalendarBase.ViewType.USER) {
-            setHasOptionsMenu(true);
+        setHasOptionsMenu(true);
 
-            EventUser event = App.getBox().boxFor(EventUser.class).get(id);
+        SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
 
-            fillFields(event.getTitle(), event.getDescription(), event.getMatter(), event.getStartTime(), event.getEndTime(), event.getAlarmDifference(), event.getColor(), true);
+        EventUser event = App.getBox().boxFor(EventUser.class).get(id);
 
-        } else {
+        title_txt.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
+        startTime_txt.setText(date.format(event.getStartTime()));
+        color_img.setImageTintList(ColorStateList.valueOf(event.getColor()));
 
-            EventQ event = App.getBox().boxFor(EventQ.class).get(id);
-
-            fillFields(event.getDescription(), "", event.getMatter(), event.getStartTime(), event.getEndTime(), "", event.getColor(), false);
-        }
-    }
-
-    private void fillFields(String title, String description, String matter, long start, long end, String alarm, @ColorInt int color, boolean isUserEvent) {
-        SimpleDateFormat date = isUserEvent ? new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault()) : new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-
-        title_txt.setText(title.isEmpty() ? getString(R.string.event_no_title) : title);
-        startTime_txt.setText(date.format(start));
-        color_img.setImageTintList(ColorStateList.valueOf(color));
-
-        if (description.isEmpty()) {
+        if (event.getDescription().isEmpty()) {
             description_layout.setVisibility(GONE);
         } else {
-            description_txt.setText(description);
+            description_txt.setText(event.getDescription());
         }
 
-        if (alarm.isEmpty()) {
+        if (event.getAlarmDifference().isEmpty()) {
             notification_layout.setVisibility(GONE);
         } else {
-            notification_txt.setText(alarm);
+            notification_txt.setText(event.getAlarmDifference());
         }
 
-        if (end == 0) {
+        if (event.getEndTime() == 0) {
             endTime_txt.setVisibility(GONE);
         } else {
-            endTime_txt.setText(date.format(end));
+            endTime_txt.setText(date.format(event.getEndTime()));
         }
 
-        if (matter.isEmpty()) {
+        if (event.getMatter().isEmpty()) {
             matter_txt.setVisibility(GONE);
         } else {
-            matter_txt.setText(matter);
+            matter_txt.setText(event.getMatter());
         }
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

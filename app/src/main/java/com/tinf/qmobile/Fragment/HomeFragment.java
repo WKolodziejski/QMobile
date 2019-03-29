@@ -29,8 +29,8 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
 import com.tinf.qmobile.Class.Calendario.EventImage;
 import com.tinf.qmobile.Class.Calendario.EventImage_;
-import com.tinf.qmobile.Class.Calendario.EventQ;
-import com.tinf.qmobile.Class.Calendario.EventQ_;
+import com.tinf.qmobile.Class.Calendario.EventJournal;
+import com.tinf.qmobile.Class.Calendario.EventJournal_;
 import com.tinf.qmobile.Class.Calendario.EventSimple;
 import com.tinf.qmobile.Class.Calendario.EventSimple_;
 import com.tinf.qmobile.Class.Calendario.EventUser;
@@ -81,14 +81,14 @@ public class HomeFragment extends Fragment implements OnUpdate {
         current.set(Calendar.MILLISECOND, 0);
 
         Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
-        Box<EventQ> eventQBox = App.getBox().boxFor(EventQ.class);
+        Box<EventJournal> eventJournalBox = App.getBox().boxFor(EventJournal.class);
         Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
         Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
 
         List<EventBase> events = new ArrayList<>();
 
         events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventQBox.query().greater(EventQ_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventJournalBox.query().greater(EventJournal_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
 
@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             events = new ArrayList<>();
 
             events.addAll(eventUserBox.query().build().find());
-            events.addAll(eventQBox.query().build().find());
+            events.addAll(eventJournalBox.query().build().find());
             events.addAll(eventImageBox.query().build().find());
             events.addAll(eventSimpleBox.query().build().find());
 
@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             events = events.subList(0, 5);
         }
 
-        calendarioAdapter = new EventosAdapter(getActivity(), events);
+        calendarioAdapter = new EventosAdapter(getActivity(), events, false);
     }
 
     @Override

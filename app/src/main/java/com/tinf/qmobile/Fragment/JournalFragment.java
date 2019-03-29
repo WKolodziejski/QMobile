@@ -39,7 +39,7 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_DIARIOS;
 
-public class DiariosFragment extends Fragment implements OnUpdate {
+public class JournalFragment extends Fragment implements OnUpdate {
     private static String TAG = "DiariosFragment";
     private DiariosListAdapter adapter;
     private List<Matter> materiaList;

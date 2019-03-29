@@ -27,7 +27,8 @@
     <View
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/ic_more_vert"
+        android:background="@drawable/ic_line"
+        android:rotation="90"
         android:backgroundTint="@color/colorAccent"
         android:id="@+id/calendario_image_range"
         app:layout_constraintTop_toTopOf="parent"

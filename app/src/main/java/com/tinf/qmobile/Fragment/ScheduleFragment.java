@@ -31,7 +31,7 @@ import java.util.Objects;
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 
-public class HorarioFragment extends Fragment implements OnUpdate {
+public class ScheduleFragment extends Fragment implements OnUpdate {
     private List<Matter> matters;
 
     @Override

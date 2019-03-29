@@ -19,7 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Fragment.BoletimFragment;
-import com.tinf.qmobile.Fragment.DiariosFragment;
+import com.tinf.qmobile.Fragment.JournalFragment;
 import com.tinf.qmobile.Fragment.HomeFragment;
 import com.tinf.qmobile.Fragment.MateriaisFragment;
 import com.tinf.qmobile.Fragment.OnUpdate;
@@ -145,11 +145,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
 
-                if (fragment instanceof DiariosFragment) {
+                if (fragment instanceof JournalFragment) {
                     return changeFragment(new BoletimFragment());
 
                 } else if (fragment instanceof BoletimFragment) {
-                    return changeFragment(new DiariosFragment());
+                    return changeFragment(new JournalFragment());
 
                 } else return false;
         }
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     break;
 
                 case R.id.navigation_notas:
-                    fragment = new DiariosFragment();
+                    fragment = new JournalFragment();
                     break;
 
                 case R.id.navigation_materiais:

@@ -228,6 +228,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:clickable="false"
                     android:transitionName="Calendario"
                     android:id="@+id/recycler_home"/>
 

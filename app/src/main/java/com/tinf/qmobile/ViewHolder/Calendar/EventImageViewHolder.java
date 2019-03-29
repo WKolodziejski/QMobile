@@ -27,7 +27,7 @@ public class EventImageViewHolder extends CalendarioViewHolder<EventImage> {
     }
 
     @Override
-    public void bind(EventImage event, Context context) {
+    public void bind(EventImage event, Context context, boolean enableOnClick) {
         image.setImageResource(event.getImage());
         title.setText(event.getTitle());
         CalendarioViewHolder.setHeader(header, event, context);

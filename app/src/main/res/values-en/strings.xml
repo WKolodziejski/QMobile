@@ -26,7 +26,7 @@
     <string name="diarios_PrimeiraEtapa">First Stage</string>
     <string name="diarios_SegundaEtapa">Second Stage</string>
     <string name="app_version">Version </string>
-    <string name="diarios_Peso">・Weight: %1$s</string>
+    <string name="diarios_Peso">Weight: %1$s</string>
     <string name="diarios_Nota">Grade: <b>%1$s</b>/%2$s</string>
     <string name="app_tinf">A TINF Project</string>
     <string name="app_more">More</string>

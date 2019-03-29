@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.tinf.qmobile.Fragment.HorarioFragment;
+import com.tinf.qmobile.Fragment.ScheduleFragment;
 import com.tinf.qmobile.Network.OnResponse;
 import com.tinf.qmobile.Fragment.OnUpdate;
 import com.tinf.qmobile.Network.Client;
@@ -35,7 +35,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.schedule_fragment, new HorarioFragment())
+                .replace(R.id.schedule_fragment, new ScheduleFragment())
                 .commit();
     }
 

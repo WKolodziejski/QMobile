@@ -23,7 +23,7 @@ import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
 import com.tinf.qmobile.Class.Calendario.EventImage;
-import com.tinf.qmobile.Class.Calendario.EventQ;
+import com.tinf.qmobile.Class.Calendario.EventJournal;
 import com.tinf.qmobile.Class.Calendario.EventSimple;
 import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Calendario.Month;
@@ -153,12 +153,12 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         layout.scrollToPosition(p);
 
-        adapter = new EventosAdapter(getContext(), events);
+        adapter = new EventosAdapter(getContext(), events, true);
     }
 
     private void loadData() {
         Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
-        Box<EventQ> eventQBox = App.getBox().boxFor(EventQ.class);
+        Box<EventJournal> eventJournalBox = App.getBox().boxFor(EventJournal.class);
         Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
         Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
         Box<Month> monthBox = App.getBox().boxFor(Month.class);
@@ -166,7 +166,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         events = new ArrayList<>();
 
         events.addAll(eventUserBox.query().build().find());
-        events.addAll(eventQBox.query().build().find());
+        events.addAll(eventJournalBox.query().build().find());
         events.addAll(eventImageBox.query().build().find());
         events.addAll(eventSimpleBox.query().build().find());
         events.addAll(monthBox.query().build().find());

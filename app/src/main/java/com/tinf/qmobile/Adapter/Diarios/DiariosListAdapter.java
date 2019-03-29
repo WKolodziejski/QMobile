@@ -77,7 +77,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
                 holder.recyclerView.setVisibility(View.GONE);
             } else {
                 holder.recyclerView.post(() -> {
-                    JournalAdapter adapter = new JournalAdapter(context, diarios);
+                    JournalAdapter adapter = new JournalAdapter(context, diarios, false);
                     adapter.setHasStableIds(true);
 
                     holder.nothing.setVisibility(View.GONE);

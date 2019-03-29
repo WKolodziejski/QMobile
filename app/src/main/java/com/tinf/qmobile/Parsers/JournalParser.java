@@ -213,7 +213,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
     private String trimp(String string) {
         string = string.substring(string.indexOf(":"));
-        string = string.replace(":", "");
+        string = string.replaceFirst(":", "");
         return string;
     }
 

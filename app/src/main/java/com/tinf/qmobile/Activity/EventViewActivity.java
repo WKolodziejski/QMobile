@@ -2,8 +2,11 @@ package com.tinf.qmobile.Activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
+import com.tinf.qmobile.Class.Calendario.EventJournal;
 import com.tinf.qmobile.Fragment.EventViewFragment;
+import com.tinf.qmobile.Fragment.JournalViewFragment;
 import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,14 +25,34 @@ public class EventViewActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_cancel));
 
-        Fragment fragment = new EventViewFragment();
+        Bundle bundle = getIntent().getExtras();
 
-        fragment.setArguments(getIntent().getExtras());
+        if (bundle != null) {
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.event_view_fragment, fragment)
-                .commit();
+            Fragment fragment = null;
+
+            switch (bundle.getInt("TYPE")) {
+
+                case CalendarBase.ViewType.USER:
+                    fragment = new EventViewFragment();
+                    break;
+
+                case CalendarBase.ViewType.JOURNAL:
+                    fragment = new JournalViewFragment();
+                    break;
+
+                default: finish();
+            }
+
+            fragment.setArguments(bundle);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.event_view_fragment, fragment)
+                    .commit();
+        } else {
+            finish();
+        }
     }
 
     @Override

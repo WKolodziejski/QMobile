@@ -22,7 +22,9 @@ public class MateriaActivity extends AppCompatActivity {
 
         setSupportActionBar(findViewById(R.id.toolbar_default));
 
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_cancel));
 
         Bundle bundle = getIntent().getExtras();
 
