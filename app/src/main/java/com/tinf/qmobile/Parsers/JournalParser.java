@@ -9,6 +9,7 @@ import com.tinf.qmobile.Class.Materias.Journal_;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Period;
 import com.tinf.qmobile.Class.Materias.Matter_;
+import com.tinf.qmobile.Network.OnEvent;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
@@ -26,13 +27,15 @@ import static com.tinf.qmobile.Utilities.Utils.pickColor;
 public class JournalParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "JournalParser";
     private OnFinish onFinish;
-    private int pos;
+    private OnEvent onEvent;
+    private int pos, count;
     private boolean notify;
 
-    public JournalParser(int pos, boolean notify, OnFinish onFinish) {
+    public JournalParser(int pos, boolean notify, OnFinish onFinish, OnEvent onEvent) {
         this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
+        this.onEvent = onEvent;
 
         Log.i(TAG, "New instance");
     }
@@ -181,6 +184,8 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                             period.journals.add(newJournal);
                             journalBox.put(newJournal);
 
+                            count++;
+
                             if (notify) {
                                 Intent intent = new Intent();
                                 intent.putExtra("ID", matter.id);
@@ -205,6 +210,9 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         onFinish.onFinish(PG_DIARIOS, pos);
+        if (onEvent != null) {
+            onEvent.onJournal(count);
+        }
     }
 
     public interface OnFinish {

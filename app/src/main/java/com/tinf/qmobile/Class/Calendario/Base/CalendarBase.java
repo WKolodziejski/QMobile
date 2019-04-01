@@ -8,6 +8,7 @@ import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ImageType.CARN
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ImageType.CHRISTMAS;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ImageType.RECESS;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ImageType.VACATION;
+import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.DAY;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.DEFAULT;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.IMAGE;
 import static com.tinf.qmobile.Class.Calendario.Base.CalendarBase.ViewType.JOURNAL;
@@ -23,7 +24,7 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public interface CalendarBase {
 
-    @IntDef({DEFAULT, IMAGE, SIMPLE, MONTH, USER, JOURNAL, Q})
+    @IntDef({DEFAULT, IMAGE, SIMPLE, MONTH, USER, JOURNAL, Q, DAY})
     @Retention(RetentionPolicy.SOURCE)
     @interface ViewType {
         int DEFAULT = 100;
@@ -33,6 +34,7 @@ public interface CalendarBase {
         int USER = 500;
         int JOURNAL = 600;
         int Q = 700;
+        int DAY = 800;
     }
 
     @Retention(RetentionPolicy.SOURCE)

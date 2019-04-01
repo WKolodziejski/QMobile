@@ -35,6 +35,7 @@ import com.tinf.qmobile.Class.Calendario.EventSimple;
 import com.tinf.qmobile.Class.Calendario.EventSimple_;
 import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Calendario.EventUser_;
+import com.tinf.qmobile.Class.Materias.Journal;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Matter_;
 import com.tinf.qmobile.Class.Materias.Schedule;

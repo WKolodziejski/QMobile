@@ -102,7 +102,7 @@ public class Client {
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_DIARIOS) {
-                                new JournalParser(pos, notify, this::callOnFinish).execute(response);
+                                new JournalParser(pos, notify, this::callOnFinish, onEvent).execute(response);
 
                             } else if (pg == PG_BOLETIM) {
                                 new ReportParser(pos, notify, this::callOnFinish).execute(response);

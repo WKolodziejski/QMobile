@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginStart="10dp"
+        android:id="@+id/badge_text"
+        android:background="@drawable/ic_dot"
+        android:backgroundTint="@color/red"
+        android:gravity="center"
+        android:padding="3dp"
+        android:textSize="12sp"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimaryLight"
+        tools:text="9"/>
+
+</FrameLayout>

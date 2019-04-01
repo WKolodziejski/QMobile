@@ -1,19 +1,30 @@
 package com.tinf.qmobile.Activity;
 
+import androidx.annotation.IdRes;
 import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.transition.Fade;
 import android.util.Log;
 import android.view.*;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.Activity.Settings.SettingsActivity;
@@ -172,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
                 case R.id.navigation_notas:
                     fragment = new JournalFragment();
+                    putBadge(R.id.navigation_notas, 0);
                     break;
 
                 case R.id.navigation_materiais:
@@ -234,6 +246,24 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             }
         } else {
             dismissProgressbar();
+        }
+    }
+
+    public void putBadge(@IdRes int itemId, int count) {
+        BottomNavigationItemView itemView = bottomNav.findViewById(itemId);
+        View badge = LayoutInflater.from(getApplicationContext()).inflate(R.layout.badge_notification, bottomNav, false);
+
+        if (count > 0) {
+            TextView text = badge.findViewById(R.id.badge_text);
+            text.setText(String.valueOf(count));
+
+            if (itemView.getChildCount() < 3) {
+                itemView.addView(badge);
+            }
+        } else {
+            if (itemView.getChildCount() == 3) {
+                itemView.removeViewAt(2);
+            }
         }
     }
 
@@ -411,6 +441,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 .setNegativeButton(getResources().getString(R.string.dialog_later), null)
                 .create()
                 .show();
+    }
+
+    @Override
+    public void onJournal(int count) {
+        putBadge(R.id.navigation_notas, count);
     }
 
     /*@Override

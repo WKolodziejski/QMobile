@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.tinf.qmobile.Adapter.Calendario.EventosAdapter;
 import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
+import com.tinf.qmobile.Class.Calendario.Day;
 import com.tinf.qmobile.Class.Calendario.EventImage;
 import com.tinf.qmobile.Class.Calendario.EventJournal;
 import com.tinf.qmobile.Class.Calendario.EventSimple;
@@ -172,6 +174,47 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         events.addAll(monthBox.query().build().find());
 
         Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+        for (int i = 0; i < events.size() - 1; i++) {
+
+            CalendarBase e1 = events.get(i);
+            CalendarBase e2 = events.get(i + 1);
+
+            Calendar start = Calendar.getInstance();
+            start.setTime(e1.getDate());
+
+            if (e1 instanceof EventBase) {
+                if (((EventBase) e1).isRanged()) {
+                    start.setTime(new Date(((EventBase) e1).getEndTime()));
+                }
+            }
+
+            Calendar end = Calendar.getInstance();
+            end.setTime(e2.getDate());
+
+            if (start.getTimeInMillis() < end.getTimeInMillis()) {
+                if (start.get(Calendar.DAY_OF_MONTH) < end.get(Calendar.DAY_OF_MONTH) - 1) {
+
+                    if (!(e1 instanceof Month)) {
+                        start.add(Calendar.DAY_OF_MONTH, 1);
+                    }
+
+                    end.add(Calendar.DAY_OF_MONTH, -1);
+
+                    events.add(i + 1, new Day(start.getTime(), end.getTime()));
+                    i++;
+                } else {
+                    if (e2 instanceof Month) {
+                        start.add(Calendar.DAY_OF_MONTH, 1);
+                        end.add(Calendar.DAY_OF_MONTH, -1);
+                        if (start.get(Calendar.MONTH) == end.get(Calendar.MONTH)) {
+                            events.add(i + 1, new Day(start.getTime(), end.getTime()));
+                            i++;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Nullable

@@ -15,6 +15,7 @@ import com.tinf.qmobile.ViewHolder.Calendar.EventDefaultViewHolder;
 import com.tinf.qmobile.ViewHolder.Calendar.EventImageViewHolder;
 import com.tinf.qmobile.ViewHolder.Calendar.EventSimpleViewHolder;
 import com.tinf.qmobile.ViewHolder.Calendar.MonthViewHolder;
+import com.tinf.qmobile.ViewHolder.Calendar.TEST.DayViewHolder;
 
 import java.util.List;
 
@@ -48,6 +49,10 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
             case CalendarBase.ViewType.MONTH:
                 return new MonthViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.header_month, parent, false));
+
+            case CalendarBase.ViewType.DAY:
+                return new DayViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.header_day, parent, false));
         }
         return null;
     }
