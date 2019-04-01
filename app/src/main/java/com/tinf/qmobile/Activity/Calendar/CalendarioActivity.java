@@ -1,28 +1,27 @@
 package com.tinf.qmobile.Activity.Calendar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.tinf.qmobile.Fragment.CalendarioFragment;
 import com.tinf.qmobile.Network.Client;
-import com.tinf.qmobile.Network.OnResponse;
-import com.tinf.qmobile.Fragment.OnUpdate;
 import com.tinf.qmobile.R;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
 
-public class CalendarioActivity extends AppCompatActivity implements OnResponse {
+
+public class CalendarioActivity extends AppCompatActivity {
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
-    private OnUpdate onUpdate;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +42,7 @@ public class CalendarioActivity extends AppCompatActivity implements OnResponse 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar2, menu);
+        getMenuInflater().inflate(R.menu.calendar, menu);
         return true;
     }
 
@@ -54,55 +53,17 @@ public class CalendarioActivity extends AppCompatActivity implements OnResponse 
         } else if (item.getItemId() == R.id.action_refresh) {
             Client.get().load(PG_CALENDARIO);
             return true;
+        } else if (item.getItemId() == R.id.action_today) {
+            Client.get().requestScroll();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void setOnUpdateListener(OnUpdate onUpdate){
-        this.onUpdate = onUpdate;
-    }
-
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onBackPressed() {
+        super.onBackPressed();
+        Client.get().requestUpdate();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        onUpdate = null;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        onUpdate = null;
-    }
-
-
-    @Override
-    public void onStart(int pg, int pos) {
-    }
-
-    @Override
-    public void onFinish(int pg, int pos) {
-        if (onUpdate != null) {
-            onUpdate.onUpdate(pg);
-        }
-    }
-
-    @Override
-    public void onError(int pg, String error) {
-
-    }
-
-    @Override
-    public void onAccessDenied(int pg, String message) {
-
-    }
 }

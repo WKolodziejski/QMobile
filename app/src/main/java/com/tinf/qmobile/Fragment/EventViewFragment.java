@@ -3,6 +3,7 @@ package com.tinf.qmobile.Fragment;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,13 +13,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tinf.qmobile.Activity.Calendar.CalendarioActivity;
 import com.tinf.qmobile.Activity.Calendar.EventCreateActivity;
 import com.tinf.qmobile.Activity.EventViewActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.EventUser;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -27,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import static android.view.View.GONE;
 
-public class EventViewFragment extends Fragment {
+public class EventViewFragment extends Fragment implements OnUpdate {
     @BindView(R.id.event_view_start_time)          TextView startTime_txt;
     @BindView(R.id.event_view_end_time)            TextView endTime_txt;
     @BindView(R.id.event_view_matter_text)         TextView matter_txt;
@@ -64,6 +70,10 @@ public class EventViewFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        setText();
+    }
+
+    private void setText() {
         SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
 
         EventUser event = App.getBox().boxFor(EventUser.class).get(id);
@@ -97,7 +107,6 @@ public class EventViewFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.events, menu);
@@ -122,6 +131,7 @@ public class EventViewFragment extends Fragment {
                         .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
                             App.getBox().boxFor(EventUser.class).remove(id);
                             ((EventViewActivity) getActivity()).finish();
+                            Client.get().requestUpdate();
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
                         .create()
@@ -133,8 +143,37 @@ public class EventViewFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onUpdate(int pg) {
+        setText();
+    }
+
+    @Override
+    public void onScrollRequest() {
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Client.get().addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Client.get().addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Client.get().removeOnUpdateListener(this);
     }
 
 }

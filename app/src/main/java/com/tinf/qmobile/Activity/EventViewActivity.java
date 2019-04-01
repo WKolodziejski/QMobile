@@ -1,18 +1,25 @@
 package com.tinf.qmobile.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import com.tinf.qmobile.Activity.Calendar.EventCreateActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.Class.Calendario.EventJournal;
+import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Fragment.EventViewFragment;
 import com.tinf.qmobile.Fragment.JournalViewFragment;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 public class EventViewActivity extends AppCompatActivity {
+    @CalendarBase.ViewType int type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,9 +36,11 @@ public class EventViewActivity extends AppCompatActivity {
 
         if (bundle != null) {
 
+            type = bundle.getInt("TYPE");
+
             Fragment fragment = null;
 
-            switch (bundle.getInt("TYPE")) {
+            switch (type) {
 
                 case CalendarBase.ViewType.USER:
                     fragment = new EventViewFragment();
@@ -57,11 +66,17 @@ public class EventViewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+
+            if (type == CalendarBase.ViewType.JOURNAL) {
+                Client.get().requestUpdate();
+            }
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 }

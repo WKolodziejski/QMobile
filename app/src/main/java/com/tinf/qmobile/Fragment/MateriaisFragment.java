@@ -251,25 +251,25 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+        Client.get().removeOnUpdateListener(this);
     }
 
     @Override

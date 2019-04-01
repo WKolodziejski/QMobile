@@ -72,4 +72,9 @@ public class EventosAdapter extends RecyclerView.Adapter<CalendarioViewHolder> {
         return events.size();
     }
 
+    public void update(List<? extends CalendarBase> events) {
+        this.events = events;
+        notifyDataSetChanged();
+    }
+
 }

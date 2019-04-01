@@ -59,4 +59,5 @@ public class EventCreateActivity extends AppCompatActivity {
                 .create()
                 .show();
     }
+
 }

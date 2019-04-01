@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.Class.Materiais.Material;
+import com.tinf.qmobile.Fragment.OnUpdate;
 import com.tinf.qmobile.Parsers.ReportParser;
 import com.tinf.qmobile.Parsers.CalendarioParser;
 import com.tinf.qmobile.Parsers.JournalParser;
@@ -49,6 +51,7 @@ import static com.tinf.qmobile.Network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.Network.OnResponse.PG_MATERIAIS;
 import static com.tinf.qmobile.Network.OnResponse.URL;
+import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -56,7 +59,8 @@ public class Client {
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
     private List<RequestHelper> queue;
     private static Client singleton;
-    private List<OnResponse> listeners;
+    private List<OnResponse> onResponses;
+    private List<OnUpdate> onUpdates;
     private RequestQueue requests;
     private OnEvent onEvent;
     private String COOKIE;
@@ -373,20 +377,38 @@ public class Client {
     }
 
     public void addOnResponseListener(OnResponse onResponse) {
-        if (listeners == null) {
-            listeners = new ArrayList<>();
+        if (onResponses == null) {
+            onResponses = new ArrayList<>();
         }
 
-        if (onResponse != null && !listeners.contains(onResponse)) {
-            this.listeners.add(onResponse);
+        if (onResponse != null && !onResponses.contains(onResponse)) {
+            this.onResponses.add(onResponse);
             Log.i(TAG, "Added listener from " + onResponse);
         }
     }
 
     public void removeOnResponseListener(OnResponse onResponse) {
-        if (listeners != null && onResponse != null) {
-            listeners.remove(onResponse);
+        if (onResponses != null && onResponse != null) {
+            onResponses.remove(onResponse);
             Log.i(TAG, "Removed listener from " + onResponse);
+        }
+    }
+
+    public void addOnUpdateListener(OnUpdate onUpdate) {
+        if (onUpdates == null) {
+            onUpdates = new ArrayList<>();
+        }
+
+        if (onUpdate != null && !onUpdates.contains(onUpdate)) {
+            this.onUpdates.add(onUpdate);
+            Log.i(TAG, "Added listener from " + onUpdate);
+        }
+    }
+
+    public void removeOnUpdateListener(OnUpdate onUpdate) {
+        if (onUpdates != null && onUpdate != null) {
+            onUpdates.remove(onUpdate);
+            Log.i(TAG, "Removed listener from " + onUpdate);
         }
     }
 
@@ -395,29 +417,30 @@ public class Client {
         requests.cancelAll(request -> true);
         isLogging = false;
         isValid = false;
-        if (listeners != null) {
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onError(pg, error);
+        if (onResponses != null) {
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onError(pg, error);
             }
         }
     }
 
     private void callOnStart(int pg, int pos) {
         Log.v(TAG, "Start: " + pg);
-        if (listeners != null) {
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onStart(pg, pos);
+        if (onResponses != null) {
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onStart(pg, pos);
             }
         }
     }
 
     private void callOnFinish(int pg, int pos) {
         Log.v(TAG, "Finish: " + pg);
-        if (listeners != null) {
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onFinish(pg, pos);
+        if (onResponses != null) {
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onFinish(pg, pos);
             }
         }
+        callOnUpdate(pg);
         checkQueue();
     }
 
@@ -425,11 +448,39 @@ public class Client {
         Log.v(TAG, pg + ": " + message);
         isValid = false;
         isLogging = false;
-        if (listeners != null) {
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onAccessDenied(pg, message);
+        if (onResponses != null) {
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onAccessDenied(pg, message);
             }
         }
+    }
+
+    private void callOnUpdate(int pg) {
+        Log.v(TAG, "Update: " + pg);
+
+        if (onUpdates != null) {
+            for (int i = 0; i < onUpdates.size(); i++) {
+                onUpdates.get(i).onUpdate(pg);
+            }
+        }
+    }
+
+    private void callOnScrollRequest() {
+        if (onUpdates != null) {
+            for (int i = 0; i < onUpdates.size(); i++) {
+                onUpdates.get(i).onScrollRequest();
+            }
+        }
+    }
+
+    public void requestUpdate() {
+        new Handler().postDelayed(() -> {
+            callOnUpdate(UPDATE_REQUEST);
+        }, 100);
+    }
+
+    public void requestScroll() {
+        callOnScrollRequest();
     }
 
     public DownloadManager.Request download(Material material, String path, String name) {

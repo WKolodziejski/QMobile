@@ -29,6 +29,7 @@ import com.tinf.qmobile.Class.Calendario.EventJournal;
 import com.tinf.qmobile.Class.Calendario.EventSimple;
 import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Calendario.Month;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -60,20 +61,16 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         layout = new LinearLayoutManager(getContext());
 
-        Calendar startOfMonth = (Calendar) Calendar.getInstance();
-        Calendar endOfMonth = (Calendar) Calendar.getInstance();
+        /*Calendar startOfMonth = (Calendar) Calendar.getInstance();
+        Calendar endOfMonth = (Calendar) Calendar.getInstance();*/
 
-        Date date = new Date();
-        startOfMonth.setTime(date);
+
+        /*startOfMonth.setTime(date);
         endOfMonth.setTime(date);
-        endOfMonth.add(Calendar.MONTH, 1);
-
-        setTitle(date.getTime());
+        endOfMonth.add(Calendar.MONTH, 1);*/
 
         calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
 
-        calendarView.removeAllEvents();
-        calendarView.setCurrentDate(date);
         calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         calendarView.setUseThreeLetterAbbreviation(true);
         calendarView.shouldDrawIndicatorsBelowSelectedDays(true);
@@ -101,10 +98,6 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
             public void onMonthScroll(Date month) {
                 setTitle(month.getTime());
 
-                startOfMonth.setTime(month);
-                endOfMonth.setTime(month);
-                endOfMonth.add(Calendar.MONTH, 1);
-
                 int p = events.size() - 1;
 
                 for (int i = 0; i < events.size(); i++) {
@@ -121,41 +114,8 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
             }
         });
 
-        loadData();
-
-        for (int i = 0; i < events.size(); i++) {
-            if (events.get(i) instanceof EventBase) {
-                EventBase event = (EventBase) events.get(i);
-
-                if (event.isRanged()) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(event.getStartTime());
-
-                    while (calendar.getTimeInMillis() <= event.getEndTime()) {
-                        calendarView.addEvent(new Event(event.getColor(), calendar.getTimeInMillis()));
-                        calendar.add(Calendar.DAY_OF_MONTH, 1);
-                    }
-
-                } else {
-                    calendarView.addEvent(event);
-                }
-            }
-        }
-
-        int p = events.size() - 1;
-
-        for (int i = 0; i < events.size(); i++) {
-            if (events.get(i) instanceof Month) {
-                if (((Month) events.get(i)).getTime() >= date.getTime()) {
-                    p = i;
-                    break;
-                }
-            }
-        }
-
-        layout.scrollToPosition(p);
-
-        adapter = new EventosAdapter(getContext(), events, true);
+        displayEvents();
+        scrollToToday();
     }
 
     private void loadData() {
@@ -215,6 +175,73 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
                 }
             }
         }
+
+        CalendarBase lastEvent = events.get(events.size() - 1);
+
+        Calendar firstDate = Calendar.getInstance();
+        firstDate.setTime(lastEvent.getDate());
+
+        if (!(lastEvent instanceof Month)) {
+            firstDate.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        Calendar lastDate = Calendar.getInstance();
+        lastDate.setTime(lastEvent.getDate());
+        lastDate.add(Calendar.MONTH, 1);
+        lastDate.set(Calendar.DAY_OF_MONTH, 0);
+
+        events.add(new Day(firstDate.getTime(), lastDate.getTime()));
+    }
+
+    private void displayEvents() {
+        Date date = new Date();
+
+        setTitle(date.getTime());
+
+        calendarView.removeAllEvents();
+        calendarView.setCurrentDate(date);
+
+        loadData();
+
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i) instanceof EventBase) {
+                EventBase event = (EventBase) events.get(i);
+
+                if (event.isRanged()) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(event.getStartTime());
+
+                    while (calendar.getTimeInMillis() <= event.getEndTime()) {
+                        calendarView.addEvent(new Event(event.getColor(), calendar.getTimeInMillis()));
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                    }
+
+                } else {
+                    calendarView.addEvent(event);
+                }
+            }
+        }
+
+        if (adapter == null) {
+            adapter = new EventosAdapter(getContext(), events, true);
+        } else {
+            adapter.update(events);
+        }
+    }
+
+    private void scrollToToday() {
+        int p = events.size() - 1;
+
+        for (int i = 0; i < events.size(); i++) {
+            if (events.get(i) instanceof Month) {
+                if (((Month) events.get(i)).getTime() >= new Date().getTime()) {
+                    p = i;
+                    break;
+                }
+            }
+        }
+
+        layout.scrollToPosition(p);
     }
 
     @Nullable
@@ -265,24 +292,39 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(int pg) {
         if (pg == PG_CALENDARIO || pg == UPDATE_REQUEST) {
-
+            displayEvents();
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Client.get().addOnUpdateListener(this);
         calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
-        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Client.get().addOnUpdateListener(this);
         calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
-        ((CalendarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
     }
 
     @Override
-    public void onScrollRequest() {}
+    public void onPause() {
+        super.onPause();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onScrollRequest() {
+        scrollToToday();
+    }
+
 }

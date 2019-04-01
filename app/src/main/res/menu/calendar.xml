@@ -8,4 +8,10 @@
         android:icon="@drawable/ic_refresh"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/action_today"
+        android:title="@string/home_refresh"
+        android:icon="@drawable/ic_calendar"
+        app:showAsAction="ifRoom"/>
+
 </menu>

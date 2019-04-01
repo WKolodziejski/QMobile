@@ -16,6 +16,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.Class.Materias.Matter;
 import com.tinf.qmobile.Class.Materias.Period;
 import com.tinf.qmobile.Class.Materias.Matter_;
+import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qmobile.Utilities.User;
@@ -170,24 +171,25 @@ public class BoletimFragment extends Fragment implements OnUpdate {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+        Client.get().removeOnUpdateListener(this);
     }
+
 }

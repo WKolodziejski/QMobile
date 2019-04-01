@@ -3,6 +3,7 @@ package com.tinf.qmobile.Class.Calendario;
 import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,7 +22,13 @@ public class Day implements CalendarBase {
 
         String period = month.format(startDate) + " " + day.format(startDate);
 
-        if (startDate.getDay() != endDate.getDay()) {
+        Calendar s = Calendar.getInstance();
+        s.setTime(startDate);
+
+        Calendar e = Calendar.getInstance();
+        e.setTime(endDate);
+
+        if (s.get(Calendar.DAY_OF_MONTH) != e.get(Calendar.DAY_OF_MONTH)) {
             period += " - " + day.format(endDate);
         }
 

@@ -69,6 +69,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
             startActivity(new Intent(getActivity(), EventCreateActivity.class));
         });
 
+        loadData();
+    }
+
+    private void loadData() {
         matters = App.getBox().boxFor(Matter.class).query()
                 .equal(Matter_.year, User.getYear(pos)).and()
                 .equal(Matter_.period, User.getPeriod(pos))
@@ -110,7 +114,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
             events = events.subList(0, 5);
         }
 
-        calendarioAdapter = new EventosAdapter(getActivity(), events, false);
+        if (calendarioAdapter == null) {
+            calendarioAdapter = new EventosAdapter(getActivity(), events, false);
+        } else {
+            calendarioAdapter.update(events);
+        }
     }
 
     @Override
@@ -206,6 +214,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
             return events;
         });
 
+        weekView.notifyDatasetChanged();
+
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 
         horario.setOnClickListener(v -> {
@@ -226,13 +236,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onUpdate(int pg) {
-        if (pg == UPDATE_REQUEST) {
-            matters = App.getBox().boxFor(Matter.class).query()
-                    .equal(Matter_.year, User.getYear(pos)).and()
-                    .equal(Matter_.period, User.getPeriod(pos))
-                    .build().find();
-        }
         if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {
+            loadData();
             if (getView() != null) {
                 showHorario(getView());
                 showOffline(getView());
@@ -243,25 +248,25 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).addOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity) getActivity()).removeOnUpdateListener(this);
+        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
@@ -269,4 +274,5 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onDetach();
         //((MainActivity) getActivity()).fab.hide();
     }
+
 }

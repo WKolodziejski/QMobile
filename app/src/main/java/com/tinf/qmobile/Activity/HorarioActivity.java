@@ -41,7 +41,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar2, menu);
+        getMenuInflater().inflate(R.menu.calendar, menu);
         return true;
     }
 

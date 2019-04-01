@@ -7,22 +7,14 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.transition.Fade;
 import android.util.Log;
 import android.view.*;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,19 +32,15 @@ import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.Utilities.Jobs;
 import com.tinf.qmobile.Utilities.User;
-import java.util.ArrayList;
-import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.Network.Client.pos;
-import static com.tinf.qmobile.Utilities.Utils.UPDATE_REQUEST;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnUpdate, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
     @BindView(R.id.fab_expand)        public FloatingActionButton fab;
-    private List<OnUpdate> listeners;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
 
         /*final MenuItem menuMsgs = menu.findItem(R.id.action_messages);
 
@@ -145,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                         .setPositiveButton(R.string.dialog_date_confirm, (dialog, which) -> {
 
                             Client.pos = year.getValue();
-                            callOnUpdate(UPDATE_REQUEST);
+                            Client.get().requestUpdate();
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
@@ -191,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     break;
             }
         } else {
-            callOnScrollRequest();
+            Client.get().requestScroll();
         }
         return changeFragment(fragment);
     }
@@ -273,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Log.v(TAG, "onStart");
         //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
+        Client.get().addOnUpdateListener(this);
         Client.get().setOnEventListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
@@ -283,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onStop();
         Log.v(TAG, "onStop");
         Client.get().removeOnResponseListener(this);
+        Client.get().removeOnUpdateListener(this);
         Client.get().setOnEventListener(null);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
@@ -293,10 +283,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onResume();
         Log.v(TAG, "onResume");
         //appBarLayout.addOnOffsetChangedListener(this);
-        refreshLayout.setOnRefreshListener(this::reload);
         Client.get().addOnResponseListener(this);
+        Client.get().addOnUpdateListener(this);
         Client.get().setOnEventListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
+        refreshLayout.setOnRefreshListener(this::reload);
     }
 
     @Override
@@ -304,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onPause();
         Log.v(TAG, "onPause");
         Client.get().removeOnResponseListener(this);
+        Client.get().removeOnUpdateListener(this);
         Client.get().setOnEventListener(null);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
@@ -330,7 +322,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onFinish(int pg, int pos) {
         dismissProgressbar();
-        callOnUpdate(pg);
     }
 
     @Override
@@ -374,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    callOnUpdate(PG_MATERIAIS);
+                    Client.get().requestUpdate();
                 } else {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
                 }
@@ -382,25 +373,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
     }
 
-    public void addOnUpdateListener(OnUpdate onUpdate) {
-        if (listeners == null) {
-            listeners = new ArrayList<>();
-        }
-
-        if (onUpdate != null && !listeners.contains(onUpdate)) {
-            this.listeners.add(onUpdate);
-            Log.i(TAG, "Added listener from " + onUpdate);
-        }
-    }
-
-    public void removeOnUpdateListener(OnUpdate onUpdate) {
-        if (listeners != null && onUpdate != null) {
-            listeners.remove(onUpdate);
-            Log.i(TAG, "Removed listener from " + onUpdate);
-        }
-    }
-
-    private void callOnUpdate(int pg) {
+    /*public void callOnUpdate(int pg) {
         Log.v(TAG, "Update: " + pg);
 
         if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
@@ -412,15 +385,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 listeners.get(i).onUpdate(pg);
             }
         }
-    }
+    }*/
 
-    private void callOnScrollRequest() {
-        if (listeners != null) {
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onScrollRequest();
-            }
-        }
-    }
+
 
     @Override
     public void onMessage(int count) {
@@ -446,6 +413,18 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onJournal(int count) {
         putBadge(R.id.navigation_notas, count);
+    }
+
+    @Override
+    public void onUpdate(int pg) {
+        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
+            setTitle(User.getYears()[pos]);
+        }
+    }
+
+    @Override
+    public void onScrollRequest() {
+
     }
 
     /*@Override
