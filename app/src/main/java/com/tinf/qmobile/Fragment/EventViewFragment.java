@@ -32,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static android.view.View.GONE;
+import static com.tinf.qmobile.Activity.Calendar.EventCreateActivity.EVENT;
 
 public class EventViewFragment extends Fragment implements OnUpdate {
     @BindView(R.id.event_view_start_time)          TextView startTime_txt;
@@ -85,24 +86,28 @@ public class EventViewFragment extends Fragment implements OnUpdate {
         if (event.getDescription().isEmpty()) {
             description_layout.setVisibility(GONE);
         } else {
+            description_layout.setVisibility(View.VISIBLE);
             description_txt.setText(event.getDescription());
         }
 
         if (event.getAlarmDifference().isEmpty()) {
             notification_layout.setVisibility(GONE);
         } else {
+            notification_layout.setVisibility(View.VISIBLE);
             notification_txt.setText(event.getAlarmDifference());
         }
 
         if (event.getEndTime() == 0) {
             endTime_txt.setVisibility(GONE);
         } else {
+            endTime_txt.setVisibility(View.VISIBLE);
             endTime_txt.setText(date.format(event.getEndTime()));
         }
 
         if (event.getMatter().isEmpty()) {
             matter_txt.setVisibility(GONE);
         } else {
+            matter_txt.setVisibility(View.VISIBLE);
             matter_txt.setText(event.getMatter());
         }
     }
@@ -120,6 +125,7 @@ public class EventViewFragment extends Fragment implements OnUpdate {
             case R.id.action_edit:
 
                 Intent intent = new Intent(getContext(), EventCreateActivity.class);
+                intent.putExtra("TYPE", EVENT);
                 intent.putExtra("ID", id);
                 startActivity(intent);
                 return true;

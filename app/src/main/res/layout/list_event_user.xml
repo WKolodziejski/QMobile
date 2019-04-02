@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:id="@+id/calendar_default_layout"
+    android:id="@+id/calendar_user_layout"
     >
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/calendar_default_header"/>
+        android:id="@+id/calendar_user_header"/>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="8dp"
-            android:id="@+id/calendar_default_card"
+            android:id="@+id/calendar_user_card"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
@@ -42,19 +42,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:textSize="@dimen/alt_font_size"
-                android:id="@+id/calendar_default_title"
-                android:textColor="@color/colorPrimaryLight"
-                tools:text="Matemática"
-                tools:visibility="visible"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/main_font_size"
+                android:id="@+id/calendar_user_title"
+                android:textSize="@dimen/alt_font_size"
                 android:textStyle="bold"
-                android:id="@+id/caledar_default_description"
                 android:textColor="@color/colorPrimaryLight"
                 tools:text="Prova de trigonometria" />
 
@@ -62,10 +53,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textSize="@dimen/alt_font_size"
                 android:id="@+id/calendar_user_description"
+                android:textSize="@dimen/main_font_size"
                 android:textColor="@color/colorPrimaryLight"
-                tools:text="Conteúdo no drive"/>
+                tools:text="Conteúdo no drive" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:id="@+id/calendar_user_matter"
+                android:textColor="@color/colorPrimaryLight"
+                tools:text="MATEMATICA"/>
 
         </LinearLayout>
 

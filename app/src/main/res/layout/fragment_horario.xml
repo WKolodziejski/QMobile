@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fab_add_schedule"
@@ -18,7 +18,7 @@
         android:transitionName="Fab"
         app:borderWidth="0dp"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_add" />
+        app:srcCompat="@drawable/ic_add" /> !-->
 
     <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"

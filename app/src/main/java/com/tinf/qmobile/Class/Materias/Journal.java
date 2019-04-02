@@ -2,6 +2,7 @@ package com.tinf.qmobile.Class.Materias;
 
 import android.content.Context;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 
 import java.text.SimpleDateFormat;
@@ -65,23 +66,42 @@ public class Journal {
         return max == -1 ? "-" : String.valueOf(max);
     }
 
-    public String getTypeString(Context context) {
+    public String getShort() {
         if (type == AVALIACAO.get()) {
-            return context.getResources().getString(R.string.sigla_Avaliacao);
+            return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
 
         } else if (type == Type.PROVA.get()) {
-            return context.getResources().getString(R.string.sigla_Prova);
+            return App.getContext().getResources().getString(R.string.sigla_Prova);
 
         } else if (type == Type.EXERCICIO.get()) {
-            return context.getResources().getString(R.string.sigla_Exercicio);
+            return App.getContext().getResources().getString(R.string.sigla_Exercicio);
 
         } else if (type == Type.TRABALHO.get()) {
-            return context.getResources().getString(R.string.sigla_Trabalho);
+            return App.getContext().getResources().getString(R.string.sigla_Trabalho);
 
         } else if (type == Type.QUALITATIVA.get()) {
-            return context.getResources().getString(R.string.sigla_Qualitativa);
+            return App.getContext().getResources().getString(R.string.sigla_Qualitativa);
 
-        } else return context.getResources().getString(R.string.sigla_Avaliacao);
+        } else return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
+    }
+
+    public String getTypeString() {
+        if (type == AVALIACAO.get()) {
+            return App.getContext().getResources().getString(R.string.journal_Avaliacao);
+
+        } else if (type == Type.PROVA.get()) {
+            return App.getContext().getResources().getString(R.string.journal_Prova);
+
+        } else if (type == Type.EXERCICIO.get()) {
+            return App.getContext().getResources().getString(R.string.journal_Exercicio);
+
+        } else if (type == Type.TRABALHO.get()) {
+            return App.getContext().getResources().getString(R.string.journal_Trabalho);
+
+        } else if (type == Type.QUALITATIVA.get()) {
+            return App.getContext().getResources().getString(R.string.journal_Trabalho);
+
+        } else return App.getContext().getResources().getString(R.string.journal_Avaliacao);
     }
 
     public String getDateString() {
@@ -91,6 +111,10 @@ public class Journal {
 
     public int getColor() {
         return period.getTarget().matter.getTarget().getColor();
+    }
+
+    public String getPeriod() {
+        return period.getTarget().getTitleString();
     }
 
     /*

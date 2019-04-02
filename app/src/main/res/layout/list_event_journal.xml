@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:id="@+id/caledar_default_description"
+                android:id="@+id/calendar_default_description"
                 android:textColor="@color/colorPrimaryLight"
                 tools:text="Matemática" />
 

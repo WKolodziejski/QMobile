@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.tinf.qmobile.Activity.Calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.Network.Client.pos;
 import static com.tinf.qmobile.Network.OnResponse.INDEX;
 import static com.tinf.qmobile.Network.OnResponse.PG_LOGIN;
@@ -66,7 +67,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onCreate(savedInstanceState);
 
         ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), EventCreateActivity.class));
+            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
+            intent.putExtra("TYPE", EVENT);
+            startActivity(intent);
         });
 
         loadData();
@@ -177,10 +180,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
             LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
 
             calendario.setOnClickListener(v -> {
-                Pair statusAnim = Pair.create(recyclerView, recyclerView.getTransitionName());
+                //Pair statusAnim = Pair.create(recyclerView, recyclerView.getTransitionName());
                 Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
 
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), driverBundleAnim);
                 startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
             });
 
@@ -219,11 +222,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 
         horario.setOnClickListener(v -> {
-            Pair statusAnim = Pair.create(weekView, weekView.getTransitionName());
-            Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
+            //Pair statusAnim = Pair.create(weekView, weekView.getTransitionName());
+            //Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
 
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), statusAnim, driverBundleAnim);
-            startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
+            //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), driverBundleAnim);
+            startActivity(new Intent(getActivity(), HorarioActivity.class));
         });
     }
 

@@ -41,7 +41,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.calendar, menu);
+        getMenuInflater().inflate(R.menu.schedule, menu);
         return true;
     }
 
@@ -106,4 +106,5 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
     public void onAccessDenied(int pg, String message) {
 
     }
+
 }

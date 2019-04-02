@@ -295,7 +295,6 @@
         app:layout_constraintTop_toBottomOf="@id/event_create_color_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingTop="8dp"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
@@ -304,6 +303,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:layout_margin="16dp"
             android:tint="@color/colorAccent"
             app:srcCompat="@drawable/ic_note" />
@@ -311,12 +311,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="16dp"
             android:hint="@string/event_hint"
             android:capitalize="sentences"
             android:background="@color/transparent"

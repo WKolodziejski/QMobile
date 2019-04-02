@@ -2,14 +2,12 @@ package com.tinf.qmobile.Fragment;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.Class.Calendario.EventJournal;
 import com.tinf.qmobile.Class.Materias.Journal;
 import com.tinf.qmobile.R;
 import java.text.SimpleDateFormat;
@@ -61,9 +59,10 @@ public class JournalViewFragment extends Fragment {
         title_txt.setText(journal.getTitle());
         grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGradeString(), journal.getMaxString()));
         weight_txt.setText(String.format(getString(R.string.diarios_Peso), journal.getWeightString()));
-        short_txt.setText(journal.getTypeString(getContext()));
+        short_txt.setText(journal.getShort());
+        type_txt.setText(journal.getTypeString());
         time_txt.setText(date.format(journal.getDate()));
-        matter_txt.setText(journal.getMatter());
+        matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
         color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
     }
 

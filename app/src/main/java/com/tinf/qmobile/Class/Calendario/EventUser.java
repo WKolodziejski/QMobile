@@ -87,7 +87,7 @@ public class EventUser extends EventBase {
 
     @Override
     public int getItemType() {
-        return ViewType.DEFAULT;
+        return ViewType.USER;
     }
 
 }

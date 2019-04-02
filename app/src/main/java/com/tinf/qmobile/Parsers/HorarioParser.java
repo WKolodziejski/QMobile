@@ -135,7 +135,8 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                                 .equal(Matter_.period, User.getPeriod(pos))
                                 .build().findFirst();
 
-                        Schedule horario = new Schedule(Integer.valueOf(trtd_horario[0][i]), trtd_horario[j][0], true);
+                        Schedule horario = new Schedule(Integer.valueOf(trtd_horario[0][i]) - 1, getStartHour(trtd_horario[j][0]),
+                                getStartMinute(trtd_horario[j][0]), getEndHour(trtd_horario[j][0]), getEndMinute(trtd_horario[j][0]));
                         news.add(horario);
 
                         if (materia != null) {
@@ -154,8 +155,8 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
             if (olds.size() == news.size()) {
                 for (int i = 0; i < olds.size(); i++) {
                     for (int j = 0; j < news.size(); j++) {
-                        if (olds.get(i).getDay() == news.get(j).getDay()
-                                && olds.get(i).getTime().equals(news.get(j).getTime())) {
+                        if (olds.get(i).getStartDay() == news.get(j).getStartDay()
+                                && olds.get(i).getStartTime().equals(news.get(j).getStartTime())) {
                             s++;
                         }
                     }
@@ -169,7 +170,7 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
 
             if (hasChanged && notify) {
                 //TODO notificção
-                /*Jobs.displayNotification(matter.getTitle(), new_diario.getTitle(),
+                /*Jobs.displayNotification(matter.getTitleString(), new_diario.getTitleString(),
                         App.getContext().getResources().getString(R.string.title_diarios), (int) new_diario.id, intent.getExtras());*/
             }
         });
@@ -185,4 +186,41 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
     public interface OnFinish {
         void onFinish(int pg, int year);
     }
+
+    private int getStartHour(String time) {
+        return formatHour(formatStart(time));
+    }
+
+    private int getEndHour(String time) {
+        return formatHour(formatEnd(time));
+    }
+
+    private int getStartMinute(String time) {
+        return formatMinute(formatStart(time));
+    }
+
+    private int getEndMinute(String time) {
+        return formatMinute(formatEnd(time));
+    }
+
+    private int formatHour(String string) {
+        string = string.substring(0, string.indexOf(":"));
+        return Integer.valueOf(string);
+    }
+
+    private int formatMinute(String string) {
+        string = string.substring(string.indexOf(":") + 1);
+        return Integer.valueOf(string);
+    }
+
+    private String formatStart(String string) {
+        string = string.substring(0, string.indexOf("~"));
+        return string;
+    }
+
+    private String formatEnd(String string) {
+        string = string.substring(string.indexOf("~") + 1);
+        return string;
+    }
+
 }

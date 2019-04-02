@@ -45,4 +45,8 @@ public class Day implements CalendarBase {
         return startDate;
     }
 
+    public Date getEndDate() {
+        return endDate;
+    }
+
 }

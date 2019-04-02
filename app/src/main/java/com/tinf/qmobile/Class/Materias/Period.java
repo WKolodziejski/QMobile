@@ -1,8 +1,7 @@
 package com.tinf.qmobile.Class.Materias;
 
-import android.content.Context;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
@@ -39,20 +38,20 @@ public class Period {
         this.title = title;
     }
     
-    public String getTitle(Context context) {
+    public String getTitleString() {
         if (title == Type.PRIMEIRA.get()) {
-            return context.getResources().getString(R.string.diarios_PrimeiraEtapa);
+            return App.getContext().getResources().getString(R.string.diarios_PrimeiraEtapa);
         } else if (title == Type.PRIMEIRA_RP1.get()) {
-            return context.getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
+            return App.getContext().getResources().getString(R.string.diarios_RP1_PrimeiraEtapa);
         } else if (title == Type.PRIMEIRA_RP2.get()) {
-            return context.getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
+            return App.getContext().getResources().getString(R.string.diarios_RP2_PrimeiraEtapa);
         } else if (title == Type.SEGUNDA.get()) {
-            return context.getResources().getString(R.string.diarios_SegundaEtapa);
+            return App.getContext().getResources().getString(R.string.diarios_SegundaEtapa);
         } else if (title == Type.SEGUNDA_RP1.get()) {
-            return context.getResources().getString(R.string.diarios_RP1_SegundaEtapa);
+            return App.getContext().getResources().getString(R.string.diarios_RP1_SegundaEtapa);
         } else if (title == Type.SEGUNDA_RP2.get()) {
-            return context.getResources().getString(R.string.diarios_RP2_SegundaEtapa);
-        } else return "?";
+            return App.getContext().getResources().getString(R.string.diarios_RP2_SegundaEtapa);
+        } else return "";
     }
 
     public String getGradeString() {

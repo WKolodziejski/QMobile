@@ -3,6 +3,8 @@ package com.tinf.qmobile.Class.Calendario;
 import com.tinf.qmobile.Class.Calendario.Base.EventBase;
 import com.tinf.qmobile.Class.Materias.Journal;
 import com.tinf.qmobile.Class.Materias.Matter;
+import com.tinf.qmobile.Class.Materias.Period;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
 
@@ -49,7 +51,7 @@ public class EventJournal extends EventBase {
 
     @Override
     public int getItemType() {
-        return ViewType.DEFAULT;
+        return ViewType.JOURNAL;
     }
 
 }

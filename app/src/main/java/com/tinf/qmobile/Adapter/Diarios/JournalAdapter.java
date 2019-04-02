@@ -7,9 +7,7 @@ import android.view.ViewGroup;
 
 import com.tinf.qmobile.Activity.EventViewActivity;
 import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
-import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Materias.Journal;
-import com.tinf.qmobile.Fragment.JournalViewFragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.ViewHolder.DiariosViewHolder;
 import java.util.List;
@@ -39,7 +37,7 @@ public class JournalAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(journals.get(i).getTitle());
         holder.date.setText(journals.get(i).getDateString());
-        holder.type.setText(journals.get(i).getTypeString(context));
+        holder.type.setText(journals.get(i).getShort());
         holder.type.setTextColor(journals.get(i).getColor());
         holder.weight.setText(String.format("・" + context.getString(R.string.diarios_Peso), journals.get(i).getWeightString()));
         holder.grade.setText(String.format(context.getString(R.string.diarios_Nota), journals.get(i).getGradeString(), journals.get(i).getMaxString()));

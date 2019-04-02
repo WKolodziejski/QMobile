@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.tinf.qmobile.Class.Calendario.Base.CalendarBase;
 import com.tinf.qmobile.Fragment.EventCreateFragment;
+import com.tinf.qmobile.Fragment.EventViewFragment;
+import com.tinf.qmobile.Fragment.JournalViewFragment;
+import com.tinf.qmobile.Fragment.ScheduleCreateFragment;
 import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -14,7 +18,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EventCreateActivity extends AppCompatActivity {
-    @BindView(R.id.event_add)   public Button add;
+    public final static int EVENT = 1;
+    public final static int SCHEDULE = 2;
+    @BindView(R.id.event_add) public Button add;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,14 +35,35 @@ public class EventCreateActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_cancel));
 
-        Fragment fragment = new EventCreateFragment();
+        Bundle bundle = getIntent().getExtras();
 
-        fragment.setArguments(getIntent().getExtras());
+        if (bundle != null) {
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.event_create_fragment, fragment)
-                .commit();
+            Fragment fragment = null;
+
+            switch (bundle.getInt("TYPE")) {
+
+                case EVENT:
+                    fragment = new EventCreateFragment();
+                    break;
+
+                case SCHEDULE:
+                    fragment = new ScheduleCreateFragment();
+                    break;
+
+                default:
+                    finish();
+            }
+
+            fragment.setArguments(bundle);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.event_create_fragment, fragment)
+                    .commit();
+        } else {
+            finish();
+        }
     }
 
     @Override

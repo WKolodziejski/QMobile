@@ -10,10 +10,11 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Scroller;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -31,6 +32,9 @@ import com.tinf.qmobile.Class.Calendario.EventUser;
 import com.tinf.qmobile.Class.Calendario.Month;
 import com.tinf.qmobile.Network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.ViewHolder.Calendar.TEST.EventBaseTEST;
+import com.tinf.qmobile.ViewHolder.Calendar.TEST.MultipleItemQuickAdapter;
+import com.tinf.qmobile.ViewHolder.Calendar.TEST.DaySection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,6 +43,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import static com.tinf.qmobile.Activity.Calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
 
 public class CalendarioFragment extends Fragment implements OnUpdate {
@@ -61,15 +67,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         layout = new LinearLayoutManager(getContext());
 
-        /*Calendar startOfMonth = (Calendar) Calendar.getInstance();
-        Calendar endOfMonth = (Calendar) Calendar.getInstance();*/
-
-
-        /*startOfMonth.setTime(date);
-        endOfMonth.setTime(date);
-        endOfMonth.add(Calendar.MONTH, 1);*/
-
-        calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
+        calendarView = ((CalendarioActivity) getActivity()).calendar;
 
         calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         calendarView.setUseThreeLetterAbbreviation(true);
@@ -115,7 +113,20 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         });
 
         displayEvents();
-        scrollToToday();
+        scrollToToday(false);
+
+        /*List<DaySection> sections = new ArrayList<>();
+
+        for (CalendarBase event : events) {
+            if (event instanceof Day) {
+                sections.add(new DaySection((Day) event));
+            } else {
+                sections.add(new DaySection((EventBaseTEST) event));
+            }
+        }
+
+        MultipleItemQuickAdapter multipleItemQuickAdapter = new MultipleItemQuickAdapter(R.layout.header_day, sections);*/
+
     }
 
     private void loadData() {
@@ -176,7 +187,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
             }
         }
 
-        CalendarBase lastEvent = events.get(events.size() - 1);
+        /*CalendarBase lastEvent = events.get(events.size() - 1);
 
         Calendar firstDate = Calendar.getInstance();
         firstDate.setTime(lastEvent.getDate());
@@ -190,16 +201,16 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         lastDate.add(Calendar.MONTH, 1);
         lastDate.set(Calendar.DAY_OF_MONTH, 0);
 
-        events.add(new Day(firstDate.getTime(), lastDate.getTime()));
+        events.add(new Day(firstDate.getTime(), lastDate.getTime()));*/
     }
 
     private void displayEvents() {
-        Date date = new Date();
+        //Date date = new Date();
 
-        setTitle(date.getTime());
+        //setTitle(date.getTime());
 
         calendarView.removeAllEvents();
-        calendarView.setCurrentDate(date);
+        //calendarView.setCurrentDate(date);
 
         loadData();
 
@@ -229,19 +240,34 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         }
     }
 
-    private void scrollToToday() {
+    private void scrollToToday(boolean smooth) {
         int p = events.size() - 1;
 
         for (int i = 0; i < events.size(); i++) {
             if (events.get(i) instanceof Month) {
-                if (((Month) events.get(i)).getTime() >= new Date().getTime()) {
+                if (((Month) events.get(i)).getTime() <= new Date().getTime()) {
                     p = i;
-                    break;
                 }
             }
         }
 
-        layout.scrollToPosition(p);
+        if (smooth) {
+            RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
+                @Override
+                protected int getVerticalSnapPreference() {
+                    return LinearSmoothScroller.SNAP_TO_START;
+                }
+            };
+
+            smoothScroller.setTargetPosition(p);
+            layout.startSmoothScroll(smoothScroller);
+
+        } else {
+            layout.scrollToPosition(p);
+        }
+
+        calendarView.setCurrentDate(events.get(p).getDate());
+        setTitle(events.get(p).getDate().getTime());
     }
 
     @Nullable
@@ -280,9 +306,10 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_calendar);
         fab.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), EventCreateActivity.class));
+            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
+            intent.putExtra("TYPE", EVENT);
+            startActivity(intent);
         });
-
     }
 
     private void setTitle(long date) {
@@ -324,7 +351,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onScrollRequest() {
-        scrollToToday();
+        scrollToToday(true);
     }
 
 }

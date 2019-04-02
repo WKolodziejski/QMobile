@@ -14,10 +14,15 @@ import com.tinf.qmobile.Class.Calendario.Month;
 import com.tinf.qmobile.Class.Calendario.Month_;
 import com.tinf.qmobile.Class.Materias.Journal;
 import com.tinf.qmobile.Class.Materias.Journal_;
+import com.tinf.qmobile.R;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.util.Calendar;
+
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.Network.OnResponse.PG_CALENDARIO;
@@ -253,6 +258,47 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                             }
                         }
                     }
+                }
+
+                if (i == 0) {
+                    Element yearStart = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(8).child(0);
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(getDate(yearStart.text(), true));
+                    cal.set(Calendar.MILLISECOND, 1);
+
+                    int title = EventSimple.Type.INICIO.get();
+                    long date = cal.getTimeInMillis();
+
+                    EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
+                            .between(EventSimple_.startTime, date, date).build().findFirst();
+
+                    if (search == null) {
+                        eventSimpleBox.put(new EventSimple(title, date));
+                    }
+
+                    month = new Month(getDate(yearStart.text(), true));
+
+                } else if (i == months.size() -1) {
+                    Element yearEnd = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(12).child(0);
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(getDate(yearEnd.text(), false));
+                    cal.set(Calendar.HOUR_OF_DAY, 23);
+                    cal.set(Calendar.MINUTE, 59);
+                    cal.set(Calendar.SECOND, 59);
+                    cal.set(Calendar.MILLISECOND, 999);
+
+                    int title = EventSimple.Type.FIM.get();
+                    long date = cal.getTimeInMillis();
+
+                    EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
+                            .between(EventSimple_.startTime, date, date).build().findFirst();
+
+                    if (search == null) {
+                        eventSimpleBox.put(new EventSimple(title, date));
+                    }
+
                 }
 
                 Month search = monthBox.query().between(Month_.time, month.getDate(), month.getDate()).build().findFirst();

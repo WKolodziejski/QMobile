@@ -70,7 +70,7 @@ public class EventViewActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
 
-            if (type == CalendarBase.ViewType.JOURNAL) {
+            if (type == CalendarBase.ViewType.USER) {
                 Client.get().requestUpdate();
             }
             return true;

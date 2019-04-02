@@ -44,7 +44,7 @@ public class EtapasAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final EtapasViewHolder holder = (EtapasViewHolder) viewHolder;
 
-        holder.title.setText(etapas.get(i).getTitle(context));
+        holder.title.setText(etapas.get(i).getTitleString());
         holder.recyclerView.setHasFixedSize(true);
         holder.recyclerView.setItemViewCacheSize(20);
         holder.recyclerView.setDrawingCacheEnabled(true);

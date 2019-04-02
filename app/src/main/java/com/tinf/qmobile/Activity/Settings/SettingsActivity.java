@@ -25,7 +25,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getLayoutInflater().inflate(R.layout.action_bar_main, (ViewGroup) findViewById(android.R.id.content));
+        getLayoutInflater().inflate(R.layout.action_bar_default, (ViewGroup) findViewById(android.R.id.content));
         androidx.appcompat.widget.Toolbar toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar_default);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

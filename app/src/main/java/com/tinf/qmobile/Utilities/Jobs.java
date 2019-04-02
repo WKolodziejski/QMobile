@@ -8,6 +8,7 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -90,6 +91,7 @@ public class Jobs {
         bigText.setSummaryText(channelID);
 
         mBuilder.setSmallIcon(R.drawable.icon_launcher_grey);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.icon_launcher_grey));
         mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(txt);

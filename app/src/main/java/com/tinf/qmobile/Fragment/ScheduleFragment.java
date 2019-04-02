@@ -54,10 +54,10 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
         showHorario2(view);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_schedule);
+        /*FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_schedule);
         fab.setOnClickListener(v -> {
             //startActivity(new Intent(getActivity(), CreateEventActivity.class));
-        });
+        });*/
     }
 
     private void showHorario2(View view) {
