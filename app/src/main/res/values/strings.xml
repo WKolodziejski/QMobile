@@ -98,12 +98,21 @@
     <string name="diarios_collapsed">Abas recolhidas</string>
 
     <string name="event_none">Nenhum</string>
-    <string name="event_custom">Customizado</string>
-    <string name="event_default">Padrão</string>
+    <string name="event_custom_color">Cor customizada</string>
+    <string name="event_default_color">Cor padrão</string>
     <string name="event_title">Digite o título</string>
-    <string name="event_hint">Adicionar nota</string>
+    <string name="event_note">Adicionar nota</string>
     <string name="event_added">Evento adicionado</string>
+    <string name="event_edited">Evento editado</string>
+    <string name="event_removed">Evento removido</string>
     <string name="event_no_title">(Sem título)</string>
+    <string name="event_no_alarm">Sem alarme</string>
+    <string name="event_alarm">Adicionar alarme</string>
+    <string name="event_matter">Linkar matéria</string>
+
+    <string name="alarm_30min">30 minutos antes</string>
+    <string name="alarm_1h">1 hora antes</string>
+    <string name="alarm_1d">1 dia antes</string>
 
     <string name="home_last_login">Última atualização em %1s</string>
     <string name="home_footer">Confira suas notas no site</string>

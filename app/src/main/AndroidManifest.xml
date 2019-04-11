@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name="com.tinf.qmobile.App"
@@ -31,7 +34,7 @@
             android:value="1bfde5883d67bfe2eadbcd4eca35d0e5c5d73fbe" />
 
         <activity
-            android:name=".Activity.Settings.SplashActivity"
+            android:name=".activity.settings.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,7 +43,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop">
             <intent-filter>
@@ -50,7 +53,7 @@
         </activity>
 
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -58,14 +61,14 @@
         </activity>
 
         <activity
-            android:name=".Activity.Settings.AboutActivity">
+            android:name=".activity.settings.AboutActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".Activity.Calendar.EventCreateActivity"
+            android:name=".activity.calendar.EventCreateActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -74,7 +77,7 @@
 
 
         <activity
-            android:name=".Activity.EventViewActivity"
+            android:name=".activity.EventViewActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -82,36 +85,36 @@
         </activity>
 
         <activity
-            android:name=".Activity.Settings.MoreActivity">
+            android:name=".activity.settings.MoreActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".Activity.HorarioActivity">
+            android:name=".activity.HorarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".Activity.Calendar.CalendarioActivity">
+            android:name=".activity.calendar.CalendarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".Activity.Calendar.CalendarioActivity2">
+            android:name=".activity.calendar.CalendarioActivity2">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity
-            android:name=".Activity.MateriaActivity"
-            android:parentActivityName=".Activity.MainActivity"
+            android:name=".activity.MateriaActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -119,29 +122,39 @@
         </activity>
 
         <activity
-            android:name=".Activity.Settings.SettingsActivity"
+            android:name=".activity.settings.SettingsActivity"
             android:label="@string/title_settings">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tinf.qmobile.Activity.MainActivity" />
+                android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
         <activity
-            android:name=".Activity.Settings.WebViewActivity">
+            android:name=".activity.settings.WebViewActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tinf.qmobile.Activity.MainActivity" />
+                android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
         <service
             android:exported="false"
-            android:name=".Service.BackgroundCheck">
+            android:name=".service.BackgroundCheck">
             <intent-filter>
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
             </intent-filter>
         </service>
+
+        <receiver android:name=".service.AlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.AlarmService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

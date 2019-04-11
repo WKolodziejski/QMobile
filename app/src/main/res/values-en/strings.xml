@@ -93,10 +93,6 @@
     <string name="dialog_continue_offline">Stay offline</string>
     <string name="event_title">Enter title</string>
     <string name="event_none">None</string>
-    <string name="event_no_title">(No title)</string>
-    <string name="event_hint">Add note</string>
-    <string name="event_default">Default</string>
-    <string name="event_custom">Custom</string>
     <string name="event_added">Event added</string>
     <string name="dialog_select">Select</string>
     <string name="dialog_keep_editing">Keep editing</string>
@@ -118,4 +114,16 @@
     <string name="calendar_scroll">Go to today</string>
     <string name="calendar_period_start">Start of school year</string>
     <string name="calendar_period_end">End of school year</string>
+    <string name="event_note">Add note</string>
+    <string name="event_no_alarm">No alarm</string>
+    <string name="event_alarm">Add alarm</string>
+    <string name="alarm_30min">30 minutes before</string>
+    <string name="alarm_1h">1 hour before</string>
+    <string name="alarm_1d">1 day before</string>
+    <string name="event_matter">Link matter</string>
+    <string name="event_default_color">Default color</string>
+    <string name="event_no_title">(No title)</string>
+    <string name="event_custom_color">Custom color</string>
+    <string name="event_edited">Event edited</string>
+    <string name="event_removed">Event deleted</string>
 </resources>

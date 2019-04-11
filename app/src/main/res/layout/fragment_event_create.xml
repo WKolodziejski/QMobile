@@ -63,11 +63,11 @@
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:id="@+id/event_create_matter_text"
+            android:hint="@string/event_matter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="Matter" />
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </LinearLayout>
 
@@ -181,12 +181,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="8dp"
         android:orientation="horizontal"
-        android:id="@+id/event_create_notification_layout"
+        android:id="@+id/event_create_alarm_layout"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toBottomOf="@id/event_create_time_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
         >
 
         <ImageView
@@ -196,44 +199,19 @@
             android:tint="@color/colorAccent"
             app:srcCompat="@drawable/ic_notification" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            >
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="4dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:id="@+id/event_create_notification_text"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:text="30 minutes before" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="4dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/transparent"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/ic_cancel"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:id="@+id/event_create_alarm_text"
+            android:hint="@string/event_alarm"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"  />
 
     </LinearLayout>
 
@@ -241,14 +219,14 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/event_create_notification_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/event_create_alarm_layout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/event_create_color_layout"
-        app:layout_constraintTop_toBottomOf="@id/event_create_notification_layout"
+        app:layout_constraintTop_toBottomOf="@id/event_create_alarm_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="8dp"
@@ -311,14 +289,14 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
             android:paddingTop="28dp"
             android:paddingBottom="16dp"
-            android:hint="@string/event_hint"
+            android:hint="@string/event_note"
             android:capitalize="sentences"
             android:background="@color/transparent"
             android:id="@+id/event_create_description"
+            android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -4,28 +4,24 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.core.CrashlyticsCore;
-import com.tinf.qmobile.Class.MyObjectBox;
-import com.tinf.qmobile.Utilities.Jobs;
-import com.tinf.qmobile.Utilities.User;
-import com.tinf.qmobile.Utilities.Utils;
+import com.tinf.qmobile.model.MyObjectBox;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.Utils;
 
-import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
-import static com.tinf.qmobile.Utilities.User.REGISTRATION;
-import static com.tinf.qmobile.Utilities.Utils.VERSION_INFO;
+import static com.tinf.qmobile.utility.User.REGISTRATION;
+import static com.tinf.qmobile.utility.Utils.VERSION_INFO;
 
 public class App extends Application {
+    private static final String TAG = "Application";
     private static BoxStore boxStore;
-    private static boolean isLogged;
+    //private static boolean isLogged;
     private static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("Application", "Initialized");
 
         context = getApplicationContext();
 
@@ -39,33 +35,35 @@ public class App extends Application {
         }
     }
 
-    public void setLogged(boolean logged) {
-        isLogged = logged;
-        Log.i("BoxStore", String.valueOf(logged));
-    }
-
     public static BoxStore getBox() {
-        if (!isLogged || boxStore == null || boxStore.isClosed()) {
+        if (/*!isLogged ||*/ boxStore == null || boxStore.isClosed()) {
+            //Log.v(TAG, "Login state: " + String.valueOf(isLogged));
+            Log.v(TAG, "Box state: " + boxStore);
             initBoxStore();
         }
         return boxStore;
     }
 
     private static void initBoxStore() {
+        Log.v(TAG, "Initializing box...");
         if (boxStore != null) {
+            Log.w(TAG, "Box already open. Closing...");
             boxStore.close();
         }
-        if (User.isValid() || isLogged) {
+        if (User.isValid() || Client.get().isValid()/*|| isLogged*/) {
+            Log.v(TAG, "Building box...");
             boxStore = MyObjectBox
                     .builder()
                     .androidContext(App.getContext())
                     .name(User.getCredential(REGISTRATION))
                     .build();
+        } else {
+            Log.e(TAG, "Box not initilized");
         }
     }
 
     public void logOut() {
-        isLogged = false;
+        //isLogged = false;
         boxStore.closeThreadResources();
         boxStore.close();
         boxStore.deleteAllFiles();
