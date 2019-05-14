@@ -124,7 +124,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
             name = material.getFileName();
             path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
 
-            long lastDownloadL = manager.enqueue(Client.get().download(material, path, name));
+            long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(material, path, name));
 
             mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
 
@@ -207,11 +207,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private boolean checkPermission() {
         int write = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
         int read = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
+        return (write == PackageManager.PERMISSION_GRANTED && read == PackageManager.PERMISSION_GRANTED);
     }
 
     private void requestPermission() {

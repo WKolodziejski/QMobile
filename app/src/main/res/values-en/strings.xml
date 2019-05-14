@@ -126,4 +126,5 @@
     <string name="event_custom_color">Custom color</string>
     <string name="event_edited">Event edited</string>
     <string name="event_removed">Event deleted</string>
+    <string name="diarios_EtapaUnica">Single Stage</string>
 </resources>

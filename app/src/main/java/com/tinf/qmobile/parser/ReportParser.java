@@ -48,14 +48,6 @@ public class ReportParser extends AsyncTask<String, Void, Void> {
                 for (int i = 2; i < table.childNodeSize() - 1; i++) {
                     String matterTitle = formatName(rows.get(i).child(0).text()).trim();
                     String absencesTotal = formatTd(rows.get(i).child(3).text()).trim();
-                    String gradeFirst = formatTd(rows.get(i).child(5).text()).trim();
-                    String absencesFirst = formatTd(rows.get(i).child(6).text()).trim();
-                    String gradeRPFirst = formatTd(rows.get(i).child(7).text()).trim();
-                    String gradeFinalFirst = formatTd(rows.get(i).child(9).text()).trim();
-                    String gradeSecond = formatTd(rows.get(i).child(10).text()).trim();
-                    String absencesSecond = formatTd(rows.get(i).child(11).text()).trim();
-                    String gradeRPSecond = formatTd(rows.get(i).child(12).text()).trim();
-                    String gradeFinalSecond = formatTd(rows.get(i).child(14).text()).trim();
 
                     Matter matter = matterBox.query()
                             .equal(Matter_.title, matterTitle).and()
@@ -75,6 +67,12 @@ public class ReportParser extends AsyncTask<String, Void, Void> {
                             boolean isPeriodValid = false;
 
                             if (period.getTitle() == Period.Type.PRIMEIRA.get()) {
+
+                                String gradeFirst = formatTd(rows.get(i).child(5).text()).trim();
+                                String absencesFirst = formatTd(rows.get(i).child(6).text()).trim();
+                                String gradeRPFirst = formatTd(rows.get(i).child(7).text()).trim();
+                                String gradeFinalFirst = formatTd(rows.get(i).child(9).text()).trim();
+
                                 grade = gradeFirst.isEmpty() ? - 1 : Float.parseFloat(gradeFirst);
                                 absences = absencesFirst.isEmpty() ? - 1 : Integer.parseInt(absencesFirst);
                                 gradeFinal = gradeFinalFirst.isEmpty() ? - 1 : Float.parseFloat(gradeFinalFirst);
@@ -82,11 +80,18 @@ public class ReportParser extends AsyncTask<String, Void, Void> {
                                 isPeriodValid = true;
 
                             } else if (period.getTitle() == Period.Type.SEGUNDA.get()) {
-                                grade = gradeSecond.isEmpty() ? - 1 : Float.parseFloat(gradeSecond);
-                                absences = absencesSecond.isEmpty() ? - 1 : Integer.parseInt(absencesSecond);
-                                gradeFinal = gradeFinalSecond.isEmpty() ? - 1 : Float.parseFloat(gradeFinalSecond);
-                                gradeRP = gradeRPSecond.isEmpty() ? - 1 : Float.parseFloat(gradeRPSecond);
-                                isPeriodValid = true;
+                                if (rows.get(i).children().size() > 11) {
+                                    String gradeSecond = formatTd(rows.get(i).child(10).text()).trim();
+                                    String absencesSecond = formatTd(rows.get(i).child(11).text()).trim();
+                                    String gradeRPSecond = formatTd(rows.get(i).child(12).text()).trim();
+                                    String gradeFinalSecond = formatTd(rows.get(i).child(14).text()).trim();
+
+                                    grade = gradeSecond.isEmpty() ? -1 : Float.parseFloat(gradeSecond);
+                                    absences = absencesSecond.isEmpty() ? -1 : Integer.parseInt(absencesSecond);
+                                    gradeFinal = gradeFinalSecond.isEmpty() ? -1 : Float.parseFloat(gradeFinalSecond);
+                                    gradeRP = gradeRPSecond.isEmpty() ? -1 : Float.parseFloat(gradeRPSecond);
+                                    isPeriodValid = true;
+                                }
                             }
 
                             if (isPeriodValid) {

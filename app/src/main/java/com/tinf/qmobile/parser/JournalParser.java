@@ -100,11 +100,11 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                     periodTitle = nxtElem.child(0).child(0).ownText();
                 }
 
-                while (periodTitle.contains("Etapa")) {
+                while (periodTitle.contains("Etapa") || periodTitle.equals("Nota do Semestre") || periodTitle.equals("Exame Final")) {
                     if (periodTitle.equals("1a. Etapa") || periodTitle.equals("1ª Etapa")) {
                         periodType = Period.Type.PRIMEIRA.get();
                     } else if (periodTitle.equals("1a Reavaliação da 1a Etapa") || periodTitle.equals("1ª Reavaliação da 1ª Etapa")) {
-                        periodType =Period.Type.PRIMEIRA_RP1.get();
+                        periodType = Period.Type.PRIMEIRA_RP1.get();
                     } else if (periodTitle.equals("2a Reavaliação da 1a Etapa") || periodTitle.equals("2ª Reavaliação da 1ª Etapa")) {
                         periodType = Period.Type.PRIMEIRA_RP2.get();
                     } else if (periodTitle.equals("2a. Etapa") || periodTitle.equals("2ª Etapa")) {
@@ -113,6 +113,9 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                         periodType = Period.Type.SEGUNDA_RP1.get();
                     } else if (periodTitle.equals("2a Reavaliação da 2a Etapa") || periodTitle.equals("2ª Reavaliação da 2ª Etapa")) {
                         periodType = Period.Type.SEGUNDA_RP2.get();
+                    } else if (periodTitle.equals("Etapa Única") || periodTitle.equals("Nota do Semestre") || periodTitle.equals("Exame Final")) {
+                        periodType = Period.Type.PRIMEIRA.get();
+                        //periodType = Period.Type.UNICO.get();
                     }
 
                     Element tableGrades = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);

@@ -86,6 +86,7 @@
 
     <string name="diarios_PrimeiraEtapa">Primeira Etapa</string>
     <string name="diarios_SegundaEtapa">Segunda Etapa</string>
+    <string name="diarios_EtapaUnica">Etapa Única</string>
     <string name="diarios_RP1_PrimeiraEtapa">Primeira Reavaliação da Primeira Etapa</string>
     <string name="diarios_RP1_SegundaEtapa">Primeira Reavaliação da Segunda Etapa</string>
     <string name="diarios_RP2_PrimeiraEtapa">Segunda Reavaliação da Primeira Etapa</string>

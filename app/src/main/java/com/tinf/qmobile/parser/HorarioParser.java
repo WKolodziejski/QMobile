@@ -78,26 +78,37 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                         trtd_horario[i][j] = tds.get(j).text();
 
                         for (int k = 1; k < code.length; k++) {
-                            String sub = code[k].substring(0, code[k].indexOf("-") + 1);
+                            /*String sub = code[k].substring(0, code[k].indexOf("-") + 1);
                             sub = sub.substring(0, sub.lastIndexOf(" ") + 1);
 
                             String recebe = code[k].substring(code[k].indexOf("-"));
                             recebe = recebe.substring(recebe.indexOf("-"));
                             recebe = recebe.substring(recebe.indexOf("-") + 2);
-                            recebe = recebe.substring(recebe.indexOf("-") + 2, recebe.lastIndexOf("-"));
+                            recebe = recebe.substring(recebe.indexOf("-") + 2, recebe.lastIndexOf("-"));*/
 
-                            if ((trtd_horario[i][j]).contains(sub)) {
-                                trtd_horario[i][j] = recebe;
+                            String title = code[k].substring(0, code[k].lastIndexOf("-"));
+
+                            String sign = title.substring(0, title.lastIndexOf("-"));
+                            sign = sign.substring(0, sign.lastIndexOf("-")).trim();
+
+                            title = title.substring(title.lastIndexOf("-") + 1).trim();
+
+                            if ((trtd_horario[i][j]).contains(sign)) {
+                                trtd_horario[i][j] = title;
                             }
 
                             if (((trtd_horario[i][j]).contains("2ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.MONDAY);
+
                             } else if (((trtd_horario[i][j]).contains("3ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.TUESDAY);
+
                             } else if (((trtd_horario[i][j]).contains("4ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.WEDNESDAY);
+
                             } else if (((trtd_horario[i][j]).contains("5ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.THURSDAY);
+
                             } else if (((trtd_horario[i][j]).contains("6ª-FEIRA"))) {
                                 trtd_horario[i][j] = String.valueOf(Calendar.FRIDAY);
                             }

@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class Utils {
     public static final int UPDATE_REQUEST = 0;
-    public static final String VERSION = ".v1.0.2-r12";
+    public static final String VERSION = ".v1.0.0-r13";
     public static final String VERSION_INFO = ".Version";
 
     private static int getRandomColorGenerator() {

@@ -11,7 +11,7 @@ import io.objectbox.relation.ToOne;
 public class Period {
 
     public enum Type {
-        PRIMEIRA(0), PRIMEIRA_RP1(1), PRIMEIRA_RP2(2), SEGUNDA(3), SEGUNDA_RP1(4), SEGUNDA_RP2(5);
+        PRIMEIRA(0), PRIMEIRA_RP1(1), PRIMEIRA_RP2(2), SEGUNDA(3), SEGUNDA_RP1(4), SEGUNDA_RP2(5);//, UNICO(6);
 
         private int i;
 
@@ -51,7 +51,9 @@ public class Period {
             return App.getContext().getResources().getString(R.string.diarios_RP1_SegundaEtapa);
         } else if (title == Type.SEGUNDA_RP2.get()) {
             return App.getContext().getResources().getString(R.string.diarios_RP2_SegundaEtapa);
-        } else return "";
+        } /*else if (title == Type.UNICO.get()) {
+            return App.getContext().getResources().getString(R.string.diarios_EtapaUnica);
+        }*/ else return "";
     }
 
     public String getGradeString() {

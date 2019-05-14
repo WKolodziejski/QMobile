@@ -372,8 +372,9 @@ public class EventCreateFragment extends Fragment {
 
             if (alarmManager != null) {
                 if (alarm > 0) {
+                    SimpleDateFormat date = new SimpleDateFormat("dd/MMM/yyyy HH:mm", Locale.getDefault());
+                    Log.i(TAG, "Alarm scheduled to " + date.format(alarm));
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getAlarm(), pendingIntent);
-                    Log.i(TAG, "Alarm scheduled");
                 } else {
                     alarmManager.cancel(pendingIntent);
                     pendingIntent.cancel();

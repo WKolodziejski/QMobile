@@ -6,10 +6,10 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -31,12 +31,15 @@ import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
@@ -210,7 +213,10 @@ public class Client {
 
                             isLogging = false;
 
-                            //App.setLogged(true);
+                            String cod = document.getElementsByTag("q_latente").get(4).val();
+                            cod = cod.substring(cod.indexOf("=") + 1);
+
+                            //downloadImage(cod);
 
                             callOnFinish(PG_LOGIN, 0);
 
@@ -485,7 +491,7 @@ public class Client {
         callOnScrollRequest();
     }
 
-    public DownloadManager.Request download(Material material, String path, String name) {
+    public DownloadManager.Request downloadMaterial(Material material, String path, String name) {
         Uri uri = Uri.parse(URL + material.getLink());
 
         return new DownloadManager.Request(uri)
@@ -496,6 +502,26 @@ public class Client {
                 .setTitle(material.getTitle())
                 .setDescription(material.getDateString())
                 .setDestinationInExternalPublicDir("/Download" + path, name);
+    }
+
+    private void downloadImage(String cod) {
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+
+        if (!picture.exists()) {
+
+            Log.i(TAG, "Downloading profile picture");
+
+            DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
+
+            Uri uri = Uri.parse(URL + INDEX + "1025&tipo=0&COD=" + cod);
+
+            manager.enqueue(new DownloadManager.Request(uri)
+                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
+                    .setAllowedOverRoaming(false)
+                    .addRequestHeader("Cookie", COOKIE)
+                    .setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_PICTURES, User.getCredential(User.REGISTRATION)));
+        }
     }
 
     public void setOnEventListener(OnEvent onEvent) {

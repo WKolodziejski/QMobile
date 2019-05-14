@@ -1,5 +1,6 @@
 package com.tinf.qmobile;
 
+import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
@@ -63,7 +64,6 @@ public class App extends Application {
     }
 
     public void logOut() {
-        //isLogged = false;
         boxStore.closeThreadResources();
         boxStore.close();
         boxStore.deleteAllFiles();

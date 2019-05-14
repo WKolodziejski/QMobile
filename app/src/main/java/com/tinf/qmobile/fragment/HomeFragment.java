@@ -2,6 +2,8 @@ package com.tinf.qmobile.fragment;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,10 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
+
+import android.os.Environment;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
@@ -50,6 +55,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
@@ -135,6 +141,15 @@ public class HomeFragment extends Fragment implements OnUpdate {
         showHorario(view);
 
         view.post(() -> {
+
+            /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
+            Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    + "/" + User.getCredential(User.REGISTRATION));
+
+            Bitmap croppedBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getWidth());
+
+            image.setImageBitmap(croppedBmp);*/
+
             nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
             nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)

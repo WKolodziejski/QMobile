@@ -97,7 +97,7 @@ public class Journal {
             return App.getContext().getResources().getString(R.string.journal_Trabalho);
 
         } else if (type == Type.QUALITATIVA.get()) {
-            return App.getContext().getResources().getString(R.string.journal_Trabalho);
+            return App.getContext().getResources().getString(R.string.journal_Qualitativa);
 
         } else return App.getContext().getResources().getString(R.string.journal_Avaliacao);
     }

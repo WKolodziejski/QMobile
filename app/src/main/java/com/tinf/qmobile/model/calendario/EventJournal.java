@@ -32,8 +32,11 @@ public class EventJournal extends EventBase {
 
     @Override
     public String getDescription() {
-        Matter matter = journal.getTarget().period.getTarget().matter.getTarget();
-        return matter != null ? matter.getTitle() : super.getDescription();
+        if (journal.getTargetId() != 0) {
+            Matter matter = journal.getTarget().period.getTarget().matter.getTarget();
+            return matter != null ? matter.getTitle() : super.getDescription();
+        }
+        return super.getDescription();
     }
 
     public Journal getJournal() {
