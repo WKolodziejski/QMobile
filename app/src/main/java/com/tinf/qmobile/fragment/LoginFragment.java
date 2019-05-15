@@ -11,15 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.utility.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
@@ -35,6 +41,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     @BindView(R.id.user_input_login)        EditText user;
     @BindView(R.id.password_input_login)    EditText password;
     @BindView(R.id.btn_login)               Button btn;
+    @BindView(R.id.login_spinner)           Spinner spinner;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,6 +53,34 @@ public class LoginFragment extends Fragment implements OnResponse {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        List<String> urls = new ArrayList<>();
+        urls.add("IFSUL");
+        urls.add("IFES");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
+        adapter.addAll(urls);
+        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                        switch (position) {
+                            case 0 : Client.get().setURL(IFSUL);
+                                break;
+
+                            case 1: Client.get().setURL(IFES);
+                                break;
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parentView) {
+                        // your code here
+                    }
+                });
 
         btn.setOnClickListener(v -> {
 
@@ -92,10 +127,8 @@ public class LoginFragment extends Fragment implements OnResponse {
         } else if (pg == PG_LOGIN) {
             textView.setText(getResources().getString(R.string.login_validating));
 
-        } else if (pg ==  PG_DIARIOS) {
-            if (pos == 0) {
-                textView.setText(getResources().getString(R.string.login_checking));
-            }
+        } else if (pg ==  PG_FETCH_YEARS) {
+            textView.setText(getResources().getString(R.string.login_checking));
 
         } else {
             textView.setText(String.format(

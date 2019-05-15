@@ -17,7 +17,7 @@ public class MonthViewHolder extends CalendarioViewHolder<Month> {
     }
 
     @Override
-    public void bind(Month month, Context context, boolean enableOnClick) {
+    public void bind(Month month, Context context) {
         title.setText(month.getMonth());
     }
 

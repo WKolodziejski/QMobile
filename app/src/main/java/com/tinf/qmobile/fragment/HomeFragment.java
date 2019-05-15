@@ -50,6 +50,7 @@ import com.tinf.qmobile.R;
 import org.threeten.bp.DayOfWeek;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -60,7 +61,6 @@ import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
-import static com.tinf.qmobile.network.OnResponse.URL;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         }
 
         if (calendarioAdapter == null) {
-            calendarioAdapter = new EventosAdapter(getActivity(), events, false);
+            calendarioAdapter = new EventosAdapter(getActivity(), events);
         } else {
             calendarioAdapter.update(events);
         }
@@ -155,6 +155,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
             nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                     (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                         ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
+                        if (scrollY < oldScrollY && !((MainActivity) getActivity()).fab.isShown())
+                            ((MainActivity) getActivity()).fab.show();
+                        else if(scrollY > oldScrollY && ((MainActivity) getActivity()).fab.isShown())
+                            ((MainActivity) getActivity()).fab.hide();
                     });
 
             showOffline(view);
@@ -162,10 +166,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             view.findViewById(R.id.home_website).setOnClickListener(v -> {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(URL + INDEX + PG_LOGIN));
+                        Uri.parse(User.getURL() + INDEX + PG_LOGIN));
                 startActivity(browserIntent);
             });
-            ((MainActivity) getActivity()).fab.setImageResource(R.drawable.ic_add);
+            ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
+            ((MainActivity) getActivity()).fab.shrink(((MainActivity) getActivity()).fab.isShown());
             ((MainActivity) getActivity()).fab.show();
         });
     }
@@ -224,6 +229,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                     }
                 }
             }
+
 
             weekView.goToDate(DayOfWeek.MONDAY);
             weekView.goToHour(firstHour + 0.5);

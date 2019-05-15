@@ -54,6 +54,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private List<Matter> materiaList;
     private MateriaisListAdapter adapter;
     private String name, mime, path;
+    private int i, j;
     @BindView(R.id.recycler_materiais) RecyclerView recyclerView;
     @BindView(R.id.materiais_empty) View empty;
 
@@ -66,12 +67,15 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
 
         loadData();
 
-        adapter = new MateriaisListAdapter(getContext(), materiaList, material -> {
+        adapter = new MateriaisListAdapter(getContext(), materiaList, (i, j) -> {
             if (checkPermission()) {
+                Material material = materiaList.get(i).materials.get(j);
                 if (material.isDownloaded) {
                     openFile(material.getFileName(), material.getPath(), material.getMime());
                 } else {
                     downloadFile(material);
+                    this.i = i;
+                    this.j = j;
                 }
             } else {
                 requestPermission();
@@ -154,7 +158,6 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
         Log.v(TAG, "View created");
 
         view.post(() -> {
-
             RecyclerView.LayoutManager layout = new LinearLayoutManager(getContext());
             DividerItemDecoration decoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
 
@@ -174,6 +177,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
+            ((MainActivity) getActivity()).fab.hide();
         });
     }
 
@@ -218,6 +222,10 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private BroadcastReceiver onComplete = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             openFile(name, path, mime);
+            materiaList.get(i).materials.get(j).isDownloaded = true;
+            if (adapter != null) {
+                adapter.notifyDownloaded(i);
+            }
         }
     };
 
@@ -241,7 +249,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     }
 
     public interface OnDownloadListener {
-        void onDownload(Material material);
+        void onDownload(int i, int j);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class EventUserViewHolder extends CalendarioViewHolder<EventUser> {
     }
 
     @Override
-    public void bind(EventUser event, Context context, boolean enableOnClick) {
+    public void bind(EventUser event, Context context) {
         title.setText(event.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : event.getTitle());
         if (event.getDescription().isEmpty()) {
             description.setVisibility(View.GONE);
@@ -44,14 +44,13 @@ public class EventUserViewHolder extends CalendarioViewHolder<EventUser> {
         card.setBackgroundColor(event.getColor());
         CalendarioViewHolder.setHeader(header, event, context);
 
-        if (enableOnClick) {
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EventViewActivity.class);
                 intent.putExtra("TYPE", CalendarBase.ViewType.USER);
                 intent.putExtra("ID", event.id);
                 context.startActivity(intent);
             });
-        }
+
     }
 
 }

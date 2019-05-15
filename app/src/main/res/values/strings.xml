@@ -96,8 +96,8 @@
     <string name="diarios_nothing">Nada Aqui</string>
     <string name="diarios_cobre">Peça a seu professor</string>
     <string name="diarios_expanded">Abas expandidas</string>
+    <string name="diarios_expand">Expandir</string>
     <string name="diarios_collapsed">Abas recolhidas</string>
-
     <string name="event_none">Nenhum</string>
     <string name="event_custom_color">Cor customizada</string>
     <string name="event_default_color">Cor padrão</string>

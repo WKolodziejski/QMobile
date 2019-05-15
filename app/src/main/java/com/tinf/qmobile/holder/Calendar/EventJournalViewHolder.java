@@ -25,20 +25,19 @@ public class EventJournalViewHolder extends CalendarioViewHolder<EventJournal> {
     }
 
     @Override
-    public void bind(EventJournal event, Context context, boolean enableOnClick) {
+    public void bind(EventJournal event, Context context) {
         title.setText(event.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : event.getTitle());
         description.setText(event.getDescription());
         card.setBackgroundColor(event.getColor());
         CalendarioViewHolder.setHeader(header, event, context);
 
-        if (enableOnClick) {
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EventViewActivity.class);
                 intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
                 intent.putExtra("ID", event.journal.getTargetId());
                 context.startActivity(intent);
             });
-        }
+
     }
 
 }

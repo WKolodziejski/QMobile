@@ -143,6 +143,7 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
+            ((MainActivity) getActivity()).fab.hide();
         });
     }
 

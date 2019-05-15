@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fab_add_calendar"
@@ -14,11 +14,11 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         android:background="@color/colorAccent"
-        android:tint="@color/colorPrimaryLight"
         android:transitionName="Fab"
         app:borderWidth="0dp"
         app:fabSize="normal"
-        app:srcCompat="@drawable/ic_add" />
+        app:icon="@drawable/ic_add"
+        app:iconTint="@color/colorPrimaryLight" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

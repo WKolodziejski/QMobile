@@ -41,7 +41,9 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
         holder.materia.setText(materiaList.get(i).getTitle());
         holder.materia.setTag(i);
         holder.recyclerView.setHasFixedSize(true);
-        holder.recyclerView.setAdapter(new MateriaisAdapter(context, materiaList.get(i).materials, onDownloadListener));
+        holder.recyclerView.setAdapter(new MateriaisAdapter(context, materiaList.get(i).materials, j -> {
+            onDownloadListener.onDownload(i, j);
+        }));
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
@@ -50,9 +52,13 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
         return materiaList.size();
     }
 
-    public void update(List<Matter> materiaList){
+    public void update(List<Matter> materiaList) {
         this.materiaList = materiaList;
         notifyDataSetChanged();
+    }
+
+    public void notifyDownloaded(int i) {
+        notifyItemChanged(i);
     }
 
 }

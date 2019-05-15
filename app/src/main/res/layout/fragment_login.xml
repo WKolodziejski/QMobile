@@ -1,79 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
-    >
+    android:gravity="center_horizontal"
+    android:imeOptions="actionSend|flagNoEnterAction"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_marginTop="16dp"
-        >
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/icon_launcher_grey"
-            android:tint="@color/colorAccent"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/login_welcome"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:layout_marginBottom="40dp"
-        android:orientation="vertical">
+    <ImageView
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_margin="16dp"
+        android:id="@+id/login_logo"
+        android:src="@drawable/icon_launcher_grey"
+        android:tint="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
+        android:id="@+id/login_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
         android:visibility="gone"
-        android:id="@+id/login_progressbar"/>
+        app:layout_constraintBottom_toTopOf="@id/login_layout1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_logo"
+        app:layout_constraintVertical_bias="1"
+        tools:visibility="visible" />
 
     <TextView
+        android:id="@+id/login_textLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:id="@+id/login_textLoading"
         android:visibility="invisible"
-        tools:text="Carregando"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_progressbar"
+        tools:text="Carregando"
+        tools:visibility="visible" />
 
     <LinearLayout
+        android:id="@+id/login_layout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical"
-        android:gravity="center"
-        android:imeOptions="actionSend|flagNoEnterAction"
-        >
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Spinner
+            android:id="@+id/login_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            >
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/user_input_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:hint="@string/text_user"
-                android:id="@+id/user_input_login"
-                android:inputType="text" />
+                android:inputType="text"
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,30 +82,26 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/colorAccent"
-            >
+            app:passwordToggleTint="@color/colorAccent">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_input_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
                 android:hint="@string/text_password"
-                android:id="@+id/password_input_login"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:background="@color/colorAccent"
-            android:textColor="@color/white"
-            android:id="@+id/btn_login"
-            android:text="@string/button_login"/>
+            android:text="@string/button_login"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

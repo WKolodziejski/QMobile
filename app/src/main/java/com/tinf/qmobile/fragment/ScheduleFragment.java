@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
@@ -29,6 +31,7 @@ import java.util.Objects;
 
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
+import static java.util.Calendar.MONDAY;
 
 public class ScheduleFragment extends Fragment implements OnUpdate {
     private List<Matter> matters;
@@ -62,11 +65,12 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
     private void showHorario2(View view) {
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_horario);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+        //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         //prefs.edit().putInt(SCHEDULE_HOUR, 0).apply();
 
         weekView.setWeekViewLoader(() -> {
-            double firstHour = 24;
+            //double firstHour = 24;
+            int firstHour = 24;
 
             List<WeekViewEvent> events = new ArrayList<>();
 
@@ -77,8 +81,12 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                     event.setColor(matter.getColor());
                     events.add(event);
 
-                    if (event.getStartTime().getHour() < firstHour) {
+                    /*if (event.getStartTime().getHour() < firstHour) {
                         firstHour = event.getStartTime().getHour() + event.getStartTime().getMinute();
+                    }*/
+
+                    if (event.getStartTime().getHour() < firstHour) {
+                        firstHour = event.getStartTime().getHour();
                     }
                 }
             }

@@ -60,13 +60,13 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
             Elements dates = document.getElementsByTag("option");
 
-            String[] years = new String[dates.size() - 1];
+            /*String[] years = new String[dates.size() - 1];
 
             for (int i = 0; i < dates.size() - 1; i++) {
                 years[i] = dates.get(i + 1).text();
             }
 
-            User.setYears(years);
+            User.setYears(years);*/
 
             for (int i = 0; i < size; i++) {
                 if (tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).next().eq(0) != null) {

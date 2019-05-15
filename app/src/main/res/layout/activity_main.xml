@@ -41,18 +41,20 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/fab_expand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:transitionName="Fab"
+            android:text="@string/diarios_expand"
+            android:textColor="@color/colorPrimaryLight"
             android:background="@color/colorAccent"
-            android:tint="@color/colorPrimaryLight"
-            app:srcCompat="@drawable/ic_add"
+            android:visibility="gone"
+            app:icon="@drawable/ic_add"
+            app:iconTint="@color/colorPrimaryLight"
             app:fabSize="normal"
             app:borderWidth="0dp" />
 

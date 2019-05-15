@@ -30,6 +30,10 @@ public class EventViewActivity extends AppCompatActivity {
 
         if (bundle != null) {
 
+            /*if (bundle.getInt("ID") == 0) {
+                finish();
+            }*/
+
             type = bundle.getInt("TYPE");
 
             Fragment fragment = null;

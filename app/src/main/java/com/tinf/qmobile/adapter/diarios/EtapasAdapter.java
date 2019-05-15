@@ -50,7 +50,7 @@ public class EtapasAdapter extends RecyclerView.Adapter {
         holder.recyclerView.setDrawingCacheEnabled(true);
         holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
-        holder.recyclerView.setAdapter(new JournalAdapter(context, etapas.get(i).journals, true));
+        holder.recyclerView.setAdapter(new JournalAdapter(context, etapas.get(i).journals));
     }
 
     @Override

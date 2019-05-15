@@ -31,14 +31,13 @@ import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
+import org.jsoup.select.Elements;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
@@ -49,11 +48,11 @@ import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
+import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
 import static com.tinf.qmobile.network.OnResponse.PG_GERADOR;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
-import static com.tinf.qmobile.network.OnResponse.URL;
 import static com.tinf.qmobile.utility.Utils.UPDATE_REQUEST;
 
 public class Client {
@@ -62,6 +61,7 @@ public class Client {
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
     private List<RequestHelper> queue;
     private static Client singleton;
+    private static String URL;
     private List<OnResponse> onResponses;
     private List<OnUpdate> onUpdates;
     private RequestQueue requests;
@@ -80,6 +80,7 @@ public class Client {
     private Client() {
         requests = Volley.newRequestQueue(getContext(), new HurlStack());
         queue = new ArrayList<>();
+        URL = User.getURL();
         Log.v(TAG, "New instace created");
     }
 
@@ -123,6 +124,20 @@ public class Client {
                             } else if (pg == PG_CALENDARIO) {
                                 new CalendarioParser(pos, notify, this::callOnFinish).execute(response);
 
+                            } else if (pg == PG_FETCH_YEARS) {
+                                Document document = Jsoup.parse(response);
+
+                                Elements dates = document.getElementsByTag("option");
+
+                                String[] years = new String[dates.size() - 1];
+
+                                for (int i = 0; i < dates.size() - 1; i++) {
+                                    years[i] = dates.get(i + 1).text();
+                                }
+
+                                User.setYears(years);
+
+                                callOnFinish(PG_FETCH_YEARS, 0);
                             }
                         }
                     }, error -> onError(pg, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
@@ -151,7 +166,9 @@ public class Client {
         String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
 
-        if (pos != 0) {
+        if (pg == PG_FETCH_YEARS) {
+            url = INDEX + PG_DIARIOS;
+        } else {
             switch (pg) {
                 case PG_DIARIOS: method = POST;
                     form.put("ANO_PERIODO2", User.getYear(pos) + "_" + User.getPeriod(pos));
@@ -348,7 +365,7 @@ public class Client {
         }, PG_GERADOR,0);
     }
 
-    public void logOut() {
+    public void clearRequests() {
         Log.i(TAG, "Logout");
         queue.clear();
         requests.cancelAll(request -> true);
@@ -540,6 +557,11 @@ public class Client {
 
     public boolean isLogging() {
         return isLogging;
+    }
+
+    public void setURL(String url) {
+        URL = url;
+        User.setURL(url);
     }
 
 }

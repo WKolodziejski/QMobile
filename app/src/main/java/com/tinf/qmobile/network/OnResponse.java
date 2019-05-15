@@ -1,8 +1,8 @@
 package com.tinf.qmobile.network;
 
 public interface OnResponse {
-    String URL = "http://qacademico.ifsul.edu.br";
-    //String URL = "https://academico3.cefetes.br";
+    String IFSUL = "http://qacademico.ifsul.edu.br";
+    String IFES = "https://academico3.cefetes.br";
     String INDEX = "/qacademico/index.asp?t=";
     int PG_LOGIN = 1001;
     int PG_HOME = 2000;
@@ -14,6 +14,7 @@ public interface OnResponse {
     int PG_ERRO = 1;
     int PG_GERADOR = 2;
     int PG_ACESSO_NEGADO = 3;
+    int PG_FETCH_YEARS = 4;
 
     void onStart(int pg, int pos);
     void onFinish(int pg, int pos);

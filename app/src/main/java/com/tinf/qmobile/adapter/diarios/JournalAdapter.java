@@ -17,12 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 public class JournalAdapter extends RecyclerView.Adapter {
     private List<Journal> journals;
     private Context context;
-    private boolean enableOnClick;
 
-    public JournalAdapter(Context context, List<Journal> journals, boolean enableOnClick) {
+    public JournalAdapter(Context context, List<Journal> journals) {
         this.context = context;
         this.journals = journals;
-        this.enableOnClick = enableOnClick;
     }
 
     @NonNull
@@ -41,14 +39,12 @@ public class JournalAdapter extends RecyclerView.Adapter {
         holder.type.setTextColor(journals.get(i).getColor());
         holder.weight.setText(String.format("・" + context.getString(R.string.diarios_Peso), journals.get(i).getWeightString()));
         holder.grade.setText(String.format(context.getString(R.string.diarios_Nota), journals.get(i).getGradeString(), journals.get(i).getMaxString()));
-        if (enableOnClick) {
-            holder.header.setOnClickListener(v -> {
-                Intent intent = new Intent(context, EventViewActivity.class);
-                intent.putExtra("ID", journals.get(i).id);
-                intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
-                context.startActivity(intent);
-            });
-        }
+        holder.header.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EventViewActivity.class);
+            intent.putExtra("ID", journals.get(i).id);
+            intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+            context.startActivity(intent);
+        });
     }
 
     @Override

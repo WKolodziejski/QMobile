@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.tinf.qmobile.network.OnResponse.IFSUL;
+
 public class User {
     private final static String TAG = "User";
     public static final String REGISTRATION = ".Reg";
@@ -31,6 +33,7 @@ public class User {
     private static final String NAME = ".Name";
     private static final String LAST = ".Last";
     private static final String YEARS = ".Years";
+    private static final String URL = ".Url";
 
     public static boolean isValid() {
         return getInfo().getBoolean(VALID, false);
@@ -38,6 +41,14 @@ public class User {
 
     public static void setValid(boolean isValid) {
         getEditor().putBoolean(VALID, isValid).apply();
+    }
+
+    public static void setURL(String url) {
+        getEditor().putString(URL, url).apply();
+    }
+
+    public static String getURL() {
+       return getInfo().getString(URL, IFSUL);
     }
 
     public static String getName() {

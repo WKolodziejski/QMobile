@@ -19,7 +19,7 @@ public class EventSimpleViewHolder extends CalendarioViewHolder<EventSimple> {
     }
 
     @Override
-    public void bind(EventSimple event, Context context, boolean enableOnClick) {
+    public void bind(EventSimple event, Context context) {
         title.setText(event.getTitle());
         CalendarioViewHolder.setHeader(header, event, context);
     }

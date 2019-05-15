@@ -13,11 +13,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.transition.Fade;
 import android.util.Log;
 import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.App;
@@ -40,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.fab_expand)        public FloatingActionButton fab;
+    @BindView(R.id.fab_expand)        public ExtendedFloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,9 +199,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void logOut() {
-        Client.get().logOut();
+        Client.get().clearRequests();
         Jobs.cancellAllJobs();
-        ((App) getApplication()).logOut();
+        ((App) getApplication()).closeBoxStore();
         User.clearInfos();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
@@ -215,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             transaction.replace(R.id.main_fragment, fragment).commit();
 
-            fab.hide();
+            //fab.hide();
             return true;
         }
         return false;
@@ -402,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 .setCancelable(true)
                 .setPositiveButton(getResources().getString(R.string.dialog_open_site), (dialogInterface, i) -> {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(URL + INDEX + PG_LOGIN));
+                            Uri.parse(User.getURL() + INDEX + PG_LOGIN));
                     startActivity(browserIntent);
                 })
                 .setNegativeButton(getResources().getString(R.string.dialog_later), null)

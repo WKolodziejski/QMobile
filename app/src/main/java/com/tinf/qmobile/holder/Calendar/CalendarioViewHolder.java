@@ -21,7 +21,7 @@ public abstract class CalendarioViewHolder<T extends CalendarBase> extends Recyc
         ButterKnife.bind(this, view);
     }
 
-    public abstract void bind(T calendar, Context context, boolean enableOnClick);
+    public abstract void bind(T calendar, Context context);
 
     public static void setHeader(FrameLayout header, EventBase event, Context context) {
         final boolean isRanged = event.isRanged();

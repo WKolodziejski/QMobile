@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.Client;
@@ -65,21 +66,21 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     @Override
     public void onFinish(int pg, int pos) {
         if (pg == PG_LOGIN) {
-            Client.get().load(PG_DIARIOS);
+            Client.get().load(PG_FETCH_YEARS);
+        }
+
+        if (pg == PG_FETCH_YEARS) {
+            for (int i = 0; i < User.getYears().length; i++) {
+                Client.get().load(PG_DIARIOS, i);
+            }
         }
 
         if (pg == PG_DIARIOS) {
-
-            if (pos == 0) {
-                for (int i = 1; i < User.getYears().length; i++) {
-                    Client.get().load(PG_DIARIOS, i);
-                }
-
-                Client.get().load(PG_CALENDARIO, pos);
-            }
-
             Client.get().load(PG_BOLETIM, pos);
             Client.get().load(PG_HORARIO, pos);
+            if (pos == 0) {
+                Client.get().load(PG_CALENDARIO, pos);
+            }
 
             pages++;
         }
@@ -108,6 +109,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     @Override
     public void onError(int pg, String error) {
         pages = 0;
+        ((App) getApplication()).closeBoxStore();
 
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 

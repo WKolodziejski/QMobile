@@ -63,7 +63,7 @@ public class App extends Application {
         }
     }
 
-    public void logOut() {
+    public void closeBoxStore() {
         boxStore.closeThreadResources();
         boxStore.close();
         boxStore.deleteAllFiles();

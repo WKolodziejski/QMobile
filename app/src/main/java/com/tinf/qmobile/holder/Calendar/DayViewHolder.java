@@ -18,7 +18,7 @@ public class DayViewHolder extends CalendarioViewHolder<Day> {
     }
 
     @Override
-    public void bind(Day day, Context context, boolean enableOnClick) {
+    public void bind(Day day, Context context) {
         title.setText(day.getDayPeriod());
     }
 }

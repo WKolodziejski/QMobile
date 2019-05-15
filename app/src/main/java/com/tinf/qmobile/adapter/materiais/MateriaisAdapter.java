@@ -16,9 +16,9 @@ import java.util.List;
 public class MateriaisAdapter extends RecyclerView.Adapter {
     private List<Material> materials;
     private Context context;
-    private MateriaisFragment.OnDownloadListener onDownloadListener;
+    private OnDownloadListener onDownloadListener;
 
-    public MateriaisAdapter(Context context, List<Material> materials, MateriaisFragment.OnDownloadListener onDownloadListener) {
+    public MateriaisAdapter(Context context, List<Material> materials, OnDownloadListener onDownloadListener) {
         this.context = context;
         this.materials = materials;
         this.onDownloadListener = onDownloadListener;
@@ -50,13 +50,17 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
             Integer pos = (Integer) holder.title.getTag();
 
-            onDownloadListener.onDownload(materials.get(pos));
+            onDownloadListener.onDownload(pos);
         });
     }
 
     @Override
     public int getItemCount() {
         return materials.size();
+    }
+
+    public interface OnDownloadListener {
+        void onDownload(int j);
     }
 
 }

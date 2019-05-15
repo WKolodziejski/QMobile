@@ -167,6 +167,10 @@ public class JournalFragment extends Fragment implements OnUpdate {
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                     ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                    if (dy < 0 && !((MainActivity) getActivity()).fab.isShown())
+                        ((MainActivity) getActivity()).fab.show();
+                    else if(dy > 0 && ((MainActivity) getActivity()).fab.isShown())
+                        ((MainActivity) getActivity()).fab.hide();
                 }
 
                 @Override
@@ -174,7 +178,8 @@ public class JournalFragment extends Fragment implements OnUpdate {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
-            ((MainActivity) getActivity()).fab.setImageResource(R.drawable.ic_expand);
+            ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_expand);
+            ((MainActivity) getActivity()).fab.extend(((MainActivity) getActivity()).fab.isShown());
             ((MainActivity) getActivity()).fab.show();
         });
     }
