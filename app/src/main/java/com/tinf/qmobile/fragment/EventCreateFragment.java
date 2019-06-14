@@ -72,8 +72,8 @@ public class EventCreateFragment extends Fragment {
         Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
 
         matters = matterBox.query()
-                .equal(Matter_.year, User.getYear(0)).and()
-                .equal(Matter_.period, User.getPeriod(0))
+                .equal(Matter_.year_, User.getYear(0)).and()
+                .equal(Matter_.period_, User.getPeriod(0))
                 .build().find();
 
         Calendar calendar = Calendar.getInstance();

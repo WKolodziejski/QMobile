@@ -30,13 +30,24 @@
         app:eventCornerRadius="5dp"
         app:eventTextSize="12sp"
         app:hourHeight="60dp"
+        app:maxHourHeight="60dp"
+        app:minHourHeight="60dp"
         app:headerRowPadding="12dp"
         app:columnGap="8dp"
-        app:headerColumnBackground="@color/colorPrimary"
+        app:firstDayOfWeek="monday"
+        app:horizontalFlingEnabled="false"
+        app:xScrollingSpeed="0"
+        app:showNowLine="false"
+        app:showFirstDayOfWeekFirst="true"
+        app:zoomFocusPointEnabled="false"
+        app:hourSeparatorColor="@color/transparent"
+        app:headerColumnBackground="@color/transparent"
         app:headerColumnTextColor="@color/colorPrimary"
         app:eventTextColor="@color/colorPrimaryLight"
-        app:headerRowBackgroundColor="@color/white_dividers"
-        app:nowLineColor="@color/colorPrimary" />
+        app:headerRowBackgroundColor="@color/transparent"
+        app:dayBackgroundColor="@color/transparent"
+        app:pastBackgroundColor="@color/transparent"
+        app:todayBackgroundColor="@color/transparent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

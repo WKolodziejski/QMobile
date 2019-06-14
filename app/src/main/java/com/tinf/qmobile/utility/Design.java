@@ -20,9 +20,7 @@ public class Design {
     }
 
     public static void setStatusBarLight(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     private static void setSystemBarTheme(final Activity activity, final boolean pIsDark) { //Muda o tema do app para StatusBar Light ou Dark

@@ -25,6 +25,21 @@ import java.util.Map;
 import static com.tinf.qmobile.network.OnResponse.IFSUL;
 
 public class User {
+
+    public enum Type {
+        SEMESTRE1(0), BIMESTRE(1), UNICO(2), SEMESTRE2(3);
+
+        private int i;
+
+        Type(final int i) {
+            this.i = i;
+        }
+
+        public int get() {
+            return i;
+        }
+    }
+
     private final static String TAG = "User";
     public static final String REGISTRATION = ".Reg";
     public static final String PASSWORD = ".Pass";
@@ -34,6 +49,7 @@ public class User {
     private static final String LAST = ".Last";
     private static final String YEARS = ".Years";
     private static final String URL = ".Url";
+    private static final String TYPE = ".Type";
 
     public static boolean isValid() {
         return getInfo().getBoolean(VALID, false);
@@ -49,6 +65,14 @@ public class User {
 
     public static String getURL() {
        return getInfo().getString(URL, IFSUL);
+    }
+
+    public static void setType(Type type) {
+        getEditor().putInt(TYPE, type.get()).apply();
+    }
+
+    public static int getType() {
+        return getInfo().getInt(TYPE, 0);
     }
 
     public static String getName() {

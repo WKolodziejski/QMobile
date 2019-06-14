@@ -3,14 +3,25 @@ package com.tinf.qmobile;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.tinf.qmobile.model.MyObjectBox;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import com.tinf.qmobile.utility.Utils;
 
+import java.util.List;
+
 import io.objectbox.BoxStore;
+
+import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
+import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 import static com.tinf.qmobile.utility.Utils.VERSION_INFO;
 
@@ -23,6 +34,9 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(NIGHT, false) ?
+                AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         context = getApplicationContext();
 
@@ -63,11 +77,13 @@ public class App extends Application {
         }
     }
 
-    public void closeBoxStore() {
-        boxStore.closeThreadResources();
-        boxStore.close();
-        boxStore.deleteAllFiles();
-        boxStore = null;
+    public static void closeBoxStore() {
+        if (boxStore != null) {
+            boxStore.closeThreadResources();
+            boxStore.close();
+            boxStore.deleteAllFiles();
+            boxStore = null;
+        }
     }
 
     public static Context getContext() {

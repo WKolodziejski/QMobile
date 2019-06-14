@@ -31,80 +31,80 @@ public class Journal {
     }
 
     @Id public long id;
-    private String title;
-    private float weight;
-    private float max;
-    private float grade;
-    private long date;
-    private int type;
+    private String title_;
+    private float weight_;
+    private float max_;
+    private float grade_;
+    private long date_;
+    private int type_;
     public ToOne<Period> period;
 
     public Journal(String title, float grade, float weight, float max, long date, int type) {
-        this.title = title;
-        this.grade = grade;
-        this.weight = weight;
-        this.max = max;
-        this.date = date;
-        this.type = type;
+        this.title_ = title;
+        this.grade_ = grade;
+        this.weight_ = weight;
+        this.max_ = max;
+        this.date_ = date;
+        this.type_ = type;
     }
 
     public String getMatter() {
         return period.getTarget().matter.getTarget().getTitle();
     }
 
-    public String getGradeString() {
-        return grade == -1 ? "-" : String.valueOf(grade);
+    public String getGrade() {
+        return grade_ == -1 ? "-" : String.valueOf(grade_);
     }
 
-    public String getWeightString() {
-        return weight == -1 ? "-" : String.valueOf(weight);
+    public String getWeight() {
+        return weight_ == -1 ? "-" : String.valueOf(weight_);
     }
 
-    public String getMaxString() {
-        return max == -1 ? "-" : String.valueOf(max);
+    public String getMax() {
+        return max_ == -1 ? "-" : String.valueOf(max_);
     }
 
-    public String getShort() {
-        if (type == AVALIACAO.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
-
-        } else if (type == Type.PROVA.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Prova);
-
-        } else if (type == Type.EXERCICIO.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Exercicio);
-
-        } else if (type == Type.TRABALHO.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Trabalho);
-
-        } else if (type == Type.QUALITATIVA.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Qualitativa);
-
-        } else return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
-    }
-
-    public String getTypeString() {
-        if (type == AVALIACAO.get()) {
+    public String getType() {
+        if (type_ == AVALIACAO.get()) {
             return App.getContext().getResources().getString(R.string.journal_Avaliacao);
 
-        } else if (type == Type.PROVA.get()) {
+        } else if (type_ == Type.PROVA.get()) {
             return App.getContext().getResources().getString(R.string.journal_Prova);
 
-        } else if (type == Type.EXERCICIO.get()) {
+        } else if (type_ == Type.EXERCICIO.get()) {
             return App.getContext().getResources().getString(R.string.journal_Exercicio);
 
-        } else if (type == Type.TRABALHO.get()) {
+        } else if (type_ == Type.TRABALHO.get()) {
             return App.getContext().getResources().getString(R.string.journal_Trabalho);
 
-        } else if (type == Type.QUALITATIVA.get()) {
+        } else if (type_ == Type.QUALITATIVA.get()) {
             return App.getContext().getResources().getString(R.string.journal_Qualitativa);
 
         } else return App.getContext().getResources().getString(R.string.journal_Avaliacao);
     }
 
-    public String getDateString() {
+    public String getShort() {
+        if (type_ == AVALIACAO.get()) {
+            return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
+
+        } else if (type_ == Type.PROVA.get()) {
+            return App.getContext().getResources().getString(R.string.sigla_Prova);
+
+        } else if (type_ == Type.EXERCICIO.get()) {
+            return App.getContext().getResources().getString(R.string.sigla_Exercicio);
+
+        } else if (type_ == Type.TRABALHO.get()) {
+            return App.getContext().getResources().getString(R.string.sigla_Trabalho);
+
+        } else if (type_ == Type.QUALITATIVA.get()) {
+            return App.getContext().getResources().getString(R.string.sigla_Qualitativa);
+
+        } else return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
+    }
+
+    public String getDate() {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return format.format(new Date(date));
+        return format.format(new Date(date_));
     }
 
     public int getColor() {
@@ -112,7 +112,15 @@ public class Journal {
     }
 
     public String getPeriod() {
-        return period.getTarget().getTitleString();
+        return period.getTarget().getTitle();
+    }
+
+    public String getTitle() {
+        return title_ == null ? "" : title_;
+    }
+
+    public void setGrade(float grade) {
+        this.grade_ = grade;
     }
 
     /*
@@ -121,28 +129,28 @@ public class Journal {
 
     public Journal() {}
 
-    public String getTitle() {
-        return title;
+    public String getTitle_() {
+        return title_;
     }
 
-    public float getWeight() {
-        return weight;
+    public float getWeight_() {
+        return weight_;
     }
 
-    public float getMax() {
-        return max;
+    public float getMax_() {
+        return max_;
     }
 
-    public float getGrade() {
-        return grade;
+    public float getGrade_() {
+        return grade_;
     }
 
-    public int getType() {
-        return type;
+    public long getDate_() {
+        return date_;
     }
 
-    public long getDate() {
-        return date;
+    public int getType_() {
+        return type_;
     }
 
 }

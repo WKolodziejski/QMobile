@@ -28,8 +28,6 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
         this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
-
-        Log.i(TAG, "New instance");
     }
 
     @Override
@@ -46,16 +44,14 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
         for (int i = 1; i < rotulos.size(); i++) {
 
-            String str = rotulos.get(i).text();
-            str = str.substring(str.indexOf('-') + 2, str.indexOf('('));
-            str = str.substring(str.indexOf('-') + 2);
-            String nomeMateria = str;
+            String infos = rotulos.get(i).text();
 
             Matter materia = materiaBox.query()
-                    .equal(Matter_.title, nomeMateria).and()
-                    .equal(Matter_.year, User.getYear(pos)).and()
-                    .equal(Matter_.period, User.getPeriod(pos))
-                    .build().findFirst();
+                    .equal(Matter_.title_, formatTitle(infos)).and()
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos)).and()
+                    .equal(Matter_.qid_, formatQid(infos))
+                    .build().findUnique();
 
             if (materia != null) {
                 String classe = rotulos.get(i).nextElementSibling().className();
@@ -66,6 +62,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                     String dataString = element.child(0).text().trim();
                     String link = element.child(1).child(1).attr("href");
                     String title = element.child(1).child(1).text().trim();
+
                     String descricao = "";
 
                     if (element.child(1).children().size() > 2) {
@@ -111,6 +108,23 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
     public interface OnFinish {
         void onFinish(int pg, int year);
+    }
+
+    private String formatTitle(String s) {
+        s = s.substring(s.indexOf("-") + 1, s.indexOf("("));
+        s = s.substring(s.indexOf("-") + 1).trim();
+        return s;
+    }
+
+    private int formatQid(String s) {
+        s = s.substring(0, s.indexOf("-") - 1).trim();
+        return Integer.parseInt(s);
+    }
+
+    private String formatClazz(String s) {
+        s = s.substring(s.indexOf("-") + 1);
+        s = s.substring(0, s.indexOf("-") - 1).trim();
+        return s;
     }
 
 }

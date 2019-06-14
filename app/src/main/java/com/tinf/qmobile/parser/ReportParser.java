@@ -31,7 +31,7 @@ public class ReportParser extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... page) {
-        App.getBox().runInTx(() -> {
+        /*App.getBox().runInTx(() -> {
 
             Log.i(TAG, "Parsing " + User.getYear(pos));
 
@@ -41,6 +41,8 @@ public class ReportParser extends AsyncTask<String, Void, Void> {
             Document document = Jsoup.parse(page[0]);
 
             Element table = document.getElementsByTag("tbody").get(13);
+
+            Log.e("BOLETIM", String.valueOf(table.children().select("tr").size()));
 
             if (table != null) {
                 Elements rows = table.getElementsByTag("tr");
@@ -145,7 +147,7 @@ public class ReportParser extends AsyncTask<String, Void, Void> {
                     }
                 }
             }
-        });
+        }); */
         return null;
     }
 

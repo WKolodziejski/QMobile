@@ -34,11 +34,11 @@ public class JournalAdapter extends RecyclerView.Adapter {
         final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
 
         holder.title.setText(journals.get(i).getTitle());
-        holder.date.setText(journals.get(i).getDateString());
+        holder.date.setText(journals.get(i).getDate());
         holder.type.setText(journals.get(i).getShort());
         holder.type.setTextColor(journals.get(i).getColor());
-        holder.weight.setText(String.format("・" + context.getString(R.string.diarios_Peso), journals.get(i).getWeightString()));
-        holder.grade.setText(String.format(context.getString(R.string.diarios_Nota), journals.get(i).getGradeString(), journals.get(i).getMaxString()));
+        holder.weight.setText(String.format("・" + context.getString(R.string.diarios_Peso), journals.get(i).getWeight()));
+        holder.grade.setText(String.format(context.getString(R.string.diarios_Nota), journals.get(i).getGrade(), journals.get(i).getMax()));
         holder.header.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journals.get(i).id);

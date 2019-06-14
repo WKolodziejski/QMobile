@@ -43,6 +43,7 @@ import java.util.List;
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
 import static com.tinf.qmobile.network.Client.isConnected;
 import static com.tinf.qmobile.network.Client.pos;
@@ -86,9 +87,9 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private void loadData() {
         path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
 
-        List<Matter> matters = App.getBox().boxFor(Matter.class).query().order(Matter_.title)
-                .equal(Matter_.year, User.getYear(pos)).and()
-                .equal(Matter_.period, User.getPeriod(pos))
+        List<Matter> matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos)).and()
+                .equal(Matter_.period_, User.getPeriod(pos))
                 .build().find();
 
         materiaList = new ArrayList<>();

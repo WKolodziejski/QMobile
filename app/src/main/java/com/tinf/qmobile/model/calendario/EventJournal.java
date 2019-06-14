@@ -12,7 +12,7 @@ public class EventJournal extends EventBase {
     public ToOne<Journal> journal;
 
     public EventJournal(Journal journal) {
-        super(journal.getTitle(), journal.getDate());
+        super(journal.getTitle(), journal.getDate_());
         this.journal.setTarget(journal);
     }
 

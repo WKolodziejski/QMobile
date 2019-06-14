@@ -1,11 +1,15 @@
 package com.tinf.qmobile.fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,9 +81,8 @@ public class LoginFragment extends Fragment implements OnResponse {
                     }
 
                     @Override
-                    public void onNothingSelected(AdapterView<?> parentView) {
-                        // your code here
-                    }
+                    public void onNothingSelected(AdapterView<?> parentView) {}
+
                 });
 
         btn.setOnClickListener(v -> {
@@ -95,11 +98,11 @@ public class LoginFragment extends Fragment implements OnResponse {
             if (!user.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
 
                 hideKeyboard();
+                user.setError(null);
 
                 User.setCredential(REGISTRATION, user.getText().toString().toUpperCase());
                 User.setCredential(PASSWORD, password.getText().toString());
 
-                ((LoginActivity) getActivity()).dismissSnackbar();
                 Client.get().login();
             }
         });
@@ -139,6 +142,13 @@ public class LoginFragment extends Fragment implements OnResponse {
         Log.v(TAG, "Started loading");
     }
 
+    @OnClick(R.id.login_help)
+    public void openHelp(View view) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://sites.google.com/view/qmobileapp/ajuda"));
+        startActivity(browserIntent);
+    }
+
     @Override
     public void onFinish(int pg, int pos) {
         Log.v(TAG, "Finished loading");
@@ -157,8 +167,7 @@ public class LoginFragment extends Fragment implements OnResponse {
         progressBar.setVisibility(GONE);
         textView.setVisibility(View.GONE);
         btn.setClickable(true);
-        user.setError("Inválido");
-        password.setError("Inválido");
+        user.setError("");
         Log.v(TAG, "Access denied");
     }
 

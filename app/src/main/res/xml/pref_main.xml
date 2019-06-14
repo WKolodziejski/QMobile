@@ -3,6 +3,13 @@
     <PreferenceCategory android:title=""></PreferenceCategory>
     <PreferenceCategory android:title=""></PreferenceCategory>
 
+    <SwitchPreference
+        android:title="Modo Noturno"
+        android:key="key_night_mode"
+        android:defaultValue="false"
+        android:summaryOn="Modo noturno ligado"
+        android:summaryOff="Modo noturno desligado"/>
+
     <PreferenceCategory android:title="@string/pref_services">
 
         <SwitchPreference

@@ -30,15 +30,9 @@ import static com.tinf.qmobile.utility.Utils.getDate;
 public class CalendarioParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";
     private OnFinish onFinish;
-    private int pos;
-    private boolean notify;
 
-    public CalendarioParser(int pos, boolean notify, OnFinish onFinish) {
-        this.pos = pos;
-        this.notify = notify;
+    public CalendarioParser(OnFinish onFinish) {
         this.onFinish = onFinish;
-
-        Log.i(TAG, "New instance");
     }
 
     @Override
@@ -148,8 +142,11 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     long date = getDate(day + "/" + monthCurrent + "/" + year, false);
 
                                     String infos = events.get(k).child(1).text();
-                                    String title = getValidTitle(infos.substring(infos.lastIndexOf(") ") + 1).trim());
-                                    String matter = infos.substring(0, infos.indexOf(" (") + 1).trim();
+                                    //Log.v(TAG, infos);
+                                    //String title = getValidTitle(infos.substring(infos.lastIndexOf(") ") + 1).trim());
+                                    String title = formatTitle(infos);
+                                    String matter = formatMatter(infos);
+                                    Log.d(TAG, matter);
 
                                     boolean isJournal = true;
 
@@ -170,8 +167,8 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     if (search1 == null && search2 == null && search3 == null) {
 
                                         if (isJournal) {
-                                            Journal journal = journalBox.query().equal(Journal_.title, title).and()
-                                                    .between(Journal_.date, date, date).build().findFirst();
+                                            Journal journal = journalBox.query().equal(Journal_.title_, title).and()
+                                                    .between(Journal_.date_, date, date).build().findFirst();
 
                                             EventJournal event;
 
@@ -279,7 +276,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                     month = new Month(getDate(yearStart.text(), true));
 
                 } else if (i == months.size() -1) {
-                    Element yearEnd = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(12).child(0);
+                    Element yearEnd = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(10).child(0);
 
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(getDate(yearEnd.text(), false));
@@ -297,7 +294,6 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                     if (search == null) {
                         eventSimpleBox.put(new EventSimple(title, date));
                     }
-
                 }
 
                 Month search = monthBox.query().between(Month_.time, month.getDate(), month.getDate()).build().findFirst();
@@ -321,12 +317,18 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
         void onFinish(int pg, int year);
     }
 
-    private String getValidTitle(String d) {
-        if (d.contains("'")) {
-            return d.substring(d.indexOf("'") + 1, d.lastIndexOf("'"));
+    private String formatTitle(String s) {
+        if (s.contains("'")) {
+            return s.substring(s.indexOf("'") + 1, s.lastIndexOf("'")).trim();
         } else {
-            return d;
+            return s;
         }
+    }
+
+    private String formatMatter(String s) {
+        if (s.contains("(")) {
+            return s.substring(0, s.indexOf("(") - 1).trim();
+        } else return "";
     }
 
 }

@@ -14,26 +14,53 @@ public class Matter {
     @Transient public boolean isExpanded;
     @Transient public boolean shouldAnimate;
     @Id public long id;
-    @ColorInt private int color;
-    private String title;
-    private int absences = -1;
-    private int year;
-    private int period;
+    @ColorInt private int color_;
+    private String title_;
+    private String description_;
+    private String clazz_;
+    private int absences_ = -1;
+    private int year_;
+    private int period_;
+    private int qid_;
     public ToMany<Period> periods;
     public ToMany<Schedule> schedules;
     public ToMany<EventJournal> events;
     public ToMany<Material> materials;
     public ToOne<Infos> infos;
+    public ToOne<Clazz> clazz;
 
-    public Matter(String title, int color, int year, int period) {
-        this.title = title;
-        this.color = color;
-        this.year = year;
-        this.period = period;
+    public Matter(String title, int color, int year, int period, int qid) {
+        this.title_ = title;
+        this.color_ = color;
+        this.year_ = year;
+        this.period_ = period;
+        this.qid_ = qid;
     }
 
-    public String getAbsencesString() {
-        return absences == -1 ? "" : String.valueOf(absences);
+    public String getAbsences() {
+        return absences_ == -1 ? "" : String.valueOf(absences_);
+    }
+
+    public void setAbsences(int absences) {
+        this.absences_ = absences;
+    }
+
+    public void setDescription(String description) {
+        this.description_ = description;
+    }
+
+    public void setClazz(Clazz clazz) {
+        this.clazz.setTarget(clazz);
+        this.clazz_ = clazz.getTitle_();
+    }
+
+    @ColorInt
+    public int getColor() {
+        return color_;
+    }
+
+    public String getTitle() {
+        return title_ == null ? "" : title_;
     }
 
     /*
@@ -42,28 +69,36 @@ public class Matter {
 
     public Matter() {}
 
-    public int getYear() {
-        return year;
+    public int getColor_() {
+        return color_;
     }
 
-    public int getColor() {
-        return color;
+    public String getTitle_() {
+        return title_;
     }
 
-    public String getTitle() {
-        return title;
+    public int getAbsences_() {
+        return absences_;
     }
 
-    public int getAbsences() {
-        return absences;
+    public int getYear_() {
+        return year_;
     }
 
-    public void setAbsences(int absences) {
-        this.absences = absences;
+    public int getPeriod_() {
+        return period_;
     }
 
-    public int getPeriod() {
-        return period;
+    public int getQid_() {
+        return qid_;
+    }
+
+    public String getDescription_() {
+        return description_;
+    }
+
+    public String getClazz_() {
+        return clazz_;
     }
 
 }

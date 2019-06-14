@@ -19,6 +19,7 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.App;
@@ -81,7 +82,7 @@ public class Jobs {
         dispatcher.cancelAll();
     }
 
-    public static void displayNotification(String title, String txt, String channelID, int id, Bundle extras) {
+    public static void displayNotification(String title, String txt, String channelID, int id, Intent intent) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(App.getContext(), channelID);
 
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
@@ -106,11 +107,11 @@ public class Jobs {
 
         mBuilder.setAutoCancel(true);
 
-        Intent resultIntent = extras == null ? new Intent(App.getContext(), SplashActivity.class) : new Intent(App.getContext(), MateriaActivity.class).putExtras(extras);
+        //Intent resultIntent = extras == null ? new Intent(App.getContext(), SplashActivity.class) : new Intent(App.getContext(), EventViewActivity.class).putExtras(extras);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getContext());
         stackBuilder.addParentStack(MateriaActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
+        stackBuilder.addNextIntent(intent);
 
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 

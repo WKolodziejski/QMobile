@@ -1,9 +1,13 @@
 package com.tinf.qmobile.fragment;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
@@ -26,14 +31,16 @@ import java.util.Arrays;
 import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static com.tinf.qmobile.App.getBox;
+import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
 public class BoletimFragment extends Fragment implements OnUpdate {
     private static String TAG = "BoletimFragment";
-    private ArrayList<String> mfristData;
     private LockTableView mLockTableView;
     private ArrayList<ArrayList<String>> mTableDatas;
+    private List<Matter> materiaList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,11 +49,15 @@ public class BoletimFragment extends Fragment implements OnUpdate {
 
         setHasOptionsMenu(true);
 
-        mfristData = new ArrayList<>();
+        loadData();
+    }
+
+    private void loadData() {
+        ArrayList<String> mfristData = new ArrayList<>();
 
         mfristData.add(getResources().getString(R.string.boletim_Materia));
 
-        String[] header = {
+        String[] sem1 = {
                 getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
                 getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
                 getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
@@ -58,15 +69,48 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 getResources().getString(R.string.boletim_TFaltas)
         };
 
-        mfristData.addAll(Arrays.asList(header));
+        String[] sem2 = {
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_TFaltas)
+        };
 
-        loadData();
-    }
+        String[] bim = {
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                "3 " + getResources().getString(R.string.boletim_Nota),
+                "3 " + getResources().getString(R.string.boletim_Faltas),
+                "4 " + getResources().getString(R.string.boletim_Nota),
+                "4 " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_TFaltas)
+        };
 
-    private void loadData() {
-        List<Matter> materiaList = App.getBox().boxFor(Matter.class).query().order(Matter_.title)
-                .equal(Matter_.year, User.getYear(pos)).and()
-                .equal(Matter_.period, User.getPeriod(pos))
+        String[] uni = {
+                getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_RP),
+                getResources().getString(R.string.boletim_NotaFinal),
+                getResources().getString(R.string.boletim_TFaltas)
+        };
+
+        switch (User.getType()) {
+            case 0 : mfristData.addAll(Arrays.asList(sem1));
+                break;
+            case 1: mfristData.addAll(Arrays.asList(bim));
+                break;
+            case 2: mfristData.addAll(Arrays.asList(uni));
+                break;
+            case 3: mfristData.addAll(Arrays.asList(sem2));
+                break;
+        }
+
+        materiaList = getBox().boxFor(Matter.class).query().order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos)).and()
+                .equal(Matter_.period_, User.getPeriod(pos))
                 .build().find();
 
         mTableDatas = new ArrayList<>();
@@ -74,23 +118,21 @@ public class BoletimFragment extends Fragment implements OnUpdate {
         mTableDatas.add(mfristData);
 
         for (int i = 0; i < materiaList.size(); i++) {
-            if (materiaList.get(i).periods != null) {
-                ArrayList<String> mRowDatas = new ArrayList<>();
-                mRowDatas.add(materiaList.get(i).getTitle());
+            ArrayList<String> mRowDatas = new ArrayList<>();
+            mRowDatas.add(materiaList.get(i).getTitle());
 
-                for (int j = 0; j < materiaList.get(i).periods.size(); j++) {
-                    Period period = materiaList.get(i).periods.get(j);
-                    if (period.getTitle() == Period.Type.PRIMEIRA.get() || period.getTitle() == Period.Type.SEGUNDA.get()) {
-
-                        mRowDatas.add(period.getGradeString());
-                        mRowDatas.add(period.getAbsencesString());
-                        mRowDatas.add(period.getGradeRPString());
-                        mRowDatas.add(period.getGradeFinalString());
-                    }
-                }
-                mRowDatas.add((materiaList.get(i).getAbsencesString()));
-                mTableDatas.add(mRowDatas);
+            for (int j = 0; j < materiaList.get(i).periods.size(); j++) {
+                Period period = materiaList.get(i).periods.get(j);
+                Log.d(TAG, materiaList.get(i).getTitle() + " " + materiaList.get(i).periods.get(j).getTitle());
+                mRowDatas.add(period.getGrade());
+                mRowDatas.add(period.getAbsences());
+                //if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.BIMESTRE.get()) {
+                    mRowDatas.add(period.getGradeRP());
+                    mRowDatas.add(period.getGradeFinal());
+                //}
             }
+            mRowDatas.add(materiaList.get(i).getAbsences());
+            mTableDatas.add(mRowDatas);
         }
     }
 
@@ -113,23 +155,30 @@ public class BoletimFragment extends Fragment implements OnUpdate {
             mLockTableView
                     .setLockFristColumn(true)
                     .setLockFristRow(true)
+                    .setMinColumnWidth(32)
                     .setMaxColumnWidth(96)
-                    .setMinColumnWidth(24)
                     .setMinRowHeight(32)
-                    .setMaxRowHeight(64)
+                    .setMaxRowHeight(96)
                     .setTextViewSize(15)
                     .setCellPadding(8)
-                    .setFristRowBackGroudColor(R.color.colorAccent)
-                    .setTableHeadTextColor(R.color.white)
-                    .setTableContentTextColor(R.color.colorAccent)
-                    .setNullableString("-")
-                    //.setOnItemClickListenter((item, position) -> Log.e("点击事件",position+""))
+                    .setFristRowBackGroudColor(R.color.colorPrimaryLight)
+                    .setTableHeadTextColor(R.color.colorPrimary)
+                    .setTableContentTextColor(R.color.colorPrimary)
+                    .setNullableString("")
+                    .setOnItemClickListenter((item, position) -> {
+                        if (position != 0) {
+                            Intent intent = new Intent(getContext(), MateriaActivity.class);
+                            intent.putExtra("ID", materiaList.get(position - 1).id);
+                            startActivity(intent);
+                        }
+                    })
                     //.setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
-                    .setOnItemSeletor(R.color.white)
+                    .setOnItemSeletor(R.color.colorPrimaryLight)
                     .show();
 
             mLockTableView.getTableScrollView().setPullRefreshEnabled(false);
             mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
+            mLockTableView.getTableScrollView().setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
 
             mLockTableView.getTableScrollView().addOnScrollListener(new RecyclerView.OnScrollListener(){
                 @Override

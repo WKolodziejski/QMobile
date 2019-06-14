@@ -11,8 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
@@ -25,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.activity.HorarioActivity;
@@ -56,6 +62,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
@@ -70,20 +77,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
-            intent.putExtra("TYPE", EVENT);
-            startActivity(intent);
-        });
-
         loadData();
     }
 
     private void loadData() {
-        matters = App.getBox().boxFor(Matter.class).query()
-                .equal(Matter_.year, User.getYear(pos)).and()
-                .equal(Matter_.period, User.getPeriod(pos))
+        matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos)).and()
+                .equal(Matter_.period_, User.getPeriod(pos))
                 .build().find();
 
         Calendar current = Calendar.getInstance();
@@ -131,7 +131,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -141,6 +143,12 @@ public class HomeFragment extends Fragment implements OnUpdate {
         showHorario(view);
 
         view.post(() -> {
+
+            ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), EventCreateActivity.class);
+                intent.putExtra("TYPE", EVENT);
+                startActivity(intent);
+            });
 
             /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
             Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -164,15 +172,17 @@ public class HomeFragment extends Fragment implements OnUpdate {
             showOffline(view);
             showCalendar(view);
 
-            view.findViewById(R.id.home_website).setOnClickListener(v -> {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(User.getURL() + INDEX + PG_LOGIN));
-                startActivity(browserIntent);
-            });
             ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
             ((MainActivity) getActivity()).fab.shrink(((MainActivity) getActivity()).fab.isShown());
             ((MainActivity) getActivity()).fab.show();
         });
+    }
+
+    @OnClick(R.id.home_website)
+    public void openQSite(View view) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(User.getURL() + INDEX + PG_LOGIN));
+        startActivity(browserIntent);
     }
 
     private void showOffline(View view) {
@@ -213,7 +223,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
         weekView.setWeekViewLoader(() -> {
-            int firstHour = 24;
+            double firstHour = 24;
 
             List<WeekViewEvent> events = new ArrayList<>();
 
@@ -226,18 +236,30 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                     if (event.getStartTime().getHour() < firstHour) {
                         firstHour = event.getStartTime().getHour();
+                        firstHour += event.getStartTime().getMinute() * 0.0167;
                     }
                 }
             }
 
-
-            weekView.goToDate(DayOfWeek.MONDAY);
-            weekView.goToHour(firstHour + 0.5);
+            weekView.goToDay(DayOfWeek.MONDAY);
+            weekView.goToHour(firstHour);
 
             return events;
         });
 
         weekView.notifyDatasetChanged();
+        weekView.setOnEventClickListener((event, eventRect) -> {
+            Matter matter = getBox().boxFor(Matter.class).query()
+                    .equal(Matter_.title_, event.getName())
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build().findUnique();
+            if (matter != null) {
+                Intent intent = new Intent(getContext(), MateriaActivity.class);
+                intent.putExtra("ID", matter.id);
+                startActivity(intent);
+            }
+        });
 
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 

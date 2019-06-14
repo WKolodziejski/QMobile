@@ -36,6 +36,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 
@@ -52,10 +53,6 @@ public class JournalFragment extends Fragment implements OnUpdate {
         Log.v(TAG, "New instace created");
 
         setHasOptionsMenu(true);
-
-        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            adapter.toggleAll();
-        });
 
         RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         rotate.setDuration(250);
@@ -131,9 +128,9 @@ public class JournalFragment extends Fragment implements OnUpdate {
     }
 
     private void loadData() {
-        materiaList = App.getBox().boxFor(Matter.class).query().order(Matter_.title)
-                .equal(Matter_.year, User.getYear(pos)).and()
-                .equal(Matter_.period, User.getPeriod(pos))
+        materiaList = getBox().boxFor(Matter.class).query().order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos)).and()
+                .equal(Matter_.period_, User.getPeriod(pos))
                 .build().find();
     }
 
@@ -150,6 +147,10 @@ public class JournalFragment extends Fragment implements OnUpdate {
         Log.v(TAG, "View created");
 
         view.post(() -> {
+
+            ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+                adapter.toggleAll();
+            });
 
             DividerItemDecoration decoration = new DividerItemDecoration(getContext(),
                     LinearLayoutManager.VERTICAL);

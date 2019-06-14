@@ -44,7 +44,7 @@
     <string name="calendar_end_period">Date out of school year range</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
     <string name="boletim_Materia">Subject</string>
-    <string name="home_last_login">The last update was in %1s</string>
+    <string name="home_last_login">Last updated in %1s</string>
     <string name="home_footer">Check your grades on the website</string>
     <string name="home_refresh">Refresh</string>
     <string name="action_date">Select Date</string>
@@ -79,6 +79,7 @@
     <string name="login_validating">Authenticating</string>
     <string name="login_loading">Loading data for %1$s</string>
     <string name="login_checking">Getting information</string>
+    <string name="login_help">Help?</string>
     <string name="text_permission_denied">Permission is required to download materials</string>
     <string name="pref_privacy">Privacy Policy</string>
     <string name="pref_license">Use License</string>

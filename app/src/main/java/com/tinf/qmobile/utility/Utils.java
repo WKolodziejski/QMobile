@@ -70,7 +70,7 @@ public class Utils {
         } else if (string.contains("Sociologia")) {
             color = R.color.sociologia;
         } else {
-            Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.title, string).build().findFirst();
+            Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.title_, string).build().findFirst();
 
             if (matter != null) {
                 color = matter.getColor();

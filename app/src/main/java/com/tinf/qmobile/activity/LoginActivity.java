@@ -3,6 +3,8 @@ package com.tinf.qmobile.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -21,7 +23,6 @@ import com.tinf.qmobile.utility.User;
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private static String TAG = "LoginActivity";
     Fragment fragment;
-    Snackbar snackBar;
     int pages;
 
     @Override
@@ -38,29 +39,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.login_fragment, fragment)
                 .commit();
-    }
-
-    public void showSnackBar(String message) { //Mostra a SnackBar
-        ViewGroup loginLayout = (ViewGroup) findViewById(R.id.login_container);
-
-        //snackBar.setActionTextColor(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimaryLight)));
-
-        //View view = snackBar.getView();
-        //TextView tv = (TextView) view.findViewById(R.id.snackbar_text);
-        //tv.setTextColor(getResources().getColor(R.color.colorPrimaryLight));
-
-        //  tv.setTextSize(getResources().getDimension(R.dimen.snackBar_font_size));
-        //  A fonte fica bem pequena no meu celular, não sei se não era bom deixar um pouco maior.
-        //  Mas aí fica por cima do botão entrar, tem q deixar mais espaço em branco embaixo.
-        snackBar = Snackbar.make(loginLayout, message, Snackbar.LENGTH_INDEFINITE);
-        snackBar.show();
-    }
-
-    public void dismissSnackbar() { //Esconde a SnackBar
-        if (null != snackBar) {
-            snackBar.dismiss();
-            snackBar = null;
-        }
     }
 
     @Override
@@ -109,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     @Override
     public void onError(int pg, String error) {
         pages = 0;
-        ((App) getApplication()).closeBoxStore();
+        App.closeBoxStore();
 
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 
@@ -121,10 +99,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         pages = 0;
 
-        if (pg == PG_LOGIN) {
-            showSnackBar(getResources().getString(R.string.login_invalid));
-
-        } else if (pg == PG_ACESSO_NEGADO) {
+       if (pg == PG_ACESSO_NEGADO) {
             new AlertDialog.Builder(LoginActivity.this)
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(message)
@@ -132,12 +107,12 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                     .create()
                     .show();
 
-        } else {
-            Toast.makeText(getApplicationContext(), getResources().getString(R.string.client_error), Toast.LENGTH_LONG).show();
-            Log.wtf(TAG, "Somehow this come to happen");
-        }
+       } else {
+           App.closeBoxStore();
+           Toast.makeText(getApplicationContext(), getResources().getString(R.string.client_error), Toast.LENGTH_LONG).show();
+       }
 
-        Log.v(TAG, "Access denied");
+       Log.v(TAG, "Access denied");
     }
 
     @Override
@@ -181,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("pages", pages);
         getSupportFragmentManager().putFragment(outState, "loginFragment", fragment);

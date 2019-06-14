@@ -9,11 +9,14 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.preference.PreferenceManager;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.*;
@@ -30,8 +33,10 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.fragment.BoletimFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
+import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.fragment.MateriaisFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.model.matter.Journal;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.Client;
@@ -57,7 +62,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         setSupportActionBar(findViewById(R.id.toolbar_main));
 
-        changeFragment(new HomeFragment());
+        if (savedInstanceState != null) {
+            changeFragment(getSupportFragmentManager().getFragment(savedInstanceState, "fragment"));
+        } else {
+            changeFragment(new HomeFragment());
+        }
 
         if (Client.get().isLogging()) {
             Client.get().load(PG_DIARIOS);
@@ -101,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             case android.R.id.home:
 
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 onBackPressed();
                 return true;
 
@@ -164,11 +173,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
         Fragment fragment = null;
-
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
-
             switch (item.getItemId()) {
 
                 case R.id.navigation_home:
@@ -201,8 +207,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     private void logOut() {
         Client.get().clearRequests();
         Jobs.cancellAllJobs();
-        ((App) getApplication()).closeBoxStore();
+        App.closeBoxStore();
         User.clearInfos();
+        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
@@ -398,6 +405,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onMessage(int count) {
 
+    }
+
+    @Override
+    public void onDialog(String title, String msg) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(title)
+                .setMessage(msg)
+                .setCancelable(true)
+                .setPositiveButton("OK", null)
+                .create()
+                .show();
     }
 
     @Override

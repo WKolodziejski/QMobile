@@ -20,12 +20,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.CalendarioParser;
 import com.tinf.qmobile.parser.JournalParser;
 import com.tinf.qmobile.parser.HorarioParser;
 import com.tinf.qmobile.parser.MateriaisParser;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.parser.novo.JournalParser2;
+import com.tinf.qmobile.parser.novo.ReportParser2;
+import com.tinf.qmobile.parser.novo.ScheduleParser;
 import com.tinf.qmobile.utility.RequestHelper;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
@@ -38,9 +43,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import io.objectbox.android.AndroidScheduler;
+import io.objectbox.query.Query;
+
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
+import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
@@ -110,19 +120,19 @@ public class Client {
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_DIARIOS) {
-                                new JournalParser(pos, notify, this::callOnFinish, onEvent).execute(response);
+                                new JournalParser2(pos, notify, this::callOnFinish, onEvent).execute(response);
 
                             } else if (pg == PG_BOLETIM) {
-                                new ReportParser(pos, notify, this::callOnFinish).execute(response);
+                                new ReportParser2(pos, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_HORARIO) {
-                                new HorarioParser(pos, notify, this::callOnFinish).execute(response);
+                                new ScheduleParser(pos, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_MATERIAIS) {
                                 new MateriaisParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_CALENDARIO) {
-                                new CalendarioParser(pos, notify, this::callOnFinish).execute(response);
+                                new CalendarioParser(this::callOnFinish).execute(response);
 
                             } else if (pg == PG_FETCH_YEARS) {
                                 Document document = Jsoup.parse(response);
@@ -242,6 +252,18 @@ public class Client {
                             if (renewal.contains("matrícula")) {
                                 callOnRenewalAvailable();
                             }
+
+                            //Element msg = document.getElementById("modalmensagens");
+
+                            //if (msg != null) {
+                                //Element t = msg.child(0).getElementsByTag("h2").first();
+                                //Element p = msg.child(1).getElementsByTag("p").first();
+
+                                //if (t != null && p != null) {
+                                    //callOnDialog(t.text(), p.text());
+                                //}
+                            //}
+
                         }
                     }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
@@ -438,7 +460,7 @@ public class Client {
     }
 
     private void callOnError(int pg, String error) {
-        Log.v(TAG, pg + ": " + error);
+        Log.e(TAG, pg + " " + User.getYear(pos) + "/" + User.getPeriod(pos));
         requests.cancelAll(request -> true);
         isLogging = false;
         isValid = false;
@@ -477,6 +499,13 @@ public class Client {
             for (int i = 0; i < onResponses.size(); i++) {
                 onResponses.get(i).onAccessDenied(pg, message);
             }
+        }
+    }
+
+    private void callOnDialog(String title, String message) {
+        Log.v(TAG, message);
+        if (onEvent != null) {
+           onEvent.onDialog(title, message);
         }
     }
 

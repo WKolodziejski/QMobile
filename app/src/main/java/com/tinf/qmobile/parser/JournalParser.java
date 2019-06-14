@@ -42,9 +42,9 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... page) {
-        App.getBox().runInTx(() -> {
+        /*App.getBox().runInTx(() -> {
 
-            Log.i(TAG, "Parsing");
+            Log.i(TAG, "Parsing " + User.getYear(pos));
 
             Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
             Box<Period> periodBox = App.getBox().boxFor(Period.class);
@@ -57,16 +57,6 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
             int size = tableMatters.select("table.conteudoTexto").size();
 
             Element nxtElem = null;
-
-            Elements dates = document.getElementsByTag("option");
-
-            /*String[] years = new String[dates.size() - 1];
-
-            for (int i = 0; i < dates.size() - 1; i++) {
-                years[i] = dates.get(i + 1).text();
-            }
-
-            User.setYears(years);*/
 
             for (int i = 0; i < size; i++) {
                 if (tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).next().eq(0) != null) {
@@ -118,7 +108,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                         //periodType = Period.Type.UNICO.get();
                     }
 
-                    Element tableGrades = Objects.requireNonNull(nxtElem).child(0).child(1).child(0);
+                    Element tableGrades = nxtElem.child(0).child(1).child(0);
                     Elements rowGrades = tableGrades.getElementsByClass("conteudoTexto");
                     nxtElem = nxtElem.nextElementSibling();
 
@@ -204,7 +194,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                 }
                 matterBox.put(matter);
             }
-        });
+        }); */
 
         return null;
     }

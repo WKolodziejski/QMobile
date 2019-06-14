@@ -10,6 +10,7 @@ import com.tinf.qmobile.model.matter.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.holder.DiariosListViewHolder;
+import com.tinf.qmobile.model.matter.Period;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -67,34 +68,43 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
 
     private void setView(DiariosListViewHolder holder, int i) {
         if (matters.get(i).isExpanded) {
-            List<Journal> diarios = matters.get(i).periods.get(getLast(i)).journals;
+            if (matters.get(i).periods.size() > 0) {
 
-            if (diarios.isEmpty()) {
+                List<Journal> diarios = matters.get(i).periods.get(getLast(i)).journals;
+
+                if (diarios.isEmpty()) {
+                    holder.arrow.setImageResource(R.drawable.ic_less);
+                    holder.title.setTextColor(matters.get(i).getColor());
+                    holder.nothing.setVisibility(View.VISIBLE);
+                    holder.open.setVisibility(View.GONE);
+                    holder.recyclerView.setVisibility(View.GONE);
+                } else {
+                    holder.recyclerView.post(() -> {
+                        JournalAdapter adapter = new JournalAdapter(context, diarios);
+                        adapter.setHasStableIds(true);
+
+                        holder.nothing.setVisibility(View.GONE);
+
+                        holder.open.setVisibility(View.VISIBLE);
+
+                        holder.recyclerView.setHasFixedSize(true);
+                        holder.recyclerView.setItemViewCacheSize(20);
+                        holder.recyclerView.setDrawingCacheEnabled(true);
+                        holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+                        holder.recyclerView.setAdapter(adapter);
+                        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                        holder.recyclerView.setVisibility(View.VISIBLE);
+
+                        holder.arrow.setImageResource(R.drawable.ic_less);
+                        holder.title.setTextColor(matters.get(i).getColor());
+                    });
+                }
+            } else {
                 holder.arrow.setImageResource(R.drawable.ic_less);
                 holder.title.setTextColor(matters.get(i).getColor());
                 holder.nothing.setVisibility(View.VISIBLE);
                 holder.open.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.GONE);
-            } else {
-                holder.recyclerView.post(() -> {
-                    JournalAdapter adapter = new JournalAdapter(context, diarios);
-                    adapter.setHasStableIds(true);
-
-                    holder.nothing.setVisibility(View.GONE);
-
-                    holder.open.setVisibility(View.VISIBLE);
-
-                    holder.recyclerView.setHasFixedSize(true);
-                    holder.recyclerView.setItemViewCacheSize(20);
-                    holder.recyclerView.setDrawingCacheEnabled(true);
-                    holder.recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-                    holder.recyclerView.setAdapter(adapter);
-                    holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
-                    holder.recyclerView.setVisibility(View.VISIBLE);
-
-                    holder.arrow.setImageResource(R.drawable.ic_less);
-                    holder.title.setTextColor(matters.get(i).getColor());
-                });
             }
         } else {
             holder.arrow.setImageResource(R.drawable.ic_more);

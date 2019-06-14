@@ -1,7 +1,11 @@
 package com.tinf.qmobile.service;
 
+import android.content.Intent;
+
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
@@ -45,7 +49,7 @@ public class BackgroundCheck extends JobService {
             @Override
             public void onAccessDenied(int pg, String message) {
                 Jobs.displayNotification(getResources().getString(R.string.dialog_access_denied),
-                        getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, null);
+                        getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, new Intent(App.getContext(), SplashActivity.class));
                 Client.get().removeOnResponseListener(this);
                 onStopJob(job);
             }

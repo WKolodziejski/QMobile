@@ -10,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.utility.Jobs;
 
@@ -18,6 +20,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String MOBILE = "key_mobile_data";
     public static final String ALERT = "key_alert_mode";
     public static final String NOTIFY = "key_notifications";
+    public static final String NIGHT = "key_night_mode";
     public static final String SCHEDULE_HOUR = "schedule_first_hour";
     public static final String SCHEDULE_DAYS = "schedule_days";
 
@@ -40,6 +43,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     }
 
     public static class MainPreferenceFragment extends PreferenceFragment {
+
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -53,6 +57,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(ALERT));
 
             bindPreferenceSummaryToValue(findPreference(NOTIFY));
+
+            bindPreferenceSummaryToValue(findPreference(NIGHT));
 
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {
@@ -73,6 +79,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 Intent intent = new Intent(getActivity(), WebViewActivity.class);
                 intent.putExtra("URL", "file:///android_asset/icons_license.html");
                 startActivity(intent);
+                return true;
+            });
+
+            Preference night_mode = findPreference(NIGHT);
+            night_mode.setOnPreferenceClickListener(preference -> {
+                AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?
+                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                 return true;
             });
         }

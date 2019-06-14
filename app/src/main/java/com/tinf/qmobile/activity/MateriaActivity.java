@@ -1,6 +1,8 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.flask.colorpicker.ColorPickerView;
@@ -46,12 +48,12 @@ public class MateriaActivity extends AppCompatActivity {
                 .show();
     }
 
-    /*@Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
 }

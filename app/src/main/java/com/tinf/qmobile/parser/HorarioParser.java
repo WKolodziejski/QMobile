@@ -47,10 +47,11 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
 
             Document document = Jsoup.parse(page[0]);
 
-            Element table_horario = document.select("table").eq(11).first();
+            Elements tables = document.select("table").get(11).children();
 
-            Element table_codes = document.select("table").get(12);
-            Elements codes = table_codes.children();
+            Log.e("HORARIO", String.valueOf(tables.select("tr").size()));
+
+            Elements codes = document.select("table").get(12).children();
 
             String[] code = null;
 
@@ -61,8 +62,6 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                     code[i] = trs.get(i).text();
                 }
             }
-
-            Elements tables = table_horario.children();
 
             String[][] trtd_horario = null;
 
@@ -121,8 +120,8 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
             List<Schedule> news = new ArrayList<>();
 
             List<Matter> materialist = materiaBox.query()
-                    .equal(Matter_.year, User.getYear(pos)).and()
-                    .equal(Matter_.period, User.getPeriod(pos))
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
                     .build().find();
 
                 for (int i = 0; i < materialist.size(); i++) {
@@ -141,9 +140,9 @@ public class HorarioParser extends AsyncTask<String, Void, Void> {
                     if (!trtd_horario[j][i].equals("")) {
 
                         Matter materia = materiaBox.query()
-                                .equal(Matter_.title, trtd_horario[j][i].trim()).and()
-                                .equal(Matter_.year, User.getYear(pos)).and()
-                                .equal(Matter_.period, User.getPeriod(pos))
+                                .equal(Matter_.title_, trtd_horario[j][i].trim()).and()
+                                .equal(Matter_.year_, User.getYear(pos)).and()
+                                .equal(Matter_.period_, User.getPeriod(pos))
                                 .build().findFirst();
 
                         Schedule horario = new Schedule(Integer.valueOf(trtd_horario[0][i]) - 1, getStartHour(trtd_horario[j][0]),
