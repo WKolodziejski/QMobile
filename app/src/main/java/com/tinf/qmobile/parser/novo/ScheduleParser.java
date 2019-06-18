@@ -52,8 +52,10 @@ public class ScheduleParser extends AsyncTask<String, Void, Void> {
             for (int l = 0; l < tables.size(); l++) {
                 if (tables.get(l).getElementsByTag("tr").get(0).text().contains("HORÁRIO")) {
                     schedules = tables.get(l).getElementsByTag("tr");
+
                 } else if (tables.get(l).getElementsByTag("tr").get(0).text().contains("Legenda")) {
                     codes = tables.get(l).getElementsByTag("tr");
+
                 } else if (tables.get(l).getElementsByTag("tr").get(0).text().contains("MAPA")) {
                     classes = tables.get(l).getElementsByTag("tr");
                 }

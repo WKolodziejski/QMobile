@@ -6,7 +6,6 @@ import android.util.Log;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventSimple;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Journal;
@@ -22,8 +21,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import java.util.List;
-import java.util.Objects;
+
 import io.objectbox.Box;
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 import static com.tinf.qmobile.utility.Utils.getDate;
@@ -126,27 +124,26 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
                     }
 
                     for (int j = 0; j < rowGrades.size(); j++) {
-                        String dateString = rowGrades.eq(j).first().child(1).text().substring(0, 10).trim();
-                        String title = rowGrades.eq(j).first().child(1).text();
+                        String dateString = formatDate(rowGrades.eq(j).first().child(1).text());
+                        String infos = rowGrades.eq(j).first().child(1).text();
+                        String t = formatType(infos);
 
                         int type = Journal.Type.AVALIACAO.get();
 
-                        if (title.contains("Prova")) {
+                        if (t.equals("Prova")) {
                             type = Journal.Type.PROVA.get();
-                        } else if (title.contains("Diarios") || title.contains("Trabalho")) {
+                        } else if (t.equals("Diarios") || t.equals("Trabalho")) {
                             type = Journal.Type.TRABALHO.get();
-                        } else if (title.contains("Qualitativa")) {
+                        } else if (t.contains("Qualitativa")) {
                             type = Journal.Type.QUALITATIVA.get();
-                        } else if (title.contains("Exercício")) {
+                        } else if (t.equals("Exercício")) {
                             type = Journal.Type.EXERCICIO.get();
                         }
 
-                        title = title.substring(title.indexOf(", ") + 2);
-                        String caps = trimp(title);
-                        title = caps.substring(1, 2).toUpperCase() + caps.substring(2);
-                        String weightString = formatGrade(trimp(rowGrades.eq(j).first().child(2).text()));
-                        String maxString = formatGrade(trimp(rowGrades.eq(j).first().child(3).text()));
-                        String gradeString = formatGrade(trimp(rowGrades.eq(j).first().child(4).text()));
+                        String title = formatJournalTitle(infos);
+                        String weightString = formatGrade(formatNumber(rowGrades.eq(j).first().child(2).text()));
+                        String maxString = formatGrade(formatNumber(rowGrades.eq(j).first().child(3).text()));
+                        String gradeString = formatGrade(formatNumber(rowGrades.eq(j).first().child(4).text()));
 
                         float grade, weight, max;
                         long date;
@@ -225,14 +222,12 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
         void onFinish(int pg, int year);
     }
 
-    private String trimp(String string) {
-        string = string.substring(string.indexOf(":"));
-        string = string.replaceFirst(":", "");
-        return string;
+    private String formatNumber(String s) {
+        return s.substring(s.indexOf(":") + 1).trim();
     }
 
-    private String formatGrade(String text){
-        return text.startsWith(",") ? "" : text.replaceAll(",", ".");
+    private String formatGrade(String s){
+        return s.startsWith(",") ? "" : s.replaceAll(",", ".");
     }
 
     private String formatTitle(String s) {
@@ -242,8 +237,7 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
     }
 
     private int formatQid(String s) {
-        s = s.substring(0, s.indexOf("-") - 1).trim();
-        return Integer.parseInt(s);
+        return Integer.parseInt(s.substring(0, s.indexOf("-") - 1).trim());
     }
 
     private String formatClazz(String s) {
@@ -259,6 +253,18 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
         if (s.contains("(")) {
             return s.substring(s.indexOf("("), s.indexOf(")"));
         } else return "";
+    }
+
+    private String formatDate(String s) {
+        return s.substring(0, s.indexOf(',')).trim();
+    }
+
+    private String formatType(String s) {
+        return s.substring(s.indexOf(",") + 1, s.indexOf(':')).trim();
+    }
+
+    private String formatJournalTitle(String s) {
+        return s.substring(s.indexOf(":") + 1).trim();
     }
 
 }

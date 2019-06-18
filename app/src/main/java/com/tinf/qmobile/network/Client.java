@@ -31,6 +31,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.parser.novo.JournalParser2;
 import com.tinf.qmobile.parser.novo.ReportParser2;
 import com.tinf.qmobile.parser.novo.ScheduleParser;
+import com.tinf.qmobile.parser.novo.ScheduleParser2;
 import com.tinf.qmobile.utility.RequestHelper;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
@@ -126,7 +127,7 @@ public class Client {
                                 new ReportParser2(pos, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_HORARIO) {
-                                new ScheduleParser(pos, this::callOnFinish).execute(response);
+                                new ScheduleParser2(pos, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_MATERIAIS) {
                                 new MateriaisParser(pos, notify, this::callOnFinish).execute(response);

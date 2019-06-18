@@ -7,7 +7,6 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;
-import com.tinf.qmobile.utility.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -53,7 +52,7 @@ public class ReportParser2 extends AsyncTask<String, Void, Void> {
                         for (int i = 2; i < tables.get(k).childNodeSize() - 1; i++) {
 
                             String matterTitle = formatTitle(rows.get(i).child(0).text());
-                            String absencesTotal = formatTd(rows.get(i).child(3).text());
+                            String absencesTotal = formatNumber(rows.get(i).child(3).text());
 
                             Matter matter = matterBox.query()
                                     .equal(Matter_.title_, matterTitle).and()
@@ -102,57 +101,57 @@ public class ReportParser2 extends AsyncTask<String, Void, Void> {
                                     String grade_ = "", absences_ = "", gradeRP_ = "", gradeFinal_ = "";
 
                                     if (User.getType() == User.Type.UNICO.get()) { //Etapa única
-                                        grade_ = formatTd(rows.get(i).child(5).text());
-                                        absences_ = formatTd(rows.get(i).child(6).text());
-                                        gradeRP_ = formatTd(rows.get(i).child(7).text());
-                                        gradeFinal_ = formatTd(rows.get(i).child(9).text());
+                                        grade_ = formatNumber(rows.get(i).child(5).text());
+                                        absences_ = formatNumber(rows.get(i).child(6).text());
+                                        gradeRP_ = formatNumber(rows.get(i).child(7).text());
+                                        gradeFinal_ = formatNumber(rows.get(i).child(9).text());
 
                                     } else { //Semestre ou bimestre
                                         if (User.getType() == User.Type.SEMESTRE1.get()) { //Semestre tabela completa
                                             switch (j) {
                                                 case 0:
-                                                    grade_ = formatTd(rows.get(i).child(5).text());
-                                                    absences_ = formatTd(rows.get(i).child(6).text());
-                                                    gradeRP_ = formatTd(rows.get(i).child(7).text());
-                                                    gradeFinal_ = formatTd(rows.get(i).child(9).text());
+                                                    grade_ = formatNumber(rows.get(i).child(5).text());
+                                                    absences_ = formatNumber(rows.get(i).child(6).text());
+                                                    gradeRP_ = formatNumber(rows.get(i).child(7).text());
+                                                    gradeFinal_ = formatNumber(rows.get(i).child(9).text());
                                                     break;
                                                 case 1:
-                                                    grade_ = formatTd(rows.get(i).child(10).text());
-                                                    absences_ = formatTd(rows.get(i).child(11).text());
-                                                    gradeRP_ = formatTd(rows.get(i).child(12).text());
-                                                    gradeFinal_ = formatTd(rows.get(i).child(14).text());
+                                                    grade_ = formatNumber(rows.get(i).child(10).text());
+                                                    absences_ = formatNumber(rows.get(i).child(11).text());
+                                                    gradeRP_ = formatNumber(rows.get(i).child(12).text());
+                                                    gradeFinal_ = formatNumber(rows.get(i).child(14).text());
                                                     break;
                                                 default: isPeriodValid = false;
                                             }
                                         } else if (User.getType() == User.Type.SEMESTRE2.get()) { //Semestre tabela simples
                                             switch (j) {
                                                 case 0:
-                                                    grade_ = formatTd(rows.get(i).child(5).text());
-                                                    absences_ = formatTd(rows.get(i).child(6).text());
+                                                    grade_ = formatNumber(rows.get(i).child(5).text());
+                                                    absences_ = formatNumber(rows.get(i).child(6).text());
                                                     break;
                                                 case 1:
-                                                    grade_ = formatTd(rows.get(i).child(7).text());
-                                                    absences_ = formatTd(rows.get(i).child(8).text());
+                                                    grade_ = formatNumber(rows.get(i).child(7).text());
+                                                    absences_ = formatNumber(rows.get(i).child(8).text());
                                                     break;
                                                 default: isPeriodValid = false;
                                             }
                                         } else if (User.getType() == User.Type.BIMESTRE.get()) { //Bimestre
                                             switch (j) {
                                                 case 0:
-                                                    grade_ = formatTd(rows.get(i).child(5).text());
-                                                    absences_ = formatTd(rows.get(i).child(6).text());
+                                                    grade_ = formatNumber(rows.get(i).child(5).text());
+                                                    absences_ = formatNumber(rows.get(i).child(6).text());
                                                     break;
                                                 case 1:
-                                                    grade_ = formatTd(rows.get(i).child(7).text());
-                                                    absences_ = formatTd(rows.get(i).child(8).text());
+                                                    grade_ = formatNumber(rows.get(i).child(7).text());
+                                                    absences_ = formatNumber(rows.get(i).child(8).text());
                                                     break;
                                                 case 2:
-                                                    grade_ = formatTd(rows.get(i).child(9).text());
-                                                    absences_ = formatTd(rows.get(i).child(10).text());
+                                                    grade_ = formatNumber(rows.get(i).child(9).text());
+                                                    absences_ = formatNumber(rows.get(i).child(10).text());
                                                     break;
                                                 case 3:
-                                                    grade_ = formatTd(rows.get(i).child(11).text());
-                                                    absences_ = formatTd(rows.get(i).child(12).text());
+                                                    grade_ = formatNumber(rows.get(i).child(11).text());
+                                                    absences_ = formatNumber(rows.get(i).child(12).text());
                                                     break;
                                                 default: isPeriodValid = false;
                                             }
@@ -202,8 +201,8 @@ public class ReportParser2 extends AsyncTask<String, Void, Void> {
         void onFinish(int pg, int year);
     }
 
-    private String formatTd(String text){
-        return text.startsWith(",") ? "" : text.replaceAll(",", ".").trim();
+    private String formatNumber(String s){
+        return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
     }
 
     private String formatTitle(String s) {

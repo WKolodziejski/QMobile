@@ -105,6 +105,10 @@ public class Schedule {
         return room_ == null ? "" : room_;
     }
 
+    public void setRoom(String room) {
+        this.room_ = room;
+    }
+
     public long getAlarm() {
         return alarm_;
     }
