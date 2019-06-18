@@ -57,20 +57,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            >
-
-            <Spinner
-                android:id="@+id/login_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                tools:listitem="@android:layout/simple_list_item_1"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             >
 
@@ -121,6 +107,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" /> !-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+
+                <Spinner
+                    android:id="@+id/login_spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    tools:listitem="@android:layout/simple_list_item_1"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:layout_width="wrap_content"

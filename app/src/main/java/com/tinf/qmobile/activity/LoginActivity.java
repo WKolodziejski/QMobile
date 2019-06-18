@@ -43,6 +43,43 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onFinish(int pg, int pos) {
+        /*  DEBUG VERSION
+
+        if (pg == PG_LOGIN) {
+            Client.get().load(PG_FETCH_YEARS);
+        }
+
+        if (pg == PG_FETCH_YEARS) {
+            Client.get().load(PG_DIARIOS, 0);
+        }
+
+        if (pg == PG_DIARIOS) {
+            Client.get().load(PG_BOLETIM, pos);
+            pages++;
+        }
+
+        if (pg == PG_BOLETIM) {
+            Client.get().load(PG_HORARIO, pos);
+            pages++;
+        }
+
+        if (pg == PG_HORARIO) {
+            pages++;
+
+            if (pos < User.getYears().length - 1) {
+                Client.get().load(PG_DIARIOS, pos + 1);
+            } else {
+                Client.get().load(PG_CALENDARIO, pos);
+            }
+        }
+
+        if (pg == PG_CALENDARIO) {
+            pages++;
+        }*/
+
+        // =================================================
+
+
         if (pg == PG_LOGIN) {
             Client.get().load(PG_FETCH_YEARS);
         }
@@ -59,7 +96,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             if (pos == 0) {
                 Client.get().load(PG_CALENDARIO, pos);
             }
-
             pages++;
         }
 
@@ -74,6 +110,8 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         if (pg == PG_CALENDARIO) {
             pages++;
         }
+
+        // =================================================
 
         if (pages == User.getYears().length * 3 + 1) {
             User.setValid(true);

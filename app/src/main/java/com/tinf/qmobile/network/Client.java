@@ -461,7 +461,7 @@ public class Client {
     }
 
     private void callOnError(int pg, String error) {
-        Log.e(TAG, pg + " " + User.getYear(pos) + "/" + User.getPeriod(pos));
+        Log.e(TAG, String.valueOf(pg));
         requests.cancelAll(request -> true);
         isLogging = false;
         isValid = false;

@@ -37,7 +37,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... page) {
-        App.getBox().runInTx(() -> {
+        //App.getBox().runInTx(() -> {
 
             Log.i(TAG, "Parsing");
 
@@ -167,8 +167,10 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                     if (search1 == null && search2 == null && search3 == null) {
 
                                         if (isJournal) {
-                                            Journal journal = journalBox.query().equal(Journal_.title_, title).and()
-                                                    .between(Journal_.date_, date, date).build().findFirst();
+                                            Journal journal = journalBox.query()
+                                                    .equal(Journal_.title_, title).and()
+                                                    .between(Journal_.date_, date, date)
+                                                    .build().findFirst();
 
                                             EventJournal event;
 
@@ -218,13 +220,17 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                                         long start = getDate(startTime + "/" + year, false);
                                         long end = getDate(endTime + "/" + year, false);
 
-                                        EventSimple search1 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
+                                        EventSimple search1 = eventSimpleBox.query()
+                                                .equal(EventSimple_.title, title).and()
                                                 .between(EventSimple_.startTime, start, start).and()
-                                                .between(EventSimple_.endTime, end, end).build().findFirst();
+                                                .between(EventSimple_.endTime, end, end)
+                                                .build().findFirst();
 
-                                        EventImage search2 = eventImageBox.query().equal(EventImage_.title, title).and()
+                                        EventImage search2 = eventImageBox.query()
+                                                .equal(EventImage_.title, title).and()
                                                 .between(EventImage_.startTime, start, start).and()
-                                                .between(EventImage_.endTime, end, end).build().findFirst();
+                                                .between(EventImage_.endTime, end, end)
+                                                .build().findFirst();
 
                                         if (search1 == null && search2 == null) {
 
@@ -302,7 +308,7 @@ public class CalendarioParser extends AsyncTask<String, Void, Void> {
                     monthBox.put(month);
                 }
             }
-        });
+        //});
 
         return null;
     }

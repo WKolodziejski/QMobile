@@ -30,7 +30,7 @@ public class ReportParser2 extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... page) {
-        App.getBox().runInTx(() -> {
+        //App.getBox().runInTx(() -> {
 
             Log.i(TAG, "Parsing " + User.getYear(pos));
 
@@ -187,7 +187,7 @@ public class ReportParser2 extends AsyncTask<String, Void, Void> {
                     }
                 }
             }
-        });
+        //});
         return null;
     }
 

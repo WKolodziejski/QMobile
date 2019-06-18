@@ -23,6 +23,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import io.objectbox.Box;
+import io.objectbox.exception.NonUniqueResultException;
+
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.utility.Utils.pickColor;
@@ -43,7 +45,7 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... page) {
-        App.getBox().runInTx(() -> {
+        //App.getBox().runInTx(() -> {
 
             Log.i(TAG, "Parsing " + User.getYear(pos));
 
@@ -160,11 +162,19 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
 
                         Log.d(TAG, title);
 
-                        Journal search = journalBox.query()
-                                .equal(Journal_.title_, title).and()
-                                .equal(Journal_.date_, date).and()
-                                .equal(Journal_.type_, type)
-                                .build().findUnique();
+                        Journal search = null;
+
+                        try {
+                            search = journalBox.query()
+                                    .equal(Journal_.title_, title).and()
+                                    .equal(Journal_.type_, type).and()
+                                    .equal(Journal_.date_, date).and()
+                                    .between(Journal_.weight_, weight, weight).and()
+                                    .between(Journal_.max_, max, max)
+                                    .build().findUnique();
+                        } catch (NonUniqueResultException e) {
+                            e.printStackTrace();
+                        }
 
                         if (search == null) {
                             newJournal.period.setTarget(period);
@@ -204,7 +214,7 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
                 }
                 matterBox.put(matter);
             }
-        });
+        //});
 
         return null;
     }

@@ -39,7 +39,7 @@ public class ScheduleParser2 extends AsyncTask<String, Void, Void> {
 
     @Override
     protected Void doInBackground(String... page) {
-        App.getBox().runInTx(() -> {
+        //App.getBox().runInTx(() -> {
 
             Log.i(TAG, "Parsing " + User.getYear(pos));
 
@@ -72,15 +72,13 @@ public class ScheduleParser2 extends AsyncTask<String, Void, Void> {
                         .build().find();
 
                 for (int i = 0; i < matters.size(); i++) {
-                    for (int j = 0; j < matters.get(i).schedules.size(); j++) {
-                        ToMany<Schedule> s = matters.get(i).schedules;
+                    ToMany<Schedule> s = matters.get(i).schedules;
+                    for (int j = 0; j < s.size(); j++) {
                         Schedule h = s.get(j);
                         if (h.isFromSite()) {
-                            s.removeById(h.id);
                             scheduleBox.remove(h.id);
                         }
                     }
-                    //matters.get(i).schedules.clear();
                 }
 
                 HashMap<String, String> codes = new HashMap<>();
@@ -145,7 +143,7 @@ public class ScheduleParser2 extends AsyncTask<String, Void, Void> {
                 }
 
             }
-        });
+        //});
         return null;
     }
 
