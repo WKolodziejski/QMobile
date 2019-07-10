@@ -1,4 +1,4 @@
-package com.tinf.qmobile.utility;
+package com.tinf.qmobile.network;
 
 import java.util.Map;
 
@@ -18,4 +18,5 @@ public class RequestHelper {
         this.form = form;
         this.notify = notify;
     }
+
 }

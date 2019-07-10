@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.utility.Jobs;
+import com.tinf.qmobile.service.Jobs;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String CHECK = "key_check";

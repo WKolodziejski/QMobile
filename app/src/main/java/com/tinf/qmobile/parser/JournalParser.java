@@ -1,28 +1,11 @@
 package com.tinf.qmobile.parser;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.matter.Journal;
-import com.tinf.qmobile.model.matter.Journal_;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Period;
-import com.tinf.qmobile.model.matter.Matter_;
+
 import com.tinf.qmobile.network.OnEvent;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.utility.Jobs;
-import com.tinf.qmobile.utility.User;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import java.util.List;
-import java.util.Objects;
-import io.objectbox.Box;
+
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
-import static com.tinf.qmobile.utility.Utils.getDate;
-import static com.tinf.qmobile.utility.Utils.pickColor;
 
 public class JournalParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "JournalParser";

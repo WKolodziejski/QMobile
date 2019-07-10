@@ -1,4 +1,4 @@
-package com.tinf.qmobile.utility;
+package com.tinf.qmobile.service;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

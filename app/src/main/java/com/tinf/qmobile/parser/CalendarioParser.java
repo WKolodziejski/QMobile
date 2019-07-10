@@ -25,7 +25,7 @@ import java.util.Calendar;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
-import static com.tinf.qmobile.utility.Utils.getDate;
+import static com.tinf.qmobile.model.calendario.Utils.getDate;
 
 public class CalendarioParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";

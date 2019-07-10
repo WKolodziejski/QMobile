@@ -20,19 +20,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.parser.ReportParser;
-import com.tinf.qmobile.parser.CalendarioParser;
-import com.tinf.qmobile.parser.JournalParser;
-import com.tinf.qmobile.parser.HorarioParser;
 import com.tinf.qmobile.parser.MateriaisParser;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.parser.novo.CalendarParser2;
 import com.tinf.qmobile.parser.novo.JournalParser2;
 import com.tinf.qmobile.parser.novo.ReportParser2;
-import com.tinf.qmobile.parser.novo.ScheduleParser;
 import com.tinf.qmobile.parser.novo.ScheduleParser2;
-import com.tinf.qmobile.utility.RequestHelper;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -45,13 +38,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.objectbox.android.AndroidScheduler;
-import io.objectbox.query.Query;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
-import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
@@ -64,7 +53,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_GERADOR;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
-import static com.tinf.qmobile.utility.Utils.UPDATE_REQUEST;
+import static com.tinf.qmobile.model.calendario.Utils.UPDATE_REQUEST;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -133,7 +122,7 @@ public class Client {
                                 new MateriaisParser(pos, notify, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_CALENDARIO) {
-                                new CalendarioParser(this::callOnFinish).execute(response);
+                                new CalendarParser2(this::callOnFinish).execute(response);
 
                             } else if (pg == PG_FETCH_YEARS) {
                                 Document document = Jsoup.parse(response);
@@ -461,7 +450,6 @@ public class Client {
     }
 
     private void callOnError(int pg, String error) {
-        Log.e(TAG, String.valueOf(pg));
         requests.cancelAll(request -> true);
         isLogging = false;
         isValid = false;

@@ -8,15 +8,11 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;
-import com.tinf.qmobile.utility.Utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +21,7 @@ import io.objectbox.relation.ToMany;
 
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
-public class ScheduleParser2 extends AsyncTask<String, Void, Void> {
+public class ScheduleParser2 extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "HorarioParser";
     private OnFinish onFinish;
     private int pos;
@@ -33,123 +29,125 @@ public class ScheduleParser2 extends AsyncTask<String, Void, Void> {
     public ScheduleParser2(int pos, OnFinish onFinish) {
         this.pos = pos;
         this.onFinish = onFinish;
-
         Log.i(TAG, "New instance");
     }
 
     @Override
-    protected Void doInBackground(String... page) {
-        //App.getBox().runInTx(() -> {
+    protected Boolean doInBackground(String... page) {
+        try {
+            return App.getBox().callInTx(() -> {
 
-            Log.i(TAG, "Parsing " + User.getYear(pos));
+                Log.i(TAG, "Parsing " + User.getYear(pos));
 
-            Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
-            Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
+                Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
+                Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
 
-            Document document = Jsoup.parse(page[0]);
+                Document document = Jsoup.parse(page[0]);
 
-            Elements tables = document.select("table");
-            Elements scheduleTable = null, codeTable = null, roomTable = null;
+                Elements tables = document.select("table");
+                Elements scheduleTable = null, codeTable = null, roomTable = null;
 
-            for (int i = 0; i < tables.size(); i++) {
-                String header = tables.get(i).getElementsByTag("tr").get(0).text();
-                if (header.contains("HORÁRIO")) {
-                    scheduleTable = tables.get(i).getElementsByTag("tr");
+                for (int i = 0; i < tables.size(); i++) {
+                    String header = tables.get(i).getElementsByTag("tr").get(0).text();
+                    if (header.contains("HORÁRIO")) {
+                        scheduleTable = tables.get(i).getElementsByTag("tr");
 
-                } else if (header.contains("Legenda")) {
-                    codeTable = tables.get(i).getElementsByTag("tr");
+                    } else if (header.contains("Legenda")) {
+                        codeTable = tables.get(i).getElementsByTag("tr");
 
-                } else if (header.contains("MAPA")) {
-                    roomTable = tables.get(i).getElementsByTag("tr");
+                    } else if (header.contains("MAPA")) {
+                        roomTable = tables.get(i).getElementsByTag("tr");
+                    }
                 }
-            }
 
-            if (scheduleTable != null && codeTable != null) {
+                if (scheduleTable != null && codeTable != null) {
 
-                List<Matter> matters = matterBox.query()
-                        .equal(Matter_.year_, User.getYear(pos)).and()
-                        .equal(Matter_.period_, User.getPeriod(pos))
-                        .build().find();
+                    List<Matter> matters = matterBox.query()
+                            .equal(Matter_.year_, User.getYear(pos)).and()
+                            .equal(Matter_.period_, User.getPeriod(pos))
+                            .build().find();
 
-                for (int i = 0; i < matters.size(); i++) {
-                    ToMany<Schedule> s = matters.get(i).schedules;
-                    for (int j = 0; j < s.size(); j++) {
-                        Schedule h = s.get(j);
-                        if (h.isFromSite()) {
-                            scheduleBox.remove(h.id);
+                    for (int i = 0; i < matters.size(); i++) {
+                        ToMany<Schedule> s = matters.get(i).schedules;
+                        for (int j = 0; j < s.size(); j++) {
+                            Schedule h = s.get(j);
+                            if (h.isFromSite()) {
+                                scheduleBox.remove(h.id);
+                            }
                         }
                     }
-                }
 
-                HashMap<String, String> codes = new HashMap<>();
+                    HashMap<String, String> codes = new HashMap<>();
 
-                for (int i = 1; i < codeTable.size(); i++) {
-                    String c = formatCode(codeTable.get(i).text());
-                    String t = formatTitle(codeTable.get(i).text());
+                    for (int i = 1; i < codeTable.size(); i++) {
+                        String c = formatCode(codeTable.get(i).text());
+                        String t = formatTitle(codeTable.get(i).text());
 
-                    if (!c.isEmpty() && !t.isEmpty()) {
-                        codes.put(c, t);
-                    }
-                }
-
-                HashMap<String, String> rooms = new HashMap<>();
-
-                if (roomTable != null) {
-                    for (int i = 2; i < roomTable.size(); i++) {
-                        Elements column = roomTable.get(i).select("td");
-
-                        String c = column.get(0).text();
-                        String d = column.get(1).text();
-
-                        if (!c.isEmpty() && !d.isEmpty()) {
-                            rooms.put(c, d);
+                        if (!c.isEmpty() && !t.isEmpty()) {
+                            codes.put(c, t);
                         }
                     }
-                }
 
-                for (int i = 1; i < scheduleTable.size(); i++) {
-                    Elements column = scheduleTable.get(i).select("td");
-                    String time = column.get(0).text();
+                    HashMap<String, String> rooms = new HashMap<>();
 
-                    for (int j = 1; j < column.size(); j++) {
-                        if (!column.get(j).text().isEmpty()) {
-                            Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time));
-                            String c = formatCode2(column.get(j).text());
-                            String matterTitle = codes.get(c);
+                    if (roomTable != null) {
+                        for (int i = 2; i < roomTable.size(); i++) {
+                            Elements column = roomTable.get(i).select("td");
 
-                            if (matterTitle != null) {
-                                Matter matter = matterBox.query()
-                                        .equal(Matter_.title_, matterTitle).and()
-                                        .equal(Matter_.year_, User.getYear(pos)).and()
-                                        .equal(Matter_.period_, User.getPeriod(pos))
-                                        .build().findUnique();
+                            String c = column.get(0).text();
+                            String d = column.get(1).text();
 
-                                if (matter != null) {
-                                    String room = rooms.get(formatRoom(column.get(j).text()));
+                            if (!c.isEmpty() && !d.isEmpty()) {
+                                rooms.put(c, d);
+                            }
+                        }
+                    }
 
-                                    if (room != null) {
-                                        schedule.setRoom(room);
+                    for (int i = 1; i < scheduleTable.size(); i++) {
+                        Elements column = scheduleTable.get(i).select("td");
+                        String time = column.get(0).text();
+
+                        for (int j = 1; j < column.size(); j++) {
+                            if (!column.get(j).text().isEmpty()) {
+                                Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time));
+                                String c = formatCode2(column.get(j).text());
+                                String matterTitle = codes.get(c);
+
+                                if (matterTitle != null) {
+                                    Matter matter = matterBox.query()
+                                            .equal(Matter_.title_, matterTitle).and()
+                                            .equal(Matter_.year_, User.getYear(pos)).and()
+                                            .equal(Matter_.period_, User.getPeriod(pos))
+                                            .build().findUnique();
+
+                                    if (matter != null) {
+                                        String room = rooms.get(formatRoom(column.get(j).text()));
+
+                                        if (room != null) {
+                                            schedule.setRoom(room);
+                                        }
+
+                                        schedule.matter.setTarget(matter);
+                                        scheduleBox.put(schedule);
+                                        matter.schedules.add(schedule);
+                                        matterBox.put(matter);
                                     }
-
-                                    schedule.matter.setTarget(matter);
-                                    scheduleBox.put(schedule);
-                                    matter.schedules.add(schedule);
-                                    matterBox.put(matter);
                                 }
                             }
-
                         }
                     }
                 }
-
-            }
-        //});
-        return null;
+                return true;
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
+    protected void onPostExecute(Boolean result) {
+        super.onPostExecute(result);
         onFinish.onFinish(PG_HORARIO, pos);
     }
 

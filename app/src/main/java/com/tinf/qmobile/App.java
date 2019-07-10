@@ -1,29 +1,22 @@
 package com.tinf.qmobile;
 
-import android.app.AlarmManager;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.tinf.qmobile.model.MyObjectBox;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-import com.tinf.qmobile.utility.Utils;
-
-import java.util.List;
+import com.tinf.qmobile.model.calendario.Utils;
 
 import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
-import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
-import static com.tinf.qmobile.utility.Utils.VERSION_INFO;
+import static com.tinf.qmobile.model.calendario.Utils.VERSION_INFO;
 
 public class App extends Application {
     private static final String TAG = "Application";
@@ -51,7 +44,7 @@ public class App extends Application {
     }
 
     public static BoxStore getBox() {
-        if (/*!isLogged ||*/ boxStore == null || boxStore.isClosed()) {
+        if (/*!isLogged ||*/ boxStore == null) {
             //Log.v(TAG, "Login state: " + String.valueOf(isLogged));
             Log.v(TAG, "Box state: " + boxStore);
             initBoxStore();
@@ -61,10 +54,7 @@ public class App extends Application {
 
     private static void initBoxStore() {
         Log.v(TAG, "Initializing box...");
-        if (boxStore != null) {
-            Log.w(TAG, "Box already open. Closing...");
-            boxStore.close();
-        }
+
         if (User.isValid() || Client.get().isValid()/*|| isLogged*/) {
             Log.v(TAG, "Building box...");
             boxStore = MyObjectBox
@@ -72,6 +62,7 @@ public class App extends Application {
                     .androidContext(App.getContext())
                     .name(User.getCredential(REGISTRATION))
                     .build();
+            boxStore.setDbExceptionListener(Throwable::printStackTrace);
         } else {
             Log.e(TAG, "Box not initilized");
         }

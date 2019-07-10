@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
-import static com.tinf.qmobile.utility.Utils.getDate;
+import static com.tinf.qmobile.model.calendario.Utils.getDate;
 
 public class MateriaisParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "MateriaisParser";

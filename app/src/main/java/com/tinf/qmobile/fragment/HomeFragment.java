@@ -117,7 +117,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
-            events = events.subList(events.size() - 5, events.size());
         } else {
             events = events.subList(0, 5);
         }

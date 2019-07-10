@@ -9,7 +9,6 @@ import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.utility.Jobs;
 
 public class BackgroundCheck extends JobService {
     private boolean errorOcurred;

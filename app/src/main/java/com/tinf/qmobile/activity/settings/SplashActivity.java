@@ -10,7 +10,7 @@ import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.Jobs;
+import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 import androidx.appcompat.app.AppCompatActivity;
 import io.fabric.sdk.android.Fabric;
