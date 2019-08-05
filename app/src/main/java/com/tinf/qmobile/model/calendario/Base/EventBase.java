@@ -64,7 +64,7 @@ public abstract class EventBase extends Event implements CalendarBase {
             Date s = new Date(startTime);
             Date e = new Date(endTime);
 
-            return s.getDay() != e.getDay();
+            return !s.equals(e);
         }
     }
 

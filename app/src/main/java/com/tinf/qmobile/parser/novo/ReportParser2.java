@@ -44,8 +44,8 @@ public class ReportParser2 extends AsyncTask<String, Void, Boolean> {
                 Document document = Jsoup.parse(page[0]);
 
                 Elements tables = document.getElementsByTag("tbody");
-                for (Element e : tables)
-                    Log.v(TAG, e.getElementsByTag("tr").get(0).text());
+                //for (Element e : tables)
+                    //Log.v(TAG, e.getElementsByTag("tr").get(0).text());
 
                 for (int k = 0; k < tables.size(); k++) {
                     if (tables.get(k).getElementsByTag("tr").get(0).text().contains("Estrutura")) {
@@ -70,9 +70,9 @@ public class ReportParser2 extends AsyncTask<String, Void, Boolean> {
 
                                     if (rows.get(1).children().size() == 11) {
                                         if (matter.periods.size() < 1) {
-                                            matter.periods.add(new Period("1"));
-                                            User.setType(User.Type.UNICO);
+                                            matter.periods.add(new Period("Unico"));
                                         }
+                                        User.setType(User.Type.UNICO);
                                     } else {
                                         switch (rows.get(1).child(5).text()) {
                                             case "1E":

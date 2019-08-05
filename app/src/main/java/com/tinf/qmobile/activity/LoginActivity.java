@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                 Client.get().load(PG_BOLETIM, pos);
                 Client.get().load(PG_HORARIO, pos);
                 if (pos == 0) {
-                    //Client.get().load(PG_CALENDARIO, pos);
+                    Client.get().load(PG_CALENDARIO, pos);
                 }
                 pages++;
             }
@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             }
         }
 
-        if (pages == User.getYears().length * 3) {
+        if (pages == User.getYears().length * 3 + 1) {
             User.setValid(true);
             startActivity(new Intent(this, MainActivity.class));
             finish();

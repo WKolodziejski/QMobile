@@ -34,14 +34,14 @@ android {
         targetSdkVersion 28
         versionName '1.0.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 22
+        versionCode 31
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']
             }
         }
-        versionNameSuffix 'ES-test2'
+        versionNameSuffix 'ES-alpha'
         signingConfig signingConfigs.config
     }
     buildTypes {

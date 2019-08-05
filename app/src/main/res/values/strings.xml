@@ -84,6 +84,8 @@
     <string name="boletim_NotaFinal">NF</string>
     <string name="boletim_PrimeiraEtapa">1ª</string>
     <string name="boletim_SegundaEtapa">2ª</string>
+    <string name="boletim_TerceiraEtapa">3ª</string>
+    <string name="boletim_QuartaEtapa">4ª</string>
 
     <string name="diarios_PrimeiraEtapa">Primeira Etapa</string>
     <string name="diarios_SegundaEtapa">Segunda Etapa</string>

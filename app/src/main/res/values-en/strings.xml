@@ -129,4 +129,6 @@
     <string name="event_removed">Event deleted</string>
     <string name="diarios_EtapaUnica">Single Stage</string>
     <string name="diarios_expand">Expand</string>
+    <string name="boletim_QuartaEtapa">4th</string>
+    <string name="boletim_TerceiraEtapa">3rd</string>
 </resources>

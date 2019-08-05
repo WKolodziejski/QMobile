@@ -3,6 +3,7 @@ package com.tinf.qmobile.service;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -17,7 +18,7 @@ import io.objectbox.Box;
 import static android.content.Context.ALARM_SERVICE;
 import static com.tinf.qmobile.App.getContext;
 
-public class AlarmReceiver extends WakefulBroadcastReceiver {
+public class AlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "AlarmReceiver";
 
     @Override
@@ -31,14 +32,14 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
                 Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
                 List<EventUser> events = eventBox.query().greater(EventUser_.alarm, new Date().getTime() - 1).build().find();
 
-                AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(ALARM_SERVICE);
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
                 for (EventUser event : events) {
-                    Intent i = new Intent(getContext(), AlarmReceiver.class);
+                    Intent i = new Intent(context, AlarmReceiver.class);
                     i.putExtra("ID", event.id);
                     i.putExtra("TYPE", CalendarBase.ViewType.USER);
 
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) event.id, i, 0);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
 
                     if (alarmManager != null) {
                         Log.i(TAG, "Scheduling alarm");

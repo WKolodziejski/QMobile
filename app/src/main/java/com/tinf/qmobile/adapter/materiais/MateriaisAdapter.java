@@ -37,7 +37,7 @@ public class MateriaisAdapter extends RecyclerView.Adapter {
 
         holder.title.setText(materials.get(i).getTitle());
         holder.date.setText((materials.get(i).getDateString()));
-        holder.type.setImageDrawable(context.getResources().getDrawable(materials.get(i).getIcon()));
+        holder.type.setImageDrawable(context.getDrawable(materials.get(i).getIcon()));
         holder.offline.setVisibility(materials.get(i).isDownloaded ? View.VISIBLE : View.GONE);
         if (!materials.get(i).getDescription().isEmpty()) {
             holder.description.setText(materials.get(i).getDescription());

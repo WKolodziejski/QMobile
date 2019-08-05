@@ -23,7 +23,6 @@
             android:layout_height="96dp"
             android:scaleType="centerCrop"
             android:foregroundTint="@color/colorPrimaryLight"
-            android:foreground="@mipmap/circle"
             android:src="@mipmap/img_christmas" />
 
         <TextView

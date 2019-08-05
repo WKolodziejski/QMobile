@@ -2,12 +2,14 @@ package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.model.materiais.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,8 +17,8 @@ import org.jsoup.select.Elements;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
 import static com.tinf.qmobile.model.calendario.Utils.getDate;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
 
 public class MateriaisParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "MateriaisParser";

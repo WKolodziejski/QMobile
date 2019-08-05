@@ -21,7 +21,7 @@ public class MateriaActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_cancel));
+        getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
 
         Bundle bundle = getIntent().getExtras();
 

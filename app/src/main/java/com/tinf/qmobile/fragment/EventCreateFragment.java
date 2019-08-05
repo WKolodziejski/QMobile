@@ -320,15 +320,15 @@ public class EventCreateFragment extends Fragment {
                             case 0: alarm = 0;
                                     break;
 
-                            case 1: alarmTime.add(Calendar.MINUTE, -30);
+                            case 1: alarmTime.roll(Calendar.MINUTE, 30);
                                     alarm = alarmTime.getTimeInMillis();
                                     break;
 
-                            case 2: alarmTime.add(Calendar.HOUR_OF_DAY, -1);
+                            case 2: alarmTime.roll(Calendar.HOUR_OF_DAY, 1);
                                     alarm = alarmTime.getTimeInMillis();
                                     break;
 
-                            case 3: alarmTime.add(Calendar.DAY_OF_MONTH, -1);
+                            case 3: alarmTime.roll(Calendar.DAY_OF_MONTH, 1);
                                     alarm = alarmTime.getTimeInMillis();
                                     break;
                         }

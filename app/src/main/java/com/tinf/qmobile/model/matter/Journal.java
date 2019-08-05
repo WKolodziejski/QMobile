@@ -38,14 +38,16 @@ public class Journal {
     private long date_;
     private int type_;
     public ToOne<Period> period;
+    public ToOne<Matter> matter;
 
-    public Journal(String title, float grade, float weight, float max, long date, int type) {
+    public Journal(String title, float grade, float weight, float max, long date, int type, Matter matter) {
         this.title_ = title;
         this.grade_ = grade;
         this.weight_ = weight;
         this.max_ = max;
         this.date_ = date;
         this.type_ = type;
+        this.matter.setTarget(matter);
     }
 
     public String getMatter() {

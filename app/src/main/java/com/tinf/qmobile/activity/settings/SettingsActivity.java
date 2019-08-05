@@ -58,7 +58,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             bindPreferenceSummaryToValue(findPreference(NOTIFY));
 
-            bindPreferenceSummaryToValue(findPreference(NIGHT));
+            //bindPreferenceSummaryToValue(findPreference(NIGHT));
 
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {
@@ -82,12 +82,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             });
 
-            Preference night_mode = findPreference(NIGHT);
+            /*Preference night_mode = findPreference(NIGHT);
             night_mode.setOnPreferenceClickListener(preference -> {
                 AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?
                         AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                 return true;
-            });
+            });*/
         }
     }
 

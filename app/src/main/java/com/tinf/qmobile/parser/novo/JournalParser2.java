@@ -26,6 +26,8 @@ import java.util.concurrent.Callable;
 
 import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
+import io.objectbox.query.QueryBuilder;
+
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 import static com.tinf.qmobile.model.calendario.Utils.getDate;
 
@@ -157,45 +159,36 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
 
                             max = maxString.isEmpty() ? -1 : Float.parseFloat(maxString);
 
-                            date = getDate(dateString, false);
+                            date = dateString.isEmpty()? -1 : getDate(dateString, false);
 
-                            Journal newJournal = new Journal(title, grade, weight, max, date, type);
+                            if (date != -1) {
 
-                            Log.d(TAG, title);
+                                Journal newJournal = new Journal(title, grade, weight, max, date, type, matter);
 
-                            Journal search = null;
+                                Log.d(TAG, title);
 
-                            try {
-                                search = journalBox.query()
-                                        .equal(Journal_.title_, title).and()
-                                        .equal(Journal_.type_, type).and()
-                                        .equal(Journal_.date_, date).and()
-                                        .between(Journal_.weight_, weight, weight).and()
-                                        .between(Journal_.max_, max, max)
-                                        .build().findUnique();
-                            } catch (NonUniqueResultException e) {
-                                e.printStackTrace();
-                            }
+                                Journal search = null;
 
-                            if (search == null) {
-                                newJournal.period.setTarget(period);
-                                period.journals.add(newJournal);
-                                journalBox.put(newJournal);
+                                try {
+                                    QueryBuilder<Journal> builder = journalBox.query()
+                                            .equal(Journal_.title_, title).and()
+                                            .equal(Journal_.type_, type).and()
+                                            .equal(Journal_.date_, date).and()
+                                            .between(Journal_.weight_, weight, weight).and()
+                                            .between(Journal_.max_, max, max);
 
-                                count++;
+                                    builder.link(Journal_.matter).equal(Matter_.title_, titleMatter);
 
-                                if (notify) {
-                                    Intent intent = new Intent(App.getContext(), EventViewActivity.class);
-                                    intent.putExtra("ID", newJournal.id);
-                                    intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
-
-                                    Jobs.displayNotification(matter.getTitle(), newJournal.getTitle(),
-                                            App.getContext().getResources().getString(R.string.title_diarios), (int) newJournal.id, intent);
+                                    search = builder.build().findUnique();
+                                } catch (NonUniqueResultException e) {
+                                    e.printStackTrace();
                                 }
-                            } else {
-                                if (search.getGrade_() != grade) {
-                                    search.setGrade(grade);
-                                    journalBox.put(search);
+
+                                if (search == null) {
+                                    newJournal.period.setTarget(period);
+                                    period.journals.add(newJournal);
+                                    journalBox.put(newJournal);
+
                                     count++;
 
                                     if (notify) {
@@ -205,6 +198,21 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
 
                                         Jobs.displayNotification(matter.getTitle(), newJournal.getTitle(),
                                                 App.getContext().getResources().getString(R.string.title_diarios), (int) newJournal.id, intent);
+                                    }
+                                } else {
+                                    if (search.getGrade_() != grade) {
+                                        search.setGrade(grade);
+                                        journalBox.put(search);
+                                        count++;
+
+                                        if (notify) {
+                                            Intent intent = new Intent(App.getContext(), EventViewActivity.class);
+                                            intent.putExtra("ID", newJournal.id);
+                                            intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+
+                                            Jobs.displayNotification(matter.getTitle(), newJournal.getTitle(),
+                                                    App.getContext().getResources().getString(R.string.title_diarios), (int) newJournal.id, intent);
+                                        }
                                     }
                                 }
                             }

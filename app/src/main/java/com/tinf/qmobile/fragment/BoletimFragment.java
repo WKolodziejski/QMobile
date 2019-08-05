@@ -1,13 +1,11 @@
 package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
@@ -32,14 +29,13 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.tinf.qmobile.App.getBox;
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
 public class BoletimFragment extends Fragment implements OnUpdate {
     private static String TAG = "BoletimFragment";
-    private LockTableView mLockTableView;
-    private ArrayList<ArrayList<String>> mTableDatas;
+    private LockTableView table;
+    private ArrayList<ArrayList<String>> data;
     private List<Matter> materiaList;
 
     @Override
@@ -53,9 +49,9 @@ public class BoletimFragment extends Fragment implements OnUpdate {
     }
 
     private void loadData() {
-        ArrayList<String> mfristData = new ArrayList<>();
+        ArrayList<String> header = new ArrayList<>();
 
-        mfristData.add(getResources().getString(R.string.boletim_Materia));
+        header.add(getResources().getString(R.string.boletim_Materia));
 
         String[] sem1 = {
                 getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
@@ -82,10 +78,10 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
                 getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
                 getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                "3 " + getResources().getString(R.string.boletim_Nota),
-                "3 " + getResources().getString(R.string.boletim_Faltas),
-                "4 " + getResources().getString(R.string.boletim_Nota),
-                "4 " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
                 getResources().getString(R.string.boletim_TFaltas)
         };
 
@@ -98,13 +94,13 @@ public class BoletimFragment extends Fragment implements OnUpdate {
         };
 
         switch (User.getType()) {
-            case 0 : mfristData.addAll(Arrays.asList(sem1));
+            case 0 : header.addAll(Arrays.asList(sem1));
                 break;
-            case 1: mfristData.addAll(Arrays.asList(bim));
+            case 1: header.addAll(Arrays.asList(bim));
                 break;
-            case 2: mfristData.addAll(Arrays.asList(uni));
+            case 2: header.addAll(Arrays.asList(uni));
                 break;
-            case 3: mfristData.addAll(Arrays.asList(sem2));
+            case 3: header.addAll(Arrays.asList(sem2));
                 break;
         }
 
@@ -113,26 +109,26 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 .equal(Matter_.period_, User.getPeriod(pos))
                 .build().find();
 
-        mTableDatas = new ArrayList<>();
+        data = new ArrayList<>();
 
-        mTableDatas.add(mfristData);
+        data.add(header);
 
         for (int i = 0; i < materiaList.size(); i++) {
-            ArrayList<String> mRowDatas = new ArrayList<>();
-            mRowDatas.add(materiaList.get(i).getTitle());
+            ArrayList<String> row = new ArrayList<>();
+            row.add(materiaList.get(i).getTitle());
 
             for (int j = 0; j < materiaList.get(i).periods.size(); j++) {
                 Period period = materiaList.get(i).periods.get(j);
-                Log.d(TAG, materiaList.get(i).getTitle() + " " + materiaList.get(i).periods.get(j).getTitle());
-                mRowDatas.add(period.getGrade());
-                mRowDatas.add(period.getAbsences());
-                //if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.BIMESTRE.get()) {
-                    mRowDatas.add(period.getGradeRP());
-                    mRowDatas.add(period.getGradeFinal());
-                //}
+                //Log.d(TAG, materiaList.get(i).getTitle() + " " + materiaList.get(i).periods.get(j).getTitle());
+                row.add(period.getGrade());
+                row.add(period.getAbsences());
+                if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
+                    row.add(period.getGradeRP());
+                    row.add(period.getGradeFinal());
+                }
             }
-            mRowDatas.add(materiaList.get(i).getAbsences());
-            mTableDatas.add(mRowDatas);
+            row.add(materiaList.get(i).getAbsences());
+            data.add(row);
         }
     }
 
@@ -150,9 +146,9 @@ public class BoletimFragment extends Fragment implements OnUpdate {
 
             LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
 
-            mLockTableView = new LockTableView(getContext(), mContentView, mTableDatas);
+            table = new LockTableView(getContext(), mContentView, data);
 
-            mLockTableView
+            table
                     .setLockFristColumn(true)
                     .setLockFristRow(true)
                     .setMinColumnWidth(32)
@@ -176,11 +172,11 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                     .setOnItemSeletor(R.color.colorPrimaryLight)
                     .show();
 
-            mLockTableView.getTableScrollView().setPullRefreshEnabled(false);
-            mLockTableView.getTableScrollView().setLoadingMoreEnabled(false);
-            mLockTableView.getTableScrollView().setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+            table.getTableScrollView().setPullRefreshEnabled(false);
+            table.getTableScrollView().setLoadingMoreEnabled(false);
+            table.getTableScrollView().setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
 
-            mLockTableView.getTableScrollView().addOnScrollListener(new RecyclerView.OnScrollListener(){
+            table.getTableScrollView().addOnScrollListener(new RecyclerView.OnScrollListener(){
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
@@ -207,14 +203,14 @@ public class BoletimFragment extends Fragment implements OnUpdate {
     public void onUpdate(int pg) {
         if (pg == PG_BOLETIM || pg == UPDATE_REQUEST) {
             loadData();
-            mLockTableView.setTableDatas(mTableDatas);
+            table.setTableDatas(data);
         }
     }
 
     @Override
     public void onScrollRequest() {
-        if (mLockTableView != null) {
-            mLockTableView.getTableScrollView().smoothScrollToPosition(0);
+        if (table != null) {
+            table.getTableScrollView().smoothScrollToPosition(0);
         }
     }
 
