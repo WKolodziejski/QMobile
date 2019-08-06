@@ -27,26 +27,27 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (intent.getAction() != null && context != null) {
             if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
-                Log.i(TAG, "Action boot");
+                if (App.getBox() != null) {
 
-                Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
-                List<EventUser> events = eventBox.query().greater(EventUser_.alarm, new Date().getTime() - 1).build().find();
+                    Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
+                    List<EventUser> events = eventBox.query().greater(EventUser_.alarm, new Date().getTime() - 1).build().find();
 
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-                for (EventUser event : events) {
-                    Intent i = new Intent(context, AlarmReceiver.class);
-                    i.putExtra("ID", event.id);
-                    i.putExtra("TYPE", CalendarBase.ViewType.USER);
+                    for (EventUser event : events) {
+                        Intent i = new Intent(context, AlarmReceiver.class);
+                        i.putExtra("ID", event.id);
+                        i.putExtra("TYPE", CalendarBase.ViewType.USER);
 
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
 
-                    if (alarmManager != null) {
-                        Log.i(TAG, "Scheduling alarm");
-                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getAlarm(), pendingIntent);
+                        if (alarmManager != null) {
+                            Log.i(TAG, "Scheduling alarm");
+                            alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getAlarm(), pendingIntent);
+                        }
                     }
+                    return;
                 }
-                return;
             }
         }
 
@@ -60,8 +61,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                     AlarmService.enqueueWork(context, AlarmService.class, (int) id, intent);
                     setResultCode(Activity.RESULT_OK);
                 }
-            } else {
-                Log.e(TAG, "id == 0");
             }
         }
     }
