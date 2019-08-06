@@ -1,4 +1,4 @@
-package com.tinf.qmobile.parser.novo;
+package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -21,12 +21,12 @@ import io.objectbox.relation.ToMany;
 
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
-public class ScheduleParser2 extends AsyncTask<String, Void, Boolean> {
+public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "HorarioParser";
     private OnFinish onFinish;
     private int pos;
 
-    public ScheduleParser2(int pos, OnFinish onFinish) {
+    public ScheduleParser(int pos, OnFinish onFinish) {
         this.pos = pos;
         this.onFinish = onFinish;
         Log.i(TAG, "New instance");

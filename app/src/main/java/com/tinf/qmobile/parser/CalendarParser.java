@@ -1,4 +1,4 @@
-package com.tinf.qmobile.parser.novo;
+package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,11 +24,11 @@ import io.objectbox.Box;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
 import static com.tinf.qmobile.model.calendario.Utils.getDate;
 
-public class CalendarParser2 extends AsyncTask<String, Void, Void> {
+public class CalendarParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";
     private OnFinish onFinish;
 
-    public CalendarParser2(OnFinish onFinish) {
+    public CalendarParser(OnFinish onFinish) {
         this.onFinish = onFinish;
     }
 
