@@ -27,16 +27,14 @@ public class SplashActivity extends AppCompatActivity {
 
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(task -> {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
+                        if (task.isSuccessful()) {
+                            Crashlytics.setUserEmail(task.getResult().getToken());
                         }
-                        Log.d(TAG, task.getResult().getToken());
                     });
 
-            Fabric.with(this, new Crashlytics());
+            Fabric.with(getApplicationContext(), new Crashlytics());
 
-            Fabric.with(new Fabric.Builder(this)
+            Fabric.with(new Fabric.Builder(getApplicationContext())
                     .kits(new CrashlyticsCore.Builder().build())
                     .debuggable(true)
                     .build());

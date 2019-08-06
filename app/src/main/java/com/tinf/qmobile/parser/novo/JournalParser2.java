@@ -13,6 +13,7 @@ import com.tinf.qmobile.model.matter.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Period_;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.service.Jobs;
@@ -159,7 +160,7 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
 
                             max = maxString.isEmpty() ? -1 : Float.parseFloat(maxString);
 
-                            date = dateString.isEmpty()? -1 : getDate(dateString, false);
+                            date = dateString.isEmpty() ? -1 : getDate(dateString, false);
 
                             if (date != -1) {
 
@@ -173,11 +174,12 @@ public class JournalParser2 extends AsyncTask<String, Void, Void> {
                                     QueryBuilder<Journal> builder = journalBox.query()
                                             .equal(Journal_.title_, title).and()
                                             .equal(Journal_.type_, type).and()
-                                            .equal(Journal_.date_, date).and()
+                                            .between(Journal_.date_, date, date).and()
                                             .between(Journal_.weight_, weight, weight).and()
                                             .between(Journal_.max_, max, max);
 
                                     builder.link(Journal_.matter).equal(Matter_.title_, titleMatter);
+                                    builder.link(Journal_.period).equal(Period_.title_, periodTitle);
 
                                     search = builder.build().findUnique();
                                 } catch (NonUniqueResultException e) {
