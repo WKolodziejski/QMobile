@@ -85,6 +85,7 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
 
                         if (!c.isEmpty() && !t.isEmpty()) {
                             codes.put(c, t);
+                            Log.d(TAG, c + ": " + t);
                         }
                     }
 
@@ -110,7 +111,7 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                         for (int j = 1; j < column.size(); j++) {
                             if (!column.get(j).text().isEmpty()) {
                                 Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time));
-                                String c = formatCode2(column.get(j).text());
+                                String c = formatCode(column.get(j).text());
                                 String matterTitle = codes.get(c);
 
                                 if (matterTitle != null) {
@@ -195,17 +196,17 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
         if (s.contains("(")) {
             s = s.substring(s.indexOf("-") + 1, s.indexOf("("));
         } else {
-            s = s.substring(s.indexOf("-") + 1, s.lastIndexOf("-"));
+            s = s.substring(s.indexOf(" ") + 2, s.lastIndexOf("-"));
         }
         s = s.substring(s.indexOf("-") + 1).trim();
         return s;
     }
 
-    private String formatCode(String s) {
+    /*private String formatCode(String s) {
         return s.substring(0, s.indexOf("-") - 1).trim();
-    }
+    }*/
 
-    private String formatCode2(String s) {
+    private String formatCode(String s) {
         return s.substring(0, s.indexOf(" ")).trim();
     }
 

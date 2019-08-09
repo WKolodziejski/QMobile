@@ -1,12 +1,17 @@
 package com.tinf.qmobile.activity.settings;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
@@ -14,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.utility.User;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
     public static final String CHECK = "key_check";
@@ -82,12 +88,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             });
 
-            /*Preference night_mode = findPreference(NIGHT);
-            night_mode.setOnPreferenceClickListener(preference -> {
-                AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?
-                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                return true;
-            });*/
+            Preference night_mode = findPreference(NIGHT);
+
+            if (User.isNight()) {
+                night_mode.setOnPreferenceClickListener(preference -> {
+                    AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?
+                            AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    return true;
+                });
+            } else {
+                PreferenceScreen preferenceScreen = getPreferenceScreen();
+                preferenceScreen.removePreference(night_mode);
+            }
         }
     }
 

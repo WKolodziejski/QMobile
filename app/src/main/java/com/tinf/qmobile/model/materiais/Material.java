@@ -35,69 +35,79 @@ public class Material {
     }
 
     public int getIcon() {
-        return getIcon(link.substring(link.lastIndexOf(".")).toLowerCase());
+        if (link.contains(".")) {
+            return parseIcon(link.substring(link.lastIndexOf(".")).toLowerCase());
+        } else {
+            return R.drawable.ic_file;
+        }
     }
 
     public String getFileName() {
-        return format(title) + link.substring(link.lastIndexOf(".")).toLowerCase();
+        String name = format(title);
+
+        if (link.contains(".")) {
+            name += link.substring(link.lastIndexOf(".")).toLowerCase();
+        }
+
+        return name;
     }
 
-    private int getIcon(String extension) {
+    private int parseIcon(String ext) {
         int icon = R.drawable.ic_file;
 
-        if (extension.equals(".pdf")) {
+        if (ext.equals(".pdf")) {
             icon = R.drawable.ic_pdf;
-        } else if (extension.contains(".doc")) {
+        } else if (ext.contains(".doc")) {
             icon = R.drawable.ic_doc;
-        } else if (extension.contains(".ppt")) {
+        } else if (ext.contains(".ppt")) {
             icon = R.drawable.ic_ppt;
-        } else if (extension.contains(".xls")) {
+        } else if (ext.contains(".xls")) {
             icon = R.drawable.ic_xls;
-        } else if (extension.equals(".zip")) {
+        } else if (ext.equals(".zip")) {
             icon = R.drawable.ic_zip;
-        } else if (extension.equals(".rtf")) {
+        } else if (ext.equals(".rtf")) {
             icon = R.drawable.ic_rtf;
-        } else if (extension.equals(".txt")) {
+        } else if (ext.equals(".txt")) {
             icon = R.drawable.ic_txt;
-        } else if (extension.equals(".csv")) {
+        } else if (ext.equals(".csv")) {
             icon = R.drawable.ic_csv;
-        } else if (extension.equals(".svg")) {
+        } else if (ext.equals(".svg")) {
             icon = R.drawable.ic_svg;
-        } else if (extension.equals(".rar") || extension.equals(".7z")) {
+        } else if (ext.equals(".rar") || ext.equals(".7z")) {
             icon = R.drawable.ic_comp;
-        } else if (extension.equals(".css")) {
+        } else if (ext.equals(".css")) {
             icon = R.drawable.ic_css;
-        } else if (extension.equals(".dbf")) {
+        } else if (ext.equals(".dbf")) {
             icon = R.drawable.ic_dbf;
-        } else if (extension.equals(".dwg")) {
+        } else if (ext.equals(".dwg")) {
             icon = R.drawable.ic_dwg;
-        } else if (extension.equals(".exe")) {
+        } else if (ext.equals(".exe")) {
             icon = R.drawable.ic_exe;
-        } else if (extension.equals(".fla")) {
+        } else if (ext.equals(".fla")) {
             icon = R.drawable.ic_fla;
-        } else if (extension.equals(".html")) {
+        } else if (ext.equals(".html")) {
             icon = R.drawable.ic_html;
-        } else if (extension.equals(".xml")) {
+        } else if (ext.equals(".xml")) {
             icon = R.drawable.ic_xml;
-        } else if (extension.equals(".iso")) {
+        } else if (ext.equals(".iso")) {
             icon = R.drawable.ic_iso;
-        } else if (extension.equals(".js")) {
+        } else if (ext.equals(".js")) {
             icon = R.drawable.ic_js;
-        } else if (extension.equals(".jpg")) {
+        } else if (ext.equals(".jpg")) {
             icon = R.drawable.ic_jpg;
-        } else if (extension.equals(".json")) {
+        } else if (ext.equals(".json")) {
             icon = R.drawable.ic_json;
-        } else if (extension.equals(".mp3")) {
+        } else if (ext.equals(".mp3")) {
             icon = R.drawable.ic_mp3;
-        } else if (extension.equals(".mp4")) {
+        } else if (ext.equals(".mp4")) {
             icon = R.drawable.ic_mp4;
-        } else if (extension.equals(".ai")) {
+        } else if (ext.equals(".ai")) {
             icon = R.drawable.ic_ai;
-        } else if (extension.equals(".avi")) {
+        } else if (ext.equals(".avi")) {
             icon = R.drawable.ic_avi;
-        } else if (extension.equals(".png")) {
+        } else if (ext.equals(".png")) {
             icon = R.drawable.ic_png;
-        } else if (extension.equals(".psd")) {
+        } else if (ext.equals(".psd")) {
             icon = R.drawable.ic_psd;
         }
         return icon;

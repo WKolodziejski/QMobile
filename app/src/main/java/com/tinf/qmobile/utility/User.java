@@ -50,6 +50,15 @@ public class User {
     private static final String YEARS = ".Years";
     private static final String URL = ".Url";
     private static final String TYPE = ".Type";
+    private static final String NIGHT = ".Night";
+
+    public static boolean isNight() {
+        return getInfo().getBoolean(NIGHT, false);
+    }
+
+    public static void setNight(boolean isValid) {
+        getEditor().putBoolean(NIGHT, isValid).apply();
+    }
 
     public static boolean isValid() {
         return getInfo().getBoolean(VALID, false);

@@ -178,8 +178,11 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                                             .between(Journal_.weight_, weight, weight).and()
                                             .between(Journal_.max_, max, max);
 
-                                    builder.link(Journal_.matter).equal(Matter_.title_, titleMatter);
-                                    builder.link(Journal_.period).equal(Period_.title_, periodTitle);
+                                    builder.link(Journal_.matter)
+                                            .equal(Matter_.title_, titleMatter).and()
+                                            .equal(Matter_.year_, User.getYear(pos)).and()
+                                            .equal(Matter_.period_, User.getPeriod(pos)).and()
+                                            .equal(Matter_.qid_, qid);
 
                                     search = builder.build().findUnique();
                                 } catch (NonUniqueResultException e) {

@@ -150,7 +150,6 @@
                     android:layout_marginBottom="10dp"
                     android:transitionName="Horario"
                     android:id="@+id/weekView_home"
-                    android:background="@color/white"
                     app:headerColumnPadding="8dp"
                     app:noOfVisibleDays="5"
                     app:eventCornerRadius="5dp"
@@ -164,14 +163,14 @@
                     app:showNowLine="false"
                     app:showFirstDayOfWeekFirst="true"
                     app:zoomFocusPointEnabled="false"
-                    app:hourSeparatorColor="@color/white"
-                    app:headerColumnBackground="@color/colorPrimary"
+                    app:hourSeparatorColor="@color/transparent"
+                    app:headerColumnBackground="@color/transparent"
                     app:headerColumnTextColor="@color/colorPrimary"
-                    app:eventTextColor="@color/white"
-                    app:headerRowBackgroundColor="@color/white"
-                    app:dayBackgroundColor="@color/white"
-                    app:pastBackgroundColor="@color/white"
-                    app:todayBackgroundColor="@color/white"/>
+                    app:eventTextColor="@color/colorPrimaryLight"
+                    app:headerRowBackgroundColor="@color/transparent"
+                    app:dayBackgroundColor="@color/transparent"
+                    app:pastBackgroundColor="@color/transparent"
+                    app:todayBackgroundColor="@color/transparent"/>
 
             </LinearLayout>
 
