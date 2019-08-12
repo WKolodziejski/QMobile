@@ -1,6 +1,8 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,26 +36,18 @@ public class MateriaActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void changeColor() {
-        ColorPickerDialogBuilder
-                .with(getApplicationContext())
-                .setTitle("Choose color")
-                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
-                .density(12)
-                .setPositiveButton("ok", (dialog, selectedColor, allColors) -> {
-
-                    //materias.get(X).setColor(color);
-                })
-                .build()
-                .show();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.matters, menu);
+        return true;
     }
 
 }

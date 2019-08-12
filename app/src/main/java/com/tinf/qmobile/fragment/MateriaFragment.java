@@ -2,13 +2,21 @@ package com.tinf.qmobile.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.adapter.diarios.EtapasAdapter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.network.Client;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,19 +25,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MateriaFragment extends Fragment {
     private EtapasAdapter adapter;
+    private Matter matter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         Bundle bundle = getArguments();
 
         if (bundle != null) {
-            Matter materia = App.getBox().boxFor(Matter.class).get(bundle.getLong("ID"));
+            matter = App.getBox().boxFor(Matter.class).get(bundle.getLong("ID"));
 
-            adapter = new EtapasAdapter(materia, getContext());
+            adapter = new EtapasAdapter(matter, getContext());
 
-            ((MateriaActivity) getActivity()).setTitle(materia.getTitle());
+            ((MateriaActivity) getActivity()).setTitle(matter.getTitle());
         } else {
             ((MateriaActivity) getActivity()).finish();
         }
@@ -51,6 +62,35 @@ public class MateriaFragment extends Fragment {
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_color) {
+            if (matter != null) {
+                ColorPickerDialogBuilder
+                        .with(getContext())
+                        .setTitle(getString(R.string.dialog_choose_color))
+                        .initialColor(matter.getColor())
+                        .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+                        .density(6)
+                        .lightnessSliderOnly()
+                        .setPositiveButton(getString(R.string.dialog_select), (dialog, selectedColor, allColors) -> {
+                            matter.setColor(selectedColor);
+                            App.getBox().boxFor(Matter.class).put(matter);
+                        })
+                        .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
+                        .build()
+                        .show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Client.get().requestUpdate();
     }
 
 }

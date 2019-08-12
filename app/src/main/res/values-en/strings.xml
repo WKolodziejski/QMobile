@@ -105,6 +105,7 @@
     <string name="dialog_choose_matter">Select matter</string>
     <string name="dialog_choose_color">Select color</string>
     <string name="action_grade">Change view mode</string>
+    <string name="action_color">Change color</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
     <string name="journal_Trabalho">Work</string>

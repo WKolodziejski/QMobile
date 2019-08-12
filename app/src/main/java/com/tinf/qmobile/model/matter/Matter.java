@@ -59,6 +59,10 @@ public class Matter {
         return color_;
     }
 
+    public void setColor(int color) {
+        this.color_ = color;
+    }
+
     public String getTitle() {
         return title_ == null ? "" : title_;
     }

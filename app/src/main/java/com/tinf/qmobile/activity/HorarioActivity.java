@@ -16,9 +16,9 @@ import com.tinf.qmobile.utility.User;
 import java.util.Objects;
 
 import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
-public class HorarioActivity extends AppCompatActivity implements OnResponse {
-    private OnUpdate onUpdate;
+public class HorarioActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +31,7 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.title_horario)
                 + " ― " + User.getYears()[pos]);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getSupportFragmentManager()
@@ -56,55 +57,5 @@ public class HorarioActivity extends AppCompatActivity implements OnResponse {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setOnUpdateListener(OnUpdate onUpdate){
-        this.onUpdate = onUpdate;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnResponseListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnResponseListener(this);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Client.get().removeOnResponseListener(this);
-        onUpdate = null;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Client.get().removeOnResponseListener(this);
-        onUpdate = null;
-    }
-
-    @Override
-    public void onStart(int pg, int pos) {
-
-    }
-
-    @Override
-    public void onFinish(int pg, int pos) {
-        if (onUpdate != null) {
-            onUpdate.onUpdate(pg);
-        }
-    }
-
-    @Override
-    public void onError(int pg, String error) {
-    }
-
-    @Override
-    public void onAccessDenied(int pg, String message) {
-
-    }
 
 }
