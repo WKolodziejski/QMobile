@@ -90,8 +90,8 @@ public class Jobs {
         bigText.setBigContentTitle(title);
         bigText.setSummaryText(channelID);
 
-        mBuilder.setSmallIcon(R.drawable.icon_launcher_grey);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.icon_launcher_grey));
+        mBuilder.setSmallIcon(R.drawable.ic_launcher_white);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.ic_launcher_white));
         mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(txt);

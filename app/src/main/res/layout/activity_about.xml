@@ -30,10 +30,11 @@
             android:layout_marginTop="4dp"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:src="@drawable/icon_launcher_round_black"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/ic_launcher_white"
             android:layout_marginTop="16dp"
+            android:tint="@color/colorPrimary"
             android:id="@+id/about_icon"/>
 
         <TextView

@@ -260,8 +260,12 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     private String formatTitle(String s) {
         s = s.substring(0, s.lastIndexOf("-"));
         s = s.substring(s.lastIndexOf("-") + 1);
-        s = s.substring(0, s.indexOf("(")).trim();
-        return s;
+
+        if (s.contains("(")) {
+            s = s.substring(0, s.indexOf("("));
+        }
+
+        return s.trim();
     }
 
     private int formatQid(String s) {
@@ -269,8 +273,9 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     }
 
     private String formatClazz(String s) {
-        s = s.substring(s.indexOf("-") + 1);
-        s = s.substring(0, s.indexOf("-") - 1).trim();
+        s = s.substring(0, s.lastIndexOf("-"));
+        s = s.substring(s.indexOf("-") + 1, s.lastIndexOf("("));
+        s = s.substring(0, s.lastIndexOf("-")).trim();
         return s;
     }
 

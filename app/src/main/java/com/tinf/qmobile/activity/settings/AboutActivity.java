@@ -42,7 +42,7 @@ public class AboutActivity extends AppCompatActivity {
         ImageView icon = (ImageView) findViewById(R.id.about_icon);
         icon.setOnClickListener(view -> {
             if (User.isNight()) {
-                Toast.makeText(getApplicationContext(), "Modo já noturno desbloqueado.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Modo noturno já desbloqueado.", Toast.LENGTH_LONG).show();
             } else {
                 if (counter > 0) {
                     Toast.makeText(getApplicationContext(), counter + " restantes.", Toast.LENGTH_LONG).show();

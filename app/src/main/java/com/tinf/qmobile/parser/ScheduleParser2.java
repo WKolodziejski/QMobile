@@ -11,6 +11,7 @@ import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
@@ -21,12 +22,12 @@ import io.objectbox.relation.ToMany;
 
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
-public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
+public class ScheduleParser2 extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "HorarioParser";
     private OnFinish onFinish;
     private int pos;
 
-    public ScheduleParser(int pos, OnFinish onFinish) {
+    public ScheduleParser2(int pos, OnFinish onFinish) {
         this.pos = pos;
         this.onFinish = onFinish;
         Log.i(TAG, "New instance");
@@ -45,22 +46,10 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                 Document document = Jsoup.parse(page[0]);
 
                 Elements tables = document.select("table");
-                Elements scheduleTable = null, codeTable = null, roomTable = null;
 
-                for (int i = 0; i < tables.size(); i++) {
-                    String header = tables.get(i).getElementsByTag("tr").get(0).text();
-                    if (header.contains("HORÁRIO")) {
-                        scheduleTable = tables.get(i).getElementsByTag("tr");
+                Elements scheduleTable = tables.get(11).getElementsByTag("tr");
 
-                    } else if (header.contains("Legenda")) {
-                        codeTable = tables.get(i).getElementsByTag("tr");
-
-                    } else if (header.contains("MAPA")) {
-                        roomTable = tables.get(i).getElementsByTag("tr");
-                    }
-                }
-
-                if (scheduleTable != null && codeTable != null) {
+                if (scheduleTable != null) {
 
                     List<Matter> matters = matterBox.query()
                             .equal(Matter_.year_, User.getYear(pos)).and()
@@ -77,33 +66,6 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                         }
                     }
 
-                    HashMap<String, String> codes = new HashMap<>();
-
-                    for (int i = 1; i < codeTable.size(); i++) {
-                        String c = formatCode1(codeTable.get(i).text());
-                        String t = formatTitle(codeTable.get(i).text());
-
-                        if (!c.isEmpty() && !t.isEmpty()) {
-                            codes.put(c, t);
-                            Log.d(TAG, c + ": " + t);
-                        }
-                    }
-
-                    HashMap<String, String> rooms = new HashMap<>();
-
-                    if (roomTable != null) {
-                        for (int i = 2; i < roomTable.size(); i++) {
-                            Elements column = roomTable.get(i).select("td");
-
-                            String c = column.get(0).text();
-                            String d = column.get(1).text();
-
-                            if (!c.isEmpty() && !d.isEmpty()) {
-                                rooms.put(c, d);
-                            }
-                        }
-                    }
-
                     for (int i = 1; i < scheduleTable.size(); i++) {
                         Elements column = scheduleTable.get(i).select("td");
                         String time = column.get(0).text();
@@ -111,13 +73,8 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                         for (int j = 1; j < column.size(); j++) {
                             if (!column.get(j).text().isEmpty()) {
                                 Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time));
-                                String c1 = formatCode1(column.get(j).text());
-                                String c2 = formatCode2(column.get(j).text());
 
-                                String matterTitle1 = codes.get(c1);
-                                String matterTitle2 = codes.get(c2);
-
-                                String matterTitle = codes.get(c1);
+                                String matterTitle = formatTitle(column.get(j).getElementsByTag("div").get(1).attr("title"));
 
                                 if (matterTitle != null) {
                                     Matter matter = matterBox.query()
@@ -127,7 +84,7 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                                             .build().findUnique();
 
                                     if (matter != null) {
-                                        String room = rooms.get(formatRoom(column.get(j).text()));
+                                        String room = column.get(j).getElementsByTag("div").get(2).attr("title");
 
                                         if (room != null) {
                                             schedule.setRoom(room);
@@ -199,25 +156,8 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
 
     private String formatTitle(String s) {
         if (s.contains("(")) {
-            s = s.substring(s.indexOf("-") + 1, s.indexOf("("));
-        } else {
-            s = s.substring(s.indexOf(" ") + 2, s.lastIndexOf("-"));
+            s = s.substring(0, s.indexOf("(")).trim();
         }
-        s = s.substring(s.indexOf("-") + 1).trim();
-        return s;
-    }
-
-    private String formatCode2(String s) {
-        return s.substring(0, s.indexOf("-")).trim();
-    }
-
-    private String formatCode1(String s) {
-        return s.substring(0, s.indexOf(" ")).trim();
-    }
-
-    private String formatRoom(String s) {
-        s = s.substring(s.indexOf(" ") + 1);
-        s = s.substring(0, s.indexOf(" ")).trim();
         return s;
     }
 

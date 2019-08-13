@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.fragment.BoletimFragment;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             changeFragment(new HomeFragment());
         }
 
-        if (Client.get().isLogging()) {
+        if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_DIARIOS);
             Client.get().load(PG_BOLETIM);
         }

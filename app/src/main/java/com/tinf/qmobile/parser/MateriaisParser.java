@@ -113,9 +113,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
     }
 
     private String formatTitle(String s) {
-        s = s.substring(0, s.lastIndexOf("-"));
-        s = s.substring(s.lastIndexOf("-") + 1);
-        s = s.substring(0, s.indexOf("(")).trim();
+        s = s.substring(s.lastIndexOf("-") + 1, s.indexOf("(")).trim();
         return s;
     }
 
@@ -125,8 +123,9 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
     }
 
     private String formatClazz(String s) {
-        s = s.substring(s.indexOf("-") + 1);
-        s = s.substring(0, s.indexOf("-") - 1).trim();
+        s = s.substring(s.indexOf("-"));
+        s = s.substring(s.indexOf("-") + 1, s.lastIndexOf("("));
+        s = s.substring(0, s.lastIndexOf("-")).trim();
         return s;
     }
 
