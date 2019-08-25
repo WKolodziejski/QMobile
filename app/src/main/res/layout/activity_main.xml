@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
+        android:id="@+id/main_view"
         app:layout_constraintBottom_toTopOf="@id/navigation"
         >
 
@@ -26,6 +27,7 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="56dp"
             android:id="@+id/refresh_layout"
             android:isScrollContainer="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"

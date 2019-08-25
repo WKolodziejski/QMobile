@@ -61,7 +61,7 @@ public class JournalViewFragment extends Fragment {
         weight_txt.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
         short_txt.setText(journal.getShort());
         type_txt.setText(journal.getType());
-        time_txt.setText(date.format(journal.getDate_()));
+        time_txt.setText(date.format(journal.getDate()));
         matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
         color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
     }

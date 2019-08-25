@@ -2,19 +2,16 @@ package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
 import com.tinf.qmobile.model.calendario.EventImage;
 import com.tinf.qmobile.model.calendario.EventImage_;
-import com.tinf.qmobile.model.calendario.EventJournal;
-import com.tinf.qmobile.model.calendario.EventJournal_;
 import com.tinf.qmobile.model.calendario.EventSimple;
 import com.tinf.qmobile.model.calendario.EventSimple_;
 import com.tinf.qmobile.model.calendario.Month;
 import com.tinf.qmobile.model.calendario.Month_;
-import com.tinf.qmobile.model.matter.Journal;
-import com.tinf.qmobile.model.matter.Journal_;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -42,12 +39,14 @@ public class CalendarParser extends AsyncTask<String, Void, Void> {
                 Box<Month> monthBox = App.getBox().boxFor(Month.class);
                 Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
                 Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
-                Box<EventJournal> eventJournalBox = App.getBox().boxFor(EventJournal.class);
-                Box<Journal> journalBox = App.getBox().boxFor(Journal.class);
 
                 Document document = Jsoup.parse(page[0]);
 
                 Elements months = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.log(Log.ERROR, TAG, months.toString());
+                }
 
                 int monthLast = -1;
                 boolean shouldAddYear = false;
@@ -139,67 +138,39 @@ public class CalendarParser extends AsyncTask<String, Void, Void> {
 
                                         long date = getDate(day + "/" + monthCurrent + "/" + year, false);
 
-                                        String infos = events.get(k).child(1).text();
-                                        String title = formatTitle(infos);
-                                        String matter = formatMatter(infos);
-                                        Log.d(TAG, matter);
+                                        String title = events.get(k).child(1).text().trim();
 
-                                        boolean isJournal = true;
+                                        if (!title.contains("'")) {
 
-                                        if (matter.isEmpty()){
-                                            //matter = title;
-                                            isJournal = false;
-                                        }
+                                            EventSimple search1 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
+                                                    .between(EventSimple_.startTime, date, date).build().findFirst();
 
-                                        EventJournal search1 = eventJournalBox.query().equal(EventJournal_.title, title).and()
-                                                .between(EventJournal_.startTime, date, date).build().findFirst();
+                                            EventImage search2 = eventImageBox.query().equal(EventImage_.title, title).and()
+                                                    .between(EventImage_.startTime, date, date).build().findFirst();
 
-                                        EventSimple search2 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
-                                                .between(EventSimple_.startTime, date, date).build().findFirst();
+                                            if (search1 == null && search2 == null) {
 
-                                        EventImage search3 = eventImageBox.query().equal(EventImage_.title, title).and()
-                                                .between(EventImage_.startTime, date, date).build().findFirst();
-
-                                        if (search1 == null && search2 == null && search3 == null) {
-
-                                            if (isJournal) {
-                                                Journal journal = journalBox.query()
-                                                        .equal(Journal_.title_, title).and()
-                                                        .between(Journal_.date_, date, date)
-                                                        .build().findFirst();
-
-                                                EventJournal event;
-
-                                                if (journal != null) {
-                                                    event = new EventJournal(journal);
-                                                } else {
-                                                    event = new EventJournal(title, date);
-                                                    event.setDescription(matter);
-                                                }
-
-                                                eventJournalBox.put(event);
-
-                                            } else {
                                                 int img = 0;
-
+                                                
                                                 if (title.equals("Natal")) {
                                                     img = CalendarBase.ImageType.CHRISTMAS;
-
+                                                
                                                 } else if (title.equals("Férias")) {
                                                     img = CalendarBase.ImageType.VACATION;
-
+                                                
                                                 } else if (title.equals("Carnaval")) {
                                                     img = CalendarBase.ImageType.CARNAVAL;
-
+                                                
                                                 } else if (title.equals("Recesso Escolar")) {
                                                     img = CalendarBase.ImageType.RECESS;
                                                 }
-
+                                                
                                                 if (img != 0) {
                                                     eventImageBox.put(new EventImage(title, date, img));
                                                 } else {
                                                     eventSimpleBox.put(new EventSimple(title, date));
                                                 }
+
                                             }
                                         }
 

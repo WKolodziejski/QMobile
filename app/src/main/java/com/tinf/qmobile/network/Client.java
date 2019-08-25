@@ -21,13 +21,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.parser.JournalParser;
 import com.tinf.qmobile.parser.MateriaisParser;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.parser.CalendarParser;
-import com.tinf.qmobile.parser.JournalParser;
 import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
-import com.tinf.qmobile.parser.ScheduleParser2;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -118,7 +117,7 @@ public class Client {
                                 new ReportParser(pos, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_HORARIO) {
-                                new ScheduleParser2(pos, this::callOnFinish).execute(response);
+                                new ScheduleParser(pos, this::callOnFinish).execute(response);
 
                             } else if (pg == PG_MATERIAIS) {
                                 new MateriaisParser(pos, notify, this::callOnFinish).execute(response);

@@ -3,9 +3,13 @@ package com.tinf.qmobile.parser;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.model.materiais.Material_;
+import com.tinf.qmobile.model.matter.Journal;
+import com.tinf.qmobile.model.matter.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;
@@ -16,6 +20,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import io.objectbox.Box;
+import io.objectbox.exception.NonUniqueResultException;
+import io.objectbox.query.QueryBuilder;
 
 import static com.tinf.qmobile.model.calendario.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
@@ -44,15 +50,18 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
         Element table = document.getElementsByTag("tbody").get(10);
         Elements rotulos = table.getElementsByClass("rotulo");
 
+        if (!BuildConfig.DEBUG) {
+            Crashlytics.log(Log.ERROR, TAG, table.toString());
+        }
+
         for (int i = 1; i < rotulos.size(); i++) {
 
-            String infos = rotulos.get(i).text();
+            String description = rotulos.get(i).text();
 
             Matter materia = materiaBox.query()
-                    .equal(Matter_.title_, formatTitle(infos)).and()
+                    .equal(Matter_.description_, description).and()
                     .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos)).and()
-                    .equal(Matter_.qid_, formatQid(infos))
+                    .equal(Matter_.period_, User.getPeriod(pos))
                     .build().findUnique();
 
             if (materia != null) {
@@ -73,13 +82,28 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
                     long date = getDate(dataString, false);
 
-                    Material material = new Material(title, date, descricao, link);
+                    Material search = null;
 
-                    Material search = materiaisBox.query().equal(Material_.title, title).and()
-                            .between(Material_.date, date, date).and()
-                            .equal(Material_.link, link).build().findFirst();
+                    try {
+                        QueryBuilder<Material> builder = materiaisBox.query()
+                                .equal(Material_.title, title).and()
+                                .between(Material_.date, date, date).and()
+                                .equal(Material_.link, link);
+
+                        builder.link(Material_.matter)
+                                .equal(Matter_.description_, description).and()
+                                .equal(Matter_.year_, User.getYear(pos)).and()
+                                .equal(Matter_.period_, User.getPeriod(pos));
+
+                        search = builder.build().findUnique();
+                    } catch (NonUniqueResultException e) {
+                        e.printStackTrace();
+                    }
 
                     if (search == null) {
+
+                        Material material = new Material(title, date, descricao, link);
+
                         material.matter.setTarget(materia);
                         materia.materials.add(material);
                         materiaisBox.put(material);
@@ -110,23 +134,6 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
     public interface OnFinish {
         void onFinish(int pg, int year);
-    }
-
-    private String formatTitle(String s) {
-        s = s.substring(s.lastIndexOf("-") + 1, s.indexOf("(")).trim();
-        return s;
-    }
-
-    private int formatQid(String s) {
-        s = s.substring(0, s.indexOf("-") - 1).trim();
-        return Integer.parseInt(s);
-    }
-
-    private String formatClazz(String s) {
-        s = s.substring(s.indexOf("-"));
-        s = s.substring(s.indexOf("-") + 1, s.lastIndexOf("("));
-        s = s.substring(0, s.lastIndexOf("-")).trim();
-        return s;
     }
 
 }

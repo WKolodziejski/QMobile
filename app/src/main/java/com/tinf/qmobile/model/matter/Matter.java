@@ -1,6 +1,5 @@
 package com.tinf.qmobile.model.matter;
 
-import com.tinf.qmobile.model.calendario.EventJournal;
 import com.tinf.qmobile.model.materiais.Material;
 import androidx.annotation.ColorInt;
 import io.objectbox.annotation.Entity;
@@ -17,24 +16,20 @@ public class Matter {
     @ColorInt private int color_;
     private String title_;
     private String description_;
-    private String clazz_;
     private int absences_ = -1;
     private int year_;
     private int period_;
-    private int qid_;
     public ToMany<Period> periods;
     public ToMany<Schedule> schedules;
-    public ToMany<EventJournal> events;
     public ToMany<Material> materials;
     public ToOne<Infos> infos;
     public ToOne<Clazz> clazz;
 
-    public Matter(String title, int color, int year, int period, int qid) {
-        this.title_ = title;
+    public Matter(String description, int color, int year, int period) {
+        this.description_ = description;
         this.color_ = color;
         this.year_ = year;
         this.period_ = period;
-        this.qid_ = qid;
     }
 
     public String getAbsences() {
@@ -43,15 +38,6 @@ public class Matter {
 
     public void setAbsences(int absences) {
         this.absences_ = absences;
-    }
-
-    public void setDescription(String description) {
-        this.description_ = description;
-    }
-
-    public void setClazz(Clazz clazz) {
-        this.clazz.setTarget(clazz);
-        this.clazz_ = clazz.getTitle_();
     }
 
     @ColorInt
@@ -65,6 +51,10 @@ public class Matter {
 
     public String getTitle() {
         return title_ == null ? "" : title_;
+    }
+
+    public void setTitle(String title) {
+        this.title_ = title;
     }
 
     /*
@@ -93,16 +83,8 @@ public class Matter {
         return period_;
     }
 
-    public int getQid_() {
-        return qid_;
-    }
-
     public String getDescription_() {
         return description_;
-    }
-
-    public String getClazz_() {
-        return clazz_;
     }
 
 }

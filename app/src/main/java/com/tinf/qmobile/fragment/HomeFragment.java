@@ -40,15 +40,16 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.calendario.Base.EventBase;
 import com.tinf.qmobile.model.calendario.EventImage;
 import com.tinf.qmobile.model.calendario.EventImage_;
-import com.tinf.qmobile.model.calendario.EventJournal;
-import com.tinf.qmobile.model.calendario.EventJournal_;
 import com.tinf.qmobile.model.calendario.EventSimple;
 import com.tinf.qmobile.model.calendario.EventSimple_;
 import com.tinf.qmobile.model.calendario.EventUser;
 import com.tinf.qmobile.model.calendario.EventUser_;
+import com.tinf.qmobile.model.matter.Journal;
+import com.tinf.qmobile.model.matter.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import com.tinf.qmobile.R;
@@ -94,14 +95,14 @@ public class HomeFragment extends Fragment implements OnUpdate {
         current.set(Calendar.MILLISECOND, 0);
 
         Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
-        Box<EventJournal> eventJournalBox = App.getBox().boxFor(EventJournal.class);
+        Box<Journal> eventJournalBox = App.getBox().boxFor(Journal.class);
         Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
         Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
 
         List<EventBase> events = new ArrayList<>();
 
         events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventJournalBox.query().greater(EventJournal_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
 
@@ -231,18 +232,21 @@ public class HomeFragment extends Fragment implements OnUpdate {
             double firstHour = 24;
 
             List<WeekViewEvent> events = new ArrayList<>();
+            List<Schedule> schedules = App.getBox().boxFor(Schedule.class).query()
+                    .equal(Schedule_.year, User.getYear(pos)).and()
+                    .equal(Schedule_.period, User.getPeriod(pos)).and()
+                    .equal(Schedule_.isFromSite_, true)
+                    .build().find();
 
-            for (Matter matter : matters) {
-                for (Schedule schedule : matter.schedules) {
-                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), matter.getTitle(),
-                            schedule.getStartTime(), schedule.getEndTime());
-                    event.setColor(matter.getColor());
-                    events.add(event);
+            for (Schedule schedule : schedules) {
+                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                        schedule.getStartTime(), schedule.getEndTime());
+                event.setColor(schedule.getColor());
+                events.add(event);
 
-                    if (event.getStartTime().getHour() < firstHour) {
-                        firstHour = event.getStartTime().getHour();
-                        firstHour += event.getStartTime().getMinute() * 0.0167;
-                    }
+                if (event.getStartTime().getHour() < firstHour) {
+                    firstHour = event.getStartTime().getHour();
+                    firstHour += event.getStartTime().getMinute() * 0.0167;
                 }
             }
 
@@ -269,11 +273,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
         LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
 
         horario.setOnClickListener(v -> {
-            //Pair statusAnim = Pair.create(weekView, weekView.getTransitionName());
-            //Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
+            Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
 
-            //ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), driverBundleAnim);
-            startActivity(new Intent(getActivity(), HorarioActivity.class));
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), driverBundleAnim);
+            startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
         });
     }
 

@@ -2,20 +2,19 @@ package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.model.matter.Period_;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import io.objectbox.Box;
-import io.objectbox.query.Query;
-import io.objectbox.query.QueryBuilder;
 
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
@@ -44,8 +43,10 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                 Document document = Jsoup.parse(page[0]);
 
                 Elements tables = document.getElementsByTag("tbody");
-                //for (Element e : tables)
-                    //Log.v(TAG, e.getElementsByTag("tr").get(0).text());
+
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.log(Log.ERROR, TAG, tables.toString());
+                }
 
                 for (int k = 0; k < tables.size(); k++) {
                     if (tables.get(k).getElementsByTag("tr").get(0).text().contains("Estrutura")) {
@@ -57,16 +58,18 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
 
                                 String matterTitle = formatTitle(rows.get(i).child(0).text());
                                 String absencesTotal = formatNumber(rows.get(i).child(3).text());
+                                String clazz = formatClass(rows.get(i).child(2).text());
 
                                 Matter matter = matterBox.query()
-                                        .equal(Matter_.title_, matterTitle).and()
+                                        .contains(Matter_.description_, matterTitle).and()
                                         .equal(Matter_.year_, User.getYear(pos)).and()
                                         .equal(Matter_.period_, User.getPeriod(pos)).and()
-                                        .equal(Matter_.clazz_, formatClazz(rows.get(i).child(2).text()))
+                                        .contains(Matter_.description_, clazz)
                                         .build().findUnique();
 
                                 if (matter != null) {
                                     matter.setAbsences(absencesTotal.isEmpty() ? -1 : Integer.parseInt(absencesTotal));
+                                    matter.setTitle(matterTitle);
 
                                     if (rows.get(1).children().size() == 11) {
                                         if (matter.periods.size() < 1) {
@@ -110,7 +113,7 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                                             gradeRP_ = formatNumber(rows.get(i).child(7).text());
                                             gradeFinal_ = formatNumber(rows.get(i).child(9).text());
 
-                                        } else { //Semestre ou bimestre
+                                        } else {
                                             if (User.getType() == User.Type.SEMESTRE1.get()) { //Semestre tabela completa
                                                 switch (j) {
                                                     case 0:
@@ -223,7 +226,7 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
         return s.trim();
     }
 
-    private String formatClazz(String s) {
+    private String formatClass(String s) {
         s = s.substring(s.indexOf("-") + 1).trim();
         return s;
     }

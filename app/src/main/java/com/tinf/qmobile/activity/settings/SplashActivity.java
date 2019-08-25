@@ -54,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
             if (!Client.get().isValid()) {
                 Client.get().login();
             }
-            //((App) getApplication()).setLogged(true);
+
             intent = new Intent(this, MainActivity.class);
         } else {
             intent = new Intent(this, LoginActivity.class);
@@ -63,4 +63,5 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 }

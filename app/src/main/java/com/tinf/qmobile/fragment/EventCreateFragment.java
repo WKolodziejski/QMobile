@@ -100,7 +100,7 @@ public class EventCreateFragment extends Fragment {
 
             if (id != 0) {
 
-                EventUser event = App.getBox().boxFor(EventUser.class).get(bundle.getLong("ID"));
+                EventUser event = App.getBox().boxFor(EventUser.class).get(id);
 
                 if (event != null) {
 
@@ -343,7 +343,7 @@ public class EventCreateFragment extends Fragment {
                 end.setTimeInMillis(0);
             }
 
-            EventUser event = new EventUser(title_edt.getText().toString(),
+            EventUser event = new EventUser(title_edt.getText().toString().trim(),
                     start.getTimeInMillis(), end.getTimeInMillis(), alarm, alarmDif);
 
             if (id != 0) {

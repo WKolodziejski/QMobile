@@ -92,7 +92,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
             if (pg == PG_DIARIOS) {
                 Client.get().load(PG_BOLETIM, pos);
-                Client.get().load(PG_HORARIO, pos);
                 if (pos == 0) {
                     Client.get().load(PG_CALENDARIO, pos);
                 }
@@ -100,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             }
 
             if (pg == PG_BOLETIM) {
+                Client.get().load(PG_HORARIO, pos);
                 pages++;
             }
 

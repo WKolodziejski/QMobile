@@ -34,7 +34,7 @@ public class JournalAdapter extends RecyclerView.Adapter {
         final DiariosViewHolder holder = (DiariosViewHolder) viewHolder;
 
         holder.title.setText(journals.get(i).getTitle());
-        holder.date.setText(journals.get(i).getDate());
+        holder.date.setText(journals.get(i).formatDate());
         holder.type.setText(journals.get(i).getShort());
         holder.type.setTextColor(journals.get(i).getColor());
         holder.weight.setText(String.format("・" + context.getString(R.string.diarios_Peso), journals.get(i).getWeight()));

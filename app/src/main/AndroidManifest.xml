@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tinf.qmobile"
-    >
+    package="com.tinf.qmobile">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,20 +10,19 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <application
-        android:name="com.tinf.qmobile.App"
+        android:name=".App"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:allowBackup="false"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:allowBackup"
-        >
+        tools:replace="android:allowBackup">
 
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
@@ -49,6 +47,7 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -61,8 +60,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.settings.AboutActivity">
+        <activity android:name=".activity.settings.AboutActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
@@ -76,7 +74,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".activity.EventViewActivity"
             android:label="">
@@ -85,36 +82,31 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.settings.MoreActivity">
+        <activity android:name=".activity.settings.MoreActivity">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.HorarioActivity">
+        <activity android:name=".activity.HorarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.calendar.CalendarioActivity">
+        <activity android:name=".activity.calendar.CalendarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.calendar.CalendarioActivity2">
+        <activity android:name=".activity.calendar.CalendarioActivity2">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activity.MateriaActivity">
+        <activity android:name=".activity.MateriaActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -123,47 +115,45 @@
         <activity
             android:name=".activity.settings.SettingsActivity"
             android:label="@string/title_settings">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
-        <activity
-            android:name=".activity.settings.WebViewActivity">
-
+        <activity android:name=".activity.settings.WebViewActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
         <service
-            android:exported="false"
-            android:name=".service.BackgroundCheck">
+            android:name=".service.BackgroundCheck"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
 
-        <receiver android:name=".service.AlarmReceiver"
+        <receiver
+            android:name=".service.AlarmReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.AlarmService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <service
+            android:name=".service.AlarmService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/external_files"/>
+                android:resource="@xml/external_files" />
         </provider>
 
     </application>

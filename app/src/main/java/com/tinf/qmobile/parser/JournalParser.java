@@ -3,34 +3,35 @@ package com.tinf.qmobile.parser;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.matter.Clazz;
-import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Journal;
 import com.tinf.qmobile.model.matter.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.model.matter.Period_;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.OnEvent;
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Random;
-import java.util.concurrent.Callable;
 
 import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
-import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 import static com.tinf.qmobile.model.calendario.Utils.getDate;
+import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 
 public class JournalParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "JournalParser";
@@ -56,11 +57,24 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                 Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
                 Box<Period> periodBox = App.getBox().boxFor(Period.class);
                 Box<Journal> journalBox = App.getBox().boxFor(Journal.class);
-                Box<Clazz> clazzBox = App.getBox().boxFor(Clazz.class);
 
                 Document document = Jsoup.parse(page[0]);
 
+                Elements dates = document.getElementsByTag("option");
+
+                String[] years = new String[dates.size() - 1];
+
+                for (int i = 0; i < dates.size() - 1; i++) {
+                    years[i] = dates.get(i + 1).text();
+                }
+
+                User.setYears(years);
+
                 Elements tableMatters = document.getElementsByTag("tbody").eq(12);
+
+                if (!BuildConfig.DEBUG) {
+                    Crashlytics.log(Log.ERROR, TAG, tableMatters.toString());
+                }
 
                 for (int i = 0; i < tableMatters.select("table.conteudoTexto").size(); i++) {
                     Element nxtElem = null;
@@ -70,43 +84,24 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                     }
 
                     String info = tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).first().child(0).text();
-                    String titleMatter = formatTitle(info);
-                    int qid = formatQid(info);
 
-                    Log.d(TAG, titleMatter);
+                    String description = formatDescription(info);
 
                     Matter matter = matterBox.query()
-                            .equal(Matter_.title_, titleMatter).and()
+                            .equal(Matter_.description_, description).and()
                             .equal(Matter_.year_, User.getYear(pos)).and()
-                            .equal(Matter_.period_, User.getPeriod(pos)).and()
-                            .equal(Matter_.qid_, qid)
+                            .equal(Matter_.period_, User.getPeriod(pos))
                             .build().findUnique();
 
                     if (matter == null) {
-                        String clazzTitle = formatClazz(info);
-
-                        Clazz clazz = clazzBox.query().equal(Clazz_.title_, clazzTitle).build().findUnique();
-
-                        if (clazz == null) {
-                            clazz = new Clazz(clazzTitle);
-                        }
-
-                        matter = new Matter(titleMatter, pickColor(titleMatter), User.getYear(pos), User.getPeriod(pos), qid);
-
+                        matter = new Matter(description, pickColor(description), User.getYear(pos), User.getPeriod(pos));
                         matterBox.put(matter);
-                        clazz.matters.add(matter);
-                        clazzBox.put(clazz);
-                        matter.setClazz(clazz);
-
-                        String desc = formatDesc(info);
-                        if (!desc.isEmpty()) {
-                            matter.setDescription(desc);
-                        }
                     }
 
                     int periodCount = 0;
 
                     while (nxtElem != null && nxtElem.child(0).child(0).is("div")) {
+
                         String periodTitle = nxtElem.child(0).child(0).ownText();
                         Element tableGrades = nxtElem.child(0).child(1).child(0);
                         Elements rowGrades = tableGrades.getElementsByClass("conteudoTexto");
@@ -119,7 +114,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                         }
 
                         if (periodTitle.contains("Exame") || periodTitle.contains("Reavaliação")) {
-                            period = periodBox.get(matter.periods.get(periodCount - 1).id);
+                            period = matter.periods.get(periodCount - 1);
                         } else {
                             periodCount++;
                             if (period == null) {
@@ -164,25 +159,20 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                             if (date != -1) {
 
-                                Journal newJournal = new Journal(title, grade, weight, max, date, type, matter);
-
-                                Log.d(TAG, title);
-
                                 Journal search = null;
 
                                 try {
                                     QueryBuilder<Journal> builder = journalBox.query()
-                                            .equal(Journal_.title_, title).and()
+                                            .equal(Journal_.title, title).and()
                                             .equal(Journal_.type_, type).and()
-                                            .between(Journal_.date_, date, date).and()
+                                            .between(Journal_.startTime, date, date).and()
                                             .between(Journal_.weight_, weight, weight).and()
                                             .between(Journal_.max_, max, max);
 
                                     builder.link(Journal_.matter)
-                                            .equal(Matter_.title_, titleMatter).and()
+                                            .equal(Matter_.description_, description).and()
                                             .equal(Matter_.year_, User.getYear(pos)).and()
-                                            .equal(Matter_.period_, User.getPeriod(pos)).and()
-                                            .equal(Matter_.qid_, qid);
+                                            .equal(Matter_.period_, User.getPeriod(pos));
 
                                     search = builder.build().findUnique();
                                 } catch (NonUniqueResultException e) {
@@ -190,19 +180,16 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                                 }
 
                                 if (search == null) {
-                                    newJournal.period.setTarget(period);
+
+                                    Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
+
                                     period.journals.add(newJournal);
                                     journalBox.put(newJournal);
 
                                     count++;
 
                                     if (notify) {
-                                        Intent intent = new Intent(App.getContext(), EventViewActivity.class);
-                                        intent.putExtra("ID", newJournal.id);
-                                        intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
-
-                                        Jobs.displayNotification(matter.getTitle(), newJournal.getTitle(),
-                                                App.getContext().getResources().getString(R.string.title_diarios), (int) newJournal.id, intent);
+                                        sendNotification(newJournal);
                                     }
                                 } else {
                                     if (search.getGrade_() != grade) {
@@ -211,12 +198,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                                         count++;
 
                                         if (notify) {
-                                            Intent intent = new Intent(App.getContext(), EventViewActivity.class);
-                                            intent.putExtra("ID", newJournal.id);
-                                            intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
-
-                                            Jobs.displayNotification(matter.getTitle(), newJournal.getTitle(),
-                                                    App.getContext().getResources().getString(R.string.title_diarios), (int) newJournal.id, intent);
+                                            sendNotification(search);
                                         }
                                     }
                                 }
@@ -257,35 +239,8 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
         return s.startsWith(",") ? "" : s.replaceAll(",", ".");
     }
 
-    private String formatTitle(String s) {
-        s = s.substring(0, s.lastIndexOf("-"));
-        s = s.substring(s.lastIndexOf("-") + 1);
-
-        if (s.contains("(")) {
-            s = s.substring(0, s.indexOf("("));
-        }
-
-        return s.trim();
-    }
-
-    private int formatQid(String s) {
-        return Integer.parseInt(s.substring(0, s.indexOf("-") - 1).trim());
-    }
-
-    private String formatClazz(String s) {
-        s = s.substring(0, s.lastIndexOf("-"));
-        s = s.substring(s.indexOf("-") + 1, s.lastIndexOf("("));
-        s = s.substring(0, s.lastIndexOf("-")).trim();
-        return s;
-    }
-
-    private String formatDesc(String s) {
-        s = s.substring(s.indexOf("-") + 1, s.lastIndexOf("("));
-        s = s.substring(s.indexOf("-") + 1);
-
-        if (s.contains("(")) {
-            return s.substring(s.indexOf("("), s.indexOf(")"));
-        } else return "";
+    private String formatDescription(String s) {
+        return s.substring(0, s.lastIndexOf("-")).trim();
     }
 
     private String formatDate(String s) {
@@ -334,43 +289,29 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
         return App.getContext().getResources().getColor(color);
     }
 
-    private int pickColor(String string) {
+    private int pickColor(String description) {
         int color = 0;
 
-        if (string.contains("Biologia")) {
-            color = R.color.biologia;
-        } else if (string.contains("Educação Física")) {
-            color = R.color.edFisica;
-        } else if (string.contains("Filosofia")) {
-            color = R.color.filosofia;
-        } else if (string.contains("Física")) {
-            color = R.color.fisica;
-        } else if (string.contains("Geografia")) {
-            color = R.color.geografia;
-        } else if (string.contains("História")) {
-            color = R.color.historia;
-        } else if (string.contains("Portugu")) {
-            color = R.color.portugues;
-        } else if (string.contains("Matemática")) {
-            color = R.color.matematica;
-        } else if (string.contains("Química")) {
-            color = R.color.quimica;
-        } else if (string.contains("Sociologia")) {
-            color = R.color.sociologia;
-        } else {
-            Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.title_, string).build().findFirst();
+        Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.description_, description).build().findFirst();
 
-            if (matter != null) {
-                color = matter.getColor();
-            }
-
-            if (color == 0) {
-                color = getRandomColorGenerator();
-            }
-
-            return color;
+        if (matter != null) {
+            color = matter.getColor();
         }
-        return App.getContext().getResources().getColor(color);
+
+        if (color == 0) {
+            color = getRandomColorGenerator();
+        }
+
+        return color;
+    }
+
+    private void sendNotification(Journal journal) {
+        Intent intent = new Intent(App.getContext(), EventViewActivity.class);
+        intent.putExtra("ID", journal.id);
+        intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+
+        Jobs.displayNotification(journal.getMatter(), journal.getTitle(),
+                App.getContext().getResources().getString(R.string.title_diarios), (int) journal.id, intent);
     }
 
 }

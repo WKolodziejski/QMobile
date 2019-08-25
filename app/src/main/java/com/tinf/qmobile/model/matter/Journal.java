@@ -2,6 +2,7 @@ package com.tinf.qmobile.model.matter;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendario.Base.EventBase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,7 +15,7 @@ import io.objectbox.relation.ToOne;
 import static com.tinf.qmobile.model.matter.Journal.Type.AVALIACAO;
 
 @Entity
-public class Journal {
+public class Journal extends EventBase {
 
     public enum Type {
         AVALIACAO(0), PROVA(1), TRABALHO(2), EXERCICIO(3), QUALITATIVA(4);
@@ -30,23 +31,20 @@ public class Journal {
         }
     }
 
-    @Id public long id;
-    private String title_;
     private float weight_;
     private float max_;
     private float grade_;
-    private long date_;
     private int type_;
     public ToOne<Period> period;
     public ToOne<Matter> matter;
 
-    public Journal(String title, float grade, float weight, float max, long date, int type, Matter matter) {
-        this.title_ = title;
+    public Journal(String title, float grade, float weight, float max, long date, int type, Period period, Matter matter) {
+        super(title, date);
         this.grade_ = grade;
         this.weight_ = weight;
         this.max_ = max;
-        this.date_ = date;
         this.type_ = type;
+        this.period.setTarget(period);
         this.matter.setTarget(matter);
     }
 
@@ -104,21 +102,22 @@ public class Journal {
         } else return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
     }
 
-    public String getDate() {
+    @Override
+    public int getItemType() {
+        return ViewType.JOURNAL;
+    }
+
+    public String formatDate() {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return format.format(new Date(date_));
+        return format.format(getDate());
     }
 
     public int getColor() {
-        return period.getTarget().matter.getTarget().getColor();
+        return matter.getTarget().getColor();
     }
 
     public String getPeriod() {
         return period.getTarget().getTitle();
-    }
-
-    public String getTitle() {
-        return title_ == null ? "" : title_;
     }
 
     public void setGrade(float grade) {
@@ -131,10 +130,6 @@ public class Journal {
 
     public Journal() {}
 
-    public String getTitle_() {
-        return title_;
-    }
-
     public float getWeight_() {
         return weight_;
     }
@@ -145,10 +140,6 @@ public class Journal {
 
     public float getGrade_() {
         return grade_;
-    }
-
-    public long getDate_() {
-        return date_;
     }
 
     public int getType_() {

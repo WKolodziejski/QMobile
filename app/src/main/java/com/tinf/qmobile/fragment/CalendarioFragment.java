@@ -26,10 +26,10 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.calendario.Base.EventBase;
 import com.tinf.qmobile.model.calendario.Day;
 import com.tinf.qmobile.model.calendario.EventImage;
-import com.tinf.qmobile.model.calendario.EventJournal;
 import com.tinf.qmobile.model.calendario.EventSimple;
 import com.tinf.qmobile.model.calendario.EventUser;
 import com.tinf.qmobile.model.calendario.Month;
+import com.tinf.qmobile.model.matter.Journal;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
 
@@ -129,7 +129,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
 
     private void loadData() {
         Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
-        Box<EventJournal> eventJournalBox = App.getBox().boxFor(EventJournal.class);
+        Box<Journal> eventJournalBox = App.getBox().boxFor(Journal.class);
         Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
         Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
         Box<Month> monthBox = App.getBox().boxFor(Month.class);

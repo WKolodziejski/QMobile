@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
@@ -17,13 +18,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.matter.Schedule_;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import org.threeten.bp.DayOfWeek;
@@ -37,21 +42,17 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static com.tinf.qmobile.App.getBox;
+import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 import static java.util.Calendar.MONDAY;
 
 public class ScheduleFragment extends Fragment implements OnUpdate {
-    private List<Matter> matters;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos)).and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build().find();
     }
 
     @Override
@@ -64,10 +65,12 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
         showHorario2(view);
 
-        /*FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_schedule);
+        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) view.findViewById(R.id.fab_add_schedule);
         fab.setOnClickListener(v -> {
-            //startActivity(new Intent(getActivity(), CreateEventActivity.class));
-        });*/
+            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
+            intent.putExtra("TYPE", SCHEDULE);
+            startActivity(intent);
+        });
     }
 
     private void showHorario2(View view) {
@@ -81,40 +84,27 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
             int firstHour = 24;
 
             List<WeekViewEvent> events = new ArrayList<>();
+            List<Schedule> schedules = App.getBox().boxFor(Schedule.class).query()
+                    .equal(Schedule_.year, User.getYear(pos)).and()
+                    .equal(Schedule_.period, User.getPeriod(pos))
+                    .build().find();
 
-            for (Matter matter : matters) {
-                for (Schedule schedule : matter.schedules) {
-                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), matter.getTitle(),
-                            schedule.getStartTime(), schedule.getEndTime());
-                    event.setColor(matter.getColor());
-                    events.add(event);
+            for (Schedule schedule : schedules) {
+                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                        schedule.getStartTime(), schedule.getEndTime());
+                event.setColor(schedule.getColor());
+                events.add(event);
 
-                    /*if (event.getStartTime().getHour() < firstHour) {
-                        firstHour = event.getStartTime().getHour() + event.getStartTime().getMinute();
-                    }*/
-
-                    if (event.getStartTime().getHour() < firstHour) {
-                        firstHour = event.getStartTime().getHour();
-                        firstHour += event.getStartTime().getMinute() * 0.0167;
-                    }
+                if (event.getStartTime().getHour() < firstHour) {
+                    firstHour = event.getStartTime().getHour();
+                    firstHour += event.getStartTime().getMinute() * 0.0167;
                 }
             }
 
             weekView.goToDay(DayOfWeek.MONDAY);
             weekView.goToHour(firstHour);
 
-            weekView.setOnEventClickListener((event, eventRect) -> {
-                Matter matter = getBox().boxFor(Matter.class).query()
-                        .equal(Matter_.title_, event.getName())
-                        .equal(Matter_.year_, User.getYear(pos)).and()
-                        .equal(Matter_.period_, User.getPeriod(pos))
-                        .build().findUnique();
-                if (matter != null) {
-                    Intent intent = new Intent(getContext(), MateriaActivity.class);
-                    intent.putExtra("ID", matter.id);
-                    startActivity(intent);
-                }
-            });
+
             /*weekView.setDayTimeInterpreter(new WeekView.DayTimeInterpreter() {
                 @Override
                 public String interpretDay(int day) {
@@ -136,15 +126,26 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
 
             return events;
         });
+
+        weekView.notifyDatasetChanged();
+
+        weekView.setOnEventClickListener((event, eventRect) -> {
+            Matter matter = getBox().boxFor(Matter.class).query()
+                    .equal(Matter_.title_, event.getName())
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build().findUnique();
+            if (matter != null) {
+                Intent intent = new Intent(getContext(), MateriaActivity.class);
+                intent.putExtra("ID", matter.id);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onUpdate(int pg) {
         if (pg == PG_HORARIO || pg == UPDATE_REQUEST) {
-            matters = App.getBox().boxFor(Matter.class).query()
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build().find();
             showHorario2(getView());
         }
     }
@@ -152,15 +153,28 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
     @Override
     public void onStart() {
         super.onStart();
-        //((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //((HorarioActivity) Objects.requireNonNull(getActivity())).setOnUpdateListener(this);
+        Client.get().addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
     public void onScrollRequest() {}
+
 }

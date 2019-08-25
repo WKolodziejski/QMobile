@@ -8,12 +8,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventJournal;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.matter.Journal;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventJournalViewHolder extends CalendarioViewHolder<EventJournal> {
+public class EventJournalViewHolder extends CalendarioViewHolder<Journal> {
     @BindView(R.id.calendar_default_title)       public TextView title;
     @BindView(R.id.calendar_default_description) public TextView description;
     @BindView(R.id.calendar_default_card)        public LinearLayout card;
@@ -25,7 +26,7 @@ public class EventJournalViewHolder extends CalendarioViewHolder<EventJournal> {
     }
 
     @Override
-    public void bind(EventJournal event, Context context) {
+    public void bind(Journal event, Context context) {
         title.setText(event.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : event.getTitle());
         description.setText(event.getDescription());
         card.setBackgroundColor(event.getColor());
@@ -34,7 +35,7 @@ public class EventJournalViewHolder extends CalendarioViewHolder<EventJournal> {
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EventViewActivity.class);
                 intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
-                intent.putExtra("ID", event.journal.getTargetId());
+                intent.putExtra("ID", event.id);
                 context.startActivity(intent);
             });
 

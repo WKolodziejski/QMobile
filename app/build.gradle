@@ -32,16 +32,16 @@ android {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 22
         targetSdkVersion 29
-        versionName '1.0.5'
+        versionName '1.0.6'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 35
+        versionCode 37
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['objectbox.debug': 'true']
             }
         }
-        versionNameSuffix 'beta'
+        versionNameSuffix ' (still) beta'
         signingConfig signingConfigs.config
     }
     buildTypes {
@@ -81,6 +81,7 @@ dependencies {
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'me.jlurena:revolvingweekview:2.0.0'
+    implementation 'ca.antonious:materialdaypicker:0.4.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tinf.qmobile.model.calendario.Base.CalendarBase;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.R;
@@ -57,4 +58,5 @@ public class EtapasAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return etapas.size();
     }
+
 }

@@ -11,37 +11,43 @@ import me.jlurena.revolvingweekview.DayTime;
 public class Schedule {
     @Id public long id;
     private int startDay_;
-    private int endDay_;
     private int startHour_;
     private int startMinute_;
     private int endHour_;
     private int endMinute_;
     @ColorInt private int color_;
     private long alarm_;
-    private String description_;
     private String title_;
+    private String description_;
     private String room_;
     private boolean isFromSite_;
     public ToOne<Matter> matter;
+    private int difference;
+    private int year;
+    private int period;
 
-    public Schedule(int startDay, int startHour, int startMinute, int endHour, int endMinute) {
+    public Schedule(int startDay, int startHour, int startMinute, int endHour, int endMinute, int year, int period) {
         this.startDay_ = startDay;
-        this.endDay_ = startDay;
         this.startHour_ = startHour;
         this.startMinute_ = startMinute;
         this.endHour_ = endHour;
         this.endMinute_ = endMinute;
+        this.year = year;
+        this.period = period;
         this.isFromSite_ = true;
     }
 
-    public Schedule(String title, int startDay, int endDay, int startHour, int startMinute, int endHour, int endMinute) {
+    public Schedule(String title, DayTime start, DayTime end, int difference, int year, int period) {
         this.title_ = title;
-        this.startDay_ = startDay;
-        this.endDay_ = endDay;
-        this.startHour_ = startHour;
-        this.startMinute_ = startMinute;
-        this.endHour_ = endHour;
-        this.endMinute_ = endMinute;
+        this.startDay_ = start.getDayValue();
+        this.startHour_ = start.getHour();
+        this.startMinute_ = start.getMinute();
+        this.endHour_ = end.getHour();
+        this.endMinute_ = end.getMinute();
+        this.difference = difference;
+        this.year = year;
+        this.period = period;
+        this.isFromSite_ = false;
     }
 
     public DayTime getStartTime() {
@@ -49,7 +55,7 @@ public class Schedule {
     }
 
     public DayTime getEndTime() {
-        return new DayTime(endDay_, endHour_, endMinute_);
+        return new DayTime(startDay_, endHour_, endMinute_);
     }
 
     @ColorInt
@@ -73,10 +79,6 @@ public class Schedule {
         return startDay_;
     }
 
-    public int getEndDay() {
-        return endDay_;
-    }
-
     public int getStartHour() {
         return startHour_;
     }
@@ -98,7 +100,7 @@ public class Schedule {
     }
 
     public String getTitle() {
-        return title_;
+        return title_ == null ? matter.getTarget().getTitle() : title_;
     }
 
     public String getRoom() {
@@ -117,6 +119,10 @@ public class Schedule {
         return isFromSite_;
     }
 
+    public int getDifference() {
+        return difference;
+    }
+
     /*
      * Required methods
      */
@@ -125,10 +131,6 @@ public class Schedule {
 
     public int getStartDay_() {
         return startDay_;
-    }
-
-    public int getEndDay_() {
-        return endDay_;
     }
 
     public int getStartHour_() {
@@ -171,4 +173,11 @@ public class Schedule {
         return isFromSite_;
     }
 
+    public int getYear() {
+        return year;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
 }
