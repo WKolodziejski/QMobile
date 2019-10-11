@@ -47,7 +47,7 @@ public class BackgroundCheck extends JobService {
 
             @Override
             public void onAccessDenied(int pg, String message) {
-                Jobs.displayNotification(getResources().getString(R.string.dialog_access_denied),
+                Jobs.displayNotification(getApplicationContext(), getResources().getString(R.string.dialog_access_denied),
                         getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, new Intent(App.getContext(), SplashActivity.class));
                 Client.get().removeOnResponseListener(this);
                 onStopJob(job);

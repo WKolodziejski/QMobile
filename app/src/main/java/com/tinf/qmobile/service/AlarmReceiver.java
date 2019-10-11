@@ -7,6 +7,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.RetryStrategy;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
 import com.tinf.qmobile.model.calendario.EventUser;
@@ -75,7 +82,19 @@ public class AlarmReceiver extends BroadcastReceiver {
                 if (context != null) {
                     Log.i(TAG, "Calling alarm service");
 
-                    AlarmService.enqueueWork(context, AlarmService.class, (int) id, intent);
+                    //AlarmService.enqueueWork(context, AlarmService.class, (int) id, intent);
+
+                    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+
+                    Job.Builder alarm = dispatcher.newJobBuilder()
+                            .setService(AlarmJob.class)
+                            .setTag(String.valueOf(id))
+                            .setRecurring(false)
+                            .setLifetime(Lifetime.FOREVER)
+                            .setReplaceCurrent(true);
+
+                    dispatcher.schedule(alarm.build());
+
                     setResultCode(Activity.RESULT_OK);
                 }
             }

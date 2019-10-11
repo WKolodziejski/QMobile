@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
@@ -43,9 +44,9 @@ public class Jobs {
         if (prefs.getBoolean(CHECK, true)) {
             Job.Builder diarios = dispatcher.newJobBuilder()
                     .setService(BackgroundCheck.class)
-                    .setTag("Diarios")
+                    .setTag("Background")
                     .setRecurring(false)
-                    .setLifetime(Lifetime.UNTIL_NEXT_BOOT)
+                    .setLifetime(Lifetime.FOREVER)
                     .setReplaceCurrent(true)
                     .setRetryStrategy(RetryStrategy.DEFAULT_EXPONENTIAL)
                     .setConstraints(Constraint.ON_UNMETERED_NETWORK);
@@ -67,12 +68,12 @@ public class Jobs {
                     Log.i(TAG, "Normal mode");
                 }
             }
-            dispatcher.cancelAll();
+            dispatcher.cancel("Background");
             dispatcher.schedule(diarios.build());
             Log.i(TAG, "Job scheduled");
 
         } else {
-            dispatcher.cancelAll();
+            dispatcher.cancel("Background");
             Log.i(TAG, "All jobs cancelled");
         }
     }
@@ -82,8 +83,8 @@ public class Jobs {
         dispatcher.cancelAll();
     }
 
-    public static void displayNotification(String title, String txt, String channelID, int id, Intent intent) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(App.getContext(), channelID);
+    public static void displayNotification(Context context, String title, String txt, String channelID, int id, Intent intent) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelID);
 
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
         bigText.bigText(txt);
@@ -91,25 +92,25 @@ public class Jobs {
         bigText.setSummaryText(channelID);
 
         mBuilder.setSmallIcon(R.drawable.ic_launcher_white);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.ic_launcher_white));
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_white));
         mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(txt);
         mBuilder.setStyle(bigText);
 
-        NotificationManager mNotificationManager = (NotificationManager) App.getContext().getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mNotificationManager != null) {
-            mNotificationManager.createNotificationChannel(new NotificationChannel(channelID, channelID,
-                    NotificationManager.IMPORTANCE_DEFAULT));
-            mBuilder.setChannelId(channelID);
+            if (mNotificationManager.getNotificationChannel(channelID) == null) {
+                mNotificationManager.createNotificationChannel(new NotificationChannel(channelID, channelID,
+                        NotificationManager.IMPORTANCE_DEFAULT));
+            }
         }
 
+        mBuilder.setChannelId(channelID);
         mBuilder.setAutoCancel(true);
 
-        //Intent resultIntent = extras == null ? new Intent(App.getContext(), SplashActivity.class) : new Intent(App.getContext(), EventViewActivity.class).putExtras(extras);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getContext());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MateriaActivity.class);
         stackBuilder.addNextIntent(intent);
 

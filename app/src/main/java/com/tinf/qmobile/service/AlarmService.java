@@ -119,11 +119,9 @@ public class AlarmService extends JobIntentService {
 
         mBuilder.setAutoCancel(true);
 
-        Intent resultIntent = extras == null ? new Intent(getApplicationContext(), SplashActivity.class) : new Intent(getApplicationContext(), EventViewActivity.class).putExtras(extras);
-
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getContext());
         stackBuilder.addParentStack(EventViewActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
+        stackBuilder.addNextIntent(new Intent().putExtras(extras));
 
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 

@@ -310,7 +310,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
 
-        Jobs.displayNotification(journal.getMatter(), journal.getTitle(),
+        Jobs.displayNotification(App.getContext(), journal.getMatter(), journal.getTitle(),
                 App.getContext().getResources().getString(R.string.title_diarios), (int) journal.id, intent);
     }
 
