@@ -1,4 +1,4 @@
-package com.tinf.qmobile.fragment;
+package com.tinf.qmobile.fragment.view;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.calendario.EventUser;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
@@ -58,7 +59,7 @@ public class EventViewFragment extends Fragment implements OnUpdate {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_event, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

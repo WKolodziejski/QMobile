@@ -37,7 +37,7 @@ public class Schedule {
         this.isFromSite_ = true;
     }
 
-    public Schedule(String title, DayTime start, DayTime end, int difference, int year, int period) {
+    public Schedule(String title, DayTime start, DayTime end, int difference, int year, int period, boolean isFromSite) {
         this.title_ = title;
         this.startDay_ = start.getDayValue();
         this.startHour_ = start.getHour();
@@ -47,7 +47,7 @@ public class Schedule {
         this.difference = difference;
         this.year = year;
         this.period = period;
-        this.isFromSite_ = false;
+        this.isFromSite_ = isFromSite;
     }
 
     public DayTime getStartTime() {
@@ -60,7 +60,7 @@ public class Schedule {
 
     @ColorInt
     public int getColor() {
-        return matter.getTargetId() != 0 ? matter.getTarget().getColor() : color_;
+        return color_ == 0 ? matter.getTarget().getColor() : color_;
     }
 
     public void setDescription(String description) {
@@ -96,7 +96,7 @@ public class Schedule {
     }
 
     public String getDescription() {
-        return description_;
+        return description_ == null ? "" : description_;
     }
 
     public String getTitle() {
@@ -121,6 +121,10 @@ public class Schedule {
 
     public int getDifference() {
         return difference;
+    }
+
+    public String getMatter() {
+        return isFromSite_ || matter.getTargetId() == 0 ? "" : matter.getTarget().getTitle();
     }
 
     /*
@@ -180,4 +184,5 @@ public class Schedule {
     public int getPeriod() {
         return period;
     }
+
 }

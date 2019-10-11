@@ -3,9 +3,10 @@ package com.tinf.qmobile.activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.fragment.EventViewFragment;
-import com.tinf.qmobile.fragment.JournalViewFragment;
+import com.tinf.qmobile.fragment.view.EventViewFragment;
+import com.tinf.qmobile.fragment.view.JournalViewFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
@@ -13,7 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 public class EventViewActivity extends AppCompatActivity {
-    @CalendarBase.ViewType int type;
+    public final static int SCHEDULE = 2;
+    int type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +50,10 @@ public class EventViewActivity extends AppCompatActivity {
                     fragment = new JournalViewFragment();
                     break;
 
+                case SCHEDULE:
+                    fragment = new ScheduleViewFragment();
+                    break;
+
                 default: finish();
             }
 
@@ -68,7 +74,7 @@ public class EventViewActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
 
-            if (type == CalendarBase.ViewType.USER) {
+            if (type == CalendarBase.ViewType.USER || type == SCHEDULE) {
                 Client.get().requestUpdate();
             }
             return true;

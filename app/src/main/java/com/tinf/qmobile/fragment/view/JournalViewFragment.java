@@ -1,4 +1,4 @@
-package com.tinf.qmobile.fragment;
+package com.tinf.qmobile.fragment.view;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -43,7 +43,7 @@ public class JournalViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_journal_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_journal, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

@@ -25,7 +25,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Broadcast received");
 
-        if (intent.getAction() != null && context != null) {
+        /*if (intent.getAction() != null && context != null) {
             if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
                 if (App.getBox() != null) {
 
@@ -49,7 +49,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                     return;
                 }
             }
-        }
+        }*/
 
         if (intent.getExtras() != null) {
             long id = intent.getExtras().getLong("ID", 0);

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.activity.MateriaActivity;
@@ -79,6 +80,8 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
         //prefs.edit().putInt(SCHEDULE_HOUR, 0).apply();
 
+        weekView.invalidate();
+
         weekView.setWeekViewLoader(() -> {
             //double firstHour = 24;
             int firstHour = 24;
@@ -101,7 +104,6 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 }
             }
 
-            weekView.goToDay(DayOfWeek.MONDAY);
             weekView.goToHour(firstHour);
 
 
@@ -130,17 +132,20 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         weekView.notifyDatasetChanged();
 
         weekView.setOnEventClickListener((event, eventRect) -> {
-            Matter matter = getBox().boxFor(Matter.class).query()
-                    .equal(Matter_.title_, event.getName())
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build().findUnique();
-            if (matter != null) {
+            Matter matter = getBox().boxFor(Schedule.class).get(Long.valueOf(event.getIdentifier())).matter.getTarget();
+
+            Intent intent = new Intent(getActivity(), EventViewActivity.class);
+            intent.putExtra("TYPE", SCHEDULE);
+            intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
+            startActivity(intent);
+
+            /*if (matter != null) {
                 Intent intent = new Intent(getContext(), MateriaActivity.class);
                 intent.putExtra("ID", matter.id);
                 startActivity(intent);
-            }
+            }*/
         });
+
     }
 
     @Override

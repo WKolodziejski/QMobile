@@ -34,7 +34,7 @@
         app:minHourHeight="60dp"
         app:headerRowPadding="12dp"
         app:columnGap="8dp"
-        app:firstDayOfWeek="monday"
+        app:firstDayOfWeek="sunday"
         app:horizontalFlingEnabled="false"
         app:xScrollingSpeed="0"
         app:showNowLine="false"
@@ -50,5 +50,3 @@
         app:todayBackgroundColor="@color/transparent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-

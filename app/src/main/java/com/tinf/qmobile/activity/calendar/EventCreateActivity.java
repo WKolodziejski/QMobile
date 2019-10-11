@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.tinf.qmobile.fragment.EventCreateFragment;
-import com.tinf.qmobile.fragment.ScheduleCreateFragment;
+import com.tinf.qmobile.fragment.create.EventCreateFragment;
+import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
 import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
