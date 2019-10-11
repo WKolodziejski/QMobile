@@ -13,8 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+
 public class EventViewActivity extends AppCompatActivity {
-    public final static int SCHEDULE = 2;
     int type;
 
     @Override

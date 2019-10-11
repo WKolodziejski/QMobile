@@ -11,12 +11,16 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.calendario.Base.CalendarBase;
 import com.tinf.qmobile.model.calendario.EventUser;
 import com.tinf.qmobile.model.calendario.EventUser_;
+import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.model.matter.Schedule_;
+
 import java.util.Date;
 import java.util.List;
 import androidx.legacy.content.WakefulBroadcastReceiver;
 import io.objectbox.Box;
 import static android.content.Context.ALARM_SERVICE;
 import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "AlarmReceiver";
@@ -25,31 +29,44 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Broadcast received");
 
-        /*if (intent.getAction() != null && context != null) {
+        if (intent.getAction() != null && context != null) {
             if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
                 if (App.getBox() != null) {
 
-                    Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
-                    List<EventUser> events = eventBox.query().greater(EventUser_.alarm, new Date().getTime() - 1).build().find();
-
                     AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-                    for (EventUser event : events) {
-                        Intent i = new Intent(context, AlarmReceiver.class);
-                        i.putExtra("ID", event.id);
-                        i.putExtra("TYPE", CalendarBase.ViewType.USER);
+                    if (alarmManager != null) {
 
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
+                        Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
+                        List<EventUser> events = eventBox.query().greater(EventUser_.alarm, new Date().getTime() - 1).build().find();
 
-                        if (alarmManager != null) {
-                            Log.i(TAG, "Scheduling alarm");
+                        for (EventUser event : events) {
+                            Intent i = new Intent(context, AlarmReceiver.class);
+                            i.putExtra("ID", event.id);
+                            i.putExtra("TYPE", CalendarBase.ViewType.USER);
+
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
+
                             alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getAlarm(), pendingIntent);
+                        }
+
+                        Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
+                        List<Schedule> schedules = scheduleBox.query().greater(Schedule_.alarm_, new Date().getTime() - 1).build().find();
+
+                        for (Schedule schedule : schedules) {
+                            Intent i = new Intent(context, AlarmReceiver.class);
+                            i.putExtra("ID", schedule.id);
+                            i.putExtra("TYPE", SCHEDULE);
+
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) schedule.id, i, 0);
+
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, schedule.getAlarm(), 24 * 7 * 60 * 60 * 1000, pendingIntent);
                         }
                     }
                     return;
                 }
             }
-        }*/
+        }
 
         if (intent.getExtras() != null) {
             long id = intent.getExtras().getLong("ID", 0);

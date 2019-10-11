@@ -49,7 +49,7 @@ import me.jlurena.revolvingweekview.DayTime;
 import static android.content.Context.ALARM_SERVICE;
 import static android.icu.text.RelativeDateTimeFormatter.AbsoluteUnit.WEEK;
 import static android.view.View.GONE;
-import static com.tinf.qmobile.activity.EventViewActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 
 public class ScheduleCreateFragment extends Fragment {
     private static final String TAG = "EventCreateFragment";
@@ -60,6 +60,7 @@ public class ScheduleCreateFragment extends Fragment {
     @BindView(R.id.schedule_create_matter_text)   TextView matter_txt;
     @BindView(R.id.schedule_create_alarm_text)    TextView alarm_txt;
     @BindView(R.id.schedule_create_description)   EditText description_edt;
+    @BindView(R.id.schedule_create_room)          EditText room_edt;
     @BindView(R.id.schedule_create_title)         EditText title_edt;
     @BindView(R.id.schedule_create_color_layout)  LinearLayout color_btn;
     @BindView(R.id.schedule_create_matter_layout) LinearLayout matter_btn;
@@ -68,7 +69,7 @@ public class ScheduleCreateFragment extends Fragment {
     private boolean isRanged, isFromSite;
     private int color, matter, alarmDif;
     private List<Matter> matters;
-    private String title, description;
+    private String title, description, room;
     private long id, alarm;
     private DayTime start, end;
 
@@ -99,6 +100,7 @@ public class ScheduleCreateFragment extends Fragment {
                     title = schedule.getTitle();
                     color = schedule.getColor();
                     description = schedule.getDescription();
+                    room = schedule.getRoom();
 
                     start = schedule.getStartTime();
                     end = schedule.getEndTime();
@@ -119,8 +121,9 @@ public class ScheduleCreateFragment extends Fragment {
                 color = getResources().getColor(R.color.colorPrimary);
 
                 Calendar calendar = Calendar.getInstance();
-                start = new DayTime(calendar.get(Calendar.DAY_OF_WEEK), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                end = start;
+                start = new DayTime(calendar.get(Calendar.DAY_OF_WEEK) - 1, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                end = new DayTime(start);
+                isFromSite = false;
             }
         }
     }
@@ -146,6 +149,8 @@ public class ScheduleCreateFragment extends Fragment {
 
         description_edt.setText(description);
 
+        room_edt.setText(room);
+
         updateText();
 
         startDate_txt.setOnClickListener(view1 -> {
@@ -170,7 +175,7 @@ public class ScheduleCreateFragment extends Fragment {
                 start = new DayTime(start.getDayValue(), h, m);
 
                 if (start.isAfter(end)) {
-                    end = start;
+                    end = new DayTime(start);
                 }
 
                 updateText();
@@ -182,10 +187,10 @@ public class ScheduleCreateFragment extends Fragment {
 
         endTime_txt.setOnClickListener(view1 -> {
             TimePickerDialog dialog = new TimePickerDialog(getContext(), (timePicker, h, m) -> {
-                end = new DayTime(end.getDayValue(), h, m);
+                end = new DayTime(start.getDayValue(), h, m);
 
                 if (end.isBefore(start)) {
-                    start = end;
+                    start = new DayTime(end);
                 }
 
                 updateText();
@@ -194,6 +199,8 @@ public class ScheduleCreateFragment extends Fragment {
 
             dialog.show();
         });
+
+        if (!isFromSite) {
 
         color_btn.setOnClickListener(v -> {
             ColorPickerDialogBuilder
@@ -212,7 +219,6 @@ public class ScheduleCreateFragment extends Fragment {
                     .show();
         });
 
-        if (!isFromSite) {
             matter_btn.setOnClickListener(v -> {
                 String[] strings = new String[matters.size() + 1];
 
@@ -233,51 +239,55 @@ public class ScheduleCreateFragment extends Fragment {
                         })
                         .create().show();
             });
+
+            alarm_btn.setOnClickListener(v -> {
+                String[] strings = new String[4];
+
+                strings[0] = getString(R.string.event_no_alarm);
+                strings[1] = getString(R.string.alarm_30min);
+                strings[2] = getString(R.string.alarm_1h);
+                strings[3] = getString(R.string.alarm_1d);
+
+                new AlertDialog.Builder(getContext())
+                        .setItems(strings, (dialog, which) -> {
+                            alarmDif = which;
+                            updateText();
+                        })
+                        .create().show();
+            });
         } else {
             matter_btn.setVisibility(GONE);
+            color_btn.setVisibility(GONE);
+            alarm_btn.setVisibility(GONE);
         }
-
-        alarm_btn.setOnClickListener(v -> {
-            String[] strings = new String[4];
-
-            strings[0] = getString(R.string.event_no_alarm);
-            strings[1] = getString(R.string.alarm_30min);
-            strings[2] = getString(R.string.alarm_1h);
-            strings[3] = getString(R.string.alarm_1d);
-
-            new AlertDialog.Builder(getContext())
-                    .setItems(strings, (dialog, which) -> {
-                        alarmDif = which;
-                        Calendar alarmTime = Calendar.getInstance();
-                        alarmTime.set(Calendar.DAY_OF_WEEK, start.getDay().getValue() + 1);
-                        alarmTime.set(Calendar.HOUR_OF_DAY, start.getHour());
-                        alarmTime.set(Calendar.MINUTE, start.getMinute());
-                        alarmTime.set(Calendar.SECOND, 0);
-                        alarmTime.set(Calendar.MILLISECOND, 0);
-
-                        switch (which) {
-                            case 0: alarm = 0;
-                                    break;
-
-                            case 1: alarmTime.roll(Calendar.MINUTE, 30);
-                                    alarm = alarmTime.getTimeInMillis();
-                                    break;
-
-                            case 2: alarmTime.roll(Calendar.HOUR_OF_DAY, 1);
-                                    alarm = alarmTime.getTimeInMillis();
-                                    break;
-
-                            case 3: alarmTime.roll(Calendar.DAY_OF_MONTH, 1);
-                                    alarm = alarmTime.getTimeInMillis();
-                                    break;
-                        }
-                        updateText();
-                    })
-                    .create().show();
-        });
 
         ((EventCreateActivity) getActivity()).add.setOnClickListener(v -> {
             end = new DayTime(start.getDayValue(), end.getHour(), end.getMinute());
+
+            Calendar alarmTime = Calendar.getInstance();
+            alarmTime.set(Calendar.DAY_OF_WEEK, start.getDayValue() + 1);
+            alarmTime.set(Calendar.HOUR_OF_DAY, start.getHour());
+            alarmTime.set(Calendar.MINUTE, start.getMinute());
+            alarmTime.set(Calendar.SECOND, 0);
+            alarmTime.set(Calendar.MILLISECOND, 0);
+
+            switch (alarmDif) {
+
+                case 0: alarm = 0;
+                    break;
+
+                case 1: alarmTime.add(Calendar.MINUTE, -30);
+                    alarm = alarmTime.getTimeInMillis();
+                    break;
+
+                case 2: alarmTime.add(Calendar.HOUR_OF_DAY, -1);
+                    alarm = alarmTime.getTimeInMillis();
+                    break;
+
+                case 3: alarmTime.add(Calendar.DAY_OF_WEEK, -1);
+                    alarm = alarmTime.getTimeInMillis();
+                    break;
+            }
 
             Schedule schedule = new Schedule(title_edt.getText().toString().trim(), start, end, alarmDif, User.getYear(0), User.getPeriod(0), isFromSite);
 
@@ -285,12 +295,10 @@ public class ScheduleCreateFragment extends Fragment {
                 schedule.id = id;
             }
 
-            schedule.setDescription(description_edt.getText().toString());
+            schedule.setDescription(description_edt.getText().toString().trim());
             schedule.setColor(color);
             schedule.setAlarm(alarm);
-
-            Log.e("saved", String.valueOf(schedule.getAlarm()));
-            Log.e("var", String.valueOf(alarm));
+            schedule.setRoom(room_edt.getText().toString().trim());
 
             if (matter > 0) {
                 schedule.matter.setTarget(matters.get(matter - 1));
@@ -310,10 +318,13 @@ public class ScheduleCreateFragment extends Fragment {
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
 
             if (alarmManager != null) {
-                if (alarm > 0) {
+                if (alarmDif != 0) {
+
                     SimpleDateFormat date = new SimpleDateFormat("dd/MMM/yyyy HH:mm", Locale.getDefault());
                     Log.i(TAG, "Alarm scheduled to " + date.format(alarm));
+
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, schedule.getAlarm(), 24 * 7 * 60 * 60 * 1000,  pendingIntent);
+
                 } else {
                     alarmManager.cancel(pendingIntent);
                     pendingIntent.cancel();

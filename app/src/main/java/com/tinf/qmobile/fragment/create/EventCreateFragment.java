@@ -315,23 +315,6 @@ public class EventCreateFragment extends Fragment {
             new AlertDialog.Builder(getContext())
                     .setItems(strings, (dialog, which) -> {
                         alarmDif = which;
-                        Calendar alarmTime = (Calendar) start.clone();
-                        switch (which) {
-                            case 0: alarm = 0;
-                                    break;
-
-                            case 1: alarmTime.roll(Calendar.MINUTE, 30);
-                                    alarm = alarmTime.getTimeInMillis();
-                                    break;
-
-                            case 2: alarmTime.roll(Calendar.HOUR_OF_DAY, 1);
-                                    alarm = alarmTime.getTimeInMillis();
-                                    break;
-
-                            case 3: alarmTime.roll(Calendar.DAY_OF_MONTH, 1);
-                                    alarm = alarmTime.getTimeInMillis();
-                                    break;
-                        }
                         updateText();
                     })
                     .create().show();
@@ -343,6 +326,26 @@ public class EventCreateFragment extends Fragment {
                 end.setTimeInMillis(0);
             }
 
+            Calendar alarmTime = (Calendar) start.clone();
+
+            switch (alarmDif) {
+
+                case 0: alarm = 0;
+                    break;
+
+                case 1: alarmTime.add(Calendar.MINUTE, -30);
+                    alarm = alarmTime.getTimeInMillis();
+                    break;
+
+                case 2: alarmTime.add(Calendar.HOUR_OF_DAY, -1);
+                    alarm = alarmTime.getTimeInMillis();
+                    break;
+
+                case 3: alarmTime.add(Calendar.DAY_OF_MONTH, -1);
+                    alarm = alarmTime.getTimeInMillis();
+                    break;
+            }
+
             EventUser event = new EventUser(title_edt.getText().toString().trim(),
                     start.getTimeInMillis(), end.getTimeInMillis(), alarm, alarmDif);
 
@@ -350,7 +353,7 @@ public class EventCreateFragment extends Fragment {
                 event.id = id;
             }
 
-            event.setDescription(description_edt.getText().toString());
+            event.setDescription(description_edt.getText().toString().trim());
             event.setColor(color);
 
             if (matter > 0) {
@@ -371,10 +374,13 @@ public class EventCreateFragment extends Fragment {
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
 
             if (alarmManager != null) {
-                if (alarm > 0) {
+                if (alarmDif != 0) {
+
                     SimpleDateFormat date = new SimpleDateFormat("dd/MMM/yyyy HH:mm", Locale.getDefault());
                     Log.i(TAG, "Alarm scheduled to " + date.format(alarm));
+
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getAlarm(), pendingIntent);
+
                 } else {
                     alarmManager.cancel(pendingIntent);
                     pendingIntent.cancel();

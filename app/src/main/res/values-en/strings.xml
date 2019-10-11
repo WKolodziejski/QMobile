@@ -117,6 +117,7 @@
     <string name="calendar_period_start">Start of school year</string>
     <string name="calendar_period_end">End of school year</string>
     <string name="event_note">Add note</string>
+    <string name="event_room">Classroom</string>
     <string name="event_no_alarm">No alarm</string>
     <string name="event_alarm">Add alarm</string>
     <string name="alarm_30min">30 minutes before</string>

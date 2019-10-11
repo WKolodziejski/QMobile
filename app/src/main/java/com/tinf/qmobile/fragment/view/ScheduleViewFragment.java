@@ -30,7 +30,6 @@ import com.tinf.qmobile.network.Client;
 
 import org.threeten.bp.format.TextStyle;
 
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,8 +40,7 @@ import static android.view.View.VISIBLE;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 
 public class ScheduleViewFragment extends Fragment implements OnUpdate {
-    @BindView(R.id.schedule_view_start_time)          TextView startTime_txt;
-    @BindView(R.id.schedule_view_end_time)            TextView endTime_txt;
+    @BindView(R.id.schedule_view_start_time)          TextView date_txt;
     @BindView(R.id.schedule_view_matter_text)         TextView matter_txt;
     @BindView(R.id.schedule_view_description)         TextView description_txt;
     @BindView(R.id.schedule_view_title)               TextView title_txt;
@@ -89,7 +87,7 @@ public class ScheduleViewFragment extends Fragment implements OnUpdate {
         DayTime end = schedule.getEndTime();
 
         title_txt.setText(schedule.getTitle().isEmpty() ? getString(R.string.event_no_title) : schedule.getTitle());
-        startTime_txt.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", start.getHour(), start.getMinute()));
+        date_txt.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", start.getHour(), start.getMinute()));
         color_img.setImageTintList(ColorStateList.valueOf(schedule.getColor()));
 
         if (schedule.getRoom().isEmpty()) {
@@ -106,8 +104,6 @@ public class ScheduleViewFragment extends Fragment implements OnUpdate {
             description_txt.setText(schedule.getDescription());
         }
 
-        Log.e("", String.valueOf(schedule.getAlarm()));
-
         if (schedule.getAlarm() == 0) {
             notification_layout.setVisibility(GONE);
         } else {
@@ -122,11 +118,8 @@ public class ScheduleViewFragment extends Fragment implements OnUpdate {
             notification_txt.setText(strings[schedule.getDifference()]);
         }
 
-        if (end.equals(start)) {
-            endTime_txt.setVisibility(GONE);
-        } else {
-            endTime_txt.setVisibility(VISIBLE);
-            endTime_txt.setText(end.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", end.getHour(), end.getMinute()));
+        if (!end.equals(start)) {
+            date_txt.append(" ー " + String.format("%02d:%02d", end.getHour(), end.getMinute()));
         }
 
         if (schedule.getMatter().isEmpty()) {

@@ -162,13 +162,58 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/schedule_create_room_layout"
+        app:layout_constraintTop_toBottomOf="@id/schedule_create_time_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:layout_margin="16dp"
+            android:tint="@color/colorAccent"
+            app:srcCompat="@drawable/ic_room" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="16dp"
+            android:hint="@string/event_room"
+            android:inputType="textCapSentences"
+            android:background="@color/transparent"
+            android:id="@+id/schedule_create_room"
+            android:textSize="14sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black_dividers"
+        app:layout_constraintTop_toBottomOf="@id/schedule_create_room_layout"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:orientation="horizontal"
         android:id="@+id/schedule_create_alarm_layout"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_time_layout"
+        app:layout_constraintTop_toBottomOf="@id/schedule_create_room_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >

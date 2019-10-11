@@ -107,6 +107,7 @@
     <string name="event_default_color">Cor padrão</string>
     <string name="event_title">Digite o título</string>
     <string name="event_note">Adicionar nota</string>
+    <string name="event_room">Sala de aula</string>
     <string name="event_added">Evento adicionado</string>
     <string name="event_edited">Evento editado</string>
     <string name="event_removed">Evento removido</string>
