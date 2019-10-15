@@ -43,7 +43,7 @@
                 android:layout_marginBottom="4dp"
                 android:id="@+id/event_view_title"
                 android:textSize="24sp"
-                tools:text="Title" />
+                tools:text="Title dsadsad sadsad sadsadsad sadas" />
 
             <TextView
                 android:layout_width="match_parent"

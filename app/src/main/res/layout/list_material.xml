@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/materiais_description"
             android:visibility="gone"
+            android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@id/materiais_title"
             tools:text="A resolução de alguns exercios"
             tools:visibility="visible"/>

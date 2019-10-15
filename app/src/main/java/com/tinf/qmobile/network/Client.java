@@ -488,6 +488,7 @@ public class Client {
         Log.v(TAG, pg + ": " + message);
         isValid = false;
         isLogging = false;
+        clearRequests();
         if (onResponses != null) {
             for (int i = 0; i < onResponses.size(); i++) {
                 onResponses.get(i).onAccessDenied(pg, message);

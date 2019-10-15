@@ -27,3 +27,4 @@ public class DiariosListViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, view);
     }
 }
+
