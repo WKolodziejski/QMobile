@@ -163,7 +163,7 @@ public class ScheduleCreateFragment extends Fragment {
             }
 
             new AlertDialog.Builder(getContext())
-                    .setTitle("DIA")
+                    .setTitle(getString(R.string.dialog_choose_day))
                     .setItems(strings, (dialog, which) -> {
                         start = new DayTime(which + 1, start.getHour(), start.getMinute());
                         updateText();
@@ -343,8 +343,8 @@ public class ScheduleCreateFragment extends Fragment {
 
     private void updateText() {
         startDate_txt.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()));
-        startTime_txt.setText(String.format("%02d:%02d", start.getHour(), start.getMinute()));
-        endTime_txt.setText(String.format("%02d:%02d", end.getHour(), end.getMinute()));
+        startTime_txt.setText(String.format(Locale.getDefault(), "%02d:%02d", start.getHour(), start.getMinute()));
+        endTime_txt.setText(String.format(Locale.getDefault(), "%02d:%02d", end.getHour(), end.getMinute()));
         color_img.setImageTintList(ColorStateList.valueOf(color));
 
         String[] alarms = new String[4];

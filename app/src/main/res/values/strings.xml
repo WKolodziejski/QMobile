@@ -63,6 +63,7 @@
     <string name="dialog_discart">Descartar</string>
     <string name="dialog_keep_editing">Continuar editando</string>
     <string name="dialog_choose_color">Selecione uma cor</string>
+    <string name="dialog_choose_day">Selecione um dia</string>
     <string name="dialog_choose_matter">Selecione a matéria</string>
     <string name="dialog_select">Selecionar</string>
     <string name="dialog_delete_txt">Deletar esse evento?</string>
@@ -115,6 +116,7 @@
     <string name="event_no_alarm">Sem alarme</string>
     <string name="event_alarm">Adicionar alarme</string>
     <string name="event_matter">Linkar matéria</string>
+    <string name="event_save">Salvar</string>
 
     <string name="alarm_30min">30 minutos antes</string>
     <string name="alarm_1h">1 hora antes</string>

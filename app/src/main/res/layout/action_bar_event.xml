@@ -15,17 +15,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:id="@+id/event_add"
+        android:text="@string/event_save"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0"
-        android:text="Save"/>
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

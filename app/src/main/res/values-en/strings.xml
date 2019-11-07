@@ -104,6 +104,7 @@
     <string name="dialog_delete">Delete</string>
     <string name="dialog_choose_matter">Select matter</string>
     <string name="dialog_choose_color">Select color</string>
+    <string name="dialog_choose_day">Select day</string>
     <string name="action_grade">Change view mode</string>
     <string name="action_color">Change color</string>
     <string name="action_edit">Edit</string>
@@ -133,4 +134,5 @@
     <string name="diarios_expand">Expand</string>
     <string name="boletim_QuartaEtapa">4th</string>
     <string name="boletim_TerceiraEtapa">3rd</string>
+    <string name="event_save">Save</string>
 </resources>
