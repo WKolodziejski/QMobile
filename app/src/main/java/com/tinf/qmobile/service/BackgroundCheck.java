@@ -5,10 +5,10 @@ import android.content.Intent;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.activity.settings.SplashActivity;
-import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.settings.SplashActivity;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.OnResponse;
 
 public class BackgroundCheck extends JobService {
     private boolean errorOcurred;

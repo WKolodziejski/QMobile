@@ -10,20 +10,23 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.settings.SplashActivity;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.JobIntentService;
+import androidx.core.app.NotificationCompat;
+
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventUser;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.matter.Schedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-import androidx.annotation.NonNull;
-import androidx.core.app.JobIntentService;
-import androidx.core.app.NotificationCompat;
+
 import io.objectbox.Box;
+
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 
 public class AlarmService extends JobIntentService {
@@ -74,10 +77,10 @@ public class AlarmService extends JobIntentService {
 
                     title = schedule.getTitle();
 
-                    desc = String.format("%02d:%02d", schedule.getStartTime().getHour(), schedule.getStartTime().getMinute());
+                    desc = String.format(Locale.getDefault(), "%02d:%02d", schedule.getStartTime().getHour(), schedule.getStartTime().getMinute());
 
                     if (!schedule.getEndTime().equals(schedule.getStartTime())) {
-                        desc = desc.concat(" ー " + String.format("%02d:%02d", schedule.getEndTime().getHour(), schedule.getEndTime().getMinute()));
+                        desc = desc.concat(" ー " + String.format(Locale.getDefault(), "%02d:%02d", schedule.getEndTime().getHour(), schedule.getEndTime().getMinute()));
                     }
 
                 }
@@ -131,4 +134,5 @@ public class AlarmService extends JobIntentService {
             mNotificationManager.notify(id, mBuilder.build());
         }
     }
+
 }

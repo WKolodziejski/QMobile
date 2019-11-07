@@ -1,26 +1,18 @@
 package com.tinf.qmobile.activity.settings;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
-import android.preference.Preference;
-import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tinf.qmobile.App;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.utility.User;
 
 import java.util.Objects;
-
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
 
 public class MoreActivity extends AppCompatActivity {
 

@@ -47,25 +47,27 @@ import io.objectbox.Box;
 import me.jlurena.revolvingweekview.DayTime;
 
 import static android.content.Context.ALARM_SERVICE;
-import static android.icu.text.RelativeDateTimeFormatter.AbsoluteUnit.WEEK;
 import static android.view.View.GONE;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 
 public class ScheduleCreateFragment extends Fragment {
     private static final String TAG = "EventCreateFragment";
-    @BindView(R.id.schedule_create_start_day)     TextView startDate_txt;
-    @BindView(R.id.schedule_create_start_time)    TextView startTime_txt;
-    @BindView(R.id.schedule_create_end_time)      TextView endTime_txt;
-    @BindView(R.id.schedule_create_color_text)    TextView color_txt;
-    @BindView(R.id.schedule_create_matter_text)   TextView matter_txt;
-    @BindView(R.id.schedule_create_alarm_text)    TextView alarm_txt;
-    @BindView(R.id.schedule_create_description)   EditText description_edt;
-    @BindView(R.id.schedule_create_room)          EditText room_edt;
-    @BindView(R.id.schedule_create_title)         EditText title_edt;
-    @BindView(R.id.schedule_create_color_layout)  LinearLayout color_btn;
-    @BindView(R.id.schedule_create_matter_layout) LinearLayout matter_btn;
-    @BindView(R.id.schedule_create_alarm_layout)  LinearLayout alarm_btn;
-    @BindView(R.id.schedule_create_color_img)     ImageView color_img;
+    @BindView(R.id.schedule_create_start_day)           TextView startDate_txt;
+    @BindView(R.id.schedule_create_start_time)          TextView startTime_txt;
+    @BindView(R.id.schedule_create_end_time)            TextView endTime_txt;
+    @BindView(R.id.schedule_create_color_text)          TextView color_txt;
+    @BindView(R.id.schedule_create_matter_text)         TextView matter_txt;
+    @BindView(R.id.schedule_create_alarm_text)          TextView alarm_txt;
+    @BindView(R.id.schedule_create_description)         EditText description_edt;
+    @BindView(R.id.schedule_create_room)                EditText room_edt;
+    @BindView(R.id.schedule_create_title)               EditText title_edt;
+    @BindView(R.id.schedule_create_color_layout)        LinearLayout color_btn;
+    @BindView(R.id.schedule_create_matter_layout)       LinearLayout matter_btn;
+    @BindView(R.id.schedule_create_alarm_layout)        LinearLayout alarm_btn;
+    @BindView(R.id.schedule_create_color_img)           ImageView color_img;
+    @BindView(R.id.schedule_create_alarm_decoration)    View ad;
+    @BindView(R.id.schedule_create_color_decoration)    View cd;
+    @BindView(R.id.schedule_create_matter_decoration)   View md;
     private boolean isRanged, isFromSite;
     private int color, matter, alarmDif;
     private List<Matter> matters;
@@ -259,6 +261,9 @@ public class ScheduleCreateFragment extends Fragment {
             matter_btn.setVisibility(GONE);
             color_btn.setVisibility(GONE);
             alarm_btn.setVisibility(GONE);
+            ad.setVisibility(GONE);
+            md.setVisibility(GONE);
+            cd.setVisibility(GONE);
         }
 
         ((EventCreateActivity) getActivity()).add.setOnClickListener(v -> {

@@ -1,22 +1,21 @@
-package com.tinf.qmobile.adapter.diarios;
+package com.tinf.qmobile.adapter.journal;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.matter.Period;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.holder.EtapasViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.holder.EtapasViewHolder;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Period;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EtapasAdapter extends RecyclerView.Adapter {
     private List<Period> etapas;

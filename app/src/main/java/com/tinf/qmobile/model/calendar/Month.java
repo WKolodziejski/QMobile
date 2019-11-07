@@ -1,6 +1,6 @@
-package com.tinf.qmobile.model.calendario;
+package com.tinf.qmobile.model.calendar;
 
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

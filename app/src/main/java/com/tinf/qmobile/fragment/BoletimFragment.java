@@ -2,10 +2,6 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,20 +9,25 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.rmondjone.locktableview.LockTableView;
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
-import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qmobile.utility.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.network.Client.pos;

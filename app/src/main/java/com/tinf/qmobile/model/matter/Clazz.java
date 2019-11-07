@@ -3,7 +3,6 @@ package com.tinf.qmobile.model.matter;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
 
 @Entity
 public class Clazz {

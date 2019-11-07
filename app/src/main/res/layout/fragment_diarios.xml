@@ -10,6 +10,6 @@
         android:id="@+id/recycler_diarios"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_expandable_2" />
+        tools:listitem="@layout/list_journal_header" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -16,31 +16,36 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventSimple;
-import com.tinf.qmobile.model.calendario.EventSimple_;
-import com.tinf.qmobile.model.calendario.EventUser;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.model.calendar.EventSimple;
+import com.tinf.qmobile.model.calendar.EventSimple_;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.service.AlarmReceiver;
 import com.tinf.qmobile.utility.User;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.Box;
+
 import static android.content.Context.ALARM_SERVICE;
 
 public class EventCreateFragment extends Fragment {

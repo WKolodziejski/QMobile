@@ -1,19 +1,20 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import butterknife.ButterKnife;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.tinf.qmobile.fragment.ScheduleFragment;
-import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.network.Client;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.ScheduleFragment;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import java.util.Objects;
+
+import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;

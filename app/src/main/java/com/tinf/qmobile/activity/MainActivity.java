@@ -1,44 +1,48 @@
 package com.tinf.qmobile.activity;
 
-import androidx.annotation.IdRes;
-import androidx.appcompat.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.fragment.BoletimFragment;
-import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
+import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MateriaisFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnUpdate, BottomNavigationView.OnNavigationItemSelectedListener {

@@ -2,23 +2,18 @@ package com.tinf.qmobile.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.fragment.LoginFragment;
-import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.LoginFragment;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {

@@ -6,17 +6,15 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.util.HashMap;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -87,8 +85,8 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                                     Matter matter = matterBox.query()
                                             .equal(Matter_.title_, matterTitle).and()
                                             .equal(Matter_.year_, User.getYear(pos)).and()
-                                            .equal(Matter_.period_, User.getPeriod(pos)).and()
-                                            .contains(Matter_.description_, clazz)
+                                            .equal(Matter_.period_, User.getPeriod(pos))//.and()
+                                            //.contains(Matter_.description_, clazz)
                                             .build().findUnique();
 
                                     if (matter != null) {

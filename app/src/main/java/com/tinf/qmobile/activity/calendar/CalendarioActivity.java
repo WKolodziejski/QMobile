@@ -1,16 +1,16 @@
 package com.tinf.qmobile.activity.calendar;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.tinf.qmobile.fragment.CalendarioFragment;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.CalendarFragment;
+import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +34,7 @@ public class CalendarioActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.calendario_fragment, new CalendarioFragment())
+                .replace(R.id.calendario_fragment, new CalendarFragment())
                 .commit();
     }
 

@@ -3,7 +3,6 @@ package com.tinf.qmobile.fragment.view;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +30,7 @@ import com.tinf.qmobile.network.Client;
 import org.threeten.bp.format.TextStyle;
 
 import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.jlurena.revolvingweekview.DayTime;

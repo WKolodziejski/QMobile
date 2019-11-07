@@ -7,14 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.matter.Journal;
-import com.tinf.qmobile.R;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.journal.Journal;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

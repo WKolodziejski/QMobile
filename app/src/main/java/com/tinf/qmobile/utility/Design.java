@@ -3,11 +3,13 @@ package com.tinf.qmobile.utility;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
 import com.tinf.qmobile.R;
 
 public class Design {

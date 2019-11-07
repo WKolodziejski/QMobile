@@ -1,9 +1,10 @@
-package com.tinf.qmobile.model.calendario;
+package com.tinf.qmobile.model.calendar;
 
 import android.util.Log;
 
-import com.tinf.qmobile.model.calendario.Base.EventBase;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.EventBase;
+
 import io.objectbox.annotation.Entity;
 
 @Entity

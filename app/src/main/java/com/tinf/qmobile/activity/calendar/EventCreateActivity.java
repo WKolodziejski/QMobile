@@ -4,13 +4,15 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.tinf.qmobile.fragment.create.EventCreateFragment;
-import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
-import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.create.EventCreateFragment;
+import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

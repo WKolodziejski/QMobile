@@ -2,14 +2,6 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,21 +12,34 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.adapter.diarios.DiariosListAdapter;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.adapter.diarios.ExpandableAdapter;
+import com.tinf.qmobile.adapter.journal.DiariosListAdapter;
+import com.tinf.qmobile.adapter.journal.JournalAdapter3;
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.journal.JournalBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.utility.User;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,8 +49,8 @@ import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 
 public class JournalFragment extends Fragment implements OnUpdate {
     private static String TAG = "DiariosFragment";
-    private ExpandableAdapter adapter;
-    private List<Matter> materiaList;
+    private DiariosListAdapter adapter;
+    private List<Matter> journals;
     private RecyclerView.LayoutManager layout;
     @BindView(R.id.recycler_diarios) RecyclerView recyclerView;
 
@@ -56,26 +61,51 @@ public class JournalFragment extends Fragment implements OnUpdate {
 
         setHasOptionsMenu(true);
 
+        RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotate.setDuration(250);
+        rotate.setInterpolator(new LinearInterpolator());
+
+
         loadData();
 
-        adapter = new ExpandableAdapter(getContext(), materiaList, view -> {
+        adapter = new DiariosListAdapter(getContext(), journals, view -> {
             Integer pos = (Integer) view.getTag();
 
             Intent intent = new Intent(getContext(), MateriaActivity.class);
-            intent.putExtra("ID", materiaList.get(pos).id);
+            intent.putExtra("ID", journals.get(pos).id);
 
             startActivity(intent);
 
-            /*Fragment fragment = new MateriaFragment();
-            fragment.setArguments(intent.getExtras());
+        }, view -> {
+            ConstraintLayout expandAct = (ConstraintLayout) view;
+            ExpandableLayout expandableLayout = (ExpandableLayout) expandAct.getChildAt(2);
+            ImageView arrow = (ImageView) expandAct.getChildAt(1);
 
-            ((FragmentActivity) view1.getContext()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.main_fragment, fragment)
-                    .commit();
+            expandableLayout.toggle();
+            arrow.startAnimation(rotate);
 
-            ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
+            Integer pos = (Integer) view.getTag();
+
+            journals.get(pos).isExpanded = !journals.get(pos).isExpanded;
+
+            rotate.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if (journals.get(pos).isExpanded) {
+                        arrow.setImageResource(R.drawable.ic_less);
+                    } else {
+                        arrow.setImageResource(R.drawable.ic_more);
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
         });
 
         adapter.setHasStableIds(true);
@@ -98,7 +128,14 @@ public class JournalFragment extends Fragment implements OnUpdate {
     }
 
     private void loadData() {
-        materiaList = getBox().boxFor(Matter.class).query().order(Matter_.title_)
+        /*journals = new ArrayList<>();
+
+        journals.addAll(getBox().boxFor(Matter.class).query().order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos)).and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build().find());*/
+
+        journals = getBox().boxFor(Matter.class).query().order(Matter_.title_)
                 .equal(Matter_.year_, User.getYear(pos)).and()
                 .equal(Matter_.period_, User.getPeriod(pos))
                 .build().find();
@@ -172,7 +209,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
     public void onUpdate(int pg) {
         if (pg == PG_DIARIOS || pg == UPDATE_REQUEST) {
             loadData();
-            adapter.update(materiaList);
+            adapter.update(journals);
         }
     }
 

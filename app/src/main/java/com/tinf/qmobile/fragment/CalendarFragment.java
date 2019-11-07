@@ -2,36 +2,34 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
-import io.objectbox.Box;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.adapter.calendario.EventosAdapter;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.EventBase;
-import com.tinf.qmobile.model.calendario.Day;
-import com.tinf.qmobile.model.calendario.EventImage;
-import com.tinf.qmobile.model.calendario.EventSimple;
-import com.tinf.qmobile.model.calendario.EventUser;
-import com.tinf.qmobile.model.calendario.Month;
-import com.tinf.qmobile.model.matter.Journal;
+import com.tinf.qmobile.adapter.calendar.EventsAdapter;
+import com.tinf.qmobile.model.calendar.Day;
+import com.tinf.qmobile.model.calendar.EventImage;
+import com.tinf.qmobile.model.calendar.EventSimple;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,13 +40,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import io.objectbox.Box;
+
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
 
-public class CalendarioFragment extends Fragment implements OnUpdate {
+public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;
     private LinearLayoutManager layout;
-    private EventosAdapter adapter;
+    private EventsAdapter adapter;
     //private CalendarAdapterTEST adapter;
     private List<CalendarBase> events;
 
@@ -232,7 +232,7 @@ public class CalendarioFragment extends Fragment implements OnUpdate {
         }
 
         if (adapter == null) {
-            adapter = new EventosAdapter(getContext(), events);
+            adapter = new EventsAdapter(getContext(), events);
         } else {
             adapter.update(events);
         }

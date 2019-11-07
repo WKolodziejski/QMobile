@@ -1,4 +1,4 @@
-package com.tinf.qmobile.model.calendario;
+package com.tinf.qmobile.model.calendar;
 
 import java.util.Calendar;
 

@@ -1,22 +1,22 @@
 package com.tinf.qmobile.holder.Calendar;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.Base.EventBase;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.calendar.base.EventBase;
 
 import butterknife.ButterKnife;
 
-public abstract class CalendarioViewHolder<T extends CalendarBase> extends RecyclerView.ViewHolder {
+public abstract class CalendarViewHolder<T extends CalendarBase> extends RecyclerView.ViewHolder {
 
-    public CalendarioViewHolder(View view) {
+    public CalendarViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
     }

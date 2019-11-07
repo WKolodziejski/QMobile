@@ -7,14 +7,16 @@ import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
 import io.objectbox.Box;
+import io.objectbox.exception.NonUniqueResultException;
 
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
@@ -59,17 +61,31 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                                 String matterTitle = formatTitle(rows.get(i).child(0).text());
                                 String absencesTotal = formatNumber(rows.get(i).child(3).text());
                                 String clazz = formatClass(rows.get(i).child(2).text());
+                                String qid = formatQID(rows.get(i).child(0).getElementsByTag("q_latente").attr("value"));
 
-                                Matter matter = matterBox.query()
-                                        .contains(Matter_.description_, matterTitle).and()
-                                        .equal(Matter_.year_, User.getYear(pos)).and()
-                                        .equal(Matter_.period_, User.getPeriod(pos)).and()
-                                        .contains(Matter_.description_, clazz)
-                                        .build().findUnique();
+                                Log.i(TAG, qid);
+
+                                Matter matter = null;
+
+                                try {
+                                    matter = matterBox.query()
+                                            .contains(Matter_.description_, matterTitle).and()
+                                            .equal(Matter_.year_, User.getYear(pos)).and()
+                                            .equal(Matter_.period_, User.getPeriod(pos)).and()
+                                            .contains(Matter_.description_, clazz).and()
+                                            .contains(Matter_.description_, qid)
+                                            .build().findUnique();
+                                } catch (NonUniqueResultException e) {
+                                    e.printStackTrace();
+                                }
+
+                                //Log.i(TAG, matterTitle);
 
                                 if (matter != null) {
                                     matter.setAbsences(absencesTotal.isEmpty() ? -1 : Integer.parseInt(absencesTotal));
                                     matter.setTitle(matterTitle);
+
+                                    //Log.i(TAG, matterTitle + ": " + matter.getDescription_());
 
                                     if (rows.get(1).children().size() == 11) {
                                         if (matter.periods.size() < 1) {
@@ -170,11 +186,11 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                                         gradeFinal = gradeFinal_.isEmpty() ? -1 : Float.parseFloat(gradeFinal_);
                                         gradeRP = gradeRP_.isEmpty() ? -1 : Float.parseFloat(gradeRP_);
 
-                                        Log.d(TAG, period.getTitle());
-                                        Log.d(TAG, "Nota " + grade);
-                                        Log.d(TAG, "Nota Final " + gradeFinal);
-                                        Log.d(TAG, "Nota RP " + gradeRP);
-                                        Log.d(TAG, "Faltas " + absences);
+                                        //Log.d(TAG, period.getTitle());
+                                        //Log.d(TAG, "Nota " + grade);
+                                        //Log.d(TAG, "Nota Final " + gradeFinal);
+                                        //Log.d(TAG, "Nota RP " + gradeRP);
+                                        //Log.d(TAG, "Faltas " + absences);
 
                                         if (isPeriodValid) {
 
@@ -227,8 +243,11 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
     }
 
     private String formatClass(String s) {
-        s = s.substring(s.indexOf("-") + 1).trim();
-        return s;
+        return s.substring(s.indexOf("-") + 1).trim();
+    }
+
+    private String formatQID(String s) {
+        return s.substring(s.indexOf("=") + 1).trim();
     }
 
 }

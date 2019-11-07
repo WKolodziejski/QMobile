@@ -1,24 +1,17 @@
 package com.tinf.qmobile.activity.settings;
 
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceActivity;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-
-import android.preference.PreferenceManager;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.tinf.qmobile.App;
-
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
 
 /**
  * A {@link android.preference.PreferenceActivity} which implements and proxies the necessary calls

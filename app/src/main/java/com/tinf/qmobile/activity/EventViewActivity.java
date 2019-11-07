@@ -3,15 +3,16 @@ package com.tinf.qmobile.activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.fragment.view.EventViewFragment;
-import com.tinf.qmobile.fragment.view.JournalViewFragment;
-import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.view.EventViewFragment;
+import com.tinf.qmobile.fragment.view.JournalViewFragment;
+import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.network.Client;
 
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 

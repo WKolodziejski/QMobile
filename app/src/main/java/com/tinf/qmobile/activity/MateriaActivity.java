@@ -2,15 +2,13 @@ package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.tinf.qmobile.fragment.MateriaFragment;
+
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.MateriaFragment;
 
 public class MateriaActivity extends AppCompatActivity {
 

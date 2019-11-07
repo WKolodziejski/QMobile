@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
@@ -19,19 +20,21 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.tinf.qmobile.model.materiais.Material;
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.model.materiais.Material;
+import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.JournalParser;
 import com.tinf.qmobile.parser.MateriaisParser;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,8 +45,9 @@ import java.util.Map;
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
 import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
+import static com.tinf.qmobile.model.calendar.Utils.UPDATE_REQUEST;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
@@ -54,7 +58,6 @@ import static com.tinf.qmobile.network.OnResponse.PG_GERADOR;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
-import static com.tinf.qmobile.model.calendario.Utils.UPDATE_REQUEST;
 
 public class Client {
     private final static String TAG = "Network Client";

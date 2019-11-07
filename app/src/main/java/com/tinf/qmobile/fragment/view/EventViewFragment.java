@@ -14,22 +14,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.calendario.EventUser;
-import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.R;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.network.Client;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
 import static android.view.View.GONE;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 

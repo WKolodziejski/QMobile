@@ -1,53 +1,36 @@
 package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import io.objectbox.Box;
-import io.objectbox.query.QueryBuilder;
-import me.jlurena.revolvingweekview.WeekView;
-import me.jlurena.revolvingweekview.WeekViewEvent;
-
-import android.preference.PreferenceManager;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
-import org.threeten.bp.DayOfWeek;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.TextStyle;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+
+import me.jlurena.revolvingweekview.WeekView;
+import me.jlurena.revolvingweekview.WeekViewEvent;
 
 import static com.tinf.qmobile.App.getBox;
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
-import static java.util.Calendar.MONDAY;
 
 public class ScheduleFragment extends Fragment implements OnUpdate {
 

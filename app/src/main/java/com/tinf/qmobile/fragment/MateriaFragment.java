@@ -2,26 +2,24 @@ package com.tinf.qmobile.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.adapter.diarios.EtapasAdapter;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.network.Client;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.adapter.journal.EtapasAdapter;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.network.Client;
 
 public class MateriaFragment extends Fragment {
     private EtapasAdapter adapter;

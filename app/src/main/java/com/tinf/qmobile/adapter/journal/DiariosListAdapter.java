@@ -1,100 +1,62 @@
-package com.tinf.qmobile.adapter.diarios;
+package com.tinf.qmobile.adapter.journal;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.holder.DiariosListViewHolder;
-import com.tinf.qmobile.holder.ExpandableViewHolder;
-import com.tinf.qmobile.model.matter.Journal;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.List;
 
-public class ExpandableAdapter extends RecyclerView.Adapter {
+public class DiariosListAdapter extends RecyclerView.Adapter {
     private List<Matter> matters;
     private Context context;
-    private DiariosListAdapter.OnExpandListener onExpandListener;
+    private OnExpandListener onExpandListener;
     private View.OnClickListener open, expand;
-    private RotateAnimation rotate;
 
-    public ExpandableAdapter(Context context, List<Matter> matters, View.OnClickListener open) {
+    public DiariosListAdapter(Context context, List<Matter> matters, View.OnClickListener open, View.OnClickListener expand) {
         this.context = context;
         this.matters = matters;
         this.open = open;
         this.expand = expand;
-
-        rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(250);
-        rotate.setInterpolator(new LinearInterpolator());
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ExpandableViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.list_expandable_2, parent, false));
+        return new DiariosListViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.list_expandable, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        final ExpandableViewHolder holder = (ExpandableViewHolder) viewHolder;
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
+         final DiariosListViewHolder holder = (DiariosListViewHolder) viewHolder;
 
-        holder.title.setText(matters.get(i).getTitle());
-        holder.expand.setExpanded(matters.get(i).isExpanded, matters.get(i).shouldAnimate);
-        holder.badge.setBackgroundTintList(ColorStateList.valueOf(matters.get(i).getColor()));
+         holder.title.setText(matters.get(i).getTitle());
+         holder.expand.setExpanded(matters.get(i).isExpanded, matters.get(i).shouldAnimate);
 
-        setView(holder, i);
+         setView(holder, i);
 
-        holder.details.setTag(i);
-        holder.layout.setTag(i);
+         holder.open.setTag(i);
+         holder.expandAct.setTag(i);
 
-        holder.details.setTextColor(matters.get(i).getColor());
+         holder.open.setOnClickListener(open);
+         holder.expandAct.setOnClickListener(expand);
 
-        holder.details.setOnClickListener(open);
-        holder.layout.setOnClickListener(view -> {
-            holder.expand.toggle();
-            holder.arrow.startAnimation(rotate);
+         holder.expand.setOnExpansionUpdateListener((expansionFraction, state) -> {
 
-            Integer pos = (Integer) view.getTag();
-
-            matters.get(pos).isExpanded = !matters.get(pos).isExpanded;
-
-            rotate.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    if (matters.get(pos).isExpanded) {
-                        holder.arrow.setImageResource(R.drawable.ic_less);
-                    } else {
-                        holder.arrow.setImageResource(R.drawable.ic_more);
-                    }
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });
-        });
-
-        holder.expand.setOnExpansionUpdateListener((expansionFraction, state) -> {
-
-            Integer pos = (Integer) holder.layout.getTag();
+            Integer pos = (Integer) holder.open.getTag();
             setView(holder, pos);
 
             if (state == ExpandableLayout.State.EXPANDED && matters.get(pos).isExpanded) {
@@ -103,7 +65,7 @@ public class ExpandableAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private void setView(ExpandableViewHolder holder, int i) {
+    private void setView(DiariosListViewHolder holder, int i) {
         if (matters.get(i).isExpanded) {
             if (matters.get(i).periods.size() > 0) {
 
@@ -112,17 +74,17 @@ public class ExpandableAdapter extends RecyclerView.Adapter {
                 if (diarios.isEmpty()) {
                     holder.arrow.setImageResource(R.drawable.ic_less);
                     holder.title.setTextColor(matters.get(i).getColor());
-                    //holder.nothing.setVisibility(View.VISIBLE);
-                    //holder.open.setVisibility(View.GONE);
+                    holder.nothing.setVisibility(View.VISIBLE);
+                    holder.open.setVisibility(View.GONE);
                     holder.recyclerView.setVisibility(View.GONE);
                 } else {
                     holder.recyclerView.post(() -> {
-                        JournalAdapter2 adapter = new JournalAdapter2(context, diarios);
+                        JournalAdapter adapter = new JournalAdapter(context, diarios);
                         adapter.setHasStableIds(true);
 
-                        //holder.nothing.setVisibility(View.GONE);
+                        holder.nothing.setVisibility(View.GONE);
 
-                        //holder.open.setVisibility(View.VISIBLE);
+                        holder.open.setVisibility(View.VISIBLE);
 
                         holder.recyclerView.setHasFixedSize(true);
                         holder.recyclerView.setItemViewCacheSize(20);
@@ -139,8 +101,8 @@ public class ExpandableAdapter extends RecyclerView.Adapter {
             } else {
                 holder.arrow.setImageResource(R.drawable.ic_less);
                 holder.title.setTextColor(matters.get(i).getColor());
-                //holder.nothing.setVisibility(View.VISIBLE);
-                //holder.open.setVisibility(View.GONE);
+                holder.nothing.setVisibility(View.VISIBLE);
+                holder.open.setVisibility(View.GONE);
                 holder.recyclerView.setVisibility(View.GONE);
             }
         } else {
@@ -207,7 +169,7 @@ public class ExpandableAdapter extends RecyclerView.Adapter {
         //notifyDataSetChanged();
     }
 
-    public void setOnExpandListener(DiariosListAdapter.OnExpandListener onExpandListener){
+    public void setOnExpandListener(OnExpandListener onExpandListener){
         this.onExpandListener = onExpandListener;
     }
 

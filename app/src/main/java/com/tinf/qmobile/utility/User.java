@@ -6,10 +6,12 @@ import android.text.TextUtils;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

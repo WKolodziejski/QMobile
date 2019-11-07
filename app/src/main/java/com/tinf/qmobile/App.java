@@ -8,15 +8,15 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.tinf.qmobile.model.MyObjectBox;
+import com.tinf.qmobile.model.calendar.Utils;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-import com.tinf.qmobile.model.calendario.Utils;
 
 import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
+import static com.tinf.qmobile.model.calendar.Utils.VERSION_INFO;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
-import static com.tinf.qmobile.model.calendario.Utils.VERSION_INFO;
 
 public class App extends Application {
     private static final String TAG = "Application";

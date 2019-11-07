@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
+
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -20,13 +22,9 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
-import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.service.BackgroundCheck;
-import androidx.core.app.NotificationCompat;
+import com.tinf.qmobile.activity.MateriaActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tinf.qmobile.activity.settings.SettingsActivity.ALERT;

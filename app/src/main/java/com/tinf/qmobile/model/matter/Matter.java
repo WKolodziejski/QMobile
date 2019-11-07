@@ -1,15 +1,21 @@
 package com.tinf.qmobile.model.matter;
 
-import com.tinf.qmobile.model.materiais.Material;
 import androidx.annotation.ColorInt;
+
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.journal.JournalBase;
+import com.tinf.qmobile.model.materiais.Material;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
+import static com.tinf.qmobile.model.journal.JournalBase.ViewType.HEADER;
+
 @Entity
-public class Matter {
+public class Matter implements JournalBase {
     @Transient public boolean isExpanded;
     @Transient public boolean shouldAnimate;
     @Id public long id;
@@ -50,11 +56,54 @@ public class Matter {
     }
 
     public String getTitle() {
-        return title_ == null ? "" : title_;
+        return title_ == null ? description_ : title_;
     }
 
     public void setTitle(String title) {
         this.title_ = title;
+    }
+
+    public Period getLastPeriod() {
+        int k = 0;
+        for (int j = 0; j < periods.size(); j++) {
+            if (!periods.get(j).journals.isEmpty()) {
+                k = j;
+            }
+        }
+
+        return periods.get(k);
+    }
+
+    public float getGradeSum() {
+        Period period = getLastPeriod();
+
+        if (period.journals.isEmpty())
+            return -1;
+
+        float sum = 0;
+
+        for (Journal j : period.journals)
+            if (j.getGrade_() != -1)
+                sum += j.getGrade_();
+
+        return sum;
+    }
+
+    public float getPartialGrade() {
+        Period period = getLastPeriod();
+
+        if (period.journals.isEmpty())
+            return -1;
+
+        float sum = getGradeSum();
+
+        float weight = 0;
+
+        for (Journal j : period.journals)
+            if (j.getWeight_() != -1)
+                weight = +j.getWeight_();
+
+        return sum / weight;
     }
 
     /*
@@ -85,6 +134,11 @@ public class Matter {
 
     public String getDescription_() {
         return description_;
+    }
+
+    @Override
+    public int getItemType() {
+        return HEADER;
     }
 
 }

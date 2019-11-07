@@ -2,24 +2,29 @@ package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventImage;
-import com.tinf.qmobile.model.calendario.EventImage_;
-import com.tinf.qmobile.model.calendario.EventSimple;
-import com.tinf.qmobile.model.calendario.EventSimple_;
-import com.tinf.qmobile.model.calendario.Month;
-import com.tinf.qmobile.model.calendario.Month_;
+import com.tinf.qmobile.model.calendar.EventImage;
+import com.tinf.qmobile.model.calendar.EventImage_;
+import com.tinf.qmobile.model.calendar.EventSimple;
+import com.tinf.qmobile.model.calendar.EventSimple_;
+import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.model.calendar.Month_;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
+
 import io.objectbox.Box;
+
+import static com.tinf.qmobile.model.calendar.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
-import static com.tinf.qmobile.model.calendario.Utils.getDate;
 
 public class CalendarParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";

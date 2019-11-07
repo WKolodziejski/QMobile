@@ -1,13 +1,13 @@
-package com.tinf.qmobile.model.calendario;
+package com.tinf.qmobile.model.calendar;
 
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.EventBase;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.EventBase;
 
 import io.objectbox.annotation.Entity;
 
-import static com.tinf.qmobile.model.calendario.EventSimple.Type.FIM;
-import static com.tinf.qmobile.model.calendario.EventSimple.Type.INICIO;
+import static com.tinf.qmobile.model.calendar.EventSimple.Type.FIM;
+import static com.tinf.qmobile.model.calendar.EventSimple.Type.INICIO;
 
 @Entity
 public class EventSimple extends EventBase {

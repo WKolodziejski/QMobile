@@ -1,17 +1,16 @@
 package com.tinf.qmobile.activity.calendar;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
+import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.widget.TextView;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.tinf.qmobile.fragment.CalendarioFragment;
+import com.google.android.material.appbar.AppBarLayout;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.CalendarFragment;
 
 import java.util.Date;
 
@@ -32,7 +31,7 @@ public class CalendarioActivity2 extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.calendario_fragment, new CalendarioFragment())
+                .replace(R.id.calendario_fragment, new CalendarFragment())
                 .commit();
 
         calendar = findViewById(R.id.compactcalendar_view);

@@ -2,10 +2,12 @@ package com.tinf.qmobile.holder;
 
 import android.view.View;
 import android.widget.TextView;
-import com.tinf.qmobile.R;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.tinf.qmobile.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

@@ -6,15 +6,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventUser;
+
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventUserViewHolder extends CalendarioViewHolder<EventUser> {
+public class EventUserViewHolder extends CalendarViewHolder<EventUser> {
     @BindView(R.id.calendar_user_title)       public TextView title;
     @BindView(R.id.calendar_user_description) public TextView description;
     @BindView(R.id.calendar_user_matter)      public TextView matter;
@@ -42,7 +43,7 @@ public class EventUserViewHolder extends CalendarioViewHolder<EventUser> {
             matter.setText(event.getMatter());
         }
         card.setBackgroundColor(event.getColor());
-        CalendarioViewHolder.setHeader(header, event, context);
+        CalendarViewHolder.setHeader(header, event, context);
 
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EventViewActivity.class);

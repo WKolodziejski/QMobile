@@ -2,18 +2,54 @@ package com.tinf.qmobile.fragment;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.HorarioActivity;
+import com.tinf.qmobile.activity.MainActivity;
+import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.calendar.CalendarioActivity;
+import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.adapter.calendar.EventsAdapter;
+import com.tinf.qmobile.model.calendar.EventImage;
+import com.tinf.qmobile.model.calendar.EventImage_;
+import com.tinf.qmobile.model.calendar.EventSimple;
+import com.tinf.qmobile.model.calendar.EventSimple_;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.EventUser_;
+import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.journal.Journal_;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.model.matter.Schedule_;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.User;
+
+import org.threeten.bp.DayOfWeek;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,50 +57,7 @@ import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-import android.os.Environment;
-import android.util.Pair;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.activity.calendar.CalendarioActivity;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.activity.HorarioActivity;
-import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.adapter.calendario.EventosAdapter;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.EventBase;
-import com.tinf.qmobile.model.calendario.EventImage;
-import com.tinf.qmobile.model.calendario.EventImage_;
-import com.tinf.qmobile.model.calendario.EventSimple;
-import com.tinf.qmobile.model.calendario.EventSimple_;
-import com.tinf.qmobile.model.calendario.EventUser;
-import com.tinf.qmobile.model.calendario.EventUser_;
-import com.tinf.qmobile.model.matter.Journal;
-import com.tinf.qmobile.model.matter.Journal_;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.model.matter.Schedule_;
-import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
-import com.tinf.qmobile.R;
-
-import org.threeten.bp.DayOfWeek;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import static com.tinf.qmobile.App.getBox;
-import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
@@ -72,7 +65,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     private NestedScrollView nestedScrollView;
-    private EventosAdapter calendarioAdapter;
+    private EventsAdapter calendarioAdapter;
     private List<Matter> matters;
 
     @Override
@@ -129,7 +122,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         }
 
         if (calendarioAdapter == null) {
-            calendarioAdapter = new EventosAdapter(getActivity(), events);
+            calendarioAdapter = new EventsAdapter(getActivity(), events);
         } else {
             calendarioAdapter.update(events);
         }

@@ -8,25 +8,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.RetryStrategy;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.calendario.EventUser;
-import com.tinf.qmobile.model.calendario.EventUser_;
+import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.EventUser_;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 
 import java.util.Date;
 import java.util.List;
-import androidx.legacy.content.WakefulBroadcastReceiver;
+
 import io.objectbox.Box;
+
 import static android.content.Context.ALARM_SERVICE;
-import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -82,9 +80,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 if (context != null) {
                     Log.i(TAG, "Calling alarm service");
 
-                    //AlarmService.enqueueWork(context, AlarmService.class, (int) id, intent);
+                    AlarmService.enqueueWork(context, AlarmService.class, (int) id, intent);
 
-                    FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+                    /*FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
 
                     Job.Builder alarm = dispatcher.newJobBuilder()
                             .setService(AlarmJob.class)
@@ -93,7 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             .setLifetime(Lifetime.FOREVER)
                             .setReplaceCurrent(true);
 
-                    dispatcher.schedule(alarm.build());
+                    dispatcher.schedule(alarm.build());*/
 
                     setResultCode(Activity.RESULT_OK);
                 }

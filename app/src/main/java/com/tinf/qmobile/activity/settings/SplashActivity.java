@@ -3,17 +3,21 @@ package com.tinf.qmobile.activity.settings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-import androidx.appcompat.app.AppCompatActivity;
+
 import io.fabric.sdk.android.Fabric;
+
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class SplashActivity extends AppCompatActivity {

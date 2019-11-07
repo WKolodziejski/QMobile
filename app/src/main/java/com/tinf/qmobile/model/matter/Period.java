@@ -1,7 +1,7 @@
 package com.tinf.qmobile.model.matter;
 
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.journal.Journal;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;

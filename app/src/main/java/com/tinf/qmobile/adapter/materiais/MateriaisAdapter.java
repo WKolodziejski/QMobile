@@ -1,16 +1,17 @@
 package com.tinf.qmobile.adapter.materiais;
 
 import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tinf.qmobile.model.materiais.Material;
-import com.tinf.qmobile.fragment.MateriaisFragment;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.holder.MateriaisViewHolder;
+import com.tinf.qmobile.model.materiais.Material;
+
 import java.util.List;
 
 public class MateriaisAdapter extends RecyclerView.Adapter {

@@ -9,9 +9,9 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.model.calendario.Base.CalendarBase;
-import com.tinf.qmobile.model.matter.Journal;
-import com.tinf.qmobile.model.matter.Journal_;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -30,7 +30,7 @@ import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
-import static com.tinf.qmobile.model.calendario.Utils.getDate;
+import static com.tinf.qmobile.model.calendar.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 
 public class JournalParser extends AsyncTask<String, Void, Void> {
@@ -70,7 +70,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                 User.setYears(years);
 
-                Elements tableMatters = document.getElementsByTag("tbody").eq(12);
+                Element tableMatters = document.getElementsByTag("tbody").get(12);
 
                 if (!BuildConfig.DEBUG) {
                     Crashlytics.log(Log.ERROR, TAG, tableMatters.toString());
@@ -109,7 +109,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                         Period period = null;
 
-                        if (matter.periods.size() > periodCount) {
+                        if (matter.periods.size() - 1 > periodCount) {
                             period = matter.periods.get(periodCount);
                         }
 
@@ -127,7 +127,13 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                         for (int j = 0; j < rowGrades.size(); j++) {
                             String dateString = formatDate(rowGrades.eq(j).first().child(1).text());
                             String infos = rowGrades.eq(j).first().child(1).text();
+
+                            //Log.i(TAG, infos);
+
+
                             String t = formatType(infos);
+
+                            //Log.i(TAG, infos);
 
                             int type = Journal.Type.AVALIACAO.get();
 
@@ -188,7 +194,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                                     count++;
 
-                                    if (notify) {
+                                    if (notify && grade != -1) {
                                         sendNotification(newJournal);
                                     }
                                 } else {

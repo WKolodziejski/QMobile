@@ -1,11 +1,14 @@
-package com.tinf.qmobile.model.calendario.Base;
+package com.tinf.qmobile.model.calendar.base;
+
+import androidx.annotation.ColorInt;
 
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+
 import java.util.Calendar;
 import java.util.Date;
-import androidx.annotation.ColorInt;
+
 import io.objectbox.annotation.BaseEntity;
 import io.objectbox.annotation.Id;
 
@@ -115,4 +118,5 @@ public abstract class EventBase extends Event implements CalendarBase {
     public int getColor() {
         return color == 0 ? App.getContext().getResources().getColor(R.color.colorAccent) : color;
     }
+
 }

@@ -72,6 +72,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/schedule_create_matter_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
@@ -242,6 +243,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/schedule_create_alarm_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
@@ -286,6 +288,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/schedule_create_color_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"

@@ -3,13 +3,6 @@ package com.tinf.qmobile.fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,14 +15,22 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import com.tinf.qmobile.activity.LoginActivity;
-import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.network.Client;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;

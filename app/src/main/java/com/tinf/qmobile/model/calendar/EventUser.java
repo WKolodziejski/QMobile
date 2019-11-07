@@ -1,9 +1,9 @@
-package com.tinf.qmobile.model.calendario;
+package com.tinf.qmobile.model.calendar;
 
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.model.calendario.Base.EventBase;
-import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.matter.Matter;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;

@@ -6,12 +6,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tinf.qmobile.model.calendario.EventImage;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.EventImage;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EventImageViewHolder extends CalendarioViewHolder<EventImage> {
+public class EventImageViewHolder extends CalendarViewHolder<EventImage> {
     @BindView(R.id.calendar_image_image) public ImageView image;
     @BindView(R.id.calendar_image_title) public TextView title;
     @BindView(R.id.calendar_image_header) public FrameLayout header;
@@ -25,6 +26,6 @@ public class EventImageViewHolder extends CalendarioViewHolder<EventImage> {
     public void bind(EventImage event, Context context) {
         image.setImageResource(event.getImage());
         title.setText(event.getTitle());
-        CalendarioViewHolder.setHeader(header, event, context);
+        CalendarViewHolder.setHeader(header, event, context);
     }
 }

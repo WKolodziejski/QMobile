@@ -1,21 +1,21 @@
-package com.tinf.qmobile.model.matter;
+package com.tinf.qmobile.model.journal;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.model.calendario.Base.EventBase;
+import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Period;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
 
-import static com.tinf.qmobile.model.matter.Journal.Type.AVALIACAO;
+import static com.tinf.qmobile.model.journal.Journal.Type.AVALIACAO;
 
 @Entity
-public class Journal extends EventBase {
+public class Journal extends EventBase implements JournalBase {
 
     public enum Type {
         AVALIACAO(0), PROVA(1), TRABALHO(2), EXERCICIO(3), QUALITATIVA(4);
@@ -104,7 +104,7 @@ public class Journal extends EventBase {
 
     @Override
     public int getItemType() {
-        return ViewType.JOURNAL;
+        return JournalBase.ViewType.JOURNAL;
     }
 
     public String formatDate() {
