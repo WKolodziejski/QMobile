@@ -106,6 +106,10 @@ public class Matter implements JournalBase {
         return sum / weight;
     }
 
+    public int getQID() {
+        return Integer.parseInt(description_.substring(0, description_.indexOf('-') - 1));
+    }
+
     /*
      * Auto-generated methods
      */

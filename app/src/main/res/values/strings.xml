@@ -84,6 +84,7 @@
     <string name="boletim_Faltas">F</string>
     <string name="boletim_RP">RP</string>
     <string name="boletim_NotaFinal">NF</string>
+    <string name="boletim_Conceito">C</string>
     <string name="boletim_PrimeiraEtapa">1ª</string>
     <string name="boletim_SegundaEtapa">2ª</string>
     <string name="boletim_TerceiraEtapa">3ª</string>

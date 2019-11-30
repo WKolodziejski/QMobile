@@ -24,6 +24,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.Date;
 import java.util.Random;
 
 import io.objectbox.Box;
@@ -54,6 +55,8 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                 Log.i(TAG, "Parsing " + User.getYear(pos) + User.getPeriod(pos));
 
+                Date today = new Date();
+
                 Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
                 Box<Period> periodBox = App.getBox().boxFor(Period.class);
                 Box<Journal> journalBox = App.getBox().boxFor(Journal.class);
@@ -83,9 +86,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                         nxtElem = tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).next().eq(0).first();
                     }
 
-                    String info = tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).first().child(0).text();
-
-                    String description = formatDescription(info);
+                    String description = tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).first().child(0).text();
 
                     Matter matter = matterBox.query()
                             .equal(Matter_.description_, description).and()
@@ -194,7 +195,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                                     count++;
 
-                                    if (notify && grade != -1) {
+                                    if (notify && grade != -1 && date <= today.getTime()) {
                                         sendNotification(newJournal);
                                     }
                                 } else {
@@ -254,7 +255,8 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     }
 
     private String formatType(String s) {
-        return s.substring(s.indexOf(",") + 1, s.indexOf(':')).trim();
+        s = s.substring(s.indexOf(",") + 1);
+        return s.substring(0, s.indexOf(':')).trim();
     }
 
     private String formatJournalTitle(String s) {

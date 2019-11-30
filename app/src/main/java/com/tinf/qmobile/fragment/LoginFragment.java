@@ -62,6 +62,7 @@ public class LoginFragment extends Fragment implements OnResponse {
         List<String> urls = new ArrayList<>();
         urls.add("IFSUL");
         urls.add("IFES");
+        urls.add("IFMT");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         adapter.addAll(urls);
@@ -77,6 +78,9 @@ public class LoginFragment extends Fragment implements OnResponse {
                                 break;
 
                             case 1: Client.get().setURL(IFES);
+                                break;
+
+                            case 2: Client.get().setURL(IFMT);
                                 break;
                         }
                     }

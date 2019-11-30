@@ -86,6 +86,26 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 getResources().getString(R.string.boletim_TFaltas)
         };
 
+        String[] bim2 = {
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                getResources().getString(R.string.boletim_TFaltas)
+        };
+
         String[] uni = {
                 getResources().getString(R.string.boletim_Nota),
                 getResources().getString(R.string.boletim_Faltas),
@@ -103,6 +123,8 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 break;
             case 3: header.addAll(Arrays.asList(sem2));
                 break;
+            case 4: header.addAll(Arrays.asList(bim2));
+                break;
         }
 
         materiaList = getBox().boxFor(Matter.class).query().order(Matter_.title_)
@@ -117,14 +139,21 @@ public class BoletimFragment extends Fragment implements OnUpdate {
         for (int i = 0; i < materiaList.size(); i++) {
             ArrayList<String> row = new ArrayList<>();
             row.add(materiaList.get(i).getTitle());
+            int size = materiaList.get(i).periods.size();
 
-            for (int j = 0; j < materiaList.get(i).periods.size(); j++) {
+            if (User.getType() == User.Type.BIMESTRE2.get())
+                size--;
+
+            for (int j = 0; j < size; j++) {
                 Period period = materiaList.get(i).periods.get(j);
-                //Log.d(TAG, materiaList.get(i).getTitle() + " " + materiaList.get(i).periods.get(j).getTitle());
                 row.add(period.getGrade());
-                row.add(period.getAbsences());
+                if (j % 2 == 0 || User.getType() != User.Type.BIMESTRE2.get()) {
+                    row.add(period.getAbsences());
+                }
                 if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
                     row.add(period.getGradeRP());
+                    row.add(period.getGradeFinal());
+                } else if (User.getType() == User.Type.BIMESTRE2.get() && j % 2 == 0) {
                     row.add(period.getGradeFinal());
                 }
             }

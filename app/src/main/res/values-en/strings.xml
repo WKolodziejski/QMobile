@@ -18,6 +18,7 @@
     <string name="boletim_Nota">G</string>
     <string name="boletim_RP">RT</string>
     <string name="boletim_NotaFinal">FG</string>
+    <string name="boletim_Conceito">C</string>
     <string name="boletim_PrimeiraEtapa">1st</string>
     <string name="boletim_SegundaEtapa">2nd</string>
     <string name="dialog_date_change">Select a year</string>

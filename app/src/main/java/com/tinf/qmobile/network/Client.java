@@ -23,7 +23,9 @@ import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.materiais.Material;
+import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.parser.CalendarParser;
+import com.tinf.qmobile.parser.ClassParser;
 import com.tinf.qmobile.parser.JournalParser;
 import com.tinf.qmobile.parser.MateriaisParser;
 import com.tinf.qmobile.parser.ReportParser;
@@ -36,11 +38,22 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.X509TrustManager;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
@@ -52,6 +65,7 @@ import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
 import static com.tinf.qmobile.network.OnResponse.PG_GERADOR;
@@ -82,6 +96,19 @@ public class Client {
     }
 
     private Client() {
+        try {
+            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new X509TrustManager[]{
+                    new X509TrustManager(){
+                        public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+                        public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+                        public X509Certificate[] getAcceptedIssuers() {return new X509Certificate[0];}}},
+                    new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         requests = Volley.newRequestQueue(getContext(), new HurlStack());
         queue = new ArrayList<>();
         URL = User.getURL();
@@ -95,12 +122,12 @@ public class Client {
         return singleton;
     }
 
-    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify) {
+    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter) {
         if (!isValid) {
             if (!isLogging) {
                 login();
             }
-            addToQueue(pg, url, pos, method, form, notify);
+            addToQueue(pg, url, pos, method, form, notify, matter);
         } else {
             Log.i(TAG, "Request for: " + pg);
             addRequest(new StringRequest(method, URL + url,
@@ -108,7 +135,7 @@ public class Client {
                         Resp r = testResponse(response);
 
                         if (r == Resp.DENIED) {
-                            addToQueue(pg, url, pos, method, form, notify);
+                            addToQueue(pg, url, pos, method, form, notify, matter);
                             login();
                             callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
 
@@ -127,6 +154,9 @@ public class Client {
 
                             } else if (pg == PG_CALENDARIO) {
                                 new CalendarParser(this::callOnFinish).execute(response);
+
+                            } else if (pg == PG_CLASSES) {
+                                new ClassParser(matter, pg, pos, notify, this::callOnFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_FETCH_YEARS) {
                                 Document document = Jsoup.parse(response);
@@ -165,6 +195,12 @@ public class Client {
         load(pg, pos);
     }
 
+    public void load(Matter matter) {
+        createRequest(PG_CLASSES,
+                INDEX + PG_DIARIOS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
+                pos, POST, new HashMap<>(), false, matter);
+    }
+
     public void load(int pg, int pos) {
         int method = GET;
         String url = INDEX + pg;
@@ -192,12 +228,12 @@ public class Client {
             }
         }
 
-        createRequest(pg, url, pos, method, form, false);
+        createRequest(pg, url, pos, method, form, false, null);
     }
 
     public void checkChanges(int pg) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean(NOTIFY, true));
+        createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean(NOTIFY, true), null);
     }
 
     private <T> void addRequest(Request<T> request, int pg, int pos) {
@@ -293,7 +329,7 @@ public class Client {
         if (strong != null) {
             String s = strong.text().trim();
 
-            if (s.contains("Negado") || s.contains("negado")) {
+            if (s.contains("negado") || s.contains("Negado")) {
                 Element div = document.getElementsByClass("conteudoTexto").first();
 
                 if (div != null) {
@@ -326,17 +362,17 @@ public class Client {
         if (queue != null && !queue.isEmpty()) {
             for (int i = 0; i < queue.size(); i++) {
                 RequestHelper helper = queue.get(i);
-                createRequest(helper.pg, helper.url, helper.pos, helper.method, helper.form, helper.notify);
+                createRequest(helper.pg, helper.url, helper.pos, helper.method, helper.form, helper.notify, helper.matter);
                 queue.remove(i);
             }
         }
     }
 
-    private void addToQueue(int pg, String url, int pos, int method, Map<String, String> form, boolean notify) {
+    private void addToQueue(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter) {
         if (queue == null) {
             queue = new ArrayList<>();
         }
-        RequestHelper request = new RequestHelper(pg, url, pos, method, form, notify);
+        RequestHelper request = new RequestHelper(pg, url, pos, method, form, notify, matter);
         if (!queue.contains(request)) {
             queue.add(request);
             Log.i(TAG, "Queued: " + pg + " for " + User.getYear(pos));
@@ -363,12 +399,18 @@ public class Client {
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
                         String cookie1 = response.allHeaders.get(5).getValue();
+                        Log.d("Cookie 1", cookie1);
                         cookie1 = cookie1.substring(0, cookie1.indexOf(";")).concat("; ");
+                        COOKIE = cookie1;
 
-                        String cookie2 = response.allHeaders.get(6).getValue();
-                        cookie2 = cookie2.substring(0, cookie2.indexOf(";")).concat(";");
+                        try {
+                            String cookie2 = response.allHeaders.get(6).getValue();
+                            cookie2 = cookie2.substring(0, cookie2.indexOf(";")).concat(";");
+                            COOKIE = cookie1.concat(cookie2);
+                        } catch (StringIndexOutOfBoundsException e) {
+                            e.printStackTrace();
+                        }
 
-                        COOKIE = cookie1.concat(cookie2);
                         Log.d("Cookie", COOKIE);
 
                         Log.v(TAG, "Cookie fetched");
@@ -399,7 +441,7 @@ public class Client {
             msg = getContext().getResources().getString(R.string.client_no_connection);
         } else {
             if (pg == PG_GERADOR) {
-                msg = getContext().getResources().getString(R.string.client_host);
+                //msg = getContext().getResources().getString(R.string.client_host);
             } else if (pg == PG_LOGIN) {
                 isLogging = false;
                 isValid = false;

@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public class Utils {
     public static final int UPDATE_REQUEST = 0;
-    public static final String VERSION = ".v1.0.6-beta";
+    public static final String VERSION = ".v1.0.7-beta";
     public static final String VERSION_INFO = ".Version";
 
     public static long getDate(String date, boolean isMonth) {
@@ -28,7 +28,7 @@ public class Utils {
     }
 
     private static int getYear(String date) {
-        return Integer.parseInt(date.substring(date.lastIndexOf("/") + 1));
+        return Integer.parseInt(date.substring(date.lastIndexOf("/") + 1, date.lastIndexOf("/") + 5));
     }
 
 }

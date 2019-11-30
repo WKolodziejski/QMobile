@@ -29,7 +29,7 @@ import static com.tinf.qmobile.network.OnResponse.IFSUL;
 public class User {
 
     public enum Type {
-        SEMESTRE1(0), BIMESTRE(1), UNICO(2), SEMESTRE2(3);
+        SEMESTRE1(0), BIMESTRE(1), UNICO(2), SEMESTRE2(3), BIMESTRE2(4);
 
         private int i;
 

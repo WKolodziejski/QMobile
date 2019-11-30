@@ -2,6 +2,7 @@ package com.tinf.qmobile;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.calendar.Utils;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 
 import io.objectbox.BoxStore;
@@ -28,6 +30,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
+
         AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(NIGHT, false) ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
@@ -35,8 +39,13 @@ public class App extends Application {
 
         if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
             if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
-                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
+                Client.get().clearRequests();
+                Jobs.cancellAllJobs();
+                App.closeBoxStore();
                 User.clearInfos();
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
+                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         } else {
             initBoxStore();

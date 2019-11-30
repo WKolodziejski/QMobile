@@ -100,17 +100,26 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                                                 }
                                                 User.setType(User.Type.SEMESTRE1);
                                                 break;
+
                                             case "NB1":
                                                 for (int j = matter.periods.size() + 1; j <= 4; j++) {
                                                     matter.periods.add(new Period(Integer.toString(j)));
                                                 }
                                                 User.setType(User.Type.BIMESTRE);
                                                 break;
+
                                             case "NS1":
                                                 for (int j = matter.periods.size() + 1; j <= 2; j++) {
                                                     matter.periods.add(new Period(Integer.toString(j)));
                                                 }
                                                 User.setType(User.Type.SEMESTRE2);
+                                                break;
+
+                                            case "1B":
+                                                for (int j = matter.periods.size() + 1; j <= 8; j++) {
+                                                    matter.periods.add(new Period(Integer.toString(j)));
+                                                }
+                                                User.setType(User.Type.BIMESTRE2);
                                                 break;
                                         }
                                     }
@@ -176,6 +185,50 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                                                         grade_ = formatNumber(rows.get(i).child(11).text());
                                                         absences_ = formatNumber(rows.get(i).child(12).text());
                                                         break;
+                                                    default: isPeriodValid = false;
+                                                }
+                                            } else if (User.getType() == User.Type.BIMESTRE2.get()) { //Bimestre com conceito
+                                                switch (j) {
+                                                    case 0:
+                                                        grade_ = formatNumber(rows.get(i).child(5).text());
+                                                        absences_ = formatNumber(rows.get(i).child(6).text());
+                                                        gradeFinal_ = formatNumber(rows.get(i).child(9).text());
+                                                        break;
+
+                                                    case 1:
+                                                        grade_ = formatNumber(rows.get(i).child(7).text());
+                                                        break;
+
+                                                    case 2:
+                                                        grade_ = formatNumber(rows.get(i).child(10).text());
+                                                        absences_ = formatNumber(rows.get(i).child(11).text());
+                                                        gradeFinal_ = formatNumber(rows.get(i).child(14).text());
+                                                        break;
+
+                                                    case 3:
+                                                        grade_ = formatNumber(rows.get(i).child(12).text());
+                                                        break;
+
+                                                    case 4:
+                                                        grade_ = formatNumber(rows.get(i).child(15).text());
+                                                        absences_ = formatNumber(rows.get(i).child(16).text());
+                                                        gradeFinal_ = formatNumber(rows.get(i).child(19).text());
+                                                        break;
+
+                                                    case 5:
+                                                        grade_ = formatNumber(rows.get(i).child(17).text());
+                                                        break;
+
+                                                    case 6:
+                                                        grade_ = formatNumber(rows.get(i).child(20).text());
+                                                        absences_ = formatNumber(rows.get(i).child(21).text());
+                                                        gradeFinal_ = formatNumber(rows.get(i).child(24).text());
+                                                        break;
+
+                                                    case 7:
+                                                        grade_ = formatNumber(rows.get(i).child(22).text());
+                                                        break;
+
                                                     default: isPeriodValid = false;
                                                 }
                                             }

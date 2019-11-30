@@ -18,6 +18,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -208,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         App.closeBoxStore();
         User.clearInfos();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }

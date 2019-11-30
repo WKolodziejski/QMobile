@@ -1,6 +1,5 @@
 package com.tinf.qmobile.parser;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -22,30 +21,22 @@ import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
 import static com.tinf.qmobile.model.calendar.Utils.getDate;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
 
-public class MateriaisParser extends AsyncTask<String, Void, Void> {
+public class MaterialsParser2 extends BaseParser {
     private final static String TAG = "MateriaisParser";
-    private OnFinish onFinish;
-    private int pos;
-    private boolean notify;
 
-    public MateriaisParser(int pos, boolean notify, OnFinish onFinish) {
-        this.pos = pos;
-        this.notify = notify;
-        this.onFinish = onFinish;
+    public MaterialsParser2(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+        super(page, pos, notify, onFinish, onError);
     }
 
     @Override
-    protected Void doInBackground(String... page) {
-
+    public void parse(Document page) {
         Log.i(TAG, "Parsing");
 
         Box<Matter> materiaBox = App.getBox().boxFor(Matter.class);
         Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
 
-        Document document = Jsoup.parse(page[0]);
-        Element table = document.getElementsByTag("tbody").get(10);
+        Element table = page.getElementsByTag("tbody").get(10);
         Elements rotulos = table.getElementsByClass("rotulo");
 
         if (!BuildConfig.DEBUG) {
@@ -121,17 +112,6 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                 materiaBox.put(materia);
             }
         }
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_MATERIAIS, pos);
-    }
-
-    public interface OnFinish {
-        void onFinish(int pg, int year);
     }
 
 }

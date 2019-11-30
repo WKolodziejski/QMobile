@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     @Override
     public void onFinish(int pg, int pos) {
 
-        if (false) {
+        /*if (false) {
 
             if (pg == PG_LOGIN) {
                 Client.get().load(PG_FETCH_YEARS);
@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                 pages++;
             }
 
-        } else {
+        } else {*/
             if (pg == PG_LOGIN) {
                 Client.get().load(PG_FETCH_YEARS);
             }
@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             if (pg == PG_CALENDARIO) {
                 pages++;
             }
-        }
+        //}
 
         if (pages == User.getYears().length * 3 + 1) {
             User.setValid(true);
@@ -141,10 +141,10 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
        } else {
            //App.closeBoxStore();
-           Toast.makeText(getApplicationContext(), getResources().getString(R.string.client_error), Toast.LENGTH_LONG).show();
+           Toast.makeText(getApplicationContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
        }
 
-       Log.v(TAG, "Access denied");
+       Log.v(TAG, message);
     }
 
     @Override
