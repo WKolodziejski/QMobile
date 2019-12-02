@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
 
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ImageType.CARNAVAL;
+import static com.tinf.qmobile.model.calendar.base.CalendarBase.ImageType.CARNIVAL;
 import static com.tinf.qmobile.model.calendar.base.CalendarBase.ImageType.CHRISTMAS;
 import static com.tinf.qmobile.model.calendar.base.CalendarBase.ImageType.RECESS;
 import static com.tinf.qmobile.model.calendar.base.CalendarBase.ImageType.VACATION;
@@ -34,11 +34,11 @@ public interface CalendarBase {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({CHRISTMAS, VACATION, CARNAVAL, RECESS})
+    @IntDef({CHRISTMAS, VACATION, CARNIVAL, RECESS})
     @interface ImageType {
         int CHRISTMAS = 1;
         int VACATION = 2;
-        int CARNAVAL = 3;
+        int CARNIVAL = 3;
         int RECESS = 4;
     }
 

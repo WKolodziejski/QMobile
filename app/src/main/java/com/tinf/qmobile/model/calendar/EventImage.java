@@ -30,7 +30,7 @@ public class EventImage extends EventBase {
 
             case ImageType.VACATION: return R.mipmap.img_vacation;
 
-            case ImageType.CARNAVAL: return R.mipmap.img_carnaval;
+            case ImageType.CARNIVAL: return R.mipmap.img_carnaval;
 
             case ImageType.RECESS: return R.mipmap.img_recess;
         }

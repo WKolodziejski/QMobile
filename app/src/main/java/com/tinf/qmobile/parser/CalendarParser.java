@@ -157,16 +157,16 @@ public class CalendarParser extends AsyncTask<String, Void, Void> {
 
                                                 int img = 0;
                                                 
-                                                if (title.equals("Natal")) {
+                                                if (title.contains("Natal")) {
                                                     img = CalendarBase.ImageType.CHRISTMAS;
                                                 
-                                                } else if (title.equals("Férias")) {
+                                                } else if (title.contains("Férias")) {
                                                     img = CalendarBase.ImageType.VACATION;
                                                 
-                                                } else if (title.equals("Carnaval")) {
-                                                    img = CalendarBase.ImageType.CARNAVAL;
+                                                } else if (title.contains("Carnaval")) {
+                                                    img = CalendarBase.ImageType.CARNIVAL;
                                                 
-                                                } else if (title.equals("Recesso Escolar")) {
+                                                } else if (title.contains("Recesso")) {
                                                     img = CalendarBase.ImageType.RECESS;
                                                 }
                                                 
@@ -208,16 +208,16 @@ public class CalendarParser extends AsyncTask<String, Void, Void> {
 
                                                 int img = 0;
 
-                                                if (title.equals("Natal")) {
+                                                if (title.contains("Natal")) {
                                                     img = CalendarBase.ImageType.CHRISTMAS;
 
-                                                } else if (title.equals("Férias")) {
+                                                } else if (title.contains("Férias")) {
                                                     img = CalendarBase.ImageType.VACATION;
 
-                                                } else if (title.equals("Carnaval")) {
-                                                    img = CalendarBase.ImageType.CARNAVAL;
+                                                } else if (title.contains("Carnaval")) {
+                                                    img = CalendarBase.ImageType.CARNIVAL;
 
-                                                } else if (title.equals("Recesso Escolar")) {
+                                                } else if (title.contains("Recesso")) {
                                                     img = CalendarBase.ImageType.RECESS;
                                                 }
 

@@ -114,6 +114,16 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 getResources().getString(R.string.boletim_TFaltas)
         };
 
+        String[] trim = {
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                getResources().getString(R.string.boletim_TFaltas)
+        };
+
         switch (User.getType()) {
             case 0 : header.addAll(Arrays.asList(sem1));
                 break;
@@ -124,6 +134,8 @@ public class BoletimFragment extends Fragment implements OnUpdate {
             case 3: header.addAll(Arrays.asList(sem2));
                 break;
             case 4: header.addAll(Arrays.asList(bim2));
+                break;
+            case 5: header.addAll(Arrays.asList(trim));
                 break;
         }
 
@@ -141,7 +153,7 @@ public class BoletimFragment extends Fragment implements OnUpdate {
             row.add(materiaList.get(i).getTitle());
             int size = materiaList.get(i).periods.size();
 
-            if (User.getType() == User.Type.BIMESTRE2.get())
+            if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
                 size--;
 
             for (int j = 0; j < size; j++) {

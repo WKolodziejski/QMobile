@@ -13,7 +13,6 @@ import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.Month_;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -156,7 +155,7 @@ public class CalendarParser2 extends BaseParser {
                                             img = CalendarBase.ImageType.VACATION;
 
                                         } else if (title.equals("Carnaval")) {
-                                            img = CalendarBase.ImageType.CARNAVAL;
+                                            img = CalendarBase.ImageType.CARNIVAL;
 
                                         } else if (title.equals("Recesso Escolar")) {
                                             img = CalendarBase.ImageType.RECESS;
@@ -207,7 +206,7 @@ public class CalendarParser2 extends BaseParser {
                                             img = CalendarBase.ImageType.VACATION;
 
                                         } else if (title.equals("Carnaval")) {
-                                            img = CalendarBase.ImageType.CARNAVAL;
+                                            img = CalendarBase.ImageType.CARNIVAL;
 
                                         } else if (title.equals("Recesso Escolar")) {
                                             img = CalendarBase.ImageType.RECESS;
