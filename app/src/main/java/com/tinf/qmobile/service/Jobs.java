@@ -76,7 +76,7 @@ public class Jobs {
         }
     }
 
-    public static void cancellAllJobs() {
+    public static void cancelAllJobs() {
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(App.getContext()));
         dispatcher.cancelAll();
     }

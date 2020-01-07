@@ -5,13 +5,14 @@ import android.content.Intent;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 
 public class BackgroundCheck extends JobService {
-    private boolean errorOcurred;
+    private boolean errorOccurred;
 
     @Override
     public boolean onStartJob(JobParameters job) {
@@ -21,7 +22,9 @@ public class BackgroundCheck extends JobService {
         Client.get().addOnResponseListener(new OnResponse() {
             @Override
             public void onStart(int pg, int pos) {
-                //TODO adicionar Log ou notificação pra DeBug
+                if (BuildConfig.DEBUG) {
+                    Jobs.displayNotification(getApplicationContext(), "Debug", "Verificando notas", "Debug", 0, new Intent(App.getContext(), SplashActivity.class));
+                }
             }
 
             @Override
@@ -32,7 +35,7 @@ public class BackgroundCheck extends JobService {
                 }
 
                 if (pg == PG_DIARIOS) {
-                    errorOcurred = false;
+                    errorOccurred = false;
                     Client.get().removeOnResponseListener(this);
                     onStopJob(job);
                 }
@@ -40,7 +43,7 @@ public class BackgroundCheck extends JobService {
 
             @Override
             public void onError(int pg, String error) {
-                errorOcurred = true;
+                errorOccurred = true;
                 Client.get().removeOnResponseListener(this);
                 onStopJob(job);
             }
@@ -59,7 +62,8 @@ public class BackgroundCheck extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters job) {
-        Jobs.scheduleJob(errorOcurred);
+        Jobs.scheduleJob(errorOccurred);
         return false;
     }
+
 }

@@ -9,11 +9,16 @@
     <include
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        layout="@layout/action_bar_default"/>
+        layout="@layout/action_bar_matter"/>
 
-    <FrameLayout
+    <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/materia_fragment"/>
+        android:id="@+id/pager_matter"/>
+
+    <!--<FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/materia_fragment"/>!-->
 
 </LinearLayout>

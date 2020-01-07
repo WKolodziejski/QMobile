@@ -1,5 +1,7 @@
 package com.tinf.qmobile.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -19,12 +21,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
@@ -35,6 +39,7 @@ import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MateriaisFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
@@ -43,6 +48,7 @@ import com.tinf.qmobile.utility.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.Box;
 
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -76,6 +82,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);*/
+
+
 
         /*final MenuItem menuMsgs = menu.findItem(R.id.action_messages);
 
@@ -120,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             case R.id.action_logout:
 
-                new AlertDialog.Builder(MainActivity.this)
+                new MaterialAlertDialogBuilder(MainActivity.this)
                         .setTitle(getResources().getString(R.string.dialog_quit))
                         .setMessage(R.string.dialog_quit_msg)
                         .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
@@ -141,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 year.setDisplayedValues(User.getYears());
                 year.setWrapSelectorWheel(false);
 
-                new AlertDialog.Builder(MainActivity.this)
+                new MaterialAlertDialogBuilder(MainActivity.this)
                         .setView(view)
                         .setTitle(getResources().getString(R.string.dialog_date_change))
                         .setPositiveButton(R.string.dialog_date_confirm, (dialog, which) -> {
@@ -205,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private void logOut() {
         Client.get().clearRequests();
-        Jobs.cancellAllJobs();
+        Jobs.cancelAllJobs();
         App.closeBoxStore();
         User.clearInfos();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
@@ -348,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         dismissProgressbar();
 
         if (pg == PG_LOGIN) {
-            new AlertDialog.Builder(MainActivity.this)
+            new MaterialAlertDialogBuilder(MainActivity.this)
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(getResources().getString(R.string.dialog_access_changed))
                     .setCancelable(false)
@@ -359,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .show();
 
         } else if (pg == PG_ACESSO_NEGADO) {
-            new AlertDialog.Builder(MainActivity.this)
+            new MaterialAlertDialogBuilder(MainActivity.this)
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(message)
                     .setCancelable(false)
@@ -409,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onDialog(String title, String msg) {
-        new AlertDialog.Builder(MainActivity.this)
+        new MaterialAlertDialogBuilder(MainActivity.this)
                 .setTitle(title)
                 .setMessage(msg)
                 .setCancelable(true)
@@ -420,7 +433,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onRenewalAvailable() {
-        new AlertDialog.Builder(MainActivity.this)
+        new MaterialAlertDialogBuilder(MainActivity.this)
                 .setTitle(getResources().getString(R.string.dialog_renewal_title))
                 .setMessage(getResources().getString(R.string.dialog_renewal_txt))
                 .setCancelable(true)

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.create.EventCreateFragment;
 import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
@@ -76,7 +77,7 @@ public class EventCreateActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(EventCreateActivity.this)
+        new MaterialAlertDialogBuilder(EventCreateActivity.this)
                 .setTitle(getString(R.string.dialog_discart_changes_title))
                 .setMessage(getString(R.string.dialog_discart_changes_txt))
                 .setCancelable(true)

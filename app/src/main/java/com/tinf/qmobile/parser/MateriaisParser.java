@@ -80,8 +80,6 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
                     long date = getDate(dataString, false);
 
-                    Material search = null;
-
                     try {
                         QueryBuilder<Material> builder = materiaisBox.query()
                                 .equal(Material_.title, title).and()
@@ -89,26 +87,27 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                                 .equal(Material_.link, link);
 
                         builder.link(Material_.matter)
-                                .equal(Matter_.description_, description).and()
+                                .contains(Matter_.description_, description).and()
                                 .equal(Matter_.year_, User.getYear(pos)).and()
                                 .equal(Matter_.period_, User.getPeriod(pos));
 
-                        search = builder.build().findUnique();
+                        Material search = builder.build().findUnique();
+
+                        if (search == null) {
+
+                            Material material = new Material(title, date, descricao, link);
+
+                            material.matter.setTarget(materia);
+                            materia.materials.add(material);
+                            materiaisBox.put(material);
+
+                            if (notify) {
+                                //TODO notificação
+                            }
+                        }
+
                     } catch (NonUniqueResultException e) {
                         e.printStackTrace();
-                    }
-
-                    if (search == null) {
-
-                        Material material = new Material(title, date, descricao, link);
-
-                        material.matter.setTarget(materia);
-                        materia.materials.add(material);
-                        materiaisBox.put(material);
-
-                        if (notify) {
-                            //TODO notificação
-                        }
                     }
 
                     if (element.nextElementSibling() != null) {

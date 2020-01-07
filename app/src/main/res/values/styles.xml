@@ -22,6 +22,9 @@
         <item name="alertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <!-- New MaterialComponents attributes. -->
         <item name="snackbarButtonStyle">?attr/borderlessButtonStyle</item>
+
+        <item name="searchViewStyle">@style/ThemeOverlay.MaterialComponents.Light</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">

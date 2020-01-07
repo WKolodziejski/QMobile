@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
@@ -297,7 +298,7 @@ public class EventCreateFragment extends Fragment {
                 strings[i + 1] = matters.get(i).getTitle();
             }
 
-            new AlertDialog.Builder(getContext())
+            new MaterialAlertDialogBuilder(getContext())
                     .setTitle(getString(R.string.dialog_choose_matter))
                     .setItems(strings, (dialog, which) -> {
                         matter = which;
@@ -317,7 +318,7 @@ public class EventCreateFragment extends Fragment {
             strings[2] = getString(R.string.alarm_1h);
             strings[3] = getString(R.string.alarm_1d);
 
-            new AlertDialog.Builder(getContext())
+            new MaterialAlertDialogBuilder(getContext())
                     .setItems(strings, (dialog, which) -> {
                         alarmDif = which;
                         updateText();

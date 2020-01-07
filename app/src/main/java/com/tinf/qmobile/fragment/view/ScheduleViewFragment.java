@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
@@ -150,7 +151,7 @@ public class ScheduleViewFragment extends Fragment implements OnUpdate {
 
             case R.id.action_delete:
 
-                new AlertDialog.Builder(getActivity())
+                new MaterialAlertDialogBuilder(getActivity())
                         .setMessage(getString(R.string.dialog_delete_txt))
                         .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
                             App.getBox().boxFor(Schedule.class).remove(id);

@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.HorarioActivity;
@@ -172,7 +173,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
             showCalendar(view);
 
             ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
-            ((MainActivity) getActivity()).fab.shrink(((MainActivity) getActivity()).fab.isShown());
             ((MainActivity) getActivity()).fab.show();
         });
     }

@@ -45,10 +45,6 @@ public class SplashActivity extends AppCompatActivity {
 
             Crashlytics.setUserIdentifier(User.getCredential(REGISTRATION));
 
-            Log.d(TAG, "Release version");
-
-        } else {
-            Log.d(TAG, "Debug version");
         }
 
         Intent intent;

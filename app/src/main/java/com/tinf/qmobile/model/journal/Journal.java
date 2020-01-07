@@ -2,6 +2,7 @@ package com.tinf.qmobile.model.journal;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
@@ -15,7 +16,7 @@ import io.objectbox.relation.ToOne;
 import static com.tinf.qmobile.model.journal.Journal.Type.AVALIACAO;
 
 @Entity
-public class Journal extends EventBase implements JournalBase {
+public class Journal extends EventBase implements JournalBase, Queryable {
 
     public enum Type {
         AVALIACAO(0), PROVA(1), TRABALHO(2), EXERCICIO(3), QUALITATIVA(4);
@@ -144,6 +145,11 @@ public class Journal extends EventBase implements JournalBase {
 
     public int getType_() {
         return type_;
+    }
+
+    @Override
+    public long getID() {
+        return id;
     }
 
 }

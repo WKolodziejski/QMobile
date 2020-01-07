@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,7 +26,6 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="56dp"
             android:id="@+id/refresh_layout"
             android:isScrollContainer="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -51,7 +49,6 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:transitionName="Fab"
-            android:text="@string/diarios_expand"
             android:textColor="@color/colorPrimaryLight"
             android:background="@color/colorAccent"
             android:visibility="gone"

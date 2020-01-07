@@ -58,4 +58,16 @@ public class EtapasAdapter extends RecyclerView.Adapter {
         return etapas.size();
     }
 
+    public void update(Matter matter) {
+        etapas.clear();
+
+        for (int i = 0; i < matter.periods.size(); i++) {
+            if (!matter.periods.get(i).journals.isEmpty()) {
+                etapas.add(matter.periods.get(i));
+            }
+        }
+        
+        notifyDataSetChanged();
+    }
+
 }

@@ -20,11 +20,13 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     private List<Matter> materiaList;
     private Context context;
     private MateriaisFragment.OnDownloadListener onDownloadListener;
+    private boolean isBundle;
 
-    public MateriaisListAdapter(Context context, List<Matter> materiaList, MateriaisFragment.OnDownloadListener onDownloadListener) {
+    public MateriaisListAdapter(Context context, List<Matter> materiaList, boolean isBundle, MateriaisFragment.OnDownloadListener onDownloadListener) {
         this.context = context;
         this.materiaList = materiaList;
         this.onDownloadListener = onDownloadListener;
+        this.isBundle = isBundle;
     }
 
     @NonNull
@@ -39,6 +41,7 @@ public class MateriaisListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final MateriaisListViewHolder holder = (MateriaisListViewHolder) viewHolder;
 
+        holder.materia.setVisibility(isBundle ? View.GONE : View.VISIBLE);
         holder.materia.setText(materiaList.get(i).getTitle());
         holder.materia.setTag(i);
         holder.recyclerView.setHasFixedSize(true);

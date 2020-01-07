@@ -38,6 +38,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -273,12 +277,10 @@ public class Client {
 
                             isLogging = false;
 
-                            String cod = document.getElementsByTag("q_latente").get(4).val();
-                            cod = cod.substring(cod.indexOf("=") + 1);
+                            //String cod = document.getElementsByTag("q_latente").get(4).val();
+                            //cod = cod.substring(cod.indexOf("=") + 1);
 
                             //downloadImage(cod);
-
-                            callOnFinish(PG_LOGIN, 0);
 
                             String renewal = document.getElementsByClass("conteudoLink").get(2).text();
 
@@ -286,16 +288,7 @@ public class Client {
                                 callOnRenewalAvailable();
                             }
 
-                            //Element msg = document.getElementById("modalmensagens");
-
-                            //if (msg != null) {
-                                //Element t = msg.child(0).getElementsByTag("h2").first();
-                                //Element p = msg.child(1).getElementsByTag("p").first();
-
-                                //if (t != null && p != null) {
-                                    //callOnDialog(t.text(), p.text());
-                                //}
-                            //}
+                            callOnFinish(PG_LOGIN, 0);
 
                         }
                     }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {

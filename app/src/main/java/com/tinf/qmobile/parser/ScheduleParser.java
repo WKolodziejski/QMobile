@@ -79,7 +79,7 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                                 Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time), User.getYear(pos), User.getPeriod(pos));
 
                                 String matterTitle = formatTitle(column.get(j).getElementsByTag("div").get(1).attr("title"));
-                                String clazz = formatClass(column.get(j).getElementsByTag("div").get(3).ownText());
+                                //String clazz = formatClass(column.get(j).getElementsByTag("div").get(3).ownText());
 
                                 if (matterTitle != null) {
                                     Matter matter = matterBox.query()

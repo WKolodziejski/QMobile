@@ -166,8 +166,6 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                             if (date != -1) {
 
-                                Journal search = null;
-
                                 try {
                                     QueryBuilder<Journal> builder = journalBox.query()
                                             .equal(Journal_.title, title).and()
@@ -181,33 +179,34 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                                             .equal(Matter_.year_, User.getYear(pos)).and()
                                             .equal(Matter_.period_, User.getPeriod(pos));
 
-                                    search = builder.build().findUnique();
-                                } catch (NonUniqueResultException e) {
-                                    e.printStackTrace();
-                                }
+                                    Journal search = builder.build().findUnique();
 
-                                if (search == null) {
+                                    if (search == null) {
 
-                                    Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
+                                        Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
 
-                                    period.journals.add(newJournal);
-                                    journalBox.put(newJournal);
+                                        period.journals.add(newJournal);
+                                        journalBox.put(newJournal);
 
-                                    count++;
-
-                                    if (notify && grade != -1 && date <= today.getTime()) {
-                                        sendNotification(newJournal);
-                                    }
-                                } else {
-                                    if (search.getGrade_() != grade) {
-                                        search.setGrade(grade);
-                                        journalBox.put(search);
                                         count++;
 
-                                        if (notify) {
-                                            sendNotification(search);
+                                        if (notify && grade != -1 && date <= today.getTime()) {
+                                            sendNotification(newJournal);
+                                        }
+                                    } else {
+                                        if (search.getGrade_() != grade) {
+                                            search.setGrade(grade);
+                                            journalBox.put(search);
+                                            count++;
+
+                                            if (notify) {
+                                                sendNotification(search);
+                                            }
                                         }
                                     }
+
+                                } catch (NonUniqueResultException e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.network.Client;
@@ -132,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         pages = 0;
 
        if (pg == PG_ACESSO_NEGADO) {
-            new AlertDialog.Builder(LoginActivity.this)
+            new MaterialAlertDialogBuilder(LoginActivity.this)
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(message)
                     .setCancelable(true)

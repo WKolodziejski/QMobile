@@ -34,6 +34,8 @@ import com.tinf.qmobile.adapter.materiais.MateriaisListAdapter;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
@@ -44,6 +46,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
@@ -61,6 +64,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private MateriaisListAdapter adapter;
     private String name, mime, path;
     private int i, j;
+    private Bundle bundle;
     @BindView(R.id.recycler_materiais) RecyclerView recyclerView;
     @BindView(R.id.materiais_empty) View empty;
 
@@ -69,11 +73,13 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
         super.onCreate(savedInstanceState);
         getActivity().registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
+        bundle = getArguments();
+
         Client.get().load(PG_MATERIAIS);
 
         loadData();
 
-        adapter = new MateriaisListAdapter(getContext(), materiaList, (i, j) -> {
+        adapter = new MateriaisListAdapter(getContext(), materiaList, bundle != null, (i, j) -> {
             if (checkPermission()) {
                 Material material = materiaList.get(i).materials.get(j);
                 if (material.isDownloaded) {
@@ -92,10 +98,18 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     private void loadData() {
         path = "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
 
-        List<Matter> matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos)).and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build().find();
+        List<Matter> matters;
+
+        if (bundle == null) {
+            matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build().find();
+        } else {
+            matters = getBox().boxFor(Matter.class).query()
+                    .equal(Matter_.id, bundle.getLong("ID"))
+                    .build().find();
+        }
 
         materiaList = new ArrayList<>();
 
@@ -163,28 +177,28 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
         Log.v(TAG, "View created");
 
-        view.post(() -> {
             RecyclerView.LayoutManager layout = new LinearLayoutManager(getContext());
             DividerItemDecoration decoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
 
             recyclerView.setLayoutManager(layout);
-            recyclerView.addItemDecoration(decoration);
             recyclerView.setAdapter(adapter);
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
-                }
+            if (bundle == null) {
+                recyclerView.addItemDecoration(decoration);
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                        ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                    }
 
-                @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
-            });
-            ((MainActivity) getActivity()).fab.hide();
-        });
+                    @Override
+                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                    }
+                });
+                ((MainActivity) getActivity()).fab.hide();
+            }
     }
 
     @Override

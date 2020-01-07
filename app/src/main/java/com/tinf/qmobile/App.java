@@ -40,7 +40,7 @@ public class App extends Application {
         if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
             if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
                 Client.get().clearRequests();
-                Jobs.cancellAllJobs();
+                Jobs.cancelAllJobs();
                 App.closeBoxStore();
                 User.clearInfos();
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();

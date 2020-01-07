@@ -1,5 +1,6 @@
 package com.tinf.qmobile.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -7,7 +8,9 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
@@ -16,6 +19,7 @@ import java.util.Objects;
 
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
@@ -39,6 +43,13 @@ public class HorarioActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.schedule_fragment, new ScheduleFragment())
                 .commit();
+
+        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) findViewById(R.id.fab_add_schedule);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), EventCreateActivity.class);
+            intent.putExtra("TYPE", SCHEDULE);
+            startActivity(intent);
+        });
     }
 
     @Override

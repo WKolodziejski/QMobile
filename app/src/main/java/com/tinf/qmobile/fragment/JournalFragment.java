@@ -187,7 +187,6 @@ public class JournalFragment extends Fragment implements OnUpdate {
                 }
             });
             ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_expand);
-            ((MainActivity) getActivity()).fab.extend(((MainActivity) getActivity()).fab.isShown());
             ((MainActivity) getActivity()).fab.show();
         });
     }
