@@ -4,31 +4,28 @@ import android.util.Log;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.MyObjectBox;
+import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.utility.User;
 import java.util.List;
 import io.objectbox.BoxStore;
-import io.objectbox.android.AndroidScheduler;
-
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class DataBase {
     private static final String TAG = "DataBase";
     private static DataBase instance;
     private BoxStore boxStore;
     private List<Matter> matters;
+    private List<Schedule> schedule;
+    private List<EventBase> events;
 
     private DataBase() {
-        if (User.isValid() || Client.get().isValid()) {
-            boxStore = MyObjectBox
-                    .builder()
-                    .androidContext(App.getContext())
-                    .name(User.getCredential(REGISTRATION))
-                    .build();
-        } else return;
+        boxStore = MyObjectBox
+                .builder()
+                .androidContext(App.getContext())
+                .build();
 
         boxStore.subscribe(Matter.class)
                 .observer(data -> {
@@ -77,10 +74,6 @@ public class DataBase {
         return instance;
     }
 
-    public List<Matter> getMatters() {
-        return matters;
-    }
-
     public BoxStore getBoxStore() {
         return boxStore;
     }
@@ -92,6 +85,19 @@ public class DataBase {
             boxStore.deleteAllFiles();
             boxStore = null;
         }
+    }
+
+
+    public List<Matter> getMatters() {
+        return matters;
+    }
+
+    public List<Schedule> getSchedule() {
+        return schedule;
+    }
+
+    public List<EventBase> getEvents() {
+        return events;
     }
 
 }

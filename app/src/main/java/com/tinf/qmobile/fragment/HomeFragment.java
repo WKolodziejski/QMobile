@@ -42,27 +42,26 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
 import org.threeten.bp.DayOfWeek;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 
 public class HomeFragment extends Fragment implements OnUpdate {
+    @BindView(R.id.weekView_home)   WeekView weekView;
     private NestedScrollView nestedScrollView;
     private EventsAdapter calendarioAdapter;
     private List<Matter> matters;
@@ -137,13 +136,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         showHorario(view);
 
-        view.post(() -> {
-
-            ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), EventCreateActivity.class);
-                intent.putExtra("TYPE", EVENT);
-                startActivity(intent);
-            });
+        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
+            intent.putExtra("TYPE", EVENT);
+            startActivity(intent);
+        });
 
             /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
             Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -153,23 +150,22 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             image.setImageBitmap(croppedBmp);*/
 
-            nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
+        nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
-            nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                    (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                        ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
-                        if (scrollY < oldScrollY && !((MainActivity) getActivity()).fab.isShown())
-                            ((MainActivity) getActivity()).fab.show();
-                        else if(scrollY > oldScrollY && ((MainActivity) getActivity()).fab.isShown())
-                            ((MainActivity) getActivity()).fab.hide();
-                    });
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
+                    if (scrollY < oldScrollY && !((MainActivity) getActivity()).fab.isShown())
+                        ((MainActivity) getActivity()).fab.show();
+                    else if(scrollY > oldScrollY && ((MainActivity) getActivity()).fab.isShown())
+                        ((MainActivity) getActivity()).fab.hide();
+                });
 
-            showOffline(view);
-            showCalendar(view);
+        showOffline(view);
+        showCalendar(view);
 
-            ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
-            ((MainActivity) getActivity()).fab.show();
-        });
+        ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
+        ((MainActivity) getActivity()).fab.show();
     }
 
     @OnClick(R.id.home_website)
@@ -214,7 +210,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     private void showHorario(View view) {
 
-        WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
+        //WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
 
         weekView.setWeekViewLoader(() -> {
             double firstHour = 24;

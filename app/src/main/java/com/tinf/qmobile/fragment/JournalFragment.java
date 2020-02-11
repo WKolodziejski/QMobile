@@ -26,6 +26,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.adapter.journal.DiariosListAdapter;
+import com.tinf.qmobile.adapter.journal.JournalAdapter3;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
