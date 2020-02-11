@@ -3,12 +3,12 @@ package com.tinf.qmobile.parser;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -51,15 +51,15 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... page) {
         try {
-            return App.getBox().callInTx(() -> {
+            return DataBase.get().getBoxStore().callInTx(() -> {
 
                 Log.i(TAG, "Parsing " + User.getYear(pos) + User.getPeriod(pos));
 
                 Date today = new Date();
 
-                Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
-                Box<Period> periodBox = App.getBox().boxFor(Period.class);
-                Box<Journal> journalBox = App.getBox().boxFor(Journal.class);
+                Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+                Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
+                Box<Journal> journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
 
                 Document document = Jsoup.parse(page[0]);
 
@@ -299,7 +299,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     private int pickColor(String description) {
         int color = 0;
 
-        Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.description_, description).build().findFirst();
+        Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query().equal(Matter_.description_, description).build().findFirst();
 
         if (matter != null) {
             color = matter.getColor();

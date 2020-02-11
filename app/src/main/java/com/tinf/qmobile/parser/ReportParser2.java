@@ -3,13 +3,13 @@ package com.tinf.qmobile.parser;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.utility.User;
-import org.jsoup.Jsoup;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -27,8 +27,8 @@ public class ReportParser2 extends BaseParser {
     public void parse(Document page) {
         Log.i(TAG, "Parsing " + User.getYear(pos));
 
-        Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
-        Box<Period> periodBox = App.getBox().boxFor(Period.class);
+        Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+        Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
 
         Elements tables = page.getElementsByTag("tbody");
 

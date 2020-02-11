@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -14,8 +14,6 @@ import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-
-import java.text.Normalizer;
 
 import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
@@ -37,12 +35,12 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... page) {
         try {
-            return App.getBox().callInTx(() -> {
+            return DataBase.get().getBoxStore().callInTx(() -> {
 
                 Log.i(TAG, "Parsing " + User.getYear(pos));
 
-                Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
-                Box<Period> periodBox = App.getBox().boxFor(Period.class);
+                Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+                Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
 
                 Document document = Jsoup.parse(page[0]);
 

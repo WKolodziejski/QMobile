@@ -21,6 +21,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.adapter.calendar.EventsAdapter;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -128,11 +129,11 @@ public class CalendarFragment extends Fragment implements OnUpdate {
     }
 
     private void loadData() {
-        Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
-        Box<Journal> eventJournalBox = App.getBox().boxFor(Journal.class);
-        Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
-        Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
-        Box<Month> monthBox = App.getBox().boxFor(Month.class);
+        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
+        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
+        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
+        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
 
         events = new ArrayList<>();
 

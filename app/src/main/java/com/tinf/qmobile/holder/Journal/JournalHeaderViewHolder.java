@@ -6,11 +6,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
 import com.tinf.qmobile.model.matter.Matter;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

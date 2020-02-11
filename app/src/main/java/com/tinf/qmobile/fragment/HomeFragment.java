@@ -19,8 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.activity.MainActivity;
@@ -28,6 +26,7 @@ import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.adapter.calendar.EventsAdapter;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -58,7 +57,6 @@ import io.objectbox.Box;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
@@ -76,10 +74,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     }
 
     private void loadData() {
-        matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos)).and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build().find();
+        matters = DataBase.get().getMatters();
 
         Calendar current = Calendar.getInstance();
         current.setTime(new Date());
@@ -88,10 +83,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
         current.set(Calendar.SECOND, 0);
         current.set(Calendar.MILLISECOND, 0);
 
-        Box<EventUser> eventUserBox = App.getBox().boxFor(EventUser.class);
-        Box<Journal> eventJournalBox = App.getBox().boxFor(Journal.class);
-        Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
-        Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
+        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
+        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
+        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
+        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
 
         List<EventBase> events = new ArrayList<>();
 
@@ -225,7 +220,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             double firstHour = 24;
 
             List<WeekViewEvent> events = new ArrayList<>();
-            List<Schedule> schedules = App.getBox().boxFor(Schedule.class).query()
+            List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
                     .equal(Schedule_.year, User.getYear(pos)).and()
                     .equal(Schedule_.period, User.getPeriod(pos)).and()
                     .equal(Schedule_.isFromSite_, true)
@@ -251,7 +246,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         weekView.notifyDatasetChanged();
         weekView.setOnEventClickListener((event, eventRect) -> {
-            Matter matter = getBox().boxFor(Matter.class).query()
+            Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query()
                     .equal(Matter_.title_, event.getName())
                     .equal(Matter_.year_, User.getYear(pos)).and()
                     .equal(Matter_.period_, User.getPeriod(pos))
@@ -259,6 +254,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             if (matter != null) {
                 Intent intent = new Intent(getContext(), MateriaActivity.class);
                 intent.putExtra("ID", matter.id);
+                intent.putExtra("PAGE", MateriaActivity.SCHEDULE);
                 startActivity(intent);
             }
         });

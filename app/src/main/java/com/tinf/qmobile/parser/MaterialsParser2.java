@@ -3,15 +3,14 @@ package com.tinf.qmobile.parser;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.model.materiais.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -33,8 +32,8 @@ public class MaterialsParser2 extends BaseParser {
     public void parse(Document page) {
         Log.i(TAG, "Parsing");
 
-        Box<Matter> materiaBox = App.getBox().boxFor(Matter.class);
-        Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
+        Box<Matter> materiaBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+        Box<Material> materiaisBox = DataBase.get().getBoxStore().boxFor(Material.class);
 
         Element table = page.getElementsByTag("tbody").get(10);
         Elements rotulos = table.getElementsByClass("rotulo");

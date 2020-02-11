@@ -1,7 +1,5 @@
 package com.tinf.qmobile.parser;
 
-import android.util.Log;
-
 import com.tinf.qmobile.model.matter.Matter;
 
 import org.jsoup.nodes.Document;

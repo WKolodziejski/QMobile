@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -24,6 +23,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.network.Client;
@@ -82,7 +82,7 @@ public class ScheduleViewFragment extends Fragment implements OnUpdate {
     }
 
     private void setText() {
-        Schedule schedule = App.getBox().boxFor(Schedule.class).get(id);
+        Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
 
         DayTime start = schedule.getStartTime();
         DayTime end = schedule.getEndTime();
@@ -154,7 +154,7 @@ public class ScheduleViewFragment extends Fragment implements OnUpdate {
                 new MaterialAlertDialogBuilder(getActivity())
                         .setMessage(getString(R.string.dialog_delete_txt))
                         .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
-                            App.getBox().boxFor(Schedule.class).remove(id);
+                            DataBase.get().getBoxStore().boxFor(Schedule.class).remove(id);
                             Client.get().removeOnUpdateListener(this);
                             ((EventViewActivity) getActivity()).finish();
                             Client.get().requestUpdate();

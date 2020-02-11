@@ -5,6 +5,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -34,9 +35,9 @@ public class CalendarParser2 extends BaseParser {
     public void parse(Document page) {
         Log.i(TAG, "Parsing");
 
-        Box<Month> monthBox = App.getBox().boxFor(Month.class);
-        Box<EventImage> eventImageBox = App.getBox().boxFor(EventImage.class);
-        Box<EventSimple> eventSimpleBox = App.getBox().boxFor(EventSimple.class);
+        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
+        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
+        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
 
         Elements months = page.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 

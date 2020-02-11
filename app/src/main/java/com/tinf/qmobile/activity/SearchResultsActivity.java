@@ -1,23 +1,19 @@
 package com.tinf.qmobile.activity;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
-import android.content.Entity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.holder.DiariosViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
@@ -36,7 +32,7 @@ public class SearchResultsActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        journalBox = App.getBox().boxFor(Journal.class);
+        journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
 
         Intent intent = getIntent();
         list = new ArrayList<>();

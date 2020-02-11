@@ -4,23 +4,20 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.model.materiais.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-
 import static com.tinf.qmobile.model.calendar.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
 
@@ -41,8 +38,8 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
 
         Log.i(TAG, "Parsing");
 
-        Box<Matter> materiaBox = App.getBox().boxFor(Matter.class);
-        Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
+        Box<Matter> materiaBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+        Box<Material> materiaisBox = DataBase.get().getBoxStore().boxFor(Material.class);
 
         Document document = Jsoup.parse(page[0]);
         Element table = document.getElementsByTag("tbody").get(10);

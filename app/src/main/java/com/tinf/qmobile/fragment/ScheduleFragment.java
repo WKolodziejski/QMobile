@@ -10,12 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
@@ -25,12 +23,10 @@ import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.objectbox.query.Query;
 import io.objectbox.query.QueryBuilder;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
@@ -61,13 +57,13 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         List<Schedule> schedules;
 
         if (bundle == null) {
-            schedules = App.getBox().boxFor(Schedule.class).query()
+            schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
                     .equal(Schedule_.year, User.getYear(pos)).and()
                     .equal(Schedule_.period, User.getPeriod(pos))
                     .build().find();
         } else {
 
-            QueryBuilder<Schedule> builder =  App.getBox().boxFor(Schedule.class).query()
+            QueryBuilder<Schedule> builder = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
                     .equal(Schedule_.year, User.getYear(pos)).and()
                     .equal(Schedule_.period, User.getPeriod(pos));
 

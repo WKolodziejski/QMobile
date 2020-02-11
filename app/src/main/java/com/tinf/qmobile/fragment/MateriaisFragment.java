@@ -27,15 +27,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.materiais.MateriaisListAdapter;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
@@ -46,12 +44,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.Box;
-import io.objectbox.query.QueryBuilder;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.tinf.qmobile.App.getBox;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
 import static com.tinf.qmobile.network.Client.isConnected;
 import static com.tinf.qmobile.network.Client.pos;
@@ -101,12 +97,9 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
         List<Matter> matters;
 
         if (bundle == null) {
-            matters = getBox().boxFor(Matter.class).query().order(Matter_.title_)
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build().find();
+            matters = DataBase.get().getMatters();
         } else {
-            matters = getBox().boxFor(Matter.class).query()
+            matters = DataBase.get().getBoxStore().boxFor(Matter.class).query()
                     .equal(Matter_.id, bundle.getLong("ID"))
                     .build().find();
         }
@@ -152,7 +145,7 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
 
             mime = manager.getMimeTypeForDownloadedFile(lastDownloadL);
 
-            Box<Material> materiaisBox = App.getBox().boxFor(Material.class);
+            Box<Material> materiaisBox = DataBase.get().getBoxStore().boxFor(Material.class);
             material.setMime(mime);
             material.setPath(path);
             materiaisBox.put(material);

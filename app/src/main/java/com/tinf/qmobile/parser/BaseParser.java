@@ -3,6 +3,7 @@ package com.tinf.qmobile.parser;
 import android.os.AsyncTask;
 
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.data.DataBase;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +26,7 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... strings) {
         try {
-            return App.getBox().callInTx(() -> {
+            return DataBase.get().getBoxStore().callInTx(() -> {
                 parse(Jsoup.parse(strings[0]));
                 return true;
             });

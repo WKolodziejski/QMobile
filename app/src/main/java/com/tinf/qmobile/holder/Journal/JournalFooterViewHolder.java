@@ -37,6 +37,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
         details.setOnClickListener(view -> {
             Intent intent = new Intent(context, MateriaActivity.class);
             intent.putExtra("ID", footer.getMatter().id);
+            intent.putExtra("PAGE", MateriaActivity.GRADES);
             context.startActivity(intent);
         });
         layout.setOnClickListener(view -> {

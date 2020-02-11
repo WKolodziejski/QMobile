@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -28,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -75,7 +75,7 @@ public class EventCreateFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
+        Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
         matters = matterBox.query()
                 .equal(Matter_.year_, User.getYear(0)).and()
@@ -92,7 +92,7 @@ public class EventCreateFragment extends Fragment {
         start = (Calendar) calendar.clone();
         end = (Calendar) calendar.clone();
 
-        List<EventSimple> months = App.getBox().boxFor(EventSimple.class).query().order(EventSimple_.startTime).build().find();
+        List<EventSimple> months = DataBase.get().getBoxStore().boxFor(EventSimple.class).query().order(EventSimple_.startTime).build().find();
 
         firstMonth = months.get(0).getStartTime() + 1;
 
@@ -106,7 +106,7 @@ public class EventCreateFragment extends Fragment {
 
             if (id != 0) {
 
-                EventUser event = App.getBox().boxFor(EventUser.class).get(id);
+                EventUser event = DataBase.get().getBoxStore().boxFor(EventUser.class).get(id);
 
                 if (event != null) {
 
@@ -368,7 +368,7 @@ public class EventCreateFragment extends Fragment {
 
             Toast.makeText(getContext(), getString(id == 0 ? R.string.event_added : R.string.event_edited), Toast.LENGTH_SHORT).show();
 
-            Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
+            Box<EventUser> eventBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
             id = eventBox.put(event);
 
             Intent intent = new Intent(getContext(), AlarmReceiver.class);

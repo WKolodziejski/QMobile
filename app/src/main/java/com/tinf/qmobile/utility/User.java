@@ -9,8 +9,6 @@ import com.tinf.qmobile.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 

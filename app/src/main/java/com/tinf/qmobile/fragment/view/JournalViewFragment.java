@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.journal.Journal;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +59,7 @@ public class JournalViewFragment extends Fragment {
 
         SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-        Journal journal = App.getBox().boxFor(Journal.class).get(id);
+        Journal journal = DataBase.get().getBoxStore().boxFor(Journal.class).get(id);
 
         title_txt.setText(journal.getTitle());
         grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));

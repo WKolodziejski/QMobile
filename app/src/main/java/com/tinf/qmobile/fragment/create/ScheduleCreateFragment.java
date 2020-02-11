@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -27,6 +26,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -80,7 +80,7 @@ public class ScheduleCreateFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
+        Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
         matters = matterBox.query()
                 .equal(Matter_.year_, User.getYear(0)).and()
@@ -95,7 +95,7 @@ public class ScheduleCreateFragment extends Fragment {
 
             if (id != 0) {
 
-                Schedule schedule = App.getBox().boxFor(Schedule.class).get(id);
+                Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
 
                 if (schedule != null) {
 
@@ -312,7 +312,7 @@ public class ScheduleCreateFragment extends Fragment {
 
             Toast.makeText(getContext(), getString(id == 0 ? R.string.event_added : R.string.event_edited), Toast.LENGTH_SHORT).show();
 
-            Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
+            Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
             id = scheduleBox.put(schedule);
 
             Intent intent = new Intent(getContext(), AlarmReceiver.class);

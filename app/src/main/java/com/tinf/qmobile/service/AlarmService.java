@@ -18,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -50,7 +51,7 @@ public class AlarmService extends JobIntentService {
 
                 channel = getString(R.string.title_calendario);
 
-                Box<EventUser> eventBox = App.getBox().boxFor(EventUser.class);
+                Box<EventUser> eventBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
                 EventUser event = eventBox.get(id);
 
                 if (event != null) {
@@ -70,7 +71,7 @@ public class AlarmService extends JobIntentService {
 
                 channel = getString(R.string.title_horario);
 
-                Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
+                Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
                 Schedule schedule = scheduleBox.get(id);
 
                 if (schedule != null) {

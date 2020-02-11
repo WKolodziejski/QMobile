@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -36,12 +36,12 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... page) {
         try {
-            return App.getBox().callInTx(() -> {
+            return DataBase.get().getBoxStore().callInTx(() -> {
 
                 Log.i(TAG, "Parsing " + User.getYear(pos));
 
-                Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
-                Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
+                Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
+                Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
                 Document document = Jsoup.parse(page[0]);
 

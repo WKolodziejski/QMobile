@@ -19,8 +19,9 @@ import com.rmondjone.locktableview.LockTableView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.fragment.matter.GradesFragment;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
@@ -29,8 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.tinf.qmobile.App.getBox;
-import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
 public class BoletimFragment extends Fragment implements OnUpdate {
@@ -139,10 +138,7 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                 break;
         }
 
-        materiaList = getBox().boxFor(Matter.class).query().order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos)).and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build().find();
+        materiaList = DataBase.get().getMatters();
 
         data = new ArrayList<>();
 
@@ -190,8 +186,7 @@ public class BoletimFragment extends Fragment implements OnUpdate {
 
             table = new LockTableView(getContext(), mContentView, data);
 
-            table
-                    .setLockFristColumn(true)
+            table.setLockFristColumn(true)
                     .setLockFristRow(true)
                     .setMinColumnWidth(32)
                     .setMaxColumnWidth(96)
@@ -207,6 +202,7 @@ public class BoletimFragment extends Fragment implements OnUpdate {
                         if (position != 0) {
                             Intent intent = new Intent(getContext(), MateriaActivity.class);
                             intent.putExtra("ID", materiaList.get(position - 1).id);
+                            intent.putExtra("PAGE", MateriaActivity.GRADES);
                             startActivity(intent);
                         }
                     })

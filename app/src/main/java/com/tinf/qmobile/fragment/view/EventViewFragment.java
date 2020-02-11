@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -24,6 +23,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.network.Client;
@@ -80,7 +80,7 @@ public class EventViewFragment extends Fragment implements OnUpdate {
     private void setText() {
         SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
 
-        EventUser event = App.getBox().boxFor(EventUser.class).get(id);
+        EventUser event = DataBase.get().getBoxStore().boxFor(EventUser.class).get(id);
 
         title_txt.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
         startTime_txt.setText(date.format(event.getStartTime()));
@@ -145,7 +145,7 @@ public class EventViewFragment extends Fragment implements OnUpdate {
                 new MaterialAlertDialogBuilder(getActivity())
                         .setMessage(getString(R.string.dialog_delete_txt))
                         .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
-                            App.getBox().boxFor(EventUser.class).remove(id);
+                            DataBase.get().getBoxStore().boxFor(EventUser.class).remove(id);
                             Client.get().removeOnUpdateListener(this);
                             ((EventViewActivity) getActivity()).finish();
                             Client.get().requestUpdate();

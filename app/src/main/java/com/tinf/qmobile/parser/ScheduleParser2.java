@@ -3,14 +3,13 @@ package com.tinf.qmobile.parser;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.utility.User;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
@@ -30,8 +29,8 @@ public class ScheduleParser2 extends BaseParser {
     public void parse(Document page) {
         Log.i(TAG, "Parsing " + User.getYear(pos));
 
-        Box<Schedule> scheduleBox = App.getBox().boxFor(Schedule.class);
-        Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
+        Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
+        Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
         Elements tables = page.select("table");
 

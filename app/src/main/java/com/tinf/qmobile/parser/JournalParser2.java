@@ -8,6 +8,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -17,7 +18,6 @@ import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -44,9 +44,9 @@ public class JournalParser2 extends BaseParser {
 
         Date today = new Date();
 
-        Box<Matter> matterBox = App.getBox().boxFor(Matter.class);
-        Box<Period> periodBox = App.getBox().boxFor(Period.class);
-        Box<Journal> journalBox = App.getBox().boxFor(Journal.class);
+        Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+        Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
+        Box<Journal> journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
 
         Elements dates = page.getElementsByTag("option");
 
@@ -263,7 +263,7 @@ public class JournalParser2 extends BaseParser {
     private int pickColor(String description) {
         int color = 0;
 
-        Matter matter = App.getBox().boxFor(Matter.class).query().equal(Matter_.description_, description).build().findFirst();
+        Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query().equal(Matter_.description_, description).build().findFirst();
 
         if (matter != null) {
             color = matter.getColor();

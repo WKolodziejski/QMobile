@@ -1,7 +1,5 @@
 package com.tinf.qmobile.activity;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,10 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -30,16 +26,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.BoletimFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MateriaisFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.materiais.Material;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
@@ -48,7 +43,6 @@ import com.tinf.qmobile.utility.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.Box;
 
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -219,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     private void logOut() {
         Client.get().clearRequests();
         Jobs.cancelAllJobs();
-        App.closeBoxStore();
+        DataBase.get().closeBoxStore();
         User.clearInfos();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
