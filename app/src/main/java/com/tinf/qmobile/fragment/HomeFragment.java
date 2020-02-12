@@ -216,7 +216,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     private void updateSchedule() {
         Log.d("Home", "Update Schedule");
 
-        DataBase.get().getBoxStore().runInTxAsync(() -> {
+        new Thread(() -> {
             weekView.setWeekViewLoader(() -> {
                 boolean[][] hours = new boolean[24][7];
                 WeekViewEvent[] minutes = new WeekViewEvent[24];
@@ -283,10 +283,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                 return events;
             });
-        }, (result, error) -> {
-            weekView.notifyDatasetChanged();
-        });
 
+            weekView.post(() -> weekView.notifyDatasetChanged());
+        }).start();
     }
 
     @OnClick(R.id.home_website)
