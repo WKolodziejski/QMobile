@@ -42,7 +42,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
         });
         layout.setOnClickListener(view -> {
             footer.getMatter().isExpanded = false;
-            adapter.collapse(footer.getPosition());
+            adapter.collapse(footer.getPosition(), footer.getMatter());
         });
     }
 

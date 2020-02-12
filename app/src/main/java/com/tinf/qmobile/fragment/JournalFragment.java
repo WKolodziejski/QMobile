@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,19 +64,33 @@ public class JournalFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            //adapter.toggleAll();
-            DataBase.get().getBoxStore().boxFor(Journal.class).removeAll();
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
+        RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
+            @Override
+            protected int getVerticalSnapPreference() {
+                return LinearSmoothScroller.SNAP_TO_ANY;
+            }
+        };
+
+        JournalAdapter3 adapter = new JournalAdapter3(getContext(), position -> {
+            if (position != 0) {
+                smoothScroller.setTargetPosition(position);
+                layout.startSmoothScroll(smoothScroller);
+            }
+        });
+
+        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+            adapter.toggle();
         });
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(layout);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(new JournalAdapter3(getContext()));
+        recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override

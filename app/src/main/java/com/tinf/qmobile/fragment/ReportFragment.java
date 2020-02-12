@@ -32,8 +32,8 @@ import java.util.List;
 
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
-public class BoletimFragment extends Fragment implements OnUpdate {
-    private static String TAG = "BoletimFragment";
+public class ReportFragment extends Fragment implements OnUpdate {
+    private static String TAG = "ReportFragment";
     private LockTableView table;
     private ArrayList<ArrayList<String>> data;
     private List<Matter> materiaList;

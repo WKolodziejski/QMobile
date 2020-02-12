@@ -1,9 +1,12 @@
 package com.tinf.qmobile.fragment;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,15 +27,12 @@ import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.adapter.calendar.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
-import com.tinf.qmobile.model.calendar.Month;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -48,10 +48,13 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.objectbox.Box;
+import io.objectbox.BoxStore;
+import io.objectbox.android.AndroidScheduler;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
@@ -75,6 +78,20 @@ public class HomeFragment extends Fragment implements OnUpdate {
             intent.putExtra("TYPE", EVENT);
             startActivity(intent);
         });
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        boxStore.subscribe(Schedule.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> updateSchedule());
+
+        boxStore.subscribe(Matter.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> updateSchedule());
     }
 
     @Override
@@ -87,6 +104,26 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Log.d("Home", "View Created");
+
+        weekView.setWeekViewLoader(ArrayList::new);
+
+        weekView.setOnEventClickListener((event, eventRect) -> {
+            Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query()
+                    .equal(Matter_.title_, event.getName())
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build().findUnique();
+            if (matter != null) {
+                Intent intent = new Intent(getContext(), MateriaActivity.class);
+                intent.putExtra("ID", matter.id);
+                intent.putExtra("PAGE", MateriaActivity.SCHEDULE);
+                startActivity(intent);
+            }
+        });
+
+        //updateSchedule();
 
             /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
             Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -104,10 +141,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
                     else if(scrollY > oldScrollY && ((MainActivity) getActivity()).fab.isShown())
                         ((MainActivity) getActivity()).fab.hide();
                 });
-
-        showSchedule(view);
-        showOffline(view);
-        showCalendar(view);
     }
 
     private void showOffline(View view) {
@@ -180,6 +213,77 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     }
 
+    private void updateSchedule() {
+        Log.d("Home", "Update Schedule");
+
+        weekView.setWeekViewLoader(() -> {
+            boolean[][] hours = new boolean[24][7];
+            WeekViewEvent[] minutes = new WeekViewEvent[24];
+
+            List<WeekViewEvent> events = new ArrayList<>();
+            List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                    .equal(Schedule_.year, User.getYear(pos)).and()
+                    .equal(Schedule_.period, User.getPeriod(pos))
+                    .build().find();
+
+            for (Schedule schedule : schedules) {
+                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                        schedule.getStartTime(), schedule.getEndTime());
+                event.setColor(schedule.getColor());
+                events.add(event);
+
+                int day = event.getStartTime().getDay().getValue();
+                int hour = event.getStartTime().getHour();
+
+                if (!hours[hour][day]) {
+                    minutes[hour] = event;
+                    hours[hour][day] = true;
+                }
+            }
+
+            int firstIndex = 0;
+            int parc1 = 0;
+
+            for (int h = 0; h < 24; h++) {
+                int sum = 0;
+                for (int d = 0; d < 7; d++) {
+                    if (hours[h][d]) {
+                        sum++;
+                    }
+                }
+                if (sum > parc1) {
+                    firstIndex = h;
+                    parc1 = sum;
+                }
+            }
+
+            int lastIndex = firstIndex;
+
+            for (int h = firstIndex; h < 24; h++) {
+                int sum = 0;
+                for (int d = 0; d < 7; d++) {
+                    if (hours[h][d])
+                        sum++;
+                }
+                if (sum == 0)
+                    break;
+                else
+                    lastIndex = h;
+            }
+
+            ViewGroup.LayoutParams params = weekView.getLayoutParams();
+            params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45) * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+            weekView.setLayoutParams(params);
+
+            weekView.goToDay(DayOfWeek.MONDAY);
+            weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+
+            Log.d("Home", "View listener");
+
+            return events;
+        });
+    }
+
     @OnClick(R.id.home_website)
     public void openQSite(View view) {
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL() + INDEX + PG_LOGIN)));
@@ -203,59 +307,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         .toBundle());
     }
 
-    private void showSchedule(View view) {
-
-        weekView.setWeekViewLoader(ArrayList::new);
-
-        DataBase.get().getBoxStore().runInTxAsync(() -> {
-
-                    weekView.setWeekViewLoader(() -> {
-                        double firstHour = 24;
-
-                        List<WeekViewEvent> events = new ArrayList<>();
-                        List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                                .equal(Schedule_.year, User.getYear(pos)).and()
-                                .equal(Schedule_.period, User.getPeriod(pos)).and()
-                                .equal(Schedule_.isFromSite_, true)
-                                .build().find();
-
-                        for (Schedule schedule : schedules) {
-                            WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                                    schedule.getStartTime(), schedule.getEndTime());
-                            event.setColor(schedule.getColor());
-                            events.add(event);
-
-                            if (event.getStartTime().getHour() < firstHour) {
-                                firstHour = event.getStartTime().getHour();
-                                firstHour += event.getStartTime().getMinute() * 0.0167;
-                            }
-                        }
-
-                        weekView.goToDay(DayOfWeek.MONDAY);
-                        weekView.goToHour(firstHour);
-
-                        return events;
-                    });
-
-                    weekView.setOnEventClickListener((event, eventRect) -> {
-                        Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query()
-                                .equal(Matter_.title_, event.getName())
-                                .equal(Matter_.year_, User.getYear(pos)).and()
-                                .equal(Matter_.period_, User.getPeriod(pos))
-                                .build().findUnique();
-                        if (matter != null) {
-                            Intent intent = new Intent(getContext(), MateriaActivity.class);
-                            intent.putExtra("ID", matter.id);
-                            intent.putExtra("PAGE", MateriaActivity.SCHEDULE);
-                            startActivity(intent);
-                        }
-                    });
-
-                }, (result, error) -> {
-                    weekView.post(() -> weekView.notifyDatasetChanged());
-                });
-    }
-
     @Override
     public void onScrollRequest() {
         if (nestedScrollView != null) {
@@ -265,13 +316,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onUpdate(int pg) {
-        if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {
-            if (getView() != null) {
-                showSchedule(getView());
-                showOffline(getView());
-                showCalendar(getView());
-            }
-        }
+
     }
 
     @Override

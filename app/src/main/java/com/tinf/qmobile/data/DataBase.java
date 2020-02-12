@@ -1,23 +1,17 @@
 package com.tinf.qmobile.data;
 
 import android.util.Log;
-
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
-
 import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.BoxStore;
-import io.objectbox.query.QueryBuilder;
-
 import static com.tinf.qmobile.network.Client.pos;
 
 public class DataBase {

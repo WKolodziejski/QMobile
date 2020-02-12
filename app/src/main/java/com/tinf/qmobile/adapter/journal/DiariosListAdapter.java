@@ -137,7 +137,7 @@ public class DiariosListAdapter extends RecyclerView.Adapter {
         return matters.get(i).hashCode();
     }
 
-    public void toggleAll(){
+    public void toggleAll() {
         int a = 0;
         int f = 0;
         for (int i = 0; i < matters.size(); i++) {

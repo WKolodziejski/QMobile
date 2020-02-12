@@ -6,15 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.IdRes;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -22,9 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.badge.BadgeDrawable;
-import com.google.android.material.badge.BadgeUtils;
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -33,7 +27,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.data.OnDataChange;
-import com.tinf.qmobile.fragment.BoletimFragment;
+import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MateriaisFragment;
@@ -143,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
 
                 if (fragment instanceof JournalFragment) {
-                    return changeFragment(new BoletimFragment());
+                    return changeFragment(new ReportFragment());
 
-                } else if (fragment instanceof BoletimFragment) {
+                } else if (fragment instanceof ReportFragment) {
                     return changeFragment(new JournalFragment());
 
                 } else return false;

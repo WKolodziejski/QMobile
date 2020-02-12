@@ -39,12 +39,10 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
         header.setVisibility(matter.isExpanded && !matter.getLastPeriod().journals.isEmpty() ? View.VISIBLE : View.GONE);
         arrow.setVisibility(matter.isExpanded ? View.GONE : View.VISIBLE);
         layout.setOnClickListener(view -> {
-            matter.isExpanded = !matter.isExpanded;
-
             if (matter.isExpanded) {
-                adapter.expand(getAdapterPosition(), matter);
+                adapter.collapse(getAdapterPosition(), matter);
             } else {
-                adapter.collapse(getAdapterPosition());
+                adapter.expand(getAdapterPosition(), matter);
             }
         });
 
