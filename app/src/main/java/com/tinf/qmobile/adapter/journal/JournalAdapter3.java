@@ -86,7 +86,7 @@ public class JournalAdapter3 extends RecyclerView.Adapter<JournalBaseViewHolder>
                                         }
 
                                         journals.remove(j);
-                                        journals.add(j, new Footer(j, m2));
+                                        journals.add(j, new Footer(i, m2));
 
                                         notifyItemChanged(j);
                                     }
