@@ -167,29 +167,29 @@ public class JournalParser2 extends BaseParser {
                                     .equal(Matter_.period_, User.getPeriod(pos));
 
                             search = builder.build().findUnique();
-                        } catch (NonUniqueResultException e) {
-                            e.printStackTrace();
-                        }
 
-                        if (search == null) {
+                            if (search == null) {
 
-                            Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
+                                Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
 
-                            period.journals.add(newJournal);
-                            journalBox.put(newJournal);
+                                period.journals.add(newJournal);
+                                journalBox.put(newJournal);
 
-                            if (notify && grade != -1 && date <= today.getTime()) {
-                                sendNotification(newJournal);
-                            }
-                        } else {
-                            if (search.getGrade_() != grade) {
-                                search.setGrade(grade);
-                                journalBox.put(search);
+                                if (notify && grade != -1 && date <= today.getTime()) {
+                                    sendNotification(newJournal);
+                                }
+                            } else {
+                                if (search.getGrade_() != grade) {
+                                    search.setGrade(grade);
+                                    journalBox.put(search);
 
-                                if (notify) {
-                                    sendNotification(search);
+                                    if (notify) {
+                                        sendNotification(search);
+                                    }
                                 }
                             }
+                        } catch (NonUniqueResultException e) {
+                            e.printStackTrace();
                         }
                     }
                 }

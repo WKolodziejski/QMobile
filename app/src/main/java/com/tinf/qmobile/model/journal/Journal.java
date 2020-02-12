@@ -36,6 +36,7 @@ public class Journal extends EventBase implements JournalBase, Queryable {
     private int type_;
     public ToOne<Period> period;
     public ToOne<Matter> matter;
+    private boolean seen_;
 
     public Journal(String title, float grade, float weight, float max, long date, int type, Period period, Matter matter) {
         super(title, date);
@@ -123,11 +124,19 @@ public class Journal extends EventBase implements JournalBase, Queryable {
         this.grade_ = grade;
     }
 
+    public void see() {
+        seen_ = true;
+    }
+
     /*
      * Required methods
      */
 
     public Journal() {}
+
+    public boolean isSeen_() {
+        return seen_;
+    }
 
     public float getWeight_() {
         return weight_;

@@ -61,6 +61,9 @@ public class JournalViewFragment extends Fragment {
 
         Journal journal = DataBase.get().getBoxStore().boxFor(Journal.class).get(id);
 
+        journal.see();
+        DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+
         title_txt.setText(journal.getTitle());
         grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
         weight_txt.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));

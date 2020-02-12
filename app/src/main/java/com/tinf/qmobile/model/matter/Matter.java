@@ -74,6 +74,21 @@ public class Matter implements JournalBase {
         return periods.get(k);
     }
 
+    public int getNotSeenCount() {
+        Period period = getLastPeriod();
+
+        if (period.journals.isEmpty())
+            return -1;
+
+        int sum = 0;
+
+        for (Journal j : period.journals)
+            if (!j.isSeen_())
+                sum++;
+
+        return sum;
+    }
+
     public float getGradeSum() {
         Period period = getLastPeriod();
 

@@ -12,8 +12,11 @@ import android.widget.TextView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
+
+import java.util.logging.Handler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +46,17 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
             intent.putExtra("ID", journal.id);
             intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
             context.startActivity(intent);
+
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         });
+
+        if (journal.isSeen_()) {
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+        } else {
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
+            journal.see();
+            DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+        }
 
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.item_slide_down);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());

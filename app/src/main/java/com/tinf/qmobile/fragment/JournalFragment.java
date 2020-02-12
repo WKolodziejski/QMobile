@@ -28,6 +28,7 @@ import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.adapter.journal.DiariosListAdapter;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.model.journal.JournalBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 
@@ -42,94 +43,12 @@ import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 
 public class JournalFragment extends Fragment implements OnUpdate {
     private static String TAG = "DiariosFragment";
-    private DiariosListAdapter adapter;
-    private List<Matter> journals;
-    private RecyclerView.LayoutManager layout;
     @BindView(R.id.recycler_diarios) RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(TAG, "New instace created");
-
         setHasOptionsMenu(true);
-
-        RotateAnimation rotate = new RotateAnimation(180, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotate.setDuration(250);
-        rotate.setInterpolator(new LinearInterpolator());
-
-
-        loadData();
-
-        adapter = new DiariosListAdapter(getContext(), journals, view -> {
-            Integer pos = (Integer) view.getTag();
-
-            Intent intent = new Intent(getContext(), MateriaActivity.class);
-            intent.putExtra("ID", journals.get(pos).id);
-            intent.putExtra("PAGE", MateriaActivity.GRADES);
-
-            startActivity(intent);
-
-        }, view -> {
-            ConstraintLayout expandAct = (ConstraintLayout) view;
-            ExpandableLayout expandableLayout = (ExpandableLayout) expandAct.getChildAt(2);
-            ImageView arrow = (ImageView) expandAct.getChildAt(1);
-
-            expandableLayout.toggle();
-            arrow.startAnimation(rotate);
-
-            Integer pos = (Integer) view.getTag();
-
-            journals.get(pos).isExpanded = !journals.get(pos).isExpanded;
-
-            rotate.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    if (journals.get(pos).isExpanded) {
-                        arrow.setImageResource(R.drawable.ic_less);
-                    } else {
-                        arrow.setImageResource(R.drawable.ic_more);
-                    }
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-        });
-
-        adapter.setHasStableIds(true);
-
-        layout = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-
-        adapter.setOnExpandListener(position -> {
-
-            RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
-                @Override
-                protected int getVerticalSnapPreference() {
-                    return LinearSmoothScroller.SNAP_TO_ANY;
-                }
-            };
-            if (position != 0) {
-                smoothScroller.setTargetPosition(position);
-                layout.startSmoothScroll(smoothScroller);
-            }
-        });
-    }
-
-    private void loadData() {
-        /*journals = new ArrayList<>();
-
-        journals.addAll(getBox().boxFor(Matter.class).query().order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos)).and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build().find());*/
-
-        journals = DataBase.get().getMatters();
     }
 
     @Override
@@ -142,44 +61,37 @@ public class JournalFragment extends Fragment implements OnUpdate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.v(TAG, "View created");
 
-        view.post(() -> {
-
-            ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-                adapter.toggleAll();
-            });
-
-            DividerItemDecoration decoration = new DividerItemDecoration(getContext(),
-                    LinearLayoutManager.VERTICAL);
-
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setItemViewCacheSize(20);
-            recyclerView.setDrawingCacheEnabled(true);
-            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            recyclerView.setLayoutManager(layout);
-            recyclerView.addItemDecoration(decoration);
-            recyclerView.setAdapter(adapter);
-
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
-                    if (dy < 0 && !((MainActivity) getActivity()).fab.isShown())
-                        ((MainActivity) getActivity()).fab.show();
-                    else if(dy > 0 && ((MainActivity) getActivity()).fab.isShown())
-                        ((MainActivity) getActivity()).fab.hide();
-                }
-
-                @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
-            });
-            ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_expand);
-            ((MainActivity) getActivity()).fab.show();
+        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+            //adapter.toggleAll();
         });
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(new JournalAdapter3(getContext()));
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                if (dy < 0 && !((MainActivity) getActivity()).fab.isShown())
+                    ((MainActivity) getActivity()).fab.show();
+                else if(dy > 0 && ((MainActivity) getActivity()).fab.isShown())
+                    ((MainActivity) getActivity()).fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+        ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_expand);
+        ((MainActivity) getActivity()).fab.show();
     }
 
     @Override
@@ -190,17 +102,8 @@ public class JournalFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        //((MainActivity) getActivity()).fab.hide();
-    }
-
-    @Override
     public void onUpdate(int pg) {
-        if (pg == PG_DIARIOS || pg == UPDATE_REQUEST) {
-            loadData();
-            adapter.update(journals);
-        }
+
     }
 
     @Override

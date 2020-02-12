@@ -29,42 +29,15 @@ public class DataBase {
 
         boxStore.subscribe(Matter.class)
                 .observer(data -> {
-                    if (matters == null) {
-                        matters = boxStore
-                                .boxFor(Matter.class)
-                                .query()
-                                .order(Matter_.title_)
-                                .equal(Matter_.year_, User.getYear(pos))
-                                .and()
-                                .equal(Matter_.period_, User.getPeriod(pos))
-                                .build()
-                                .find();
-
-                        Log.d(TAG, "First fetch");
-
-                    } else {
-                        List<Matter> updated = boxStore
-                                .boxFor(Matter.class)
-                                .query()
-                                .order(Matter_.title_)
-                                .equal(Matter_.year_, User.getYear(pos))
-                                .and()
-                                .equal(Matter_.period_, User.getPeriod(pos))
-                                .build()
-                                .find();
-
-                        for (Matter m1 : updated)
-                            for (Matter m2 : matters)
-                                if (m1.id == m2.id) {
-                                    m1.isExpanded = m2.isExpanded;
-                                    m1.shouldAnimate = m2.shouldAnimate;
-                                }
-
-                        matters.clear();
-                        matters = updated;
-
-                        Log.d(TAG, "List updated");
-                    }
+                    matters = boxStore
+                            .boxFor(Matter.class)
+                            .query()
+                            .order(Matter_.title_)
+                            .equal(Matter_.year_, User.getYear(pos))
+                            .and()
+                            .equal(Matter_.period_, User.getPeriod(pos))
+                            .build()
+                            .find();
                 });
     }
 

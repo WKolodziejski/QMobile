@@ -12,7 +12,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
+import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,20 +36,25 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
     public void bind(Context context, Matter matter, JournalAdapter3 adapter) {
         title.setText(matter.getTitle());
         badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
-        header.setVisibility(matter.isExpanded ? View.VISIBLE : View.GONE);
+        header.setVisibility(matter.isExpanded && !matter.getLastPeriod().journals.isEmpty() ? View.VISIBLE : View.GONE);
         arrow.setVisibility(matter.isExpanded ? View.GONE : View.VISIBLE);
         layout.setOnClickListener(view -> {
             matter.isExpanded = !matter.isExpanded;
 
             if (matter.isExpanded) {
                 adapter.expand(getAdapterPosition(), matter);
-                if (matter.getLastPeriod().journals.isEmpty()) {
-                    header.setVisibility(View.GONE);
-                }
             } else {
                 adapter.collapse(getAdapterPosition());
             }
         });
+
+        int n = matter.getNotSeenCount();
+
+        if (n > 0) {
+            badge.setText(String.valueOf(n));
+        } else {
+            badge.setText("");
+        }
     }
 
 }
