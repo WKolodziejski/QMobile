@@ -85,13 +85,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> updateSchedule());
+                .observer(data -> weekView.notifyDatasetChanged());
 
         boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> updateSchedule());
+                .observer(data -> weekView.notifyDatasetChanged());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             }
         });
 
-        //updateSchedule();
+        updateSchedule();
 
             /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
             Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -216,72 +216,77 @@ public class HomeFragment extends Fragment implements OnUpdate {
     private void updateSchedule() {
         Log.d("Home", "Update Schedule");
 
-        weekView.setWeekViewLoader(() -> {
-            boolean[][] hours = new boolean[24][7];
-            WeekViewEvent[] minutes = new WeekViewEvent[24];
+        DataBase.get().getBoxStore().runInTxAsync(() -> {
+            weekView.setWeekViewLoader(() -> {
+                boolean[][] hours = new boolean[24][7];
+                WeekViewEvent[] minutes = new WeekViewEvent[24];
 
-            List<WeekViewEvent> events = new ArrayList<>();
-            List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                    .equal(Schedule_.year, User.getYear(pos)).and()
-                    .equal(Schedule_.period, User.getPeriod(pos))
-                    .build().find();
+                List<WeekViewEvent> events = new ArrayList<>();
+                List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                        .equal(Schedule_.year, User.getYear(pos)).and()
+                        .equal(Schedule_.period, User.getPeriod(pos))
+                        .build().find();
 
-            for (Schedule schedule : schedules) {
-                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                        schedule.getStartTime(), schedule.getEndTime());
-                event.setColor(schedule.getColor());
-                events.add(event);
+                for (Schedule schedule : schedules) {
+                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                            schedule.getStartTime(), schedule.getEndTime());
+                    event.setColor(schedule.getColor());
+                    events.add(event);
 
-                int day = event.getStartTime().getDay().getValue();
-                int hour = event.getStartTime().getHour();
+                    int day = event.getStartTime().getDay().getValue();
+                    int hour = event.getStartTime().getHour();
 
-                if (!hours[hour][day]) {
-                    minutes[hour] = event;
-                    hours[hour][day] = true;
-                }
-            }
-
-            int firstIndex = 0;
-            int parc1 = 0;
-
-            for (int h = 0; h < 24; h++) {
-                int sum = 0;
-                for (int d = 0; d < 7; d++) {
-                    if (hours[h][d]) {
-                        sum++;
+                    if (!hours[hour][day]) {
+                        minutes[hour] = event;
+                        hours[hour][day] = true;
                     }
                 }
-                if (sum > parc1) {
-                    firstIndex = h;
-                    parc1 = sum;
+
+                int firstIndex = 0;
+                int parc1 = 0;
+
+                for (int h = 0; h < 24; h++) {
+                    int sum = 0;
+                    for (int d = 0; d < 7; d++) {
+                        if (hours[h][d]) {
+                            sum++;
+                        }
+                    }
+                    if (sum > parc1) {
+                        firstIndex = h;
+                        parc1 = sum;
+                    }
                 }
-            }
 
-            int lastIndex = firstIndex;
+                int lastIndex = firstIndex;
 
-            for (int h = firstIndex; h < 24; h++) {
-                int sum = 0;
-                for (int d = 0; d < 7; d++) {
-                    if (hours[h][d])
-                        sum++;
+                for (int h = firstIndex; h < 24; h++) {
+                    int sum = 0;
+                    for (int d = 0; d < 7; d++) {
+                        if (hours[h][d])
+                            sum++;
+                    }
+                    if (sum == 0)
+                        break;
+                    else
+                        lastIndex = h;
                 }
-                if (sum == 0)
-                    break;
-                else
-                    lastIndex = h;
-            }
 
-            ViewGroup.LayoutParams params = weekView.getLayoutParams();
-            params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45) * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
-            weekView.setLayoutParams(params);
+                ViewGroup.LayoutParams params = weekView.getLayoutParams();
+                params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45) * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+                weekView.setLayoutParams(params);
 
-            weekView.goToDay(DayOfWeek.MONDAY);
-            weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                weekView.goToDay(DayOfWeek.MONDAY);
+                weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
-            Log.d("Home", "View listener");
+                Log.d("Home", "View listener");
 
-            return events;
+                return events;
+            });
+        }, (result, error) -> {
+            weekView.notifyDatasetChanged();
         });
+
     }
 
     @OnClick(R.id.home_website)
