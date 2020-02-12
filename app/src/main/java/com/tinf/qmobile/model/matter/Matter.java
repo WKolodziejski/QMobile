@@ -77,9 +77,6 @@ public class Matter implements JournalBase {
     public int getNotSeenCount() {
         Period period = getLastPeriod();
 
-        if (period.journals.isEmpty())
-            return -1;
-
         int sum = 0;
 
         for (Journal j : period.journals)

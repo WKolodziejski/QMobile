@@ -28,6 +28,7 @@ import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.adapter.journal.DiariosListAdapter;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.JournalBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
@@ -64,6 +65,8 @@ public class JournalFragment extends Fragment implements OnUpdate {
 
         ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
             //adapter.toggleAll();
+            DataBase.get().getBoxStore().boxFor(Journal.class).removeAll();
+
         });
 
         recyclerView.setHasFixedSize(true);

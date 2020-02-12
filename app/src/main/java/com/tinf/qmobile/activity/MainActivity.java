@@ -10,10 +10,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +22,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -30,6 +32,7 @@ import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.data.OnDataChange;
 import com.tinf.qmobile.fragment.BoletimFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
@@ -40,13 +43,12 @@ import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.network.Client.pos;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnUpdate, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnUpdate, OnDataChange, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
@@ -81,31 +83,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);*/
-
-
-
-        /*final MenuItem menuMsgs = menu.findItem(R.id.action_messages);
-
-        FrameLayout layout = (FrameLayout) menu.findItem(R.id.action_messages).getActionView();
-
-        TextView badge = (TextView) layout.findViewById(R.id.messages_badge);
-
-        int count = 3;
-
-        if (badge != null) {
-            if (count == 0) {
-                if (badge.getVisibility() != View.GONE) {
-                    badge.setVisibility(View.GONE);
-                }
-            } else {
-                badge.setText(String.valueOf(Math.min(count, 99)));
-                if (badge.getVisibility() != View.VISIBLE) {
-                    badge.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-
-        layout.setOnClickListener(v -> onOptionsItemSelected(menuMsgs));*/
 
         return true;
     }
@@ -189,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
                 case R.id.navigation_notas:
                     fragment = new JournalFragment();
-                    putBadge(R.id.navigation_notas, 0);
                     break;
 
                 case R.id.navigation_materiais:
@@ -257,24 +233,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
     }
 
-    public void putBadge(@IdRes int itemId, int count) {
-        BottomNavigationItemView itemView = bottomNav.findViewById(itemId);
-        View badge = LayoutInflater.from(getApplicationContext()).inflate(R.layout.badge_notification, bottomNav, false);
-
-        if (count > 0) {
-            TextView text = badge.findViewById(R.id.badge_text);
-            text.setText(String.valueOf(count));
-
-            if (itemView.getChildCount() < 3) {
-                itemView.addView(badge);
-            }
-        } else {
-            if (itemView.getChildCount() == 3) {
-                itemView.removeViewAt(2);
-            }
-        }
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -283,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().addOnResponseListener(this);
         Client.get().addOnUpdateListener(this);
         Client.get().setOnEventListener(this);
+        DataBase.get().addOnDataChangeListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
     }
@@ -294,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().removeOnResponseListener(this);
         Client.get().removeOnUpdateListener(this);
         Client.get().setOnEventListener(null);
+        DataBase.get().removeOnDataChangeListener(this);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
@@ -306,6 +266,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().addOnResponseListener(this);
         Client.get().addOnUpdateListener(this);
         Client.get().setOnEventListener(this);
+        DataBase.get().addOnDataChangeListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
     }
@@ -317,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().removeOnResponseListener(this);
         Client.get().removeOnUpdateListener(this);
         Client.get().setOnEventListener(null);
+        DataBase.get().removeOnDataChangeListener(this);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
@@ -443,7 +405,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onJournal(int count) {
-        putBadge(R.id.navigation_notas, count);
     }
 
     @Override
@@ -455,6 +416,15 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onScrollRequest() {
+
+    }
+
+    @Override
+    public void onNotification(int count) {
+        if (count <= 0)
+            bottomNav.removeBadge(R.id.navigation_notas);
+        else
+            bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(count);
 
     }
 

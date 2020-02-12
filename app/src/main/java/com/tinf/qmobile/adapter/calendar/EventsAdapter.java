@@ -26,6 +26,10 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     public EventsAdapter(Context context, List<? extends CalendarBase> events) {
         this.context = context;
         this.events = events;
+
+
+
+
     }
 
     @NonNull

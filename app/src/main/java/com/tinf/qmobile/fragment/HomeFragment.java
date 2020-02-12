@@ -8,9 +8,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -18,7 +16,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.activity.MainActivity;
@@ -27,12 +24,15 @@ import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.adapter.calendar.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
+import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -48,7 +48,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,65 +61,20 @@ import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     @BindView(R.id.weekView_home)   WeekView weekView;
-    private NestedScrollView nestedScrollView;
-    private EventsAdapter calendarioAdapter;
-    private List<Matter> matters;
+    @BindView(R.id.home_scroll)     NestedScrollView nestedScrollView;
+    private EventsAdapter calendarAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadData();
-    }
 
-    private void loadData() {
-        matters = DataBase.get().getMatters();
-
-        Calendar current = Calendar.getInstance();
-        current.setTime(new Date());
-        current.set(Calendar.HOUR_OF_DAY, 0);
-        current.set(Calendar.MINUTE, 0);
-        current.set(Calendar.SECOND, 0);
-        current.set(Calendar.MILLISECOND, 0);
-
-        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
-        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-
-        List<EventBase> events = new ArrayList<>();
-
-        events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
-
-        Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-        if (events.size() < 5) {
-            events = new ArrayList<>();
-
-            events.addAll(eventUserBox.query().build().find());
-            events.addAll(eventJournalBox.query().build().find());
-            events.addAll(eventImageBox.query().build().find());
-            events.addAll(eventSimpleBox.query().build().find());
-
-            Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-            if (events.size() > 5) {
-                events = events.subList(0, 5);
-            } else {
-                events = events.subList(0, events.size());
-            }
-
-        } else {
-            events = events.subList(0, 5);
-        }
-
-        if (calendarioAdapter == null) {
-            calendarioAdapter = new EventsAdapter(getActivity(), events);
-        } else {
-            calendarioAdapter.update(events);
-        }
+        ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
+        ((MainActivity) getActivity()).fab.show();
+        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
+            intent.putExtra("TYPE", EVENT);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -134,14 +88,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        showHorario(view);
-
-        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
-            intent.putExtra("TYPE", EVENT);
-            startActivity(intent);
-        });
-
             /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
             Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     + "/" + User.getCredential(User.REGISTRATION));
@@ -149,8 +95,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
             Bitmap croppedBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getWidth());
 
             image.setImageBitmap(croppedBmp);*/
-
-        nestedScrollView = (NestedScrollView) view.findViewById(R.id.home_scroll);
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -161,18 +105,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         ((MainActivity) getActivity()).fab.hide();
                 });
 
+        showSchedule(view);
         showOffline(view);
         showCalendar(view);
-
-        ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_add);
-        ((MainActivity) getActivity()).fab.show();
-    }
-
-    @OnClick(R.id.home_website)
-    public void openQSite(View view) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse(User.getURL() + INDEX + PG_LOGIN));
-        startActivity(browserIntent);
     }
 
     private void showOffline(View view) {
@@ -191,78 +126,134 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     private void showCalendar(View view) {
 
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_home);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_home);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            recyclerView.setAdapter(calendarioAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DataBase.get().getBoxStore().runInTxAsync(() -> {
 
-            LinearLayout calendario = (LinearLayout) view.findViewById(R.id.home_calendario);
+            Calendar current = Calendar.getInstance();
+            current.setTime(new Date());
+            current.set(Calendar.HOUR_OF_DAY, 0);
+            current.set(Calendar.MINUTE, 0);
+            current.set(Calendar.SECOND, 0);
+            current.set(Calendar.MILLISECOND, 0);
 
-            calendario.setOnClickListener(v -> {
-                //Pair statusAnim = Pair.create(recyclerView, recyclerView.getTransitionName());
-                Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
+            Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
+            Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
+            Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
+            Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
 
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), driverBundleAnim);
-                startActivity(new Intent(getActivity(), CalendarioActivity.class), options.toBundle());
-            });
+            List<EventBase> events = new ArrayList<>();
+
+            events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
+            events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
+            events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
+            events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
+
+            Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+            if (events.size() < 5) {
+                events = new ArrayList<>();
+
+                events.addAll(eventUserBox.query().build().find());
+                events.addAll(eventJournalBox.query().build().find());
+                events.addAll(eventImageBox.query().build().find());
+                events.addAll(eventSimpleBox.query().build().find());
+
+                Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+
+                if (events.size() > 5) {
+                    events = events.subList(0, 5);
+                } else {
+                    events = events.subList(0, events.size());
+                }
+
+            } else {
+                events = events.subList(0, 5);
+            }
+
+            calendarAdapter = new EventsAdapter(getActivity(), events);
+
+        }, (result, error) -> {
+            recyclerView.setAdapter(calendarAdapter);
+        });
 
     }
 
-    private void showHorario(View view) {
+    @OnClick(R.id.home_website)
+    public void openQSite(View view) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL() + INDEX + PG_LOGIN)));
+    }
 
-        //WeekView weekView = (WeekView) view.findViewById(R.id.weekView_home);
+    @OnClick(R.id.home_calendario)
+    public void openCalendar(View view) {
+        startActivity(new Intent(getActivity(), CalendarioActivity.class),
+                ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        Pair.create(((MainActivity) getActivity()).fab,
+                                ((MainActivity) getActivity()).fab.getTransitionName()))
+                        .toBundle());
+    }
 
-        weekView.setWeekViewLoader(() -> {
-            double firstHour = 24;
+    @OnClick(R.id.home_horario)
+    public void openSchedule(View view) {
+        startActivity(new Intent(getActivity(), HorarioActivity.class),
+                ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        Pair.create(((MainActivity) getActivity()).fab,
+                                ((MainActivity) getActivity()).fab.getTransitionName()))
+                        .toBundle());
+    }
 
-            List<WeekViewEvent> events = new ArrayList<>();
-            List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                    .equal(Schedule_.year, User.getYear(pos)).and()
-                    .equal(Schedule_.period, User.getPeriod(pos)).and()
-                    .equal(Schedule_.isFromSite_, true)
-                    .build().find();
+    private void showSchedule(View view) {
 
-            for (Schedule schedule : schedules) {
-                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                        schedule.getStartTime(), schedule.getEndTime());
-                event.setColor(schedule.getColor());
-                events.add(event);
+        weekView.setWeekViewLoader(ArrayList::new);
 
-                if (event.getStartTime().getHour() < firstHour) {
-                    firstHour = event.getStartTime().getHour();
-                    firstHour += event.getStartTime().getMinute() * 0.0167;
-                }
-            }
+        DataBase.get().getBoxStore().runInTxAsync(() -> {
 
-            weekView.goToDay(DayOfWeek.MONDAY);
-            weekView.goToHour(firstHour);
+                    weekView.setWeekViewLoader(() -> {
+                        double firstHour = 24;
 
-            return events;
-        });
+                        List<WeekViewEvent> events = new ArrayList<>();
+                        List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                                .equal(Schedule_.year, User.getYear(pos)).and()
+                                .equal(Schedule_.period, User.getPeriod(pos)).and()
+                                .equal(Schedule_.isFromSite_, true)
+                                .build().find();
 
-        weekView.notifyDatasetChanged();
-        weekView.setOnEventClickListener((event, eventRect) -> {
-            Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query()
-                    .equal(Matter_.title_, event.getName())
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build().findUnique();
-            if (matter != null) {
-                Intent intent = new Intent(getContext(), MateriaActivity.class);
-                intent.putExtra("ID", matter.id);
-                intent.putExtra("PAGE", MateriaActivity.SCHEDULE);
-                startActivity(intent);
-            }
-        });
+                        for (Schedule schedule : schedules) {
+                            WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                                    schedule.getStartTime(), schedule.getEndTime());
+                            event.setColor(schedule.getColor());
+                            events.add(event);
 
-        LinearLayout horario = (LinearLayout) view.findViewById(R.id.home_horario);
+                            if (event.getStartTime().getHour() < firstHour) {
+                                firstHour = event.getStartTime().getHour();
+                                firstHour += event.getStartTime().getMinute() * 0.0167;
+                            }
+                        }
 
-        horario.setOnClickListener(v -> {
-            Pair driverBundleAnim = Pair.create(((MainActivity) getActivity()).fab, ((MainActivity) getActivity()).fab.getTransitionName());
+                        weekView.goToDay(DayOfWeek.MONDAY);
+                        weekView.goToHour(firstHour);
 
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(), driverBundleAnim);
-            startActivity(new Intent(getActivity(), HorarioActivity.class), options.toBundle());
-        });
+                        return events;
+                    });
+
+                    weekView.setOnEventClickListener((event, eventRect) -> {
+                        Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query()
+                                .equal(Matter_.title_, event.getName())
+                                .equal(Matter_.year_, User.getYear(pos)).and()
+                                .equal(Matter_.period_, User.getPeriod(pos))
+                                .build().findUnique();
+                        if (matter != null) {
+                            Intent intent = new Intent(getContext(), MateriaActivity.class);
+                            intent.putExtra("ID", matter.id);
+                            intent.putExtra("PAGE", MateriaActivity.SCHEDULE);
+                            startActivity(intent);
+                        }
+                    });
+
+                }, (result, error) -> {
+                    weekView.post(() -> weekView.notifyDatasetChanged());
+                });
     }
 
     @Override
@@ -275,10 +266,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onUpdate(int pg) {
         if (pg == PG_LOGIN || pg == UPDATE_REQUEST) {
-            loadData();
             if (getView() != null) {
-                showHorario(getView());
+                showSchedule(getView());
                 showOffline(getView());
+                showCalendar(getView());
             }
         }
     }
@@ -305,12 +296,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onStop() {
         super.onStop();
         Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        //((MainActivity) getActivity()).fab.hide();
     }
 
 }

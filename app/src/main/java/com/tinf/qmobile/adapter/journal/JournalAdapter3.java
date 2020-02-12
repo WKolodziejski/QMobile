@@ -50,11 +50,9 @@ public class JournalAdapter3 extends RecyclerView.Adapter<JournalBaseViewHolder>
                 .build()
                 .find());
 
-        boxStore.subscribe(Matter.class)
+        /*boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> {
-                    Log.e(th.getMessage(), th.toString());
-                })
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
                     List<JournalBase> updated = new ArrayList<>(boxStore
                             .boxFor(Matter.class)
@@ -80,21 +78,105 @@ public class JournalAdapter3 extends RecyclerView.Adapter<JournalBaseViewHolder>
                                         journals.add(i, m2);
                                         notifyItemChanged(i);
 
-                                        int j = i;
-                                        while (journals.get(j).getItemType() != JournalBase.ViewType.FOOTER) {
-                                            j++;
+                                        if (m2.isExpanded) {
+                                            int j = i + m2.getLastPeriod().journals.size() + 1;
+
+                                            journals.remove(j);
+                                            journals.add(j, new Footer(i, m2));
+
+                                            notifyItemChanged(j);
                                         }
-
-                                        journals.remove(j);
-                                        journals.add(j, new Footer(i, m2));
-
-                                        notifyItemChanged(j);
                                     }
                                 }
                             }
                         }
                     }
-                });
+                });*/
+
+        boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> update());
+
+        boxStore.subscribe(Journal.class)
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> update());
+    }
+
+    private void update() {
+        List<JournalBase> updated = new ArrayList<>(DataBase.get().getBoxStore()
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos))
+                .and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build()
+                .find());
+
+        for (int i = 0; i < journals.size(); i++) {
+            if (journals.get(i) instanceof Matter) {
+                Matter m1 = (Matter) journals.get(i);
+                for (JournalBase jb : updated) {
+                    if (jb instanceof Matter) {
+                        Matter m2 = (Matter) jb;
+                        if (m1.id == m2.id) {
+                            m2.isExpanded = m1.isExpanded;
+                            m2.shouldAnimate = m1.shouldAnimate;
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < updated.size(); i++) {
+            if (updated.get(i) instanceof Matter) {
+                Matter matter = (Matter) updated.get(i);
+
+                if (matter.isExpanded) {
+                    List<Journal> items = matter.getLastPeriod().journals;
+                    updated.addAll(i + 1, items);
+                    updated.add(i + items.size() + 1, new Footer(i, matter));
+                }
+            }
+        }
+
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return journals.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return updated.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                if (journals.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
+                    return (((Matter) journals.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
+
+                else if (journals.get(oldItemPosition) instanceof Journal && updated.get(newItemPosition) instanceof Journal)
+                    return (((Journal) journals.get(oldItemPosition)).id == (((Journal) updated.get(newItemPosition)).id));
+
+                else if (journals.get(oldItemPosition) instanceof Footer && updated.get(newItemPosition) instanceof Footer)
+                    return (((Footer) journals.get(oldItemPosition)).getMatter().id == (((Footer) updated.get(newItemPosition)).getMatter().id));
+
+                else return false;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return (journals.get(oldItemPosition).equals(updated.get(newItemPosition)));
+            }
+
+        }, true);
+
+        journals.clear();
+        journals.addAll(updated);
+        result.dispatchUpdatesTo(this);
     }
 
     @NonNull

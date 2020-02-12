@@ -5,12 +5,19 @@ import android.util.Log;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
+
+import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.BoxStore;
+import io.objectbox.query.QueryBuilder;
+
 import static com.tinf.qmobile.network.Client.pos;
 
 public class DataBase {
@@ -20,6 +27,7 @@ public class DataBase {
     private List<Matter> matters;
     private List<Schedule> schedule;
     private List<EventBase> events;
+    private List<OnDataChange> listeners;
 
     private DataBase() {
         boxStore = MyObjectBox
@@ -28,17 +36,10 @@ public class DataBase {
                 .build();
 
         boxStore.subscribe(Matter.class)
-                .observer(data -> {
-                    matters = boxStore
-                            .boxFor(Matter.class)
-                            .query()
-                            .order(Matter_.title_)
-                            .equal(Matter_.year_, User.getYear(pos))
-                            .and()
-                            .equal(Matter_.period_, User.getPeriod(pos))
-                            .build()
-                            .find();
-                });
+                .observer(data -> update());
+
+        boxStore.subscribe(Journal.class)
+                .observer(data -> update());
     }
 
     public static synchronized DataBase get() {
@@ -60,7 +61,6 @@ public class DataBase {
         }
     }
 
-
     public List<Matter> getMatters() {
         return matters;
     }
@@ -71,6 +71,50 @@ public class DataBase {
 
     public List<EventBase> getEvents() {
         return events;
+    }
+
+
+    private void callOnNotification(int c) {
+        if (listeners != null)
+            for (OnDataChange listener : listeners)
+                listener.onNotification(c);
+    }
+
+    public void addOnDataChangeListener(OnDataChange onDataChange) {
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
+
+        if (onDataChange != null && !listeners.contains(onDataChange)) {
+            listeners.add(onDataChange);
+            Log.i(TAG, "Added listener from " + onDataChange);
+        }
+    }
+
+    public void removeOnDataChangeListener(OnDataChange onDataChange) {
+        if (listeners != null && onDataChange != null) {
+            listeners.remove(onDataChange);
+            Log.i(TAG, "Removed listener from " + onDataChange);
+        }
+    }
+
+    private void update() {
+        matters = boxStore
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos))
+                .and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build()
+                .find();
+
+        int c = 0;
+
+        for (Matter matter : matters)
+            c += matter.getNotSeenCount();
+
+        callOnNotification(c);
     }
 
 }
