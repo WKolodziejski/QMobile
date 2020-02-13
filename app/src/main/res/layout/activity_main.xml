@@ -41,22 +41,6 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/fab_expand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:transitionName="Fab"
-            android:textColor="@color/colorPrimaryLight"
-            android:background="@color/colorAccent"
-            android:visibility="gone"
-            app:icon="@drawable/ic_add"
-            app:iconTint="@color/colorPrimaryLight"
-            app:fabSize="normal"
-            app:borderWidth="0dp" />
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

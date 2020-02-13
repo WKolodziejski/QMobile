@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.holder.Journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 

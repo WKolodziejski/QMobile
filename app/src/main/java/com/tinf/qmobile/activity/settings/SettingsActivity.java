@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             bindPreferenceSummaryToValue(findPreference(NOTIFY));
 
-            //bindPreferenceSummaryToValue(findPreference(NIGHT));
+            bindPreferenceSummaryToValue(findPreference(NIGHT));
 
             Preference about = findPreference("key_about");
             about.setOnPreferenceClickListener(preference -> {
@@ -85,17 +85,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             });
 
             Preference night_mode = findPreference(NIGHT);
-
-            if (User.isNight()) {
-                night_mode.setOnPreferenceClickListener(preference -> {
-                    AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?
-                            AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                    return true;
-                });
-            } else {
-                PreferenceScreen preferenceScreen = getPreferenceScreen();
-                preferenceScreen.removePreference(night_mode);
-            }
+            night_mode.setOnPreferenceClickListener(preference -> {
+                AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?
+                        AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                return true;
+            });
         }
     }
 

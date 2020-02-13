@@ -8,13 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.holder.Calendar.CalendarViewHolder;
-import com.tinf.qmobile.holder.Calendar.DayViewHolder;
-import com.tinf.qmobile.holder.Calendar.EventImageViewHolder;
-import com.tinf.qmobile.holder.Calendar.EventJournalViewHolder;
-import com.tinf.qmobile.holder.Calendar.EventSimpleViewHolder;
-import com.tinf.qmobile.holder.Calendar.EventUserViewHolder;
-import com.tinf.qmobile.holder.Calendar.MonthViewHolder;
+import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
+import com.tinf.qmobile.holder.calendar.DayViewHolder;
+import com.tinf.qmobile.holder.calendar.EventImageViewHolder;
+import com.tinf.qmobile.holder.calendar.EventJournalViewHolder;
+import com.tinf.qmobile.holder.calendar.EventSimpleViewHolder;
+import com.tinf.qmobile.holder.calendar.EventUserViewHolder;
+import com.tinf.qmobile.holder.calendar.MonthViewHolder;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 
 import java.util.List;

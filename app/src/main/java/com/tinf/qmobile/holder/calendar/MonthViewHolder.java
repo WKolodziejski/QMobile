@@ -1,4 +1,4 @@
-package com.tinf.qmobile.holder.Calendar;
+package com.tinf.qmobile.holder.calendar;
 
 import android.content.Context;
 import android.view.View;

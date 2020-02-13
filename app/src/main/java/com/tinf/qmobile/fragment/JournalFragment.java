@@ -1,52 +1,34 @@
 package com.tinf.qmobile.fragment;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.adapter.journal.DiariosListAdapter;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
-import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.journal.JournalBase;
-import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utils.JournalDecoration;
-
-import net.cachapa.expandablelayout.ExpandableLayout;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
-
 public class JournalFragment extends Fragment implements OnUpdate {
     private static String TAG = "DiariosFragment";
-    @BindView(R.id.recycler_diarios) RecyclerView recyclerView;
+    @BindView(R.id.recycler_diarios)    RecyclerView recyclerView;
+    @BindView(R.id.fab_journal)         ExtendedFloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,7 +38,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_diarios, container, false);
+        View view = inflater.inflate(R.layout.fragment_journal, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -81,9 +63,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
             }
         });
 
-        ((MainActivity) getActivity()).fab.setOnClickListener(v -> {
-            adapter.toggle();
-        });
+        fab.setOnClickListener(v -> adapter.toggle());
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
@@ -98,10 +78,10 @@ public class JournalFragment extends Fragment implements OnUpdate {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
-                if (dy < 0 && !((MainActivity) getActivity()).fab.isShown())
-                    ((MainActivity) getActivity()).fab.show();
-                else if(dy > 0 && ((MainActivity) getActivity()).fab.isShown())
-                    ((MainActivity) getActivity()).fab.hide();
+                if (dy < 0 && !fab.isShown())
+                    fab.show();
+                else if(dy > 0 && fab.isShown())
+                    fab.hide();
             }
 
             @Override
@@ -109,8 +89,6 @@ public class JournalFragment extends Fragment implements OnUpdate {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
-        ((MainActivity) getActivity()).fab.setIconResource(R.drawable.ic_expand);
-        ((MainActivity) getActivity()).fab.show();
     }
 
     @Override
@@ -149,6 +127,18 @@ public class JournalFragment extends Fragment implements OnUpdate {
     public void onStop() {
         super.onStop();
         Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Client.get().addOnUpdateListener(this);
     }
 
 }

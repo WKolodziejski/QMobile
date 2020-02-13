@@ -20,7 +20,6 @@ import com.tinf.qmobile.utility.User;
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
 
 public class AboutActivity extends AppCompatActivity {
-    int counter = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,30 +37,6 @@ public class AboutActivity extends AppCompatActivity {
 
         TextView version_txt = (TextView) findViewById(R.id.about_version);
         version_txt.append(" " + version);
-
-        ImageView icon = (ImageView) findViewById(R.id.about_icon);
-        icon.setOnClickListener(view -> {
-            if (User.isNight()) {
-                Toast.makeText(getApplicationContext(), "Modo noturno já desbloqueado.", Toast.LENGTH_LONG).show();
-            } else {
-                if (counter > 0) {
-                    Toast.makeText(getApplicationContext(), counter + " restantes.", Toast.LENGTH_LONG).show();
-                    counter--;
-                } else {
-                    Toast.makeText(getApplicationContext(), "Modo noturno (beta) desbloqueado.", Toast.LENGTH_LONG).show();
-
-                    User.setNight(true);
-
-                    SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit();
-                    prefs.putBoolean(NIGHT, true);
-                    prefs.apply();
-
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                }
-            }
-        });
-
-
     }
 
     public void more(View v){

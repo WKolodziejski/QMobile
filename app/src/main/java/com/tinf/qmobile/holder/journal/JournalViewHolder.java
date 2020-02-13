@@ -1,4 +1,4 @@
-package com.tinf.qmobile.holder.Journal;
+package com.tinf.qmobile.holder.journal;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +15,6 @@ import com.tinf.qmobile.adapter.journal.JournalAdapter3;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
-
-import java.util.logging.Handler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

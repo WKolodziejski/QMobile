@@ -31,7 +31,6 @@ import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MateriaisFragment;
-import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.fab_expand)        public ExtendedFloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

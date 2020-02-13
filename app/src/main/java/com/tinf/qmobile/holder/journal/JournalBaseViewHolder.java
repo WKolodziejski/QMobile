@@ -1,4 +1,4 @@
-package com.tinf.qmobile.holder.Journal;
+package com.tinf.qmobile.holder.journal;
 
 import android.content.Context;
 import android.view.View;

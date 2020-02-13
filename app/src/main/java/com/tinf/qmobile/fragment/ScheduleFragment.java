@@ -115,38 +115,41 @@ public class ScheduleFragment extends Fragment {
                     schedules = builder.build().find();
                 }
 
-                for (Schedule schedule : schedules) {
-                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                            schedule.getStartTime(), schedule.getEndTime());
-                    event.setColor(schedule.getColor());
-                    events.add(event);
+                if (!schedules.isEmpty()) {
 
-                    int day = event.getStartTime().getDay().getValue();
-                    int hour = event.getStartTime().getHour();
+                    for (Schedule schedule : schedules) {
+                        WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                                schedule.getStartTime(), schedule.getEndTime());
+                        event.setColor(schedule.getColor());
+                        events.add(event);
 
-                    if (!hours[hour][day]) {
-                        minutes[hour] = event;
-                        hours[hour][day] = true;
-                    }
-                }
+                        int day = event.getStartTime().getDay().getValue();
+                        int hour = event.getStartTime().getHour();
 
-                int firstIndex = 0;
-                int parc1 = 0;
-
-                for (int h = 0; h < 24; h++) {
-                    int sum = 0;
-                    for (int d = 0; d < 7; d++) {
-                        if (hours[h][d]) {
-                            sum++;
+                        if (!hours[hour][day]) {
+                            minutes[hour] = event;
+                            hours[hour][day] = true;
                         }
                     }
-                    if (sum > parc1) {
-                        firstIndex = h;
-                        parc1 = sum;
-                    }
-                }
 
-                weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                    int firstIndex = 0;
+                    int parc1 = 0;
+
+                    for (int h = 0; h < 24; h++) {
+                        int sum = 0;
+                        for (int d = 0; d < 7; d++) {
+                            if (hours[h][d]) {
+                                sum++;
+                            }
+                        }
+                        if (sum > parc1) {
+                            firstIndex = h;
+                            parc1 = sum;
+                        }
+                    }
+
+                    weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                }
 
                 return events;
             });

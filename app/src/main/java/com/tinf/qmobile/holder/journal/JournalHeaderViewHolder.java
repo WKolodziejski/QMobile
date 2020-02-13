@@ -1,4 +1,4 @@
-package com.tinf.qmobile.holder.Journal;
+package com.tinf.qmobile.holder.journal;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -12,10 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.journal.JournalAdapter3;
-import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
-
-import net.cachapa.expandablelayout.ExpandableLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

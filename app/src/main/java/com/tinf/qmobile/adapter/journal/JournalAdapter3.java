@@ -3,7 +3,6 @@ package com.tinf.qmobile.adapter.journal;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -13,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.holder.Journal.JournalBaseViewHolder;
-import com.tinf.qmobile.holder.Journal.JournalFooterViewHolder;
-import com.tinf.qmobile.holder.Journal.JournalHeaderViewHolder;
-import com.tinf.qmobile.holder.Journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
+import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
+import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
+import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.model.journal.Footer;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.JournalBase;
