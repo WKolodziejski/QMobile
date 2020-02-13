@@ -50,7 +50,6 @@ public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;
     private LinearLayoutManager layout;
     private EventsAdapter adapter;
-    //private CalendarAdapterTEST adapter;
     private List<CalendarBase> events;
 
     @Override
@@ -313,13 +312,6 @@ public class CalendarFragment extends Fragment implements OnUpdate {
 
     private void setTitle(long date) {
         ((CalendarioActivity) getActivity()).setTitle(new SimpleDateFormat("MMM ― yyyy", Locale.getDefault()).format(date));
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-        if (pg == PG_CALENDARIO || pg == UPDATE_REQUEST) {
-            displayEvents();
-        }
     }
 
     @Override

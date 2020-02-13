@@ -18,7 +18,7 @@ import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 
-public class GradesFragment extends Fragment implements OnUpdate {
+public class GradesFragment extends Fragment {
     private EtapasAdapter adapter;
 
     @Override
@@ -43,40 +43,6 @@ public class GradesFragment extends Fragment implements OnUpdate {
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-        adapter.update(DataBase.get().getBoxStore().boxFor(Matter.class).get(getArguments().getLong("ID")));
-    }
-
-    @Override
-    public void onScrollRequest() {
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Client.get().removeOnUpdateListener(this);
     }
 
 }

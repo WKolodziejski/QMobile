@@ -69,7 +69,6 @@ public class MateriaActivity extends AppCompatActivity {
                             matter.setColor(selectedColor);
                             DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
                             changed = true;
-                            Client.get().requestUpdate();
                         })
                         .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
                         .build()
@@ -83,13 +82,6 @@ public class MateriaActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.matters, menu);
         return true;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (changed)
-            Client.get().requestUpdate();
     }
 
 }

@@ -38,7 +38,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "JournalParser";
     private OnFinish onFinish;
     private OnEvent onEvent;
-    private int pos, count;
+    private int pos;
     private boolean notify;
 
     public JournalParser(int pos, boolean notify, OnFinish onFinish, OnEvent onEvent) {
@@ -188,8 +188,6 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                                         period.journals.add(newJournal);
                                         journalBox.put(newJournal);
 
-                                        count++;
-
                                         if (notify && grade != -1 && date <= today.getTime()) {
                                             sendNotification(newJournal);
                                         }
@@ -197,7 +195,6 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                                         if (search.getGrade_() != grade) {
                                             search.setGrade(grade);
                                             journalBox.put(search);
-                                            count++;
 
                                             if (notify) {
                                                 sendNotification(search);
@@ -228,9 +225,6 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         onFinish.onFinish(PG_DIARIOS, pos);
-        if (onEvent != null) {
-            onEvent.onJournal(count);
-        }
     }
 
     public interface OnFinish {

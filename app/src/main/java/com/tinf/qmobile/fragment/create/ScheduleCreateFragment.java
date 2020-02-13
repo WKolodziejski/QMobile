@@ -338,7 +338,6 @@ public class ScheduleCreateFragment extends Fragment {
             }
 
             ((EventCreateActivity) getActivity()).finish();
-            Client.get().requestUpdate();
         });
     }
 

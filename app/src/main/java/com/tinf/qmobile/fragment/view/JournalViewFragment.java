@@ -2,6 +2,7 @@ package com.tinf.qmobile.fragment.view;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,16 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Schedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.android.AndroidScheduler;
+import io.objectbox.reactive.DataObserver;
 
 public class JournalViewFragment extends Fragment {
     @BindView(R.id.journal_view_time_text)           TextView time_txt;
@@ -43,6 +48,22 @@ public class JournalViewFragment extends Fragment {
         if (bundle != null) {
             id = bundle.getLong("ID");
         }
+
+        DataObserver observer = data -> setText();
+
+        DataBase.get().getBoxStore()
+                .subscribe(Journal.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        DataBase.get().getBoxStore()
+                .subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
     }
 
     @Nullable
@@ -57,6 +78,10 @@ public class JournalViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setText();
+    }
+
+    private void setText() {
         SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
         Journal journal = DataBase.get().getBoxStore().boxFor(Journal.class).get(id);

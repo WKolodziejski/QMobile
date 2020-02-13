@@ -33,6 +33,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.JournalBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utils.JournalDecoration;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
@@ -117,11 +118,6 @@ public class JournalFragment extends Fragment implements OnUpdate {
         inflater.inflate(R.menu.grades, menu);
         super.onCreateOptionsMenu(menu, inflater);
         menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_column);
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-
     }
 
     @Override

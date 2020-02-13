@@ -58,10 +58,4 @@ public class CalendarioActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Client.get().requestUpdate();
-    }
-
 }

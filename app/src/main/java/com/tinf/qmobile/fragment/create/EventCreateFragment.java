@@ -394,7 +394,6 @@ public class EventCreateFragment extends Fragment {
             }
 
             ((EventCreateActivity) getActivity()).finish();
-            Client.get().requestUpdate();
         });
     }
 

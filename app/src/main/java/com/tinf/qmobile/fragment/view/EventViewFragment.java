@@ -3,6 +3,7 @@ package com.tinf.qmobile.fragment.view;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,8 @@ import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.network.Client;
 
 import java.text.SimpleDateFormat;
@@ -33,11 +36,13 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.android.AndroidScheduler;
+import io.objectbox.reactive.DataObserver;
 
 import static android.view.View.GONE;
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
 
-public class EventViewFragment extends Fragment implements OnUpdate {
+public class EventViewFragment extends Fragment {
     @BindView(R.id.event_view_start_time)          TextView startTime_txt;
     @BindView(R.id.event_view_end_time)            TextView endTime_txt;
     @BindView(R.id.event_view_matter_text)         TextView matter_txt;
@@ -58,6 +63,22 @@ public class EventViewFragment extends Fragment implements OnUpdate {
         if (bundle != null) {
             id = bundle.getLong("ID");
         }
+
+        DataObserver observer = data -> setText();
+
+        DataBase.get().getBoxStore()
+                .subscribe(EventUser.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        DataBase.get().getBoxStore()
+                .subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
     }
 
     @Nullable
@@ -146,9 +167,7 @@ public class EventViewFragment extends Fragment implements OnUpdate {
                         .setMessage(getString(R.string.dialog_delete_txt))
                         .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
                             DataBase.get().getBoxStore().boxFor(EventUser.class).remove(id);
-                            Client.get().removeOnUpdateListener(this);
                             ((EventViewActivity) getActivity()).finish();
-                            Client.get().requestUpdate();
                             Toast.makeText(getContext(), getString(R.string.event_removed), Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)
@@ -158,40 +177,6 @@ public class EventViewFragment extends Fragment implements OnUpdate {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-        setText();
-    }
-
-    @Override
-    public void onScrollRequest() {
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Client.get().removeOnUpdateListener(this);
     }
 
 }

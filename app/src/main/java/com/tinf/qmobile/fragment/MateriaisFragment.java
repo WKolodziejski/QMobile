@@ -195,26 +195,6 @@ public class MateriaisFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onUpdate(int pg) {
-        if (pg == UPDATE_REQUEST) {
-            Client.get().load(PG_MATERIAIS);
-        }
-
-        if (pg == PG_MATERIAIS || pg == UPDATE_REQUEST) {
-            loadData();
-            adapter.update(materiaList);
-
-            if (!materiaList.isEmpty()) {
-                recyclerView.setVisibility(View.VISIBLE);
-                empty.setVisibility(View.GONE);
-            } else {
-                recyclerView.setVisibility(View.GONE);
-                empty.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    @Override
     public void onScrollRequest() {
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);

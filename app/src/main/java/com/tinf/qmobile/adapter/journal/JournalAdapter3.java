@@ -29,6 +29,7 @@ import java.util.List;
 
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
+import io.objectbox.reactive.DataObserver;
 
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -53,60 +54,19 @@ public class JournalAdapter3 extends RecyclerView.Adapter<JournalBaseViewHolder>
                 .build()
                 .find());
 
-        /*boxStore.subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    List<JournalBase> updated = new ArrayList<>(boxStore
-                            .boxFor(Matter.class)
-                            .query()
-                            .order(Matter_.title_)
-                            .equal(Matter_.year_, User.getYear(pos))
-                            .and()
-                            .equal(Matter_.period_, User.getPeriod(pos))
-                            .build()
-                            .find());
-
-                    for (int i = 0; i < journals.size(); i++) {
-                        if (journals.get(i) instanceof Matter) {
-                            Matter m1 = (Matter) journals.get(i);
-                            for (JournalBase jb : updated) {
-                                if (jb instanceof Matter) {
-                                    Matter m2 = (Matter) jb;
-
-                                    if (m1.id == m2.id) {
-                                        m2.isExpanded = m1.isExpanded;
-                                        m2.shouldAnimate = m1.shouldAnimate;
-                                        journals.remove(i);
-                                        journals.add(i, m2);
-                                        notifyItemChanged(i);
-
-                                        if (m2.isExpanded) {
-                                            int j = i + m2.getLastPeriod().journals.size() + 1;
-
-                                            journals.remove(j);
-                                            journals.add(j, new Footer(i, m2));
-
-                                            notifyItemChanged(j);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });*/
+        DataObserver observer = data -> update();
 
         boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> update());
+                .observer(observer);
 
         boxStore.subscribe(Journal.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> update());
+                .observer(observer);
     }
 
     private void update() {

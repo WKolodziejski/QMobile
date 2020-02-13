@@ -509,7 +509,6 @@ public class Client {
                 onResponses.get(i).onFinish(pg, pos);
             }
         }
-        callOnUpdate(pg);
         checkQueue();
     }
 
@@ -532,28 +531,12 @@ public class Client {
         }
     }
 
-    private void callOnUpdate(int pg) {
-        Log.v(TAG, "Update: " + pg);
-
-        if (onUpdates != null) {
-            for (int i = 0; i < onUpdates.size(); i++) {
-                onUpdates.get(i).onUpdate(pg);
-            }
-        }
-    }
-
     private void callOnScrollRequest() {
         if (onUpdates != null) {
             for (int i = 0; i < onUpdates.size(); i++) {
                 onUpdates.get(i).onScrollRequest();
             }
         }
-    }
-
-    public void requestUpdate() {
-        new Handler().postDelayed(() -> {
-            callOnUpdate(UPDATE_REQUEST);
-        }, 100);
     }
 
     public void requestScroll() {

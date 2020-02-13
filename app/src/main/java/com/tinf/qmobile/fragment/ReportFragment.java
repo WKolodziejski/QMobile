@@ -20,8 +20,8 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.fragment.matter.GradesFragment;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
@@ -30,144 +30,160 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
+import io.objectbox.android.AndroidScheduler;
+
+import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportFragment extends Fragment implements OnUpdate {
     private static String TAG = "ReportFragment";
+    private List<Matter> matters;
+    private ArrayList<ArrayList<String>> content;
     private LockTableView table;
-    private ArrayList<ArrayList<String>> data;
-    private List<Matter> materiaList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v(TAG, "New instace created");
-
         setHasOptionsMenu(true);
 
-        loadData();
+        DataBase.get().getBoxStore()
+                .subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> {
+                    updateReport();
+                    table.setTableDatas(content);
+                });
     }
 
-    private void loadData() {
-        ArrayList<String> header = new ArrayList<>();
+    private void updateReport() {
+            matters = new ArrayList<>(DataBase.get().getBoxStore()
+                    .boxFor(Matter.class)
+                    .query()
+                    .order(Matter_.title_)
+                    .equal(Matter_.year_, User.getYear(pos))
+                    .and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build()
+                    .find());
 
-        header.add(getResources().getString(R.string.boletim_Materia));
+            ArrayList<String> header = new ArrayList<>();
 
-        String[] sem1 = {
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_TFaltas)
-        };
+            header.add(getResources().getString(R.string.boletim_Materia));
 
-        String[] sem2 = {
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_TFaltas)
-        };
+            String[] sem1 = {
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_RP),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_TFaltas)
+            };
 
-        String[] bim = {
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_TFaltas)
-        };
+            String[] sem2 = {
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_TFaltas)
+            };
 
-        String[] bim2 = {
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
-                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
-                getResources().getString(R.string.boletim_TFaltas)
-        };
+            String[] bim = {
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_TFaltas)
+            };
 
-        String[] uni = {
-                getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_RP),
-                getResources().getString(R.string.boletim_NotaFinal),
-                getResources().getString(R.string.boletim_TFaltas)
-        };
+            String[] bim2 = {
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                    getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_QuartaEtapa) + " " + getResources().getString(R.string.boletim_Conceito),
+                    getResources().getString(R.string.boletim_TFaltas)
+            };
 
-        String[] trim = {
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
-                getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
-                getResources().getString(R.string.boletim_TFaltas)
-        };
+            String[] uni = {
+                    getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_RP),
+                    getResources().getString(R.string.boletim_NotaFinal),
+                    getResources().getString(R.string.boletim_TFaltas)
+            };
 
-        switch (User.getType()) {
-            case 0 : header.addAll(Arrays.asList(sem1));
-                break;
-            case 1: header.addAll(Arrays.asList(bim));
-                break;
-            case 2: header.addAll(Arrays.asList(uni));
-                break;
-            case 3: header.addAll(Arrays.asList(sem2));
-                break;
-            case 4: header.addAll(Arrays.asList(bim2));
-                break;
-            case 5: header.addAll(Arrays.asList(trim));
-                break;
-        }
+            String[] trim = {
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_SegundaEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Nota),
+                    getResources().getString(R.string.boletim_TerceiraEtapa) + " " + getResources().getString(R.string.boletim_Faltas),
+                    getResources().getString(R.string.boletim_TFaltas)
+            };
 
-        materiaList = DataBase.get().getMatters();
-
-        data = new ArrayList<>();
-
-        data.add(header);
-
-        for (int i = 0; i < materiaList.size(); i++) {
-            ArrayList<String> row = new ArrayList<>();
-            row.add(materiaList.get(i).getTitle());
-            int size = materiaList.get(i).periods.size();
-
-            if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
-                size--;
-
-            for (int j = 0; j < size; j++) {
-                Period period = materiaList.get(i).periods.get(j);
-                row.add(period.getGrade());
-                if (j % 2 == 0 || User.getType() != User.Type.BIMESTRE2.get()) {
-                    row.add(period.getAbsences());
-                }
-                if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
-                    row.add(period.getGradeRP());
-                    row.add(period.getGradeFinal());
-                } else if (User.getType() == User.Type.BIMESTRE2.get() && j % 2 == 0) {
-                    row.add(period.getGradeFinal());
-                }
+            switch (User.getType()) {
+                case 0 : header.addAll(Arrays.asList(sem1));
+                    break;
+                case 1: header.addAll(Arrays.asList(bim));
+                    break;
+                case 2: header.addAll(Arrays.asList(uni));
+                    break;
+                case 3: header.addAll(Arrays.asList(sem2));
+                    break;
+                case 4: header.addAll(Arrays.asList(bim2));
+                    break;
+                case 5: header.addAll(Arrays.asList(trim));
+                    break;
             }
-            row.add(materiaList.get(i).getAbsences());
-            data.add(row);
-        }
+
+            content = new ArrayList<>();
+
+            content.add(header);
+
+            for (int i = 0; i < matters.size(); i++) {
+                ArrayList<String> row = new ArrayList<>();
+                row.add(matters.get(i).getTitle());
+                int size = matters.get(i).periods.size();
+
+                if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
+                    size--;
+
+                for (int j = 0; j < size; j++) {
+                    Period period = matters.get(i).periods.get(j);
+                    row.add(period.getGrade());
+                    if (j % 2 == 0 || User.getType() != User.Type.BIMESTRE2.get()) {
+                        row.add(period.getAbsences());
+                    }
+                    if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
+                        row.add(period.getGradeRP());
+                        row.add(period.getGradeFinal());
+                    } else if (User.getType() == User.Type.BIMESTRE2.get() && j % 2 == 0) {
+                        row.add(period.getGradeFinal());
+                    }
+                }
+                row.add(matters.get(i).getAbsences());
+                content.add(row);
+            }
     }
 
     @Override
@@ -178,13 +194,12 @@ public class ReportFragment extends Fragment implements OnUpdate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.v(TAG, "View created");
 
-        view.post(() -> {
+        updateReport();
 
-            LinearLayout mContentView = (LinearLayout) view.findViewById(R.id.table_boletim);
+            LinearLayout layout = (LinearLayout) view.findViewById(R.id.table_boletim);
 
-            table = new LockTableView(getContext(), mContentView, data);
+            table = new LockTableView(getContext(), layout, content);
 
             table.setLockFristColumn(true)
                     .setLockFristRow(true)
@@ -201,12 +216,11 @@ public class ReportFragment extends Fragment implements OnUpdate {
                     .setOnItemClickListenter((item, position) -> {
                         if (position != 0) {
                             Intent intent = new Intent(getContext(), MateriaActivity.class);
-                            intent.putExtra("ID", materiaList.get(position - 1).id);
+                            intent.putExtra("ID", matters.get(position - 1).id);
                             intent.putExtra("PAGE", MateriaActivity.GRADES);
                             startActivity(intent);
                         }
                     })
-                    //.setOnItemLongClickListenter((item, position) -> Log.e("长按事件",position+""))
                     .setOnItemSeletor(R.color.colorPrimaryLight)
                     .show();
 
@@ -227,7 +241,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
                 }
             });
             ((MainActivity) getActivity()).fab.hide();
-        });
+
     }
 
     @Override
@@ -235,14 +249,6 @@ public class ReportFragment extends Fragment implements OnUpdate {
         inflater.inflate(R.menu.grades, menu);
         super.onCreateOptionsMenu(menu, inflater);
         menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_list);
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-        if (pg == PG_BOLETIM || pg == UPDATE_REQUEST) {
-            loadData();
-            table.setTableDatas(data);
-        }
     }
 
     @Override

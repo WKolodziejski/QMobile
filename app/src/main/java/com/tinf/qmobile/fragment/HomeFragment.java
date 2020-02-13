@@ -210,7 +210,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
         }, (result, error) -> {
             recyclerView.setAdapter(calendarAdapter);
         });
-
     }
 
     private void updateSchedule() {
@@ -316,11 +315,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
         if (nestedScrollView != null) {
             nestedScrollView.smoothScrollTo(0, 0);
         }
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-
     }
 
     @Override

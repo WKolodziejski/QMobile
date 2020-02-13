@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.network.Client.pos;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnUpdate, OnDataChange, BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
     @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                         .setPositiveButton(R.string.dialog_date_confirm, (dialog, which) -> {
 
                             Client.pos = year.getValue();
-                            Client.get().requestUpdate();
 
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
@@ -233,7 +232,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Log.v(TAG, "onStart");
         //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
-        Client.get().addOnUpdateListener(this);
         Client.get().setOnEventListener(this);
         DataBase.get().addOnDataChangeListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
@@ -245,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onStop();
         Log.v(TAG, "onStop");
         Client.get().removeOnResponseListener(this);
-        Client.get().removeOnUpdateListener(this);
         Client.get().setOnEventListener(null);
         DataBase.get().removeOnDataChangeListener(this);
         //appBarLayout.removeOnResponseListener(this);
@@ -258,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Log.v(TAG, "onResume");
         //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
-        Client.get().addOnUpdateListener(this);
         Client.get().setOnEventListener(this);
         DataBase.get().addOnDataChangeListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
@@ -270,7 +266,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onPause();
         Log.v(TAG, "onPause");
         Client.get().removeOnResponseListener(this);
-        Client.get().removeOnUpdateListener(this);
         Client.get().setOnEventListener(null);
         DataBase.get().removeOnDataChangeListener(this);
         //appBarLayout.removeOnResponseListener(this);
@@ -340,9 +335,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Client.get().requestUpdate();
-                } else {
+                if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
                 }
             }
@@ -362,13 +355,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             }
         }
     }*/
-
-
-
-    @Override
-    public void onMessage(int count) {
-
-    }
 
     @Override
     public void onDialog(String title, String msg) {
@@ -398,28 +384,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void onJournal(int count) {
-    }
-
-    @Override
-    public void onUpdate(int pg) {
-        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
-            setTitle(User.getYears()[pos]);
-        }
-    }
-
-    @Override
-    public void onScrollRequest() {
-
-    }
-
-    @Override
     public void onNotification(int count) {
-        if (count <= 0)
-            bottomNav.removeBadge(R.id.navigation_notas);
-        else
-            bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(count);
-
+        runOnUiThread(() -> {
+            if (count <= 0)
+                bottomNav.removeBadge(R.id.navigation_notas);
+            else
+                bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(count);
+        });
     }
 
     /*@Override
