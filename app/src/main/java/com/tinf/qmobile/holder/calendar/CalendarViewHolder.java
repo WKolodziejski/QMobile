@@ -26,7 +26,7 @@ public abstract class CalendarViewHolder<T extends CalendarBase> extends Recycle
     public static void setHeader(FrameLayout header, EventBase event, Context context) {
         final boolean isRanged = event.isRanged();
 
-        final int layout = isRanged ? R.layout.header_range_day : R.layout.header_single_day;
+        final int layout = isRanged ? R.layout.calendar_header_range_day : R.layout.calendar_header_single_day;
 
         final View view = LayoutInflater.from(context).inflate(layout, header, false);
         if (header.getChildCount() > 0 ) {

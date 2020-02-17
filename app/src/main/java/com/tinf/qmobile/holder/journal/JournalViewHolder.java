@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.adapter.journal.JournalAdapter3;
+import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
@@ -33,7 +33,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     }
 
     @Override
-    public void bind(Context context, Journal journal, JournalAdapter3 adapter) {
+    public void bind(Context context, Journal journal, JournalAdapter adapter) {
         title.setText(journal.getTitle());
         weight.setText(journal.getWeight());
         date.setText(journal.formatDate());

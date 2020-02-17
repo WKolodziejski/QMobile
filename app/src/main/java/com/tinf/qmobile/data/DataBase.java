@@ -106,7 +106,7 @@ public class DataBase {
         int c = 0;
 
         for (Matter matter : matters)
-            c += matter.getNotSeenCount();
+            c += matter.getJournalNotSeenCount();
 
         callOnNotification(c);
     }

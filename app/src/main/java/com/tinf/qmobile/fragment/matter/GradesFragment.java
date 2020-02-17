@@ -4,27 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.journal.EtapasAdapter;
-import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.network.Client;
 
 public class GradesFragment extends Fragment {
-    private EtapasAdapter adapter;
+   // private EtapasAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new EtapasAdapter(DataBase.get().getBoxStore().boxFor(Matter.class).get(getArguments().getLong("ID")), getContext());
+        //adapter = new EtapasAdapter(DataBase.get().getBoxStore().boxFor(Matter.class).get(getArguments().getLong("ID")), getContext());
     }
 
     @Override
@@ -42,7 +35,7 @@ public class GradesFragment extends Fragment {
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
+        //recyclerView.setAdapter(adapter);
     }
 
 }

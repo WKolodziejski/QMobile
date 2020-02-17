@@ -7,7 +7,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -22,7 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.materiais.Material;
+import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
@@ -55,7 +54,6 @@ import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
-import static com.tinf.qmobile.model.calendar.Utils.UPDATE_REQUEST;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
@@ -67,6 +65,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_GERADOR;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
+import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -382,12 +381,12 @@ public class Client {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        String cookie1 = response.allHeaders.get(5).getValue();
-                        Log.d("Cookie 1", cookie1);
-                        cookie1 = cookie1.substring(0, cookie1.indexOf(";")).concat("; ");
-                        COOKIE = cookie1;
-
                         try {
+                            String cookie1 = response.allHeaders.get(5).getValue();
+                            Log.d("Cookie 1", cookie1);
+                            cookie1 = cookie1.substring(0, cookie1.indexOf(";")).concat("; ");
+                            COOKIE = cookie1;
+
                             String cookie2 = response.allHeaders.get(6).getValue();
                             cookie2 = cookie2.substring(0, cookie2.indexOf(";")).concat(";");
                             COOKIE = cookie1.concat(cookie2);
@@ -543,7 +542,7 @@ public class Client {
         callOnScrollRequest();
     }
 
-    public DownloadManager.Request downloadMaterial(Material material, String path, String name) {
+    public DownloadManager.Request downloadMaterial(Material material) {
         Uri uri = Uri.parse(URL + material.getLink());
 
         return new DownloadManager.Request(uri)
@@ -553,7 +552,9 @@ public class Client {
                 .addRequestHeader("Cookie", COOKIE)
                 .setTitle(material.getTitle())
                 .setDescription(material.getDateString())
-                .setDestinationInExternalPublicDir("/Download" + path, name);
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+                        "QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos)
+                                + "/" + material.getFileName());
     }
 
     private void downloadImage(String cod) {

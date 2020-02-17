@@ -30,18 +30,20 @@ import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 
 import static com.tinf.qmobile.network.Client.pos;
 
-public class ReportTableAdapter extends AbstractTableAdapter<String, Matter, String> {
+public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> {
     private Context context;
     private ArrayList<String> columnHeader;
     private ArrayList<Matter> rowHeader;
     private List<List<String>> cells;
 
-    public ReportTableAdapter(Context context, TableView tableView) {
+    public ReportAdapter(Context context, TableView tableView) {
         this.context = context;
         this.columnHeader = new ArrayList<>();
 
@@ -132,8 +134,10 @@ public class ReportTableAdapter extends AbstractTableAdapter<String, Matter, Str
                 break;
         }
 
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
         DataObserver observer = data -> {
-            List<Matter> matters = new ArrayList<>(DataBase.get().getBoxStore()
+            List<Matter> matters = new ArrayList<>(boxStore
                     .boxFor(Matter.class)
                     .query()
                     .order(Matter_.title_)
@@ -178,14 +182,12 @@ public class ReportTableAdapter extends AbstractTableAdapter<String, Matter, Str
             notifyDataSetChanged();
         };
 
-        DataBase.get().getBoxStore()
-                .subscribe(Matter.class)
+        boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        DataBase.get().getBoxStore()
-                .subscribe(Journal.class)
+        boxStore.subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
@@ -305,7 +307,7 @@ public class ReportTableAdapter extends AbstractTableAdapter<String, Matter, Str
         TableRowHeaderViewHolder h = (TableRowHeaderViewHolder) holder;
         h.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(rowPosition).getColor()));
 
-        int n = rowHeader.get(rowPosition).getNotSeenCount();
+        int n = rowHeader.get(rowPosition).getJournalNotSeenCount();
 
         if (n > 0) {
             h.badge.setText(String.valueOf(n));

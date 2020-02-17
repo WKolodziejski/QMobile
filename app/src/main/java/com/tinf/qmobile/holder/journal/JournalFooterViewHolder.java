@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.adapter.journal.JournalAdapter3;
+import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.journal.Footer;
 
 import butterknife.BindView;
@@ -28,7 +28,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
     }
 
     @Override
-    public void bind(Context context, Footer footer, JournalAdapter3 adapter) {
+    public void bind(Context context, Footer footer, JournalAdapter adapter) {
         float p = footer.getMatter().getGradeSum();
 
         partial.setText(p == -1 ? "-" : String.format("%.1f", p));

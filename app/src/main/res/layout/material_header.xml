@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/layout1"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    >
+
+    <TextView
+        android:id="@+id/material_color_badge"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/ic_square"
+        android:backgroundTint="@color/colorPrimary"
+        android:gravity="center"
+        android:padding="3dp"
+        android:textSize="12sp"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimaryLight"
+        tools:text="9"/>
+
+    <TextView
+        android:id="@+id/material_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="@dimen/main_font_size"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        tools:text="Matter" />
+
+</LinearLayout>

@@ -2,7 +2,6 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.data.DataBase;
@@ -20,10 +18,7 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
-import org.threeten.bp.DayOfWeek;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +33,6 @@ import me.jlurena.revolvingweekview.WeekViewEvent;
 
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
 public class ScheduleFragment extends Fragment {
     @BindView(R.id.weekView_horario)    WeekView weekView;
@@ -66,7 +60,7 @@ public class ScheduleFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_horario, container, false);
+        View view = inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

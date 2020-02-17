@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.evrencoskun.tableview.TableView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.adapter.ReportTableAdapter;
+import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.network.Client;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +30,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_report_2, container, false);
+        View view = inflater.inflate(R.layout.fragment_report, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -39,7 +39,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        table.setAdapter(new ReportTableAdapter(getContext(), table));
+        table.setAdapter(new ReportAdapter(getContext(), table));
 
         table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override

@@ -16,11 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.adapter.calendar.EventsAdapter;
+import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventImage;
@@ -44,7 +43,6 @@ import java.util.Objects;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
-import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
 
 public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;
@@ -123,7 +121,7 @@ public class CalendarFragment extends Fragment implements OnUpdate {
             }
         }
 
-        MultipleItemQuickAdapter multipleItemQuickAdapter = new MultipleItemQuickAdapter(R.layout.header_day, sections);*/
+        MultipleItemQuickAdapter multipleItemQuickAdapter = new MultipleItemQuickAdapter(R.layout.calendar_header_day, sections);*/
 
     }
 
@@ -271,7 +269,7 @@ public class CalendarFragment extends Fragment implements OnUpdate {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_calendario, container, false);
+        return inflater.inflate(R.layout.fragment_calendar, container, false);
     }
 
     @Override

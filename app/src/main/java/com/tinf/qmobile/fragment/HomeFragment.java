@@ -26,7 +26,7 @@ import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.adapter.calendar.EventsAdapter;
+import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventImage_;
@@ -34,6 +34,7 @@ import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -251,7 +252,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
             Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
 
-            List<EventBase> events = new ArrayList<>();
+            List<CalendarBase> events = new ArrayList<>();
 
             events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
             events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());

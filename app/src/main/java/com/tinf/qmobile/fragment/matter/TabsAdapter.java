@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.fragment.MateriaisFragment;
+import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 
 public class TabsAdapter extends FragmentPagerAdapter {
@@ -35,7 +35,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
             case 1: fragment = new ScheduleFragment();
             break;
 
-            case 2: fragment = new MateriaisFragment();
+            case 2: fragment = new MaterialsFragment();
             break;
         }
 

@@ -21,7 +21,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
@@ -30,7 +29,7 @@ import com.tinf.qmobile.data.OnDataChange;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
-import com.tinf.qmobile.fragment.MateriaisFragment;
+import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     break;
 
                 case R.id.navigation_materiais:
-                    fragment = new MateriaisFragment();
+                    fragment = new MaterialsFragment();
                     break;
             }
         } else {

@@ -11,10 +11,11 @@ import java.util.Locale;
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
 
+import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.journal.Journal.Type.AVALIACAO;
 
 @Entity
-public class Journal extends EventBase implements JournalBase, Queryable {
+public class Journal extends EventBase implements Queryable {
 
     public enum Type {
         AVALIACAO(0), PROVA(1), TRABALHO(2), EXERCICIO(3), QUALITATIVA(4);
@@ -104,7 +105,7 @@ public class Journal extends EventBase implements JournalBase, Queryable {
 
     @Override
     public int getItemType() {
-        return JournalBase.ViewType.JOURNAL;
+        return JOURNAL;
     }
 
     public String formatDate() {
@@ -152,11 +153,6 @@ public class Journal extends EventBase implements JournalBase, Queryable {
 
     public int getType_() {
         return type_;
-    }
-
-    @Override
-    public long getID() {
-        return id;
     }
 
 }

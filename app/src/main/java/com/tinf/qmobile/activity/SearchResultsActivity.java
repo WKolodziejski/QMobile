@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.holder.DiariosViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -63,16 +62,14 @@ public class SearchResultsActivity extends ListActivity {
 
         @Override
         public long getItemId(int i) {
-            return list.get(i).getID();
+            return 0;
         }
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             //View v = getLayoutInflater().inflate(R.layout.list_diarios, viewGroup, false);
-            RecyclerView.ViewHolder v = new DiariosViewHolder(LayoutInflater.from(getApplicationContext()).inflate(R.layout.list_diarios, viewGroup, false));
-            ((DiariosViewHolder) v).title.setText(((Journal) list.get(i)).getTitle());
 
-            return v.itemView;
+            return null;
         }
     }
 

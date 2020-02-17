@@ -2,20 +2,18 @@ package com.tinf.qmobile.model.matter;
 
 import androidx.annotation.ColorInt;
 
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.journal.JournalBase;
-import com.tinf.qmobile.model.materiais.Material;
-
+import com.tinf.qmobile.model.material.Material;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.journal.JournalBase.ViewType.HEADER;
+import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 
 @Entity
-public class Matter implements JournalBase {
+public class Matter implements Queryable {
     @Transient public boolean isExpanded;
     @Transient public boolean shouldAnimate;
     @Id public long id;
@@ -74,13 +72,23 @@ public class Matter implements JournalBase {
         return periods.get(k);
     }
 
-    public int getNotSeenCount() {
+    public int getJournalNotSeenCount() {
         Period period = getLastPeriod();
 
         int sum = 0;
 
         for (Journal j : period.journals)
             if (!j.isSeen_())
+                sum++;
+
+        return sum;
+    }
+
+    public int getMaterialNotSeenCount() {
+        int sum = 0;
+
+        for (Material m : materials)
+            if (!m.isSeen_())
                 sum++;
 
         return sum;

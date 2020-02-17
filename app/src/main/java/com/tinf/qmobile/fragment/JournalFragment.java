@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.adapter.journal.JournalAdapter3;
+import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
@@ -56,7 +56,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
             }
         };
 
-        JournalAdapter3 adapter = new JournalAdapter3(getContext(), position -> {
+        JournalAdapter adapter = new JournalAdapter(getContext(), position -> {
             if (position != 0) {
                 smoothScroller.setTargetPosition(position);
                 layout.startSmoothScroll(smoothScroller);

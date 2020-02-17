@@ -1,10 +1,10 @@
 package com.tinf.qmobile.model.journal;
 
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
+import static com.tinf.qmobile.model.Queryable.ViewType.FOOTER;
 
-import static com.tinf.qmobile.model.journal.JournalBase.ViewType.FOOTER;
-
-public class Footer implements JournalBase {
+public class Footer implements Queryable {
     private Matter matter;
     private int i;
 

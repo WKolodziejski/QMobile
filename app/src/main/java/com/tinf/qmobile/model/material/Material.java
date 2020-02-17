@@ -1,6 +1,7 @@
-package com.tinf.qmobile.model.materiais;
+package com.tinf.qmobile.model.material;
 
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
 
 import java.text.SimpleDateFormat;
@@ -12,8 +13,10 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
+import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
+
 @Entity
-public class Material {
+public class Material implements Queryable {
     @Transient public boolean isDownloaded;
     @Id public long id;
     private String title;
@@ -22,6 +25,7 @@ public class Material {
     private long date;
     private String path;
     private String mime;
+    private boolean seen_;
     public ToOne<Matter> matter;
 
     public Material(String title, long date, String description, String link) {
@@ -119,6 +123,10 @@ public class Material {
         return input.replaceAll("[:\\\\/*\"%?|<>'.]", "-");
     }
 
+    public void see() {
+        seen_ = true;
+    }
+
     /*
      * Required methods
      */
@@ -155,6 +163,15 @@ public class Material {
 
     public void setMime(String mime) {
         this.mime = mime;
+    }
+
+    public boolean isSeen_() {
+        return seen_;
+    }
+
+    @Override
+    public int getItemType() {
+        return MATERIAL;
     }
 
 }
