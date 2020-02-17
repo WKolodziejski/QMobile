@@ -67,7 +67,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @BindView(R.id.weekView_home)   WeekView weekView;
     @BindView(R.id.home_scroll)     NestedScrollView nestedScrollView;
     @BindView(R.id.fab_home)        ExtendedFloatingActionButton fab;
-    private EventsAdapter calendarAdapter;
+    @BindView(R.id.recycler_home)   RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,13 +79,19 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> {
+                    weekView.notifyDatasetChanged();
+                    ((EventsAdapter) recyclerView.getAdapter()).update(getCalendarList());
+                });
 
         boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> {
+                    weekView.notifyDatasetChanged();
+                    ((EventsAdapter) recyclerView.getAdapter()).update(getCalendarList());
+                });
     }
 
     @Override
@@ -208,6 +214,26 @@ public class HomeFragment extends Fragment implements OnUpdate {
             startActivity(intent);
         });
 
+        CardView offline = (CardView) view.findViewById(R.id.home_offline);
+
+        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
+            offline.setVisibility(View.VISIBLE);
+
+            TextView text = (TextView) view.findViewById(R.id.offline_last_update);
+            text.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
+        } else {
+            offline.setVisibility(View.GONE);
+        }
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        new Thread(() -> {
+            List<? extends CalendarBase> events = getCalendarList();
+            recyclerView.post(() -> {
+                recyclerView.setAdapter(new EventsAdapter(getContext(), events));
+            });
+        }).start();
+
             /*ImageView image = (ImageView) view.findViewById(R.id.home_image);
             Bitmap bitmap = BitmapFactory.decodeFile(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                     + "/" + User.getCredential(User.REGISTRATION));
@@ -216,76 +242,51 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             image.setImageBitmap(croppedBmp);*/
 
-
     }
 
-    private void showOffline(View view) {
+    private List<EventBase> getCalendarList() {
+        Calendar current = Calendar.getInstance();
+        current.setTime(new Date());
+        current.set(Calendar.HOUR_OF_DAY, 0);
+        current.set(Calendar.MINUTE, 0);
+        current.set(Calendar.SECOND, 0);
+        current.set(Calendar.MILLISECOND, 0);
 
-            CardView offline = (CardView) view.findViewById(R.id.home_offline);
+        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
+        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
+        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
+        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
 
-            if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-                offline.setVisibility(View.VISIBLE);
+        List<EventBase> events = new ArrayList<>();
 
-                TextView text = (TextView) view.findViewById(R.id.offline_last_update);
-                text.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
-            } else {
-                offline.setVisibility(View.GONE);
-            }
-    }
+        events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
 
-    private void showCalendar(View view) {
+        Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_home);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (events.size() < 5) {
+            events = new ArrayList<>();
 
-        DataBase.get().getBoxStore().runInTxAsync(() -> {
-
-            Calendar current = Calendar.getInstance();
-            current.setTime(new Date());
-            current.set(Calendar.HOUR_OF_DAY, 0);
-            current.set(Calendar.MINUTE, 0);
-            current.set(Calendar.SECOND, 0);
-            current.set(Calendar.MILLISECOND, 0);
-
-            Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-            Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-            Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
-            Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-
-            List<CalendarBase> events = new ArrayList<>();
-
-            events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
-            events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
-            events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
-            events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
+            events.addAll(eventUserBox.query().build().find());
+            events.addAll(eventJournalBox.query().build().find());
+            events.addAll(eventImageBox.query().build().find());
+            events.addAll(eventSimpleBox.query().build().find());
 
             Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
-            if (events.size() < 5) {
-                events = new ArrayList<>();
-
-                events.addAll(eventUserBox.query().build().find());
-                events.addAll(eventJournalBox.query().build().find());
-                events.addAll(eventImageBox.query().build().find());
-                events.addAll(eventSimpleBox.query().build().find());
-
-                Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-                if (events.size() > 5) {
-                    events = events.subList(0, 5);
-                } else {
-                    events = events.subList(0, events.size());
-                }
-
-            } else {
+            if (events.size() > 5) {
                 events = events.subList(0, 5);
+            } else {
+                events = events.subList(0, events.size());
             }
 
-            calendarAdapter = new EventsAdapter(getActivity(), events);
+        } else {
+            events = events.subList(0, 5);
+        }
 
-        }, (result, error) -> {
-            recyclerView.setAdapter(calendarAdapter);
-        });
+        return events;
     }
 
     @OnClick(R.id.home_website)

@@ -2,12 +2,10 @@ package com.tinf.qmobile.adapter;
 
 import android.content.Context;
 import android.os.Environment;
-import android.os.storage.StorageManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.documentfile.provider.DocumentFile;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;

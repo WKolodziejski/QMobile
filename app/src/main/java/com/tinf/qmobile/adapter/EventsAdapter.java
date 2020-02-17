@@ -20,10 +20,10 @@ import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import java.util.List;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
-    private List<CalendarBase> events;
+    private List<? extends CalendarBase> events;
     private Context context;
 
-    public EventsAdapter(Context context, List<CalendarBase> events) {
+    public EventsAdapter(Context context, List<? extends CalendarBase> events) {
         this.context = context;
         this.events = events;
     }
@@ -74,7 +74,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         return events.size();
     }
 
-    public void update(List<CalendarBase> events) {
+    public void update(List<? extends CalendarBase> events) {
         this.events = events;
         notifyDataSetChanged();
     }

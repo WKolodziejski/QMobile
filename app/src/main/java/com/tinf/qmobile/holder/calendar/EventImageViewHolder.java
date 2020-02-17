@@ -28,4 +28,5 @@ public class EventImageViewHolder extends CalendarViewHolder<EventImage> {
         title.setText(event.getTitle());
         CalendarViewHolder.setHeader(header, event, context);
     }
+
 }

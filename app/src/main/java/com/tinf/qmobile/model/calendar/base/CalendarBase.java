@@ -24,11 +24,11 @@ public interface CalendarBase {
     @Retention(RetentionPolicy.SOURCE)
     @interface ViewType {
         //int DEFAULT = 100;
-        int IMAGE = 200;
+        int IMAGE = 600;
         int SIMPLE = 300;
         int MONTH = 400;
         int USER = 500;
-        int JOURNAL = 600;
+        int JOURNAL = 200;
         int Q = 700;
         int DAY = 800;
     }
