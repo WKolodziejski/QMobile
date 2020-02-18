@@ -11,14 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.BuildConfig;
@@ -37,7 +35,6 @@ import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, BottomNavigationView.OnNavigationItemSelectedListener {
@@ -61,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
 
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
-            Client.get().load(PG_DIARIOS);
-            Client.get().load(PG_BOLETIM);
+            Client.get().load(PG_FETCH_YEARS);
         }
     }
 
@@ -84,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             case android.R.id.home:
 
-                //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 onBackPressed();
                 return true;
 
@@ -120,9 +115,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                         .setView(view)
                         .setTitle(getResources().getString(R.string.dialog_date_change))
                         .setPositiveButton(R.string.dialog_date_confirm, (dialog, which) -> {
-
-                            Client.pos = year.getValue();
-
+                            Client.get().changeData(year.getValue());
+                            Client.get().loadYear(year.getValue());
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
                         .show();
@@ -177,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void logOut() {
+        finish();
         Client.get().clearRequests();
         Jobs.cancelAllJobs();
         DataBase.get().closeBoxStore();
@@ -184,7 +179,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         startActivity(new Intent(this, LoginActivity.class));
-        finish();
     }
 
     private boolean changeFragment(Fragment fragment) {
@@ -193,15 +187,12 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 
-            if (fragment instanceof HomeFragment) {
-                setTitle(User.getName());
-            } else {
+            if (!(fragment instanceof HomeFragment)) {
                 setTitle(User.getYears()[pos]);
             }
 
             transaction.replace(R.id.main_fragment, fragment).commit();
 
-            //fab.hide();
             return true;
         }
         return false;
@@ -212,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             switch (bottomNav.getSelectedItemId()) {
                 case R.id.navigation_home: Client.get().login();
                     break;
-                case R.id.navigation_notas: Client.get().load(PG_DIARIOS);
-                                            Client.get().load(PG_BOLETIM);
+                case R.id.navigation_notas: Client.get().loadYear(pos);
                     break;
                 case R.id.navigation_materiais: Client.get().load(PG_MATERIAIS);
                     break;
@@ -339,20 +329,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
     }
 
-    /*public void callOnUpdate(int pg) {
-        Log.v(TAG, "Update: " + pg);
-
-        if (bottomNav.getSelectedItemId() != R.id.navigation_home) {
-            setTitle(User.getYears()[pos]);
-        }
-
-        if (listeners != null) {
-            for (int i = 0; i < listeners.size(); i++) {
-                listeners.get(i).onUpdate(pg);
-            }
-        }
-    }*/
-
     @Override
     public void onDialog(String title, String msg) {
         new MaterialAlertDialogBuilder(MainActivity.this)
@@ -381,21 +357,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void onNotification(int count) {
-        runOnUiThread(() -> {
-            if (count <= 0)
-                bottomNav.removeBadge(R.id.navigation_notas);
-            else
-                bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(count);
-        });
+    public void onNotification(int count1, int count2) {
+        if (count1 <= 0)
+            bottomNav.removeBadge(R.id.navigation_notas);
+        else
+            bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(count1);
+
+        if (count2 <= 0)
+            bottomNav.removeBadge(R.id.navigation_materiais);
+        else
+            bottomNav.getOrCreateBadge(R.id.navigation_materiais).setNumber(count2);
     }
 
-    /*@Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout.setElevation(i == 0 ?
-                    (4 * getResources().getDisplayMetrics().density) :
-                    (0 * getResources().getDisplayMetrics().density));
-        }
-    }*/
 }

@@ -78,7 +78,7 @@
     <string name="text_empty">Empty</string>
     <string name="login_token">Fetching tokens</string>
     <string name="login_validating">Authenticating</string>
-    <string name="login_loading">Loading data for %1$s</string>
+    <string name="login_loading">Loading</string>
     <string name="login_checking">Getting information</string>
     <string name="login_help">Help?</string>
     <string name="text_permission_denied">Permission is required to download materials</string>

@@ -135,13 +135,11 @@ public class LoginFragment extends Fragment implements OnResponse {
         } else if (pg == PG_LOGIN) {
             textView.setText(getResources().getString(R.string.login_validating));
 
-        } else if (pg ==  PG_FETCH_YEARS) {
+        } else if (pg == PG_FETCH_YEARS) {
             textView.setText(getResources().getString(R.string.login_checking));
 
         } else {
-            textView.setText(String.format(
-                    getResources().getString(R.string.login_loading),
-                    String.valueOf(getYear(pos))));
+            textView.setText(getResources().getString(R.string.login_loading));
         }
 
         Log.v(TAG, "Started loading");

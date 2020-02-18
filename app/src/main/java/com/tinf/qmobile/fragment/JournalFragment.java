@@ -21,9 +21,12 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalFragment extends Fragment implements OnUpdate {
     private static String TAG = "DiariosFragment";
@@ -103,6 +106,11 @@ public class JournalFragment extends Fragment implements OnUpdate {
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public void onDateChanged() {
+        getActivity().setTitle(User.getYears()[pos]);
     }
 
     @Override

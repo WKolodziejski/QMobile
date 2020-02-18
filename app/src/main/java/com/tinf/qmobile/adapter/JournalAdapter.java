@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
@@ -19,6 +20,7 @@ import com.tinf.qmobile.model.journal.Footer;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
+public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate {
     private List<Queryable> journals;
     private Context context;
     private OnExpandListener onExpandListener;
@@ -39,17 +41,11 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         this.context = context;
         this.onExpandListener = onExpandListener;
 
+        Client.get().addOnUpdateListener(this);
+
         BoxStore boxStore = DataBase.get().getBoxStore();
 
-        journals = new ArrayList<>(boxStore
-                .boxFor(Matter.class)
-                .query()
-                .order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos))
-                .and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build()
-                .find());
+        journals = getList();
 
         DataObserver observer = data -> {
             List<Queryable> updated = new ArrayList<>(DataBase.get().getBoxStore()
@@ -139,6 +135,18 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 .observer(observer);
     }
 
+    private List<Queryable> getList() {
+        return new ArrayList<>(DataBase.get().getBoxStore()
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos))
+                .and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build()
+                .find());
+    }
+
     public void toggle() {
         int open = 0, closed = 0;
 
@@ -226,6 +234,17 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
     @Override
     public int getItemCount() {
         return journals.size();
+    }
+
+    @Override
+    public void onScrollRequest() {
+
+    }
+
+    @Override
+    public void onDateChanged() {
+        journals = getList();
+        notifyDataSetChanged();
     }
 
     public interface OnExpandListener {

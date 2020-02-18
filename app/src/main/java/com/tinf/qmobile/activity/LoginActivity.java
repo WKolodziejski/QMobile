@@ -19,7 +19,6 @@ import com.tinf.qmobile.utility.User;
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private static String TAG = "LoginActivity";
     Fragment fragment;
-    int pages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,88 +38,19 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onFinish(int pg, int pos) {
-
-        /*if (false) {
-
-            if (pg == PG_LOGIN) {
-                Client.get().load(PG_FETCH_YEARS);
-            }
-
-            if (pg == PG_FETCH_YEARS) {
-                Client.get().load(PG_DIARIOS, 0);
-            }
-
-            if (pg == PG_DIARIOS) {
-                Client.get().load(PG_BOLETIM, pos);
-                pages++;
-            }
-
-            if (pg == PG_BOLETIM) {
-                Client.get().load(PG_HORARIO, pos);
-                pages++;
-            }
-
-            if (pg == PG_HORARIO) {
-                pages++;
-
-                if (pos < User.getYears().length - 1) {
-                    Client.get().load(PG_DIARIOS, pos + 1);
-                } else {
-                    Client.get().load(PG_CALENDARIO, pos);
-                }
-            }
-
-            if (pg == PG_CALENDARIO) {
-                pages++;
-            }
-
-        } else {*/
-            if (pg == PG_LOGIN) {
-                Client.get().load(PG_FETCH_YEARS);
-            }
-
-            if (pg == PG_FETCH_YEARS) {
-                for (int i = 0; i < User.getYears().length; i++) {
-                    Client.get().load(PG_DIARIOS, i);
-                }
-            }
-
-            if (pg == PG_DIARIOS) {
-                Client.get().load(PG_BOLETIM, pos);
-                if (pos == 0) {
-                    Client.get().load(PG_CALENDARIO, pos);
-                }
-                pages++;
-            }
-
-            if (pg == PG_BOLETIM) {
-                Client.get().load(PG_HORARIO, pos);
-                pages++;
-            }
-
-            if (pg == PG_HORARIO) {
-                pages++;
-            }
-
-            if (pg == PG_CALENDARIO) {
-                pages++;
-            }
-        //}
-
-        if (pages == User.getYears().length * 3 + 1) {
+        if (pg == PG_LOGIN) {
+            Client.get().load(PG_FETCH_YEARS);
+        } else if (pg == PG_DIARIOS) {
+            Client.get().load(PG_CALENDARIO);
+        } else if (pg == PG_HORARIO) {
             User.setValid(true);
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
-
-        Log.v(TAG, "Finished loading");
     }
 
     @Override
     public void onError(int pg, String error) {
-        pages = 0;
-        //App.closeBoxStore();
-
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
 
         Log.e(TAG, error);
@@ -128,9 +58,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onAccessDenied(int pg, String message) {
-
-        pages = 0;
-
        if (pg == PG_ACESSO_NEGADO) {
             new MaterialAlertDialogBuilder(LoginActivity.this)
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
@@ -140,7 +67,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                     .show();
 
        } else {
-           //App.closeBoxStore();
            Toast.makeText(getApplicationContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
        }
 
@@ -149,54 +75,43 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onStart(int pg, int pos) {
-        Log.v(TAG, "Started loading");
+        Log.v(TAG, "Started loading " + pg);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart");
         Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.v(TAG, "onResume");
         Client.get().addOnResponseListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop");
-        //Client.get().removeOnResponseListener(this);
+        Client.get().removeOnResponseListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.v(TAG, "onPause");
-        //Client.get().removeOnResponseListener(this);
+        Client.get().removeOnResponseListener(this);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.v(TAG, "onDestroy");
         Client.get().removeOnResponseListener(this);
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("pages", pages);
         getSupportFragmentManager().putFragment(outState, "loginFragment", fragment);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        pages = savedInstanceState.getInt("pages");
-    }
 }

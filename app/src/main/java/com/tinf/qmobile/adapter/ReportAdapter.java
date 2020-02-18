@@ -17,6 +17,7 @@ import com.evrencoskun.tableview.listener.ITableViewListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.report.TableCellMatterViewHolder;
 import com.tinf.qmobile.holder.report.TableCellViewHolder;
 import com.tinf.qmobile.holder.report.TableColumnHeaderViewHolder;
@@ -26,6 +27,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +39,7 @@ import io.objectbox.reactive.DataObserver;
 
 import static com.tinf.qmobile.network.Client.pos;
 
-public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> {
+public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> implements OnUpdate {
     private Context context;
     private ArrayList<String> columnHeader;
     private ArrayList<Matter> rowHeader;
@@ -46,6 +48,8 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     public ReportAdapter(Context context, TableView tableView) {
         this.context = context;
         this.columnHeader = new ArrayList<>();
+
+        Client.get().addOnUpdateListener(this);
 
         columnHeader.add(context.getResources().getString(R.string.boletim_Materia));
 
@@ -136,51 +140,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
-        DataObserver observer = data -> {
-            List<Matter> matters = new ArrayList<>(boxStore
-                    .boxFor(Matter.class)
-                    .query()
-                    .order(Matter_.title_)
-                    .equal(Matter_.year_, User.getYear(pos))
-                    .and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build()
-                    .find());
-
-            rowHeader = new ArrayList<>();
-            cells = new ArrayList<>();
-
-            for (int i = 0; i < matters.size(); i++) {
-                ArrayList<String> row = new ArrayList<>();
-
-                rowHeader.add(matters.get(i));
-                row.add(matters.get(i).getTitle());
-
-                int size = matters.get(i).periods.size();
-
-                if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
-                    size--;
-
-                for (int j = 0; j < size; j++) {
-                    Period period = matters.get(i).periods.get(j);
-                    row.add(period.getGrade());
-                    if (j % 2 == 0 || User.getType() != User.Type.BIMESTRE2.get()) {
-                        row.add(period.getAbsences());
-                    }
-                    if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
-                        row.add(period.getGradeRP());
-                        row.add(period.getGradeFinal());
-                    } else if (User.getType() == User.Type.BIMESTRE2.get() && j % 2 == 0) {
-                        row.add(period.getGradeFinal());
-                    }
-                }
-                row.add(matters.get(i).getAbsences());
-                cells.add(row);
-            }
-
-            setAllItems(columnHeader, rowHeader, cells);
-            notifyDataSetChanged();
-        };
+        DataObserver observer = data -> loadList();
 
         boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
@@ -234,6 +194,53 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
 
         });
+    }
+
+    private void loadList() {
+        List<Matter> matters = new ArrayList<>(
+                DataBase.get().getBoxStore()
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos))
+                .and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build()
+                .find());
+
+        rowHeader = new ArrayList<>();
+        cells = new ArrayList<>();
+
+        for (int i = 0; i < matters.size(); i++) {
+            ArrayList<String> row = new ArrayList<>();
+
+            rowHeader.add(matters.get(i));
+            row.add(matters.get(i).getTitle());
+
+            int size = matters.get(i).periods.size();
+
+            if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
+                size--;
+
+            for (int j = 0; j < size; j++) {
+                Period period = matters.get(i).periods.get(j);
+                row.add(period.getGrade());
+                if (j % 2 == 0 || User.getType() != User.Type.BIMESTRE2.get()) {
+                    row.add(period.getAbsences());
+                }
+                if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
+                    row.add(period.getGradeRP());
+                    row.add(period.getGradeFinal());
+                } else if (User.getType() == User.Type.BIMESTRE2.get() && j % 2 == 0) {
+                    row.add(period.getGradeFinal());
+                }
+            }
+            row.add(matters.get(i).getAbsences());
+            cells.add(row);
+        }
+
+        setAllItems(columnHeader, rowHeader, cells);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -320,6 +327,16 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @Override
     public View onCreateCornerView(@NonNull ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.table_corner, null, false);
+    }
+
+    @Override
+    public void onScrollRequest() {
+
+    }
+
+    @Override
+    public void onDateChanged() {
+        loadList();
     }
 
 }

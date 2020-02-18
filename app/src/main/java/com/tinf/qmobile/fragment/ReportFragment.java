@@ -16,8 +16,12 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.User;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportFragment extends Fragment implements OnUpdate {
     @BindView(R.id.report_table)    TableView table;
@@ -68,6 +72,11 @@ public class ReportFragment extends Fragment implements OnUpdate {
             table.scrollToRowPosition(0);
             table.scrollToColumnPosition(0);
         }
+    }
+
+    @Override
+    public void onDateChanged() {
+        getActivity().setTitle(User.getYears()[pos]);
     }
 
     @Override

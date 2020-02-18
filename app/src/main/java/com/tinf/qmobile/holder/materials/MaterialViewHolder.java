@@ -46,8 +46,6 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         } else {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
-            material.see();
-            DataBase.get().getBoxStore().boxFor(Material.class).put(material);
         }
 
         header.setOnClickListener(view -> {

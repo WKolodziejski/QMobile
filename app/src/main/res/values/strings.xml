@@ -76,7 +76,7 @@
     <string name="login_expired">Sessão expirada</string>
     <string name="login_token">Obtendo tokens</string>
     <string name="login_validating">Autenticando</string>
-    <string name="login_loading">Carregando dados de %1$s</string>
+    <string name="login_loading">Carregando</string>
     <string name="login_help">Ajuda?</string>
 
     <string name="boletim_TFaltas">TF</string>

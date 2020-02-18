@@ -71,9 +71,9 @@ public class Client {
     private final static String TAG = "Network Client";
     private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
-    private List<RequestHelper> queue;
     private static Client singleton;
-    private static String URL;
+    private List<RequestHelper> queue;
+    private String URL;
     private List<OnResponse> onResponses;
     private List<OnUpdate> onUpdates;
     private RequestQueue requests;
@@ -164,6 +164,8 @@ public class Client {
                                 }
 
                                 User.setYears(years);
+
+                                Client.get().loadYear(0);
 
                                 callOnFinish(PG_FETCH_YEARS, 0);
                             }
@@ -538,6 +540,16 @@ public class Client {
         }
     }
 
+    public void changeData(int pos) {
+        Client.pos = pos;
+
+        if (onUpdates != null) {
+            for (int i = 0; i < onUpdates.size(); i++) {
+                onUpdates.get(i).onDateChanged();
+            }
+        }
+    }
+
     public void requestScroll() {
         callOnScrollRequest();
     }
@@ -598,6 +610,36 @@ public class Client {
     public void setURL(String url) {
         URL = url;
         User.setURL(url);
+    }
+
+    public void loadYear(int pos) {
+        load(PG_DIARIOS, pos);
+
+        Client.get().addOnResponseListener(new OnResponse() {
+            @Override
+            public void onStart(int pg, int pos) {
+
+            }
+
+            @Override
+            public void onFinish(int pg, int pos) {
+                if (pg == PG_DIARIOS) {
+                    Client.get().load(PG_BOLETIM, pos);
+                } else if (pg == PG_BOLETIM) {
+                    Client.get().load(PG_HORARIO, pos);
+                }
+            }
+
+            @Override
+            public void onError(int pg, String error) {
+
+            }
+
+            @Override
+            public void onAccessDenied(int pg, String message) {
+
+            }
+        });
     }
 
 }

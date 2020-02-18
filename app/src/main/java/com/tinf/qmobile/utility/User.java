@@ -107,7 +107,7 @@ public class User {
         getEditor().clear().apply();
     }
 
-    public static SharedPreferences getInfo() {
+    private static SharedPreferences getInfo() {
         return App.getContext().getSharedPreferences(INFO, Context.MODE_PRIVATE);
     }
 
@@ -156,6 +156,14 @@ public class User {
     public static int getPeriod(int i) {
         return Integer.valueOf(getYears()[i].substring(7));
     }
+
+    /*public static boolean isYearLoaded(int i) {
+        return getInfo().getBoolean(getYears()[i], false);
+    }
+
+    public static void setYearLoaded(int i) {
+        getEditor().putBoolean(getYears()[i], true).apply();
+    }*/
 
     private static String encrypt(String value, String KEY_A, String KEY_B) {
         String encrypted = "", javaScriptCode = "";

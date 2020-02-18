@@ -2,37 +2,50 @@ package com.tinf.qmobile.data;
 
 import android.util.Log;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.BoxStore;
+import io.objectbox.android.AndroidScheduler;
+
 import static com.tinf.qmobile.network.Client.pos;
 
-public class DataBase {
+public class DataBase implements OnUpdate {
     private static final String TAG = "DataBase";
     private static DataBase instance;
     private BoxStore boxStore;
-    private List<Matter> matters;
-    private List<Schedule> schedule;
-    private List<EventBase> events;
     private List<OnDataChange> listeners;
 
     private DataBase() {
+        Client.get().addOnUpdateListener(this);
+
         boxStore = MyObjectBox
                 .builder()
                 .androidContext(App.getContext())
                 .build();
 
         boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> update());
 
         boxStore.subscribe(Journal.class)
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> update());
+
+        boxStore.subscribe(Material.class)
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> update());
     }
 
@@ -47,31 +60,42 @@ public class DataBase {
     }
 
     public void closeBoxStore() {
+        Client.get().removeOnUpdateListener(this);
         if (boxStore != null) {
             boxStore.closeThreadResources();
             boxStore.close();
             boxStore.deleteAllFiles();
             boxStore = null;
+            instance = null;
         }
     }
 
-    public List<Matter> getMatters() {
-        return matters;
-    }
-
-    public List<Schedule> getSchedule() {
-        return schedule;
-    }
-
-    public List<EventBase> getEvents() {
-        return events;
-    }
-
-
-    private void callOnNotification(int c) {
+    private void callOnNotification(int i1, int i2) {
         if (listeners != null)
             for (OnDataChange listener : listeners)
-                listener.onNotification(c);
+                listener.onNotification(i1, i2);
+    }
+
+    private void update() {
+        List<Matter> matters = boxStore
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos))
+                .and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build()
+                .find();
+
+        int c1 = 0;
+        int c2 = 0;
+
+        for (Matter matter : matters) {
+            c1 += matter.getJournalNotSeenCount();
+            c2 += matter.getMaterialNotSeenCount();
+        }
+
+        callOnNotification(c1, c2);
     }
 
     public void addOnDataChangeListener(OnDataChange onDataChange) {
@@ -92,23 +116,14 @@ public class DataBase {
         }
     }
 
-    private void update() {
-        matters = boxStore
-                .boxFor(Matter.class)
-                .query()
-                .order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos))
-                .and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build()
-                .find();
+    @Override
+    public void onScrollRequest() {
 
-        int c = 0;
+    }
 
-        for (Matter matter : matters)
-            c += matter.getJournalNotSeenCount();
-
-        callOnNotification(c);
+    @Override
+    public void onDateChanged() {
+        update();
     }
 
 }

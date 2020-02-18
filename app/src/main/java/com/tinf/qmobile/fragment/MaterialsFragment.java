@@ -76,49 +76,54 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(new MaterialsAdapter(getContext(), hasPermission(), material -> {
-            if (material.isDownloaded) {
-                openFile(material);
-            } else {
-                if (isConnected()) {
-
-                    this.material = material;
-
-                    DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
-
-                    long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(material));
-
-                    Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
-                    material.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
-                    material.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-                    box.put(material);
-
-                    Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-
+        if (hasPermission()) {
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setItemViewCacheSize(20);
+            recyclerView.setDrawingCacheEnabled(true);
+            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+            recyclerView.setAdapter(new MaterialsAdapter(getContext(), getArguments(), material -> {
+                if (material.isDownloaded) {
+                    openFile(material);
                 } else {
-                    Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                    if (isConnected()) {
+
+                        this.material = material;
+
+                        DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
+
+                        long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(material));
+
+                        Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
+                        material.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
+                        material.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
+                        material.see();
+                        box.put(material);
+
+                        Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        }));
+            }));
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
-            }
+            if (getActivity() instanceof MainActivity) {
+                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                        ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                    }
 
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+                    @Override
+                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                    }
+                });
             }
-        });
+        }
     }
 
     private void openFile(Material material) {
@@ -166,6 +171,12 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
+    }
+
+    @Override
+    public void onDateChanged() {
+        getActivity().setTitle(User.getYears()[pos]);
+        Client.get().load(PG_MATERIAIS);
     }
 
     @Override

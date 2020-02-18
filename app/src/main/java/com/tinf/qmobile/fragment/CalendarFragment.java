@@ -343,4 +343,9 @@ public class CalendarFragment extends Fragment implements OnUpdate {
         scrollToToday(true);
     }
 
+    @Override
+    public void onDateChanged() {
+
+    }
+
 }
