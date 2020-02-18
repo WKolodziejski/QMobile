@@ -26,8 +26,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
+import io.objectbox.reactive.DataObserver;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
@@ -45,47 +47,56 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
         Client.get().addOnUpdateListener(this);
 
-        DataBase.get().getBoxStore()
-                .subscribe(Material.class)
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        DataObserver observer = data -> {
+            List<Queryable> updated = getList(bundle);
+
+            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                @Override
+                public int getOldListSize() {
+                    return materials.size();
+                }
+
+                @Override
+                public int getNewListSize() {
+                    return updated.size();
+                }
+
+                @Override
+                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                    if (materials.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
+                        return (((Matter) materials.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
+
+                    else if (materials.get(oldItemPosition) instanceof Material && updated.get(newItemPosition) instanceof Material)
+                        return (((Material) materials.get(oldItemPosition)).id == (((Material) updated.get(newItemPosition)).id));
+
+                    else return false;
+                }
+
+                @Override
+                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                    return (materials.get(oldItemPosition).equals(updated.get(newItemPosition)));
+                }
+
+            }, true);
+
+            materials.clear();
+            materials.addAll(updated);
+            result.dispatchUpdatesTo(this);
+        };
+
+        boxStore.subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    List<Queryable> updated = getList(bundle);
+                .observer(observer);
 
-                    DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                        @Override
-                        public int getOldListSize() {
-                            return materials.size();
-                        }
-
-                        @Override
-                        public int getNewListSize() {
-                            return updated.size();
-                        }
-
-                        @Override
-                        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                            if (materials.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
-                                return (((Matter) materials.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
-
-                            else if (materials.get(oldItemPosition) instanceof Material && updated.get(newItemPosition) instanceof Material)
-                                return (((Material) materials.get(oldItemPosition)).id == (((Material) updated.get(newItemPosition)).id));
-
-                            else return false;
-                        }
-
-                        @Override
-                        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                            return (materials.get(oldItemPosition).equals(updated.get(newItemPosition)));
-                        }
-
-                    }, true);
-
-                    materials.clear();
-                    materials.addAll(updated);
-                    result.dispatchUpdatesTo(this);
-                });
+        boxStore.subscribe(Matter.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
     }
 
     private List<Queryable> getList(Bundle bundle) {
@@ -144,7 +155,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 }
             }
         });
-
         return list;
     }
 

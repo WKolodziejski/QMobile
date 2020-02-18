@@ -1,11 +1,13 @@
 package com.tinf.qmobile.holder.materials;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 import butterknife.BindView;
@@ -32,6 +34,13 @@ public class MaterialHeaderViewHolder extends MaterialBaseViewHolder<Matter> {
         } else {
             badge.setText("");
         }
+
+        itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(context, MateriaActivity.class);
+            intent.putExtra("ID", matter.id);
+            intent.putExtra("PAGE", MateriaActivity.MATERIALS);
+            context.startActivity(intent);
+        });
     }
 
 }

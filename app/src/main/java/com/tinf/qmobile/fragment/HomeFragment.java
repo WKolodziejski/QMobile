@@ -83,7 +83,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
                     updateSchedule();
-                    ((EventsAdapter) recyclerView.getAdapter()).update(getCalendarList());
                 });
 
         boxStore.subscribe(Matter.class)
