@@ -17,8 +17,8 @@ import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.calendar.CalendarioActivity;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.activity.CalendarioActivity;
+import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.Day;
@@ -42,7 +42,7 @@ import java.util.Objects;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 
 public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;

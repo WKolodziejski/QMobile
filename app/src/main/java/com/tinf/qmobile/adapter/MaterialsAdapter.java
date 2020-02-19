@@ -30,6 +30,8 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
+
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
@@ -39,6 +41,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     private List<Queryable> materials;
     private Context context;
     private OnDownloadListener onDownload;
+    private DataSubscription sub1, sub2;
 
     public MaterialsAdapter(Context context, Bundle bundle, MaterialsAdapter.OnDownloadListener onDownload) {
         this.context = context;
@@ -86,13 +89,13 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
             result.dispatchUpdatesTo(this);
         };
 
-        boxStore.subscribe(Material.class)
+        sub1 = boxStore.subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        boxStore.subscribe(Matter.class)
+        sub2 = boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
@@ -202,6 +205,13 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     public interface OnDownloadListener {
         void onDownload(Material material);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

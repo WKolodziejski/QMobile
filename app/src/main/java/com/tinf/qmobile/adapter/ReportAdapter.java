@@ -36,6 +36,7 @@ import java.util.List;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
 
 import static com.tinf.qmobile.network.Client.pos;
 

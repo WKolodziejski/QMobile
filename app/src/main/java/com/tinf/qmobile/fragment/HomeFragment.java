@@ -2,7 +2,6 @@ package com.tinf.qmobile.fragment;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,9 +23,9 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
-import com.tinf.qmobile.activity.calendar.CalendarioActivity;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
-import com.tinf.qmobile.activity.settings.WebViewActivity;
+import com.tinf.qmobile.activity.CalendarioActivity;
+import com.tinf.qmobile.activity.EventCreateActivity;
+import com.tinf.qmobile.activity.WebViewActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
@@ -57,43 +56,24 @@ import butterknife.OnClick;
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
+import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     @BindView(R.id.weekView_home)   WeekView weekView;
     @BindView(R.id.home_scroll)     NestedScrollView nestedScrollView;
     @BindView(R.id.fab_home)        ExtendedFloatingActionButton fab;
     @BindView(R.id.recycler_home)   RecyclerView recyclerView;
+    private DataSubscription sub1, sub2;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getActivity().setTitle(User.getName());
-
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        boxStore.subscribe(Schedule.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    updateSchedule();
-                });
-
-        boxStore.subscribe(Matter.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    updateSchedule();
-                    ((EventsAdapter) recyclerView.getAdapter()).update(getCalendarList());
-                });
     }
 
     @Override
@@ -320,6 +300,25 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onStart() {
         super.onStart();
         Client.get().addOnUpdateListener(this);
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(Schedule.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> {
+                    updateSchedule();
+                });
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> {
+                    updateSchedule();
+                    ((EventsAdapter) recyclerView.getAdapter()).update(getCalendarList());
+                });
     }
 
     @Override
@@ -338,6 +337,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onStop() {
         super.onStop();
         Client.get().removeOnUpdateListener(this);
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
@@ -22,7 +21,7 @@ import java.util.List;
 import io.objectbox.Box;
 
 import static android.content.Context.ALARM_SERVICE;
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "AlarmReceiver";

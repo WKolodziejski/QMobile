@@ -20,31 +20,28 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.network.Client;
 
 import org.threeten.bp.format.TextStyle;
 
 import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.DayTime;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class ScheduleViewFragment extends Fragment {
     @BindView(R.id.schedule_view_start_time)          TextView date_txt;
@@ -57,6 +54,7 @@ public class ScheduleViewFragment extends Fragment {
     @BindView(R.id.schedule_view_description_layout)  LinearLayout description_layout;
     @BindView(R.id.schedule_view_notification_layout) LinearLayout notification_layout;
     @BindView(R.id.schedule_view_room_layout)         LinearLayout room_layout;
+    private DataSubscription sub1, sub2;
     private long id;
 
     @Override
@@ -68,22 +66,6 @@ public class ScheduleViewFragment extends Fragment {
         if (bundle != null) {
             id = bundle.getLong("ID");
         }
-
-        DataObserver observer = data -> setText();
-
-        DataBase.get().getBoxStore()
-                .subscribe(Schedule.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
-
-        DataBase.get().getBoxStore()
-                .subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
     }
 
     @Nullable
@@ -187,6 +169,34 @@ public class ScheduleViewFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        DataObserver observer = data -> setText();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(Schedule.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

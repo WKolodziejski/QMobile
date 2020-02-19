@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.data.DataBase;
@@ -18,7 +17,7 @@ import java.util.Locale;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class AlarmJob extends JobService {
     private static final String TAG = "AlarmJob";

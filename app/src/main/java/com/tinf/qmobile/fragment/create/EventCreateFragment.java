@@ -24,9 +24,8 @@ import androidx.fragment.app.Fragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
@@ -34,7 +33,6 @@ import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.AlarmReceiver;
 import com.tinf.qmobile.utility.User;
 

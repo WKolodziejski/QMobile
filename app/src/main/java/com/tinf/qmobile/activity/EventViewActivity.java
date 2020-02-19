@@ -12,9 +12,8 @@ import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
-import com.tinf.qmobile.network.Client;
 
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class EventViewActivity extends AppCompatActivity {
     int type;

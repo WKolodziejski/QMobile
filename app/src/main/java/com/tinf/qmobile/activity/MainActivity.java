@@ -2,7 +2,6 @@ package com.tinf.qmobile.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -22,7 +21,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
-import com.tinf.qmobile.activity.settings.WebViewActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.data.OnDataChange;
 import com.tinf.qmobile.fragment.ReportFragment;

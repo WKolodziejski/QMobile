@@ -20,27 +20,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.network.Client;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
 
 import static android.view.View.GONE;
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 
 public class EventViewFragment extends Fragment {
     @BindView(R.id.event_view_start_time)          TextView startTime_txt;
@@ -52,6 +50,7 @@ public class EventViewFragment extends Fragment {
     @BindView(R.id.event_view_color_img)           ImageView color_img;
     @BindView(R.id.event_view_description_layout)  LinearLayout description_layout;
     @BindView(R.id.event_view_notification_layout) LinearLayout notification_layout;
+    private DataSubscription sub1, sub2;
     private long id;
 
     @Override
@@ -63,22 +62,6 @@ public class EventViewFragment extends Fragment {
         if (bundle != null) {
             id = bundle.getLong("ID");
         }
-
-        DataObserver observer = data -> setText();
-
-        DataBase.get().getBoxStore()
-                .subscribe(EventUser.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
-
-        DataBase.get().getBoxStore()
-                .subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
     }
 
     @Nullable
@@ -177,6 +160,34 @@ public class EventViewFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        DataObserver observer = data -> setText();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(EventUser.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

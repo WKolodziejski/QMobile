@@ -28,34 +28,22 @@ import butterknife.ButterKnife;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
+import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ScheduleFragment extends Fragment {
     @BindView(R.id.weekView_horario)    WeekView weekView;
+    private DataSubscription sub1, sub2;
     private Bundle bundle;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
-
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        boxStore.subscribe(Schedule.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
-
-        boxStore.subscribe(Matter.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
     }
 
     @Override
@@ -77,7 +65,6 @@ public class ScheduleFragment extends Fragment {
             intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
             startActivity(intent);
         });
-
 
         updateSchedule();
     }
@@ -150,6 +137,32 @@ public class ScheduleFragment extends Fragment {
 
             weekView.post(() -> weekView.notifyDatasetChanged());
         }).start();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(Schedule.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> weekView.notifyDatasetChanged());
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> weekView.notifyDatasetChanged());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

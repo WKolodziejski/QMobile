@@ -27,6 +27,7 @@ import java.util.List;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
 import static com.tinf.qmobile.model.Queryable.ViewType.FOOTER;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
@@ -36,6 +37,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
     private List<Queryable> journals;
     private Context context;
     private OnExpandListener onExpandListener;
+    private DataSubscription sub1, sub2;
 
     public JournalAdapter(Context context, OnExpandListener onExpandListener) {
         this.context = context;
@@ -122,13 +124,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             result.dispatchUpdatesTo(this);
         };
 
-        boxStore.subscribe(Matter.class)
+        sub1 = boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        boxStore.subscribe(Journal.class)
+        sub2 = boxStore.subscribe(Journal.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
@@ -249,6 +251,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     public interface OnExpandListener {
         void onExpand(int position);
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

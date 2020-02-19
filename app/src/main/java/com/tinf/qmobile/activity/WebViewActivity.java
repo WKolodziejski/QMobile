@@ -1,4 +1,4 @@
-package com.tinf.qmobile.activity.settings;
+package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
 import android.util.Log;

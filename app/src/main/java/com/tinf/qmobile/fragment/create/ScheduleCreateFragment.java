@@ -23,14 +23,12 @@ import androidx.fragment.app.Fragment;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.AlarmReceiver;
 import com.tinf.qmobile.utility.User;
 
@@ -49,7 +47,7 @@ import me.jlurena.revolvingweekview.DayTime;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.view.View.GONE;
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class ScheduleCreateFragment extends Fragment {
     private static final String TAG = "EventCreateFragment";

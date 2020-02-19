@@ -4,19 +4,17 @@ import android.util.Log;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
-import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
-
+import io.objectbox.reactive.DataSubscription;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class DataBase implements OnUpdate {
@@ -24,6 +22,7 @@ public class DataBase implements OnUpdate {
     private static DataBase instance;
     private BoxStore boxStore;
     private List<OnDataChange> listeners;
+    private DataSubscription sub1, sub2, sub3;
 
     private DataBase() {
         Client.get().addOnUpdateListener(this);
@@ -33,17 +32,17 @@ public class DataBase implements OnUpdate {
                 .androidContext(App.getContext())
                 .build();
 
-        boxStore.subscribe(Matter.class)
+        sub1 = boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> update());
 
-        boxStore.subscribe(Journal.class)
+        sub2 = boxStore.subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> update());
 
-        boxStore.subscribe(Material.class)
+        sub3 = boxStore.subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> update());
@@ -62,6 +61,9 @@ public class DataBase implements OnUpdate {
     public void closeBoxStore() {
         Client.get().removeOnUpdateListener(this);
         if (boxStore != null) {
+            sub1.cancel();
+            sub2.cancel();
+            sub3.cancel();
             boxStore.closeThreadResources();
             boxStore.close();
             boxStore.deleteAllFiles();

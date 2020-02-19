@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.calendar.EventCreateActivity;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
@@ -19,7 +18,7 @@ import java.util.Objects;
 
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 

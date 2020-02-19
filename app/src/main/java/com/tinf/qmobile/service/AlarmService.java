@@ -28,7 +28,7 @@ import java.util.Locale;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.activity.calendar.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class AlarmService extends JobIntentService {
     private static final String TAG = "AlarmService";

@@ -80,7 +80,7 @@
         </activity>
 
         <activity
-            android:name=".activity.calendar.EventCreateActivity"
+            android:name=".activity.EventCreateActivity"
             android:label="">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -107,7 +107,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.calendar.CalendarioActivity">
+        <activity android:name=".activity.CalendarioActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -133,7 +133,7 @@
                 android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
-        <activity android:name=".activity.settings.WebViewActivity">
+        <activity android:name=".activity.WebViewActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.activity.MainActivity" />

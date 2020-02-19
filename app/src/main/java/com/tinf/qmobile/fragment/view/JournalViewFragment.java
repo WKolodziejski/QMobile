@@ -25,8 +25,10 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
+import io.objectbox.reactive.DataSubscription;
 
 public class JournalViewFragment extends Fragment {
     @BindView(R.id.journal_view_time_text)           TextView time_txt;
@@ -37,6 +39,7 @@ public class JournalViewFragment extends Fragment {
     @BindView(R.id.journal_view_type_text)           TextView type_txt;
     @BindView(R.id.journal_view_type_short)          TextView short_txt;
     @BindView(R.id.journal_view_color_img)           ImageView color_img;
+    private DataSubscription sub1, sub2;
     private long id;
 
     @Override
@@ -48,22 +51,6 @@ public class JournalViewFragment extends Fragment {
         if (bundle != null) {
             id = bundle.getLong("ID");
         }
-
-        DataObserver observer = data -> setText();
-
-        DataBase.get().getBoxStore()
-                .subscribe(Journal.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
-
-        DataBase.get().getBoxStore()
-                .subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
     }
 
     @Nullable
@@ -97,6 +84,34 @@ public class JournalViewFragment extends Fragment {
         time_txt.setText(date.format(journal.getDate()));
         matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
         color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        DataObserver observer = data -> setText();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(Journal.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }
