@@ -56,7 +56,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NOTIFY;
+import static com.tinf.qmobile.fragment.SettingsFragment.NOTIFY;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;

@@ -28,7 +28,7 @@ public class CalendarioActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(findViewById(R.id.toolbar_calendario));
+        setSupportActionBar(findViewById(R.id.toolbar_calendar));
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

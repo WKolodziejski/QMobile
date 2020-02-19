@@ -15,7 +15,7 @@ import com.tinf.qmobile.utility.User;
 
 import io.objectbox.BoxStore;
 
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
+import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 import static com.tinf.qmobile.model.calendar.Utils.VERSION_INFO;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 

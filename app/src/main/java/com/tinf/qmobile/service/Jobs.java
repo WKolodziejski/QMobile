@@ -27,9 +27,9 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MateriaActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
-import static com.tinf.qmobile.activity.settings.SettingsActivity.ALERT;
-import static com.tinf.qmobile.activity.settings.SettingsActivity.CHECK;
-import static com.tinf.qmobile.activity.settings.SettingsActivity.MOBILE;
+import static com.tinf.qmobile.fragment.SettingsFragment.ALERT;
+import static com.tinf.qmobile.fragment.SettingsFragment.CHECK;
+import static com.tinf.qmobile.fragment.SettingsFragment.MOBILE;
 import static java.util.concurrent.TimeUnit.HOURS;
 
 public class Jobs {

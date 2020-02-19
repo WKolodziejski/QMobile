@@ -1,42 +1,36 @@
 package com.tinf.qmobile.activity.settings;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.utility.User;
-
-import static com.tinf.qmobile.activity.settings.SettingsActivity.NIGHT;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AboutActivity extends AppCompatActivity {
+    @BindView(R.id.about_version)       TextView version;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        String version = "";
+        ButterKnife.bind(this);
+
+        String v = "";
 
         try {
-            PackageInfo pInfo = this.getPackageManager().getPackageInfo(getPackageName(), 0);
-            version = pInfo.versionName;
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            v = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
 
-        TextView version_txt = (TextView) findViewById(R.id.about_version);
-        version_txt.append(" " + version);
+        version.setText(v);
     }
 
     public void more(View v){
@@ -48,4 +42,5 @@ public class AboutActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
 }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title=""></PreferenceCategory>
-    <PreferenceCategory android:title=""></PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pref_general">
 
-    <SwitchPreference
-        android:title="Modo Noturno (teste)"
-        android:key="key_night_mode"
-        android:defaultValue="false"
-        android:summaryOn="Modo noturno ligado"
-        android:summaryOff="Modo noturno desligado"/>
+        <SwitchPreference
+            android:title="@string/pref_dark_mode"
+            android:key="key_night_mode"
+            android:defaultValue="false"
+            android:summary="@string/pref_dark_mode_sum"/>
+
+    </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_services">
 
@@ -85,7 +85,7 @@
             android:key="key_notifications"
             android:defaultValue="true"
             android:summary="@string/pref_notifications_sum"
-            android:disableDependentsState="false"/>
+            android:dependency="key_check"/>
 
         <!--<CheckBoxPreference
             android:title="Diarios"

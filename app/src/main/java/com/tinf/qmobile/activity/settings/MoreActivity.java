@@ -11,18 +11,25 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.network.Client;
 
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MoreActivity extends AppCompatActivity {
+    @BindView(R.id.tinf_logo)       ImageView logo;
+    @BindView(R.id.more_url)        TextView url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more);
 
-        ImageView tinf_logo = (ImageView) findViewById(R.id.tinf_logo);
-        tinf_logo.setOnLongClickListener(v -> {
+        ButterKnife.bind(this);
+
+        logo.setOnLongClickListener(v -> {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             Objects.requireNonNull(vibrator).vibrate(1000);
 
@@ -35,5 +42,8 @@ public class MoreActivity extends AppCompatActivity {
             return true;
         });
 
+        url.setText(Client.get().getURL());
+
     }
+
 }
