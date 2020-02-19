@@ -26,6 +26,7 @@ import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MateriaActivity;
 import com.tinf.qmobile.activity.calendar.CalendarioActivity;
 import com.tinf.qmobile.activity.calendar.EventCreateActivity;
+import com.tinf.qmobile.activity.settings.WebViewActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
@@ -284,7 +285,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @OnClick(R.id.home_website)
     public void openQSite(View view) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL() + INDEX + PG_LOGIN)));
+        startActivity(new Intent(getContext(), WebViewActivity.class));
     }
 
     @OnClick(R.id.home_calendario)

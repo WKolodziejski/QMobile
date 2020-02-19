@@ -22,6 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
+import com.tinf.qmobile.activity.settings.WebViewActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.data.OnDataChange;
 import com.tinf.qmobile.fragment.ReportFragment;
@@ -347,9 +348,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 .setMessage(getResources().getString(R.string.dialog_renewal_txt))
                 .setCancelable(true)
                 .setPositiveButton(getResources().getString(R.string.dialog_open_site), (dialogInterface, i) -> {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(User.getURL() + INDEX + PG_LOGIN));
-                    startActivity(browserIntent);
+                    startActivity(new Intent(getApplicationContext(), WebViewActivity.class));
                 })
                 .setNegativeButton(getResources().getString(R.string.dialog_later), null)
                 .create()

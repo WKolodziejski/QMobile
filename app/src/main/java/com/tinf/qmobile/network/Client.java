@@ -6,12 +6,15 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.webkit.CookieManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Header;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -78,7 +81,8 @@ public class Client {
     private List<OnUpdate> onUpdates;
     private RequestQueue requests;
     private OnEvent onEvent;
-    private String COOKIE;
+    //private String COOKIE;
+    private Map<String, String> params;
     private String KEY_A;
     private String KEY_B;
     public static int pos = 0;
@@ -105,6 +109,7 @@ public class Client {
         }
         requests = Volley.newRequestQueue(getContext(), new HurlStack());
         queue = new ArrayList<>();
+        params = new HashMap<>();
         URL = User.getURL();
         Log.v(TAG, "New instace created");
     }
@@ -174,8 +179,6 @@ public class Client {
 
                 @Override
                 public Map<String, String> getHeaders() {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("Cookie", COOKIE);
                     return params;
                 }
 
@@ -287,8 +290,6 @@ public class Client {
 
                         @Override
                         public Map<String, String> getHeaders() {
-                            Map<String,String> params = new HashMap<>();
-                            params.put("Cookie", COOKIE);
                             return params;
                         }
 
@@ -383,22 +384,29 @@ public class Client {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        try {
+                        for(Header h : response.allHeaders)
+                            Log.d(h.getName(), h.getValue());
+
+                        params.put("Set-Cookie", response.allHeaders.get(5).getValue());
+                        params.put("Cookie", response.allHeaders.get(6).getValue());
+
+                        /*try {
                             String cookie1 = response.allHeaders.get(5).getValue();
-                            Log.d("Cookie 1", cookie1);
+                            //Log.d("Cookie 1", cookie1);
                             cookie1 = cookie1.substring(0, cookie1.indexOf(";")).concat("; ");
                             COOKIE = cookie1;
 
                             String cookie2 = response.allHeaders.get(6).getValue();
+                            //Log.d("Cookie 2", cookie2);
                             cookie2 = cookie2.substring(0, cookie2.indexOf(";")).concat(";");
-                            COOKIE = cookie1.concat(cookie2);
+                            COOKIE += cookie2;
                         } catch (StringIndexOutOfBoundsException e) {
                             e.printStackTrace();
                         }
 
                         Log.d("Cookie", COOKIE);
 
-                        Log.v(TAG, "Cookie fetched");
+                        Log.v(TAG, "Cookie fetched");*/
 
                         return super.parseNetworkResponse(response);
                     }
@@ -415,9 +423,9 @@ public class Client {
         Log.i(TAG, "Logout");
         queue.clear();
         requests.cancelAll(request -> true);
+        params.clear();
         KEY_A = "";
         KEY_B = "";
-        COOKIE = "";
         pos = 0;
     }
 
@@ -561,7 +569,6 @@ public class Client {
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setAllowedOverRoaming(false)
-                .addRequestHeader("Cookie", COOKIE)
                 .setTitle(material.getTitle())
                 .setDescription(material.getDateString())
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
@@ -584,7 +591,6 @@ public class Client {
                     .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
                     .setAllowedOverRoaming(false)
-                    .addRequestHeader("Cookie", COOKIE)
                     .setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_PICTURES, User.getCredential(User.REGISTRATION)));
         }
     }
@@ -610,6 +616,14 @@ public class Client {
     public void setURL(String url) {
         URL = url;
         User.setURL(url);
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public Map<String, String> getHeaders() {
+        return params;
     }
 
     public void loadYear(int pos) {

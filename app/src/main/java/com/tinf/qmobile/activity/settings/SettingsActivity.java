@@ -76,14 +76,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             });
 
-            Preference license = findPreference("key_license");
-            license.setOnPreferenceClickListener(preference -> {
-                Intent intent = new Intent(getActivity(), WebViewActivity.class);
-                intent.putExtra("URL", "file:///android_asset/icons_license.html");
-                startActivity(intent);
-                return true;
-            });
-
             Preference night_mode = findPreference(NIGHT);
             night_mode.setOnPreferenceClickListener(preference -> {
                 AppCompatDelegate.setDefaultNightMode(getPreferenceManager().getSharedPreferences().getBoolean(NIGHT, false) ?

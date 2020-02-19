@@ -139,10 +139,6 @@
             android:key="key_privacy"
             android:title="@string/pref_privacy" />
 
-        <Preference
-            android:key="key_license"
-            android:title="@string/pref_license" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>
