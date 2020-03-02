@@ -32,6 +32,7 @@ import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
@@ -89,8 +90,6 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                 } else {
                     if (isConnected()) {
 
-                        this.material = material;
-
                         DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
 
                         long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(material));
@@ -100,6 +99,8 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                         material.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
                         material.see();
                         box.put(material);
+
+                        this.material = box.query().equal(Material_.id, material.id).build().findUnique();
 
                         Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
 
@@ -127,24 +128,25 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     }
 
     private void openFile(Material material) {
+        if (material != null) {
+            Intent intent = new Intent(ACTION_VIEW);
+            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        Intent i = new Intent(ACTION_VIEW);
-        i.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    + material.getPath() + "/" + material.getFileName());
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + material.getPath() + "/" + material.getFileName());
+            Log.d("Fragment", file.getPath());
 
-        Log.d("Fragment", file.getPath());
+            Uri uri = FileProvider.getUriForFile(getContext(), APPLICATION_ID, file);
 
-        Uri uri = FileProvider.getUriForFile(getContext(), APPLICATION_ID, file);
+            intent.setDataAndType(uri, material.getMime());
 
-        i.setDataAndType(uri, material.getMime());
-
-        try {
-            startActivity(i);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
+            }
         }
     }
 

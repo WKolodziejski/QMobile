@@ -57,6 +57,7 @@ import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.NOTIFY;
+import static com.tinf.qmobile.network.OnResponse.IFMT;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
 import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
@@ -111,7 +112,6 @@ public class Client {
         queue = new ArrayList<>();
         params = new HashMap<>();
         URL = User.getURL();
-        Log.v(TAG, "New instace created");
     }
 
     public static synchronized Client get() {
@@ -360,7 +360,7 @@ public class Client {
         }
     }
 
-    private void fetchParams( Response.Listener<String> listener) {
+    private void fetchParams(Response.Listener<String> listener) {
         addRequest(new StringRequest(GET, URL + GERADOR,
                 response ->  {
                     String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));;
@@ -379,11 +379,19 @@ public class Client {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        for(Header h : response.allHeaders)
-                            Log.d(h.getName(), h.getValue());
+                        /*for(Header h : response.allHeaders)
+                            Log.d(h.getName(), h.getValue());*/
 
-                        params.put("Set-Cookie", response.allHeaders.get(5).getValue());
-                        params.put("Cookie", response.allHeaders.get(6).getValue());
+                        int i = 5;
+                        int j = 6;
+
+                        if (User.getURL().equals(IFMT)) {
+                            i--;
+                            j--;
+                        }
+
+                        params.put("Set-Cookie", response.allHeaders.get(i).getValue());
+                        params.put("Cookie", response.allHeaders.get(j).getValue());
 
                         /*try {
                             String cookie1 = response.allHeaders.get(5).getValue();
