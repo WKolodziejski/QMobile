@@ -61,7 +61,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
             }
         };
 
-        JournalAdapter adapter = new JournalAdapter(getContext(), position -> {
+        JournalAdapter adapter = new JournalAdapter(getContext(), null, position -> {
             if (position != 0) {
                 smoothScroller.setTargetPosition(position);
                 layout.startSmoothScroll(smoothScroller);

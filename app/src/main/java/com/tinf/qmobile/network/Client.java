@@ -230,11 +230,6 @@ public class Client {
         createRequest(pg, url, pos, method, form, false, null);
     }
 
-    public void checkChanges(int pg) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        createRequest(pg, INDEX + pg, 0, GET, new HashMap<>(), prefs.getBoolean(NOTIFY, true), null);
-    }
-
     private <T> void addRequest(Request<T> request, int pg, int pos) {
         if (isConnected()) {
             callOnStart(pg, pos);

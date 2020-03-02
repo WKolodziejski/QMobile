@@ -105,6 +105,9 @@
     <string name="diarios_expanded">Abas expandidas</string>
     <string name="diarios_expand">Expandir</string>
     <string name="diarios_collapsed">Abas recolhidas</string>
+    <string name="journal_details">Detalhes</string>
+    <string name="journal_absences">Faltas</string>
+    <string name="journal_sum">Soma parcial</string>
     <string name="event_none">Nenhum</string>
     <string name="event_custom_color">Cor customizada</string>
     <string name="event_default_color">Cor padrão</string>

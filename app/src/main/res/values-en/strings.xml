@@ -140,4 +140,7 @@
     <string name="pref_dark_mode">Dark Mode</string>
     <string name="pref_dark_mode_sum">Change app theme</string>
     <string name="pref_general">General</string>
+    <string name="journal_details">Details</string>
+    <string name="journal_absences">Absences</string>
+    <string name="journal_sum">Partial sum</string>
 </resources>

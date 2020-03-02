@@ -36,6 +36,7 @@
             android:maxLength="2"
             android:maxLines="1"
             android:textColor="@color/colorPrimaryLight"
+            android:textStyle="bold"
             tools:text="9"/>
 
         <TextView

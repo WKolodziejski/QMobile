@@ -11,7 +11,7 @@
     >
 
     <TextView
-        android:id="@+id/material_color_badge"
+        android:id="@+id/period_color_badge"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -26,11 +26,10 @@
         android:maxLength="2"
         android:maxLines="1"
         android:textColor="@color/colorPrimaryLight"
-        android:textStyle="bold"
-        tools:text="9"/>
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/material_title"
+        android:id="@+id/period_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
@@ -38,6 +37,6 @@
         android:textSize="@dimen/main_font_size"
         android:textStyle="bold"
         android:gravity="center_vertical"
-        tools:text="Matter" />
+        tools:text="Period" />
 
 </LinearLayout>

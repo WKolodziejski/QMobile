@@ -1,6 +1,7 @@
 package com.tinf.qmobile.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -15,8 +16,10 @@ import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Footer;
+import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
@@ -31,6 +34,7 @@ import io.objectbox.reactive.DataSubscription;
 import static com.tinf.qmobile.model.Queryable.ViewType.FOOTER;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.Queryable.ViewType.PERIOD;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate {
@@ -39,7 +43,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
     private OnExpandListener onExpandListener;
     private DataSubscription sub1, sub2;
 
-    public JournalAdapter(Context context, OnExpandListener onExpandListener) {
+    public JournalAdapter(Context context, Bundle bundle, OnExpandListener onExpandListener) {
         this.context = context;
         this.onExpandListener = onExpandListener;
 
@@ -47,42 +51,37 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
-        journals = getList();
+        journals = getList(bundle);
 
         DataObserver observer = data -> {
-            List<Queryable> updated = new ArrayList<>(DataBase.get().getBoxStore()
-                    .boxFor(Matter.class)
-                    .query()
-                    .order(Matter_.title_)
-                    .equal(Matter_.year_, User.getYear(pos))
-                    .and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build()
-                    .find());
 
-            for (int i = 0; i < journals.size(); i++) {
-                if (journals.get(i) instanceof Matter) {
-                    Matter m1 = (Matter) journals.get(i);
-                    for (Queryable jb : updated) {
-                        if (jb instanceof Matter) {
-                            Matter m2 = (Matter) jb;
-                            if (m1.id == m2.id) {
-                                m2.isExpanded = m1.isExpanded;
-                                m2.shouldAnimate = m1.shouldAnimate;
+            List<Queryable> updated = getList(bundle);
+
+            if (bundle == null) {
+                for (int i = 0; i < journals.size(); i++) {
+                    if (journals.get(i) instanceof Matter) {
+                        Matter m1 = (Matter) journals.get(i);
+                        for (Queryable jb : updated) {
+                            if (jb instanceof Matter) {
+                                Matter m2 = (Matter) jb;
+                                if (m1.id == m2.id) {
+                                    m2.isExpanded = m1.isExpanded;
+                                    m2.shouldAnimate = m1.shouldAnimate;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            for (int i = 0; i < updated.size(); i++) {
-                if (updated.get(i) instanceof Matter) {
-                    Matter matter = (Matter) updated.get(i);
+                for (int i = 0; i < updated.size(); i++) {
+                    if (updated.get(i) instanceof Matter) {
+                        Matter matter = (Matter) updated.get(i);
 
-                    if (matter.isExpanded) {
-                        List<Journal> items = matter.getLastPeriod().journals;
-                        updated.addAll(i + 1, items);
-                        updated.add(i + items.size() + 1, new Footer(i, matter));
+                        if (matter.isExpanded) {
+                            List<Journal> items = matter.getLastPeriod().journals;
+                            updated.addAll(i + 1, items);
+                            updated.add(i + items.size() + 1, new Footer(i, matter));
+                        }
                     }
                 }
             }
@@ -108,6 +107,9 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
                     else if (journals.get(oldItemPosition) instanceof Footer && updated.get(newItemPosition) instanceof Footer)
                         return (((Footer) journals.get(oldItemPosition)).getMatter().id == (((Footer) updated.get(newItemPosition)).getMatter().id));
+
+                    else if (journals.get(oldItemPosition) instanceof Header && updated.get(newItemPosition) instanceof Header)
+                        return (((Header) journals.get(oldItemPosition)).getPeriod().id == (((Header) updated.get(newItemPosition)).getPeriod().id));
 
                     else return false;
                 }
@@ -137,16 +139,36 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 .observer(observer);
     }
 
-    private List<Queryable> getList() {
-        return new ArrayList<>(DataBase.get().getBoxStore()
-                .boxFor(Matter.class)
-                .query()
-                .order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos))
-                .and()
-                .equal(Matter_.period_, User.getPeriod(pos))
-                .build()
-                .find());
+    private List<Queryable> getList(Bundle bundle) {
+        ArrayList<Queryable> list = new ArrayList<>();
+
+        if (bundle == null) {
+            list.addAll(DataBase.get().getBoxStore()
+                    .boxFor(Matter.class)
+                    .query()
+                    .order(Matter_.title_)
+                    .equal(Matter_.year_, User.getYear(pos))
+                    .and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build()
+                    .find());
+        } else {
+            Matter matter = DataBase.get().getBoxStore()
+                    .boxFor(Matter.class)
+                    .query()
+                    .equal(Matter_.id, bundle.getLong("ID"))
+                    .build()
+                    .findUnique();
+
+            for (int i = 0; i < matter.periods.size(); i++) {
+                if (!matter.periods.get(i).journals.isEmpty()) {
+                    list.add(new Header(matter.periods.get(i)));
+                    list.addAll(matter.periods.get(i).journals);
+                }
+            }
+        }
+
+        return list;
     }
 
     public void toggle() {
@@ -189,6 +211,10 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             case FOOTER:
                 return new JournalFooterViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_footer, parent, false));
+
+            case PERIOD:
+                return new PeriodHeaderViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.period_header, parent, false));
 
         }
         return null;
@@ -245,7 +271,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public void onDateChanged() {
-        journals = getList();
+        journals = getList(null);
         notifyDataSetChanged();
     }
 

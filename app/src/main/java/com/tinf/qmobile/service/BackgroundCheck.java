@@ -22,19 +22,19 @@ public class BackgroundCheck extends JobService {
         Client.get().addOnResponseListener(new OnResponse() {
             @Override
             public void onStart(int pg, int pos) {
-                if (BuildConfig.DEBUG) {
+                /*if (BuildConfig.DEBUG) {
                     Jobs.displayNotification(getApplicationContext(), "Debug", "Verificando notas", "Debug", 0, new Intent(App.getContext(), SplashActivity.class));
-                }
+                }*/
             }
 
             @Override
             public void onFinish(int pg, int pos) {
 
                 if (pg == PG_LOGIN) {
-                    Client.get().checkChanges(PG_DIARIOS);
+                    Client.get().loadYear(0);
                 }
 
-                if (pg == PG_DIARIOS) {
+                if (pg == PG_HORARIO) {
                     errorOccurred = false;
                     Client.get().removeOnResponseListener(this);
                     onStopJob(job);

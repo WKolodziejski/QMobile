@@ -7,18 +7,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.adapter.JournalAdapter;
 
 public class GradesFragment extends Fragment {
-   // private EtapasAdapter adapter;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //adapter = new EtapasAdapter(DataBase.get().getBoxStore().boxFor(Matter.class).get(getArguments().getLong("ID")), getContext());
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,8 +30,9 @@ public class GradesFragment extends Fragment {
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        //recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(new JournalAdapter(getContext(), getArguments(), position -> {}));
     }
 
 }
