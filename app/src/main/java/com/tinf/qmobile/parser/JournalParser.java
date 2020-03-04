@@ -37,15 +37,13 @@ import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 public class JournalParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "JournalParser";
     private OnFinish onFinish;
-    private OnEvent onEvent;
     private int pos;
     private boolean notify;
 
-    public JournalParser(int pos, boolean notify, OnFinish onFinish, OnEvent onEvent) {
+    public JournalParser(int pos, boolean notify, OnFinish onFinish) {
         this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
-        this.onEvent = onEvent;
     }
 
     @Override

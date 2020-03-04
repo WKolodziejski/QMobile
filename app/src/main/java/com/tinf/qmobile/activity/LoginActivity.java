@@ -42,7 +42,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             Client.get().load(PG_FETCH_YEARS);
         } else if (pg == PG_DIARIOS) {
             Client.get().load(PG_CALENDARIO);
-        } else if (pg == PG_HORARIO) {
             User.setValid(true);
             startActivity(new Intent(this, MainActivity.class));
             finish();

@@ -24,7 +24,7 @@ import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tinf.qmobile.fragment.SettingsFragment.ALERT;
@@ -109,7 +109,7 @@ public class Jobs {
         mBuilder.setAutoCancel(true);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MateriaActivity.class);
+        stackBuilder.addParentStack(MatterActivity.class);
         stackBuilder.addNextIntent(intent);
 
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);

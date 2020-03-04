@@ -129,6 +129,20 @@ public class ScheduleFragment extends Fragment {
                         }
                     }
 
+                    boolean r = true;
+                    int d1 = 0;
+
+                    while (r) {
+                        if (!hours[firstIndex - 1][d1] && d1 < 7) {
+                            d1++;
+                            if (d1 == 7)
+                                r = false;
+                        } else {
+                            firstIndex--;
+                            d1 = 0;
+                        }
+                    }
+
                     weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
                 }
 

@@ -257,6 +257,12 @@
                         android:transitionName="Calendario"
                         android:id="@+id/recycler_home"/>
 
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:id="@+id/progressbar_home"/>
+
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -272,45 +278,44 @@
                 >
 
                 <LinearLayout
+                    android:id="@+id/home_website"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="bottom"
-                    android:padding="16dp"
-                    android:foreground="?android:attr/selectableItemBackground"
+                    android:layout_height="49dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:id="@+id/home_website"
-                    >
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        app:srcCompat="@drawable/ic_external"
+                        android:layout_gravity="center_vertical"
                         android:tint="@color/colorAccent"
-                        android:layout_gravity="center_vertical"/>
+                        app:srcCompat="@drawable/ic_external" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Website"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="Website"
                         android:textSize="@dimen/main_font_size" />
 
                     <View
                         android:layout_width="1dp"
                         android:layout_height="match_parent"
-                        android:background="@color/black_dividers"/>
+                        android:background="@color/black_dividers" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
                         android:layout_marginLeft="8dp"
-                        android:textSize="@dimen/main_font_size"
-                        android:text="@string/home_footer" />
+                        android:layout_marginRight="8dp"
+                        android:text="@string/home_footer"
+                        android:textSize="@dimen/main_font_size" />
 
                 </LinearLayout>
 

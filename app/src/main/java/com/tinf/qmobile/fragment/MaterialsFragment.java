@@ -65,6 +65,9 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getArguments() == null)
+            getActivity().setTitle(User.getYears()[pos]);
+
         getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         Client.get().load(PG_MATERIAIS);

@@ -1,6 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -8,6 +9,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -17,7 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
@@ -27,19 +35,24 @@ import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
+import com.tinf.qmobile.fragment.SheetFragment;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.JavaScriptHandler;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.tinf.qmobile.fragment.SettingsFragment.CHECK;
+import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
-    @BindView(R.id.navigation)        public BottomNavigationView bottomNav;
-    @BindView(R.id.refresh_layout)    public SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.refresh_layout)      public SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.navigation)          BottomNavigationView bottomNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_FETCH_YEARS);
         }
+
+        /*BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet));
+        bottomSheetBehavior.setHideable(true);*/
     }
 
     @Override
@@ -171,9 +187,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private void logOut() {
         finish();
-        Client.get().clearRequests();
+        Client.get().finalise();
         Jobs.cancelAllJobs();
-        DataBase.get().closeBoxStore();
+        DataBase.get().finalise();
         User.clearInfos();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -182,14 +198,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private boolean changeFragment(Fragment fragment) {
         if (fragment != null) {
-
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-
-            if (!(fragment instanceof HomeFragment)) {
-                setTitle(User.getYears()[pos]);
-            }
-
             transaction.replace(R.id.main_fragment, fragment).commit();
 
             return true;
@@ -218,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Log.v(TAG, "onStart");
         //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
-        Client.get().setOnEventListener(this);
         DataBase.get().addOnDataChangeListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
@@ -229,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onStop();
         Log.v(TAG, "onStop");
         Client.get().removeOnResponseListener(this);
-        Client.get().setOnEventListener(null);
         DataBase.get().removeOnDataChangeListener(this);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
@@ -241,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Log.v(TAG, "onResume");
         //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
-        Client.get().setOnEventListener(this);
         DataBase.get().addOnDataChangeListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
@@ -252,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onPause();
         Log.v(TAG, "onPause");
         Client.get().removeOnResponseListener(this);
-        Client.get().setOnEventListener(null);
         DataBase.get().removeOnDataChangeListener(this);
         //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
@@ -279,6 +285,36 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onFinish(int pg, int pos) {
         dismissProgressbar();
+
+        if (pg == PG_LOGIN) {
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+            if (prefs.getBoolean(POPUP, true)) {
+
+                WebView webView = new WebView(getApplicationContext());
+                webView.getSettings().setJavaScriptEnabled(true);
+                webView.getSettings().setLoadsImagesAutomatically(false);
+                webView.getSettings().setBlockNetworkImage(true);
+                webView.addJavascriptInterface(new JavaScriptHandler(webView, this), "handler");
+                webView.setWebViewClient(new WebViewClient() {
+
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        super.onPageFinished(view, url);
+
+                        Log.d("Webview", url);
+
+                        if (!url.contains("javascript")) {
+                            webView.loadUrl("javascript:window.handler.handleLogin"
+                                    + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                        }
+                    }
+
+                });
+                webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
+            }
+        }
     }
 
     @Override
@@ -327,14 +363,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void onDialog(String title, String msg) {
-        new MaterialAlertDialogBuilder(MainActivity.this)
+    public void onDialog(WebView webView, String title, String msg) {
+        /*new MaterialAlertDialogBuilder(MainActivity.this)
                 .setTitle(title)
                 .setMessage(msg)
                 .setCancelable(true)
                 .setPositiveButton("OK", null)
                 .create()
-                .show();
+                .show();*/
+
+        new SheetFragment(webView, title, msg).show(getSupportFragmentManager(), "sheet");
     }
 
     @Override

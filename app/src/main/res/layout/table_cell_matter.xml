@@ -18,7 +18,6 @@
         android:padding="8dp"
         android:gravity="center"
         android:textStyle="bold"
-        android:background="@color/colorPrimaryLight"
         tools:text="Value" />
 
 </LinearLayout>

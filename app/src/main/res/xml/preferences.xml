@@ -76,6 +76,13 @@
             android:summary="@string/pref_alert_sum"
             android:dependency="key_check" />
 
+        <SwitchPreference
+            android:title="@string/pref_popup"
+            android:key="key_popup"
+            android:defaultValue="true"
+            android:summary="@string/pref_popup_sum"
+            android:dependency="key_check" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_notifications">

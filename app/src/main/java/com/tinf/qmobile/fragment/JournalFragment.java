@@ -31,7 +31,6 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalFragment extends Fragment implements OnUpdate {
-    private static String TAG = "DiariosFragment";
     @BindView(R.id.recycler_diarios)    RecyclerView recyclerView;
     @BindView(R.id.fab_journal)         ExtendedFloatingActionButton fab;
 
@@ -39,6 +38,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().setTitle(User.getYears()[pos]);
     }
 
     @Override

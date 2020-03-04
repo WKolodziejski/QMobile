@@ -12,24 +12,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.evrencoskun.tableview.TableView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportFragment extends Fragment implements OnUpdate {
     @BindView(R.id.report_table)    TableView table;
+    //@BindView(R.id.fab_report)      ExtendedFloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        getActivity().setTitle(User.getYears()[pos]);
     }
 
     @Override
@@ -44,12 +46,15 @@ public class ReportFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
 
         table.setAdapter(new ReportAdapter(getContext(), table));
-
         table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                /*if (dy < 0 && !fab.isShown())
+                    fab.show();
+                else if(dy > 0 && fab.isShown())
+                    fab.hide();*/
             }
 
             @Override
@@ -57,6 +62,25 @@ public class ReportFragment extends Fragment implements OnUpdate {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+
+        /*String[] list = User.getReportList(getContext());
+        boolean[] checked = new boolean[list.length];
+
+        for (int i = 0; i < checked.length; i++)
+            checked[i] = true;
+
+        fab.setOnClickListener(view1 -> new MaterialAlertDialogBuilder(getActivity())
+                .setMultiChoiceItems(list, checked, (dialogInterface, i, isChecked) -> {
+                    if (isChecked) {
+                        table.showColumn(i);
+                    } else {
+                        table.hideColumn(i);
+                    }
+                    checked[i] = isChecked;
+                })
+                .setCancelable(true)
+                .create()
+                .show());*/
     }
 
     @Override

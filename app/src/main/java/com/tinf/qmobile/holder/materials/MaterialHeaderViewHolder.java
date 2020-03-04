@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 import butterknife.BindView;
@@ -36,9 +36,9 @@ public class MaterialHeaderViewHolder extends MaterialBaseViewHolder<Matter> {
         }
 
         itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MateriaActivity.class);
+            Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", MateriaActivity.MATERIALS);
+            intent.putExtra("PAGE", MatterActivity.MATERIALS);
             context.startActivity(intent);
         });
     }

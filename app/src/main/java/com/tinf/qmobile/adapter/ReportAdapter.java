@@ -15,7 +15,7 @@ import com.evrencoskun.tableview.adapter.AbstractTableAdapter;
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 import com.evrencoskun.tableview.listener.ITableViewListener;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.report.TableCellMatterViewHolder;
@@ -36,7 +36,6 @@ import java.util.List;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
-import io.objectbox.reactive.DataSubscription;
 
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -45,6 +44,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     private ArrayList<String> columnHeader;
     private ArrayList<Matter> rowHeader;
     private List<List<String>> cells;
+    private int selected_row = -1, selected_column = -1;
 
     public ReportAdapter(Context context, TableView tableView) {
         this.context = context;
@@ -53,91 +53,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         Client.get().addOnUpdateListener(this);
 
         columnHeader.add(context.getResources().getString(R.string.boletim_Materia));
-
-        switch (User.getType()) {
-            case 0 :
-                String[] sem1 = {
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_RP),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_RP),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                columnHeader.addAll(Arrays.asList(sem1));
-                break;
-            case 1:
-                String[] bim = {
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                columnHeader.addAll(Arrays.asList(bim));
-                break;
-            case 2:
-                String[] uni = {
-                        context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_RP),
-                        context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                columnHeader.addAll(Arrays.asList(uni));
-                break;
-            case 3:
-                String[] sem2 = {
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                columnHeader.addAll(Arrays.asList(sem2));
-                break;
-            case 4:
-                String[] bim2 = {
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                columnHeader.addAll(Arrays.asList(bim2));
-                break;
-            case 5:
-                String[] trim = {
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                columnHeader.addAll(Arrays.asList(trim));
-                break;
-        }
+        columnHeader.addAll(Arrays.asList(User.getReportList(context)));
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
@@ -158,11 +74,13 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             @Override
             public void onCellClicked(@NonNull RecyclerView.ViewHolder cellView, int column, int row) {
                 if (column == 0) {
-                    Intent intent = new Intent(context, MateriaActivity.class);
+                    Intent intent = new Intent(context, MatterActivity.class);
                     intent.putExtra("ID", rowHeader.get(row).id);
-                    intent.putExtra("PAGE", MateriaActivity.GRADES);
+                    intent.putExtra("PAGE", MatterActivity.GRADES);
                     context.startActivity(intent);
                 }
+
+                tableView.getSelectionHandler().clearSelection();
             }
 
             @Override
@@ -172,7 +90,13 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
             @Override
             public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder columnHeaderView, int column) {
-
+                if (column == selected_column) {
+                    tableView.getSelectionHandler().clearSelection();
+                    selected_column = -1;
+                } else {
+                    selected_column = column;
+                    selected_row = -1;
+                }
             }
 
             @Override
@@ -182,18 +106,19 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
             @Override
             public void onRowHeaderClicked(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
-                Intent intent = new Intent(context, MateriaActivity.class);
-                intent.putExtra("ID", rowHeader.get(row).id);
-                intent.putExtra("PAGE", MateriaActivity.GRADES);
-                context.startActivity(intent);
+                if (row == selected_row) {
+                    tableView.getSelectionHandler().clearSelection();
+                    selected_row = -1;
+                } else {
+                    selected_row = row;
+                    selected_column = -1;
+                }
             }
 
             @Override
             public void onRowHeaderLongPressed(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
 
             }
-
-
         });
     }
 

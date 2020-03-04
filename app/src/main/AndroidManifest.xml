@@ -119,7 +119,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.MateriaActivity">
+        <activity android:name=".activity.MatterActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

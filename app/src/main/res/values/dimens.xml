@@ -2,5 +2,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="main_font_size">15sp</dimen>
     <dimen name="alt_font_size">17sp</dimen>
+    <dimen name="bottom_sheet__peek_height">86dp</dimen>
 
 </resources>

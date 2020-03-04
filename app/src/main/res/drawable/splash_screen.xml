@@ -3,7 +3,7 @@
     android:opacity="opaque"
     >
 
-    <item android:drawable="@color/colorPrimary"/>
+    <item android:drawable="@color/splash"/>
 
     <item>
         <bitmap android:src="@drawable/ic_launcher_white"

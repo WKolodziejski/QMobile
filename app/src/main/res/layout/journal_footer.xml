@@ -81,7 +81,6 @@
             android:paddingEnd="52dp"
             android:paddingBottom="16dp"
             android:id="@+id/exp_details"
-            android:textColor="@color/red"
             android:textAllCaps="true"
             android:text="@string/journal_details"
             android:foreground="?android:attr/selectableItemBackground"

@@ -143,4 +143,11 @@
     <string name="journal_details">Details</string>
     <string name="journal_absences">Absences</string>
     <string name="journal_sum">Partial sum</string>
+    <string name="journal_date">Date</string>
+    <string name="journal_grade">Grade</string>
+    <string name="journal_max">Max</string>
+    <string name="journal_weight">Weight</string>
+    <string name="dialog_dont_show">Don\'t show again</string>
+    <string name="pref_popup_sum">Receive important notices on login</string>
+    <string name="pref_popup">Notices</string>
 </resources>

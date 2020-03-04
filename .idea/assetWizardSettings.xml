@@ -33,9 +33,10 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_signal_cellular_4_bar_black_24dp" />
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="outputName" value="ic_maximize" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\willi\Downloads\search-24px.svg" />
+                            <entry key="sourceFile" value="C:\Users\willi\Downloads\maximize-24px.svg" />
                           </map>
                         </option>
                       </PersistentState>

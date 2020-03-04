@@ -1,10 +1,15 @@
 package com.tinf.qmobile.activity;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -16,17 +21,22 @@ import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 
-public class MateriaActivity extends AppCompatActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MatterActivity extends AppCompatActivity {
+    @BindView(R.id.tab_matter)      TabLayout tabLayout;
     public static int GRADES = 0;
     public static int SCHEDULE = 1;
     public static int MATERIALS = 2;
     private Matter matter;
-    private boolean changed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_materia);
+
+        ButterKnife.bind(this);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -43,8 +53,8 @@ public class MateriaActivity extends AppCompatActivity {
             ViewPager viewPager = (ViewPager) findViewById(R.id.pager_matter);
             viewPager.setAdapter(adapter);
 
-            TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_matter);
             tabLayout.setupWithViewPager(viewPager);
+            tabLayout.setSelectedTabIndicatorColor(matter.getColor());
 
             viewPager.setCurrentItem(bundle.getInt("PAGE"));
         } else
@@ -68,7 +78,7 @@ public class MateriaActivity extends AppCompatActivity {
                         .setPositiveButton(getString(R.string.dialog_select), (dialog, selectedColor, allColors) -> {
                             matter.setColor(selectedColor);
                             DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
-                            changed = true;
+                            tabLayout.setSelectedTabIndicatorColor(matter.getColor());
                         })
                         .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
                         .build()

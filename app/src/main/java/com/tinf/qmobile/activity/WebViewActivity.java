@@ -40,41 +40,29 @@ public class WebViewActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.removeAllCookies(aBoolean -> {
-            String cookie = Client.get().getHeaders().get("Cookie");
-            String setCookie = Client.get().getHeaders().get("Set-Cookie");
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.setWebViewClient(new WebViewClient() {
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
 
-            cookieManager.setCookie(Client.get().getURL(), cookie);
-            cookieManager.setCookie(Client.get().getURL(), setCookie);
+            @Override
+            public void onPageFinished(WebView view, String url) {
 
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setUseWideViewPort(true);
-            webView.setWebViewClient(new WebViewClient() {
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
-                    return true;
+                if (!url.contains("javascript")) {
+                    view.loadUrl("javascript:(function() {" +
+                            "document.getElementsByTagName('tbody')[0].childNodes[0].style.display='none';" +
+                            "document.getElementsByTagName('tbody')[0].childNodes[4].style.display='none';" +
+                            "})()");
                 }
 
-                @Override
-                public void onPageFinished(WebView view, String url) {
-
-                    if (!url.contains("javascript")) {
-                        view.loadUrl("javascript:(function() {" +
-                                "document.getElementsByTagName('tbody')[0].childNodes[0].style.display='none';" +
-                                "document.getElementsByTagName('tbody')[0].childNodes[4].style.display='none';" +
-                                "})()");
-                    }
-
-                    super.onPageFinished(view, url);
-                }
-
-            });
-
-            webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME, Client.get().getHeaders());
-
+                super.onPageFinished(view, url);
+            }
         });
+
+        webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
     }
 
 }

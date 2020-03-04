@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.journal.Footer;
 
@@ -35,9 +35,9 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
         absences.setText(footer.getMatter().getAbsences());
         details.setTextColor(footer.getMatter().getColor());
         details.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MateriaActivity.class);
+            Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", footer.getMatter().id);
-            intent.putExtra("PAGE", MateriaActivity.GRADES);
+            intent.putExtra("PAGE", MatterActivity.GRADES);
             context.startActivity(intent);
         });
         layout.setOnClickListener(view -> {

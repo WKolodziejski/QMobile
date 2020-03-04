@@ -187,6 +187,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     expand(i, (Matter) journals.get(i));
 
             Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();
+
         } else {
             for (int i = 0; i < journals.size(); i++)
                 if (journals.get(i) instanceof Matter)

@@ -9,6 +9,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +23,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.MateriaActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.activity.CalendarioActivity;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.WebViewActivity;
@@ -63,16 +64,16 @@ import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {
-    @BindView(R.id.weekView_home)   WeekView weekView;
-    @BindView(R.id.home_scroll)     NestedScrollView nestedScrollView;
-    @BindView(R.id.fab_home)        ExtendedFloatingActionButton fab;
-    @BindView(R.id.recycler_home)   RecyclerView recyclerView;
+    @BindView(R.id.weekView_home)       WeekView weekView;
+    @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
+    @BindView(R.id.fab_home)            ExtendedFloatingActionButton fab;
+    @BindView(R.id.recycler_home)       RecyclerView recyclerView;
+    @BindView(R.id.progressbar_home)    ProgressBar bar;
     private DataSubscription sub1, sub2;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getActivity().setTitle(User.getName());
     }
 
@@ -98,9 +99,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
                     .equal(Matter_.period_, User.getPeriod(pos))
                     .build().findUnique();
             if (matter != null) {
-                Intent intent = new Intent(getContext(), MateriaActivity.class);
+                Intent intent = new Intent(getContext(), MatterActivity.class);
                 intent.putExtra("ID", matter.id);
-                intent.putExtra("PAGE", MateriaActivity.SCHEDULE);
+                intent.putExtra("PAGE", MatterActivity.SCHEDULE);
                 startActivity(intent);
             }
         });
@@ -135,9 +136,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         new Thread(() -> {
             List<? extends CalendarBase> events = getCalendarList();
-            recyclerView.post(() -> recyclerView.setAdapter(new EventsAdapter(getContext(), events)));
+            recyclerView.post(() -> {
+                bar.setVisibility(View.GONE);
+                recyclerView.setAdapter(new EventsAdapter(getContext(), events));
+            });
         }).start();
-
     }
 
     private List<EventBase> getCalendarList() {
@@ -227,6 +230,20 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         if (sum > parc1) {
                             firstIndex = h;
                             parc1 = sum;
+                        }
+                    }
+
+                    boolean r = true;
+                    int d1 = 0;
+
+                    while (r) {
+                        if (!hours[firstIndex - 1][d1] && d1 < 7) {
+                            d1++;
+                            if (d1 == 7)
+                                r = false;
+                        } else {
+                            firstIndex--;
+                            d1 = 0;
                         }
                     }
 

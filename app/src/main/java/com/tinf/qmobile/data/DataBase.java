@@ -58,7 +58,7 @@ public class DataBase implements OnUpdate {
         return boxStore;
     }
 
-    public void closeBoxStore() {
+    public void finalise() {
         Client.get().removeOnUpdateListener(this);
         if (boxStore != null) {
             sub1.cancel();

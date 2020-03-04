@@ -19,12 +19,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String ALERT = "key_alert_mode";
     public static final String NOTIFY = "key_notifications";
     public static final String NIGHT = "key_night_mode";
+    public static final String POPUP = "key_popup";
     public static final String SCHEDULE_HOUR = "schedule_first_hour";
     public static final String SCHEDULE_DAYS = "schedule_days";
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(R.xml.pref_main);
+        addPreferencesFromResource(R.xml.preferences);
 
         bindPreferenceSummaryToValue(findPreference(CHECK));
 
