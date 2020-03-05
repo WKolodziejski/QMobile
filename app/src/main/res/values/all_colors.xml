@@ -294,6 +294,6 @@
     <color name="blue_grey_800">#37474f</color>
     <color name="blue_grey_900">#263238</color>
 
-    <color name="black_dividers">#1f000000</color>
-    <color name="white_dividers">#1fffffff</color>
+    <color name="black_d">#1f000000</color>
+    <color name="white_d">#1fffffff</color>
 </resources>

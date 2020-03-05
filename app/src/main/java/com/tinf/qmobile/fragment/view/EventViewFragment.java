@@ -186,6 +186,11 @@ public class EventViewFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         sub1.cancel();
         sub2.cancel();
     }

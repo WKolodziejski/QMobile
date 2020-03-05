@@ -7,7 +7,11 @@
     <color name="colorSecondary">@color/grey_500</color>
     <color name="notificationBackground">@color/blue_50</color>
     <color name="splash">@color/black</color>
+    <color name="headerbackground">#FFFFFF</color>
+    <color name="black_dividers">@color/black_d</color>
+    <color name="white_dividers">@color/white_d</color>
 
+    <color name="card_stroke">@color/black_d</color>
     <color name="transparent">@android:color/transparent</color>
 
     <!--<color name="colorPrimary">#1e1e24</color>

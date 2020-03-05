@@ -1,6 +1,7 @@
 package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.CalendarioActivity;
+import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventImage;
-import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
@@ -43,12 +45,12 @@ import java.util.Objects;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.model.calendar.Utils.getDate;
 
 public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;
     private LinearLayoutManager layout;
     private EventsAdapter adapter;
-    private List<CalendarBase> events;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +65,9 @@ public class CalendarFragment extends Fragment implements OnUpdate {
 
         layout = new LinearLayoutManager(getContext());
 
-        calendarView = ((CalendarioActivity) getActivity()).calendar;
+        calendarView = ((CalendarActivity) getActivity()).calendar;
+
+        adapter = new EventsAdapter(getContext(), false);
 
         calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         calendarView.setUseThreeLetterAbbreviation(true);
@@ -73,11 +77,12 @@ public class CalendarFragment extends Fragment implements OnUpdate {
 
             @Override
             public void onDayClick(Date day) {
-                int p = events.size() - 1;
 
-                for (int i = 0; i < events.size(); i++) {
-                    if (events.get(i) instanceof EventBase) {
-                        if (((EventBase) events.get(i)).getStartTime() >= day.getTime()) {
+                int p = adapter.getEvents().size() - 1;
+
+                for (int i = 0; i < adapter.getEvents().size(); i++) {
+                    if (adapter.getEvents().get(i) instanceof EventBase) {
+                        if (((EventBase) adapter.getEvents().get(i)).getStartTime() >= day.getTime()) {
                             p = i;
                             break;
                         }
@@ -92,11 +97,11 @@ public class CalendarFragment extends Fragment implements OnUpdate {
             public void onMonthScroll(Date month) {
                 setTitle(month.getTime());
 
-                int p = events.size() - 1;
+                int p = adapter.getEvents().size() - 1;
 
-                for (int i = 0; i < events.size(); i++) {
-                    if (events.get(i) instanceof Month) {
-                        if (((Month) events.get(i)).getTime() >= month.getTime()) {
+                for (int i = 0; i < adapter.getEvents().size(); i++) {
+                    if (adapter.getEvents().get(i) instanceof Month) {
+                        if (((Month) adapter.getEvents().get(i)).getTime() >= month.getTime()) {
                             p = i;
                             break;
                         }
@@ -108,111 +113,16 @@ public class CalendarFragment extends Fragment implements OnUpdate {
             }
         });
 
-        displayEvents();
-        scrollToToday(false);
+        Date date = new Date();
 
-        /*List<DaySection> sections = new ArrayList<>();
-
-        for (CalendarBase event : events) {
-            if (event instanceof Day) {
-                sections.add(new DaySection((Day) event));
-            } else {
-                sections.add(new DaySection((EventBaseTEST) event));
-            }
-        }
-
-        MultipleItemQuickAdapter multipleItemQuickAdapter = new MultipleItemQuickAdapter(R.layout.calendar_header_day, sections);*/
-
-    }
-
-    private void loadData() {
-        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
-        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
-
-        events = new ArrayList<>();
-
-        events.addAll(eventUserBox.query().build().find());
-        events.addAll(eventJournalBox.query().build().find());
-        events.addAll(eventImageBox.query().build().find());
-        events.addAll(eventSimpleBox.query().build().find());
-        events.addAll(monthBox.query().build().find());
-
-        Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-        for (int i = 0; i < events.size() - 1; i++) {
-
-            CalendarBase e1 = events.get(i);
-            CalendarBase e2 = events.get(i + 1);
-
-            Calendar start = Calendar.getInstance();
-            start.setTime(e1.getDate());
-
-            if (e1 instanceof EventBase) {
-                if (((EventBase) e1).isRanged()) {
-                    start.setTime(new Date(((EventBase) e1).getEndTime()));
-                }
-            }
-
-            Calendar end = Calendar.getInstance();
-            end.setTime(e2.getDate());
-
-            if (start.getTimeInMillis() < end.getTimeInMillis()) {
-                if (start.get(Calendar.DAY_OF_MONTH) < end.get(Calendar.DAY_OF_MONTH) - 1) {
-
-                    if (!(e1 instanceof Month)) {
-                        start.add(Calendar.DAY_OF_MONTH, 1);
-                    }
-
-                    end.add(Calendar.DAY_OF_MONTH, -1);
-
-                    events.add(i + 1, new Day(start.getTime(), end.getTime()));
-                    i++;
-                } else {
-                    if (e2 instanceof Month) {
-                        start.add(Calendar.DAY_OF_MONTH, 1);
-                        end.add(Calendar.DAY_OF_MONTH, -1);
-                        if (start.get(Calendar.MONTH) == end.get(Calendar.MONTH)) {
-                            events.add(i + 1, new Day(start.getTime(), end.getTime()));
-                            i++;
-                        }
-                    }
-                }
-            }
-        }
-
-        /*CalendarBase lastEvent = events.get(events.size() - 1);
-
-        Calendar firstDate = Calendar.getInstance();
-        firstDate.setTime(lastEvent.getDate());
-
-        if (!(lastEvent instanceof Month)) {
-            firstDate.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        Calendar lastDate = Calendar.getInstance();
-        lastDate.setTime(lastEvent.getDate());
-        lastDate.add(Calendar.MONTH, 1);
-        lastDate.set(Calendar.DAY_OF_MONTH, 0);
-
-        events.add(new Day(firstDate.getTime(), lastDate.getTime()));*/
-    }
-
-    private void displayEvents() {
-        //Date date = new Date();
-
-        //setTitle(date.getTime());
+        setTitle(date.getTime());
 
         calendarView.removeAllEvents();
-        //calendarView.setCurrentDate(date);
+        calendarView.setCurrentDate(date);
 
-        loadData();
-
-        for (int i = 0; i < events.size(); i++) {
-            if (events.get(i) instanceof EventBase) {
-                EventBase event = (EventBase) events.get(i);
+        for (int i = 0; i < adapter.getEvents().size(); i++) {
+            if (adapter.getEvents().get(i) instanceof EventBase) {
+                EventBase event = (EventBase) adapter.getEvents().get(i);
 
                 if (event.isRanged()) {
                     Calendar calendar = Calendar.getInstance();
@@ -229,19 +139,15 @@ public class CalendarFragment extends Fragment implements OnUpdate {
             }
         }
 
-        if (adapter == null) {
-            adapter = new EventsAdapter(getContext(), events);
-        } else {
-            adapter.update(events);
-        }
+        scrollToToday(false);
     }
 
     private void scrollToToday(boolean smooth) {
-        int p = events.size() - 1;
+        int p = adapter.getEvents().size() - 1;
 
-        for (int i = 0; i < events.size(); i++) {
-            if (events.get(i) instanceof Month) {
-                if (((Month) events.get(i)).getTime() <= new Date().getTime()) {
+        for (int i = 0; i < adapter.getEvents().size(); i++) {
+            if (adapter.getEvents().get(i) instanceof Month) {
+                if (((Month) adapter.getEvents().get(i)).getTime() <= new Date().getTime()) {
                     p = i;
                 }
             }
@@ -262,8 +168,8 @@ public class CalendarFragment extends Fragment implements OnUpdate {
             layout.scrollToPosition(p);
         }
 
-        calendarView.setCurrentDate(events.get(p).getDate());
-        setTitle(events.get(p).getDate().getTime());
+        calendarView.setCurrentDate(adapter.getEvents().get(p).getDate());
+        setTitle(adapter.getEvents().get(p).getDate().getTime());
     }
 
     @Nullable
@@ -278,27 +184,27 @@ public class CalendarFragment extends Fragment implements OnUpdate {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_calendario);
 
-        recyclerView.post(() -> {
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setItemViewCacheSize(20);
-            recyclerView.setDrawingCacheEnabled(true);
-            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            recyclerView.setLayoutManager(layout);
-            recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
+        /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    int i = layout.findFirstVisibleItemPosition();
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int i = layout.findFirstVisibleItemPosition();
 
-                    if (events.get(i) instanceof Month) {
-                        calendarView.setCurrentDate(events.get(i).getDate());
-                        setTitle(((Month) events.get(i)).getTime());
-                    }
+                if (adapter.getEvents().get(i) instanceof Month) {
+                    calendarView.setCurrentDate(adapter.getEvents().get(i).getDate());
+                    setTitle(((Month) adapter.getEvents().get(i)).getTime());
                 }
-            });
-        });
+            }
+
+        });*/
 
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) view.findViewById(R.id.fab_add_calendar);
         fab.setOnClickListener(v -> {
@@ -309,21 +215,21 @@ public class CalendarFragment extends Fragment implements OnUpdate {
     }
 
     private void setTitle(long date) {
-        ((CalendarioActivity) getActivity()).setTitle(new SimpleDateFormat("MMM ― yyyy", Locale.getDefault()).format(date));
+        ((CalendarActivity) getActivity()).setTitle(new SimpleDateFormat("MMM ― yyyy", Locale.getDefault()).format(date));
     }
 
     @Override
     public void onStart() {
         super.onStart();
         Client.get().addOnUpdateListener(this);
-        calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
+        calendarView = ((CalendarActivity) Objects.requireNonNull(getActivity())).calendar;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
-        calendarView = ((CalendarioActivity) Objects.requireNonNull(getActivity())).calendar;
+        calendarView = ((CalendarActivity) Objects.requireNonNull(getActivity())).calendar;
     }
 
     @Override

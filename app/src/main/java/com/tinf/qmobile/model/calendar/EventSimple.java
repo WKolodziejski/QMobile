@@ -2,6 +2,7 @@ package com.tinf.qmobile.model.calendar;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 
 import io.objectbox.annotation.Entity;
@@ -66,4 +67,14 @@ public class EventSimple extends EventBase {
         return ViewType.SIMPLE;
     }
 
+    @Override
+    public boolean equals(CalendarBase event) {
+        if (event instanceof EventSimple) {
+            EventSimple e = (EventSimple) event;
+
+            return super.equals(event)
+                    && e.type == type;
+        }
+        return false;
+    }
 }

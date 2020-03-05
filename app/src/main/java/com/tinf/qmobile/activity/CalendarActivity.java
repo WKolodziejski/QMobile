@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
 
 
-public class CalendarioActivity extends AppCompatActivity {
+public class CalendarActivity extends AppCompatActivity {
     @BindView(R.id.compactcalendar_view) public CompactCalendarView calendar;
 
     @Override

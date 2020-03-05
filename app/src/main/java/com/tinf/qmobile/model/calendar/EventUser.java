@@ -2,6 +2,7 @@ package com.tinf.qmobile.model.calendar;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.matter.Matter;
 
@@ -29,13 +30,10 @@ public class EventUser extends EventBase {
 
     @Override
     public int getColor() {
-        if (super.getColor() != App.getContext().getResources().getColor(R.color.colorAccent)) {
-            return super.getColor();
-
-        } else if (matter.getTargetId() != 0) {
+        if (matter.getTargetId() != 0)
             return matter.getTarget().getColor();
 
-        } else return super.getColor();
+        else return super.getColor();
     }
 
     public String getMatter() {
@@ -91,6 +89,25 @@ public class EventUser extends EventBase {
     @Override
     public int getItemType() {
         return ViewType.USER;
+    }
+
+    @Override
+    public boolean equals(CalendarBase event) {
+        if (event instanceof EventUser) {
+            EventUser e = (EventUser) event;
+            if (e.matter.getTargetId() == matter.getTargetId()) {
+
+                boolean eq = super.equals(event)
+                        && e.alarm == alarm
+                        && e.difference == difference;
+
+                if (matter.getTarget() != null)
+                    eq = eq && matter.getTarget().equals(e.matter.getTarget());
+
+                return eq;
+            }
+        }
+        return false;
     }
 
 }

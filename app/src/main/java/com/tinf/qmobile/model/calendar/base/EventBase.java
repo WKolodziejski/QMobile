@@ -77,6 +77,20 @@ public abstract class EventBase extends Event implements CalendarBase {
     }
 
     @Override
+    public int getDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startTime);
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    @Override
+    public int getYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startTime);
+        return calendar.get(Calendar.YEAR);
+    }
+
+    @Override
     public long getTimeInMillis() {
         return startTime;
     }
@@ -117,6 +131,26 @@ public abstract class EventBase extends Event implements CalendarBase {
     @Override
     public int getColor() {
         return color == 0 ? App.getContext().getResources().getColor(R.color.colorAccent) : color;
+    }
+
+    @Override
+    public boolean equals(CalendarBase event) {
+        if (event instanceof EventBase) {
+            EventBase e = (EventBase) event;
+
+            boolean eq = e.color == color
+                    && e.startTime == startTime
+                    && e.endTime == endTime;
+
+            if (e.title != null)
+                eq = eq && e.title.equals(title);
+
+            if (e.description != null)
+                eq = eq && e.description.equals(description);
+
+            return eq;
+        }
+        return false;
     }
 
 }

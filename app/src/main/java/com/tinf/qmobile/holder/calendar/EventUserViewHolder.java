@@ -43,7 +43,7 @@ public class EventUserViewHolder extends CalendarViewHolder<EventUser> {
             matter.setText(event.getMatter());
         }
         card.setBackgroundColor(event.getColor());
-        CalendarViewHolder.setHeader(header, event, context);
+        //CalendarViewHolder.setHeader(header, event, context);
 
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EventViewActivity.class);

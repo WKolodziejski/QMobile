@@ -31,7 +31,7 @@ public class EventJournalViewHolder extends CalendarViewHolder<Journal> {
         title.setText(event.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : event.getTitle());
         description.setText(event.getDescription());
         card.setBackgroundColor(event.getColor());
-        CalendarViewHolder.setHeader(header, event, context);
+        //CalendarViewHolder.setHeader(header, event, context);
 
             card.setOnClickListener(v -> {
                 Intent intent = new Intent(context, EventViewActivity.class);

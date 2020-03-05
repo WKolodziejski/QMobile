@@ -4,6 +4,7 @@ import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.tinf.qmobile.model.calendar.base.CalendarBase.ImageType.CARNIVAL;
@@ -18,7 +19,7 @@ import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.Q;
 import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.USER;
 
-public interface CalendarBase {
+public interface CalendarBase<T extends CalendarBase> {
 
     @IntDef({IMAGE, SIMPLE, MONTH, USER, JOURNAL, Q, DAY})
     @Retention(RetentionPolicy.SOURCE)
@@ -31,6 +32,7 @@ public interface CalendarBase {
         int JOURNAL = 200;
         int Q = 700;
         int DAY = 800;
+        int HEADER = 900;
     }
 
     @Retention(RetentionPolicy.SOURCE)
@@ -44,5 +46,9 @@ public interface CalendarBase {
 
     int getItemType();
     Date getDate();
+    int getDay();
+    int getYear();
+
+    boolean equals(T event);
 
 }

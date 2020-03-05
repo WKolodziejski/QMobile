@@ -23,7 +23,7 @@ public class EventSimpleViewHolder extends CalendarViewHolder<EventSimple> {
     @Override
     public void bind(EventSimple event, Context context) {
         title.setText(event.getTitle());
-        CalendarViewHolder.setHeader(header, event, context);
+       // CalendarViewHolder.setHeader(header, event, context);
     }
 
 }

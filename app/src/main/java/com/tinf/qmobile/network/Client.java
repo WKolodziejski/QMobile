@@ -111,6 +111,8 @@ public class Client {
         requests = Volley.newRequestQueue(getContext(), new HurlStack());
         queue = new ArrayList<>();
         params = new HashMap<>();
+        onUpdates = new ArrayList<>();
+        onResponses = new ArrayList<>();
         URL = User.getURL();
     }
 
@@ -384,9 +386,6 @@ public class Client {
     }
 
     private void addToQueue(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter) {
-        if (queue == null) {
-            queue = new ArrayList<>();
-        }
         RequestHelper request = new RequestHelper(pg, url, pos, method, form, notify, matter);
         if (!queue.contains(request)) {
             queue.add(request);
@@ -479,7 +478,7 @@ public class Client {
             msg = getContext().getResources().getString(R.string.client_no_connection);
         } else {
             if (pg == PG_GERADOR) {
-                //msg = getContext().getResources().getString(R.string.client_host);
+                msg = getContext().getResources().getString(R.string.client_host);
             } else if (pg == PG_LOGIN) {
                 isLogging = false;
                 isValid = false;
@@ -501,12 +500,8 @@ public class Client {
     }
 
     public void addOnResponseListener(OnResponse onResponse) {
-        if (onResponses == null) {
-            onResponses = new ArrayList<>();
-        }
-
         if (onResponse != null && !onResponses.contains(onResponse)) {
-            this.onResponses.add(onResponse);
+            onResponses.add(onResponse);
             Log.i(TAG, "Added listener from " + onResponse);
         }
     }
@@ -519,12 +514,8 @@ public class Client {
     }
 
     public void addOnUpdateListener(OnUpdate onUpdate) {
-        if (onUpdates == null) {
-            onUpdates = new ArrayList<>();
-        }
-
         if (onUpdate != null && !onUpdates.contains(onUpdate)) {
-            this.onUpdates.add(onUpdate);
+            onUpdates.add(onUpdate);
             Log.i(TAG, "Added listener from " + onUpdate);
         }
     }
@@ -570,7 +561,12 @@ public class Client {
         Log.v(TAG, pg + ": " + message);
         isValid = false;
         isLogging = false;
-        finalise();
+        queue.clear();
+        requests.cancelAll(request -> true);
+        params.clear();
+        KEY_A = "";
+        KEY_B = "";
+        pos = 0;
         if (onResponses != null) {
             for (int i = 0; i < onResponses.size(); i++) {
                 onResponses.get(i).onAccessDenied(pg, message);

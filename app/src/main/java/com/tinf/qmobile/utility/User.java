@@ -236,11 +236,15 @@ public class User {
     }
 
     public static int getYear(int i) {
-        return Integer.valueOf(getYears()[i].substring(0, 4));
+        if (getYears().length > 0)
+            return Integer.valueOf(getYears()[i].substring(0, 4));
+        else return 0;
     }
 
     public static int getPeriod(int i) {
-        return Integer.valueOf(getYears()[i].substring(7));
+        if (getYears().length > 0)
+            return Integer.valueOf(getYears()[i].substring(7));
+        else return 0;
     }
 
     /*public static boolean isYearLoaded(int i) {

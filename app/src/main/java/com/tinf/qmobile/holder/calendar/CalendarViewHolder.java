@@ -23,7 +23,7 @@ public abstract class CalendarViewHolder<T extends CalendarBase> extends Recycle
 
     public abstract void bind(T calendar, Context context);
 
-    public static void setHeader(FrameLayout header, EventBase event, Context context) {
+    /*public static void setHeader(FrameLayout header, EventBase event, Context context) {
         final boolean isRanged = event.isRanged();
 
         final int layout = isRanged ? R.layout.calendar_header_range_day : R.layout.calendar_header_single_day;
@@ -47,6 +47,6 @@ public abstract class CalendarViewHolder<T extends CalendarBase> extends Recycle
 
             day.setText(event.getStartDay());
         }
-    }
+    }*/
 
 }

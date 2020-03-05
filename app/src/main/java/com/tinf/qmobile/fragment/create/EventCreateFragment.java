@@ -67,7 +67,7 @@ public class EventCreateFragment extends Fragment {
     private int color, matter, alarmDif;
     private List<Matter> matters;
     private String title, description;
-    private long id, alarm, firstMonth, lastMonth;
+    private long id, alarm;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,12 +89,6 @@ public class EventCreateFragment extends Fragment {
 
         start = (Calendar) calendar.clone();
         end = (Calendar) calendar.clone();
-
-        List<EventSimple> months = DataBase.get().getBoxStore().boxFor(EventSimple.class).query().order(EventSimple_.startTime).build().find();
-
-        firstMonth = months.get(0).getStartTime() + 1;
-
-        lastMonth =  months.get(months.size() - 1).getStartTime() - 1;
 
         Bundle bundle = getArguments();
 
@@ -135,14 +129,6 @@ public class EventCreateFragment extends Fragment {
                 }
             } else {
                 color = getResources().getColor(R.color.colorPrimary);
-
-                if (start.getTimeInMillis() < firstMonth) {
-                    start.setTimeInMillis(firstMonth);
-                }
-
-                if (end.getTimeInMillis() > lastMonth) {
-                    end.setTimeInMillis(lastMonth);
-                }
             }
         }
     }
@@ -168,26 +154,17 @@ public class EventCreateFragment extends Fragment {
 
         startDate_txt.setOnClickListener(view1 -> {
             DatePickerDialog dialog = new DatePickerDialog(getContext(), (datePicker, y, m, d) -> {
-                Calendar temp = (Calendar) start.clone();
-                temp.set(Calendar.YEAR, y);
-                temp.set(Calendar.MONTH, m);
-                temp.set(Calendar.DAY_OF_MONTH, d);
+                start.set(Calendar.YEAR, y);
+                start.set(Calendar.MONTH, m);
+                start.set(Calendar.DAY_OF_MONTH, d);
 
-                if (temp.getTimeInMillis() >= firstMonth && temp.getTimeInMillis() <= lastMonth) {
-                    start.set(Calendar.YEAR, y);
-                    start.set(Calendar.MONTH, m);
-                    start.set(Calendar.DAY_OF_MONTH, d);
-
-                    if (!isRanged || end.getTimeInMillis() < start.getTimeInMillis()) {
-                        end.set(Calendar.YEAR, y);
-                        end.set(Calendar.MONTH, m);
-                        end.set(Calendar.DAY_OF_MONTH, d);
-                    }
-
-                    updateText();
-                } else {
-                    Toast.makeText(getContext(), R.string.calendar_end_period, Toast.LENGTH_SHORT).show();
+                if (!isRanged || end.getTimeInMillis() < start.getTimeInMillis()) {
+                    end.set(Calendar.YEAR, y);
+                    end.set(Calendar.MONTH, m);
+                    end.set(Calendar.DAY_OF_MONTH, d);
                 }
+
+                updateText();
             },
                     start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH));
 
@@ -197,23 +174,15 @@ public class EventCreateFragment extends Fragment {
 
         startTime_txt.setOnClickListener(view1 -> {
             TimePickerDialog dialog = new TimePickerDialog(getContext(), (timePicker, h, m) -> {
-                Calendar temp = (Calendar) start.clone();
-                temp.set(Calendar.HOUR_OF_DAY, h);
-                temp.set(Calendar.MINUTE, m);
+                start.set(Calendar.HOUR_OF_DAY, h);
+                start.set(Calendar.MINUTE, m);
 
-                if (temp.getTimeInMillis() >= firstMonth && temp.getTimeInMillis() <= lastMonth) {
-                    start.set(Calendar.HOUR_OF_DAY, h);
-                    start.set(Calendar.MINUTE, m);
-
-                    if (!isRanged || end.getTimeInMillis() < start.getTimeInMillis()) {
-                        end.set(Calendar.HOUR_OF_DAY, h);
-                        end.set(Calendar.MINUTE, m);
-                    }
-
-                    updateText();
-                } else {
-                    Toast.makeText(getContext(), R.string.calendar_end_period, Toast.LENGTH_SHORT).show();
+                if (!isRanged || end.getTimeInMillis() < start.getTimeInMillis()) {
+                    end.set(Calendar.HOUR_OF_DAY, h);
+                    end.set(Calendar.MINUTE, m);
                 }
+
+                updateText();
             },
                     start.get(Calendar.HOUR_OF_DAY), start.get(Calendar.MINUTE), true);
 
@@ -227,19 +196,14 @@ public class EventCreateFragment extends Fragment {
                 temp.set(Calendar.MONTH, m);
                 temp.set(Calendar.DAY_OF_MONTH, d);
 
-                if (temp.getTimeInMillis() >= firstMonth && temp.getTimeInMillis() <= lastMonth) {
-
-                    if (temp.getTimeInMillis() >= start.getTimeInMillis()) {
-                        end.set(Calendar.YEAR, y);
-                        end.set(Calendar.MONTH, m);
-                        end.set(Calendar.DAY_OF_MONTH, d);
-                        isRanged = true;
-                    }
-
-                    updateText();
-                } else {
-                    Toast.makeText(getContext(), R.string.calendar_end_period, Toast.LENGTH_SHORT).show();
+                if (temp.getTimeInMillis() >= start.getTimeInMillis()) {
+                    end.set(Calendar.YEAR, y);
+                    end.set(Calendar.MONTH, m);
+                    end.set(Calendar.DAY_OF_MONTH, d);
+                    isRanged = true;
                 }
+
+                updateText();
             },
                     end.get(Calendar.YEAR), end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH));
 
@@ -252,18 +216,13 @@ public class EventCreateFragment extends Fragment {
                 temp.set(Calendar.HOUR_OF_DAY, h);
                 temp.set(Calendar.MINUTE, m);
 
-                if (temp.getTimeInMillis() >= firstMonth && temp.getTimeInMillis() <= lastMonth) {
-
-                    if (temp.getTimeInMillis() >= start.getTimeInMillis()) {
-                        end.set(Calendar.HOUR_OF_DAY, h);
-                        end.set(Calendar.MINUTE, m);
-                        isRanged = true;
-                    }
-
-                    updateText();
-                } else {
-                    Toast.makeText(getContext(), R.string.calendar_end_period, Toast.LENGTH_SHORT).show();
+                if (temp.getTimeInMillis() >= start.getTimeInMillis()) {
+                    end.set(Calendar.HOUR_OF_DAY, h);
+                    end.set(Calendar.MINUTE, m);
+                    isRanged = true;
                 }
+
+                updateText();
             },
                     end.get(Calendar.HOUR_OF_DAY), end.get(Calendar.MINUTE), true);
 

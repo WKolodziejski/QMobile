@@ -7,39 +7,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
+import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.HEADER;
 
-@Entity
-public class Month implements CalendarBase {
-    @Id public long id;
+public class Header implements CalendarBase {
     private long time;
 
-    public Month(long time) {
+    public Header(long time) {
         this.time = time;
     }
 
-    public String getMonth() {
-        return new SimpleDateFormat("MMMM", Locale.getDefault()).format(time);
-    }
-
-    public String getYearString() {
-        return new SimpleDateFormat("yyyy", Locale.getDefault()).format(time);
-    }
-
-    /*
-     * Required methods
-     */
-
-    public Month() {}
-
-    public long getTime() {
-        return time;
+    public String getDayString() {
+        return new SimpleDateFormat("d", Locale.getDefault()).format(time);
     }
 
     @Override
     public int getItemType() {
-        return CalendarBase.ViewType.MONTH;
+        return HEADER;
     }
 
     @Override
@@ -63,12 +46,11 @@ public class Month implements CalendarBase {
 
     @Override
     public boolean equals(CalendarBase event) {
-        if (event instanceof Month) {
-            Month m = (Month) event;
+        if (event instanceof Header) {
+            Header h = (Header) event;
 
-            return m.time == time;
+            return h.time == time;
         }
-
         return false;
     }
 

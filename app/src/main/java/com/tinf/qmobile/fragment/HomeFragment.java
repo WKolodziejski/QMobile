@@ -21,20 +21,24 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.HorarioActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.activity.CalendarioActivity;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.WebViewActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventImage;
 import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
+import com.tinf.qmobile.model.calendar.Header;
+import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.model.calendar.Month_;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
@@ -61,6 +65,7 @@ import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.model.calendar.Utils.getDate;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {
@@ -68,7 +73,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
     @BindView(R.id.fab_home)            ExtendedFloatingActionButton fab;
     @BindView(R.id.recycler_home)       RecyclerView recyclerView;
-    @BindView(R.id.progressbar_home)    ProgressBar bar;
     private DataSubscription sub1, sub2;
 
     @Override
@@ -133,19 +137,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        new Thread(() -> {
-            List<? extends CalendarBase> events = getCalendarList();
-            recyclerView.post(() -> {
-                bar.setVisibility(View.GONE);
-                recyclerView.setAdapter(new EventsAdapter(getContext(), events));
-            });
-        }).start();
+        recyclerView.setAdapter(new EventsAdapter(getContext(), true));
     }
 
-    private List<EventBase> getCalendarList() {
+    /*private List<CalendarBase> getCalendarList() {
         Calendar current = Calendar.getInstance();
-        current.setTime(new Date());
         current.set(Calendar.HOUR_OF_DAY, 0);
         current.set(Calendar.MINUTE, 0);
         current.set(Calendar.SECOND, 0);
@@ -155,38 +151,78 @@ public class HomeFragment extends Fragment implements OnUpdate {
         Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
         Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
         Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
 
-        List<EventBase> events = new ArrayList<>();
+        List<CalendarBase> events = new ArrayList<>();
 
         events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
         events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
+        events.addAll(monthBox.query().greater(Month_.time, current.getTimeInMillis() - 1).build().find());
 
         Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
-        if (events.size() < 5) {
-            events = new ArrayList<>();
+        for (int i = 0; i < events.size(); i++) {
+            CalendarBase e1 = events.get(i);
 
-            events.addAll(eventUserBox.query().build().find());
-            events.addAll(eventJournalBox.query().build().find());
-            events.addAll(eventImageBox.query().build().find());
-            events.addAll(eventSimpleBox.query().build().find());
+            int j = i + 1;
 
-            Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+            if (j < events.size()) {
 
-            if (events.size() > 5) {
-                events = events.subList(0, 5);
-            } else {
-                events = events.subList(0, events.size());
+                CalendarBase e2 = events.get(j);
+
+                while (e1.getDay() == e2.getDay() && e1.getYear() == e2.getYear()) {
+                    e2 = events.get(++j);
+                }
             }
 
-        } else {
-            events = events.subList(0, 5);
+            events.add(i, new Header(getDate(e1.getDate(), true)));
+
+            i = j;
         }
 
-        return events;
-    }
+        List<CalendarBase> returnn = new ArrayList<>();
+
+        if (!events.isEmpty()) {
+            int k = 0;
+            int l = 0;
+
+            while (l < 5 && k < events.size() - 1) {
+                CalendarBase e = events.get(k);
+
+                while (!(e instanceof EventBase) && k < events.size() - 1) {
+                    e = events.get(++k);
+                }
+
+                if (k < events.size()) {
+
+                    if (e instanceof EventBase) {
+
+                        if (k >= 2) {
+                            CalendarBase m = events.get(k - 2);
+
+                            if (m instanceof Month)
+                                returnn.add(m);
+                        }
+
+                        if (k >= 1) {
+                            CalendarBase d = events.get(k - 1);
+
+                            if (d instanceof Header)
+                                returnn.add(d);
+                        }
+
+                        returnn.add(e);
+                    }
+
+                    k++;
+                    l++;
+                }
+            }
+        }
+        return returnn;
+    }*/
 
     private void updateSchedule() {
         new Thread(() -> {
@@ -287,7 +323,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @OnClick(R.id.home_calendario)
     public void openCalendar(View view) {
-        startActivity(new Intent(getActivity(), CalendarioActivity.class),
+        startActivity(new Intent(getActivity(), CalendarActivity.class),
                 ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                         Pair.create(fab, fab.getTransitionName()))
                         .toBundle());
@@ -334,7 +370,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
                     updateSchedule();
-                    ((EventsAdapter) recyclerView.getAdapter()).update(getCalendarList());
                 });
     }
 
@@ -354,6 +389,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onStop() {
         super.onStop();
         Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         sub1.cancel();
         sub2.cancel();
     }

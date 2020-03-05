@@ -1,10 +1,10 @@
 package com.tinf.qmobile.model.calendar;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class Utils {
-    public static final int UPDATE_REQUEST = 0;
-    public static final String VERSION = ".v1.2.0-beta";
+    public static final String VERSION = ".v1.2.3";
     public static final String VERSION_INFO = ".Version";
 
     public static long getDate(String date, boolean isMonth) {
@@ -16,6 +16,16 @@ public class Utils {
         cal.set(Calendar.YEAR, getYear(date));
         cal.set(Calendar.MONTH, getMonth(date) - 1);
         cal.set(Calendar.DAY_OF_MONTH, getDay(date));
+        return cal.getTimeInMillis();
+    }
+
+    public static long getDate(Date date, boolean isMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, isMonth ? 0 : 12);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
         return cal.getTimeInMillis();
     }
 

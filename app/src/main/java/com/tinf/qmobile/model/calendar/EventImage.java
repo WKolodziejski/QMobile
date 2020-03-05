@@ -3,6 +3,7 @@ package com.tinf.qmobile.model.calendar;
 import android.util.Log;
 
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 
 import io.objectbox.annotation.Entity;
@@ -54,6 +55,17 @@ public class EventImage extends EventBase {
     @Override
     public int getItemType() {
         return ViewType.IMAGE;
+    }
+
+    @Override
+    public boolean equals(CalendarBase event) {
+        if (event instanceof EventImage) {
+            EventImage e = (EventImage) event;
+
+            return super.equals(event)
+                    && e.img == img;
+        }
+        return false;
     }
 
 }

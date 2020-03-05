@@ -6,4 +6,8 @@
     <color name="colorAccent">@color/grey_300</color>
     <color name="colorSecondary">@color/grey_300</color>
     <color name="notificationBackground">@color/grey_900</color>
+    <color name="headerbackground">#121212</color>
+    <color name="black_dividers">@color/white_d</color>
+    <color name="white_dividers">@color/black_d</color>
+
 </resources>

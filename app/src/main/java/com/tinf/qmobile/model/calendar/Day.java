@@ -1,6 +1,7 @@
 package com.tinf.qmobile.model.calendar;
 
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.calendar.base.EventBase;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,6 +44,29 @@ public class Day implements CalendarBase {
     @Override
     public Date getDate() {
         return startDate;
+    }
+
+    @Override
+    public int getDay() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    @Override
+    public int getYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        return calendar.get(Calendar.YEAR);
+    }
+
+    @Override
+    public boolean equals(CalendarBase event) {
+        if (event instanceof Day) {
+            Day d = (Day) event;
+            return d.startDate.equals(startDate) && d.endDate.equals(endDate);
+        }
+        return false;
     }
 
     public Date getEndDate() {
