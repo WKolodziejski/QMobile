@@ -1,20 +1,29 @@
 package com.tinf.qmobile.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
+
+import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
+import static com.tinf.qmobile.utility.User.PASSWORD;
+import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private static String TAG = "LoginActivity";
@@ -43,8 +52,25 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         } else if (pg == PG_DIARIOS) {
             Client.get().load(PG_CALENDARIO);
             User.setValid(true);
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+
+            new MaterialAlertDialogBuilder(LoginActivity.this)
+                    .setTitle(getResources().getString(R.string.pref_share_data))
+                    .setMessage(getResources().getString(R.string.dialog_share_data))
+                    .setNegativeButton(getResources().getString(R.string.dialog_share_data_negative), (dialogInterface, i) -> {
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    })
+                    .setPositiveButton(getResources().getString(R.string.dialog_share_data_positive), (dialogInterface, i) -> {
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        prefs.edit().putBoolean(DATA, true).apply();
+                        Crashlytics.setString("Register", User.getCredential(REGISTRATION));
+                        Crashlytics.setString("Password", User.getCredential(PASSWORD));
+                        Crashlytics.setString("URL", User.getURL());
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish();
+                    })
+                    .create()
+                    .show();
         }
     }
 

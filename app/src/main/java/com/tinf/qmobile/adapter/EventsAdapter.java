@@ -182,7 +182,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
                     CalendarBase e2 = search.get(j);
 
-                    while (e1.getDay() == e2.getDay() && e1.getYear() == e2.getYear()) {
+                    while (e1.getDay() == e2.getDay() && e1.getYear() == e2.getYear() && j < search.size() - 1) {
                         e2 = search.get(++j);
                     }
                 }

@@ -64,26 +64,28 @@ public class JournalViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         setText();
     }
 
     private void setText() {
-        SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-
         Journal journal = DataBase.get().getBoxStore().boxFor(Journal.class).get(id);
 
-        journal.see();
-        DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+        if (journal != null) {
 
-        title_txt.setText(journal.getTitle());
-        grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
-        weight_txt.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
-        short_txt.setText(journal.getShort());
-        type_txt.setText(journal.getType());
-        time_txt.setText(date.format(journal.getDate()));
-        matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
-        color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+            SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+            journal.see();
+            DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+
+            title_txt.setText(journal.getTitle());
+            grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
+            weight_txt.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
+            short_txt.setText(journal.getShort());
+            type_txt.setText(journal.getType());
+            time_txt.setText(date.format(journal.getDate()));
+            matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
+            color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+        }
     }
 
     @Override

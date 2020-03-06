@@ -20,6 +20,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String NOTIFY = "key_notifications";
     public static final String NIGHT = "key_night_mode";
     public static final String POPUP = "key_popup";
+    public static final String DATA = "key_share_data";
     public static final String SCHEDULE_HOUR = "schedule_first_hour";
     public static final String SCHEDULE_DAYS = "schedule_days";
 
@@ -36,6 +37,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         bindPreferenceSummaryToValue(findPreference(NOTIFY));
 
         bindPreferenceSummaryToValue(findPreference(NIGHT));
+
+        bindPreferenceSummaryToValue(findPreference(POPUP));
+
+        bindPreferenceSummaryToValue(findPreference(DATA));
 
         Preference about = findPreference("key_about");
         about.setOnPreferenceClickListener(preference -> {

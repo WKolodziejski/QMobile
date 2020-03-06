@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.NumberPicker;
@@ -22,10 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
@@ -45,7 +40,6 @@ import com.tinf.qmobile.utility.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.fragment.SettingsFragment.CHECK;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -187,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private void logOut() {
         finish();
-        Client.get().finalise();
+        Client.get().close();
         Jobs.cancelAllJobs();
         DataBase.get().finalise();
         User.clearInfos();

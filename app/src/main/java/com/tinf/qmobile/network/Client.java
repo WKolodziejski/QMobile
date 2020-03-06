@@ -460,7 +460,7 @@ public class Client {
         }, PG_GERADOR,0);
     }
 
-    public void finalise() {
+    public void close() {
         Log.i(TAG, "Logout");
         queue.clear();
         requests.cancelAll(request -> true);

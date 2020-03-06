@@ -1,7 +1,9 @@
 package com.tinf.qmobile.activity.settings;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +19,9 @@ import com.tinf.qmobile.utility.User;
 
 import io.fabric.sdk.android.Fabric;
 
+import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
+import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
+import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class SplashActivity extends AppCompatActivity {
@@ -25,26 +30,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (!BuildConfig.DEBUG) {
-
-            FirebaseInstanceId.getInstance().getInstanceId()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Crashlytics.setUserEmail(task.getResult().getToken());
-                        }
-                    });
-
-            Fabric.with(getApplicationContext(), new Crashlytics());
-
-            Fabric.with(new Fabric.Builder(getApplicationContext())
-                    .kits(new CrashlyticsCore.Builder().build())
-                    .debuggable(true)
-                    .build());
-
-            Crashlytics.setUserIdentifier(User.getCredential(REGISTRATION));
-
-        }
 
         Intent intent;
 

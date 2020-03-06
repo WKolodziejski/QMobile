@@ -70,6 +70,9 @@
     <string name="dialog_delete_txt">Deletar esse evento?</string>
     <string name="dialog_delete">Deletar</string>
     <string name="dialog_dont_show">Não exibir novamente</string>
+    <string name="dialog_share_data">Gostaria de fornecer suas informações de login para auxiliar na correção de futuros problemas do aplicativo?</string>
+    <string name="dialog_share_data_negative">Não fornecer</string>
+    <string name="dialog_share_data_positive">Sim, fornecer</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>
@@ -154,6 +157,8 @@
     <string name="pref_dark_mode_sum">Mudar o tema</string>
     <string name="pref_popup">Avisos</string>
     <string name="pref_popup_sum">Receber avisos importantes ao fazer login</string>
+    <string name="pref_share_data">Ajudar no desenvolvimento</string>
+    <string name="pref_share_data_sum">Compartilhar dados de login para ajudar na correção de erros no aplicativo</string>
 
     <string name="sigla_Avaliacao">A</string>
     <string name="sigla_Prova">P</string>

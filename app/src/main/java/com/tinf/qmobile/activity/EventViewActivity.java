@@ -34,7 +34,7 @@ public class EventViewActivity extends AppCompatActivity {
         if (bundle != null) {
 
             /*if (bundle.getInt("ID") == 0) {
-                finish();
+                close();
             }*/
 
             type = bundle.getInt("TYPE");

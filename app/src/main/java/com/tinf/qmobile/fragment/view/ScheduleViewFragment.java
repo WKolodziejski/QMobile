@@ -60,6 +60,7 @@ public class ScheduleViewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         Bundle bundle = getArguments();
 
@@ -79,59 +80,59 @@ public class ScheduleViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setHasOptionsMenu(true);
-
         setText();
     }
 
     private void setText() {
         Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
 
-        DayTime start = schedule.getStartTime();
-        DayTime end = schedule.getEndTime();
+        if (schedule != null) {
 
-        title_txt.setText(schedule.getTitle().isEmpty() ? getString(R.string.event_no_title) : schedule.getTitle());
-        date_txt.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", start.getHour(), start.getMinute()));
-        color_img.setImageTintList(ColorStateList.valueOf(schedule.getColor()));
+            DayTime start = schedule.getStartTime();
+            DayTime end = schedule.getEndTime();
 
-        if (schedule.getRoom().isEmpty()) {
-            room_layout.setVisibility(GONE);
-        } else {
-            room_layout.setVisibility(VISIBLE);
-            room_txt.setText(schedule.getRoom());
-        }
+            title_txt.setText(schedule.getTitle().isEmpty() ? getString(R.string.event_no_title) : schedule.getTitle());
+            date_txt.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", start.getHour(), start.getMinute()));
+            color_img.setImageTintList(ColorStateList.valueOf(schedule.getColor()));
 
-        if (schedule.getDescription().isEmpty()) {
-            description_layout.setVisibility(GONE);
-        } else {
-            description_layout.setVisibility(VISIBLE);
-            description_txt.setText(schedule.getDescription());
-        }
+            if (schedule.getRoom().isEmpty()) {
+                room_layout.setVisibility(GONE);
+            } else {
+                room_layout.setVisibility(VISIBLE);
+                room_txt.setText(schedule.getRoom());
+            }
 
-        if (schedule.getAlarm() == 0) {
-            notification_layout.setVisibility(GONE);
-        } else {
-            String[] strings = new String[4];
+            if (schedule.getDescription().isEmpty()) {
+                description_layout.setVisibility(GONE);
+            } else {
+                description_layout.setVisibility(VISIBLE);
+                description_txt.setText(schedule.getDescription());
+            }
 
-            strings[0] = getString(R.string.event_no_alarm);
-            strings[1] = getString(R.string.alarm_30min);
-            strings[2] = getString(R.string.alarm_1h);
-            strings[3] = getString(R.string.alarm_1d);
+            if (schedule.getAlarm() == 0) {
+                notification_layout.setVisibility(GONE);
+            } else {
+                String[] strings = new String[4];
 
-            notification_layout.setVisibility(VISIBLE);
-            notification_txt.setText(strings[schedule.getDifference()]);
-        }
+                strings[0] = getString(R.string.event_no_alarm);
+                strings[1] = getString(R.string.alarm_30min);
+                strings[2] = getString(R.string.alarm_1h);
+                strings[3] = getString(R.string.alarm_1d);
 
-        if (!end.equals(start)) {
-            date_txt.append(" ー " + String.format("%02d:%02d", end.getHour(), end.getMinute()));
-        }
+                notification_layout.setVisibility(VISIBLE);
+                notification_txt.setText(strings[schedule.getDifference()]);
+            }
 
-        if (schedule.getMatter().isEmpty()) {
-            matter_txt.setVisibility(GONE);
-        } else {
-            matter_txt.setVisibility(VISIBLE);
-            matter_txt.setText(schedule.getMatter());
+            if (!end.equals(start)) {
+                date_txt.append(" ー " + String.format("%02d:%02d", end.getHour(), end.getMinute()));
+            }
+
+            if (schedule.getMatter().isEmpty()) {
+                matter_txt.setVisibility(GONE);
+            } else {
+                matter_txt.setVisibility(VISIBLE);
+                matter_txt.setText(schedule.getMatter());
+            }
         }
     }
 

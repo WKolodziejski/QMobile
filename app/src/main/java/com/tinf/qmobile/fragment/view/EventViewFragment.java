@@ -56,6 +56,7 @@ public class EventViewFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         Bundle bundle = getArguments();
 
@@ -75,54 +76,54 @@ public class EventViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        setHasOptionsMenu(true);
-
         setText();
     }
 
     private void setText() {
-        SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
-
         EventUser event = DataBase.get().getBoxStore().boxFor(EventUser.class).get(id);
 
-        title_txt.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
-        startTime_txt.setText(date.format(event.getStartTime()));
-        color_img.setImageTintList(ColorStateList.valueOf(event.getColor()));
+        if (event != null) {
 
-        if (event.getDescription().isEmpty()) {
-            description_layout.setVisibility(GONE);
-        } else {
-            description_layout.setVisibility(View.VISIBLE);
-            description_txt.setText(event.getDescription());
-        }
+            SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
 
-        if (event.getAlarm() == 0) {
-            notification_layout.setVisibility(GONE);
-        } else {
-            String[] strings = new String[4];
+            title_txt.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
+            startTime_txt.setText(date.format(event.getStartTime()));
+            color_img.setImageTintList(ColorStateList.valueOf(event.getColor()));
 
-            strings[0] = getString(R.string.event_no_alarm);
-            strings[1] = getString(R.string.alarm_30min);
-            strings[2] = getString(R.string.alarm_1h);
-            strings[3] = getString(R.string.alarm_1d);
+            if (event.getDescription().isEmpty()) {
+                description_layout.setVisibility(GONE);
+            } else {
+                description_layout.setVisibility(View.VISIBLE);
+                description_txt.setText(event.getDescription());
+            }
 
-            notification_layout.setVisibility(View.VISIBLE);
-            notification_txt.setText(strings[event.getDifference()]);
-        }
+            if (event.getAlarm() == 0) {
+                notification_layout.setVisibility(GONE);
+            } else {
+                String[] strings = new String[4];
 
-        if (event.getEndTime() == 0) {
-            endTime_txt.setVisibility(GONE);
-        } else {
-            endTime_txt.setVisibility(View.VISIBLE);
-            endTime_txt.setText(date.format(event.getEndTime()));
-        }
+                strings[0] = getString(R.string.event_no_alarm);
+                strings[1] = getString(R.string.alarm_30min);
+                strings[2] = getString(R.string.alarm_1h);
+                strings[3] = getString(R.string.alarm_1d);
 
-        if (event.getMatter().isEmpty()) {
-            matter_txt.setVisibility(GONE);
-        } else {
-            matter_txt.setVisibility(View.VISIBLE);
-            matter_txt.setText(event.getMatter());
+                notification_layout.setVisibility(View.VISIBLE);
+                notification_txt.setText(strings[event.getDifference()]);
+            }
+
+            if (event.getEndTime() == 0) {
+                endTime_txt.setVisibility(GONE);
+            } else {
+                endTime_txt.setVisibility(View.VISIBLE);
+                endTime_txt.setText(date.format(event.getEndTime()));
+            }
+
+            if (event.getMatter().isEmpty()) {
+                matter_txt.setVisibility(GONE);
+            } else {
+                matter_txt.setVisibility(View.VISIBLE);
+                matter_txt.setText(event.getMatter());
+            }
         }
     }
 
