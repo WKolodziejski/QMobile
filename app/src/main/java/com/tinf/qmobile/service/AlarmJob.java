@@ -67,14 +67,12 @@ public class AlarmJob extends JobService {
 
                     title = schedule.getTitle();
 
-                    desc = String.format("%02d:%02d", schedule.getStartTime().getHour(), schedule.getStartTime().getMinute());
+                    desc = String.format(Locale.getDefault(), "%02d:%02d", schedule.getStartTime().getHour(), schedule.getStartTime().getMinute());
 
                     if (!schedule.getEndTime().equals(schedule.getStartTime())) {
-                        desc = desc.concat(" ー " + String.format("%02d:%02d", schedule.getEndTime().getHour(), schedule.getEndTime().getMinute()));
+                        desc = desc.concat(" ー " + String.format(Locale.getDefault(), "%02d:%02d", schedule.getEndTime().getHour(), schedule.getEndTime().getMinute()));
                     }
-
                 }
-
             }
 
             if (title.isEmpty()) {
@@ -96,4 +94,5 @@ public class AlarmJob extends JobService {
     public boolean onStopJob(JobParameters job) {
         return false;
     }
+
 }

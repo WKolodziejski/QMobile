@@ -9,6 +9,7 @@ import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
@@ -22,10 +23,10 @@ import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
 
 public class ReportParser extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "ReportParser";
-    private OnFinish onFinish;
+    private Client.OnFinish onFinish;
     private int pos;
 
-    public ReportParser(int pos, OnFinish onFinish) {
+    public ReportParser(int pos, Client.OnFinish onFinish) {
         this.pos = pos;
         this.onFinish = onFinish;
 
@@ -62,8 +63,6 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
                                 String absencesTotal = formatNumber(rows.get(i).child(3).text());
                                 String clazz = formatClass(rows.get(i).child(2).text());
                                 String qid = formatQID(rows.get(i).child(0).getElementsByTag("q_latente").attr("value"));
-
-                                Log.i(TAG, qid);
 
                                 Matter matter = null;
 
@@ -309,10 +308,6 @@ public class ReportParser extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
         onFinish.onFinish(PG_BOLETIM, pos);
-    }
-
-    public interface OnFinish {
-        void onFinish(int pg, int year);
     }
 
     private String formatNumber(String s){

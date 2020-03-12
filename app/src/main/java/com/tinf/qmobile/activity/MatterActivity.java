@@ -1,15 +1,10 @@
 package com.tinf.qmobile.activity;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -19,7 +14,6 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,7 +28,7 @@ public class MatterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_materia);
+        setContentView(R.layout.activity_matter);
 
         ButterKnife.bind(this);
 

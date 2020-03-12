@@ -1,14 +1,15 @@
 package com.tinf.qmobile.holder.materials;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
-import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.material.Material;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,8 +19,8 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     @BindView(R.id.materiais_title)         public TextView title;
     @BindView(R.id.materiais_date)          public TextView date;
     @BindView(R.id.materiais_description)   public TextView description;
-    @BindView(R.id.materiais_header)        public ConstraintLayout header;
-    @BindView(R.id.materiais_offline)       public ImageView offline;
+    @BindView(R.id.material_offline)        public ImageView offline;
+    @BindView(R.id.material_loading)        public ProgressBar loading;
 
     public MaterialViewHolder(@NonNull View view) {
         super(view);
@@ -27,12 +28,19 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     }
 
     @Override
-    public void bind(Context context, Material material, MaterialsAdapter.OnDownloadListener onDownload, MaterialsAdapter adapter) {
+    public void bind(Context context, Material material, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter) {
         icon.setImageDrawable(context.getDrawable(material.getIcon()));
 
         title.setText(material.getTitle());
         date.setText(material.getDateString());
         offline.setVisibility(material.isDownloaded ? View.VISIBLE : View.GONE);
+        loading.setVisibility(material.isDownloading ? View.VISIBLE : View.GONE);
+
+        if (material.isSelected) {
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));
+        } else {
+            itemView.setBackgroundColor(material.isSeen_() ? context.getResources().getColor(R.color.transparent) : context.getResources().getColor(R.color.notificationBackground));
+        }
 
         if (!material.getDescription().isEmpty()) {
             description.setText(material.getDescription());
@@ -42,14 +50,23 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
             description.setVisibility(View.GONE);
         }
 
-        if (material.isSeen_()) {
-            itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-        } else {
-            itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
-        }
+        itemView.setOnClickListener(view -> {
+            loading.setVisibility(listener.onClick(material) ? View.VISIBLE : View.GONE);
+            if (material.isSelected) {
+                itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));
+            } else {
+                itemView.setBackgroundColor(material.isSeen_() ? context.getResources().getColor(R.color.transparent) : context.getResources().getColor(R.color.notificationBackground));
+            }
+        });
 
-        header.setOnClickListener(view -> {
-            onDownload.onDownload(material);
+        itemView.setOnLongClickListener(view -> {
+            boolean r = listener.onLongClick(material);
+            if (material.isSelected) {
+                itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));
+            } else {
+                itemView.setBackgroundColor(material.isSeen_() ? context.getResources().getColor(R.color.transparent) : context.getResources().getColor(R.color.notificationBackground));
+            }
+            return r;
         });
     }
 

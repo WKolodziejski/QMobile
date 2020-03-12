@@ -16,9 +16,11 @@ import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.journal.Footer;
+import com.tinf.qmobile.model.journal.FooterJournal;
+import com.tinf.qmobile.model.journal.FooterPeriod;
 import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
@@ -31,7 +33,8 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-import static com.tinf.qmobile.model.Queryable.ViewType.FOOTER;
+import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERP;
+import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERJ;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.Queryable.ViewType.PERIOD;
@@ -67,6 +70,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                                 if (m1.id == m2.id) {
                                     m2.isExpanded = m1.isExpanded;
                                     m2.shouldAnimate = m1.shouldAnimate;
+                                    break;
                                 }
                             }
                         }
@@ -80,7 +84,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                         if (matter.isExpanded) {
                             List<Journal> items = matter.getLastPeriod().journals;
                             updated.addAll(i + 1, items);
-                            updated.add(i + items.size() + 1, new Footer(i, matter));
+                            updated.add(i + items.size() + 1, new FooterJournal(i, matter));
                         }
                     }
                 }
@@ -105,8 +109,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     else if (journals.get(oldItemPosition) instanceof Journal && updated.get(newItemPosition) instanceof Journal)
                         return (((Journal) journals.get(oldItemPosition)).id == (((Journal) updated.get(newItemPosition)).id));
 
-                    else if (journals.get(oldItemPosition) instanceof Footer && updated.get(newItemPosition) instanceof Footer)
-                        return (((Footer) journals.get(oldItemPosition)).getMatter().id == (((Footer) updated.get(newItemPosition)).getMatter().id));
+                    else if (journals.get(oldItemPosition) instanceof FooterJournal && updated.get(newItemPosition) instanceof FooterJournal)
+                        return (((FooterJournal) journals.get(oldItemPosition)).getMatter().id == (((FooterJournal) updated.get(newItemPosition)).getMatter().id));
 
                     else if (journals.get(oldItemPosition) instanceof Header && updated.get(newItemPosition) instanceof Header)
                         return (((Header) journals.get(oldItemPosition)).getPeriod().id == (((Header) updated.get(newItemPosition)).getPeriod().id));
@@ -164,6 +168,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 if (!matter.periods.get(i).journals.isEmpty()) {
                     list.add(new Header(matter.periods.get(i)));
                     list.addAll(matter.periods.get(i).journals);
+                    list.add(new FooterPeriod(matter.periods.get(i)));
                 }
             }
         }
@@ -184,7 +189,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         if (closed > open) {
             for (int i = 0; i < journals.size(); i++)
                 if (journals.get(i) instanceof Matter)
-                    expand(i, (Matter) journals.get(i));
+                    expand(i, (Matter) journals.get(i), false);
 
             Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();
 
@@ -209,9 +214,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 return new JournalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_item, parent, false));
 
-            case FOOTER:
+            case FOOTERJ:
                 return new JournalFooterViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_footer, parent, false));
+
+            case FOOTERP:
+                return new PeriodFooterViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.period_footer, parent, false));
 
             case PERIOD:
                 return new PeriodHeaderViewHolder(LayoutInflater.from(context)
@@ -231,7 +240,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         holder.bind(context, journals.get(i), this);
     }
 
-    public void expand(int i, Matter matter) {
+    public void expand(int i, Matter matter, boolean scroll) {
         matter.isExpanded = true;
 
         notifyItemChanged(i);
@@ -241,10 +250,11 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         journals.addAll(i + 1, items);
         notifyItemRangeInserted(i + 1, items.size());
 
-        journals.add(i + items.size() + 1, new Footer(i, matter));
+        journals.add(i + items.size() + 1, new FooterJournal(i, matter));
         notifyItemInserted(i + items.size() + 1);
 
-        onExpandListener.onExpand(i + items.size() + 1);
+        if (scroll)
+            onExpandListener.onExpand(i + items.size() + 1);
     }
 
     public void collapse(int i, Matter matter) {
@@ -253,7 +263,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         notifyItemChanged(i);
         i++;
         while (i < journals.size()) {
-            if (journals.get(i) instanceof Journal || journals.get(i) instanceof Footer) {
+            if (journals.get(i) instanceof Journal || journals.get(i) instanceof FooterJournal) {
                 journals.remove(i);
                 notifyItemRemoved(i);
             } else break;

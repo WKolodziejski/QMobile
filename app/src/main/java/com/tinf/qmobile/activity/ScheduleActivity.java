@@ -22,12 +22,12 @@ import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
-public class HorarioActivity extends AppCompatActivity {
+public class ScheduleActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_horario);
+        setContentView(R.layout.activity_schedule);
 
         ButterKnife.bind(this);
 
@@ -42,13 +42,6 @@ public class HorarioActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.schedule_fragment, new ScheduleFragment())
                 .commit();
-
-        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) findViewById(R.id.fab_add_schedule);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getApplicationContext(), EventCreateActivity.class);
-            intent.putExtra("TYPE", SCHEDULE);
-            startActivity(intent);
-        });
     }
 
     @Override

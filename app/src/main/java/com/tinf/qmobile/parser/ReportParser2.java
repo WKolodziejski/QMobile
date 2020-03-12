@@ -8,6 +8,7 @@ import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.nodes.Document;
@@ -19,7 +20,7 @@ import io.objectbox.exception.NonUniqueResultException;
 public class ReportParser2 extends BaseParser {
     private final static String TAG = "ReportParser";
 
-    public ReportParser2(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public ReportParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 

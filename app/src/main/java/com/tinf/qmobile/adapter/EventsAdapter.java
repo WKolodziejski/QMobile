@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.DayViewHolder;
 import com.tinf.qmobile.holder.calendar.EventImageViewHolder;
@@ -32,13 +31,11 @@ import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
-import com.tinf.qmobile.model.calendar.Month_;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.network.Client;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,7 +49,7 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
     private List<CalendarBase> events;
@@ -333,11 +330,11 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             case CalendarBase.ViewType.DAY:
                 return new DayViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.calendar_header_day, parent, false));
+                        .inflate(R.layout.calendar_header_day_range, parent, false));
 
             case CalendarBase.ViewType.HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.calendar_header_single_day, parent, false));
+                        .inflate(R.layout.calendar_header_day_single, parent, false));
         }
         return null;
     }
@@ -374,7 +371,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     @Override
     public Integer getHeaderLayout(Integer i) {
         if (events.get(i) instanceof Header)
-            return R.layout.calendar_header_single_day;
+            return R.layout.calendar_header_day_single;
         else
             return R.layout.calendar_header_empty;
     }
@@ -382,8 +379,11 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     @Override
     public void bindHeaderData(View header, Integer i) {
         if (events.get(i) instanceof Header) {
-            TextView day = (TextView) header;
-            day.setText(((Header) events.get(i)).getDayString());
+            TextView n = header.findViewById(R.id.calendar_header_simple_day_number);
+            TextView w = header.findViewById(R.id.calendar_header_simple_day_week);
+
+            n.setText(((Header) events.get(i)).getDayString());
+            w.setText(((Header) events.get(i)).getWeekString());
         }
     }
 

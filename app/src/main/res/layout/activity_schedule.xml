@@ -17,18 +17,4 @@
         android:id="@+id/schedule_fragment"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fab_add_schedule"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
-        android:background="@color/colorAccent"
-        android:transitionName="Fab"
-        app:borderWidth="0dp"
-        app:fabSize="normal"
-        app:icon="@drawable/ic_add"
-        app:iconTint="@color/colorPrimaryLight" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

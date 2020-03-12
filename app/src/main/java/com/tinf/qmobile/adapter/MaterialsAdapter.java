@@ -3,8 +3,10 @@ package com.tinf.qmobile.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileObserver;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -40,54 +42,23 @@ import static com.tinf.qmobile.utility.User.REGISTRATION;
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate {
     private List<Queryable> materials;
     private Context context;
-    private OnDownloadListener onDownload;
+    private OnInteractListener listener;
     private DataSubscription sub1, sub2;
+    private FileObserver sub3;
+    private File folder;
 
-    public MaterialsAdapter(Context context, Bundle bundle, MaterialsAdapter.OnDownloadListener onDownload) {
+    public MaterialsAdapter(Context context, Bundle bundle, OnInteractListener listener) {
         this.context = context;
-        this.onDownload = onDownload;
+        this.listener = listener;
+        this.folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
         this.materials = getList(bundle);
 
         Client.get().addOnUpdateListener(this);
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
-        DataObserver observer = data -> {
-            List<Queryable> updated = getList(bundle);
-
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return materials.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return updated.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (materials.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
-                        return (((Matter) materials.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
-
-                    else if (materials.get(oldItemPosition) instanceof Material && updated.get(newItemPosition) instanceof Material)
-                        return (((Material) materials.get(oldItemPosition)).id == (((Material) updated.get(newItemPosition)).id));
-
-                    else return false;
-                }
-
-                @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    return (materials.get(oldItemPosition).equals(updated.get(newItemPosition)));
-                }
-
-            }, true);
-
-            materials.clear();
-            materials.addAll(updated);
-            result.dispatchUpdatesTo(this);
-        };
+        DataObserver observer = data -> update(bundle);
 
         sub1 = boxStore.subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
@@ -100,6 +71,80 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
+
+        sub3 = new FileObserver(folder) {
+            @Override
+            public void onEvent(int state, String s) {
+                if (state == CLOSE_WRITE || state == DELETE) {
+                    for (int i = 0; i < materials.size(); i++)
+                        if (materials.get(i) instanceof Material)
+                            if (s.contains(((Material) materials.get(i)).getFileName())) {
+                                ((Material) materials.get(i)).isDownloading = false;
+                                ((Material) materials.get(i)).isDownloaded = state == CLOSE_WRITE;
+                                notifyItemChanged(i);
+                                break;
+                            }
+                }
+            }
+        };
+
+        sub3.startWatching();
+    }
+
+    private void update(Bundle bundle) {
+        List<Queryable> updated = getList(bundle);
+
+        if (bundle == null) {
+            for (int i = 0; i < materials.size(); i++) {
+                if (materials.get(i) instanceof Material) {
+                    Material m1 = ((Material) materials.get(i));
+
+                    for (Queryable q : updated)
+                        if (q instanceof Material) {
+                            Material m2 = (Material) q;
+
+                            if (m1.id == m2.id) {
+                                m2.isDownloading = m1.isDownloading;
+                                m2.isSelected = m1.isSelected;
+                                break;
+                            }
+                        }
+                }
+            }
+        }
+
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return materials.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return updated.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                if (materials.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
+                    return (((Matter) materials.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
+
+                else if (materials.get(oldItemPosition) instanceof Material && updated.get(newItemPosition) instanceof Material)
+                    return (((Material) materials.get(oldItemPosition)).id == (((Material) updated.get(newItemPosition)).id));
+
+                else return false;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return (materials.get(oldItemPosition).equals(updated.get(newItemPosition)));
+            }
+
+        }, true);
+
+        materials.clear();
+        materials.addAll(updated);
+        result.dispatchUpdatesTo(this);
     }
 
     private List<Queryable> getList(Bundle bundle) {
@@ -135,9 +180,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
         DataBase.get().getBoxStore().runInTx(() -> {
 
-            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-
             if (folder.exists()) {
                 if (folder.listFiles() != null) {
 
@@ -159,6 +201,15 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
             }
         });
         return list;
+    }
+
+    public void unselect() {
+        for (int i = 0; i < materials.size(); i++)
+            if (materials.get(i) instanceof Material) {
+                ((Material) materials.get(i)).isSelected = false;
+                ((Material) materials.get(i)).isDownloading = false;
+                notifyItemChanged(i);
+            }
     }
 
     @Override
@@ -184,7 +235,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int position) {
-        holder.bind(context, materials.get(position), onDownload, this);
+        holder.bind(context, materials.get(position), listener, this);
     }
 
     @Override
@@ -199,12 +250,37 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void onDateChanged() {
+        folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
+
+        sub3.stopWatching();
+
+        sub3 = new FileObserver(folder) {
+
+            @Override
+            public void onEvent(int state, String s) {
+                if (state == CLOSE_WRITE || state == DELETE) {
+                    for (int i = 0; i < materials.size(); i++)
+                        if (materials.get(i) instanceof Material)
+                            if (s.contains(((Material) materials.get(i)).getFileName())) {
+                                ((Material) materials.get(i)).isDownloading = false;
+                                ((Material) materials.get(i)).isDownloaded = state == CLOSE_WRITE;
+                                notifyItemChanged(i);
+                                break;
+                            }
+                }
+            }
+        };
+
+        sub3.startWatching();
+
         materials = getList(null);
         notifyDataSetChanged();
     }
 
-    public interface OnDownloadListener {
-        void onDownload(Material material);
+    public interface OnInteractListener<T extends Queryable> {
+        boolean onLongClick(T m);
+        boolean onClick(T m);
     }
 
     @Override
@@ -212,6 +288,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         super.onDetachedFromRecyclerView(recyclerView);
         sub1.cancel();
         sub2.cancel();
+        sub3.stopWatching();
     }
 
 }

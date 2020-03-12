@@ -83,9 +83,7 @@ public class AlarmService extends JobIntentService {
                     if (!schedule.getEndTime().equals(schedule.getStartTime())) {
                         desc = desc.concat(" ー " + String.format(Locale.getDefault(), "%02d:%02d", schedule.getEndTime().getHour(), schedule.getEndTime().getMinute()));
                     }
-
                 }
-
             }
 
             if (title.isEmpty()) {

@@ -1,4 +1,4 @@
-package com.tinf.qmobile.fragment;
+package com.tinf.qmobile.fragment.sheet;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,14 +15,14 @@ import com.tinf.qmobile.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SheetFragment extends BottomSheetDialogFragment {
-    @BindView(R.id.sheet_title)         TextView title;
-    @BindView(R.id.sheet_msg)           TextView message;
-    @BindView(R.id.sheet_checkBox)      CheckBox show;
+public class PopUpFragment extends BottomSheetDialogFragment {
+    @BindView(R.id.sheet_popup_title)         TextView title;
+    @BindView(R.id.sheet_popup_msg)           TextView message;
+    @BindView(R.id.sheet_popup_checkBox)      CheckBox show;
     private String t, m;
     private WebView webView;
 
-    public SheetFragment(WebView webView, String t, String m) {
+    public PopUpFragment(WebView webView, String t, String m) {
         this.webView = webView;
         this.t = t;
         this.m = m;
@@ -37,7 +37,7 @@ public class SheetFragment extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_sheet, container, false);
+        View view = inflater.inflate(R.layout.sheet_popup, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="72dp"
+    android:layout_height="wrap_content"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/headerBackground"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:id="@+id/calendar_header_simple_day_week"
+        android:textAllCaps="true"
+        tools:text="wed"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:id="@+id/calendar_header_simple_day_number"
+        android:textAlignment="center"
+        tools:text="7" />
+</LinearLayout>

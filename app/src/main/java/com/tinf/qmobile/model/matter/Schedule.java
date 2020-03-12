@@ -60,7 +60,7 @@ public class Schedule {
 
     @ColorInt
     public int getColor() {
-        return color_ == 0 ? matter.getTarget().getColor() : color_;
+        return !matter.isNull() ? matter.getTarget().getColor() : color_;
     }
 
     public void setDescription(String description) {
@@ -124,7 +124,7 @@ public class Schedule {
     }
 
     public String getMatter() {
-        return isFromSite_ || matter.getTargetId() == 0 ? "" : matter.getTarget().getTitle();
+        return isFromSite_ || matter.isNull() ? "" : matter.getTarget().getTitle();
     }
 
     /*

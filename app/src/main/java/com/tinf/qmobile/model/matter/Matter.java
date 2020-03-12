@@ -94,38 +94,6 @@ public class Matter implements Queryable {
         return sum;
     }
 
-    public float getGradeSum() {
-        Period period = getLastPeriod();
-
-        if (period.journals.isEmpty())
-            return -1;
-
-        float sum = 0;
-
-        for (Journal j : period.journals)
-            if (j.getGrade_() != -1)
-                sum += j.getGrade_();
-
-        return sum;
-    }
-
-    public float getPartialGrade() {
-        Period period = getLastPeriod();
-
-        if (period.journals.isEmpty())
-            return -1;
-
-        float sum = getGradeSum();
-
-        float weight = 0;
-
-        for (Journal j : period.journals)
-            if (j.getWeight_() != -1)
-                weight = +j.getWeight_();
-
-        return sum / weight;
-    }
-
     public int getQID() {
         return Integer.parseInt(description_.substring(0, description_.indexOf('-') - 1));
     }

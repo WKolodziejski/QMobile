@@ -12,7 +12,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -27,16 +31,25 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
+import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
+import org.mozilla.javascript.tools.jsc.Main;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +67,78 @@ import static com.tinf.qmobile.utility.User.REGISTRATION;
 public class MaterialsFragment extends Fragment implements OnUpdate {
     @BindView(R.id.recycler_materiais)        RecyclerView recyclerView;
     private Material material;
+    private ActionMode action;
+    private MaterialsAdapter adapter;
+    private List<String> list = new ArrayList<>();
+
+    private ActionMode.Callback callback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+            if (getActivity() instanceof MainActivity)
+                ((MainActivity) getActivity()).refreshLayout.setEnabled(false);
+
+            MenuInflater menuInflater = getActivity().getMenuInflater();
+            menuInflater.inflate(R.menu.materials, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+            if (menuItem.getItemId() == R.id.action_delete) {
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle(getString(R.string.dialog_delete))
+                        .setMessage(list.size() > 1 ? String.format(Locale.getDefault(), getString(R.string.contextual_remove_txt_plu), String.valueOf(list.size())) : getString(R.string.contextual_remove_txt_sing))
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.dialog_delete), (dialogInterface, d) -> {
+                            if (action != null) {
+
+                                while (!list.isEmpty()) {
+                                    String f = list.get(0);
+
+                                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                            + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + f);
+
+                                    Log.d("File", f);
+
+                                    if (file.exists()) {
+                                        if (file.delete())
+                                            list.remove(f);
+
+                                    } else break;
+                                }
+
+                                action.setTitle(String.valueOf(list.size()));
+
+                                if (list.isEmpty()) {
+                                    action.finish();
+                                    action = null;
+                                }
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.dialog_cancel), null)
+                        .create()
+                        .show();
+
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode actionMode) {
+            list.clear();
+            adapter.unselect();
+            action = null;
+
+            if (getActivity() instanceof MainActivity)
+                ((MainActivity) getActivity()).refreshLayout.setEnabled(true);
+        }
+    };
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -87,31 +172,112 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-            recyclerView.setAdapter(new MaterialsAdapter(getContext(), getArguments(), material -> {
-                if (material.isDownloaded) {
-                    openFile(material);
-                } else {
-                    if (isConnected()) {
 
-                        DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
+            adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
 
-                        long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(material));
+                @Override
+                public boolean onLongClick(Queryable q) {
+                    if (q instanceof Material) {
+                        Material m = (Material) q;
 
-                        Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
-                        material.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
-                        material.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-                        material.see();
-                        box.put(material);
+                        if (m.isDownloaded) {
 
-                        this.material = box.query().equal(Material_.id, material.id).build().findUnique();
+                            if (action == null)
+                                action = getActivity().startActionMode(callback);
 
-                        Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+                            if (m.isSelected) {
+                                m.isSelected = false;
+                                list.remove(m.getFileName());
 
+                                action.setTitle(String.valueOf(list.size()));
+
+                                if (list.isEmpty()) {
+                                    action.finish();
+                                    action = null;
+                                }
+                            } else {
+                                if (!list.contains(m.getFileName())) {
+                                    m.isSelected = true;
+                                    list.add(m.getFileName());
+                                }
+
+                                action.setTitle(String.valueOf(list.size()));
+                            }
+
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+
+                @Override
+                public boolean onClick(Queryable q) {
+                    if (q instanceof Matter) {
+                        if (action == null) {
+                            Intent intent = new Intent(getContext(), MatterActivity.class);
+                            intent.putExtra("ID", ((Matter) q).id);
+                            intent.putExtra("PAGE", MatterActivity.MATERIALS);
+                            startActivity(intent);
+                        }
+                        return false;
                     } else {
-                        Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                        Material m = (Material) q;
+
+                        if (action == null) {
+                            if (m.isDownloaded) {
+                                openFile(m);
+                            } else {
+                                if (isConnected()) {
+                                    m.isDownloading = true;
+
+                                    DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
+
+                                    long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(m));
+
+                                    Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
+                                    m.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
+                                    m.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
+                                    m.see();
+                                    box.put(m);
+
+                                    material = m;
+
+                                    Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+
+                                } else {
+                                    Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            return true;
+                        } else {
+                            if (m.isDownloaded) {
+                                if (m.isSelected) {
+                                    m.isSelected = false;
+                                    list.remove(m.getFileName());
+
+                                    action.setTitle(String.valueOf(list.size()));
+
+                                    if (list.isEmpty()) {
+                                        action.finish();
+                                        action = null;
+                                    }
+                                } else {
+                                    if (!list.contains(m.getFileName())) {
+                                        m.isSelected = true;
+                                        list.add(m.getFileName());
+                                    }
+
+                                    action.setTitle(String.valueOf(list.size()));
+                                }
+                            }
+                            return false;
+                        }
                     }
                 }
-            }));
+            });
+
+            recyclerView.setAdapter(adapter);
 
             if (getActivity() instanceof MainActivity) {
                 recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -132,6 +298,9 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
     private void openFile(Material material) {
         if (material != null) {
+
+            material.isDownloading = false;
+
             Intent intent = new Intent(ACTION_VIEW);
             intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -194,6 +363,8 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
+        if (!list.isEmpty() && action == null)
+            action = getActivity().startActionMode(callback);
     }
 
     @Override
@@ -212,6 +383,15 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     public void onDestroy() {
         super.onDestroy();
         getActivity().unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (action != null) {
+            action.finish();
+            action = null;
+        }
     }
 
 }

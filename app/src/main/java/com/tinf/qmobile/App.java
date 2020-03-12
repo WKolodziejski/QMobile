@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.calendar.Utils;
+import com.tinf.qmobile.utility.Utils;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
@@ -21,7 +21,7 @@ import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
-import static com.tinf.qmobile.model.calendar.Utils.VERSION_INFO;
+import static com.tinf.qmobile.utility.Utils.VERSION_INFO;
 import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 

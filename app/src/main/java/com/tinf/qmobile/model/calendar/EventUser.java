@@ -30,14 +30,11 @@ public class EventUser extends EventBase {
 
     @Override
     public int getColor() {
-        if (matter.getTargetId() != 0)
-            return matter.getTarget().getColor();
-
-        else return super.getColor();
+        return !matter.isNull() ? matter.getTarget().getColor() : super.getColor();
     }
 
     public String getMatter() {
-        return matter.getTargetId() != 0 ? matter.getTarget().getTitle() : "";
+        return matter.isNull() ? "" : matter.getTarget().getTitle();
     }
 
     /*public String getAlarmDifference() {

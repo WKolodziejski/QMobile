@@ -26,11 +26,11 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.data.OnDataChange;
+import com.tinf.qmobile.fragment.sheet.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
-import com.tinf.qmobile.fragment.SheetFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.JavaScriptHandler;
 import com.tinf.qmobile.network.OnEvent;
@@ -66,9 +66,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_FETCH_YEARS);
         }
-
-        /*BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(findViewById(R.id.bottomSheet));
-        bottomSheetBehavior.setHideable(true);*/
     }
 
     @Override
@@ -358,15 +355,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onDialog(WebView webView, String title, String msg) {
-        /*new MaterialAlertDialogBuilder(MainActivity.this)
-                .setTitle(title)
-                .setMessage(msg)
-                .setCancelable(true)
-                .setPositiveButton("OK", null)
-                .create()
-                .show();*/
-
-        new SheetFragment(webView, title, msg).show(getSupportFragmentManager(), "sheet");
+        new PopUpFragment(webView, title, msg).show(getSupportFragmentManager(), "sheet_popup");
     }
 
     @Override

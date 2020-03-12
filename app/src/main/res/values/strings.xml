@@ -18,7 +18,6 @@
     <string name="action_about">Sobre</string>
     <string name="action_logout">Sair</string>
     <string name="action_date">Selecionar Data</string>
-    <string name="action_delete">Apagar</string>
     <string name="action_edit">Editar</string>
     <string name="action_grade">Alterar visualização</string>
     <string name="action_color">Alterar cor</string>
@@ -27,6 +26,9 @@
     <string name="client_no_connection">Sem conexão com a Internet</string>
     <string name="client_host">Servidor inalcançável</string>
     <string name="client_error">Algo inesperado ocorreu, tente novamente mais tarde</string>
+
+    <string name="contextual_remove_txt_plu">Tem certeza que deseja remover %1$s arquivos?</string>
+    <string name="contextual_remove_txt_sing">Tem certeza que deseja remover esse arquivo?</string>
 
     <string name="materiais_empty">Não há materiais disponíveis</string>
     <string name="materiais_downloading">Iniciando Download</string>
@@ -73,6 +75,9 @@
     <string name="dialog_share_data">Gostaria de fornecer suas informações de login para auxiliar na correção de futuros problemas do aplicativo?</string>
     <string name="dialog_share_data_negative">Não fornecer</string>
     <string name="dialog_share_data_positive">Sim, fornecer</string>
+    <string name="dialog_create_event">Evento</string>
+    <string name="dialog_create_schedule">Horário</string>
+    <string name="dialog_create_title">Criar novo</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>

@@ -9,10 +9,12 @@ import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
@@ -24,10 +26,10 @@ import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
 
 public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "HorarioParser";
-    private OnFinish onFinish;
+    private Client.OnFinish onFinish;
     private int pos;
 
-    public ScheduleParser(int pos, OnFinish onFinish) {
+    public ScheduleParser(int pos, Client.OnFinish onFinish) {
         this.pos = pos;
         this.onFinish = onFinish;
         Log.i(TAG, "New instance");
@@ -71,36 +73,47 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
                     }
 
                     for (int i = 1; i < scheduleTable.size(); i++) {
-                        Elements column = scheduleTable.get(i).select("td");
-                        String time = column.get(0).text();
+                        Elements row = scheduleTable.get(i).select("td");
+                        String time = row.get(0).text();
 
-                        for (int j = 1; j < column.size(); j++) {
-                            if (!column.get(j).text().isEmpty()) {
-                                Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time), User.getYear(pos), User.getPeriod(pos));
+                        for (int j = 1; j < row.size(); j++) {
+                            if (!row.get(j).text().isEmpty()) {
 
-                                String matterTitle = formatTitle(column.get(j).getElementsByTag("div").get(1).attr("title"));
-                                //String clazz = formatClass(column.get(j).getElementsByTag("div").get(3).ownText());
+                                Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
 
-                                if (matterTitle != null) {
-                                    Matter matter = matterBox.query()
-                                            .equal(Matter_.title_, matterTitle).and()
-                                            .equal(Matter_.year_, User.getYear(pos)).and()
-                                            .equal(Matter_.period_, User.getPeriod(pos))//.and()
-                                            //.contains(Matter_.description_, clazz)
-                                            .build().findUnique();
+                                //Log.d("DIVS", divs.toString());
 
-                                    if (matter != null) {
-                                        String room = column.get(j).getElementsByTag("div").get(2).attr("title");
+                                int k = 0;
 
-                                        if (room != null) {
-                                            schedule.setRoom(room);
+                                while (k < divs.size()) {
+
+                                    Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time), User.getYear(pos), User.getPeriod(pos));
+
+                                    String matterTitle = formatTitle(divs.get(k).attr("title"));
+
+                                    if (matterTitle != null) {
+                                        Matter matter = matterBox.query()
+                                                .equal(Matter_.title_, matterTitle).and()
+                                                .equal(Matter_.year_, User.getYear(pos)).and()
+                                                .equal(Matter_.period_, User.getPeriod(pos))//.and()
+                                                //.contains(Matter_.description_, clazz)
+                                                .build().findUnique();
+
+                                        if (matter != null) {
+                                            String room = divs.get(k + 1).attr("title");
+
+                                            if (room != null) {
+                                                schedule.setRoom(room);
+                                            }
+
+                                            schedule.matter.setTarget(matter);
+                                            scheduleBox.put(schedule);
+                                            matter.schedules.add(schedule);
+                                            matterBox.put(matter);
                                         }
-
-                                        schedule.matter.setTarget(matter);
-                                        scheduleBox.put(schedule);
-                                        matter.schedules.add(schedule);
-                                        matterBox.put(matter);
                                     }
+
+                                    k += 3;
                                 }
                             }
                         }
@@ -118,10 +131,6 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
         onFinish.onFinish(PG_HORARIO, pos);
-    }
-
-    public interface OnFinish {
-        void onFinish(int pg, int year);
     }
 
     private int getStartHour(String time) {

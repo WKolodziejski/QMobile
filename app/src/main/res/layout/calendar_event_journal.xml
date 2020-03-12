@@ -35,8 +35,6 @@
             android:padding="8dp"
             android:id="@+id/calendar_default_card"
             android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
             tools:background="@color/colorPrimary"
             >
 

@@ -6,8 +6,10 @@ import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import io.objectbox.annotation.BaseEntity;
 import io.objectbox.annotation.Id;
@@ -20,6 +22,8 @@ public abstract class EventBase extends Event implements CalendarBase {
     private long endTime;
     private String description;
     @ColorInt private int color;
+
+    public transient boolean isHeader;
 
     public EventBase(String title, long startTime) {
         super(0, startTime);

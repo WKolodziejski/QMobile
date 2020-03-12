@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bottomSheet"
+    android:id="@+id/sheet_popup"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
@@ -15,7 +15,7 @@
     app:strokeColor="@color/card_stroke"
     app:strokeWidth="1dp"
     app:cardBackgroundColor="@color/colorPrimaryDark"
-    android:tag="sheet"
+    android:tag="sheet_popup"
     >
 
     <LinearLayout
@@ -37,7 +37,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:textStyle="bold"
-            android:id="@+id/sheet_title"
+            android:id="@+id/sheet_popup_title"
             />
 
         <TextView
@@ -46,14 +46,14 @@
             android:layout_margin="8dp"
             android:autoLink="web|all"
             android:linksClickable="true"
-            android:id="@+id/sheet_msg"/>
+            android:id="@+id/sheet_popup_msg"/>
 
         <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:buttonTint="@color/colorPrimary"
-            android:id="@+id/sheet_checkBox"
+            android:id="@+id/sheet_popup_checkBox"
             android:text="@string/dialog_dont_show"/>
 
     </LinearLayout>

@@ -20,6 +20,10 @@ public class Header implements CalendarBase {
         return new SimpleDateFormat("d", Locale.getDefault()).format(time);
     }
 
+    public String getWeekString() {
+        return new SimpleDateFormat("EE", Locale.getDefault()).format(time);
+    }
+
     @Override
     public int getItemType() {
         return HEADER;

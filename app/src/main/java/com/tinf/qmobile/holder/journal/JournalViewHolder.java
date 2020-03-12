@@ -25,7 +25,6 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     @BindView(R.id.journal_view_date)       public TextView date;
     @BindView(R.id.journal_view_max)        public TextView max;
     @BindView(R.id.journal_view_grade)      public TextView grade;
-    @BindView(R.id.journal_view_layout)     public LinearLayout layout;
 
     public JournalViewHolder(View view) {
         super(view);
@@ -39,7 +38,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         date.setText(journal.formatDate());
         max.setText(journal.getMax());
         grade.setText(journal.getGrade());
-        layout.setOnClickListener(view -> {
+        itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journal.id);
             intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
@@ -58,7 +57,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
 
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.item_slide_down);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
-        layout.setAnimation(animation);
+        itemView.setAnimation(animation);
         animation.start();
     }
 

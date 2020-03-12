@@ -1,7 +1,6 @@
 package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,30 +21,18 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
-import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventImage;
-import com.tinf.qmobile.model.calendar.EventUser;
-import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.calendar.base.EventBase;
-import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.network.Client;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import io.objectbox.Box;
-
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;

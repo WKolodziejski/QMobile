@@ -6,11 +6,13 @@
     <color name="colorAccent">@color/grey_800</color>
     <color name="colorSecondary">@color/grey_500</color>
     <color name="notificationBackground">@color/blue_50</color>
-    <color name="splash">@color/black</color>
-    <color name="headerbackground">#FFFFFF</color>
+    <color name="headerBackground">#FFFFFF</color>
+    <color name="selectionBackground">@color/red_100</color>
     <color name="black_dividers">@color/black_d</color>
     <color name="white_dividers">@color/white_d</color>
 
+
+    <color name="splash">@color/black</color>
     <color name="card_stroke">@color/black_d</color>
     <color name="transparent">@android:color/transparent</color>
 
@@ -50,16 +52,5 @@
     <color name="materiais_xml">#f6712e</color>
     <color name="materiais_zip">#ffc14f</color>
     <color name="materiais_comp">#653e66</color>
-
-    <color name="biologia">@color/green_500</color>
-    <color name="edFisica">@color/blue_grey_500</color>
-    <color name="filosofia">@color/grey_500</color>
-    <color name="fisica">@color/amber_500</color>
-    <color name="geografia">@color/blue_500</color>
-    <color name="historia">@color/red_500</color>
-    <color name="portugues">@color/pink_500</color>
-    <color name="matematica">@color/brown_500</color>
-    <color name="quimica">@color/orange_500</color>
-    <color name="sociologia">@color/purple_500</color>
 
 </resources>

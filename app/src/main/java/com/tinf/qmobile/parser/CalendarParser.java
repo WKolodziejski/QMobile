@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
@@ -14,6 +13,7 @@ import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.Month_;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.network.Client;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,14 +24,14 @@ import java.util.Calendar;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
 
 public class CalendarParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";
-    private OnFinish onFinish;
+    private Client.OnFinish onFinish;
 
-    public CalendarParser(OnFinish onFinish) {
+    public CalendarParser(Client.OnFinish onFinish) {
         this.onFinish = onFinish;
     }
 
@@ -291,10 +291,6 @@ public class CalendarParser extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         onFinish.onFinish(PG_CALENDARIO, 0);
-    }
-
-    public interface OnFinish {
-        void onFinish(int pg, int year);
     }
 
     private String formatTitle(String s) {

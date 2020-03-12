@@ -63,6 +63,34 @@ public class Period {
         this.absences_ = absences;
     }
 
+    public float getGradeSum() {
+        if (journals.isEmpty())
+            return -1;
+
+        float sum = 0;
+
+        for (Journal j : journals)
+            if (j.getGrade_() != -1)
+                sum += j.getGrade_();
+
+        return sum;
+    }
+
+    public float getPartialGrade() {
+        if (journals.isEmpty())
+            return -1;
+
+        float sum = getGradeSum();
+
+        float weight = 0;
+
+        for (Journal j : journals)
+            if (j.getWeight_() != -1)
+                weight = +j.getWeight_();
+
+        return sum / weight;
+    }
+
     /*
      * Required methods
      */

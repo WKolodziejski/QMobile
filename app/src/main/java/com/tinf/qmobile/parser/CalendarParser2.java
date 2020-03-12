@@ -3,7 +3,6 @@ package com.tinf.qmobile.parser;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.EventImage;
@@ -13,6 +12,7 @@ import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.Month_;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.network.Client;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,12 +22,12 @@ import java.util.Calendar;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class CalendarParser2 extends BaseParser {
     private final static String TAG = "CalendarioParser";
 
-    public CalendarParser2(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public CalendarParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 

@@ -39,12 +39,13 @@ public class Journal extends EventBase implements Queryable {
     public ToOne<Matter> matter;
     private boolean seen_;
 
-    public Journal(String title, float grade, float weight, float max, long date, int type, Period period, Matter matter) {
+    public Journal(String title, float grade, float weight, float max, long date, int type, Period period, Matter matter, boolean seen) {
         super(title, date);
         this.grade_ = grade;
         this.weight_ = weight;
         this.max_ = max;
         this.type_ = type;
+        this.seen_ = seen;
         this.period.setTarget(period);
         this.matter.setTarget(matter);
     }

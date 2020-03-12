@@ -10,6 +10,7 @@ import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -18,16 +19,16 @@ import org.jsoup.select.Elements;
 import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
 
 public class MateriaisParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "MateriaisParser";
-    private OnFinish onFinish;
+    private Client.OnFinish onFinish;
     private int pos;
     private boolean notify;
 
-    public MateriaisParser(int pos, boolean notify, OnFinish onFinish) {
+    public MateriaisParser(int pos, boolean notify, Client.OnFinish onFinish) {
         this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
@@ -98,9 +99,9 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                             materia.materials.add(material);
                             materiaisBox.put(material);
 
-                            if (notify) {
+                            //if (notify) {
                                 //TODO notificação
-                            }
+                            //}
                         }
 
                     } catch (NonUniqueResultException e) {
@@ -124,10 +125,6 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         onFinish.onFinish(PG_MATERIAIS, pos);
-    }
-
-    public interface OnFinish {
-        void onFinish(int pg, int year);
     }
 
 }

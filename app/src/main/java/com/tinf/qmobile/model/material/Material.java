@@ -18,6 +18,8 @@ import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 @Entity
 public class Material implements Queryable {
     @Transient public boolean isDownloaded;
+    @Transient public boolean isDownloading;
+    @Transient public boolean isSelected;
     @Id public long id;
     private String title;
     private String link;

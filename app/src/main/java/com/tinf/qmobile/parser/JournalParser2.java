@@ -15,6 +15,7 @@ import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 
@@ -29,12 +30,12 @@ import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class JournalParser2 extends BaseParser {
     private final static String TAG = "JournalParser";
 
-    public JournalParser2(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public JournalParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 
@@ -73,6 +74,8 @@ public class JournalParser2 extends BaseParser {
 
             String description = tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).first().child(0).text();
 
+            boolean isFirstParse = false;
+
             Matter matter = matterBox.query()
                     .equal(Matter_.description_, description).and()
                     .equal(Matter_.year_, User.getYear(pos)).and()
@@ -82,6 +85,7 @@ public class JournalParser2 extends BaseParser {
             if (matter == null) {
                 matter = new Matter(description, pickColor(description), User.getYear(pos), User.getPeriod(pos));
                 matterBox.put(matter);
+                isFirstParse = true;
             }
 
             int periodCount = 0;
@@ -170,7 +174,7 @@ public class JournalParser2 extends BaseParser {
 
                             if (search == null) {
 
-                                Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
+                                Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter, isFirstParse);
 
                                 period.journals.add(newJournal);
                                 journalBox.put(newJournal);

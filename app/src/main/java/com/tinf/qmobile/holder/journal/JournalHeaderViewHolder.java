@@ -21,7 +21,6 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
     @BindView(R.id.journal_title)           public TextView title;
     @BindView(R.id.journal_color_badge)     public TextView badge;
     @BindView(R.id.journal_infos_header)    public LinearLayout header;
-    @BindView(R.id.journal_header_layout)   public ConstraintLayout layout;
     @BindView(R.id.journal_expand_img)      public ImageView arrow;
 
     public JournalHeaderViewHolder(@NonNull View view) {
@@ -35,11 +34,11 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
         badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
         header.setVisibility(matter.isExpanded && !matter.getLastPeriod().journals.isEmpty() ? View.VISIBLE : View.GONE);
         arrow.setVisibility(matter.isExpanded ? View.GONE : View.VISIBLE);
-        layout.setOnClickListener(view -> {
+        itemView.setOnClickListener(view -> {
             if (matter.isExpanded) {
                 adapter.collapse(getAdapterPosition(), matter);
             } else {
-                adapter.expand(getAdapterPosition(), matter);
+                adapter.expand(getAdapterPosition(), matter, true);
             }
         });
 

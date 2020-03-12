@@ -1,6 +1,7 @@
 package com.tinf.qmobile.parser;
 
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.network.Client;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,7 +11,7 @@ public class ClassParser extends BaseParser {
     private final static String TAG = "ClassParser";
     private final Matter matter;
 
-    public ClassParser(Matter matter, int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public ClassParser(Matter matter, int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
         this.matter = matter;
     }

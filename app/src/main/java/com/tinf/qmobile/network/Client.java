@@ -16,6 +16,7 @@ import android.webkit.WebViewClient;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Header;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -123,7 +124,7 @@ public class Client {
         return instance;
     }
 
-    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter) {
+    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter, OnFinish onFinish) {
         if (!isValid) {
             if (!isLogging) {
                 login();
@@ -142,22 +143,22 @@ public class Client {
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_DIARIOS) {
-                                new JournalParser(pos, notify, this::callOnFinish).execute(response);
+                                new JournalParser(pos, notify, onFinish).execute(response);
 
                             } else if (pg == PG_BOLETIM) {
-                                new ReportParser(pos, this::callOnFinish).execute(response);
+                                new ReportParser(pos, onFinish).execute(response);
 
                             } else if (pg == PG_HORARIO) {
-                                new ScheduleParser(pos, this::callOnFinish).execute(response);
+                                new ScheduleParser(pos, onFinish).execute(response);
 
                             } else if (pg == PG_MATERIAIS) {
-                                new MateriaisParser(pos, notify, this::callOnFinish).execute(response);
+                                new MateriaisParser(pos, notify, onFinish).execute(response);
 
                             } else if (pg == PG_CALENDARIO) {
-                                new CalendarParser(this::callOnFinish).execute(response);
+                                new CalendarParser(onFinish).execute(response);
 
                             } else if (pg == PG_CLASSES) {
-                                new ClassParser(matter, pg, pos, notify, this::callOnFinish, this::callOnError).execute(response);
+                                new ClassParser(matter, pg, pos, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_FETCH_YEARS) {
                                 Document document = Jsoup.parse(response);
@@ -193,16 +194,20 @@ public class Client {
     }
 
     public void load(int pg) {
-        load(pg, pos);
+        load(pg, pos, this::callOnFinish);
+    }
+
+    public void load(int pg, int pos) {
+        load(pg, pos, this::callOnFinish);
     }
 
     public void load(Matter matter) {
         createRequest(PG_CLASSES,
                 INDEX + PG_DIARIOS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
-                pos, POST, new HashMap<>(), false, matter);
+                pos, POST, new HashMap<>(), false, matter, this::callOnFinish);
     }
 
-    public void load(int pg, int pos) {
+    public void load(int pg, int pos, OnFinish onFinish) {
         int method = GET;
         String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
@@ -229,15 +234,12 @@ public class Client {
             }
         }
 
-        createRequest(pg, url, pos, method, form, false, null);
+        createRequest(pg, url, pos, method, form, false, null, onFinish);
     }
 
     private <T> void addRequest(Request<T> request, int pg, int pos) {
         if (isConnected()) {
             callOnStart(pg, pos);
-            if (requests == null) {
-                requests = Volley.newRequestQueue(getContext(), new HurlStack());
-            }
             request.setRetryPolicy(new DefaultRetryPolicy(0,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -376,20 +378,25 @@ public class Client {
     }
 
     private void checkQueue() {
-        if (queue != null && !queue.isEmpty()) {
-            for (int i = 0; i < queue.size(); i++) {
-                RequestHelper helper = queue.get(i);
-                createRequest(helper.pg, helper.url, helper.pos, helper.method, helper.form, helper.notify, helper.matter);
-                queue.remove(i);
-            }
+        while (!queue.isEmpty()) {
+            RequestHelper helper = queue.get(0);
+            createRequest(helper.pg, helper.url, helper.pos, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
+            queue.remove(0);
         }
     }
 
     private void addToQueue(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter) {
-        RequestHelper request = new RequestHelper(pg, url, pos, method, form, notify, matter);
-        if (!queue.contains(request)) {
-            queue.add(request);
-            Log.i(TAG, "Queued: " + pg + " for " + User.getYear(pos));
+        boolean isNew = true;
+
+        for (RequestHelper h : queue)
+            if (h.pg == pg && h.pos == pos) {
+                isNew = false;
+                break;
+            }
+
+        if (isNew) {
+            queue.add(new RequestHelper(pg, url, pos, method, form, notify, matter));
+            Log.i(TAG, "Queued: " + pg + " for " + User.getYears()[pos]);
         }
     }
 
@@ -412,10 +419,10 @@ public class Client {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        /*for(Header h : response.allHeaders)
-                            Log.d(h.getName(), h.getValue());*/
+                        //for(Header h : response.allHeaders)
+                            //Log.d(h.getName(), h.getValue());
 
-                        int i = 5;
+                        /*int i = 5;
                         int j = 6;
 
                         if (User.getURL().equals(IFMT)) {
@@ -424,30 +431,26 @@ public class Client {
                         }
 
                         params.put("Set-Cookie", response.allHeaders.get(i).getValue());
-                        params.put("Cookie", response.allHeaders.get(j).getValue());
+                        params.put("Cookie", response.allHeaders.get(j).getValue());*/
+
+                        //Log.d("Cookie", response.headers.get("Set-Cookie"));
 
                         CookieManager cookieManager = CookieManager.getInstance();
                         cookieManager.setAcceptCookie(true);
-                        cookieManager.setCookie(Client.get().getURL(), params.get("Cookie"));
-                        cookieManager.setCookie(Client.get().getURL(), params.get("Set-Cookie"));
 
-                        /*try {
-                            String cookie1 = response.allHeaders.get(5).getValue();
-                            //Log.d("Cookie 1", cookie1);
-                            cookie1 = cookie1.substring(0, cookie1.indexOf(";")).concat("; ");
-                            COOKIE = cookie1;
+                        String c1 = response.headers.get("Set-Cookie");
 
-                            String cookie2 = response.allHeaders.get(6).getValue();
-                            //Log.d("Cookie 2", cookie2);
-                            cookie2 = cookie2.substring(0, cookie2.indexOf(";")).concat(";");
-                            COOKIE += cookie2;
-                        } catch (StringIndexOutOfBoundsException e) {
-                            e.printStackTrace();
+                        params.put("Cookie", c1);
+                        cookieManager.setCookie(Client.get().getURL(), c1);
+
+                        for (Header h : response.allHeaders) {
+                            if (h.getValue().contains("QSESSIONID")) {
+                                params.put("Set-Cookie", h.getValue());
+                                cookieManager.setCookie(Client.get().getURL(),  h.getValue());
+                            }
                         }
 
-                        Log.d("Cookie", COOKIE);
-
-                        Log.v(TAG, "Cookie fetched");*/
+                        Log.d("Cookies", params.toString());
 
                         return super.parseNetworkResponse(response);
                     }
@@ -585,6 +588,8 @@ public class Client {
     public void changeData(int pos) {
         Client.pos = pos;
 
+        requests.cancelAll(request -> true);
+
         if (onUpdates != null) {
             for (int i = 0; i < onUpdates.size(); i++) {
                 onUpdates.get(i).onDateChanged();
@@ -647,33 +652,17 @@ public class Client {
     }
 
     public void loadYear(int pos) {
-        load(PG_DIARIOS, pos);
-
-        Client.get().addOnResponseListener(new OnResponse() {
-            @Override
-            public void onStart(int pg, int pos) {
-
-            }
-
-            @Override
-            public void onFinish(int pg, int pos) {
-                if (pg == PG_DIARIOS) {
-                    Client.get().load(PG_BOLETIM, pos);
-                } else if (pg == PG_BOLETIM) {
-                    Client.get().load(PG_HORARIO, pos);
-                }
-            }
-
-            @Override
-            public void onError(int pg, String error) {
-
-            }
-
-            @Override
-            public void onAccessDenied(int pg, String message) {
-
+        load(PG_DIARIOS, pos, (pg, year) -> {
+            if (pg == PG_DIARIOS) {
+                load(PG_BOLETIM, year);
+            } else if (pg == PG_BOLETIM) {
+                load(PG_HORARIO, year);
             }
         });
+    }
+
+    public interface OnFinish {
+        void onFinish(int pg, int year);
     }
 
     /*public class JavaScriptHandler {

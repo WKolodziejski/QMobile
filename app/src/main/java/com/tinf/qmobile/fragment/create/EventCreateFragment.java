@@ -73,6 +73,8 @@ public class EventCreateFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d("Fragment", "Initialized");
+
         Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
         matters = matterBox.query()
@@ -81,7 +83,6 @@ public class EventCreateFragment extends Fragment {
                 .build().find();
 
         Calendar calendar = Calendar.getInstance();
-
         calendar.set(Calendar.HOUR_OF_DAY, 12);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -89,6 +90,7 @@ public class EventCreateFragment extends Fragment {
 
         start = (Calendar) calendar.clone();
         end = (Calendar) calendar.clone();
+        end.add(Calendar.HOUR_OF_DAY, 1);
 
         Bundle bundle = getArguments();
 
@@ -261,6 +263,9 @@ public class EventCreateFragment extends Fragment {
                         matter = which;
                         if (which > 0) {
                             color = matters.get(which - 1).getColor();
+                            color_btn.setClickable(false);
+                        } else {
+                            color_btn.setClickable(true);
                         }
                         updateText();
                     })

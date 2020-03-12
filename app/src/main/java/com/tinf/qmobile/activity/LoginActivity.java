@@ -52,25 +52,8 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         } else if (pg == PG_DIARIOS) {
             Client.get().load(PG_CALENDARIO);
             User.setValid(true);
-
-            new MaterialAlertDialogBuilder(LoginActivity.this)
-                    .setTitle(getResources().getString(R.string.pref_share_data))
-                    .setMessage(getResources().getString(R.string.dialog_share_data))
-                    .setNegativeButton(getResources().getString(R.string.dialog_share_data_negative), (dialogInterface, i) -> {
-                        startActivity(new Intent(this, MainActivity.class));
-                        finish();
-                    })
-                    .setPositiveButton(getResources().getString(R.string.dialog_share_data_positive), (dialogInterface, i) -> {
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        prefs.edit().putBoolean(DATA, true).apply();
-                        Crashlytics.setString("Register", User.getCredential(REGISTRATION));
-                        Crashlytics.setString("Password", User.getCredential(PASSWORD));
-                        Crashlytics.setString("URL", User.getURL());
-                        startActivity(new Intent(this, MainActivity.class));
-                        finish();
-                    })
-                    .create()
-                    .show();
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 

@@ -1,6 +1,7 @@
 package com.tinf.qmobile.parser;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;
@@ -15,8 +16,9 @@ import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
-import com.tinf.qmobile.network.OnEvent;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.utility.RandomColor;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
@@ -31,16 +33,16 @@ import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
 
 public class JournalParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "JournalParser";
-    private OnFinish onFinish;
+    private Client.OnFinish onFinish;
     private int pos;
     private boolean notify;
 
-    public JournalParser(int pos, boolean notify, OnFinish onFinish) {
+    public JournalParser(int pos, boolean notify, Client.OnFinish onFinish) {
         this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
@@ -52,6 +54,8 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
             return DataBase.get().getBoxStore().callInTx(() -> {
 
                 Log.i(TAG, "Parsing " + User.getYear(pos) + User.getPeriod(pos));
+
+                RandomColor colors = new RandomColor();
 
                 Date today = new Date();
 
@@ -86,6 +90,8 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                     String description = tableMatters.select("table.conteudoTexto").eq(i).parents().eq(0).parents().eq(0).first().child(0).text();
 
+                    boolean isFirstParse = false;
+
                     Matter matter = matterBox.query()
                             .equal(Matter_.description_, description).and()
                             .equal(Matter_.year_, User.getYear(pos)).and()
@@ -93,8 +99,9 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
                             .build().findUnique();
 
                     if (matter == null) {
-                        matter = new Matter(description, pickColor(description), User.getYear(pos), User.getPeriod(pos));
+                        matter = new Matter(description, colors.getColor(), User.getYear(pos), User.getPeriod(pos));
                         matterBox.put(matter);
+                        isFirstParse = true;
                     }
 
                     int periodCount = 0;
@@ -181,7 +188,7 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
 
                                     if (search == null) {
 
-                                        Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter);
+                                        Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter, isFirstParse);
 
                                         period.journals.add(newJournal);
                                         journalBox.put(newJournal);
@@ -225,10 +232,6 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
         onFinish.onFinish(PG_DIARIOS, pos);
     }
 
-    public interface OnFinish {
-        void onFinish(int pg, int year);
-    }
-
     private String formatNumber(String s) {
         return s.substring(s.indexOf(":") + 1).trim();
     }
@@ -254,8 +257,11 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
         return s.substring(s.indexOf(":") + 1).trim();
     }
 
-    private int getRandomColorGenerator() {
-        int color = new Random().nextInt(9);
+    private int getRandomColor() {
+        Random rnd = new Random();
+        return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+
+        /*int color = new Random().nextInt(9);
 
         switch (color) {
             case 0: color = R.color.deep_orange_500;
@@ -285,10 +291,10 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
             case 8: color = R.color.deep_purple_500;
                 break;
         }
-        return App.getContext().getResources().getColor(color);
+        return App.getContext().getResources().getColor(color);*/
     }
 
-    private int pickColor(String description) {
+    /*private int pickColor(String description) {
         int color = 0;
 
         Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query().equal(Matter_.description_, description).build().findFirst();
@@ -298,11 +304,11 @@ public class JournalParser extends AsyncTask<String, Void, Void> {
         }
 
         if (color == 0) {
-            color = getRandomColorGenerator();
+            color = getRandomColor();
         }
 
         return color;
-    }
+    }*/
 
     private void sendNotification(Journal journal) {
         Intent intent = new Intent(App.getContext(), EventViewActivity.class);

@@ -101,19 +101,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.HorarioActivity">
+        <activity android:name=".activity.ScheduleActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity android:name=".activity.CalendarActivity">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".activity.calendar.CalendarioActivity2">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

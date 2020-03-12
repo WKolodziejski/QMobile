@@ -118,8 +118,6 @@
                         android:paddingTop="16dp"
                         android:paddingBottom="8dp"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
                         android:id="@+id/home_horario"
                         >
 
@@ -213,8 +211,6 @@
                         android:paddingTop="16dp"
                         android:paddingBottom="8dp"
                         android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
                         android:id="@+id/home_calendario"
                         >
 
@@ -252,8 +248,6 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:focusable="false"
-                        android:clickable="false"
                         android:transitionName="Calendario"
                         android:id="@+id/recycler_home"/>
 
@@ -275,8 +269,6 @@
                     android:id="@+id/home_website"
                     android:layout_width="match_parent"
                     android:layout_height="49dp"
-                    android:clickable="true"
-                    android:focusable="true"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="bottom"
                     android:orientation="horizontal"

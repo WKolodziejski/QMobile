@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
@@ -153,6 +155,13 @@ public class ScheduleFragment extends Fragment {
         }).start();
     }
 
+    @OnClick(R.id.fab_add_schedule)
+    public void onClick(View view) {
+        Intent intent = new Intent(getContext(), EventCreateActivity.class);
+        intent.putExtra("TYPE", SCHEDULE);
+        startActivity(intent);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -163,18 +172,18 @@ public class ScheduleFragment extends Fragment {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> updateSchedule());
 
         sub2 = boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> updateSchedule());
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         sub1.cancel();
         sub2.cancel();
     }

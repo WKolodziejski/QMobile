@@ -1,6 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
@@ -16,12 +17,13 @@ import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 
 public class EventViewActivity extends AppCompatActivity {
-    int type;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
+
+        Log.d("Fragment", "Initialized");
 
         setSupportActionBar(findViewById(R.id.toolbar_default));
 
@@ -33,15 +35,9 @@ public class EventViewActivity extends AppCompatActivity {
 
         if (bundle != null) {
 
-            /*if (bundle.getInt("ID") == 0) {
-                close();
-            }*/
-
-            type = bundle.getInt("TYPE");
-
             Fragment fragment = null;
 
-            switch (type) {
+            switch (bundle.getInt("TYPE")) {
 
                 case CalendarBase.ViewType.USER:
                     fragment = new EventViewFragment();

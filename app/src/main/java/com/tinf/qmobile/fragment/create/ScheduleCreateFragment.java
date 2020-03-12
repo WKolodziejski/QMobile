@@ -67,7 +67,7 @@ public class ScheduleCreateFragment extends Fragment {
     @BindView(R.id.schedule_create_alarm_decoration)    View ad;
     @BindView(R.id.schedule_create_color_decoration)    View cd;
     @BindView(R.id.schedule_create_matter_decoration)   View md;
-    private boolean isRanged, isFromSite;
+    private boolean isFromSite;
     private int color, matter, alarmDif;
     private List<Matter> matters;
     private String title, description, room;
@@ -84,6 +84,11 @@ public class ScheduleCreateFragment extends Fragment {
                 .equal(Matter_.year_, User.getYear(0)).and()
                 .equal(Matter_.period_, User.getPeriod(0))
                 .build().find();
+
+        Calendar calendar = Calendar.getInstance();
+
+        start = new DayTime(calendar.get(Calendar.DAY_OF_WEEK) - 1, 12, 0);
+        end = new DayTime(calendar.get(Calendar.DAY_OF_WEEK) - 1, 13, 0);
 
         Bundle bundle = getArguments();
 
@@ -120,11 +125,6 @@ public class ScheduleCreateFragment extends Fragment {
                 }
             } else {
                 color = getResources().getColor(R.color.colorPrimary);
-
-                Calendar calendar = Calendar.getInstance();
-                start = new DayTime(calendar.get(Calendar.DAY_OF_WEEK) - 1, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                end = new DayTime(start);
-                isFromSite = false;
             }
         }
     }
@@ -235,6 +235,9 @@ public class ScheduleCreateFragment extends Fragment {
                             matter = which;
                             if (which > 0) {
                                 color = matters.get(which - 1).getColor();
+                                color_btn.setClickable(false);
+                            } else {
+                                color_btn.setClickable(true);
                             }
                             updateText();
                         })
@@ -317,7 +320,8 @@ public class ScheduleCreateFragment extends Fragment {
             intent.putExtra("ID", id);
             intent.putExtra("TYPE", SCHEDULE);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) id, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) id, intent, PendingIntent.FLAG_UPDATE_CURRENT
+                    | PendingIntent.FLAG_ONE_SHOT);
 
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
 

@@ -9,7 +9,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,50 +21,32 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
-import com.tinf.qmobile.activity.HorarioActivity;
+import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.WebViewActivity;
 import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventImage;
-import com.tinf.qmobile.model.calendar.EventImage_;
-import com.tinf.qmobile.model.calendar.EventSimple;
-import com.tinf.qmobile.model.calendar.EventSimple_;
-import com.tinf.qmobile.model.calendar.EventUser;
-import com.tinf.qmobile.model.calendar.EventUser_;
-import com.tinf.qmobile.model.calendar.Header;
-import com.tinf.qmobile.model.calendar.Month;
-import com.tinf.qmobile.model.calendar.Month_;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
-import com.tinf.qmobile.model.calendar.base.EventBase;
-import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.journal.Journal_;
+import com.tinf.qmobile.fragment.sheet.CreateFragment;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import org.threeten.bp.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {
@@ -97,17 +78,10 @@ public class HomeFragment extends Fragment implements OnUpdate {
         updateSchedule();
 
         weekView.setOnEventClickListener((event, eventRect) -> {
-            Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).query()
-                    .equal(Matter_.title_, event.getName())
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
-                    .build().findUnique();
-            if (matter != null) {
-                Intent intent = new Intent(getContext(), MatterActivity.class);
-                intent.putExtra("ID", matter.id);
-                intent.putExtra("PAGE", MatterActivity.SCHEDULE);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(getActivity(), EventViewActivity.class);
+            intent.putExtra("TYPE", SCHEDULE);
+            intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
+            startActivity(intent);
         });
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
@@ -119,11 +93,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         fab.hide();
                 });
 
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), EventCreateActivity.class);
-            intent.putExtra("TYPE", EVENT);
-            startActivity(intent);
-        });
+        fab.setOnClickListener(v -> new CreateFragment().show(getFragmentManager(), "sheet_create"));
 
         CardView offline = (CardView) view.findViewById(R.id.home_offline);
 
@@ -139,90 +109,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new EventsAdapter(getContext(), true));
     }
-
-    /*private List<CalendarBase> getCalendarList() {
-        Calendar current = Calendar.getInstance();
-        current.set(Calendar.HOUR_OF_DAY, 0);
-        current.set(Calendar.MINUTE, 0);
-        current.set(Calendar.SECOND, 0);
-        current.set(Calendar.MILLISECOND, 0);
-
-        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
-        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
-
-        List<CalendarBase> events = new ArrayList<>();
-
-        events.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
-        events.addAll(monthBox.query().greater(Month_.time, current.getTimeInMillis() - 1).build().find());
-
-        Collections.sort(events, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-        for (int i = 0; i < events.size(); i++) {
-            CalendarBase e1 = events.get(i);
-
-            int j = i + 1;
-
-            if (j < events.size()) {
-
-                CalendarBase e2 = events.get(j);
-
-                while (e1.getDay() == e2.getDay() && e1.getYear() == e2.getYear()) {
-                    e2 = events.get(++j);
-                }
-            }
-
-            events.add(i, new Header(getDate(e1.getDate(), true)));
-
-            i = j;
-        }
-
-        List<CalendarBase> returnn = new ArrayList<>();
-
-        if (!events.isEmpty()) {
-            int k = 0;
-            int l = 0;
-
-            while (l < 5 && k < events.size() - 1) {
-                CalendarBase e = events.get(k);
-
-                while (!(e instanceof EventBase) && k < events.size() - 1) {
-                    e = events.get(++k);
-                }
-
-                if (k < events.size()) {
-
-                    if (e instanceof EventBase) {
-
-                        if (k >= 2) {
-                            CalendarBase m = events.get(k - 2);
-
-                            if (m instanceof Month)
-                                returnn.add(m);
-                        }
-
-                        if (k >= 1) {
-                            CalendarBase d = events.get(k - 1);
-
-                            if (d instanceof Header)
-                                returnn.add(d);
-                        }
-
-                        returnn.add(e);
-                    }
-
-                    k++;
-                    l++;
-                }
-            }
-        }
-        return returnn;
-    }*/
 
     private void updateSchedule() {
         new Thread(() -> {
@@ -331,7 +217,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @OnClick(R.id.home_horario)
     public void openSchedule(View view) {
-        startActivity(new Intent(getActivity(), HorarioActivity.class),
+        startActivity(new Intent(getActivity(), ScheduleActivity.class),
                 ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                         Pair.create(fab, fab.getTransitionName()))
                         .toBundle());
@@ -360,17 +246,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    updateSchedule();
-                });
+                .observer(data -> updateSchedule());
 
         sub2 = boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    updateSchedule();
-                });
+                .observer(data -> updateSchedule());
     }
 
     @Override

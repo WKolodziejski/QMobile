@@ -128,8 +128,6 @@
                 android:paddingBottom="8dp"
                 android:id="@+id/event_create_end_day"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
                 app:layout_constraintTop_toBottomOf="@id/event_create_start_day"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -144,8 +142,6 @@
                 android:padding="8dp"
                 android:id="@+id/event_create_start_time"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/event_create_end_time"
@@ -159,8 +155,6 @@
                 android:padding="8dp"
                 android:id="@+id/event_create_end_time"
                 android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
                 app:layout_constraintTop_toBottomOf="@id/event_create_start_time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -183,8 +177,6 @@
         android:orientation="horizontal"
         android:id="@+id/event_create_alarm_layout"
         android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_constraintTop_toBottomOf="@id/event_create_time_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -229,8 +221,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="8dp"
         android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
         >
 
         <ImageView
@@ -272,8 +262,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:foreground="?android:attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
         >
 
         <ImageView

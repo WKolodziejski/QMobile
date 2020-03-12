@@ -9,6 +9,7 @@ import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.nodes.Document;
@@ -19,12 +20,12 @@ import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
-import static com.tinf.qmobile.model.calendar.Utils.getDate;
+import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class MaterialsParser2 extends BaseParser {
     private final static String TAG = "MateriaisParser";
 
-    public MaterialsParser2(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public MaterialsParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 

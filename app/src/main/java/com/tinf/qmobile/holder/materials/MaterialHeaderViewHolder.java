@@ -23,7 +23,7 @@ public class MaterialHeaderViewHolder extends MaterialBaseViewHolder<Matter> {
     }
 
     @Override
-    public void bind(Context context, Matter matter, MaterialsAdapter.OnDownloadListener onDownload, MaterialsAdapter adapter) {
+    public void bind(Context context, Matter matter, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter) {
         title.setText(matter.getTitle());
         badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
 
@@ -35,12 +35,7 @@ public class MaterialHeaderViewHolder extends MaterialBaseViewHolder<Matter> {
             badge.setText("");
         }
 
-        itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MatterActivity.class);
-            intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", MatterActivity.MATERIALS);
-            context.startActivity(intent);
-        });
+        itemView.setOnClickListener(view -> listener.onClick(matter));
     }
 
 }

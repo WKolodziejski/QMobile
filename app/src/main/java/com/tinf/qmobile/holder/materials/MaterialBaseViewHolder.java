@@ -15,6 +15,6 @@ public abstract class MaterialBaseViewHolder<T extends Queryable> extends Recycl
         ButterKnife.bind(this, view);
     }
 
-    public abstract void bind(Context context, T t, MaterialsAdapter.OnDownloadListener onDownload, MaterialsAdapter adapter);
+    public abstract void bind(Context context, T t, MaterialsAdapter.OnInteractListener onDownload, MaterialsAdapter adapter);
 
 }

@@ -6,21 +6,21 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
-import com.tinf.qmobile.model.journal.Footer;
+import com.tinf.qmobile.model.journal.FooterJournal;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
+public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal> {
     @BindView(R.id.journal_partial_grade_text)  public TextView partial;
     @BindView(R.id.journal_absences_text)       public TextView absences;
-    @BindView(R.id.exp_details)                 public TextView details;
-    @BindView(R.id.journal_footer_layout)       public ConstraintLayout layout;
+    @BindView(R.id.journal_exp_details)         public TextView details;
 
     public JournalFooterViewHolder(@NonNull View view) {
         super(view);
@@ -28,10 +28,10 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
     }
 
     @Override
-    public void bind(Context context, Footer footer, JournalAdapter adapter) {
-        float p = footer.getMatter().getGradeSum();
+    public void bind(Context context, FooterJournal footer, JournalAdapter adapter) {
+        float p = footer.getMatter().getLastPeriod().getGradeSum();
 
-        partial.setText(p == -1 ? "-" : String.format("%.1f", p));
+        partial.setText(p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p));
         absences.setText(footer.getMatter().getAbsences());
         details.setTextColor(footer.getMatter().getColor());
         details.setOnClickListener(view -> {
@@ -40,7 +40,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<Footer> {
             intent.putExtra("PAGE", MatterActivity.GRADES);
             context.startActivity(intent);
         });
-        layout.setOnClickListener(view -> {
+        itemView.setOnClickListener(view -> {
             footer.getMatter().isExpanded = false;
             adapter.collapse(footer.getPosition(), footer.getMatter());
         });
