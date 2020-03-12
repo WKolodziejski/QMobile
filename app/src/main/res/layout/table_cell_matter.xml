@@ -7,6 +7,8 @@
     android:layout_height="60dp"
     android:gravity="center"
     android:foreground="?android:attr/selectableItemBackground"
+    android:focusable="true"
+    android:clickable="true"
     >
 
     <TextView

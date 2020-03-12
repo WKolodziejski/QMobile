@@ -173,9 +173,9 @@ public class Client {
 
                                 User.setYears(years);
 
-                                Client.get().loadYear(0);
-
                                 callOnFinish(PG_FETCH_YEARS, 0);
+
+                                loadYear(0);
                             }
                         }
                     }, error -> onError(pg, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
@@ -653,11 +653,13 @@ public class Client {
 
     public void loadYear(int pos) {
         load(PG_DIARIOS, pos, (pg, year) -> {
-            if (pg == PG_DIARIOS) {
-                load(PG_BOLETIM, year);
-            } else if (pg == PG_BOLETIM) {
-                load(PG_HORARIO, year);
-            }
+                load(PG_BOLETIM, year, (pg1, year1) -> {
+                    load(PG_HORARIO, year1, (pg2, year2) -> {
+                        callOnFinish(pg, year2);
+                    });
+                    callOnFinish(pg, year1);
+                });
+            callOnFinish(pg, year);
         });
     }
 

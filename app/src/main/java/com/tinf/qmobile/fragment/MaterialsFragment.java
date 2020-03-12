@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -30,7 +29,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
@@ -132,7 +130,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             list.clear();
-            adapter.unselect();
+            adapter.unSelectAll();
             action = null;
 
             if (getActivity() instanceof MainActivity)

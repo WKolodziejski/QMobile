@@ -45,13 +45,11 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     private OnInteractListener listener;
     private DataSubscription sub1, sub2;
     private FileObserver sub3;
-    private File folder;
 
     public MaterialsAdapter(Context context, Bundle bundle, OnInteractListener listener) {
         this.context = context;
         this.listener = listener;
-        this.folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
+
         this.materials = getList(bundle);
 
         Client.get().addOnUpdateListener(this);
@@ -72,7 +70,9 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub3 = new FileObserver(folder) {
+        sub3 = new FileObserver(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos)) {
+
             @Override
             public void onEvent(int state, String s) {
                 if (state == CLOSE_WRITE || state == DELETE) {
@@ -180,6 +180,9 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
         DataBase.get().getBoxStore().runInTx(() -> {
 
+            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
+
             if (folder.exists()) {
                 if (folder.listFiles() != null) {
 
@@ -203,7 +206,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         return list;
     }
 
-    public void unselect() {
+    public void unSelectAll() {
         for (int i = 0; i < materials.size(); i++)
             if (materials.get(i) instanceof Material) {
                 ((Material) materials.get(i)).isSelected = false;
@@ -250,12 +253,10 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void onDateChanged() {
-        folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-
         sub3.stopWatching();
 
-        sub3 = new FileObserver(folder) {
+        sub3 = new FileObserver(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos)) {
 
             @Override
             public void onEvent(int state, String s) {

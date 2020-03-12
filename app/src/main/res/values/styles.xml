@@ -30,7 +30,7 @@
     </style>
 
     <style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
-        <item name="background">@color/colorPrimaryDark</item>
+        <item name="background">@color/colorPrimaryLight</item>
         <item name="actionMenuTextColor">@color/colorPrimary</item>
     </style>
 

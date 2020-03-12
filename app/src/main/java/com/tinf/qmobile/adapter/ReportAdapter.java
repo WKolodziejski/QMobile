@@ -144,6 +144,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             row.add(matters.get(i).getTitle());
 
             int size = matters.get(i).periods.size();
+            Log.d("report", String.valueOf(size));
 
             if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
                 size--;
