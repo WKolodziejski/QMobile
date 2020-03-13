@@ -11,7 +11,9 @@ import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import io.objectbox.Box;
@@ -20,18 +22,15 @@ import io.objectbox.exception.NonUniqueResultException;
 public class ReportParser2 extends BaseParser {
     private final static String TAG = "ReportParser";
 
-    public ReportParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
+    public ReportParser2(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 
     @Override
-    public void parse(Document page) {
+    public void parse(Document document) {
         Log.i(TAG, "Parsing " + User.getYear(pos));
 
-        Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
-        Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
-
-        Elements tables = page.getElementsByTag("tbody");
+        Elements tables = document.getElementsByTag("tbody");
 
         if (!BuildConfig.DEBUG) {
             Crashlytics.log(Log.ERROR, TAG, tables.toString());
@@ -46,11 +45,11 @@ public class ReportParser2 extends BaseParser {
                     for (int i = 2; i < tables.get(k).childNodeSize() - 1; i++) {
 
                         String matterTitle = formatTitle(rows.get(i).child(0).text());
-                        String absencesTotal = formatNumber(rows.get(i).child(3).text());
                         String clazz = formatClass(rows.get(i).child(2).text());
+                        String absencesTotal = formatNumber(rows.get(i).child(3).text());
+                        String finalMean = formatNumber(rows.get(i).child(4).text());
+                        String situation = rows.get(i).child(rows.get(1).children().size() - 1).text();
                         String qid = formatQID(rows.get(i).child(0).getElementsByTag("q_latente").attr("value"));
-
-                        Log.i(TAG, qid);
 
                         Matter matter = null;
 
@@ -66,186 +65,40 @@ public class ReportParser2 extends BaseParser {
                             e.printStackTrace();
                         }
 
-                        //Log.i(TAG, matterTitle);
-
                         if (matter != null) {
                             matter.setAbsences(absencesTotal.isEmpty() ? -1 : Integer.parseInt(absencesTotal));
+                            matter.setMean(finalMean.isEmpty() ? -1 : Float.parseFloat(finalMean));
                             matter.setTitle(matterTitle);
-
-                            //Log.i(TAG, matterTitle + ": " + matter.getDescription_());
-
-                            if (rows.get(1).children().size() == 11) {
-                                if (matter.periods.size() < 1) {
-                                    matter.periods.add(new Period("Unico"));
-                                }
-                                User.setType(User.Type.UNICO);
-                            } else {
-                                switch (rows.get(1).child(5).text()) {
-                                    case "1E":
-                                        for (int j = matter.periods.size() + 1; j <= 2; j++) {
-                                            matter.periods.add(new Period(Integer.toString(j)));
-                                        }
-                                        User.setType(User.Type.SEMESTRE1);
-                                        break;
-
-                                    case "NB1":
-                                        for (int j = matter.periods.size() + 1; j <= 4; j++) {
-                                            matter.periods.add(new Period(Integer.toString(j)));
-                                        }
-                                        User.setType(User.Type.BIMESTRE);
-                                        break;
-
-                                    case "NS1":
-                                        for (int j = matter.periods.size() + 1; j <= 2; j++) {
-                                            matter.periods.add(new Period(Integer.toString(j)));
-                                        }
-                                        User.setType(User.Type.SEMESTRE2);
-                                        break;
-
-                                    case "1B":
-                                        for (int j = matter.periods.size() + 1; j <= 8; j++) {
-                                            matter.periods.add(new Period(Integer.toString(j)));
-                                        }
-                                        User.setType(User.Type.BIMESTRE2);
-                                        break;
-                                }
-                            }
+                            matter.setSituation(situation);
 
                             for (int j = 0; j < matter.periods.size(); j++) {
                                 Period period = matter.periods.get(j);
 
-                                float grade, gradeFinal, gradeRP;
-                                int absences;
-                                boolean isPeriodValid = true;
-                                String grade_ = "", absences_ = "", gradeRP_ = "", gradeFinal_ = "";
+                                for (int l = 5; l < rows.get(1).children().size(); l++) {
+                                    Element h = rows.get(1).child(l);
 
-                                if (User.getType() == User.Type.UNICO.get()) { //Etapa única
-                                    grade_ = formatNumber(rows.get(i).child(5).text());
-                                    absences_ = formatNumber(rows.get(i).child(6).text());
-                                    gradeRP_ = formatNumber(rows.get(i).child(7).text());
-                                    gradeFinal_ = formatNumber(rows.get(i).child(9).text());
+                                    if (h.children().size() > 0) {
+                                        if (h.child(0).attr("title").equals(period.getTitle_())) {
+                                            String grade_ = formatNumber(rows.get(i).child(l).text());
+                                            String absences_ = formatNumber(rows.get(i).child(++l).text());
 
-                                } else {
-                                    if (User.getType() == User.Type.SEMESTRE1.get()) { //Semestre tabela completa
-                                        switch (j) {
-                                            case 0:
-                                                grade_ = formatNumber(rows.get(i).child(5).text());
-                                                absences_ = formatNumber(rows.get(i).child(6).text());
-                                                gradeRP_ = formatNumber(rows.get(i).child(7).text());
-                                                gradeFinal_ = formatNumber(rows.get(i).child(9).text());
-                                                break;
-                                            case 1:
-                                                grade_ = formatNumber(rows.get(i).child(10).text());
-                                                absences_ = formatNumber(rows.get(i).child(11).text());
-                                                gradeRP_ = formatNumber(rows.get(i).child(12).text());
-                                                gradeFinal_ = formatNumber(rows.get(i).child(14).text());
-                                                break;
-                                            default: isPeriodValid = false;
-                                        }
-                                    } else if (User.getType() == User.Type.SEMESTRE2.get()) { //Semestre tabela simples
-                                        switch (j) {
-                                            case 0:
-                                                grade_ = formatNumber(rows.get(i).child(5).text());
-                                                absences_ = formatNumber(rows.get(i).child(6).text());
-                                                break;
-                                            case 1:
-                                                grade_ = formatNumber(rows.get(i).child(7).text());
-                                                absences_ = formatNumber(rows.get(i).child(8).text());
-                                                break;
-                                            default: isPeriodValid = false;
-                                        }
-                                    } else if (User.getType() == User.Type.BIMESTRE.get()) { //Bimestre
-                                        switch (j) {
-                                            case 0:
-                                                grade_ = formatNumber(rows.get(i).child(5).text());
-                                                absences_ = formatNumber(rows.get(i).child(6).text());
-                                                break;
-                                            case 1:
-                                                grade_ = formatNumber(rows.get(i).child(7).text());
-                                                absences_ = formatNumber(rows.get(i).child(8).text());
-                                                break;
-                                            case 2:
-                                                grade_ = formatNumber(rows.get(i).child(9).text());
-                                                absences_ = formatNumber(rows.get(i).child(10).text());
-                                                break;
-                                            case 3:
-                                                grade_ = formatNumber(rows.get(i).child(11).text());
-                                                absences_ = formatNumber(rows.get(i).child(12).text());
-                                                break;
-                                            default: isPeriodValid = false;
-                                        }
-                                    } else if (User.getType() == User.Type.BIMESTRE2.get()) { //Bimestre com conceito
-                                        switch (j) {
-                                            case 0:
-                                                grade_ = formatNumber(rows.get(i).child(5).text());
-                                                absences_ = formatNumber(rows.get(i).child(6).text());
-                                                gradeFinal_ = formatNumber(rows.get(i).child(9).text());
-                                                break;
+                                            period.setGrade(grade_.isEmpty() ? -1 : Float.parseFloat(grade_));
+                                            period.setAbsences(absences_.isEmpty() ? -1 : Integer.parseInt(absences_));
 
-                                            case 1:
-                                                grade_ = formatNumber(rows.get(i).child(7).text());
-                                                absences_ = formatNumber(rows.get(i).child(8).text());
-                                                break;
+                                            periodBox.put(period);
 
-                                            case 2:
-                                                grade_ = formatNumber(rows.get(i).child(10).text());
-                                                absences_ = formatNumber(rows.get(i).child(11).text());
-                                                gradeFinal_ = formatNumber(rows.get(i).child(14).text());
-                                                break;
+                                            if (period.isSub_() && ((j + 1) % 2 == 0)) {
+                                                period = matter.periods.get(j - 1);
 
-                                            case 3:
-                                                grade_ = formatNumber(rows.get(i).child(12).text());
-                                                absences_ = formatNumber(rows.get(i).child(13).text());
-                                                break;
+                                                String gradeFinal_ = formatNumber(rows.get(i).child(++l).text());
+                                                float gradeFinal = gradeFinal_.isEmpty() ? -1 : Float.parseFloat(gradeFinal_);
 
-                                            case 4:
-                                                grade_ = formatNumber(rows.get(i).child(15).text());
-                                                absences_ = formatNumber(rows.get(i).child(16).text());
-                                                gradeFinal_ = formatNumber(rows.get(i).child(19).text());
-                                                break;
+                                                period.setGradeFinal(gradeFinal);
 
-                                            case 5:
-                                                grade_ = formatNumber(rows.get(i).child(17).text());
-                                                absences_ = formatNumber(rows.get(i).child(18).text());
-                                                break;
-
-                                            case 6:
-                                                grade_ = formatNumber(rows.get(i).child(20).text());
-                                                absences_ = formatNumber(rows.get(i).child(21).text());
-                                                gradeFinal_ = formatNumber(rows.get(i).child(24).text());
-                                                break;
-
-                                            case 7:
-                                                grade_ = formatNumber(rows.get(i).child(22).text());
-                                                absences_ = formatNumber(rows.get(i).child(23).text());
-                                                break;
-
-                                            default: isPeriodValid = false;
+                                                periodBox.put(period);
+                                            }
                                         }
                                     }
-                                }
-
-                                grade = grade_.isEmpty() ? -1 : Float.parseFloat(grade_);
-                                absences = absences_.isEmpty() ? -1 : Integer.parseInt(absences_);
-                                gradeFinal = gradeFinal_.isEmpty() ? -1 : Float.parseFloat(gradeFinal_);
-                                gradeRP = gradeRP_.isEmpty() ? -1 : Float.parseFloat(gradeRP_);
-
-                                //Log.d(TAG, period.getTitle());
-                                //Log.d(TAG, "Nota " + grade);
-                                //Log.d(TAG, "Nota Final " + gradeFinal);
-                                //Log.d(TAG, "Nota RP " + gradeRP);
-                                //Log.d(TAG, "Faltas " + absences);
-
-                                if (isPeriodValid) {
-
-                                    period.setGrade(grade);
-                                    period.setAbsences(absences);
-                                    period.setGradeFinal(gradeFinal);
-                                    period.setGradeRP(gradeRP);
-
-                                    period.matter.setTarget(matter);
-                                    periodBox.put(period);
-
                                 }
                             }
                             matterBox.put(matter);
@@ -254,10 +107,6 @@ public class ReportParser2 extends BaseParser {
                 }
             }
         }
-    }
-
-    private String formatNumber(String s){
-        return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
     }
 
     private String formatTitle(String s) {
@@ -276,6 +125,11 @@ public class ReportParser2 extends BaseParser {
 
     private String formatQID(String s) {
         return s.substring(s.indexOf("=") + 1).trim();
+    }
+
+    @Override
+    protected String formatNumber(String s){
+        return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
     }
 
 }

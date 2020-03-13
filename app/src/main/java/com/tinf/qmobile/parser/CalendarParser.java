@@ -25,13 +25,13 @@ import java.util.Calendar;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.utility.Utils.getDate;
-import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 
 public class CalendarParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "CalendarioParser";
-    private Client.OnFinish onFinish;
+    private BaseParser.OnFinish onFinish;
 
-    public CalendarParser(Client.OnFinish onFinish) {
+    public CalendarParser(BaseParser.OnFinish onFinish) {
         this.onFinish = onFinish;
     }
 
@@ -290,7 +290,7 @@ public class CalendarParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_CALENDARIO, 0);
+        onFinish.onFinish(PG_CALENDAR, 0);
     }
 
     private String formatTitle(String s) {

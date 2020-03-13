@@ -7,14 +7,14 @@ public interface OnResponse {
     String INDEX = "/qacademico/index.asp?t=";
     int PG_LOGIN = 1001;
     int PG_HOME = 2000;
-    int PG_DIARIOS = 2071;
-    int PG_BOLETIM = 2032;
-    int PG_HORARIO = 2010;
-    int PG_MATERIAIS = 2061;
-    int PG_CALENDARIO = 2020;
-    int PG_ERRO = 1;
-    int PG_GERADOR = 2;
-    int PG_ACESSO_NEGADO = 3;
+    int PG_JOURNALS = 2071;
+    int PG_REPORT = 2032;
+    int PG_SCHEDULE = 2010;
+    int PG_MATERIALS = 2061;
+    int PG_CALENDAR = 2020;
+    int PG_ERROR = 1;
+    int PG_GENERATOR = 2;
+    int PG_ACCESS_DENIED = 3;
     int PG_FETCH_YEARS = 4;
     int PG_CLASSES = 5;
 

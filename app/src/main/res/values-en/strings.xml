@@ -13,14 +13,6 @@
     <string name="title_home">Home</string>
     <string name="dialog_quit_msg">Are you sure?</string>
     <string name="title_horario">Schedule</string>
-    <string name="boletim_TFaltas">TA</string>
-    <string name="boletim_Faltas">A</string>
-    <string name="boletim_Nota">G</string>
-    <string name="boletim_RP">RT</string>
-    <string name="boletim_NotaFinal">FG</string>
-    <string name="boletim_Conceito">C</string>
-    <string name="boletim_PrimeiraEtapa">1st</string>
-    <string name="boletim_SegundaEtapa">2nd</string>
     <string name="dialog_date_change">Select a year</string>
     <string name="dialog_date_confirm">Change</string>
     <string name="dialog_cancel">Cancel</string>
@@ -44,7 +36,6 @@
     <string name="materiais_empty">No materials available for now</string>
     <string name="calendar_end_period">Date out of school year range</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
-    <string name="boletim_Materia">Subject</string>
     <string name="home_last_login">Last updated in %1s</string>
     <string name="home_footer">Check your grades on the website</string>
     <string name="home_refresh">Refresh</string>
@@ -132,8 +123,6 @@
     <string name="event_removed">Event deleted</string>
     <string name="diarios_EtapaUnica">Single Stage</string>
     <string name="diarios_expand">Expand</string>
-    <string name="boletim_QuartaEtapa">4th</string>
-    <string name="boletim_TerceiraEtapa">3rd</string>
     <string name="event_save">Save</string>
     <string name="action_search">Search</string>
     <string name="pref_dark_mode">Dark Mode</string>
@@ -159,4 +148,10 @@
     <string name="dialog_create_title">Create new</string>
     <string name="contextual_remove_txt_plu">Are you sure you want to delete %1$s files?</string>
     <string name="contextual_remove_txt_sing">Are you sure you want to delete this file?</string>
+    <string name="report_absences">Absences</string>
+    <string name="report_absencesTotal">Total Absences</string>
+    <string name="report_matter">Subject</string>
+    <string name="report_mean">Mean</string>
+    <string name="report_meanFinal">Final Mean</string>
+    <string name="report_situation">Situation</string>
 </resources>

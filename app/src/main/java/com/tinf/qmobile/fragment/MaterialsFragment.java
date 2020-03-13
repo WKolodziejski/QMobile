@@ -37,12 +37,9 @@ import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.material.Material;
-import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
-import org.mozilla.javascript.tools.jsc.Main;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +56,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
 import static com.tinf.qmobile.network.Client.isConnected;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class MaterialsFragment extends Fragment implements OnUpdate {
@@ -153,7 +150,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
         getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        Client.get().load(PG_MATERIAIS);
+        Client.get().load(PG_MATERIALS);
 
         if (!hasPermission())
             requestPermission();
@@ -348,7 +345,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     @Override
     public void onDateChanged() {
         getActivity().setTitle(User.getYears()[pos]);
-        Client.get().load(PG_MATERIAIS);
+        Client.get().load(PG_MATERIALS);
     }
 
     @Override

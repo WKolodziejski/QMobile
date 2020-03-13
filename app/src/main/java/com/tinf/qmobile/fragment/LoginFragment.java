@@ -37,7 +37,6 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
-import static com.tinf.qmobile.utility.User.getYear;
 
 public class LoginFragment extends Fragment implements OnResponse {
     private static String TAG = "LoginFragment";
@@ -129,7 +128,7 @@ public class LoginFragment extends Fragment implements OnResponse {
         textView.setVisibility(View.VISIBLE);
         btn.setClickable(false);
 
-        if (pg == PG_GERADOR) {
+        if (pg == PG_GENERATOR) {
             textView.setText(getResources().getString(R.string.login_token));
 
         } else if (pg == PG_LOGIN) {

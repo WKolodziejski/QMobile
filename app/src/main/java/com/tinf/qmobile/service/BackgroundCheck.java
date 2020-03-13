@@ -5,7 +5,6 @@ import android.content.Intent;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.network.Client;
@@ -34,7 +33,7 @@ public class BackgroundCheck extends JobService {
                     Client.get().loadYear(0);
                 }
 
-                if (pg == PG_HORARIO) {
+                if (pg == PG_SCHEDULE) {
                     errorOccurred = false;
                     Client.get().removeOnResponseListener(this);
                     onStopJob(job);

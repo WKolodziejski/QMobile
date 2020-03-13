@@ -20,15 +20,15 @@ import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 import static com.tinf.qmobile.utility.Utils.getDate;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 
 public class MateriaisParser extends AsyncTask<String, Void, Void> {
     private final static String TAG = "MateriaisParser";
-    private Client.OnFinish onFinish;
+    private BaseParser.OnFinish onFinish;
     private int pos;
     private boolean notify;
 
-    public MateriaisParser(int pos, boolean notify, Client.OnFinish onFinish) {
+    public MateriaisParser(int pos, boolean notify, BaseParser.OnFinish onFinish) {
         this.pos = pos;
         this.notify = notify;
         this.onFinish = onFinish;
@@ -124,7 +124,7 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_MATERIAIS, pos);
+        onFinish.onFinish(PG_MATERIALS, pos);
     }
 
 }

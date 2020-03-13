@@ -15,7 +15,7 @@ import com.tinf.qmobile.network.Client;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 
 
 public class CalendarActivity extends AppCompatActivity {
@@ -49,7 +49,7 @@ public class CalendarActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            Client.get().load(PG_CALENDARIO);
+            Client.get().load(PG_CALENDAR);
             return true;
         } else if (item.getItemId() == R.id.action_today) {
             Client.get().requestScroll();

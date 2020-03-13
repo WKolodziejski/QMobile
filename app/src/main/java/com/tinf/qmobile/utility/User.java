@@ -52,7 +52,6 @@ public class User {
     private static final String LAST = ".Last";
     private static final String YEARS = ".Years";
     private static final String URL = ".Url";
-    private static final String TYPE = ".Type";
 
     public static boolean isValid() {
         return getInfo().getBoolean(VALID, false);
@@ -68,99 +67,6 @@ public class User {
 
     public static String getURL() {
        return getInfo().getString(URL, IFSUL);
-    }
-
-    public static void setType(Type type) {
-        getEditor().putInt(TYPE, type.get()).apply();
-    }
-
-    public static int getType() {
-        return getInfo().getInt(TYPE, 0);
-    }
-
-    public static String[] getReportList(Context context) {
-        String[] list = null;
-
-        switch (User.getType()) {
-            case 0 :
-                list = new String[]{
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_RP),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_RP),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                break;
-            case 1:
-                list = new String[]{
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                break;
-            case 2:
-                list = new String[]{
-                        context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_RP),
-                        context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                break;
-            case 3:
-                list = new String[]{
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                break;
-            case 4:
-                list = new String[]{
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_NotaFinal),
-                        context.getResources().getString(R.string.boletim_QuartaEtapa) + " " + context.getResources().getString(R.string.boletim_Conceito),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                break;
-            case 5:
-                list = new String[]{
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_PrimeiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_SegundaEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Nota),
-                        context.getResources().getString(R.string.boletim_TerceiraEtapa) + " " + context.getResources().getString(R.string.boletim_Faltas),
-                        context.getResources().getString(R.string.boletim_TFaltas)
-                };
-                break;
-        }
-
-        return list;
     }
 
     public static String getName() {

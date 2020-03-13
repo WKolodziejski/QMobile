@@ -88,17 +88,12 @@
     <string name="login_loading">Carregando</string>
     <string name="login_help">Ajuda?</string>
 
-    <string name="boletim_TFaltas">TF</string>
-    <string name="boletim_Nota">N</string>
-    <string name="boletim_Materia">Matéria</string>
-    <string name="boletim_Faltas">F</string>
-    <string name="boletim_RP">RP</string>
-    <string name="boletim_NotaFinal">NF</string>
-    <string name="boletim_Conceito">C</string>
-    <string name="boletim_PrimeiraEtapa">1ª</string>
-    <string name="boletim_SegundaEtapa">2ª</string>
-    <string name="boletim_TerceiraEtapa">3ª</string>
-    <string name="boletim_QuartaEtapa">4ª</string>
+    <string name="report_absences">Faltas</string>
+    <string name="report_absencesTotal">Faltas Totais</string>
+    <string name="report_matter">Matéria</string>
+    <string name="report_mean">Média</string>
+    <string name="report_meanFinal">Média Final</string>
+    <string name="report_situation">Situação</string>
 
     <string name="diarios_PrimeiraEtapa">Primeira Etapa</string>
     <string name="diarios_SegundaEtapa">Segunda Etapa</string>

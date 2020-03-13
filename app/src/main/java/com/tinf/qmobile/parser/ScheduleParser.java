@@ -14,7 +14,6 @@ import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
@@ -22,14 +21,14 @@ import java.util.List;
 import io.objectbox.Box;
 import io.objectbox.relation.ToMany;
 
-import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 
 public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
     private final static String TAG = "HorarioParser";
-    private Client.OnFinish onFinish;
+    private BaseParser.OnFinish onFinish;
     private int pos;
 
-    public ScheduleParser(int pos, Client.OnFinish onFinish) {
+    public ScheduleParser(int pos, BaseParser.OnFinish onFinish) {
         this.pos = pos;
         this.onFinish = onFinish;
         Log.i(TAG, "New instance");
@@ -130,7 +129,7 @@ public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
-        onFinish.onFinish(PG_HORARIO, pos);
+        onFinish.onFinish(PG_SCHEDULE, pos);
     }
 
     private int getStartHour(String time) {

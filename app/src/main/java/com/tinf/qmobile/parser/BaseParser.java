@@ -1,22 +1,33 @@
 package com.tinf.qmobile.parser;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import io.objectbox.Box;
+
 
 public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
-    private Client.OnFinish onFinish;
+    private OnFinish onFinish;
     private OnError onError;
     protected final int pos, page;
     protected final boolean notify;
 
-    public BaseParser(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
+    protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+    protected Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
+    protected Box<Journal> journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
+
+    public BaseParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
         this.page = page;
         this.pos = pos;
         this.notify = notify;
@@ -26,6 +37,7 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(String... strings) {
+        Log.i(String.valueOf(page), String.valueOf(User.getYear(pos)) + String.valueOf(User.getPeriod(pos)));
         try {
             return DataBase.get().getBoxStore().callInTx(() -> {
                 parse(Jsoup.parse(strings[0]));
@@ -50,6 +62,18 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
         void onError(int pg, String error);
     }
 
-    public abstract void parse(Document page);
+    public interface OnFinish {
+        void onFinish(int pg, int year);
+    }
+
+    public abstract void parse(Document document);
+
+    protected String formatNumber(String s) {
+        return s.substring(s.indexOf(":") + 1).trim();
+    }
+
+    protected String formatGrade(String s) {
+        return s.startsWith(",") ? "" : s.replaceAll(",", ".");
+    }
 
 }

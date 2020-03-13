@@ -8,11 +8,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -28,11 +23,12 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
-import com.tinf.qmobile.parser.JournalParser;
+import com.tinf.qmobile.parser.JournalParser3;
 import com.tinf.qmobile.parser.MateriaisParser;
-import com.tinf.qmobile.parser.ReportParser;
+import com.tinf.qmobile.parser.ReportParser2;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.utility.User;
 
@@ -58,19 +54,17 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.network.OnResponse.IFMT;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.network.OnResponse.PG_ACESSO_NEGADO;
-import static com.tinf.qmobile.network.OnResponse.PG_BOLETIM;
-import static com.tinf.qmobile.network.OnResponse.PG_CALENDARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_ACCESS_DENIED;
+import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
+import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
-import static com.tinf.qmobile.network.OnResponse.PG_DIARIOS;
+import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
 import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
-import static com.tinf.qmobile.network.OnResponse.PG_GERADOR;
-import static com.tinf.qmobile.network.OnResponse.PG_HOME;
-import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_GENERATOR;
+import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIAIS;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class Client {
@@ -124,7 +118,7 @@ public class Client {
         return instance;
     }
 
-    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter, OnFinish onFinish) {
+    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter, BaseParser.OnFinish onFinish) {
         if (!isValid) {
             if (!isLogging) {
                 login();
@@ -142,19 +136,19 @@ public class Client {
                             callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
 
                         } else if (r == Resp.OK) {
-                            if (pg == PG_DIARIOS) {
-                                new JournalParser(pos, notify, onFinish).execute(response);
+                            if (pg == PG_JOURNALS) {
+                                new JournalParser3(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_BOLETIM) {
-                                new ReportParser(pos, onFinish).execute(response);
+                            } else if (pg == PG_REPORT) {
+                                new ReportParser2(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_HORARIO) {
+                            } else if (pg == PG_SCHEDULE) {
                                 new ScheduleParser(pos, onFinish).execute(response);
 
-                            } else if (pg == PG_MATERIAIS) {
+                            } else if (pg == PG_MATERIALS) {
                                 new MateriaisParser(pos, notify, onFinish).execute(response);
 
-                            } else if (pg == PG_CALENDARIO) {
+                            } else if (pg == PG_CALENDAR) {
                                 new CalendarParser(onFinish).execute(response);
 
                             } else if (pg == PG_CLASSES) {
@@ -203,32 +197,32 @@ public class Client {
 
     public void load(Matter matter) {
         createRequest(PG_CLASSES,
-                INDEX + PG_DIARIOS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
+                INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
                 pos, POST, new HashMap<>(), false, matter, this::callOnFinish);
     }
 
-    public void load(int pg, int pos, OnFinish onFinish) {
+    public void load(int pg, int pos, BaseParser.OnFinish onFinish) {
         int method = GET;
         String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
 
         if (pg == PG_FETCH_YEARS) {
-            url = INDEX + PG_DIARIOS;
+            url = INDEX + PG_JOURNALS;
         } else {
             switch (pg) {
-                case PG_DIARIOS: method = POST;
+                case PG_JOURNALS: method = POST;
                     form.put("ANO_PERIODO2", User.getYear(pos) + "_" + User.getPeriod(pos));
                     break;
 
-                case PG_BOLETIM: method = GET;
+                case PG_REPORT: method = GET;
                     url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
                     break;
 
-                case PG_HORARIO: method = GET;
+                case PG_SCHEDULE: method = GET;
                     url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
                     break;
 
-                case PG_MATERIAIS: method = POST;
+                case PG_MATERIALS: method = POST;
                     form.put("ANO_PERIODO", User.getYear(pos) + "_" + User.getPeriod(pos));
                     break;
             }
@@ -356,7 +350,7 @@ public class Client {
 
                     if (msg.contains("inativo")) {
                         User.clearInfos();
-                        callOnAccessDenied(PG_ACESSO_NEGADO, msg);
+                        callOnAccessDenied(PG_ACCESS_DENIED, msg);
                         return Resp.EGRESS;
 
                     }
@@ -415,7 +409,7 @@ public class Client {
 
                     listener.onResponse(response);
 
-                }, error -> onError(PG_GERADOR, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+                }, error -> onError(PG_GENERATOR, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -460,7 +454,7 @@ public class Client {
                         return Priority.IMMEDIATE;
                     }
 
-        }, PG_GERADOR,0);
+        }, PG_GENERATOR,0);
     }
 
     public void close() {
@@ -480,7 +474,7 @@ public class Client {
         if (!isConnected()) {
             msg = getContext().getResources().getString(R.string.client_no_connection);
         } else {
-            if (pg == PG_GERADOR) {
+            if (pg == PG_GENERATOR) {
                 msg = getContext().getResources().getString(R.string.client_host);
             } else if (pg == PG_LOGIN) {
                 isLogging = false;
@@ -652,9 +646,9 @@ public class Client {
     }
 
     public void loadYear(int pos) {
-        load(PG_DIARIOS, pos, (pg, year) -> {
-                load(PG_BOLETIM, year, (pg1, year1) -> {
-                    load(PG_HORARIO, year1, (pg2, year2) -> {
+        load(PG_JOURNALS, pos, (pg, year) -> {
+                load(PG_REPORT, year, (pg1, year1) -> {
+                    load(PG_SCHEDULE, year1, (pg2, year2) -> {
                         callOnFinish(pg, year2);
                     });
                     callOnFinish(pg, year1);
@@ -662,59 +656,5 @@ public class Client {
             callOnFinish(pg, year);
         });
     }
-
-    public interface OnFinish {
-        void onFinish(int pg, int year);
-    }
-
-    /*public class JavaScriptHandler {
-
-        @JavascriptInterface
-        public void handleLogin(String page) {
-            Client.Resp r = testResponse(page);
-
-            if (r == Client.Resp.DENIED) {
-                callOnAccessDenied(PG_LOGIN, "");
-
-            } else if (r == Client.Resp.OK) {
-                isValid = true;
-
-                Document document = Jsoup.parse(page);
-                String name = document.getElementsByClass("barraRodape").get(1).text();
-
-                User.setName(name);
-                User.setLastLogin(new Date().getTime());
-
-                isLogging = false;
-
-                //String cod = document.getElementsByTag("q_latente").get(4).val();
-                //cod = cod.substring(cod.indexOf("=") + 1);
-
-                //downloadImage(cod);
-
-                String renewal = document.getElementsByClass("conteudoLink").get(2).text();
-
-                if (renewal.contains("matrícula")) {
-                    callOnRenewalAvailable();
-                }
-
-                Element body = document.getElementById("modalmensagens");
-
-                document.outputSettings(new Document.OutputSettings().prettyPrint(false));
-                document.select("br").after("\\n");
-
-                if (body != null) {
-                    String title = body.getElementsByClass("subtitulo").first().text().replaceAll("\\\\n", "\n").trim();
-                    String message = body.getElementsByClass("conteudoTexto").first().getElementsByTag("p").first().text().replaceAll("\\\\n", "\n").trim();
-
-                    callOnDialog(webView, title, message);
-                }
-
-                callOnFinish(PG_LOGIN, 0);
-
-            }
-
-        }
-    }*/
 
 }

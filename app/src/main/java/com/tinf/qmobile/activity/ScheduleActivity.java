@@ -1,6 +1,5 @@
 package com.tinf.qmobile.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,7 +7,6 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 import com.tinf.qmobile.network.Client;
@@ -18,9 +16,8 @@ import java.util.Objects;
 
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.network.OnResponse.PG_HORARIO;
+import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 
 public class ScheduleActivity extends AppCompatActivity {
 
@@ -55,7 +52,7 @@ public class ScheduleActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         } else if (item.getItemId() == R.id.action_refresh) {
-            Client.get().load(PG_HORARIO);
+            Client.get().load(PG_SCHEDULE);
             return true;
         }
         return super.onOptionsItemSelected(item);

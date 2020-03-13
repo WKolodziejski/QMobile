@@ -19,6 +19,7 @@ import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.report.TableCellMatterViewHolder;
+import com.tinf.qmobile.holder.report.TableCellSituationViewHolder;
 import com.tinf.qmobile.holder.report.TableCellViewHolder;
 import com.tinf.qmobile.holder.report.TableColumnHeaderViewHolder;
 import com.tinf.qmobile.holder.report.TableColumnMatterHeaderViewHolder;
@@ -48,12 +49,8 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
     public ReportAdapter(Context context, TableView tableView) {
         this.context = context;
-        this.columnHeader = new ArrayList<>();
 
         Client.get().addOnUpdateListener(this);
-
-        columnHeader.add(context.getResources().getString(R.string.boletim_Materia));
-        columnHeader.addAll(Arrays.asList(User.getReportList(context)));
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
@@ -134,35 +131,87 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                 .build()
                 .find());
 
+        columnHeader = new ArrayList<>();
         rowHeader = new ArrayList<>();
         cells = new ArrayList<>();
+
+        if (!matters.isEmpty()) {
+            columnHeader.add(context.getResources().getString(R.string.report_matter));
+            columnHeader.add(context.getResources().getString(R.string.report_absencesTotal));
+            columnHeader.add(context.getResources().getString(R.string.report_meanFinal));
+
+            for (int i = 0; i < matters.get(0).periods.size(); i++) {
+                Period period = matters.get(0).periods.get(i);
+
+                if (!period.isSub_()) {
+
+                    columnHeader.add(period.getTitle());
+
+                    boolean skip = false;
+
+                    if (i < matters.get(0).periods.size() - 1) {
+                        period = matters.get(0).periods.get(i + 1);
+
+                        if (period.isSub_()) {
+                            columnHeader.add(period.getTitle());
+
+                            period = matters.get(0).periods.get(i);
+
+                            columnHeader.add(context.getResources().getString(R.string.report_mean) + " " + period.getTitle());
+
+                            skip = true;
+                        }
+                    }
+
+                    columnHeader.add(context.getResources().getString(R.string.report_absences) + " " + period.getTitle());
+
+                    if (skip)
+                        i++;
+                }
+            }
+
+            columnHeader.add(context.getResources().getString(R.string.report_situation));
+        }
 
         for (int i = 0; i < matters.size(); i++) {
             ArrayList<String> row = new ArrayList<>();
 
             rowHeader.add(matters.get(i));
             row.add(matters.get(i).getTitle());
+            row.add(matters.get(i).getAbsences());
+            row.add(matters.get(i).getMean());
 
-            int size = matters.get(i).periods.size();
-            Log.d("report", String.valueOf(size));
-
-            if (User.getType() == User.Type.BIMESTRE2.get() || User.getType() == User.Type.TRIMESTRE.get())
-                size--;
-
-            for (int j = 0; j < size; j++) {
+            for (int j = 0; j < matters.get(i).periods.size(); j++) {
                 Period period = matters.get(i).periods.get(j);
-                row.add(period.getGrade());
-                if (j % 2 == 0 || User.getType() != User.Type.BIMESTRE2.get()) {
+
+                if (!period.isSub_()) {
+
+                    row.add(period.getGrade());
+
+                    boolean skip = false;
+
+                    if (j < matters.get(i).periods.size() - 1) {
+                        period = matters.get(i).periods.get(j + 1);
+
+                        if (period.isSub_()) {
+                            row.add(period.getGrade());
+                            row.add(matters.get(i).getMean());
+                            skip = true;
+                        }
+
+                        period = matters.get(i).periods.get(j);
+
+                    }
+
                     row.add(period.getAbsences());
-                }
-                if (User.getType() == User.Type.SEMESTRE1.get() || User.getType() == User.Type.UNICO.get()) {
-                    row.add(period.getGradeRP());
-                    row.add(period.getGradeFinal());
-                } else if (User.getType() == User.Type.BIMESTRE2.get() && j % 2 == 0) {
-                    row.add(period.getGradeFinal());
+
+                    if (skip)
+                        j++;
                 }
             }
-            row.add(matters.get(i).getAbsences());
+
+            row.add(matters.get(i).getSituation());
+
             cells.add(row);
         }
 
@@ -191,9 +240,14 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         if (viewType == 0)
             return new TableCellMatterViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.table_cell_matter, parent, false));
-         else
-             return new TableCellViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.table_cell_common, parent, false));
+
+        else if (viewType == columnHeader.size() - 1)
+            return new TableCellSituationViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.table_cell_situation, parent, false));
+
+        else
+            return new TableCellViewHolder(LayoutInflater.from(context)
+            .inflate(R.layout.table_cell_common, parent, false));
     }
 
     @Override
@@ -201,6 +255,11 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         if (columnPosition == 0) {
             TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
             h.matter.setText(cells.get(rowPosition).get(columnPosition));
+
+        } else if (columnPosition == columnHeader.size() - 1) {
+            TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
+            h.situation.setText(cells.get(rowPosition).get(columnPosition));
+
         } else {
             TableCellViewHolder h = (TableCellViewHolder) holder;
             h.text.setText(cells.get(rowPosition).get(columnPosition));
@@ -210,17 +269,17 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @NonNull
     @Override
     public AbstractViewHolder onCreateColumnHeaderViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == 0)
+        if (viewType == 0 || viewType == columnHeader.size() - 1)
             return new TableColumnMatterHeaderViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.table_column_matter, parent, false));
         else
-        return new TableColumnHeaderViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.table_column, parent, false));
+            return new TableColumnHeaderViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.table_column, parent, false));
     }
 
     @Override
     public void onBindColumnHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable String columnHeaderItemModel, int columnPosition) {
-        if (columnPosition == 0) {
+        if (columnPosition == 0 ||  columnPosition == columnHeader.size() - 1) {
             TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
             h.matter.setText(columnHeader.get(columnPosition));
         } else {

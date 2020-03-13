@@ -20,7 +20,9 @@ public class Matter implements Queryable {
     @ColorInt private int color_;
     private String title_;
     private String description_;
+    private String situation_;
     private int absences_ = -1;
+    private float mean_ = -1;
     private int year_;
     private int period_;
     public ToMany<Period> periods;
@@ -40,8 +42,16 @@ public class Matter implements Queryable {
         return absences_ == -1 ? "" : String.valueOf(absences_);
     }
 
+    public String getMean() {
+        return mean_ == -1 ? "" : String.valueOf(mean_);
+    }
+
     public void setAbsences(int absences) {
         this.absences_ = absences;
+    }
+
+    public void setMean(float mean) {
+        this.mean_ = mean;
     }
 
     @ColorInt
@@ -57,14 +67,22 @@ public class Matter implements Queryable {
         return title_ == null ? description_ : title_;
     }
 
+    public String getSituation() {
+        return situation_ == null ? "" : situation_;
+    }
+
     public void setTitle(String title) {
         this.title_ = title;
+    }
+
+    public void setSituation(String situation) {
+        this.situation_ = situation;
     }
 
     public Period getLastPeriod() {
         int k = 0;
         for (int j = 0; j < periods.size(); j++) {
-            if (!periods.get(j).journals.isEmpty()) {
+            if (!periods.get(j).journals.isEmpty() && !periods.get(j).isSub_()) {
                 k = j;
             }
         }
@@ -116,6 +134,10 @@ public class Matter implements Queryable {
         return absences_;
     }
 
+    public float getMean_() {
+        return mean_;
+    }
+
     public int getYear_() {
         return year_;
     }
@@ -126,6 +148,10 @@ public class Matter implements Queryable {
 
     public String getDescription_() {
         return description_;
+    }
+
+    public String getSituation_() {
+        return situation_;
     }
 
     @Override

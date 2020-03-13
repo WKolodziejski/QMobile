@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     break;
                 case R.id.navigation_notas: Client.get().loadYear(pos);
                     break;
-                case R.id.navigation_materiais: Client.get().load(PG_MATERIAIS);
+                case R.id.navigation_materiais: Client.get().load(PG_MATERIALS);
                     break;
             }
         } else {
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .create()
                     .show();
 
-        } else if (pg == PG_ACESSO_NEGADO) {
+        } else if (pg == PG_ACCESS_DENIED) {
             new MaterialAlertDialogBuilder(MainActivity.this)
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(message)

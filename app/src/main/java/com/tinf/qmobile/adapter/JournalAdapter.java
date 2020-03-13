@@ -168,7 +168,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 if (!matter.periods.get(i).journals.isEmpty()) {
                     list.add(new Header(matter.periods.get(i)));
                     list.addAll(matter.periods.get(i).journals);
-                    list.add(new FooterPeriod(matter.periods.get(i)));
+                    if (!matter.periods.get(i).isSub_())
+                        list.add(new FooterPeriod(matter.periods.get(i)));
                 }
             }
         }

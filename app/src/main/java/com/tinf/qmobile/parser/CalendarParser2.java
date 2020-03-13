@@ -27,7 +27,7 @@ import static com.tinf.qmobile.utility.Utils.getDate;
 public class CalendarParser2 extends BaseParser {
     private final static String TAG = "CalendarioParser";
 
-    public CalendarParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
+    public CalendarParser2(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 

@@ -25,7 +25,7 @@ import static com.tinf.qmobile.utility.Utils.getDate;
 public class MaterialsParser2 extends BaseParser {
     private final static String TAG = "MateriaisParser";
 
-    public MaterialsParser2(int page, int pos, boolean notify, Client.OnFinish onFinish, OnError onError) {
+    public MaterialsParser2(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 
