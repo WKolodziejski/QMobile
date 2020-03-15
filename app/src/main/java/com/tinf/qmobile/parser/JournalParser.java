@@ -8,7 +8,6 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.calendar.base.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -28,9 +27,9 @@ import io.objectbox.query.QueryBuilder;
 
 import static com.tinf.qmobile.utility.Utils.getDate;
 
-public class JournalParser3 extends BaseParser {
+public class JournalParser extends BaseParser {
 
-    public JournalParser3(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public JournalParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 

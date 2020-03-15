@@ -26,17 +26,15 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
-import com.tinf.qmobile.parser.JournalParser3;
-import com.tinf.qmobile.parser.MateriaisParser;
-import com.tinf.qmobile.parser.ReportParser2;
+import com.tinf.qmobile.parser.JournalParser;
+import com.tinf.qmobile.parser.MaterialsParser;
+import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.utility.User;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.io.File;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -45,11 +43,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
@@ -137,19 +133,19 @@ public class Client {
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_JOURNALS) {
-                                new JournalParser3(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new JournalParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_REPORT) {
-                                new ReportParser2(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new ReportParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_SCHEDULE) {
-                                new ScheduleParser(pos, onFinish).execute(response);
+                                new ScheduleParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_MATERIALS) {
-                                new MateriaisParser(pos, notify, onFinish).execute(response);
+                                new MaterialsParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_CALENDAR) {
-                                new CalendarParser(onFinish).execute(response);
+                                new CalendarParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_CLASSES) {
                                 new ClassParser(matter, pg, pos, notify, onFinish, this::callOnError).execute(response);
@@ -188,10 +184,6 @@ public class Client {
     }
 
     public void load(int pg) {
-        load(pg, pos, this::callOnFinish);
-    }
-
-    public void load(int pg, int pos) {
         load(pg, pos, this::callOnFinish);
     }
 
@@ -292,48 +284,6 @@ public class Client {
         }, PG_LOGIN, 0));
     }
 
-    /*public void login(Context context) {
-        callOnStart(PG_LOGIN, pos);
-
-        isLogging = true;
-
-        webView = new WebView(context);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.addJavascriptInterface(new JavaScriptHandler(), "handler");
-        webView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-
-                Log.d("Webview", url);
-
-                if (url.contains(String.valueOf(PG_HOME))) {
-                        webView.loadUrl("javascript:window.handler.handleLogin"
-                                + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-                }
-            }
-
-            @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                super.onReceivedError(view, request, error);
-                callOnError(PG_HOME, error.toString());
-            }
-
-        });
-
-        fetchParams(response -> {
-            String post =  User.getLoginParams(KEY_A, KEY_B).toString();
-            post = post.replace("{", "");
-            post = post.replace(", ", "&");
-            post = post.replace("}", "");
-
-            Log.d("POST", post);
-
-            webView.postUrl(Client.get().getURL() + VALIDA, post.getBytes());
-        });
-    }*/
-
     private Resp testResponse(String response) {
         Document document = Jsoup.parse(response);
 
@@ -413,22 +363,6 @@ public class Client {
 
                     @Override
                     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        //for(Header h : response.allHeaders)
-                            //Log.d(h.getName(), h.getValue());
-
-                        /*int i = 5;
-                        int j = 6;
-
-                        if (User.getURL().equals(IFMT)) {
-                            i--;
-                            j--;
-                        }
-
-                        params.put("Set-Cookie", response.allHeaders.get(i).getValue());
-                        params.put("Cookie", response.allHeaders.get(j).getValue());*/
-
-                        //Log.d("Cookie", response.headers.get("Set-Cookie"));
-
                         CookieManager cookieManager = CookieManager.getInstance();
                         cookieManager.setAcceptCookie(true);
 

@@ -17,9 +17,9 @@ public class ClassParser extends BaseParser {
     }
 
     @Override
-    public void parse(Document page) {
+    public void parse(Document document) {
 
-        Element tableMatters = page.getElementsByTag("tbody").get(12);
+        Element tableMatters = document.getElementsByTag("tbody").get(12);
 
 
         for (int i = 0; i < tableMatters.select("table.conteudoTexto").size(); i++) {

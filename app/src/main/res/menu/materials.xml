@@ -7,6 +7,13 @@
         android:id="@+id/action_delete"
         android:title="@string/action_date"
         android:icon="@drawable/ic_delete"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_select"
+        android:title="@string/action_select_all"
+        android:icon="@drawable/ic_select_all"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"/>
 

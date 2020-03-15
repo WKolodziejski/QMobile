@@ -8,12 +8,13 @@ import android.widget.TextView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.calendar.EventSimple;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EventSimpleViewHolder extends CalendarViewHolder<EventSimple> {
     @BindView(R.id.calendar_simple_title)       public TextView title;
-    @BindView(R.id.calendar_simple_header)      public FrameLayout header;
 
     public EventSimpleViewHolder(View view) {
         super(view);
@@ -23,7 +24,9 @@ public class EventSimpleViewHolder extends CalendarViewHolder<EventSimple> {
     @Override
     public void bind(EventSimple event, Context context) {
         title.setText(event.getTitle());
-       // CalendarViewHolder.setHeader(header, event, context);
+
+        if (event.isRanged())
+            title.append(" " + String.format(Locale.getDefault(), context.getString(R.string.event_until), event.getEndDateString()));
     }
 
 }

@@ -46,22 +46,8 @@ public abstract class EventBase extends Event implements CalendarBase {
         endTime = 0;
     }
 
-    public String getStartDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(startTime);
-        return String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public String getEndDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(endTime);
-        return String.valueOf(calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    public String getMonth() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(startTime);
-        return String.valueOf(calendar.get(Calendar.MONTH));
+    public String getEndDateString() {
+        return new SimpleDateFormat("EE dd/MM/yyyy", Locale.getDefault()).format(endTime);
     }
 
     public boolean isRanged() {

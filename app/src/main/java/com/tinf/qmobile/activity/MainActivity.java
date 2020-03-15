@@ -349,6 +349,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (requestCode == 1) {
             if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+            } else {
+                Client.get().load(PG_MATERIALS);
             }
         }
     }

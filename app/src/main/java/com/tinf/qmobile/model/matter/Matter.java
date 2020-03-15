@@ -81,6 +81,7 @@ public class Matter implements Queryable {
 
     public Period getLastPeriod() {
         int k = 0;
+
         for (int j = 0; j < periods.size(); j++) {
             if (!periods.get(j).journals.isEmpty() && !periods.get(j).isSub_()) {
                 k = j;

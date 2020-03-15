@@ -120,6 +120,8 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                         .show();
 
                 return true;
+            } else if (menuItem.getItemId() == R.id.action_select) {
+                return true;
             }
             return false;
         }
@@ -150,36 +152,103 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
         getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        Client.get().load(PG_MATERIALS);
-
-        if (!hasPermission())
+        if (hasPermission()) {
+            Client.get().load(PG_MATERIALS);
+        } else {
             requestPermission();
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (hasPermission()) {
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setItemViewCacheSize(20);
-            recyclerView.setDrawingCacheEnabled(true);
-            recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
 
-            adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
+        adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
 
-                @Override
-                public boolean onLongClick(Queryable q) {
-                    if (q instanceof Material) {
-                        Material m = (Material) q;
+            @Override
+            public boolean onLongClick(Queryable q) {
+                if (q instanceof Material) {
+                    Material m = (Material) q;
 
+                    if (m.isDownloaded) {
+
+                        if (action == null)
+                            action = getActivity().startActionMode(callback);
+
+                        if (m.isSelected) {
+                            m.isSelected = false;
+                            list.remove(m.getFileName());
+
+                            action.setTitle(String.valueOf(list.size()));
+
+                            if (list.isEmpty()) {
+                                action.finish();
+                                action = null;
+                            }
+                        } else {
+                            if (!list.contains(m.getFileName())) {
+                                m.isSelected = true;
+                                list.add(m.getFileName());
+                            }
+
+                            action.setTitle(String.valueOf(list.size()));
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onClick(Queryable q) {
+                if (q instanceof Matter) {
+                    if (action == null) {
+                        Intent intent = new Intent(getContext(), MatterActivity.class);
+                        intent.putExtra("ID", ((Matter) q).id);
+                        intent.putExtra("PAGE", MatterActivity.MATERIALS);
+                        startActivity(intent);
+                    }
+                    return false;
+                } else {
+                    Material m = (Material) q;
+
+                    if (action == null) {
                         if (m.isDownloaded) {
+                            openFile(m);
+                        } else {
+                            if (isConnected()) {
+                                m.isDownloading = true;
 
-                            if (action == null)
-                                action = getActivity().startActionMode(callback);
+                                DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
 
+                                long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(m));
+
+                                Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
+                                m.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
+                                m.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
+                                m.see();
+                                box.put(m);
+
+                                material = m;
+
+                                Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        return true;
+                    } else {
+                        if (m.isDownloaded) {
                             if (m.isSelected) {
                                 m.isSelected = false;
                                 list.remove(m.getFileName());
@@ -198,96 +267,28 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
                                 action.setTitle(String.valueOf(list.size()));
                             }
-
-                            return true;
                         }
+                        return false;
                     }
+                }
+            }
+        });
 
-                    return false;
+        recyclerView.setAdapter(adapter);
+
+        if (getActivity() instanceof MainActivity) {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
                 }
 
                 @Override
-                public boolean onClick(Queryable q) {
-                    if (q instanceof Matter) {
-                        if (action == null) {
-                            Intent intent = new Intent(getContext(), MatterActivity.class);
-                            intent.putExtra("ID", ((Matter) q).id);
-                            intent.putExtra("PAGE", MatterActivity.MATERIALS);
-                            startActivity(intent);
-                        }
-                        return false;
-                    } else {
-                        Material m = (Material) q;
-
-                        if (action == null) {
-                            if (m.isDownloaded) {
-                                openFile(m);
-                            } else {
-                                if (isConnected()) {
-                                    m.isDownloading = true;
-
-                                    DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
-
-                                    long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(m));
-
-                                    Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
-                                    m.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
-                                    m.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-                                    m.see();
-                                    box.put(m);
-
-                                    material = m;
-
-                                    Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-
-                                } else {
-                                    Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            return true;
-                        } else {
-                            if (m.isDownloaded) {
-                                if (m.isSelected) {
-                                    m.isSelected = false;
-                                    list.remove(m.getFileName());
-
-                                    action.setTitle(String.valueOf(list.size()));
-
-                                    if (list.isEmpty()) {
-                                        action.finish();
-                                        action = null;
-                                    }
-                                } else {
-                                    if (!list.contains(m.getFileName())) {
-                                        m.isSelected = true;
-                                        list.add(m.getFileName());
-                                    }
-
-                                    action.setTitle(String.valueOf(list.size()));
-                                }
-                            }
-                            return false;
-                        }
-                    }
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
                 }
             });
-
-            recyclerView.setAdapter(adapter);
-
-            if (getActivity() instanceof MainActivity) {
-                recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                        int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                        ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
-                    }
-
-                    @Override
-                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                        super.onScrollStateChanged(recyclerView, newState);
-                    }
-                });
-            }
         }
     }
 

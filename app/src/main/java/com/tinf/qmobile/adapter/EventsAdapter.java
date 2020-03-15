@@ -16,15 +16,12 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.DayViewHolder;
-import com.tinf.qmobile.holder.calendar.EventImageViewHolder;
 import com.tinf.qmobile.holder.calendar.EventJournalViewHolder;
 import com.tinf.qmobile.holder.calendar.EventSimpleViewHolder;
 import com.tinf.qmobile.holder.calendar.EventUserViewHolder;
 import com.tinf.qmobile.holder.calendar.HeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.MonthViewHolder;
 import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventImage;
-import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -36,13 +33,11 @@ import com.tinf.qmobile.model.calendar.base.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
@@ -54,7 +49,7 @@ import static com.tinf.qmobile.utility.Utils.getDate;
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
     private List<CalendarBase> events;
     private Context context;
-    private DataSubscription sub1, sub2, sub3, sub4, sub5, sub6;
+    private DataSubscription sub1, sub2, sub3, sub4, sub5;
 
     public EventsAdapter(Context context, boolean isHomeFragment) {
         this.context = context;
@@ -118,7 +113,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub3 = boxStore.subscribe(EventImage.class)
+        sub3 = boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
@@ -135,12 +130,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
-
-        sub6 = boxStore.subscribe(Matter.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
     }
 
     private List<CalendarBase> getList(boolean isHomeFragment) {
@@ -149,7 +138,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
         Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
         Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-        Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
         Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
         Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
 
@@ -164,7 +152,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             search.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
             search.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
-            search.addAll(eventImageBox.query().greater(EventImage_.startTime, current.getTimeInMillis() - 1).build().find());
             search.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
             search.addAll(monthBox.query().build().find());
 
@@ -228,7 +215,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             list.addAll(eventUserBox.query().build().find());
             list.addAll(eventJournalBox.query().build().find());
-            list.addAll(eventImageBox.query().build().find());
             list.addAll(eventSimpleBox.query().build().find());
             list.addAll(monthBox.query().build().find());
 
@@ -320,10 +306,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                 return new EventUserViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_user, parent, false));
 
-            case CalendarBase.ViewType.IMAGE:
-                return new EventImageViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.calendar_event_image, parent, false));
-
             case CalendarBase.ViewType.MONTH:
                 return new MonthViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_header_month, parent, false));
@@ -402,7 +384,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         sub3.cancel();
         sub4.cancel();
         sub5.cancel();
-        sub6.cancel();
     }
 
 }

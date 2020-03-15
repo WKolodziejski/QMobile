@@ -1,310 +1,214 @@
 package com.tinf.qmobile.parser;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.calendar.EventImage;
-import com.tinf.qmobile.model.calendar.EventImage_;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.Month_;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
-import com.tinf.qmobile.network.Client;
-
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.Calendar;
-
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.utility.Utils.getDate;
-import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 
-public class CalendarParser extends AsyncTask<String, Void, Void> {
+public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
-    private BaseParser.OnFinish onFinish;
 
-    public CalendarParser(BaseParser.OnFinish onFinish) {
-        this.onFinish = onFinish;
+    public CalendarParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, pos, notify, onFinish, onError);
     }
 
     @Override
-    protected Void doInBackground(String... page) {
-        try {
-            return DataBase.get().getBoxStore().callInTx(() -> {
+    public void parse(Document document) {
+        Log.i(TAG, "Parsing");
 
-                Log.i(TAG, "Parsing");
+        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
 
-                Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
-                Box<EventImage> eventImageBox = DataBase.get().getBoxStore().boxFor(EventImage.class);
-                Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+        Elements months = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
-                Document document = Jsoup.parse(page[0]);
+        if (!BuildConfig.DEBUG) {
+            Crashlytics.log(Log.ERROR, TAG, months.toString());
+        }
 
-                Elements months = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
+        int monthLast = -1;
+        boolean shouldAddYear = false;
 
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.log(Log.ERROR, TAG, months.toString());
-                }
+        for (int i = 0; i < months.size(); i++) {
 
-                int monthLast = -1;
-                boolean shouldAddYear = false;
+            String monthName = months.get(i).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
 
-                for (int i = 0; i < months.size(); i++) {
+            int monthCurrent = -1;
 
-                    String monthName = months.get(i).previousElementSibling().previousElementSibling().getElementsByTag("div").get(0).text();
+            switch (monthName) {
+                case "JANEIRO":
+                    monthCurrent = 1;
+                    break;
+                case "FEVEREIRO":
+                    monthCurrent = 2;
+                    break;
+                case "MARÇO":
+                    monthCurrent = 3;
+                    break;
+                case "ABRIL":
+                    monthCurrent = 4;
+                    break;
+                case "MAIO":
+                    monthCurrent = 5;
+                    break;
+                case "JUNHO":
+                    monthCurrent = 6;
+                    break;
+                case "JULHO":
+                    monthCurrent = 7;
+                    break;
+                case "AGOSTO":
+                    monthCurrent = 8;
+                    break;
+                case "SETEMBRO":
+                    monthCurrent = 9;
+                    break;
+                case "OUTUBRO":
+                    monthCurrent = 10;
+                    break;
+                case "NOVEMBRO":
+                    monthCurrent = 11;
+                    break;
+                case "DEZEMBRO":
+                    monthCurrent = 12;
+                    break;
+            }
 
-                    int monthCurrent = -1;
+            String dateString = document.getElementsByTag("font").get(2).text();
 
-                    switch (monthName) {
-                        case "JANEIRO":
-                            monthCurrent = 1;
-                            break;
-                        case "FEVEREIRO":
-                            monthCurrent = 2;
-                            break;
-                        case "MARÇO":
-                            monthCurrent = 3;
-                            break;
-                        case "ABRIL":
-                            monthCurrent = 4;
-                            break;
-                        case "MAIO":
-                            monthCurrent = 5;
-                            break;
-                        case "JUNHO":
-                            monthCurrent = 6;
-                            break;
-                        case "JULHO":
-                            monthCurrent = 7;
-                            break;
-                        case "AGOSTO":
-                            monthCurrent = 8;
-                            break;
-                        case "SETEMBRO":
-                            monthCurrent = 9;
-                            break;
-                        case "OUTUBRO":
-                            monthCurrent = 10;
-                            break;
-                        case "NOVEMBRO":
-                            monthCurrent = 11;
-                            break;
-                        case "DEZEMBRO":
-                            monthCurrent = 12;
-                            break;
-                    }
+            int year = Integer.parseInt(dateString.substring(dateString.lastIndexOf("/") + 1));
 
-                    String dateString = document.getElementsByTag("font").get(2).text();
+            if (monthCurrent < monthLast) {
+                shouldAddYear = true;
+            }
 
-                    int year = Integer.parseInt(dateString.substring(dateString.lastIndexOf("/") + 1));
+            monthLast = monthCurrent;
 
-                    if (monthCurrent < monthLast) {
-                        shouldAddYear = true;
-                    }
+            if (shouldAddYear) {
+                year++;
+            }
 
-                    monthLast = monthCurrent;
+            Month month = new Month(getDate("1" + "/" + monthCurrent + "/" + year, true));
 
-                    if (shouldAddYear) {
-                        year++;
-                    }
+            Elements events = new Elements();
 
-                    Month month = new Month(getDate("1" + "/" + monthCurrent + "/" + year, true));
+            if (months.get(i).nextElementSibling().childNodeSize() > 0) {
+                events = months.get(i).nextElementSibling().child(0).getElementsByTag("tr");
+            }
 
-                    Elements events = new Elements();
+            Elements days = months.get(i).getElementsByTag("td");
 
-                    if (months.get(i).nextElementSibling().childNodeSize() > 0) {
-                        events = months.get(i).nextElementSibling().child(0).getElementsByTag("tr");
-                    }
+            for (int j = 7; j < days.size(); j++) {
 
-                    Elements days = months.get(i).getElementsByTag("td");
+                String day = days.get(j).text();
 
-                    for (int j = 7; j < days.size(); j++) {
+                if (!day.equals("")) {
 
-                        String day = days.get(j).text();
+                    String bgcolor = days.get(j).attr("bgcolor");
 
-                        if (!day.equals("")) {
+                    if (!bgcolor.isEmpty()) {
 
-                            String bgcolor = days.get(j).attr("bgcolor");
+                        for (int k = 0; k < events.size(); k++) {
 
-                            if (!bgcolor.isEmpty()) {
+                            String eventDay = events.get(k).child(0).text();
 
-                                for (int k = 0; k < events.size(); k++) {
+                            if (eventDay.equals(day)) {
 
-                                    String eventDay = events.get(k).child(0).text();
+                                long date = getDate(day + "/" + monthCurrent + "/" + year, false);
 
-                                    if (eventDay.equals(day)) {
+                                String title = events.get(k).child(1).text().trim();
 
-                                        long date = getDate(day + "/" + monthCurrent + "/" + year, false);
+                                if (!title.contains("'")) {
 
-                                        String title = events.get(k).child(1).text().trim();
+                                    EventSimple search = eventSimpleBox.query().equal(EventSimple_.title, title).and()
+                                            .between(EventSimple_.startTime, date, date).build().findFirst();
 
-                                        if (!title.contains("'")) {
+                                    if (search == null)
+                                        eventSimpleBox.put(new EventSimple(title, date));
+                                }
 
-                                            EventSimple search1 = eventSimpleBox.query().equal(EventSimple_.title, title).and()
-                                                    .between(EventSimple_.startTime, date, date).build().findFirst();
+                            } else if (eventDay.contains("~")) {
 
-                                            EventImage search2 = eventImageBox.query().equal(EventImage_.title, title).and()
-                                                    .between(EventImage_.startTime, date, date).build().findFirst();
+                                String startTime = eventDay.substring(0, eventDay.indexOf(" ~"));
+                                String endTime =  eventDay.substring(eventDay.indexOf("~ ") + 2);
+                                eventDay = startTime.substring(0, startTime.indexOf("/"));
 
-                                            if (search1 == null && search2 == null) {
+                                if (eventDay.equals(day)) {
 
-                                                int img = 0;
-                                                
-                                                if (title.contains("Natal")) {
-                                                    img = CalendarBase.ImageType.CHRISTMAS;
-                                                
-                                                } else if (title.contains("Férias")) {
-                                                    img = CalendarBase.ImageType.VACATION;
-                                                
-                                                } else if (title.contains("Carnaval")) {
-                                                    img = CalendarBase.ImageType.CARNIVAL;
-                                                
-                                                } else if (title.contains("Recesso")) {
-                                                    img = CalendarBase.ImageType.RECESS;
-                                                }
-                                                
-                                                if (img != 0) {
-                                                    eventImageBox.put(new EventImage(title, date, img));
-                                                } else {
-                                                    eventSimpleBox.put(new EventSimple(title, date));
-                                                }
+                                    String title = events.get(k).child(1).text().trim();
 
-                                            }
-                                        }
+                                    long start = getDate(startTime + "/" + year, false);
+                                    long end = getDate(endTime + "/" + year, false);
 
-                                    } else if (eventDay.contains("~")) {
+                                    EventSimple search = eventSimpleBox.query()
+                                            .equal(EventSimple_.title, title).and()
+                                            .between(EventSimple_.startTime, start, start).and()
+                                            .between(EventSimple_.endTime, end, end)
+                                            .build().findFirst();
 
-                                        String startTime = eventDay.substring(0, eventDay.indexOf(" ~"));
-                                        String endTime =  eventDay.substring(eventDay.indexOf("~ ") + 2);
-                                        eventDay = startTime.substring(0, startTime.indexOf("/"));
-
-                                        if (eventDay.equals(day)) {
-
-                                            String title = events.get(k).child(1).text().trim();
-
-                                            long start = getDate(startTime + "/" + year, false);
-                                            long end = getDate(endTime + "/" + year, false);
-
-                                            EventSimple search1 = eventSimpleBox.query()
-                                                    .equal(EventSimple_.title, title).and()
-                                                    .between(EventSimple_.startTime, start, start).and()
-                                                    .between(EventSimple_.endTime, end, end)
-                                                    .build().findFirst();
-
-                                            EventImage search2 = eventImageBox.query()
-                                                    .equal(EventImage_.title, title).and()
-                                                    .between(EventImage_.startTime, start, start).and()
-                                                    .between(EventImage_.endTime, end, end)
-                                                    .build().findFirst();
-
-                                            if (search1 == null && search2 == null) {
-
-                                                int img = 0;
-
-                                                if (title.contains("Natal")) {
-                                                    img = CalendarBase.ImageType.CHRISTMAS;
-
-                                                } else if (title.contains("Férias")) {
-                                                    img = CalendarBase.ImageType.VACATION;
-
-                                                } else if (title.contains("Carnaval")) {
-                                                    img = CalendarBase.ImageType.CARNIVAL;
-
-                                                } else if (title.contains("Recesso")) {
-                                                    img = CalendarBase.ImageType.RECESS;
-                                                }
-
-                                                if (img != 0) {
-                                                    eventImageBox.put(new EventImage(title, start, end, img));
-                                                } else {
-                                                    eventSimpleBox.put(new EventSimple(title, start, end));
-                                                }
-                                            }
-                                        }
-                                    }
+                                    if (search == null)
+                                        eventSimpleBox.put(new EventSimple(title, start, end));
                                 }
                             }
                         }
                     }
-
-                    if (i == 0) {
-                        Element yearStart = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(8).child(0);
-
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(getDate(yearStart.text(), true));
-                        cal.set(Calendar.MILLISECOND, 1);
-
-                        int title = EventSimple.Type.INICIO.get();
-                        long date = cal.getTimeInMillis();
-
-                        EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
-                                .between(EventSimple_.startTime, date, date).build().findFirst();
-
-                        if (search == null) {
-                            eventSimpleBox.put(new EventSimple(title, date));
-                        }
-
-                    } else if (i == months.size() - 1) {
-                        Element yearEnd = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(10).child(0);
-
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(getDate(yearEnd.text(), false));
-                        cal.set(Calendar.HOUR_OF_DAY, 23);
-                        cal.set(Calendar.MINUTE, 59);
-                        cal.set(Calendar.SECOND, 59);
-                        cal.set(Calendar.MILLISECOND, 999);
-
-                        int title = EventSimple.Type.FIM.get();
-                        long date = cal.getTimeInMillis();
-
-                        EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
-                                .between(EventSimple_.startTime, date, date).build().findFirst();
-
-                        if (search == null) {
-                            eventSimpleBox.put(new EventSimple(title, date));
-                        }
-                    }
-
-                    Month search = monthBox.query().between(Month_.time, month.getDate(), month.getDate()).build().findFirst();
-
-                    if (search == null) {
-                        monthBox.put(month);
-                    }
                 }
-                return null;
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            }
+
+            if (i == 0) {
+                Element yearStart = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(8).child(0);
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(getDate(yearStart.text(), true));
+                cal.set(Calendar.MILLISECOND, 1);
+
+                int title = EventSimple.Type.INICIO.get();
+                long date = cal.getTimeInMillis();
+
+                EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
+                        .between(EventSimple_.startTime, date, date).build().findFirst();
+
+                if (search == null) {
+                    eventSimpleBox.put(new EventSimple(title, date));
+                }
+
+            } else if (i == months.size() - 1) {
+                Element yearEnd = document.getElementsByTag("table").get(6).getElementsByTag("table").get(4).getElementsByTag("td").get(10).child(0);
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(getDate(yearEnd.text(), false));
+                cal.set(Calendar.HOUR_OF_DAY, 23);
+                cal.set(Calendar.MINUTE, 59);
+                cal.set(Calendar.SECOND, 59);
+                cal.set(Calendar.MILLISECOND, 999);
+
+                int title = EventSimple.Type.FIM.get();
+                long date = cal.getTimeInMillis();
+
+                EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
+                        .between(EventSimple_.startTime, date, date).build().findFirst();
+
+                if (search == null) {
+                    eventSimpleBox.put(new EventSimple(title, date));
+                }
+            }
+
+            Month search = monthBox.query().between(Month_.time, month.getDate(), month.getDate()).build().findFirst();
+
+            if (search == null) {
+                monthBox.put(month);
+            }
         }
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_CALENDAR, 0);
-    }
-
-    private String formatTitle(String s) {
-        if (s.contains("'")) {
-            return s.substring(s.indexOf("'") + 1, s.lastIndexOf("'")).trim();
-        } else {
-            return s;
-        }
-    }
-
-    private String formatMatter(String s) {
-        if (s.contains("(")) {
-            return s.substring(0, s.indexOf("(") - 1).trim();
-        } else return "";
     }
 
 }

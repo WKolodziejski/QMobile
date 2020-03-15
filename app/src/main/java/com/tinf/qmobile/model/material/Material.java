@@ -30,11 +30,12 @@ public class Material implements Queryable {
     private boolean seen_;
     public ToOne<Matter> matter;
 
-    public Material(String title, long date, String description, String link) {
+    public Material(String title, long date, String description, String link, boolean seen) {
         this.title = title;
         this.date = date;
         this.description = description;
         this.link = link;
+        this.seen_ = seen;
     }
 
     public String getDateString() {

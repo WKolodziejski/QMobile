@@ -19,7 +19,6 @@ public class EventJournalViewHolder extends CalendarViewHolder<Journal> {
     @BindView(R.id.calendar_default_title)       public TextView title;
     @BindView(R.id.calendar_default_description) public TextView description;
     @BindView(R.id.calendar_default_card)        public LinearLayout card;
-    @BindView(R.id.calendar_default_header)      public FrameLayout header;
 
     public EventJournalViewHolder(View view) {
         super(view);
@@ -31,15 +30,13 @@ public class EventJournalViewHolder extends CalendarViewHolder<Journal> {
         title.setText(journal.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : journal.getTitle());
         description.setText(journal.matter.getTarget().getTitle());
         card.setBackgroundColor(journal.getColor());
-        //CalendarViewHolder.setHeader(header, event, context);
 
-            card.setOnClickListener(v -> {
-                Intent intent = new Intent(context, EventViewActivity.class);
-                intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
-                intent.putExtra("ID", journal.id);
-                context.startActivity(intent);
-            });
-
+        card.setOnClickListener(v -> {
+            Intent intent = new Intent(context, EventViewActivity.class);
+            intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+            intent.putExtra("ID", journal.id);
+            context.startActivity(intent);
+        });
     }
 
 }

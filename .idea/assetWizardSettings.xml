@@ -34,9 +34,9 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_maximize" />
+                            <entry key="outputName" value="ic_select_all_" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\willi\Downloads\maximize-24px.svg" />
+                            <entry key="sourceFile" value="C:\Users\willi\Downloads\select_all-24px.svg" />
                           </map>
                         </option>
                       </PersistentState>

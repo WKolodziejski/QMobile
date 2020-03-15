@@ -29,4 +29,5 @@
         android:id="@+id/calendar_header_simple_day_number"
         android:textAlignment="center"
         tools:text="7" />
+
 </LinearLayout>

@@ -22,6 +22,7 @@
     <string name="action_grade">Alterar visualização</string>
     <string name="action_color">Alterar cor</string>
     <string name="action_search">Buscar</string>
+    <string name="action_select_all">Selecionar todos</string>
 
     <string name="client_no_connection">Sem conexão com a Internet</string>
     <string name="client_host">Servidor inalcançável</string>
@@ -132,6 +133,7 @@
     <string name="event_alarm">Adicionar alarme</string>
     <string name="event_matter">Linkar matéria</string>
     <string name="event_save">Salvar</string>
+    <string name="event_until">(até %1$s)</string>
 
     <string name="alarm_30min">30 minutos antes</string>
     <string name="alarm_1h">1 hora antes</string>

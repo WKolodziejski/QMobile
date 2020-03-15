@@ -1,6 +1,5 @@
 package com.tinf.qmobile.parser;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -21,115 +20,89 @@ import java.util.List;
 import io.objectbox.Box;
 import io.objectbox.relation.ToMany;
 
-import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
+public class ScheduleParser extends BaseParser {
+    private final static String TAG = "ScheduleParser";
 
-public class ScheduleParser extends AsyncTask<String, Void, Boolean> {
-    private final static String TAG = "HorarioParser";
-    private BaseParser.OnFinish onFinish;
-    private int pos;
-
-    public ScheduleParser(int pos, BaseParser.OnFinish onFinish) {
-        this.pos = pos;
-        this.onFinish = onFinish;
-        Log.i(TAG, "New instance");
+    public ScheduleParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, pos, notify, onFinish, onError);
     }
 
     @Override
-    protected Boolean doInBackground(String... page) {
-        try {
-            return DataBase.get().getBoxStore().callInTx(() -> {
+    public void parse(Document document) {
+        Log.i(TAG, "Parsing " + User.getYear(pos));
 
-                Log.i(TAG, "Parsing " + User.getYear(pos));
+        Elements tables = document.select("table");
 
-                Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
-                Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+        if (!BuildConfig.DEBUG) {
+            Crashlytics.log(Log.ERROR, TAG, tables.toString());
+        }
 
-                Document document = Jsoup.parse(page[0]);
+        Elements scheduleTable = tables.get(11).getElementsByTag("tr");
 
-                Elements tables = document.select("table");
+        if (scheduleTable != null) {
 
-                if (!BuildConfig.DEBUG) {
-                    Crashlytics.log(Log.ERROR, TAG, tables.toString());
-                }
+            List<Matter> matters = matterBox.query()
+                    .equal(Matter_.year_, User.getYear(pos)).and()
+                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .build().find();
 
-                Elements scheduleTable = tables.get(11).getElementsByTag("tr");
-
-                if (scheduleTable != null) {
-
-                    List<Matter> matters = matterBox.query()
-                            .equal(Matter_.year_, User.getYear(pos)).and()
-                            .equal(Matter_.period_, User.getPeriod(pos))
-                            .build().find();
-
-                    for (int i = 0; i < matters.size(); i++) {
-                        ToMany<Schedule> s = matters.get(i).schedules;
-                        for (int j = 0; j < s.size(); j++) {
-                            Schedule h = s.get(j);
-                            if (h.isFromSite()) {
-                                scheduleBox.remove(h.id);
-                            }
-                        }
+            for (int i = 0; i < matters.size(); i++) {
+                ToMany<Schedule> s = matters.get(i).schedules;
+                for (int j = 0; j < s.size(); j++) {
+                    Schedule h = s.get(j);
+                    if (h.isFromSite()) {
+                        scheduleBox.remove(h.id);
                     }
+                }
+            }
 
-                    for (int i = 1; i < scheduleTable.size(); i++) {
-                        Elements row = scheduleTable.get(i).select("td");
-                        String time = row.get(0).text();
+            for (int i = 1; i < scheduleTable.size(); i++) {
+                Elements row = scheduleTable.get(i).select("td");
+                String time = row.get(0).text();
 
-                        for (int j = 1; j < row.size(); j++) {
-                            if (!row.get(j).text().isEmpty()) {
+                for (int j = 1; j < row.size(); j++) {
+                    if (!row.get(j).text().isEmpty()) {
 
-                                Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
+                        Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
 
-                                //Log.d("DIVS", divs.toString());
+                        //Log.d("DIVS", divs.toString());
 
-                                int k = 0;
+                        int k = 0;
 
-                                while (k < divs.size()) {
+                        while (k < divs.size()) {
 
-                                    Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time), User.getYear(pos), User.getPeriod(pos));
+                            Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time), User.getYear(pos), User.getPeriod(pos));
 
-                                    String matterTitle = formatTitle(divs.get(k).attr("title"));
+                            String matterTitle = formatTitle(divs.get(k).attr("title"));
 
-                                    if (matterTitle != null) {
-                                        Matter matter = matterBox.query()
-                                                .equal(Matter_.title_, matterTitle).and()
-                                                .equal(Matter_.year_, User.getYear(pos)).and()
-                                                .equal(Matter_.period_, User.getPeriod(pos))//.and()
-                                                //.contains(Matter_.description_, clazz)
-                                                .build().findUnique();
+                            if (matterTitle != null) {
+                                Matter matter = matterBox.query()
+                                        .equal(Matter_.title_, matterTitle).and()
+                                        .equal(Matter_.year_, User.getYear(pos)).and()
+                                        .equal(Matter_.period_, User.getPeriod(pos))//.and()
+                                        //.contains(Matter_.description_, clazz)
+                                        .build().findUnique();
 
-                                        if (matter != null) {
-                                            String room = divs.get(k + 1).attr("title");
+                                if (matter != null) {
+                                    String room = divs.get(k + 1).attr("title");
 
-                                            if (room != null) {
-                                                schedule.setRoom(room);
-                                            }
-
-                                            schedule.matter.setTarget(matter);
-                                            scheduleBox.put(schedule);
-                                            matter.schedules.add(schedule);
-                                            matterBox.put(matter);
-                                        }
+                                    if (room != null) {
+                                        schedule.setRoom(room);
                                     }
 
-                                    k += 3;
+                                    schedule.matter.setTarget(matter);
+                                    scheduleBox.put(schedule);
+                                    matter.schedules.add(schedule);
+                                    matterBox.put(matter);
                                 }
                             }
+
+                            k += 3;
                         }
                     }
                 }
-                return true;
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            }
         }
-    }
-
-    @Override
-    protected void onPostExecute(Boolean result) {
-        super.onPostExecute(result);
-        onFinish.onFinish(PG_SCHEDULE, pos);
     }
 
     private int getStartHour(String time) {

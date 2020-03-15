@@ -19,10 +19,10 @@ import org.jsoup.select.Elements;
 import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 
-public class ReportParser2 extends BaseParser {
+public class ReportParser extends BaseParser {
     private final static String TAG = "ReportParser";
 
-    public ReportParser2(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+    public ReportParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
         super(page, pos, notify, onFinish, onError);
     }
 

@@ -1,48 +1,35 @@
 package com.tinf.qmobile.parser;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-import org.jsoup.Jsoup;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import io.objectbox.Box;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
+
 import static com.tinf.qmobile.utility.Utils.getDate;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 
-public class MateriaisParser extends AsyncTask<String, Void, Void> {
+public class MaterialsParser extends BaseParser {
     private final static String TAG = "MateriaisParser";
-    private BaseParser.OnFinish onFinish;
-    private int pos;
-    private boolean notify;
 
-    public MateriaisParser(int pos, boolean notify, BaseParser.OnFinish onFinish) {
-        this.pos = pos;
-        this.notify = notify;
-        this.onFinish = onFinish;
+    public MaterialsParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, pos, notify, onFinish, onError);
     }
 
     @Override
-    protected Void doInBackground(String... page) {
-
+    public void parse(Document document) {
         Log.i(TAG, "Parsing");
 
-        Box<Matter> materiaBox = DataBase.get().getBoxStore().boxFor(Matter.class);
-        Box<Material> materiaisBox = DataBase.get().getBoxStore().boxFor(Material.class);
-
-        Document document = Jsoup.parse(page[0]);
         Element table = document.getElementsByTag("tbody").get(10);
         Elements rotulos = table.getElementsByClass("rotulo");
 
@@ -50,17 +37,25 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
             Crashlytics.log(Log.ERROR, TAG, table.toString());
         }
 
+        QueryBuilder<Material> b = materialsBox.query();
+
+        b.link(Material_.matter)
+                .equal(Matter_.year_, User.getYear(pos)).and()
+                .equal(Matter_.period_, User.getPeriod(pos));
+
+        boolean isFirstParse = b.build().find().isEmpty();
+
         for (int i = 1; i < rotulos.size(); i++) {
 
             String description = rotulos.get(i).text();
 
-            Matter materia = materiaBox.query()
+            Matter matter = matterBox.query()
                     .contains(Matter_.description_, description).and()
                     .equal(Matter_.year_, User.getYear(pos)).and()
                     .equal(Matter_.period_, User.getPeriod(pos))
                     .build().findUnique();
 
-            if (materia != null) {
+            if (matter != null) {
                 String classe = rotulos.get(i).nextElementSibling().className();
                 Element element = rotulos.get(i).nextElementSibling();
 
@@ -79,28 +74,26 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                     long date = getDate(dataString, false);
 
                     try {
-                        QueryBuilder<Material> builder = materiaisBox.query()
+                        QueryBuilder<Material> builder = materialsBox.query()
                                 .equal(Material_.title, title).and()
                                 .between(Material_.date, date, date).and()
                                 .equal(Material_.link, link);
 
                         builder.link(Material_.matter)
-                                .contains(Matter_.description_, description).and()
-                                .equal(Matter_.year_, User.getYear(pos)).and()
-                                .equal(Matter_.period_, User.getPeriod(pos));
+                                .equal(Matter_.id, matter.id);
 
                         Material search = builder.build().findUnique();
 
                         if (search == null) {
 
-                            Material material = new Material(title, date, descricao, link);
+                            Material material = new Material(title, date, descricao, link, isFirstParse);
 
-                            material.matter.setTarget(materia);
-                            materia.materials.add(material);
-                            materiaisBox.put(material);
+                            material.matter.setTarget(matter);
+                            matter.materials.add(material);
+                            materialsBox.put(material);
 
                             //if (notify) {
-                                //TODO notificação
+                            //TODO notificação
                             //}
                         }
 
@@ -115,16 +108,9 @@ public class MateriaisParser extends AsyncTask<String, Void, Void> {
                         classe = "";
                     }
                 }
-                materiaBox.put(materia);
+                matterBox.put(matter);
             }
         }
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        super.onPostExecute(aVoid);
-        onFinish.onFinish(PG_MATERIALS, pos);
     }
 
 }

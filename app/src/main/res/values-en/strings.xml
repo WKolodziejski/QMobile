@@ -154,4 +154,5 @@
     <string name="report_mean">Mean</string>
     <string name="report_meanFinal">Final Mean</string>
     <string name="report_situation">Situation</string>
+    <string name="event_until">(until %1$s)</string>
 </resources>
