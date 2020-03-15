@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,85 +62,19 @@ import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class MaterialsFragment extends Fragment implements OnUpdate {
     @BindView(R.id.recycler_materiais)        RecyclerView recyclerView;
-    private Material material;
     private ActionMode action;
     private MaterialsAdapter adapter;
-    private List<String> list = new ArrayList<>();
-
-    private ActionMode.Callback callback = new ActionMode.Callback() {
-        @Override
-        public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-            if (getActivity() instanceof MainActivity)
-                ((MainActivity) getActivity()).refreshLayout.setEnabled(false);
-
-            MenuInflater menuInflater = getActivity().getMenuInflater();
-            menuInflater.inflate(R.menu.materials, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-            if (menuItem.getItemId() == R.id.action_delete) {
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle(getString(R.string.dialog_delete))
-                        .setMessage(list.size() > 1 ? String.format(Locale.getDefault(), getString(R.string.contextual_remove_txt_plu), String.valueOf(list.size())) : getString(R.string.contextual_remove_txt_sing))
-                        .setCancelable(true)
-                        .setPositiveButton(getString(R.string.dialog_delete), (dialogInterface, d) -> {
-                            if (action != null) {
-
-                                while (!list.isEmpty()) {
-                                    String f = list.get(0);
-
-                                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                            + "/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + f);
-
-                                    Log.d("File", f);
-
-                                    if (file.exists()) {
-                                        if (file.delete())
-                                            list.remove(f);
-
-                                    } else break;
-                                }
-
-                                action.setTitle(String.valueOf(list.size()));
-
-                                if (list.isEmpty()) {
-                                    action.finish();
-                                    action = null;
-                                }
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.dialog_cancel), null)
-                        .create()
-                        .show();
-
-                return true;
-            } else if (menuItem.getItemId() == R.id.action_select) {
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode actionMode) {
-            list.clear();
-            adapter.unSelectAll();
-            action = null;
-
-            if (getActivity() instanceof MainActivity)
-                ((MainActivity) getActivity()).refreshLayout.setEnabled(true);
-        }
-    };
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-            openFile(material);
+            Bundle extras = intent.getExtras();
+
+            if (extras != null) {
+                long downloaded_id = extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID);
+                Log.d("RECEIVE", String.valueOf(downloaded_id));
+
+                adapter.notifyItemDownloaded(downloaded_id);
+            }
         }
     };
 
@@ -152,11 +87,55 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
         getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        if (hasPermission()) {
+        if (hasPermission())
             Client.get().load(PG_MATERIALS);
-        } else {
+        else
             requestPermission();
-        }
+
+        adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
+
+            @Override
+            public boolean isSelectionMode() {
+                return action != null;
+            }
+
+            @Override
+            public void setSelectionMode(ActionMode.Callback callback) {
+                action = getActivity().startActionMode(callback);
+
+                if (getActivity() instanceof MainActivity)
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(false);
+            }
+
+            @Override
+            public void onSelectedCount(int size) {
+                if (size > 0)
+                    action.setTitle(String.valueOf(size));
+                else {
+                    action.finish();
+                    action = null;
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                if (getActivity() instanceof MainActivity)
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(false);
+
+                MenuInflater menuInflater = getActivity().getMenuInflater();
+                menuInflater.inflate(R.menu.materials, menu);
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+                action = null;
+
+                if (getActivity() instanceof MainActivity)
+                    ((MainActivity) getActivity()).refreshLayout.setEnabled(true);
+            }
+
+        });
     }
 
     @Override
@@ -169,111 +148,6 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-
-        adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
-
-            @Override
-            public boolean onLongClick(Queryable q) {
-                if (q instanceof Material) {
-                    Material m = (Material) q;
-
-                    if (m.isDownloaded) {
-
-                        if (action == null)
-                            action = getActivity().startActionMode(callback);
-
-                        if (m.isSelected) {
-                            m.isSelected = false;
-                            list.remove(m.getFileName());
-
-                            action.setTitle(String.valueOf(list.size()));
-
-                            if (list.isEmpty()) {
-                                action.finish();
-                                action = null;
-                            }
-                        } else {
-                            if (!list.contains(m.getFileName())) {
-                                m.isSelected = true;
-                                list.add(m.getFileName());
-                            }
-
-                            action.setTitle(String.valueOf(list.size()));
-                        }
-
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            @Override
-            public boolean onClick(Queryable q) {
-                if (q instanceof Matter) {
-                    if (action == null) {
-                        Intent intent = new Intent(getContext(), MatterActivity.class);
-                        intent.putExtra("ID", ((Matter) q).id);
-                        intent.putExtra("PAGE", MatterActivity.MATERIALS);
-                        startActivity(intent);
-                    }
-                    return false;
-                } else {
-                    Material m = (Material) q;
-
-                    if (action == null) {
-                        if (m.isDownloaded) {
-                            openFile(m);
-                        } else {
-                            if (isConnected()) {
-                                m.isDownloading = true;
-
-                                DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
-
-                                long lastDownloadL = manager.enqueue(Client.get().downloadMaterial(m));
-
-                                Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
-                                m.setMime(manager.getMimeTypeForDownloadedFile(lastDownloadL));
-                                m.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-                                m.see();
-                                box.put(m);
-
-                                material = m;
-
-                                Toast.makeText(getContext(), getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-
-                            } else {
-                                Toast.makeText(getContext(), getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                        return true;
-                    } else {
-                        if (m.isDownloaded) {
-                            if (m.isSelected) {
-                                m.isSelected = false;
-                                list.remove(m.getFileName());
-
-                                action.setTitle(String.valueOf(list.size()));
-
-                                if (list.isEmpty()) {
-                                    action.finish();
-                                    action = null;
-                                }
-                            } else {
-                                if (!list.contains(m.getFileName())) {
-                                    m.isSelected = true;
-                                    list.add(m.getFileName());
-                                }
-
-                                action.setTitle(String.valueOf(list.size()));
-                            }
-                        }
-                        return false;
-                    }
-                }
-            }
-        });
-
         recyclerView.setAdapter(adapter);
 
         if (getActivity() instanceof MainActivity) {
@@ -289,32 +163,6 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
-        }
-    }
-
-    private void openFile(Material material) {
-        if (material != null) {
-
-            material.isDownloading = false;
-
-            Intent intent = new Intent(ACTION_VIEW);
-            intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + material.getPath() + "/" + material.getFileName());
-
-            Log.d("Fragment", file.getPath());
-
-            Uri uri = FileProvider.getUriForFile(getContext(), APPLICATION_ID, file);
-
-            intent.setDataAndType(uri, material.getMime());
-
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(getContext(), getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
-            }
         }
     }
 
@@ -359,8 +207,6 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
-        if (!list.isEmpty() && action == null)
-            action = getActivity().startActionMode(callback);
     }
 
     @Override
