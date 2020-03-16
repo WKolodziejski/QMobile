@@ -4,19 +4,15 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.data.DataBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import io.objectbox.Box;
 import io.objectbox.exception.NonUniqueResultException;
 
 public class ReportParser extends BaseParser {

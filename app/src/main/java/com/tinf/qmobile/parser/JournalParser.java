@@ -8,7 +8,7 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;

@@ -2,63 +2,40 @@ package com.tinf.qmobile.fragment;
 
 import android.Manifest;
 import android.app.DownloadManager;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
-import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.material.Material;
-import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.Box;
 
-import static android.content.Context.DOWNLOAD_SERVICE;
-import static android.content.Intent.ACTION_VIEW;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
-import static com.tinf.qmobile.network.Client.isConnected;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class MaterialsFragment extends Fragment implements OnUpdate {
     @BindView(R.id.recycler_materiais)        RecyclerView recyclerView;

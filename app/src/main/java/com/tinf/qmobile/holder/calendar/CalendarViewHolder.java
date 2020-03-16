@@ -1,16 +1,11 @@
 package com.tinf.qmobile.holder.calendar;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
-import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 
 import butterknife.ButterKnife;
 

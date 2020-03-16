@@ -1,4 +1,4 @@
-package com.tinf.qmobile.model.calendar.base;
+package com.tinf.qmobile.model.calendar;
 
 import androidx.annotation.ColorInt;
 
@@ -47,17 +47,26 @@ public abstract class EventBase extends Event implements CalendarBase {
     }
 
     public String getEndDateString() {
-        return new SimpleDateFormat("EE dd/MM/yyyy", Locale.getDefault()).format(endTime);
+        return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(endTime);
+    }
+
+    public String getStartDateString() {
+        return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(startTime);
     }
 
     public boolean isRanged() {
         if (endTime == 0 || endTime == startTime)
             return false;
         else {
-            Date s = new Date(startTime);
-            Date e = new Date(endTime);
+            Calendar s = Calendar.getInstance();
+            s.setTimeInMillis(startTime);
 
-            return !s.equals(e);
+            Calendar e = Calendar.getInstance();
+            e.setTimeInMillis(endTime);
+
+            return !(s.get(Calendar.DAY_OF_MONTH) == e.get(Calendar.DAY_OF_MONTH)
+                    && s.get(Calendar.MONTH) == e.get(Calendar.MONTH)
+                    && s.get(Calendar.YEAR) == e.get(Calendar.YEAR));
         }
     }
 

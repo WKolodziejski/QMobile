@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;

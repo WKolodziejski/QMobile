@@ -2,20 +2,17 @@ package com.tinf.qmobile.adapter;
 
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.FileObserver;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,14 +28,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.MaterialBaseViewHolder;
+import com.tinf.qmobile.model.Material_;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.material.Material;
-import com.tinf.qmobile.model.material.Material_;
+import com.tinf.qmobile.model.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
@@ -46,10 +42,8 @@ import com.tinf.qmobile.utility.User;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -191,14 +185,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
-    }
-
-    public interface OnInteractListener {
-        boolean isSelectionMode();
-        void setSelectionMode(ActionMode.Callback callback);
-        void onSelectedCount(int size);
-        boolean onCreateActionMode(ActionMode actionMode, Menu menu);
-        void onDestroyActionMode(ActionMode actionMode);
     }
 
     public void notifyItemDownloaded(long download) {
@@ -423,7 +409,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         }
     }
 
-    private void selectItem(Material material) {
+    private boolean selectItem(Material material) {
         if (material.isDownloaded) {
             if (material.isSelected) {
                 selected.remove(material.id);
@@ -433,7 +419,11 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 material.isSelected = true;
             }
             listener.onSelectedCount(selected.size());
+
+            return true;
         }
+
+        return false;
     }
 
     public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
@@ -524,12 +514,20 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 if (!listener.isSelectionMode())
                     listener.setSelectionMode(callback);
 
-                selectItem(material);
+                boolean b = selectItem(material);
                 notifyItemChanged(getAdapterPosition());
-                return true;
+                return b;
             });
         }
 
+    }
+
+    public interface OnInteractListener {
+        boolean isSelectionMode();
+        void setSelectionMode(ActionMode.Callback callback);
+        void onSelectedCount(int size);
+        boolean onCreateActionMode(ActionMode actionMode, Menu menu);
+        void onDestroyActionMode(ActionMode actionMode);
     }
 
 }

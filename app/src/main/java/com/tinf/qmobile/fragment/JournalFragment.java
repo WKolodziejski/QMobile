@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -21,16 +20,11 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
-import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.lifecycle.JounalLifeCycle;
-import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.Box;
 
 import static com.tinf.qmobile.network.Client.pos;
 

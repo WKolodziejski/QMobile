@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.Month;

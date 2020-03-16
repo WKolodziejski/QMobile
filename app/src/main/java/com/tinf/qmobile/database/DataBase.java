@@ -1,11 +1,11 @@
-package com.tinf.qmobile.data;
+package com.tinf.qmobile.database;
 
 import android.util.Log;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;

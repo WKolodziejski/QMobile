@@ -3,7 +3,7 @@ package com.tinf.qmobile.model.journal;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.calendar.base.EventBase;
+import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import java.text.SimpleDateFormat;

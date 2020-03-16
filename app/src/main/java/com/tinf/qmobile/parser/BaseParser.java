@@ -3,15 +3,13 @@ package com.tinf.qmobile.parser;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;

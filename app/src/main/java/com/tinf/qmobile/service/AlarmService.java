@@ -18,9 +18,9 @@ import androidx.core.app.NotificationCompat;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.matter.Schedule;
 
 import java.text.SimpleDateFormat;

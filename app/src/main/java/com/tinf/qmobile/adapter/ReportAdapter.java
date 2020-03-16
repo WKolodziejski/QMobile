@@ -16,7 +16,7 @@ import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
 import com.evrencoskun.tableview.listener.ITableViewListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.report.TableCellMatterViewHolder;
 import com.tinf.qmobile.holder.report.TableCellSituationViewHolder;
@@ -31,7 +31,6 @@ import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.objectbox.BoxStore;

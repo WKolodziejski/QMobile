@@ -9,15 +9,14 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
@@ -25,7 +24,7 @@ import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.WebViewActivity;
-import com.tinf.qmobile.adapter.EventsAdapter;
+import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.sheet.CreateFragment;
 import com.tinf.qmobile.model.matter.Matter;
@@ -44,12 +43,10 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
-import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class HomeFragment extends Fragment implements OnUpdate {
+public class HomeFragment2 extends Fragment implements OnUpdate {
     @BindView(R.id.weekView_home)       WeekView weekView;
     @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
     @BindView(R.id.fab_home)            ExtendedFloatingActionButton fab;
@@ -64,7 +61,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home2, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -95,7 +92,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         fab.setOnClickListener(v -> new CreateFragment().show(getFragmentManager(), "sheet_create"));
 
-        CardView offline = (CardView) view.findViewById(R.id.home_offline);
+        LinearLayout offline = (LinearLayout) view.findViewById(R.id.home_offline);
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             offline.setVisibility(View.VISIBLE);
@@ -106,8 +103,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
             offline.setVisibility(View.GONE);
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new EventsAdapter(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        recyclerView.setAdapter(new HomeAdapter(getContext()));
     }
 
     private void updateSchedule() {

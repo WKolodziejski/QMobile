@@ -1,4 +1,4 @@
-package com.tinf.qmobile.data;
+package com.tinf.qmobile.database;
 
 public interface OnDataChange {
 

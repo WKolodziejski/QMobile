@@ -13,12 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Schedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;

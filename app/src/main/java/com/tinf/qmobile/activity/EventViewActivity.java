@@ -12,7 +12,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 

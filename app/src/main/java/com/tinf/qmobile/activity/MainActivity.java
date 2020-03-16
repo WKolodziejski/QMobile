@@ -24,8 +24,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
-import com.tinf.qmobile.data.DataBase;
-import com.tinf.qmobile.data.OnDataChange;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.database.OnDataChange;
+import com.tinf.qmobile.fragment.HomeFragment2;
 import com.tinf.qmobile.fragment.sheet.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (savedInstanceState != null) {
             changeFragment(getSupportFragmentManager().getFragment(savedInstanceState, "fragment"));
         } else {
-            changeFragment(new HomeFragment());
+            changeFragment(new HomeFragment2());
         }
 
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             switch (item.getItemId()) {
 
                 case R.id.navigation_home:
-                    fragment = new HomeFragment();
+                    fragment = new HomeFragment2();
                     break;
 
                 case R.id.navigation_notas:

@@ -1,13 +1,11 @@
 package com.tinf.qmobile.model.calendar;
 
-import com.tinf.qmobile.model.calendar.base.CalendarBase;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.HEADER;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.HEADER;
 
 public class Header implements CalendarBase {
     private long time;

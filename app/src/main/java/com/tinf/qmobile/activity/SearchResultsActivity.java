@@ -4,16 +4,11 @@ import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.data.DataBase;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;

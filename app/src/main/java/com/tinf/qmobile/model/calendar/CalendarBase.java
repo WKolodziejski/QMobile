@@ -1,16 +1,16 @@
-package com.tinf.qmobile.model.calendar.base;
+package com.tinf.qmobile.model.calendar;
 
 import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Date;
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.DAY;
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.MONTH;
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.Q;
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.SIMPLE;
-import static com.tinf.qmobile.model.calendar.base.CalendarBase.ViewType.USER;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.DAY;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.MONTH;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.Q;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.SIMPLE;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.USER;
 
 public interface CalendarBase<T extends CalendarBase> {
 

@@ -1,4 +1,4 @@
-package com.tinf.qmobile.model.material;
+package com.tinf.qmobile.model;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
