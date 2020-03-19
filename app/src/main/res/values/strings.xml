@@ -38,6 +38,8 @@
     <string name="calendar_scroll">Ir para hoje</string>
     <string name="calendar_period_start">Início do período letivo</string>
     <string name="calendar_period_end">Fim do período letivo</string>
+    <string name="calendar_empty">Sem eventos futuros</string>
+    <string name="calendar_upcoming">Próximos eventos</string>
 
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
@@ -114,6 +116,7 @@
     <string name="journal_details">Detalhes</string>
     <string name="journal_absences">Faltas</string>
     <string name="journal_sum">Soma parcial</string>
+    <string name="journal_final_grade">Nota final</string>
     <string name="journal_date">Data</string>
     <string name="journal_max">Max</string>
     <string name="journal_weight">Peso</string>
@@ -134,6 +137,8 @@
     <string name="event_matter">Linkar matéria</string>
     <string name="event_save">Salvar</string>
     <string name="event_until">(até %1$s)</string>
+
+    <string name="schedule_empty">Sem horários disponíveis</string>
 
     <string name="alarm_30min">30 minutos antes</string>
     <string name="alarm_1h">1 hora antes</string>

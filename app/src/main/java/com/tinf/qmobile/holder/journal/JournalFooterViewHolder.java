@@ -29,9 +29,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
 
     @Override
     public void bind(Context context, FooterJournal footer, JournalAdapter adapter) {
-        float p = footer.getMatter().getLastPeriod().getGradeSum();
-
-        partial.setText(p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p));
+        partial.setText(footer.getMatter().getLastPeriod().getGradeSumString());
         absences.setText(footer.getMatter().getAbsences());
         details.setTextColor(footer.getMatter().getColor());
         details.setOnClickListener(view -> {

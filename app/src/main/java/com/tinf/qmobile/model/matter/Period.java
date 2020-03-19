@@ -2,6 +2,8 @@ package com.tinf.qmobile.model.matter;
 
 import com.tinf.qmobile.model.journal.Journal;
 
+import java.util.Locale;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
@@ -66,6 +68,12 @@ public class Period {
                 sum += j.getGrade_();
 
         return sum;
+    }
+
+    public String getGradeSumString() {
+        float p = getGradeSum();
+
+        return p == -1 ? "" : String.format(Locale.getDefault(), "%.1f", p);
     }
 
     public float getPartialGrade() {

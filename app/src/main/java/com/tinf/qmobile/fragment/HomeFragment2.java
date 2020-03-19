@@ -51,6 +51,7 @@ public class HomeFragment2 extends Fragment implements OnUpdate {
     @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
     @BindView(R.id.fab_home)            ExtendedFloatingActionButton fab;
     @BindView(R.id.recycler_home)       RecyclerView recyclerView;
+    @BindView(R.id.schedule_empty_text) TextView empty;
     private DataSubscription sub1, sub2;
 
     @Override
@@ -119,6 +120,8 @@ public class HomeFragment2 extends Fragment implements OnUpdate {
                         .equal(Schedule_.period, User.getPeriod(pos))
                         .build().find();
 
+                ViewGroup.LayoutParams params = weekView.getLayoutParams();
+
                 if (!schedules.isEmpty()) {
 
                     for (Schedule schedule : schedules) {
@@ -180,22 +183,25 @@ public class HomeFragment2 extends Fragment implements OnUpdate {
                             lastIndex = h;
                     }
 
-                    ViewGroup.LayoutParams params = weekView.getLayoutParams();
                     params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45) * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
-                    weekView.setLayoutParams(params);
 
                     weekView.goToDay(DayOfWeek.MONDAY);
                     weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
+                    empty.setVisibility(View.GONE);
+
+                } else {
+                    params.height = Math.round((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
+                    empty.setVisibility(View.VISIBLE);
                 }
 
-                Log.d("Home", "View listener");
+                weekView.setLayoutParams(params);
 
                 return events;
             });
 
             weekView.post(() -> weekView.notifyDatasetChanged());
-
         }).start();
     }
 

@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     >
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/dog"
+        android:id="@+id/schedule_empty"
+        android:visibility="gone"/>
+
     <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,7 +20,7 @@
         android:id="@+id/weekView_horario"
         app:headerColumnPadding="8dp"
         app:noOfVisibleDays="7"
-        app:eventCornerRadius="5dp"
+        app:eventCornerRadius="8dp"
         app:eventTextSize="12sp"
         app:hourHeight="60dp"
         app:maxHourHeight="60dp"
@@ -30,6 +37,7 @@
         app:headerColumnBackground="@color/transparent"
         app:headerColumnTextColor="@color/colorPrimary"
         app:eventTextColor="@color/colorPrimaryLight"
+        app:todayHeaderTextColor="@color/colorPrimary"
         app:headerRowBackgroundColor="@color/transparent"
         app:dayBackgroundColor="@color/transparent"
         app:pastBackgroundColor="@color/transparent"

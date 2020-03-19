@@ -17,7 +17,7 @@ public interface CalendarBase<T extends CalendarBase> {
     @IntDef({SIMPLE, MONTH, USER, JOURNAL, Q, DAY})
     @Retention(RetentionPolicy.SOURCE)
     @interface ViewType {
-        //int DEFAULT = 100;
+        int EMPTY = 100;
         int SIMPLE = 300;
         int MONTH = 400;
         int USER = 500;

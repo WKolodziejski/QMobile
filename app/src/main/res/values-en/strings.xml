@@ -155,4 +155,9 @@
     <string name="report_meanFinal">Final Mean</string>
     <string name="report_situation">Situation</string>
     <string name="event_until">(until %1$s)</string>
+    <string name="action_select_all">Select all</string>
+    <string name="calendar_empty">No upcoming events</string>
+    <string name="calendar_upcoming">Upcoming</string>
+    <string name="schedule_empty">No available schedules</string>
+    <string name="journal_final_grade">Final grade</string>
 </resources>

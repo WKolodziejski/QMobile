@@ -40,7 +40,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="bottom"
                 android:orientation="vertical"
                 android:padding="16dp"
@@ -61,8 +60,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="32dp"
-                    android:text="@string/home_footer"
+                    android:layout_marginStart="32dp"
                     android:textSize="@dimen/main_font_size"
                     android:id="@+id/offline_last_update"
                     tools:text="Last update on 22/03/2017" />
@@ -75,25 +73,44 @@
                 android:orientation="vertical"
                 >
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:drawableStart="@drawable/ic_alarm"
-                    android:drawablePadding="8dp"
-                    android:drawableTint="@color/colorAccent"
-                    android:gravity="center_vertical"
-                    android:text="@string/title_horario"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
+                    android:orientation="vertical"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:id="@+id/home_horario"/>
+                    android:id="@+id/home_horario"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_alarm"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/colorAccent"
+                        android:gravity="center_vertical"
+                        android:text="@string/title_horario"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/schedule_empty_text"
+                        android:visibility="gone"
+                        android:text="@string/schedule_empty"
+                        tools:visibility="visible"/>
+
+                </LinearLayout>
 
                 <me.jlurena.revolvingweekview.WeekView
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginEnd="24dp"
-                    android:layout_marginStart="4dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="-32dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="-8dp"
                     android:layout_marginBottom="8dp"
                     android:transitionName="Horario"
                     android:id="@+id/weekView_home"
@@ -112,12 +129,15 @@
                     app:zoomFocusPointEnabled="false"
                     app:hourSeparatorColor="@color/transparent"
                     app:headerColumnBackground="@color/transparent"
-                    app:headerColumnTextColor="@color/colorPrimary"
+                    app:headerColumnTextColor="@color/transparent"
                     app:eventTextColor="@color/colorPrimaryLight"
+                    app:todayHeaderTextColor="@color/transparent"
                     app:headerRowBackgroundColor="@color/transparent"
                     app:dayBackgroundColor="@color/transparent"
                     app:pastBackgroundColor="@color/transparent"
-                    app:todayBackgroundColor="@color/transparent"/>
+                    app:todayBackgroundColor="@color/transparent"
+                    tools:layout_height="200dp"
+                    tools:background="@color/colorPrimaryLight"/>
 
             </LinearLayout>
 
@@ -136,7 +156,7 @@
                     android:drawablePadding="8dp"
                     android:drawableTint="@color/colorAccent"
                     android:gravity="center_vertical"
-                    android:text="Upcoming"
+                    android:text="@string/calendar_upcoming"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:foreground="?android:attr/selectableItemBackground"

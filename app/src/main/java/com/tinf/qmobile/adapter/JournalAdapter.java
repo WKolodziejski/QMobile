@@ -112,6 +112,9 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     else if (journals.get(oldItemPosition) instanceof FooterJournal && updated.get(newItemPosition) instanceof FooterJournal)
                         return (((FooterJournal) journals.get(oldItemPosition)).getMatter().id == (((FooterJournal) updated.get(newItemPosition)).getMatter().id));
 
+                    else if (journals.get(oldItemPosition) instanceof FooterPeriod && updated.get(newItemPosition) instanceof FooterPeriod)
+                        return (((FooterPeriod) journals.get(oldItemPosition)).getPeriod().id == (((FooterPeriod) updated.get(newItemPosition)).getPeriod().id));
+
                     else if (journals.get(oldItemPosition) instanceof Header && updated.get(newItemPosition) instanceof Header)
                         return (((Header) journals.get(oldItemPosition)).getPeriod().id == (((Header) updated.get(newItemPosition)).getPeriod().id));
 
@@ -165,12 +168,10 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     .findUnique();
 
             for (int i = 0; i < matter.periods.size(); i++) {
-                if (!matter.periods.get(i).journals.isEmpty()) {
-                    list.add(new Header(matter.periods.get(i)));
-                    list.addAll(matter.periods.get(i).journals);
-                    if (!matter.periods.get(i).isSub_())
-                        list.add(new FooterPeriod(matter.periods.get(i)));
-                }
+                list.add(new Header(matter.periods.get(i)));
+                list.addAll(matter.periods.get(i).journals);
+                if (!matter.periods.get(i).isSub_())
+                    list.add(new FooterPeriod(matter.periods.get(i)));
             }
         }
 
@@ -190,14 +191,16 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         if (closed > open) {
             for (int i = 0; i < journals.size(); i++)
                 if (journals.get(i) instanceof Matter)
-                    expand(i, (Matter) journals.get(i), false);
+                    if (!((Matter) journals.get(i)).isExpanded)
+                        expand(i, (Matter) journals.get(i), false);
 
             Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();
 
         } else {
             for (int i = 0; i < journals.size(); i++)
                 if (journals.get(i) instanceof Matter)
-                    collapse(i, (Matter) journals.get(i));
+                    if (((Matter) journals.get(i)).isExpanded)
+                        collapse(i, (Matter) journals.get(i));
 
             Toast.makeText(context, R.string.diarios_collapsed, Toast.LENGTH_SHORT).show();
         }

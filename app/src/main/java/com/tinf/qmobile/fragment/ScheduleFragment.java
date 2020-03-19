@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ import static com.tinf.qmobile.network.Client.pos;
 
 public class ScheduleFragment extends Fragment {
     @BindView(R.id.weekView_horario)    WeekView weekView;
+    @BindView(R.id.schedule_empty)      ImageView empty;
     private DataSubscription sub1, sub2;
     private Bundle bundle;
 
@@ -72,87 +74,91 @@ public class ScheduleFragment extends Fragment {
     }
 
     private void updateSchedule() {
-        new Thread(() -> {
-            weekView.setWeekViewLoader(() -> {
-                boolean[][] hours = new boolean[24][7];
-                WeekViewEvent[] minutes = new WeekViewEvent[24];
+        new Thread(() -> weekView.setWeekViewLoader(() -> {
+            boolean[][] hours = new boolean[24][7];
+            WeekViewEvent[] minutes = new WeekViewEvent[24];
 
-                List<WeekViewEvent> events = new ArrayList<>();
+            List<WeekViewEvent> events = new ArrayList<>();
 
-                List<Schedule> schedules;
+            List<Schedule> schedules;
 
-                if (bundle == null) {
-                    schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                            .equal(Schedule_.year, User.getYear(pos)).and()
-                            .equal(Schedule_.period, User.getPeriod(pos))
-                            .build().find();
-                } else {
+            if (bundle == null) {
+                schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                        .equal(Schedule_.year, User.getYear(pos)).and()
+                        .equal(Schedule_.period, User.getPeriod(pos))
+                        .build().find();
+            } else {
 
-                    QueryBuilder<Schedule> builder = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                            .equal(Schedule_.year, User.getYear(pos)).and()
-                            .equal(Schedule_.period, User.getPeriod(pos));
+                QueryBuilder<Schedule> builder = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                        .equal(Schedule_.year, User.getYear(pos)).and()
+                        .equal(Schedule_.period, User.getPeriod(pos));
 
-                    builder.link(Schedule_.matter)
-                            .equal(Matter_.id, bundle.getLong("ID"));
+                builder.link(Schedule_.matter)
+                        .equal(Matter_.id, bundle.getLong("ID"));
 
-                    schedules = builder.build().find();
+                schedules = builder.build().find();
+            }
+
+            if (!schedules.isEmpty()) {
+
+                for (Schedule schedule : schedules) {
+                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                            schedule.getStartTime(), schedule.getEndTime());
+                    event.setColor(schedule.getColor());
+                    events.add(event);
+
+                    int day = event.getStartTime().getDay().getValue();
+                    int hour = event.getStartTime().getHour();
+
+                    if (!hours[hour][day]) {
+                        minutes[hour] = event;
+                        hours[hour][day] = true;
+                    }
                 }
 
-                if (!schedules.isEmpty()) {
+                int firstIndex = 0;
+                int parc1 = 0;
 
-                    for (Schedule schedule : schedules) {
-                        WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                                schedule.getStartTime(), schedule.getEndTime());
-                        event.setColor(schedule.getColor());
-                        events.add(event);
-
-                        int day = event.getStartTime().getDay().getValue();
-                        int hour = event.getStartTime().getHour();
-
-                        if (!hours[hour][day]) {
-                            minutes[hour] = event;
-                            hours[hour][day] = true;
+                for (int h = 0; h < 24; h++) {
+                    int sum = 0;
+                    for (int d = 0; d < 7; d++) {
+                        if (hours[h][d]) {
+                            sum++;
                         }
                     }
-
-                    int firstIndex = 0;
-                    int parc1 = 0;
-
-                    for (int h = 0; h < 24; h++) {
-                        int sum = 0;
-                        for (int d = 0; d < 7; d++) {
-                            if (hours[h][d]) {
-                                sum++;
-                            }
-                        }
-                        if (sum > parc1) {
-                            firstIndex = h;
-                            parc1 = sum;
-                        }
+                    if (sum > parc1) {
+                        firstIndex = h;
+                        parc1 = sum;
                     }
-
-                    boolean r = true;
-                    int d1 = 0;
-
-                    while (r) {
-                        if (!hours[firstIndex - 1][d1] && d1 < 7) {
-                            d1++;
-                            if (d1 == 7)
-                                r = false;
-                        } else {
-                            firstIndex--;
-                            d1 = 0;
-                        }
-                    }
-
-                    weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
                 }
 
-                return events;
-            });
+                boolean r = true;
+                int d1 = 0;
 
-            weekView.post(() -> weekView.notifyDatasetChanged());
-        }).start();
+                while (r) {
+                    if (!hours[firstIndex - 1][d1] && d1 < 7) {
+                        d1++;
+                        if (d1 == 7)
+                            r = false;
+                    } else {
+                        firstIndex--;
+                        d1 = 0;
+                    }
+                }
+
+                weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
+                weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
+                empty.setVisibility(View.GONE);
+
+            } else {
+                weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
+                weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
+                empty.setVisibility(View.VISIBLE);
+            }
+
+            return events;
+        })).start();
     }
 
     @OnClick(R.id.fab_add_schedule)
@@ -172,13 +178,13 @@ public class ScheduleFragment extends Fragment {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> updateSchedule());
+                .observer(data -> weekView.notifyDatasetChanged());
 
         sub2 = boxStore.subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> updateSchedule());
+                .observer(data -> weekView.notifyDatasetChanged());
     }
 
     @Override

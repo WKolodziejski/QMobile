@@ -12,8 +12,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class PeriodFooterViewHolder extends JournalBaseViewHolder<FooterPeriod> {
-    @BindView(R.id.period_partial_grade_text)  public TextView partial;
-    @BindView(R.id.period_absences_text)       public TextView absences;
+    @BindView(R.id.period_partial_grade_text)   public TextView partial;
+    @BindView(R.id.period_final_grade_text)     public TextView grade;
+    @BindView(R.id.period_absences_text)        public TextView absences;
 
     public PeriodFooterViewHolder(@NonNull View view) {
         super(view);
@@ -22,9 +23,8 @@ public class PeriodFooterViewHolder extends JournalBaseViewHolder<FooterPeriod> 
 
     @Override
     public void bind(Context context, FooterPeriod footer, JournalAdapter adapter) {
-        float p = footer.getPeriod().getGradeSum();
-
-        partial.setText(p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p));
+        partial.setText(footer.getPeriod().getGradeSumString());
+        grade.setText(footer.getPeriod().getGrade());
         absences.setText(footer.getPeriod().getAbsences());
     }
 

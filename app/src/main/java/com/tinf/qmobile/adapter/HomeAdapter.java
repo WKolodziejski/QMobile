@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
+import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
@@ -34,6 +35,11 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.EMPTY;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.SIMPLE;
+import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.USER;
 
 public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private List<EventBase> events;
@@ -131,34 +137,45 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case CalendarBase.ViewType.JOURNAL:
+            case JOURNAL:
                 return new EventJournalHorizontalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_journal_h, parent, false));
 
-            case CalendarBase.ViewType.SIMPLE:
+            case SIMPLE:
                 return new EventSimpleHorizontalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_simple_h, parent, false));
 
-            case CalendarBase.ViewType.USER:
+            case USER:
                 return new EventUserHorizontalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_user_h, parent, false));
+
+            case EMPTY:
+                return new EmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.calendar_empty, parent, false));
         }
         return null;
     }
 
     @Override
     public int getItemViewType(int i) {
-        return events.get(i).getItemType();
+        if (events.isEmpty())
+            return EMPTY;
+        else
+            return events.get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int i) {
-        holder.bind(events.get(i), context);
+        if (!events.isEmpty())
+            holder.bind(events.get(i), context);
     }
 
     @Override
     public int getItemCount() {
-        return events.size();
+        if (events.isEmpty())
+            return 1;
+        else
+            return events.size();
     }
 
     @Override

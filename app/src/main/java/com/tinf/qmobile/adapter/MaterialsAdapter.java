@@ -20,17 +20,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.holder.journal.EmptyViewHolder;
 import com.tinf.qmobile.holder.MaterialBaseViewHolder;
 import com.tinf.qmobile.model.Material_;
 import com.tinf.qmobile.model.Queryable;
@@ -44,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.objectbox.Box;
@@ -53,11 +51,11 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
+import static com.tinf.qmobile.model.Queryable.ViewType.EMPTY;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
@@ -322,7 +320,10 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        return materials.get(position).getItemType();
+        if (materials.isEmpty())
+            return EMPTY;
+        else
+            return materials.get(position).getItemType();
     }
 
     @NonNull
@@ -337,18 +338,26 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 return new MaterialViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.material_item, parent, false));
 
+            case EMPTY:
+                return new EmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.material_empty, parent, false));
+
         }
         return null;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int position) {
-        holder.bind(materials.get(position));
+        if (!materials.isEmpty())
+            holder.bind(materials.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return materials.size();
+        if (materials.isEmpty())
+            return 1;
+        else
+            return materials.size();
     }
 
     @Override
@@ -409,21 +418,15 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         }
     }
 
-    private boolean selectItem(Material material) {
-        if (material.isDownloaded) {
-            if (material.isSelected) {
-                selected.remove(material.id);
-                material.isSelected = false;
-            } else {
-                selected.add(material.id);
-                material.isSelected = true;
-            }
-            listener.onSelectedCount(selected.size());
-
-            return true;
+    private void selectItem(Material material) {
+        if (material.isSelected) {
+            selected.remove(material.id);
+            material.isSelected = false;
+        } else {
+            selected.add(material.id);
+            material.isSelected = true;
         }
-
-        return false;
+        listener.onSelectedCount(selected.size());
     }
 
     public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
@@ -498,7 +501,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
             itemView.setOnClickListener(view -> {
                 if (listener.isSelectionMode()) {
-                    selectItem(material);
+                    if (material.isDownloaded)
+                        selectItem(material);
                 } else {
                     if (material.isDownloaded) {
                         openFile(material);
@@ -511,15 +515,17 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
             });
 
             itemView.setOnLongClickListener(view -> {
-                if (!listener.isSelectionMode())
-                    listener.setSelectionMode(callback);
+                if (material.isDownloaded) {
+                    if (!listener.isSelectionMode())
+                        listener.setSelectionMode(callback);
 
-                boolean b = selectItem(material);
-                notifyItemChanged(getAdapterPosition());
-                return b;
+                    selectItem(material);
+                    notifyItemChanged(getAdapterPosition());
+                    return true;
+
+                } else return false;
             });
         }
-
     }
 
     public interface OnInteractListener {
