@@ -20,12 +20,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -47,6 +51,8 @@ public class LoginFragment extends Fragment implements OnResponse {
     @BindView(R.id.btn_login)               Button btn;
     @BindView(R.id.login_spinner)           Spinner spinner;
 
+    private int url = 0;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
@@ -59,9 +65,17 @@ public class LoginFragment extends Fragment implements OnResponse {
         super.onViewCreated(view, savedInstanceState);
 
         List<String> urls = new ArrayList<>();
-        urls.add("IFSUL");
+        urls.add("IFAM");
+        urls.add("IFCE");
         urls.add("IFES");
+        urls.add("IFG");
+        urls.add("IFGOIANO");
+        urls.add("IFMA");
         urls.add("IFMT");
+        urls.add("IFPE");
+        urls.add("IFPI");
+        urls.add("IFRS");
+        urls.add("IFSUL");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
         adapter.addAll(urls);
@@ -72,16 +86,7 @@ public class LoginFragment extends Fragment implements OnResponse {
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        switch (position) {
-                            case 0 : Client.get().setURL(IFSUL);
-                                break;
-
-                            case 1: Client.get().setURL(IFES);
-                                break;
-
-                            case 2: Client.get().setURL(IFMT);
-                                break;
-                        }
+                        url = position;
                     }
 
                     @Override
@@ -100,13 +105,13 @@ public class LoginFragment extends Fragment implements OnResponse {
             }
 
             if (!user.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
-
                 hideKeyboard();
                 user.setError(null);
 
                 User.setCredential(REGISTRATION, user.getText().toString().toUpperCase());
                 User.setCredential(PASSWORD, password.getText().toString());
 
+                Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(url));
                 Client.get().login();
             }
         });

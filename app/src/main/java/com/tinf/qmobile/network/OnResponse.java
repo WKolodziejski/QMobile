@@ -1,9 +1,6 @@
 package com.tinf.qmobile.network;
 
 public interface OnResponse {
-    String IFSUL = "http://qacademico.ifsul.edu.br";
-    String IFES = "https://academico3.cefetes.br";
-    String IFMT = "https://academico.ifmt.edu.br";
     String INDEX = "/qacademico/index.asp?t=";
     int PG_LOGIN = 1001;
     int PG_HOME = 2000;

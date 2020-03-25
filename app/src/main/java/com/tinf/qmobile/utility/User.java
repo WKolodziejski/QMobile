@@ -11,21 +11,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.tinf.qmobile.network.OnResponse.IFSUL;
 
 public class User {
 
@@ -66,7 +62,7 @@ public class User {
     }
 
     public static String getURL() {
-       return getInfo().getString(URL, IFSUL);
+       return getInfo().getString(URL, "");
     }
 
     public static String getName() {
