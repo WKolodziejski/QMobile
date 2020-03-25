@@ -21,7 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.Material;
+import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;

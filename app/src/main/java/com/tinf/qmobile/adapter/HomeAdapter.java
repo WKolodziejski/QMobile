@@ -17,6 +17,7 @@ import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder
 import com.tinf.qmobile.holder.calendar.vertical.EventJournalVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventSimpleVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
+import com.tinf.qmobile.model.calendar.Empty;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -130,6 +131,9 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
         Collections.sort(list, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
+        if (list.isEmpty())
+            list.add(new Empty());
+
         return list;
     }
 
@@ -158,23 +162,23 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     @Override
     public int getItemViewType(int i) {
-        if (events.isEmpty())
-            return EMPTY;
-        else
+        //if (events.isEmpty())
+            //return EMPTY;
+        //else
             return events.get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int i) {
-        if (!events.isEmpty())
+        //if (!events.isEmpty())
             holder.bind(events.get(i), context);
     }
 
     @Override
     public int getItemCount() {
-        if (events.isEmpty())
-            return 1;
-        else
+        //if (events.isEmpty())
+            //return 1;
+        //else
             return events.size();
     }
 

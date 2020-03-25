@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.model.Material;
-import com.tinf.qmobile.model.Material_;
+import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.utility.User;

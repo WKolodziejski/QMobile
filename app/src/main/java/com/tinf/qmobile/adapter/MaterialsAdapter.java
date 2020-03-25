@@ -29,11 +29,12 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.holder.journal.EmptyViewHolder;
-import com.tinf.qmobile.holder.MaterialBaseViewHolder;
-import com.tinf.qmobile.model.Material_;
+import com.tinf.qmobile.holder.material.EmptyViewHolder;
+import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
+import com.tinf.qmobile.model.material.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.Material;
+import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
@@ -315,14 +316,18 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 }
             }
         });
+
+        if (list.isEmpty())
+            list.add(new Empty());
+
         return list;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (materials.isEmpty())
-            return EMPTY;
-        else
+        //if (materials.isEmpty())
+            //return EMPTY;
+        //else
             return materials.get(position).getItemType();
     }
 
@@ -348,15 +353,15 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int position) {
-        if (!materials.isEmpty())
+        //if (!materials.isEmpty())
             holder.bind(materials.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (materials.isEmpty())
-            return 1;
-        else
+        //if (materials.isEmpty())
+            //return 1;
+        //else
             return materials.size();
     }
 

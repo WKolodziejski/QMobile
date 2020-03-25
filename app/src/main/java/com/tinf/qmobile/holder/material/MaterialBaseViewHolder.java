@@ -1,4 +1,4 @@
-package com.tinf.qmobile.holder;
+package com.tinf.qmobile.holder.material;
 
 import android.content.Context;
 import android.view.View;

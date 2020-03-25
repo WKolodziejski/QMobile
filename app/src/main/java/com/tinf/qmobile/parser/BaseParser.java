@@ -6,7 +6,7 @@ import android.util.Log;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.Material;
+import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Schedule;
