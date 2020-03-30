@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
@@ -93,6 +94,7 @@ public class LoginFragment extends Fragment implements OnResponse {
                     public void onNothingSelected(AdapterView<?> parentView) {}
 
                 });
+        spinner.setSelection(10);
 
         btn.setOnClickListener(v -> {
 
@@ -112,6 +114,10 @@ public class LoginFragment extends Fragment implements OnResponse {
                 User.setCredential(PASSWORD, password.getText().toString());
 
                 Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(url));
+
+                Crashlytics.setString("Register", User.getCredential(REGISTRATION));
+                Crashlytics.setString("URL", User.getURL());
+
                 Client.get().login();
             }
         });

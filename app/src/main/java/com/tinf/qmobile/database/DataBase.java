@@ -30,7 +30,9 @@ public class DataBase implements OnUpdate {
         boxStore = MyObjectBox
                 .builder()
                 .androidContext(App.getContext())
+                //.name(User.getCredential(User.REGISTRATION))
                 .build();
+
 
         sub1 = boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
@@ -58,7 +60,7 @@ public class DataBase implements OnUpdate {
         return boxStore;
     }
 
-    public void finalise() {
+    public void close() {
         Client.get().removeOnUpdateListener(this);
         if (boxStore != null) {
             sub1.cancel();

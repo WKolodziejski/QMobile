@@ -29,7 +29,6 @@ import com.tinf.qmobile.database.OnDataChange;
 import com.tinf.qmobile.fragment.HomeFragment2;
 import com.tinf.qmobile.fragment.sheet.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
-import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.network.Client;
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         finish();
         Client.get().close();
         Jobs.cancelAllJobs();
-        DataBase.get().finalise();
+        DataBase.get().close();
         User.clearInfos();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

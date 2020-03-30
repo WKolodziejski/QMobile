@@ -347,15 +347,17 @@ public class Client {
     private void fetchParams(Response.Listener<String> listener) {
         addRequest(new StringRequest(GET, URL + GERADOR,
                 response ->  {
-                    String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));;
-                    keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
+                    try {
+                        String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));
+                        keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
 
-                    KEY_A = keys.substring(0, keys.indexOf("\""));
-                    Log.d("Key A", KEY_A);
-                    KEY_B = keys.substring(keys.lastIndexOf("\"") + 1);
-                    Log.d("Key B", KEY_B);
+                        KEY_A = keys.substring(0, keys.indexOf("\""));
+                        Log.d("Key A", KEY_A);
+                        KEY_B = keys.substring(keys.lastIndexOf("\"") + 1);
+                        Log.d("Key B", KEY_B);
 
-                    Log.v(TAG, "Keys fetched");
+                        Log.v(TAG, "Keys fetched");
+                    } catch (IndexOutOfBoundsException ignored) {}
 
                     listener.onResponse(response);
 

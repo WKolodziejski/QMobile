@@ -61,13 +61,16 @@ public class App extends Application {
             if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
                 Client.get().close();
                 Jobs.cancelAllJobs();
-                DataBase.get().finalise();
+                DataBase.get().close();
                 User.clearInfos();
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
                 getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
+
+        if (User.getURL().equals("https://academico3.cefetes.br"))
+            User.setURL("https://academico.ifes.edu.br");
     }
 
     public static Context getContext() {

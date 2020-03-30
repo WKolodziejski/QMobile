@@ -3,7 +3,7 @@
     <string-array name="urls">
         <item>http://qacademico.ifam.edu.br</item>          //IFAM
         <item>https://qacademico.ifce.edu.br</item>         //IFCE
-        <item>https://academico3.cefetes.br</item>          //IFES
+        <item>https://academico.ifes.edu.br</item>          //IFES
         <item>https://academicoweb.ifg.edu.br</item>        //IFG
         <item>https://academico.ifgoiano.edu.br</item>      //IFGOIANO
         <item>https://qacad.ifma.edu.br</item>              //IFMA
