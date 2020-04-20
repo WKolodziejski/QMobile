@@ -85,10 +85,8 @@ public class ScheduleCreateFragment extends Fragment {
                 .equal(Matter_.period_, User.getPeriod(0))
                 .build().find();
 
-        Calendar calendar = Calendar.getInstance();
-
-        start = new DayTime(calendar.get(Calendar.DAY_OF_WEEK) - 1, 12, 0);
-        end = new DayTime(calendar.get(Calendar.DAY_OF_WEEK) - 1, 13, 0);
+        start = new DayTime(DayOfWeek.MONDAY, 12, 0);
+        end = new DayTime(DayOfWeek.MONDAY, 13, 0);
 
         Bundle bundle = getArguments();
 

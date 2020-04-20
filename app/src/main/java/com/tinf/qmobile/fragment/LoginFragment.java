@@ -21,6 +21,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
@@ -28,10 +32,15 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,15 +53,29 @@ import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class LoginFragment extends Fragment implements OnResponse {
-    private static String TAG = "LoginFragment";
+    private static final String TAG = "LoginFragment";
     @BindView(R.id.login_progressbar)       ProgressBar progressBar;
     @BindView(R.id.login_textLoading)       TextView textView;
     @BindView(R.id.user_input_login)        EditText user;
     @BindView(R.id.password_input_login)    EditText password;
     @BindView(R.id.btn_login)               Button btn;
     @BindView(R.id.login_spinner)           Spinner spinner;
+    private FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    private Map<String, String> urls;
 
-    private int url = 0;
+    //private int url = 0;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        remoteConfig.setConfigSettingsAsync(new FirebaseRemoteConfigSettings
+                .Builder()
+                .setMinimumFetchIntervalInSeconds(3600)
+                .build());
+        remoteConfig.setDefaultsAsync(R.xml.urls);
+        urls = new Gson().fromJson(remoteConfig.getString("urls"),
+                new TypeToken<Map<String, String>>(){}.getType());
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,36 +88,38 @@ public class LoginFragment extends Fragment implements OnResponse {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        List<String> urls = new ArrayList<>();
-        urls.add("IFAM");
-        urls.add("IFCE");
-        urls.add("IFES");
-        urls.add("IFG");
-        urls.add("IFGOIANO");
-        urls.add("IFMA");
-        urls.add("IFMT");
-        urls.add("IFPE");
-        urls.add("IFPI");
-        urls.add("IFRS");
-        urls.add("IFSUL");
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
-        adapter.addAll(urls);
+        adapter.addAll(urls.keySet());
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+        remoteConfig.fetchAndActivate()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        urls = new Gson().fromJson(remoteConfig.getString("urls"),
+                                new TypeToken<Map<String, String>>(){}.getType());
+
+                        adapter.clear();
+                        adapter.addAll(urls.keySet());
+                        spinner.setAdapter(adapter);
+                        spinner.setSelection(0);
+                    }
+                });
 
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        url = position;
+                        //url = position;
+                        Client.get().setURL(urls.get(adapter.getItem(position)));
+                        Log.d(TAG, Client.get().getURL());
                     }
 
                     @Override
                     public void onNothingSelected(AdapterView<?> parentView) {}
 
                 });
-        spinner.setSelection(10);
+        spinner.setSelection(0);
 
         btn.setOnClickListener(v -> {
 
@@ -113,7 +138,7 @@ public class LoginFragment extends Fragment implements OnResponse {
                 User.setCredential(REGISTRATION, user.getText().toString().toUpperCase());
                 User.setCredential(PASSWORD, password.getText().toString());
 
-                Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(url));
+                //Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(url));
 
                 Crashlytics.setString("Register", User.getCredential(REGISTRATION));
                 Crashlytics.setString("URL", User.getURL());

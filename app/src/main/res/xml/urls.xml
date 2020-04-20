@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>urls</key>
+        <value>{
+            "IFAM": "http://qacademico.ifam.edu.br",
+            "IFCE": "https://qacademico.ifce.edu.br",
+            "IFES": "https://academico.ifes.edu.br",
+            "IFG": "https://academicoweb.ifg.edu.br",
+            "IFGOIANO": "https://academico.ifgoiano.edu.br",
+            "IFMA": "https://qacad.ifma.edu.br",
+            "IFMT": "https://academico.ifmt.edu.br",
+            "IFPE": "https://qacademico.ifpe.edu.br",
+            "IFPI": "https://academico.ifpi.edu.br",
+            "IFRS": "https://qacademico.bento.ifrs.edu.br",
+            "IFSUL": "http://qacademico.ifsul.edu.br"
+            }</value>
+    </entry>
+</defaultsMap>

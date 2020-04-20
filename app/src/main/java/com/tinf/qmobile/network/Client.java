@@ -226,9 +226,7 @@ public class Client {
     private <T> void addRequest(Request<T> request, int pg, int pos) {
         if (isConnected()) {
             callOnStart(pg, pos);
-            request.setRetryPolicy(new DefaultRetryPolicy(0,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            request.setRetryPolicy(new DefaultRetryPolicy());
             requests.add(request);
             Log.v(TAG, "Loading: " + request);
         } else {
@@ -296,7 +294,8 @@ public class Client {
                 Element div = document.getElementsByClass("conteudoTexto").first();
 
                 if (div != null) {
-                    String msg = div.text().trim();
+                    div.select("br").after("\\n");
+                    String msg = div.text().replaceAll("\\\\n", "\n").trim();
 
                     if (msg.contains("inativo")) {
                         User.clearInfos();
