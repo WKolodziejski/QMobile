@@ -8,10 +8,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.NumberPicker;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +30,7 @@ import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.network.JavaScriptHandler;
+import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.service.Jobs;
@@ -66,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_FETCH_YEARS);
         }
+
     }
 
     @Override
@@ -107,7 +106,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             case R.id.action_date:
 
-                View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
+                startActivity(new Intent(getApplicationContext(), MessagesActivity.class));
+
+                /*View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
                 final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
 
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                             Client.get().loadYear(year.getValue());
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
-                        .show();
+                        .show();*/
                 return true;
 
             case R.id.action_grades:
@@ -287,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 webView.getSettings().setJavaScriptEnabled(true);
                 webView.getSettings().setLoadsImagesAutomatically(false);
                 webView.getSettings().setBlockNetworkImage(true);
-                webView.addJavascriptInterface(new JavaScriptHandler(webView, this), "handler");
+                webView.addJavascriptInterface(new PopUpHandler(webView, this), "handler");
                 webView.setWebViewClient(new WebViewClient() {
 
                     @Override

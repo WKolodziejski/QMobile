@@ -1,16 +1,19 @@
-package com.tinf.qmobile.network;
+package com.tinf.qmobile.network.handler;
 
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+
+import com.tinf.qmobile.network.OnEvent;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-public class JavaScriptHandler {
+public class PopUpHandler {
     private WebView webView;
     private OnEvent onEvent;
 
-    public JavaScriptHandler(WebView webView, OnEvent onEvent) {
+    public PopUpHandler(WebView webView, OnEvent onEvent) {
         this.webView = webView;
         this.onEvent = onEvent;
     }

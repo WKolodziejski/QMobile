@@ -133,6 +133,12 @@
                 android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
+        <activity android:name=".activity.MessagesActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tinf.qmobile.activity.MainActivity" />
+        </activity>
+
         <service
             android:name=".service.BackgroundCheck"
             android:exported="false">

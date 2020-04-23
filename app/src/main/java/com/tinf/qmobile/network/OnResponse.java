@@ -2,6 +2,7 @@ package com.tinf.qmobile.network;
 
 public interface OnResponse {
     String INDEX = "/qacademico/index.asp?t=";
+    String MESSAGES = "/qacademicodotnet/mensagens.aspx";
     int PG_LOGIN = 1001;
     int PG_HOME = 2000;
     int PG_JOURNALS = 2071;
