@@ -44,11 +44,19 @@ public class MessagesActivity extends AppCompatActivity {
                             "var observer = new MutationObserver(callback);" +
                             "observer.observe(targetNode, config);" +
                             "})()");
+
+                    view.loadUrl("javascript:(function() {" +
+                            "window.handler.handlePage('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');" +
+                            "})()");
                 }
             }
 
         });
-        webView.addJavascriptInterface(new MessagesHandler(), "handler");
+        webView.addJavascriptInterface(new MessagesHandler((pg, year) -> {
+
+        }, (pg, error) -> {
+
+        }), "handler");
         webView.loadUrl(Client.get().getURL() + MESSAGES);
     }
 

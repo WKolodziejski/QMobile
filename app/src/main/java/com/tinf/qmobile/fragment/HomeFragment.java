@@ -17,7 +17,6 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
@@ -44,9 +43,7 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
-import static com.tinf.qmobile.utility.Utils.getDate;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {

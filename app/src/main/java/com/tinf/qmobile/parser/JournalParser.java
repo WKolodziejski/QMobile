@@ -2,7 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.content.Intent;
 import android.util.Log;
-
 import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
@@ -21,11 +20,10 @@ import com.tinf.qmobile.utility.User;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import java.util.Calendar;
 import java.util.Date;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-
-import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class JournalParser extends BaseParser {
 
@@ -144,7 +142,7 @@ public class JournalParser extends BaseParser {
 
                     max = maxString.isEmpty() ? -1 : Float.parseFloat(maxString);
 
-                    date = dateString.isEmpty() ? -1 : getDate(dateString, false);
+                    date = dateString.isEmpty() ? -1 : getDate(dateString);
 
                     if (date != -1) {
 
@@ -222,6 +220,19 @@ public class JournalParser extends BaseParser {
 
     private String formatDate(String s) {
         return s.substring(0, s.indexOf(',')).trim();
+    }
+
+    private long getDate(String s) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 12);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.YEAR, Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.lastIndexOf("/") + 5)));
+        cal.set(Calendar.MONTH, Integer.parseInt(s.substring(s.indexOf("/") + 1, s.lastIndexOf("/"))) - 1);
+        cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
+
+        return cal.getTimeInMillis();
     }
 
 }

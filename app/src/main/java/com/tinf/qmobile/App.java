@@ -11,21 +11,20 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.utility.Utils;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 
 import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
-
 import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
-import static com.tinf.qmobile.utility.Utils.VERSION_INFO;
 import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class App extends Application {
+    public static final String VERSION = ".v1.3.2";
+    public static final String VERSION_INFO = ".Version";
     private static Context context;
 
     @Override
@@ -57,20 +56,17 @@ public class App extends Application {
 
         context = getApplicationContext();
 
-        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(Utils.VERSION, true)) {
+        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true)) {
             if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
                 Client.get().close();
                 Jobs.cancelAllJobs();
                 DataBase.get().close();
                 User.clearInfos();
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
-                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(Utils.VERSION, false).apply();
+                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(VERSION, false).apply();
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
-
-        if (User.getURL().equals("https://academico3.cefetes.br"))
-            User.setURL("https://academico.ifes.edu.br");
     }
 
     public static Context getContext() {

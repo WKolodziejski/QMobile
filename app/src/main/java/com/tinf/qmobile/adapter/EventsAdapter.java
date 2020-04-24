@@ -41,8 +41,6 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
-import static com.tinf.qmobile.utility.Utils.getDate;
-
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
     private List<CalendarBase> events;
     private Context context;
@@ -161,7 +159,14 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                     }
                 }
 
-                list.add(i, new Header(getDate(e1.getDate(), true)));
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(e1.getDate());
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+
+                list.add(i, new Header(cal.getTimeInMillis()));
 
                 i = j;
             }

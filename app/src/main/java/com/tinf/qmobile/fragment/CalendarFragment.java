@@ -5,14 +5,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -30,9 +28,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
-import static com.tinf.qmobile.utility.Utils.getDate;
 
 public class CalendarFragment extends Fragment implements OnUpdate {
     private CompactCalendarView calendarView;

@@ -15,8 +15,6 @@ import org.jsoup.select.Elements;
 import java.util.Calendar;
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.utility.Utils.getDate;
-
 public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
 
@@ -209,6 +207,19 @@ public class CalendarParser extends BaseParser {
                 monthBox.put(month);
             }
         }
+    }
+
+    private long getDate(String s, boolean isMonth) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, isMonth ? 0 : 12);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.YEAR, Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.lastIndexOf("/") + 5)));
+        cal.set(Calendar.MONTH, Integer.parseInt(s.substring(s.indexOf("/") + 1, s.lastIndexOf("/"))) - 1);
+        cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
+
+        return cal.getTimeInMillis();
     }
 
 }

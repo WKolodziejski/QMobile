@@ -10,6 +10,8 @@ import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Schedule;
+import com.tinf.qmobile.model.message.Attachment;
+import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.utility.User;
 
 import org.jsoup.Jsoup;
@@ -30,6 +32,8 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
     protected Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
     protected Box<Material> materialsBox = DataBase.get().getBoxStore().boxFor(Material.class);
     protected Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+    protected Box<Message> messageBox = DataBase.get().getBoxStore().boxFor(Message.class);
+    protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
 
     public BaseParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
         this.page = page;
