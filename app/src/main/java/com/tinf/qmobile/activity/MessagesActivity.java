@@ -6,9 +6,9 @@ import android.webkit.WebViewClient;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.MessagesFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.MessagesHandler;
-
 import static com.tinf.qmobile.network.OnResponse.MESSAGES;
 
 public class MessagesActivity extends AppCompatActivity {
@@ -16,14 +16,16 @@ public class MessagesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webview);
+        setContentView(R.layout.activity_messages);
 
-        /*getSupportFragmentManager()
+        getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.messages_fragment, new)
-                .commit();*/
+                .replace(R.id.messages_fragment, new MessagesFragment())
+                .commit();
 
-        WebView webView = findViewById(R.id.webview);
+        //WebView webView = new WebView(getApplicationContext());
+        WebView webView = findViewById(R.id.webview2);
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(false);
         webView.getSettings().setBlockNetworkImage(true);

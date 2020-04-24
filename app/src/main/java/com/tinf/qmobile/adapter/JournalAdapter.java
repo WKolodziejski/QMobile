@@ -102,28 +102,28 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 }
 
                 @Override
-                public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    if (journals.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
-                        return (((Matter) journals.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
+                public boolean areItemsTheSame(int o, int n) {
+                    if (journals.get(o) instanceof Matter && updated.get(n) instanceof Matter)
+                        return (((Matter) journals.get(o)).id == (((Matter) updated.get(n)).id));
 
-                    else if (journals.get(oldItemPosition) instanceof Journal && updated.get(newItemPosition) instanceof Journal)
-                        return (((Journal) journals.get(oldItemPosition)).id == (((Journal) updated.get(newItemPosition)).id));
+                    else if (journals.get(o) instanceof Journal && updated.get(n) instanceof Journal)
+                        return (((Journal) journals.get(o)).id == (((Journal) updated.get(n)).id));
 
-                    else if (journals.get(oldItemPosition) instanceof FooterJournal && updated.get(newItemPosition) instanceof FooterJournal)
-                        return (((FooterJournal) journals.get(oldItemPosition)).getMatter().id == (((FooterJournal) updated.get(newItemPosition)).getMatter().id));
+                    else if (journals.get(o) instanceof FooterJournal && updated.get(n) instanceof FooterJournal)
+                        return (((FooterJournal) journals.get(o)).getMatter().id == (((FooterJournal) updated.get(n)).getMatter().id));
 
-                    else if (journals.get(oldItemPosition) instanceof FooterPeriod && updated.get(newItemPosition) instanceof FooterPeriod)
-                        return (((FooterPeriod) journals.get(oldItemPosition)).getPeriod().id == (((FooterPeriod) updated.get(newItemPosition)).getPeriod().id));
+                    else if (journals.get(o) instanceof FooterPeriod && updated.get(n) instanceof FooterPeriod)
+                        return (((FooterPeriod) journals.get(o)).getPeriod().id == (((FooterPeriod) updated.get(n)).getPeriod().id));
 
-                    else if (journals.get(oldItemPosition) instanceof Header && updated.get(newItemPosition) instanceof Header)
-                        return (((Header) journals.get(oldItemPosition)).getPeriod().id == (((Header) updated.get(newItemPosition)).getPeriod().id));
+                    else if (journals.get(o) instanceof Header && updated.get(n) instanceof Header)
+                        return (((Header) journals.get(o)).getPeriod().id == (((Header) updated.get(n)).getPeriod().id));
 
                     else return false;
                 }
 
                 @Override
-                public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    return (journals.get(oldItemPosition).equals(updated.get(newItemPosition)));
+                public boolean areContentsTheSame(int o, int n) {
+                    return (journals.get(o).equals(updated.get(n)));
                 }
 
             }, true);

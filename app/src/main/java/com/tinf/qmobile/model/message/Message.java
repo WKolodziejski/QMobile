@@ -1,6 +1,10 @@
 package com.tinf.qmobile.model.message;
 
 import com.tinf.qmobile.model.Queryable;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
@@ -26,6 +30,11 @@ public class Message implements Queryable {
 
     public void setText(String text) {
         this.text_ = text;
+    }
+
+    public String formatDate() {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return format.format(date_);
     }
 
     /*

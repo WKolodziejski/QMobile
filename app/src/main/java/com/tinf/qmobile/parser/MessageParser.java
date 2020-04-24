@@ -1,5 +1,7 @@
 package com.tinf.qmobile.parser;
 
+import android.util.Log;
+
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
@@ -80,6 +82,8 @@ public class MessageParser extends BaseParser {
                                 String title = td2.get(0).text();
                                 String url = td2.get(0).child(0).attr("href");
                                 String obs = td2.get(1).text();
+
+                                Log.d(title, url);
 
                                 Attachment attachment = new Attachment(title, obs, url);
                                 attachment.message.setTarget(search);

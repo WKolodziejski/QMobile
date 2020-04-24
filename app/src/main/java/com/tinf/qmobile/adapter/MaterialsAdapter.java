@@ -227,6 +227,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         }
 
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+
             @Override
             public int getOldListSize() {
                 return materials.size();
@@ -238,19 +239,19 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
             }
 
             @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                if (materials.get(oldItemPosition) instanceof Matter && updated.get(newItemPosition) instanceof Matter)
-                    return (((Matter) materials.get(oldItemPosition)).id == (((Matter) updated.get(newItemPosition)).id));
+            public boolean areItemsTheSame(int o, int n) {
+                if (materials.get(o) instanceof Matter && updated.get(n) instanceof Matter)
+                    return (((Matter) materials.get(o)).id == (((Matter) updated.get(n)).id));
 
-                else if (materials.get(oldItemPosition) instanceof Material && updated.get(newItemPosition) instanceof Material)
-                    return (((Material) materials.get(oldItemPosition)).id == (((Material) updated.get(newItemPosition)).id));
+                else if (materials.get(o) instanceof Material && updated.get(n) instanceof Material)
+                    return (((Material) materials.get(o)).id == (((Material) updated.get(n)).id));
 
-                else return false;
+                else return materials.get(o) instanceof Empty && updated.get(n) instanceof Empty;
             }
 
             @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                return (materials.get(oldItemPosition).equals(updated.get(newItemPosition)));
+            public boolean areContentsTheSame(int o, int n) {
+                return (materials.get(o).equals(updated.get(n)));
             }
 
         }, true);
@@ -324,11 +325,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     }
 
     @Override
-    public int getItemViewType(int position) {
-        //if (materials.isEmpty())
-            //return EMPTY;
-        //else
-            return materials.get(position).getItemType();
+    public int getItemViewType(int i) {
+        return materials.get(i).getItemType();
     }
 
     @NonNull

@@ -102,7 +102,7 @@ public class Material implements Queryable {
             icon = R.drawable.ic_iso;
         } else if (ext.equals(".js")) {
             icon = R.drawable.ic_js;
-        } else if (ext.equals(".jpg")) {
+        } else if (ext.equals(".jpg") || ext.equals(".jpeg")) {
             icon = R.drawable.ic_jpg;
         } else if (ext.equals(".json")) {
             icon = R.drawable.ic_json;

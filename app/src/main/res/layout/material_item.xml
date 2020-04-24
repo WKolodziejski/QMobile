@@ -39,6 +39,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:id="@+id/materiais_title"
             app:layout_constraintBottom_toTopOf="@id/materiais_description"
             tools:text="Paisagens Brasileira sdasd dsasadsad sads" />
@@ -49,6 +51,8 @@
             android:id="@+id/materiais_description"
             android:visibility="gone"
             android:textSize="14sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintTop_toBottomOf="@id/materiais_title"
             tools:text="A resolução de alguns exerci dsad sad saos"
             tools:visibility="visible"/>
