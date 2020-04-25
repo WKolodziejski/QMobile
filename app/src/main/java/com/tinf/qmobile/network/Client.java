@@ -1,6 +1,7 @@
 package com.tinf.qmobile.network;
 
 import android.app.DownloadManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
+import android.webkit.MimeTypeMap;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -23,6 +25,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
@@ -528,20 +531,6 @@ public class Client {
 
     public void requestScroll() {
         callOnScrollRequest();
-    }
-
-    public DownloadManager.Request downloadMaterial(Material material) {
-        Uri uri = Uri.parse(URL + material.getLink());
-
-        return new DownloadManager.Request(uri)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setAllowedOverRoaming(false)
-                .setTitle(material.getTitle())
-                .setDescription(material.getDateString())
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                        "QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos)
-                                + "/" + material.getFileName());
     }
 
     private void downloadImage(String cod) {

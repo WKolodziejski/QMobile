@@ -46,9 +46,8 @@ public class JournalViewFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null) {
+        if (bundle != null)
             id = bundle.getLong("ID");
-        }
     }
 
     @Nullable

@@ -2,6 +2,7 @@ package com.tinf.qmobile.holder.message;
 
 import android.content.Context;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -20,9 +21,13 @@ public class AttachmentViewHolder extends MessagesViewHolder<Attachment> {
     }
 
     @Override
-    public void bind(Context context, Attachment attachment) {
-        title.setText(attachment.getTitle_());
+    public void bind(Context context, WebView webView, Attachment attachment) {
+        title.setText(attachment.getTitle());
         icon.setImageDrawable(context.getDrawable(attachment.getIcon()));
+
+        itemView.setOnClickListener(v -> {
+            //TODO download
+        });
     }
 
 }

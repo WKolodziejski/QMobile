@@ -90,6 +90,14 @@ public class Attachment implements Queryable {
         return icon;
     }
 
+    public String getTitle() {
+        return title_ == null ? "" : title_;
+    }
+
+    public String getObs() {
+        return obs_ == null ? "" : obs_;
+    }
+
     /*
      * Required methods
      */

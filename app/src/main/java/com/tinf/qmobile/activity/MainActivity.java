@@ -29,6 +29,9 @@ import com.tinf.qmobile.fragment.sheet.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
+import com.tinf.qmobile.model.message.Attachment;
+import com.tinf.qmobile.model.message.Message;
+import com.tinf.qmobile.model.message.Sender;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
@@ -37,6 +40,7 @@ import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.objectbox.Box;
 
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
@@ -64,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_FETCH_YEARS);
         }
+
+        /*DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
+        DataBase.get().getBoxStore().boxFor(Attachment.class).removeAll();
+        DataBase.get().getBoxStore().boxFor(Sender.class).removeAll();*/
 
     }
 

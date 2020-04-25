@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
+import com.tinf.qmobile.fragment.view.MessageViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
 
 public class EventViewActivity extends AppCompatActivity {
 
@@ -49,6 +51,10 @@ public class EventViewActivity extends AppCompatActivity {
 
                 case SCHEDULE:
                     fragment = new ScheduleViewFragment();
+                    break;
+
+                case MESSAGE:
+                    fragment = new MessageViewFragment();
                     break;
 
                 default: finish();

@@ -5,11 +5,16 @@ import android.util.Log;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
+import com.tinf.qmobile.model.message.Sender;
+import com.tinf.qmobile.model.message.Sender_;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.RandomColor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.Calendar;
 import io.objectbox.exception.NonUniqueResultException;
+import io.objectbox.query.QueryBuilder;
 
 public class MessageParser extends BaseParser {
 
@@ -27,6 +32,8 @@ public class MessageParser extends BaseParser {
         if (textarea == null) {
             //TODO handle page change
 
+            RandomColor colors = new RandomColor();
+
             for (int i = 2; i < trs.size() - 1; i++) {
                 Elements td = trs.get(i).children();
 
@@ -36,15 +43,31 @@ public class MessageParser extends BaseParser {
                 long date = getDate(td.get(6).text());
 
                 try {
-                    Message search = messageBox.query()
-                            .equal(Message_.uid_, uid).and()
-                            .equal(Message_.subject_, subject).and()
-                            .equal(Message_.sender_, sender).and()
-                            .between(Message_.date_, date, date)
+
+                    Sender search2 = senderBox.query()
+                            .equal(Sender_.name_, sender)
                             .build().findUnique();
 
-                    if (search == null)
-                        messageBox.put(new Message(uid, date, subject, sender));
+                    if (search2 == null)
+                        search2 = new Sender(colors.getColor(), sender);
+
+                    senderBox.put(search2);
+
+                    QueryBuilder<Message> builder = messageBox.query()
+                            .equal(Message_.uid_, uid).and()
+                            .equal(Message_.subject_, subject).and()
+                            .between(Message_.date_, date, date);
+
+                    builder.link(Message_.sender)
+                            .equal(Sender_.id, search2.id);
+
+                    Message search1 = builder.build().findUnique();
+
+                    if (search1 == null)
+                        search1 = new Message(uid, date, subject, search2);
+
+                    search2.messages.add(search1);
+                    messageBox.put(search1);
 
                 } catch (NonUniqueResultException e) {
                     e.printStackTrace();
@@ -59,14 +82,12 @@ public class MessageParser extends BaseParser {
 
                     int uid = Integer.parseInt(td.get(1).text());
                     String subject = td.get(4).text();
-                    String sender = td.get(5).text();
                     long date = getDate(td.get(6).text());
 
                     try {
                         Message search = messageBox.query()
                                 .equal(Message_.uid_, uid).and()
                                 .equal(Message_.subject_, subject).and()
-                                .equal(Message_.sender_, sender).and()
                                 .between(Message_.date_, date, date)
                                 .build().findUnique();
 
@@ -80,7 +101,7 @@ public class MessageParser extends BaseParser {
                                 Elements td2 = trs2.get(j).children();
 
                                 String title = td2.get(0).text();
-                                String url = td2.get(0).child(0).attr("href");
+                                String url = Client.get().getURL() + "/qacademicodotnet/" + td2.get(0).child(0).attr("href");
                                 String obs = td2.get(1).text();
 
                                 Log.d(title, url);

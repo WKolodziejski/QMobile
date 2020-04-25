@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,10 +30,12 @@ import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     private List<Queryable> messages;
     private Context context;
+    private WebView webView;
     private DataSubscription sub1;
 
-    public MessagesAdapter(Context context) {
+    public MessagesAdapter(Context context, WebView webView) {
         this.context = context;
+        this.webView = webView;
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
@@ -110,7 +114,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MessagesViewHolder holder, int i) {
-        holder.bind(context, messages.get(i));
+        holder.bind(context, webView, messages.get(i));
     }
 
     @Override

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,6 +19,11 @@ import butterknife.ButterKnife;
 
 public class MessagesFragment extends Fragment {
     @BindView(R.id.recycler_messages) RecyclerView recyclerView;
+    private WebView webView;
+
+    public MessagesFragment(WebView webView) {
+        this.webView = webView;
+    }
 
     @Nullable
     @Override
@@ -36,7 +43,7 @@ public class MessagesFragment extends Fragment {
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         //recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(new MessagesAdapter(getContext()));
+        recyclerView.setAdapter(new MessagesAdapter(getContext(), webView));
 
     }
 

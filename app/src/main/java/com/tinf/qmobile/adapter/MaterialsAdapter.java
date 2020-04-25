@@ -61,6 +61,7 @@ import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
+import static com.tinf.qmobile.utility.User.getURL;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate {
     private List<Queryable> materials;
@@ -405,7 +406,15 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         if (Client.isConnected()) {
             DownloadManager manager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
 
-            long downloadID = manager.enqueue(Client.get().downloadMaterial(material));
+            long downloadID = manager.enqueue(new DownloadManager.Request(Uri.parse(Client.get().getURL() + material.getLink()))
+                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                    .setAllowedOverRoaming(false)
+                    .setTitle(material.getTitle())
+                    .setDescription(material.getDateString())
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
+                            "QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos)
+                                    + "/" + material.getFileName()));
 
             Log.d("DOWNLOAD", String.valueOf(downloadID));
 
