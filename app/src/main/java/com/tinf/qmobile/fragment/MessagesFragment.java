@@ -1,28 +1,27 @@
 package com.tinf.qmobile.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MessagesAdapter;
-import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MessagesFragment extends Fragment {
+public class MessagesFragment extends Fragment implements OnResponse {
     @BindView(R.id.recycler_messages)   RecyclerView recyclerView;
+    @BindView(R.id.message_refresh)     SwipeRefreshLayout refresh;
     @BindView(R.id.message_next)        Button nxt;
     @BindView(R.id.message_previous)    Button prv;
     WebView webView;
@@ -43,42 +42,55 @@ public class MessagesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Messenger messenger = new Messenger(getContext(), new OnResponse() {
-
-            @Override
-            public void onStart(int pg, int pos) {
-                Log.d("starting", ""+pg);
-            }
-
-            @Override
-            public void onFinish(int pg, int pos) {
-                Log.d("finished", ""+pg);
-            }
-
-            @Override
-            public void onError(int pg, String error) {
-                Log.d("error", error);
-            }
-
-            @Override
-            public void onAccessDenied(int pg, String message) {
-
-            }
-
-        }, webView);
+        Messenger messenger = new Messenger(getContext(), this, webView);
 
         prv.setOnClickListener(v -> messenger.loadPreviousPage());
         nxt.setOnClickListener(v -> messenger.loadNextPage());
-
-        MessagesAdapter adapter = new MessagesAdapter(getContext(), messenger);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(new MessagesAdapter(getContext(), messenger));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                refresh.setEnabled(p == 0);
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == recyclerView.getAdapter().getItemCount() - 1)
+                    messenger.loadNextPage();
+            }
+
+        });
+
+        refresh.setOnRefreshListener(messenger::load);
+    }
+
+    @Override
+    public void onStart(int pg, int pos) {
+        refresh.setRefreshing(true);
+    }
+
+    @Override
+    public void onFinish(int pg, int pos) {
+        refresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onError(int pg, String error) {
+        refresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onAccessDenied(int pg, String message) {
+        refresh.setRefreshing(false);
     }
 
 }

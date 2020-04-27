@@ -14,9 +14,8 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
 import java.util.ArrayList;
 import java.util.List;
-import static com.tinf.qmobile.network.OnResponse.MESSAGES;
 
-public class Messenger implements OnMessages, DownloadListener {
+public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private boolean isLoading;
     private boolean hasNextPage;
     private boolean hasPreviousPage;
@@ -40,14 +39,10 @@ public class Messenger implements OnMessages, DownloadListener {
             @Override
             public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
                 Log.d("JS", message);
-                return super.onJsAlert(view, url, message, result);
+                onResponse.onError(pg, message);
+                return false;
             }
 
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.d("Console", consoleMessage.message());
-                return super.onConsoleMessage(consoleMessage);
-            }
         });
 
         webView.setWebViewClient(new WebViewClient() {
@@ -94,6 +89,16 @@ public class Messenger implements OnMessages, DownloadListener {
 
         });
 
+        if (Client.get().isLogging()) {
+            isLoading = true;
+            onResponse.onStart(PG_LOGIN, 0);
+            Client.get().addOnResponseListener(this);
+        }
+        else
+            load();
+    }
+
+    public void load() {
         webView.loadUrl(Client.get().getURL() + MESSAGES);
     }
 
@@ -162,8 +167,10 @@ public class Messenger implements OnMessages, DownloadListener {
     }
 
     private void enqueue(String request) {
-        queue.add(request);
-        Log.d("Enqueued", request);
+        if (!queue.contains(request)) {
+            queue.add(request);
+            Log.d("Enqueued", request);
+        }
     }
 
     @Override
@@ -207,6 +214,29 @@ public class Messenger implements OnMessages, DownloadListener {
                 .setDescription(contentDisposition)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
                         "QMobile/" + User.getCredential(REGISTRATION) + "/" + url));*/
+    }
+
+    @Override
+    public void onStart(int pg, int pos) {
+
+    }
+
+    @Override
+    public void onFinish(int pg, int pos) {
+        if (pg == PG_LOGIN) {
+            load();
+            Client.get().removeOnResponseListener(this);
+        }
+    }
+
+    @Override
+    public void onError(int pg, String error) {
+        onResponse.onError(pg, error);
+    }
+
+    @Override
+    public void onAccessDenied(int pg, String message) {
+        onResponse.onAccessDenied(pg, message);
     }
 
 }

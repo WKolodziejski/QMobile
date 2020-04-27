@@ -83,9 +83,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     }
 
     private List<Queryable> getList() {
-        List<Queryable> list = new ArrayList<>();
-
-        list.addAll(DataBase.get().getBoxStore()
+        List<Queryable> list = new ArrayList<>(DataBase.get().getBoxStore()
                 .boxFor(Message.class)
                 .query()
                 .orderDesc(Message_.date_)
@@ -115,6 +113,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
                 return new EmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.message_empty, parent, false));
         }
+
         return null;
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,7 +13,6 @@ import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.network.message.Messenger;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
@@ -49,13 +47,13 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
         }
 
         itemView.setOnClickListener(v -> {
-            //if (message.getContent().isEmpty())
+            if (message.getContent().isEmpty())
                 messenger.openMessage(getAdapterPosition());
 
-            /*Intent intent = new Intent(context, EventViewActivity.class);
+            Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", MESSAGE);
             intent.putExtra("ID", Long.valueOf(message.id));
-            context.startActivity(intent);*/
+            context.startActivity(intent);
         });
     }
 

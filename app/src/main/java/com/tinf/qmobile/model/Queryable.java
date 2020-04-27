@@ -10,12 +10,13 @@ import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERP;
 import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERJ;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.Queryable.ViewType.LOADING;
 import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
 
 public interface Queryable {
 
-    @IntDef({HEADER, JOURNAL, MATERIAL, FOOTERP, FOOTERJ, EMPTY, MESSAGE, ATTACHMENT})
+    @IntDef({HEADER, JOURNAL, MATERIAL, FOOTERP, FOOTERJ, EMPTY, MESSAGE, ATTACHMENT, LOADING})
     @Retention(RetentionPolicy.SOURCE)
     @interface ViewType {
         int HEADER = 100;
@@ -25,6 +26,7 @@ public interface Queryable {
         int EMPTY = 500;
         int MESSAGE = 600;
         int ATTACHMENT = 700;
+        int LOADING = 800;
         int FOOTERJ = 900;
         int FOOTERP = 910;
     }

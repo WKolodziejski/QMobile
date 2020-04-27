@@ -76,11 +76,13 @@ public class JournalFragment extends Fragment implements OnUpdate {
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+
                 if (dy < 0 && !fab.isShown())
                     fab.show();
                 else if(dy > 0 && fab.isShown())
@@ -91,6 +93,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
+
         });
     }
 
