@@ -1,19 +1,25 @@
 package com.tinf.qmobile.network.message;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
-import android.webkit.ConsoleMessage;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
+import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private boolean isLoading;
@@ -23,8 +29,10 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private WebView webView;
     private List<String> queue;
     private OnResponse onResponse;
+    private Context context;
 
     public Messenger(Context context, OnResponse onResponse, WebView webView) {
+        this.context = context;
         this.queue = new ArrayList<>();
         this.webView = webView;
         this.onResponse = onResponse;
@@ -204,16 +212,18 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-        /*DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         dm.enqueue(new DownloadManager.Request(Uri.parse(url))
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setAllowedOverRoaming(false)
+                .setMimeType("application/pdf")
                 .setTitle(URLUtil.guessFileName(url, contentDisposition, mimetype))
                 .addRequestHeader("Content-Disposition", "attachment; filename=" + URLUtil.guessFileName(url, contentDisposition, mimetype))
                 .setDescription(contentDisposition)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                        "QMobile/" + User.getCredential(REGISTRATION) + "/" + url));*/
+                        "QMobile/" + User.getCredential(REGISTRATION) + "/" + url));
+        onFinish(pg, 0);
     }
 
     @Override
