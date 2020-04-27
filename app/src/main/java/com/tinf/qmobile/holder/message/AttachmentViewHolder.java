@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.message.Attachment;
+import com.tinf.qmobile.network.message.Messenger;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,7 +23,7 @@ public class AttachmentViewHolder extends MessagesViewHolder<Attachment> {
     }
 
     @Override
-    public void bind(Context context, WebView webView, Attachment attachment) {
+    public void bind(Context context, Messenger messenger, Attachment attachment) {
         title.setText(attachment.getTitle());
         icon.setImageDrawable(context.getDrawable(attachment.getIcon()));
 

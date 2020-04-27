@@ -69,10 +69,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             Client.get().load(PG_FETCH_YEARS);
         }
 
-        /*DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
+        DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
         DataBase.get().getBoxStore().boxFor(Attachment.class).removeAll();
-        DataBase.get().getBoxStore().boxFor(Sender.class).removeAll();*/
-
+        DataBase.get().getBoxStore().boxFor(Sender.class).removeAll();
     }
 
     @Override

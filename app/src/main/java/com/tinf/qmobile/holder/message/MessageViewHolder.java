@@ -13,6 +13,8 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.model.message.Message;
+import com.tinf.qmobile.network.message.Messenger;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
@@ -30,7 +32,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
     }
 
     @Override
-    public void bind(Context context, WebView webView, Message message) {
+    public void bind(Context context, Messenger messenger, Message message) {
         header.setText(message.sender.getTarget().getSign());
         header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
         subject.setText(message.getSubject_());
@@ -43,20 +45,17 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
             attachments.setDrawingCacheEnabled(true);
             attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
             attachments.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-            attachments.setAdapter(new AttachmentsAdapter(context, webView, message.attachments));
+            attachments.setAdapter(new AttachmentsAdapter(context, messenger, message.attachments));
         }
 
         itemView.setOnClickListener(v -> {
-            if (message.getContent().isEmpty())
-                webView.loadUrl("javascript:(function() {" +
-                        "__doPostBack('ctl00$ContentPlaceHolderPrincipal$wucMensagens1$grdMensagens','exibir_mensagem$" +
-                        getAdapterPosition() +
-                        "')})()");
+            //if (message.getContent().isEmpty())
+                messenger.openMessage(getAdapterPosition());
 
-            Intent intent = new Intent(context, EventViewActivity.class);
+            /*Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", MESSAGE);
             intent.putExtra("ID", Long.valueOf(message.id));
-            context.startActivity(intent);
+            context.startActivity(intent);*/
         });
     }
 

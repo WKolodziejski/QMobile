@@ -4,8 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +16,7 @@ import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.message.Empty;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
+import com.tinf.qmobile.network.message.Messenger;
 import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.BoxStore;
@@ -30,12 +29,12 @@ import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     private List<Queryable> messages;
     private Context context;
-    private WebView webView;
+    private Messenger messenger;
     private DataSubscription sub1;
 
-    public MessagesAdapter(Context context, WebView webView) {
+    public MessagesAdapter(Context context, Messenger messenger) {
         this.context = context;
-        this.webView = webView;
+        this.messenger = messenger;
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
@@ -58,8 +57,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
                 @Override
                 public boolean areItemsTheSame(int o, int n) {
-                    if (messages.get(o) instanceof Message && messages.get(n) instanceof Message)
-                        return ((Message) messages.get(o)).id == ((Message) messages.get(n)).id;
+                    if (messages.get(o) instanceof Message && updated.get(n) instanceof Message)
+                        return ((Message) messages.get(o)).id == ((Message) updated.get(n)).id;
 
                     else return messages.get(o) instanceof Empty && updated.get(n) instanceof Empty;
                 }
@@ -79,17 +78,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         sub1 = boxStore.subscribe(Message.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(th -> Log.e("Adapter", th.toString()))
                 .observer(observer);
     }
 
     private List<Queryable> getList() {
-        return new ArrayList<>(DataBase.get().getBoxStore()
+        List<Queryable> list = new ArrayList<>();
+
+        list.addAll(DataBase.get().getBoxStore()
                 .boxFor(Message.class)
                 .query()
                 .orderDesc(Message_.date_)
                 .build()
                 .find());
+
+        if (list.isEmpty())
+            list.add(new Empty());
+
+        return list;
     }
 
     @Override
@@ -114,7 +120,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MessagesViewHolder holder, int i) {
-        holder.bind(context, webView, messages.get(i));
+        holder.bind(context, messenger, messages.get(i));
     }
 
     @Override

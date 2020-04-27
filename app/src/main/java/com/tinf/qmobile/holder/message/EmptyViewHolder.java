@@ -2,9 +2,9 @@ package com.tinf.qmobile.holder.message;
 
 import android.content.Context;
 import android.view.View;
-import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.model.message.Empty;
+import com.tinf.qmobile.network.message.Messenger;
 
 public class EmptyViewHolder extends MessagesViewHolder<Empty> {
 
@@ -13,7 +13,7 @@ public class EmptyViewHolder extends MessagesViewHolder<Empty> {
     }
 
     @Override
-    public void bind(Context context, WebView webView, Empty empty) {
+    public void bind(Context context, Messenger messenger, Empty empty) {
 
     }
 

@@ -20,7 +20,6 @@ import org.jsoup.nodes.Document;
 
 import io.objectbox.Box;
 
-
 public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
     private OnFinish onFinish;
     private OnError onError;
@@ -47,7 +46,7 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(String... strings) {
-        Log.i(String.valueOf(page), String.valueOf(User.getYear(pos)) + String.valueOf(User.getPeriod(pos)));
+        Log.i(String.valueOf(page), User.getYear(pos) + "/" + User.getPeriod(pos));
         try {
             return DataBase.get().getBoxStore().callInTx(() -> {
                 parse(Jsoup.parse(strings[0]));
@@ -76,7 +75,7 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
         void onFinish(int pg, int year);
     }
 
-    public abstract void parse(Document document);
+    public abstract void parse(final Document document);
 
     protected String formatNumber(String s) {
         return s.substring(s.indexOf(":") + 1).trim();
