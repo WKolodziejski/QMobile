@@ -4,32 +4,32 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.message.Messenger;
 import com.tinf.qmobile.utility.User;
 
+import java.net.FileNameMap;
 import java.net.URLConnection;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
-public class AttachmentViewHolder extends MessagesViewHolder<Attachment> {
-    @BindView(R.id.message_attachment_icon)      public ImageView icon;
-    @BindView(R.id.message_attachment_title)      public TextView title;
+public class AttachmentCardViewHolder extends MessagesViewHolder<Attachment> {
+    @BindView(R.id.attachment_img)      public ImageView icon;
+    @BindView(R.id.attachment_txt)      public TextView title;
 
-    public AttachmentViewHolder(@NonNull View itemView) {
+    public AttachmentCardViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

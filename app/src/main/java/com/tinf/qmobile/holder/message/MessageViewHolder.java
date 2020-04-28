@@ -43,7 +43,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
             attachments.setDrawingCacheEnabled(true);
             attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
             attachments.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-            attachments.setAdapter(new AttachmentsAdapter(context, messenger, message.attachments));
+            attachments.setAdapter(new AttachmentsAdapter(context, message.attachments, true));
         }
 
         itemView.setOnClickListener(v -> {
