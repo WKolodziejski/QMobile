@@ -12,6 +12,7 @@ import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
@@ -31,12 +32,12 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private OnResponse onResponse;
     private Context context;
 
-    public Messenger(Context context, OnResponse onResponse, WebView webView) {
+    public Messenger(Context context, OnResponse onResponse) {
         this.context = context;
         this.queue = new ArrayList<>();
-        this.webView = webView;
         this.onResponse = onResponse;
 
+        webView = new WebView(context);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(false);
         webView.getSettings().setBlockNetworkImage(true);
@@ -47,8 +48,8 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             @Override
             public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
                 Log.d("JS", message);
-                onResponse.onError(pg, message);
-                return false;
+                onError(pg, message);
+                return true;
             }
 
         });
@@ -103,26 +104,27 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             Client.get().addOnResponseListener(this);
         }
         else
-            load();
+            loadFirstPage();
     }
 
-    public void load() {
+    public void loadFirstPage() {
         webView.loadUrl(Client.get().getURL() + MESSAGES);
     }
 
-    private void loadPage(int p) {
+    public void loadPage(int p) {
         String request = "javascript:(function() {" +
                 "__doPostBack('ctl00$ContentPlaceHolderPrincipal$wucMensagens1$grdMensagens','Page$" +
                 p + "')})()";
 
         if (p != pg)
-            if (isLoading)
-                enqueue(request);
-            else {
-                isLoading = true;
-                onResponse.onStart(pg, 0);
-                webView.loadUrl(request);
-            }
+            if (p < pg || hasNextPage)
+                if (isLoading)
+                    enqueue(request);
+                else {
+                    isLoading = true;
+                    onResponse.onStart(pg, 0);
+                    webView.loadUrl(request);
+                }
     }
 
     public void loadNextPage() {
@@ -234,13 +236,17 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     @Override
     public void onFinish(int pg, int pos) {
         if (pg == PG_LOGIN) {
-            load();
+            loadFirstPage();
             Client.get().removeOnResponseListener(this);
         }
     }
 
     @Override
     public void onError(int pg, String error) {
+        if (pg == PG_ERROR)
+            Client.get().login();
+
+        Toast.makeText(context, error, Toast.LENGTH_LONG).show();
         onResponse.onError(pg, error);
     }
 

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 
@@ -66,22 +67,35 @@ public class MessageViewFragment extends Fragment {
     private void setText() {
         Message message = DataBase.get().getBoxStore().boxFor(Message.class).get(id);
 
-        progressBar.setVisibility(message.getContent().isEmpty() ? View.VISIBLE : View.GONE);
+        if (message != null) {
 
-        title.setText(message.getSubject_());
-        date.setText(message.formatDate());
-        sender.setText(message.sender.getTarget().getName_());
-        header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
-        header.setText(message.sender.getTarget().getSign());
-        content.setText(message.getContent());
+            if (!message.isSeen_()) {
+                message.see();
+                DataBase.get().getBoxStore().boxFor(Message.class).put(message);
+            }
 
-        if (!message.attachments.isEmpty()) {
-            attachments.setHasFixedSize(true);
-            attachments.setItemViewCacheSize(3);
-            attachments.setDrawingCacheEnabled(true);
-            attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            attachments.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-            attachments.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));
+            progressBar.setVisibility(message.getText_() == null ? View.VISIBLE : View.GONE);
+
+            title.setText(message.getSubject_());
+            date.setText(message.formatDate());
+            sender.setText(message.sender.getTarget().getName_());
+            header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
+            header.setText(message.sender.getTarget().getSign());
+            content.setText(message.getContent());
+
+            if (message.isSolved_()) {
+                title.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                title.setCompoundDrawableTintList(ColorStateList.valueOf(getContext().getColor(R.color.amber_a700)));
+            }
+
+            if (!message.attachments.isEmpty()) {
+                attachments.setHasFixedSize(true);
+                attachments.setItemViewCacheSize(3);
+                attachments.setDrawingCacheEnabled(true);
+                attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+                attachments.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+                attachments.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));
+            }
         }
     }
 
@@ -89,13 +103,8 @@ public class MessageViewFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        DataObserver observer = data -> setText();
-
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        Log.d("ID", String.valueOf(id));
-
-        sub1 = boxStore.boxFor(Message.class)
+        sub1 = DataBase.get().getBoxStore()
+                .boxFor(Message.class)
                 .query()
                 .equal(Message_.id, id)
                 .build()
@@ -103,7 +112,7 @@ public class MessageViewFragment extends Fragment {
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
+                .observer(data -> setText());
     }
 
     @Override

@@ -21,8 +21,8 @@ import org.jsoup.nodes.Document;
 import io.objectbox.Box;
 
 public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
-    private OnFinish onFinish;
-    private OnError onError;
+    protected OnFinish onFinish;
+    protected OnError onError;
     protected final int pos, page;
     protected final boolean notify;
 

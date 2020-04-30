@@ -15,7 +15,7 @@ public class MessagesActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.messages_fragment, new MessagesFragment(findViewById(R.id.webview2)))
+                .replace(R.id.messages_fragment, new MessagesFragment())
                 .commit();
     }
 

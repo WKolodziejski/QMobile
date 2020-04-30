@@ -22,7 +22,10 @@
             android:textStyle="bold"
             android:textSize="24sp"
             android:id="@+id/message_view_title"
-            tools:text="Title of message" />
+            tools:text="Title of message"
+            tools:drawableEnd="@drawable/ic_check"
+            tools:drawableTint="@color/amber_a700"
+            tools:drawablePadding="8dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

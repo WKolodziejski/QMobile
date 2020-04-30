@@ -69,10 +69,12 @@ public class JournalViewFragment extends Fragment {
 
         if (journal != null) {
 
-            SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+            if (!journal.isSeen_()) {
+                journal.see();
+                DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+            }
 
-            journal.see();
-            DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+            SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
             title_txt.setText(journal.getTitle());
             grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));

@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -24,11 +26,6 @@ public class MessagesFragment extends Fragment implements OnResponse {
     @BindView(R.id.message_refresh)     SwipeRefreshLayout refresh;
     @BindView(R.id.message_next)        Button nxt;
     @BindView(R.id.message_previous)    Button prv;
-    WebView webView;
-
-    public MessagesFragment(WebView webView) {
-        this.webView = webView;
-    }
 
     @Nullable
     @Override
@@ -42,9 +39,9 @@ public class MessagesFragment extends Fragment implements OnResponse {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Messenger messenger = new Messenger(getContext(), this, webView);
+        Messenger messenger = new Messenger(getContext(), this);
 
-        prv.setOnClickListener(v -> messenger.loadPreviousPage());
+        prv.setOnClickListener(v -> messenger.loadPage(21));
         nxt.setOnClickListener(v -> messenger.loadNextPage());
 
         recyclerView.setHasFixedSize(true);
@@ -64,13 +61,15 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == recyclerView.getAdapter().getItemCount() - 1)
-                    messenger.loadNextPage();
+                int j = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                if (j == recyclerView.getAdapter().getItemCount() - 1)
+                    messenger.loadPage(Math.round(j / 20) + 2);
             }
 
         });
 
-        refresh.setOnRefreshListener(messenger::load);
+        refresh.setOnRefreshListener(messenger::loadFirstPage);
     }
 
     @Override

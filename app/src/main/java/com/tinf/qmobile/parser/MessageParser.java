@@ -1,6 +1,8 @@
 package com.tinf.qmobile.parser;
 
 import android.util.Log;
+
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
@@ -16,6 +18,9 @@ import org.jsoup.select.Elements;
 import java.util.Calendar;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
+
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
 
 public class MessageParser extends BaseParser {
     private OnMessages onMessages;
@@ -42,6 +47,14 @@ public class MessageParser extends BaseParser {
 
     @Override
     public void parse(Document document) {
+        Element t = document.getElementById("ctl00_ContentPlaceHolderPrincipal_UpdatePanel1");
+
+        if (t != null)
+            if (!t.text().contains("Mensagem")) {
+                onError.onError(PG_ERROR, getContext().getString(R.string.login_expired));
+                return;
+            }
+
         Element textarea = document.getElementsByTag("textarea").first();
 
         Element table = document.getElementsByClass("txt").first().child(0);
@@ -55,7 +68,10 @@ public class MessageParser extends BaseParser {
             for (int i = 2; i < trs.size() - 1; i++) {
                 Elements tds = trs.get(i).children();
 
+                boolean seen = !trs.get(i).attributes().get("style").contains("bold");
                 int uid = Integer.parseInt(tds.get(1).text());
+                boolean hasAtt = !tds.get(2).children().isEmpty();
+                boolean isSolved = tds.get(3).child(0).tagName().equals("img");
                 String subject = tds.get(4).text();
                 String sender = tds.get(5).text();
                 long date = getDate(tds.get(6).text());
@@ -81,7 +97,10 @@ public class MessageParser extends BaseParser {
                     Message search2 = builder.build().findUnique();
 
                     if (search2 == null)
-                        search2 = new Message(uid, date, subject, search1);
+                        search2 = new Message(uid, date, subject, search1, hasAtt);
+
+                    search2.setSeen(seen);
+                    search2.setSolved(isSolved);
 
                     search1.messages.add(search2);
                     messageBox.put(search2);
@@ -119,10 +138,11 @@ public class MessageParser extends BaseParser {
                                 .build().findUnique();
 
                         if (search != null && search.attachments.isEmpty()) {
-                            search.setText(textarea.text());
+                            String txt = textarea.text();
+                            search.setText(txt == null ? "" : txt);
 
-                            Element table2 = document.getElementsByClass("txt").get(1).child(0);
-                            Elements trs2 = table2.children();
+                            Element table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
+                            Elements trs2 = table2.getElementsByTag("tbody").first().children();
 
                             for (int j = 1; j < trs2.size(); j++) {
                                 Elements tds2 = trs2.get(j).children();

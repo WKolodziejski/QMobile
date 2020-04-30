@@ -4,24 +4,19 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.message.Messenger;
 import com.tinf.qmobile.utility.User;
-
-import java.net.FileNameMap;
 import java.net.URLConnection;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 

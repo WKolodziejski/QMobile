@@ -10,5 +10,7 @@
     <color name="selectionBackground">@color/red_200</color>
     <color name="black_dividers">@color/white_d</color>
     <color name="white_dividers">@color/black_d</color>
+    <color name="message_seen">@color/grey_600</color>
+    <color name="message_not_seen">@color/white</color>
 
 </resources>

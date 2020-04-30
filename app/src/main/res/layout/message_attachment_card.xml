@@ -36,6 +36,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="4dp"
             android:id="@+id/attachment_txt"
+            android:textColor="@color/message_seen"
             android:maxLines="1"
             android:maxLength="20"
             android:ellipsize="end"

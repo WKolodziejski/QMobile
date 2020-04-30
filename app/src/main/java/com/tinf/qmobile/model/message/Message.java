@@ -14,15 +14,19 @@ public class Message implements Queryable {
     @Id public long id;
     private int uid_;
     private float date_;
+    private boolean seen_;
+    private boolean hasAtt_;
+    private boolean isSolved_;
     private String subject_;
     private String text_;
     public ToMany<Attachment> attachments;
     public ToOne<Sender> sender;
 
-    public Message(int uid_, float date_, String subject_, Sender sender) {
+    public Message(int uid_, float date_, String subject_, Sender sender, boolean hasAtt_) {
         this.uid_ = uid_;
         this.date_ = date_;
         this.subject_ = subject_;
+        this.hasAtt_ = hasAtt_;
         this.sender.setTarget(sender);
     }
 
@@ -37,6 +41,22 @@ public class Message implements Queryable {
 
     public String getContent() {
         return text_ == null ? "" : text_;
+    }
+
+    public void see() {
+        seen_ = true;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen_ = seen;
+    }
+
+    public void setSolved(boolean isSolved) {
+        this.isSolved_ = isSolved;
+    }
+
+    public String getPreview() {
+        return text_ == null ? "" : text_.substring(0, Math.min(text_.length(), 50));
     }
 
     /*
@@ -59,6 +79,18 @@ public class Message implements Queryable {
 
     public String getText_() {
         return text_;
+    }
+
+    public boolean isSeen_() {
+        return seen_;
+    }
+
+    public boolean isHasAtt_() {
+        return hasAtt_;
+    }
+
+    public boolean isSolved_() {
+        return isSolved_;
     }
 
     @Override
