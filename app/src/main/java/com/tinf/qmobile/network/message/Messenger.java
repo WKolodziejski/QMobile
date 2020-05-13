@@ -1,14 +1,10 @@
 package com.tinf.qmobile.network.message;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
-import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -16,13 +12,8 @@ import android.widget.Toast;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
-import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
-import static android.content.Context.DOWNLOAD_SERVICE;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private boolean isLoading;
@@ -34,12 +25,15 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private OnResponse onResponse;
     private Context context;
 
-    public Messenger(Context context, OnResponse onResponse) {
+
+
+    public Messenger(WebView webView, Context context, OnResponse onResponse) {
         this.context = context;
         this.queue = new ArrayList<>();
         this.onResponse = onResponse;
+        this.webView = webView;
 
-        webView = new WebView(context);
+        //webView = new WebView(context);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(false);
         webView.getSettings().setBlockNetworkImage(true);

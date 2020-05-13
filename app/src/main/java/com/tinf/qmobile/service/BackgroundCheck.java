@@ -12,6 +12,9 @@ import com.tinf.qmobile.network.OnResponse;
 
 public class BackgroundCheck extends JobService {
     private boolean errorOccurred;
+    private boolean messagesLoaded;
+    private boolean scheduleLoaded;
+    private boolean materialsLoaded;
 
     @Override
     public boolean onStartJob(JobParameters job) {
@@ -30,10 +33,19 @@ public class BackgroundCheck extends JobService {
             public void onFinish(int pg, int pos) {
 
                 if (pg == PG_LOGIN) {
-                    Client.get().loadYear(0);
+                    Client.get().checkChanges();
                 }
 
-                if (pg == PG_SCHEDULE) {
+                if (pg == PG_SCHEDULE)
+                    scheduleLoaded = true;
+
+                if (pg == PG_MESSAGES)
+                    messagesLoaded = true;
+
+                if (pg == PG_MATERIALS)
+                    materialsLoaded = true;
+
+                if (messagesLoaded && scheduleLoaded && materialsLoaded) {
                     errorOccurred = false;
                     Client.get().removeOnResponseListener(this);
                     onStopJob(job);

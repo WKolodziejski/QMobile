@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,6 +38,7 @@ public class SplashActivity extends AppCompatActivity {
             Jobs.scheduleJob(false);
             if (!Client.get().isValid()) {
                 Client.get().login();
+                Log.d(TAG, "Calling login");
             }
 
             intent = new Intent(this, MainActivity.class);

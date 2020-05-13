@@ -3,6 +3,7 @@ package com.tinf.qmobile.network;
 import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -10,6 +11,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
+
+import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -31,6 +34,7 @@ import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
 import com.tinf.qmobile.parser.JournalParser;
 import com.tinf.qmobile.parser.MaterialsParser;
+import com.tinf.qmobile.parser.MessageParser;
 import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.utility.User;
@@ -53,8 +57,11 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.fragment.SettingsFragment.NOTIFY;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
+import static com.tinf.qmobile.network.OnResponse.MESSAGES;
 import static com.tinf.qmobile.network.OnResponse.PG_ACCESS_DENIED;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
 import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
@@ -150,6 +157,9 @@ public class Client {
                             } else if (pg == PG_CALENDAR) {
                                 new CalendarParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
 
+                            } else if (pg == PG_MESSAGES) {
+                                new MessageParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+
                             } else if (pg == PG_CLASSES) {
                                 new ClassParser(matter, pg, pos, notify, onFinish, this::callOnError).execute(response);
 
@@ -196,24 +206,33 @@ public class Client {
                 pos, POST, new HashMap<>(), false, matter, this::callOnFinish);
     }
 
-    public void load(int pg, int pos, BaseParser.OnFinish onFinish) {
+    private void load(int pg, int pos, BaseParser.OnFinish onFinish) {
+        load(pg, pos, onFinish, false);
+    }
+
+    private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
+        load(pg, 0, onFinish, notify);
+    }
+
+    private void load(int pg, int pos, BaseParser.OnFinish onFinish, boolean notify) {
         int method = GET;
         String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
 
         if (pg == PG_FETCH_YEARS) {
             url = INDEX + PG_JOURNALS;
+        } else if (pg == PG_MESSAGES) {
+            url = MESSAGES;
         } else {
             switch (pg) {
                 case PG_JOURNALS: method = POST;
                     form.put("ANO_PERIODO2", User.getYear(pos) + "_" + User.getPeriod(pos));
                     break;
 
-                case PG_REPORT: method = GET;
-                    url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
-                    break;
+                case PG_REPORT:
 
-                case PG_SCHEDULE: method = GET;
+                case PG_SCHEDULE:
+                    method = GET;
                     url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
                     break;
 
@@ -223,7 +242,7 @@ public class Client {
             }
         }
 
-        createRequest(pg, url, pos, method, form, false, null, onFinish);
+        createRequest(pg, url, pos, method, form, notify, null, onFinish);
     }
 
     private <T> void addRequest(Request<T> request, int pg, int pos) {
@@ -578,6 +597,24 @@ public class Client {
                     callOnFinish(pg, year1);
                 });
             callOnFinish(pg, year);
+        });
+    }
+
+    public void checkChanges() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean notify = prefs.getBoolean(NOTIFY, true);
+
+        load(PG_JOURNALS, notify, (pg, year) -> {
+            load(PG_REPORT, notify, (pg1, year1) -> {
+                load(PG_SCHEDULE, notify, (pg2, year2) -> {
+                    callOnFinish(pg, year2);
+                });
+                callOnFinish(pg, year1);
+            });
+            callOnFinish(pg, year);
+
+            load(PG_MESSAGES, notify, (pg1, year1) -> callOnFinish(PG_MESSAGES, 0));
+            load(PG_MATERIALS, notify, (pg1, year1) -> callOnFinish(PG_MATERIALS, 0));
         });
     }
 

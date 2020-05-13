@@ -33,6 +33,7 @@ import com.tinf.qmobile.fragment.sheet.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
+import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Sender;
@@ -66,7 +67,18 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (savedInstanceState != null) {
             changeFragment(getSupportFragmentManager().getFragment(savedInstanceState, "fragment"));
         } else {
-            changeFragment(new HomeFragment2());
+            Bundle bundle = getIntent().getExtras();
+
+            if (bundle != null) {
+                int pg = bundle.getInt("FRAGMENT");
+
+                if (pg != 0) {
+                    changeFragment(new MaterialsFragment());
+                    bottomNav.setSelectedItemId(R.id.navigation_materiais);
+                }
+
+            } else
+                changeFragment(new HomeFragment2());
         }
 
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {

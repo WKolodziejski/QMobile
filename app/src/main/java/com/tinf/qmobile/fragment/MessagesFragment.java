@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.WebView;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MessagesAdapter;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
 import butterknife.BindView;
@@ -23,6 +27,9 @@ public class MessagesFragment extends Fragment implements OnResponse {
     @BindView(R.id.message_refresh)     SwipeRefreshLayout refresh;
     @BindView(R.id.message_next)        Button nxt;
     @BindView(R.id.message_previous)    Button prv;
+
+    @BindView(R.id.message_webview)
+    WebView webView;
 
     @Nullable
     @Override
@@ -36,10 +43,12 @@ public class MessagesFragment extends Fragment implements OnResponse {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Messenger messenger = new Messenger(getContext(), this);
+        Messenger messenger = new Messenger(webView, getContext(), this);
 
         prv.setOnClickListener(v -> messenger.loadPage(21));
-        nxt.setOnClickListener(v -> messenger.loadNextPage());
+        nxt.setOnClickListener(v -> {
+            DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
+        });
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);

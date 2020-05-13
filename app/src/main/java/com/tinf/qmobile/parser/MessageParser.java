@@ -1,8 +1,14 @@
 package com.tinf.qmobile.parser;
 
+import android.content.Intent;
 import android.util.Log;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.MessagesActivity;
+import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
@@ -11,6 +17,7 @@ import com.tinf.qmobile.model.message.Sender_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.OnMessages;
+import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.RandomColor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,17 +28,18 @@ import io.objectbox.query.QueryBuilder;
 
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
 
 public class MessageParser extends BaseParser {
     private OnMessages onMessages;
 
     public MessageParser(OnMessages onMessages, OnResponse onResponse) {
-        super(0, 0, false, onResponse::onFinish, onResponse::onError);
+        super(PG_MESSAGES, 0, false, onResponse::onFinish, onResponse::onError);
         this.onMessages = onMessages;
     }
 
-    public MessageParser(boolean notify, OnFinish onFinish, OnError onError) {
-        super(0, 0, notify, onFinish, onError);
+    public MessageParser(int pg, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+        super(pg, pos, notify, onFinish, onError);
         onMessages = new OnMessages() {
             @Override
             public void onFinish(int pg, boolean hasMorePages) {
@@ -96,14 +104,21 @@ public class MessageParser extends BaseParser {
 
                     Message search2 = builder.build().findUnique();
 
-                    if (search2 == null)
+                    boolean isNew = false;
+
+                    if (search2 == null) {
                         search2 = new Message(uid, date, subject, search1, hasAtt);
+                        isNew = true;
+                    }
 
                     search2.setSeen(seen);
                     search2.setSolved(isSolved);
 
                     search1.messages.add(search2);
                     messageBox.put(search2);
+
+                    if (notify && isNew)
+                        sendNotification(search2);
 
                 } catch (NonUniqueResultException e) {
                     e.printStackTrace();
@@ -184,6 +199,13 @@ public class MessageParser extends BaseParser {
         cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
 
         return cal.getTimeInMillis();
+    }
+
+    private void sendNotification(Message message) {
+        Intent intent = new Intent(App.getContext(), MessagesActivity.class);
+
+        Jobs.displayNotification(App.getContext(), message.getSubject_(), message.sender.getTarget().getName_(),
+                App.getContext().getResources().getString(R.string.title_messages), (int) message.id, intent);
     }
 
 }

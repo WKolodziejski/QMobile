@@ -22,6 +22,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
@@ -171,8 +173,11 @@ public class JournalParser extends BaseParser {
                                 period.journals.add(newJournal);
                                 journalBox.put(newJournal);
 
-                                if (notify && grade != -1 && date <= today.getTime()) {
-                                    sendNotification(newJournal);
+                                if (notify) {
+                                    if (grade != -1 && date <= today.getTime())
+                                        notifyGrade(newJournal);
+                                    else
+                                        notifySchedule(newJournal);
                                 }
                             } else {
                                 if (search.getGrade_() != grade) {
@@ -180,7 +185,7 @@ public class JournalParser extends BaseParser {
                                     journalBox.put(search);
 
                                     if (notify) {
-                                        sendNotification(search);
+                                        notifyGrade(search);
                                     }
                                 }
                             }
@@ -200,12 +205,31 @@ public class JournalParser extends BaseParser {
         }
     }
 
-    private void sendNotification(Journal journal) {
+    private void notifyGrade(Journal journal) {
         Intent intent = new Intent(App.getContext(), EventViewActivity.class);
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
 
-        Jobs.displayNotification(App.getContext(), journal.getMatter(), journal.getTitle(),
+        Jobs.displayNotification(App.getContext(),
+                String.format(Locale.getDefault(),
+                        App.getContext().getResources().getString(R.string.notification_journal_title),
+                        journal.getType(),
+                        journal.matter.getTarget().getTitle()),
+                journal.getTitle(),
+                App.getContext().getResources().getString(R.string.title_diarios), (int) journal.id, intent);
+    }
+
+    private void notifySchedule(Journal journal) {
+        Intent intent = new Intent(App.getContext(), EventViewActivity.class);
+        intent.putExtra("ID", journal.id);
+        intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+
+        Jobs.displayNotification(App.getContext(),
+                String.format(Locale.getDefault(),
+                        App.getContext().getResources().getString(R.string.notification_journal_title),
+                        journal.getType(),
+                        journal.matter.getTarget().getTitle()),
+                journal.formatDate(),
                 App.getContext().getResources().getString(R.string.title_diarios), (int) journal.id, intent);
     }
 

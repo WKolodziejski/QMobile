@@ -1,20 +1,29 @@
 package com.tinf.qmobile.parser;
 
+import android.content.Intent;
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.Calendar;
+import java.util.Locale;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
+
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 
 public class MaterialsParser extends BaseParser {
     private final static String TAG = "MateriaisParser";
@@ -89,9 +98,9 @@ public class MaterialsParser extends BaseParser {
                             matter.materials.add(material);
                             materialsBox.put(material);
 
-                            //if (notify) {
-                            //TODO notificação
-                            //}
+                            if (true) {
+                                sendNotification(material);
+                            }
                         }
 
                     } catch (NonUniqueResultException e) {
@@ -121,6 +130,18 @@ public class MaterialsParser extends BaseParser {
         cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
 
         return cal.getTimeInMillis();
+    }
+
+    private void sendNotification(Material material) {
+        Intent intent = new Intent(App.getContext(), MainActivity.class);
+        intent.putExtra("FRAGMENT", PG_MATERIALS);
+
+        Jobs.displayNotification(App.getContext(),
+                String.format(Locale.getDefault(),
+                        App.getContext().getResources().getString(R.string.notification_material_title),
+                        material.matter.getTarget().getTitle()),
+                material.getTitle(),
+                App.getContext().getResources().getString(R.string.title_materiais), (int) material.id, intent);
     }
 
 }

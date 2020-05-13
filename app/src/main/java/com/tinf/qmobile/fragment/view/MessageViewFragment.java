@@ -21,6 +21,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
+import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
