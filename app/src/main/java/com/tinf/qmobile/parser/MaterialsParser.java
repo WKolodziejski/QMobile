@@ -7,6 +7,7 @@ import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -58,7 +59,7 @@ public class MaterialsParser extends BaseParser {
                 while (classe.equals("conteudoTexto")) {
 
                     String dataString = element.child(0).text().trim();
-                    String link = element.child(1).child(1).attr("href");
+                    String link = Client.get().getURL() + element.child(1).child(1).attr("href");
                     String title = element.child(1).child(1).text().trim();
 
                     String descricao = "";

@@ -52,13 +52,16 @@ public class Material implements Queryable {
     }
 
     public String getFileName() {
-        String name = format(title);
+        /*String name = format(title);
 
         if (link.contains(".")) {
             name += link.substring(link.lastIndexOf(".")).toLowerCase();
         }
 
-        return name;
+        return name;*/
+
+        return link.substring(link.lastIndexOf("/") + 1);
+
     }
 
     private int parseIcon(String ext) {

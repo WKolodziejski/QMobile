@@ -8,6 +8,8 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.message.Message;
+import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
@@ -22,7 +24,8 @@ public class DataBase implements OnUpdate {
     private static DataBase instance;
     private BoxStore boxStore;
     private List<OnDataChange> listeners;
-    private DataSubscription sub1, sub2, sub3;
+    private DataSubscription sub1, sub2, sub3, sub4;
+    private int messagesCount;
 
     private DataBase() {
         Client.get().addOnUpdateListener(this);
@@ -30,9 +33,8 @@ public class DataBase implements OnUpdate {
         boxStore = MyObjectBox
                 .builder()
                 .androidContext(App.getContext())
-                //.name(User.getCredential(User.REGISTRATION))
+                .name(User.getCredential(User.REGISTRATION))
                 .build();
-
 
         sub1 = boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
@@ -48,6 +50,19 @@ public class DataBase implements OnUpdate {
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> update());
+
+        sub4 = boxStore.subscribe(Message.class)
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> {
+                    messagesCount = Math.toIntExact(boxStore.boxFor(Message.class)
+                            .query()
+                            .equal(Message_.seen_, false)
+                            .build()
+                            .count());
+
+                    countMessages();
+                });
     }
 
     public static synchronized DataBase get() {
@@ -74,10 +89,16 @@ public class DataBase implements OnUpdate {
         }
     }
 
-    private void callOnNotification(int i1, int i2) {
+    private void countNotification(int i1, int i2) {
         if (listeners != null)
             for (OnDataChange listener : listeners)
-                listener.onNotification(i1, i2);
+                listener.countNotifications(i1, i2);
+    }
+
+    private void countMessages() {
+        if (listeners != null)
+            for (OnDataChange listener : listeners)
+                listener.countMessages();
     }
 
     private void update() {
@@ -99,7 +120,7 @@ public class DataBase implements OnUpdate {
             c2 += matter.getMaterialNotSeenCount();
         }
 
-        callOnNotification(c1, c2);
+        countNotification(c1, c2);
     }
 
     public void addOnDataChangeListener(OnDataChange onDataChange) {
@@ -118,6 +139,10 @@ public class DataBase implements OnUpdate {
             listeners.remove(onDataChange);
             Log.i(TAG, "Removed listener from " + onDataChange);
         }
+    }
+
+    public int getMessagesCount() {
+        return messagesCount;
     }
 
     @Override

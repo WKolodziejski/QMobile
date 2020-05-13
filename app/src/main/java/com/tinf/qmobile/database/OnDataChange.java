@@ -2,6 +2,7 @@ package com.tinf.qmobile.database;
 
 public interface OnDataChange {
 
-    void onNotification(int count1, int count2);
+    void countNotifications(int count1, int count2);
+    void countMessages();
 
 }

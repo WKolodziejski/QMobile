@@ -12,5 +12,6 @@
     <color name="white_dividers">@color/black_d</color>
     <color name="message_seen">@color/grey_600</color>
     <color name="message_not_seen">@color/white</color>
+    <color name="badge">#Cf6679</color>
 
 </resources>

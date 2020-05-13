@@ -2,11 +2,14 @@ package com.tinf.qmobile.fragment;
 
 import android.Manifest;
 import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -15,11 +18,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,11 +35,21 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URLConnection;
+import java.nio.file.Files;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.content.Intent.ACTION_VIEW;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static com.tinf.qmobile.BuildConfig.APPLICATION_ID;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 
@@ -41,23 +57,13 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     @BindView(R.id.recycler_materiais)        RecyclerView recyclerView;
     private ActionMode action;
     private MaterialsAdapter adapter;
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-
-            if (extras != null) {
-                long downloaded_id = extras.getLong(DownloadManager.EXTRA_DOWNLOAD_ID);
-                Log.d("RECEIVE", String.valueOf(downloaded_id));
-
-                adapter.notifyItemDownloaded(downloaded_id);
-            }
-        }
-    };
+    private BroadcastReceiver receiver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        receiver = new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE), id -> adapter.notifyItemDownloaded(id));
 
         if (getArguments() == null)
             getActivity().setTitle(User.getYears()[pos]);

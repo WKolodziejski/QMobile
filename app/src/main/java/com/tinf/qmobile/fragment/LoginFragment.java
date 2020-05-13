@@ -15,33 +15,19 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
-
-import org.apache.commons.lang3.ArrayUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -60,7 +46,8 @@ public class LoginFragment extends Fragment implements OnResponse {
     @BindView(R.id.password_input_login)    EditText password;
     @BindView(R.id.btn_login)               Button btn;
     @BindView(R.id.login_spinner)           Spinner spinner;
-    private FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+    private FirebaseRemoteConfig remoteConfig;
     private Map<String, String> urls;
 
     //private int url = 0;
@@ -68,6 +55,8 @@ public class LoginFragment extends Fragment implements OnResponse {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        remoteConfig = FirebaseRemoteConfig.getInstance();
+
         remoteConfig.setConfigSettingsAsync(new FirebaseRemoteConfigSettings
                 .Builder()
                 .setMinimumFetchIntervalInSeconds(3600)
@@ -135,8 +124,8 @@ public class LoginFragment extends Fragment implements OnResponse {
                 hideKeyboard();
                 user.setError(null);
 
-                User.setCredential(REGISTRATION, user.getText().toString().toUpperCase());
-                User.setCredential(PASSWORD, password.getText().toString());
+                User.setCredential(REGISTRATION, user.getText().toString().toUpperCase().trim());
+                User.setCredential(PASSWORD, password.getText().toString().trim());
 
                 //Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(url));
 
@@ -162,7 +151,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     public void onStart(int pg, int pos) {
         progressBar.setVisibility(VISIBLE);
         textView.setVisibility(View.VISIBLE);
-        btn.setClickable(false);
+        btn.setEnabled(false);
 
         if (pg == PG_GENERATOR) {
             textView.setText(getResources().getString(R.string.login_token));
@@ -196,7 +185,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     public void onError(int pg, String error) {
         progressBar.setVisibility(GONE);
         textView.setVisibility(View.GONE);
-        btn.setClickable(true);
+        btn.setEnabled(true);
         Log.e(TAG, error);
     }
 
@@ -204,7 +193,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     public void onAccessDenied(int pg, String message) {
         progressBar.setVisibility(GONE);
         textView.setVisibility(View.GONE);
-        btn.setClickable(true);
+        btn.setEnabled(true);
         user.setError("");
         Log.v(TAG, "Access denied");
     }
@@ -243,7 +232,7 @@ public class LoginFragment extends Fragment implements OnResponse {
         outState.putString("user", user.getText().toString());
         outState.putString("pass", password.getText().toString());
         outState.putInt("pgr", progressBar.getVisibility());
-        outState.putBoolean("btn", btn.isClickable());
+        outState.putBoolean("btn", btn.isEnabled());
         outState.putCharSequence("txt_txt", textView.getText());
         outState.putInt("txt_vis", textView.getVisibility());
     }
@@ -256,7 +245,7 @@ public class LoginFragment extends Fragment implements OnResponse {
             user.setText(savedInstanceState.getString("user"));
             password.setText(savedInstanceState.getString("pass"));
             progressBar.setVisibility(savedInstanceState.getInt("pgr"));
-            btn.setClickable(savedInstanceState.getBoolean("btn"));
+            btn.setEnabled(savedInstanceState.getBoolean("btn"));
             textView.setText(savedInstanceState.getCharSequence("txt_txt"));
             textView.setVisibility(savedInstanceState.getInt("txt_vis"));
         }

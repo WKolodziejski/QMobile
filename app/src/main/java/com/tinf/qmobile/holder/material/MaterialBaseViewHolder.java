@@ -1,6 +1,7 @@
 package com.tinf.qmobile.holder.material;
 
 import android.content.Context;
+import android.view.ActionMode;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,6 @@ public abstract class MaterialBaseViewHolder<T extends Queryable> extends Recycl
         ButterKnife.bind(this, view);
     }
 
-    public abstract void bind(T t);
+    public abstract void bind(Context context, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter, ActionMode.Callback callback, T t);
 
 }

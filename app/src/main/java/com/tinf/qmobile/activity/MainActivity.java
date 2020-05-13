@@ -8,12 +8,16 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -83,6 +87,21 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);*/
 
+        MenuItem item = menu.findItem(R.id.action_mail);
+        View view = item.getActionView();
+        view.setOnClickListener(v -> onOptionsItemSelected(item));
+
+        int c = DataBase.get().getMessagesCount();
+
+        TextView txt = view.findViewById(R.id.badge_mail);
+
+        if (c > 0) {
+            txt.setText(String.valueOf(Math.min(c, 99)));
+            txt.setVisibility(View.VISIBLE);
+        } else {
+            txt.setVisibility(View.GONE);
+        }
+
         return true;
     }
 
@@ -113,9 +132,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             case R.id.action_date:
 
-                startActivity(new Intent(getApplicationContext(), MessagesActivity.class));
-
-                /*View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
+                View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
 
                 final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
 
@@ -133,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                             Client.get().loadYear(year.getValue());
                         }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
-                        .show();*/
+                        .show();
                 return true;
 
             case R.id.action_grades:
@@ -147,6 +164,12 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     return changeFragment(new JournalFragment());
 
                 } else return false;
+
+            case R.id.action_mail:
+
+                startActivity(new Intent(getApplicationContext(), MessagesActivity.class));
+
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -383,16 +406,21 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void onNotification(int count1, int count2) {
+    public void countNotifications(int count1, int count2) {
         if (count1 <= 0)
             bottomNav.removeBadge(R.id.navigation_notas);
         else
-            bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(count1);
+            bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(Math.min(count1, 99));
 
         if (count2 <= 0)
             bottomNav.removeBadge(R.id.navigation_materiais);
         else
-            bottomNav.getOrCreateBadge(R.id.navigation_materiais).setNumber(count2);
+            bottomNav.getOrCreateBadge(R.id.navigation_materiais).setNumber(Math.min(count2, 99));
+    }
+
+    @Override
+    public void countMessages() {
+        invalidateOptionsMenu();
     }
 
 }

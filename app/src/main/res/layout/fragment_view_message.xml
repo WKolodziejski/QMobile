@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,73 +9,70 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_margin="8dp"
-        >
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/message_view_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
             android:layout_marginVertical="16dp"
-            android:textStyle="bold"
             android:textSize="24sp"
-            android:id="@+id/message_view_title"
-            tools:text="Title of message"
+            android:textStyle="bold"
             tools:drawableEnd="@drawable/ic_check"
+            tools:drawablePadding="8dp"
             tools:drawableTint="@color/amber_a700"
-            tools:drawablePadding="8dp" />
+            tools:text="Title of message" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/message_view_header"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginHorizontal="8dp"
-                android:id="@+id/message_view_header"
                 android:background="@drawable/layout_round"
                 android:gravity="center"
+                android:textAllCaps="true"
                 android:textColor="@color/colorPrimaryDark"
                 android:textStyle="bold"
-                android:textAllCaps="true"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:text="F"/>
+                tools:text="F" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="16dp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/message_view_header"
                 app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
-                >
+                app:layout_constraintStart_toEndOf="@id/message_view_header"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:id="@+id/message_view_sender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:id="@+id/message_view_sender"
-                    android:maxLines="1"
                     android:ellipsize="end"
+                    android:maxLines="1"
                     android:textStyle="bold"
-                    tools:text="Remetente"/>
+                    tools:text="Remetente" />
 
                 <TextView
+                    android:id="@+id/message_view_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
                     android:ellipsize="end"
-                    android:id="@+id/message_view_date"
-                    tools:text="22/03/1999"/>
+                    android:maxLines="1"
+                    tools:text="22/03/1999" />
 
             </LinearLayout>
 
@@ -84,43 +80,41 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
 
             <ProgressBar
+                android:id="@+id/message_view_progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:id="@+id/message_view_progressBar"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                >
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:id="@+id/message_view_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="16dp"
                     android:layout_marginHorizontal="8dp"
-                    android:id="@+id/message_view_content"
+                    android:layout_marginVertical="16dp"
                     android:autoLink="web|all"
                     android:linksClickable="true"
-                    tools:text="@string/message_example"/>
+                    tools:text="@string/message_example" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/message_view_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/message_view_recycler" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -128,4 +122,4 @@
 
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

@@ -18,6 +18,12 @@
         android:id="@+id/action_date"
         android:title="@string/action_date"
         android:icon="@drawable/ic_date"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_mail"
+        android:title="@string/action_mail"
+        android:icon="@drawable/ic_inbox"
+        app:actionLayout="@layout/action_mail"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"/>
 

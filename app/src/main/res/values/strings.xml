@@ -23,6 +23,7 @@
     <string name="action_color">Alterar cor</string>
     <string name="action_search">Buscar</string>
     <string name="action_select_all">Selecionar todos</string>
+    <string name="action_mail">Mensagens</string>
 
     <string name="client_no_connection">Sem conexão com a Internet</string>
     <string name="client_host">Servidor inalcançável</string>

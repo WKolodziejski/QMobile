@@ -23,7 +23,7 @@
             android:id="@+id/message_header"
             android:background="@drawable/layout_round"
             android:gravity="center"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@color/colorPrimaryLight"
             android:textStyle="bold"
             android:textAllCaps="true"
             app:layout_constraintStart_toStartOf="parent"
@@ -52,7 +52,8 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 tools:text="Remetente"
-                tools:drawableStart="@drawable/ic_check"
+                android:gravity="center_vertical"
+                tools:drawableStart="@drawable/ic_assignment"
                 tools:drawableTint="@color/amber_a700"
                 tools:drawablePadding="4dp"/>
 

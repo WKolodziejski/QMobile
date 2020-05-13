@@ -16,10 +16,12 @@ import android.widget.Toast;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
+import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
 import static android.content.Context.DOWNLOAD_SERVICE;
+import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class Messenger implements OnMessages, DownloadListener, OnResponse {
@@ -214,8 +216,8 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-        DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-        dm.enqueue(new DownloadManager.Request(Uri.parse(url))
+        /*DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+        DownloadReceiver.id = dm.enqueue(new DownloadManager.Request(Uri.parse(url))
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setAllowedOverRoaming(false)
@@ -224,8 +226,8 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                 .addRequestHeader("Content-Disposition", "attachment; filename=" + URLUtil.guessFileName(url, contentDisposition, mimetype))
                 .setDescription(contentDisposition)
                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                        "QMobile/" + User.getCredential(REGISTRATION) + "/" + url));
-        onFinish(pg, 0);
+                        PATH + "/" + url));
+        onFinish(pg, 0);*/
     }
 
     @Override
