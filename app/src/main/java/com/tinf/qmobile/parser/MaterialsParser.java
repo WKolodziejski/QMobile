@@ -98,7 +98,7 @@ public class MaterialsParser extends BaseParser {
                             matter.materials.add(material);
                             materialsBox.put(material);
 
-                            if (true) {
+                            if (notify) {
                                 sendNotification(material);
                             }
                         }

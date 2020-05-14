@@ -12,10 +12,14 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
+import com.tinf.qmobile.utility.User;
+
 import java.io.File;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH_M;
+
+import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
 public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     @BindView(R.id.materiais_type)          public ImageView icon;
@@ -32,8 +36,7 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
 
     @Override
     public void bind(Context context, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter, ActionMode.Callback callback, Material material) {
-        material.isDownloaded = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + "/" + PATH_M + "/" + material.getFileName()).exists();
+        material.isDownloaded = new File(DownloadReceiver.getMaterialPath(material.getFileName())).exists();
 
         icon.setImageDrawable(context.getDrawable(material.getIcon()));
 
@@ -62,7 +65,7 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
                     adapter.selectItem(material);
             } else {
                 if (material.isDownloaded) {
-                    DownloadReceiver.openFile(PATH_M + "/" + material.getFileName());
+                    DownloadReceiver.openFile(User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + material.getFileName());
                 } else {
                     material.isDownloading = true;
                     adapter.download(material);

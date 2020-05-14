@@ -25,8 +25,7 @@ import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class DownloadReceiver extends BroadcastReceiver {
-    public static String PATH = "QMobile/" + User.getCredential(REGISTRATION);
-    public static String PATH_M = PATH + "/" + User.getYear(pos) + "/" + User.getPeriod(pos);
+    public static final String PATH = "/QMobile/" + User.getCredential(REGISTRATION) + "/";
     private OnDownload onDownload;
     private final DownloadManager manager;
     public static long id;
@@ -93,12 +92,12 @@ public class DownloadReceiver extends BroadcastReceiver {
     public static void openFile(String path) {
         openFile(FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName(),
                 new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        + "/" + path)));
+                        + PATH + path)));
     }
 
     public static long download(Context context, String url, String title, String path) {
         if (Client.isConnected()) {
-            String destiny = PATH + "/";
+            String destiny = PATH;
 
             if (path != null)
                 destiny += path + "/";
@@ -124,6 +123,15 @@ public class DownloadReceiver extends BroadcastReceiver {
 
             return 0;
         }
+    }
+
+    public static String getMaterialPath(String name) {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + PATH + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + name;
+    }
+
+    public static String getAttachmentPath(String name) {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + PATH + name;
     }
 
     public interface OnDownload {

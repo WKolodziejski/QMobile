@@ -31,10 +31,8 @@ public class AttachmentCardViewHolder extends MessagesViewHolder<Attachment> {
         icon.setImageDrawable(context.getDrawable(attachment.getIcon()));
 
         itemView.setOnClickListener(v -> {
-            String path = PATH + "/" + attachment.getTitle();
-
-            if (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/" + path).exists())
-                DownloadReceiver.openFile(path);
+            if (new File(DownloadReceiver.getAttachmentPath(attachment.getTitle())).exists())
+                DownloadReceiver.openFile(attachment.getTitle());
             else
                 DownloadReceiver.download(context, attachment.getUrl_(), attachment.getTitle(), null);
         });

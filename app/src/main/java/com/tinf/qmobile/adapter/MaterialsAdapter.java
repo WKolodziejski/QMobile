@@ -44,7 +44,6 @@ import static com.tinf.qmobile.model.Queryable.ViewType.EMPTY;
 import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
 import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH_M;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate {
     private List<Queryable> materials;
@@ -85,7 +84,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                                     Material m = box.get(id);
 
                                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                            + "/" + PATH_M + "/" + m.getFileName());
+                                            + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + m.getFileName());
 
                                     Log.d("File", m.getFileName());
 
@@ -183,8 +182,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                         material.isDownloading = false;
                         material.see();
                         notifyItemChanged(i);
-                        //openFile(material);
-                        //DownloadReceiver.openFile(PATH_M + "/" + material.getFileName());
                         break;
                     }
                 }
@@ -363,56 +360,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         sub2.cancel();
     }
 
-    /*private void openFile(Material material) {
-        Intent intent = new Intent(ACTION_VIEW);
-        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + material.getPath() + "/" + material.getFileName());
-
-        Log.d("Fragment", file.getPath());
-
-        Uri uri = FileProvider.getUriForFile(context, APPLICATION_ID, file);
-
-        intent.setDataAndType(uri, material.getMime());
-
-        try {
-            context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(context, context.getResources().getString(R.string.text_no_handler), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void downloadMaterial(Material material) {
-        if (Client.isConnected()) {
-            DownloadManager manager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-
-            long downloadID = manager.enqueue(new DownloadManager.Request(Uri.parse(Client.get().getURL() + material.getLink()))
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setAllowedOverRoaming(false)
-                    .setTitle(material.getTitle())
-                    .setDescription(material.getDateString())
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,
-                            PATH_M + "/" + material.getFileName()));
-
-            DownloadReceiver.id = downloadID;
-
-            Log.d("DOWNLOAD", String.valueOf(downloadID));
-
-            material.setMime(manager.getMimeTypeForDownloadedFile(downloadID));
-            material.setPath("/QMobile/" + User.getCredential(REGISTRATION) + "/" + User.getYear(pos) + "/" + User.getPeriod(pos));
-            material.see();
-
-            downloading.put(downloadID, box.put(material));
-
-            Toast.makeText(context, context.getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, context.getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
-        }
-    }*/
-
     public void selectItem(Material material) {
         if (material.isSelected) {
             selected.remove(material.id);
@@ -426,7 +373,12 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     public void download(Material material) {
         material.see();
-        downloading.put(DownloadReceiver.download(context, material.getLink(), material.getFileName(), User.getYear(pos) + "/" + User.getPeriod(pos)), box.put(material));
+        downloading.put(DownloadReceiver
+                        .download(context,
+                                material.getLink(),
+                                material.getFileName(),
+                                User.getYear(pos) + "/" + User.getPeriod(pos)),
+                box.put(material));
     }
 
     public interface OnInteractListener {
