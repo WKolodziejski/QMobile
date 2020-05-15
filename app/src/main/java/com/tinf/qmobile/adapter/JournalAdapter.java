@@ -168,10 +168,12 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     .findUnique();
 
             for (int i = 0; i < matter.periods.size(); i++) {
-                list.add(new Header(matter.periods.get(i)));
-                list.addAll(matter.periods.get(i).journals);
-                if (!matter.periods.get(i).isSub_())
-                    list.add(new FooterPeriod(matter.periods.get(i)));
+                if (!matter.periods.get(i).journals.isEmpty()) {
+                    list.add(new Header(matter.periods.get(i)));
+                    list.addAll(matter.periods.get(i).journals);
+                    if (!matter.periods.get(i).isSub_())
+                        list.add(new FooterPeriod(matter.periods.get(i)));
+                }
             }
         }
 

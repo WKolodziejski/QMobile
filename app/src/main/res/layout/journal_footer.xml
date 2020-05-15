@@ -14,13 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="12dp"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginStart="52dp"
             >
 
@@ -87,18 +87,5 @@
             android:focusable="true"/>
 
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/journal_expand_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:adjustViewBounds="true"
-        android:tint="@color/colorAccent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:rotation="180"
-        app:srcCompat="@drawable/ic_more" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

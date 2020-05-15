@@ -36,6 +36,7 @@
             android:layout_height="match_parent"
             android:layout_margin="16dp"
             android:orientation="vertical"
+            android:gravity="center_vertical"
             app:layout_constraintWidth_default="spread"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/message_att"
@@ -72,7 +73,8 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:id="@+id/message_preview"
-                tools:text="Preview"/>
+                tools:text="Preview"
+                tools:visibility="visible"/>
 
         </LinearLayout>
 

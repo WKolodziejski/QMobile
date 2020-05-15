@@ -42,6 +42,8 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
         date.setText(message.formatDate());
         preview.setText(message.getPreview());
 
+        preview.setVisibility(message.getPreview().isEmpty() ? View.GONE : View.VISIBLE);
+
         int c = context.getColor(message.getContent().isEmpty() && !message.isSeen_() ? R.color.message_not_seen : R.color.message_seen);
         int t = message.getContent().isEmpty() && !message.isSeen_() ? Typeface.BOLD : Typeface.NORMAL;
 
