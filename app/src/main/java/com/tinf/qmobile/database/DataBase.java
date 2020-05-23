@@ -25,7 +25,6 @@ public class DataBase implements OnUpdate {
     private BoxStore boxStore;
     private List<OnDataChange> listeners;
     private DataSubscription sub1, sub2, sub3, sub4;
-    private int messagesCount;
 
     private DataBase() {
         Client.get().addOnUpdateListener(this);
@@ -55,13 +54,11 @@ public class DataBase implements OnUpdate {
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
-                    messagesCount = Math.toIntExact(boxStore.boxFor(Message.class)
+                    countMessages(Math.toIntExact(boxStore.boxFor(Message.class)
                             .query()
                             .equal(Message_.seen_, false)
                             .build()
-                            .count());
-
-                    countMessages();
+                            .count()));
                 });
     }
 
@@ -95,10 +92,10 @@ public class DataBase implements OnUpdate {
                 listener.countNotifications(i1, i2);
     }
 
-    private void countMessages() {
+    private void countMessages(int i) {
         if (listeners != null)
             for (OnDataChange listener : listeners)
-                listener.countMessages();
+                listener.countMessages(i);
     }
 
     private void update() {
@@ -139,10 +136,6 @@ public class DataBase implements OnUpdate {
             listeners.remove(onDataChange);
             Log.i(TAG, "Removed listener from " + onDataChange);
         }
-    }
-
-    public int getMessagesCount() {
-        return messagesCount;
     }
 
     @Override

@@ -31,7 +31,6 @@ public class ReportFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        getActivity().setTitle(User.getYears()[pos]);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onDateChanged() {
-        getActivity().setTitle(User.getYears()[pos]);
+
     }
 
     @Override

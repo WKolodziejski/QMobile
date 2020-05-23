@@ -65,9 +65,6 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
         receiver = new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE), id -> adapter.notifyItemDownloaded(id));
 
-        if (getArguments() == null)
-            getActivity().setTitle(User.getYears()[pos]);
-
         getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         if (hasPermission())
@@ -176,7 +173,6 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onDateChanged() {
-        getActivity().setTitle(User.getYears()[pos]);
         Client.get().load(PG_MATERIALS);
     }
 

@@ -5,40 +5,17 @@
     >
 
     <item
-        android:id="@+id/action_settings"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_logout"
-        android:title="@string/action_logout"
-        app:showAsAction="never"/>
-
-    <item
-        android:id="@+id/action_date"
-        android:title="@string/action_date"
-        android:icon="@drawable/ic_date"
-        app:showAsAction="never"/>
-
-    <item android:id="@+id/action_mail"
-        android:title="@string/action_mail"
-        android:icon="@drawable/ic_inbox"
-        app:actionLayout="@layout/action_mail"
+        android:id="@+id/action_account"
+        android:title="Account"
+        android:icon="@drawable/ic_account"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always" />
 
-    <!--<item android:id="@+id/action_search"
+    <!--<item
+        android:id="@+id/action_search"
         android:title="@string/action_search"
         android:icon="@drawable/ic_search"
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>!-->
-
-    <!--<item
-        android:id="@+id/action_messages"
-        android:title="Mensagens"
-        android:icon="@drawable/ic_inbox_black_24dp"
-        app:showAsAction="ifRoom"
-        app:actionLayout="@layout/custom_action_item_badge"
-        android:orderInCategory="0"/>!-->
 
 </menu>

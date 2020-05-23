@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="bottom"
+    android:layout_marginTop="16dp"
+    android:layout_marginStart="16dp"
+    >
+
+    <ImageView
+        android:id="@+id/login_logo"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginBottom="4dp"
+        android:src="@drawable/ic_launcher_white"
+        android:tint="@color/colorAccent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="mobile"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"/>
+
+</LinearLayout>

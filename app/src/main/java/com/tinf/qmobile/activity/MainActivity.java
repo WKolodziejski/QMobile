@@ -3,83 +3,108 @@ package com.tinf.qmobile.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.NumberPicker;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.view.GravityCompat;
+import androidx.core.widget.NestedScrollView;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.navigation.NavigationView;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnDataChange;
-import com.tinf.qmobile.fragment.HomeFragment2;
-import com.tinf.qmobile.fragment.sheet.PopUpFragment;
+import com.tinf.qmobile.fragment.HomeFragment;
+import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.fragment.dialog.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
-import com.tinf.qmobile.model.material.Material;
-import com.tinf.qmobile.model.message.Attachment;
-import com.tinf.qmobile.model.message.Message;
-import com.tinf.qmobile.model.message.Sender;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
+import java.io.File;
+import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.Box;
-
+import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, BottomNavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "MainActivity";
-    @BindView(R.id.refresh_layout)      public SwipeRefreshLayout refreshLayout;
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, OnUpdate,
+        BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
+    @BindView(R.id.main_refresh)        public SwipeRefreshLayout refreshLayout;
     @BindView(R.id.navigation)          BottomNavigationView bottomNav;
+    @BindView(R.id.drawer)              DrawerLayout drawerLayout;
+    @BindView(R.id.nav)                 NavigationView navigationView;
+    @BindView(R.id.toolbar_main)        Toolbar toolbar;
+    @BindView(R.id.main_date)           TextView date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        setTitle(User.getName());
 
-        setSupportActionBar(findViewById(R.id.toolbar_main));
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-        if (savedInstanceState != null) {
-            changeFragment(getSupportFragmentManager().getFragment(savedInstanceState, "fragment"));
-        } else {
-            Bundle bundle = getIntent().getExtras();
+        Menu menu = navigationView.getMenu();
 
-            if (bundle != null) {
-                int pg = bundle.getInt("FRAGMENT");
-
-                if (pg != 0) {
-                    changeFragment(new MaterialsFragment());
-                    bottomNav.setSelectedItemId(R.id.navigation_materiais);
-                }
-
-            } else
-                changeFragment(new HomeFragment2());
+        for (int i = 0; i < User.getYears().length; i++) {
+            menu.add(R.id.group1, i, Menu.NONE, User.getYears()[i]);
+            menu.getItem(i).setIcon(getDrawable(R.drawable.ic_label));
+            menu.getItem(i).setCheckable(true);
         }
+
+        menu.getItem(0).setChecked(true);
+
+        date.setText(User.getYears()[pos]);
+
+        Bundle bundle = getIntent().getExtras();
+
+        if (bundle != null) {
+            int pg = bundle.getInt("FRAGMENT");
+
+            if (pg != 0) {
+                changeFragment(new MaterialsFragment());
+                bottomNav.setSelectedItemId(R.id.navigation_materiais);
+            }
+
+        } else
+            changeFragment(new HomeFragment());
 
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_FETCH_YEARS);
@@ -99,19 +124,36 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);*/
 
-        MenuItem item = menu.findItem(R.id.action_mail);
-        View view = item.getActionView();
-        view.setOnClickListener(v -> onOptionsItemSelected(item));
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION) + ".jpg");
 
-        int c = DataBase.get().getMessagesCount();
+        if (picture.exists()) {
+            Log.d("PICTURE", picture.getAbsolutePath());
 
-        TextView txt = view.findViewById(R.id.badge_mail);
+            ImageDecoder.Source src = ImageDecoder.createSource(picture);
 
-        if (c > 0) {
-            txt.setText(String.valueOf(Math.min(c, 99)));
-            txt.setVisibility(View.VISIBLE);
-        } else {
-            txt.setVisibility(View.GONE);
+            try {
+                Bitmap bitmap = ImageDecoder.decodeBitmap(src);
+                RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(getResources(),
+                        Bitmap.createBitmap(bitmap, 0,0, bitmap.getWidth(), bitmap.getWidth()));
+                round.setCircular(true);
+                round.setAntiAlias(true);
+
+                MenuItem item = menu.findItem(R.id.action_account);
+                item.setActionView(R.layout.action_account);
+                ImageView view = (ImageView) item.getActionView();
+                view.setImageDrawable(round.getCurrent());
+                view.setOnClickListener(v -> {
+                    new MaterialAlertDialogBuilder(MainActivity.this)
+                            .setTitle(getResources().getString(R.string.dialog_quit))
+                            .setMessage(R.string.dialog_quit_msg)
+                            .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
+                            .setNegativeButton(R.string.dialog_cancel, null)
+                            .create()
+                            .show();
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return true;
@@ -126,41 +168,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 onBackPressed();
                 return true;
 
-            case R.id.action_settings:
-
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                return true;
-
-            case R.id.action_logout:
+            case R.id.action_account:
 
                 new MaterialAlertDialogBuilder(MainActivity.this)
                         .setTitle(getResources().getString(R.string.dialog_quit))
                         .setMessage(R.string.dialog_quit_msg)
                         .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
                         .setNegativeButton(R.string.dialog_cancel, null)
-                        .create()
-                        .show();
-                return true;
-
-            case R.id.action_date:
-
-                View view = getLayoutInflater().inflate(R.layout.dialog_date_picker, null);
-
-                final NumberPicker year = (NumberPicker) view.findViewById(R.id.year_picker);
-
-                year.setMinValue(0);
-                year.setMaxValue(User.getYears().length - 1);
-                year.setValue(Client.pos);
-                year.setDisplayedValues(User.getYears());
-                year.setWrapSelectorWheel(false);
-
-                new MaterialAlertDialogBuilder(MainActivity.this)
-                        .setView(view)
-                        .setTitle(getResources().getString(R.string.dialog_date_change))
-                        .setPositiveButton(R.string.dialog_date_confirm, (dialog, which) -> {
-                            Client.get().changeData(year.getValue());
-                            Client.get().loadYear(year.getValue());
-                        }).setNegativeButton(R.string.dialog_cancel, null)
                         .create()
                         .show();
                 return true;
@@ -177,11 +191,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
                 } else return false;
 
-            case R.id.action_mail:
-
-                startActivity(new Intent(getApplicationContext(), MessagesActivity.class));
-
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -189,26 +198,56 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment = null;
+
+        if (item.getGroupId() == R.id.group1) {
+            navigationView.getMenu().getItem(0).setChecked(true);
+            Client.get().changeData(item.getItemId());
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+        switch (item.getItemId()) {
+            case R.id.drawer_mail:
+                startActivity(new Intent(getApplicationContext(), MessagesActivity.class));
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+
+            case R.id.drawer_calendar:
+                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+
+            case R.id.drawer_website:
+                startActivity(new Intent(getApplicationContext(), WebViewActivity.class));
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+
+            case R.id.drawer_settings:
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+        }
+
         if (item.getItemId() != bottomNav.getSelectedItemId()) {
             switch (item.getItemId()) {
 
                 case R.id.navigation_home:
-                    fragment = new HomeFragment2();
-                    break;
+                    changeFragment(new HomeFragment());
+                    return true;
 
                 case R.id.navigation_notas:
-                    fragment = new JournalFragment();
-                    break;
+                    changeFragment(new JournalFragment());
+                    return true;
 
                 case R.id.navigation_materiais:
-                    fragment = new MaterialsFragment();
-                    break;
+                    changeFragment(new MaterialsFragment());
+                    return true;
             }
         } else {
             Client.get().requestScroll();
         }
-        return changeFragment(fragment);
+
+        return false;
     }
 
     protected void showProgressbar() {
@@ -259,48 +298,48 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onStart() {
         super.onStart();
-        Log.v(TAG, "onStart");
-        //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
+        Client.get().addOnUpdateListener(this);
         DataBase.get().addOnDataChangeListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
         bottomNav.setOnNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop");
         Client.get().removeOnResponseListener(this);
+        Client.get().removeOnUpdateListener(this);
         DataBase.get().removeOnDataChangeListener(this);
-        //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.v(TAG, "onResume");
-        //appBarLayout.addOnOffsetChangedListener(this);
         Client.get().addOnResponseListener(this);
+        Client.get().addOnUpdateListener(this);
         DataBase.get().addOnDataChangeListener(this);
         bottomNav.setOnNavigationItemSelectedListener(this);
         refreshLayout.setOnRefreshListener(this::reload);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.v(TAG, "onPause");
         Client.get().removeOnResponseListener(this);
+        Client.get().removeOnUpdateListener(this);
         DataBase.get().removeOnDataChangeListener(this);
-        //appBarLayout.removeOnResponseListener(this);
         dismissProgressbar();
     }
 
     @Override
     public void onBackPressed() {
-        if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             bottomNav.setSelectedItemId(R.id.navigation_home);
         } else {
             super.onBackPressed();
@@ -431,8 +470,28 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void countMessages() {
-        invalidateOptionsMenu();
+    public void countMessages(int count) {
+        TextView txt = (TextView) navigationView.getMenu().findItem(R.id.drawer_mail).getActionView();
+
+        if (count > 0) {
+            txt.setGravity(Gravity.CENTER_VERTICAL);
+            txt.setTypeface(null, Typeface.BOLD);
+            txt.setText(String.valueOf(Math.min(count, 99)));
+            txt.setVisibility(View.VISIBLE);
+        } else {
+            txt.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onScrollRequest() {
+
+    }
+
+    @Override
+    public void onDateChanged() {
+        date.setText(User.getYears()[pos]);
+        setTitle(User.getName());
     }
 
 }

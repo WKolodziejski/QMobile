@@ -37,275 +37,139 @@
             android:orientation="vertical"
             >
 
-            <com.google.android.material.card.MaterialCardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/black_dividers"
-                app:strokeWidth="1dp"
-                android:layout_margin="8dp"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:padding="16dp"
                 android:id="@+id/home_offline"
-                android:visibility="gone"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:drawableStart="@drawable/ic_offline"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@color/colorAccent"
+                    android:gravity="center_vertical"
+                    android:text="Offline"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:textSize="@dimen/main_font_size"
+                    android:id="@+id/offline_last_update"
+                    tools:text="Last update on 22/03/2017" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
                 >
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="bottom"
                     android:padding="16dp"
-                    >
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        app:srcCompat="@drawable/ic_offline"
-                        android:tint="@color/colorAccent"
-                        android:layout_gravity="center_vertical"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Offline"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical"
-                        android:textSize="@dimen/main_font_size" />
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_dividers"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:textSize="@dimen/main_font_size"
-                        android:id="@+id/offline_last_update"
-                        tools:text="Last update on 22/03/2017" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp"
-                android:layout_margin="8dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:orientation="vertical"
-                    >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="bottom"
-                        android:paddingLeft="16dp"
-                        android:paddingStart="16dp"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="8dp"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:id="@+id/home_horario"
-                        >
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            app:srcCompat="@drawable/ic_alarm"
-                            android:tint="@color/colorAccent"
-                            android:layout_gravity="center_vertical"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/title_horario"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:textSize="@dimen/main_font_size" />
-
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_next"
-                            android:tint="@color/colorAccent"
-                            android:layout_gravity="center_vertical"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginHorizontal="8dp"
-                        android:background="@color/black_dividers" />
-
-                    <me.jlurena.revolvingweekview.WeekView
-                        android:layout_width="match_parent"
-                        android:layout_height="365dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="10dp"
-                        android:transitionName="Horario"
-                        android:id="@+id/weekView_home"
-                        app:headerColumnPadding="8dp"
-                        app:noOfVisibleDays="5"
-                        app:eventCornerRadius="5dp"
-                        app:eventTextSize="12sp"
-                        app:hourHeight="60dp"
-                        app:headerRowPadding="12dp"
-                        app:columnGap="8dp"
-                        app:firstDayOfWeek="monday"
-                        app:horizontalFlingEnabled="false"
-                        app:xScrollingSpeed="0"
-                        app:showNowLine="false"
-                        app:showFirstDayOfWeekFirst="true"
-                        app:zoomFocusPointEnabled="false"
-                        app:hourSeparatorColor="@color/transparent"
-                        app:headerColumnBackground="@color/transparent"
-                        app:headerColumnTextColor="@color/colorPrimary"
-                        app:eventTextColor="@color/colorPrimaryLight"
-                        app:headerRowBackgroundColor="@color/transparent"
-                        app:dayBackgroundColor="@color/transparent"
-                        app:pastBackgroundColor="@color/transparent"
-                        app:todayBackgroundColor="@color/transparent"/>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp"
-                >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="bottom"
-                        android:paddingLeft="16dp"
-                        android:paddingStart="16dp"
-                        android:paddingTop="16dp"
-                        android:paddingBottom="8dp"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:id="@+id/home_calendario"
-                        >
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            app:srcCompat="@drawable/ic_calendar"
-                            android:tint="@color/colorAccent"
-                            android:layout_gravity="center_vertical"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/title_calendario"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginLeft="8dp"
-                            android:layout_gravity="center_vertical"
-                            android:textSize="@dimen/main_font_size" />
-
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_next"
-                            android:tint="@color/colorAccent"
-                            android:layout_gravity="center_vertical"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginHorizontal="8dp"
-                        android:background="@color/black_dividers" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:transitionName="Calendario"
-                        android:id="@+id/recycler_home"/>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="1dp"
-                android:layout_margin="8dp"
-                >
-
-                <LinearLayout
-                    android:id="@+id/home_website"
-                    android:layout_width="match_parent"
-                    android:layout_height="49dp"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="bottom"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:id="@+id/home_horario"
+                    >
 
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:tint="@color/colorAccent"
-                        app:srcCompat="@drawable/ic_external" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_alarm"
+                        android:drawablePadding="8dp"
+                        android:drawableTint="@color/colorAccent"
+                        android:gravity="center_vertical"
+                        android:text="@string/title_horario"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="Website"
-                        android:textSize="@dimen/main_font_size" />
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="@color/black_dividers" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:text="@string/home_footer"
-                        android:textSize="@dimen/main_font_size" />
+                        android:layout_marginStart="32dp"
+                        android:textSize="@dimen/main_font_size"
+                        android:id="@+id/schedule_empty_text"
+                        android:visibility="gone"
+                        android:text="@string/schedule_empty"
+                        tools:visibility="visible"/>
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <me.jlurena.revolvingweekview.WeekView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="-32dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="-8dp"
+                    android:layout_marginBottom="8dp"
+                    android:transitionName="Horario"
+                    android:id="@+id/weekView_home"
+                    app:headerColumnPadding="8dp"
+                    app:noOfVisibleDays="5"
+                    app:eventCornerRadius="8dp"
+                    app:eventTextSize="12sp"
+                    app:hourHeight="60dp"
+                    app:headerRowPadding="12dp"
+                    app:columnGap="8dp"
+                    app:firstDayOfWeek="monday"
+                    app:horizontalFlingEnabled="false"
+                    app:xScrollingSpeed="0"
+                    app:showNowLine="false"
+                    app:showFirstDayOfWeekFirst="true"
+                    app:zoomFocusPointEnabled="false"
+                    app:hourSeparatorColor="@color/transparent"
+                    app:headerColumnBackground="@color/transparent"
+                    app:headerColumnTextColor="@color/transparent"
+                    app:eventTextColor="@color/colorPrimaryLight"
+                    app:todayHeaderTextColor="@color/transparent"
+                    app:headerRowBackgroundColor="@color/transparent"
+                    app:dayBackgroundColor="@color/transparent"
+                    app:pastBackgroundColor="@color/transparent"
+                    app:todayBackgroundColor="@color/transparent"
+                    tools:layout_height="200dp"
+                    tools:background="@color/colorPrimaryLight"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:id="@+id/home_calendar"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawablePadding="8dp"
+                    android:drawableTint="@color/colorAccent"
+                    android:gravity="center_vertical"
+                    android:text="@string/calendar_upcoming"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:id="@+id/home_calendario"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:transitionName="Calendario"
+                    android:id="@+id/recycler_home"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

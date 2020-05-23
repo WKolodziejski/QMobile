@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorSecondary">?attr/colorPrimary</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
         <item name="scrimBackground">@color/green_a400</item>
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:colorForeground">@color/colorPrimary</item>
@@ -27,6 +27,16 @@
         <item name="searchViewStyle">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
         <item name="actionModeStyle">@style/ActionMode</item>
+
+        <item name="colorNavigationItem">@color/drawer</item>
+        <item name="colorNavigationItemSelected">@color/amber_a700</item>
+        <item name="drawableNavigationItemBackground">@drawable/selector_drawable</item>
+    </style>
+
+    <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">
+        <item name="itemIconTint">?attr/colorNavigationItem</item>
+        <item name="itemTextColor">?attr/colorNavigationItem</item>
+        <item name="itemBackground">?attr/colorNavigationItem</item>
     </style>
 
     <style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
@@ -35,7 +45,7 @@
     </style>
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:windowBackground">@drawable/layout_splash</item>
         <item name="android:windowFullscreen">false</item>
     </style>
 

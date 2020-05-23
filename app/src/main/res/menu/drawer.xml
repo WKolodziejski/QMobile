@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group
+        android:orderInCategory="1"
+        android:id="@+id/group1"
+        android:checkableBehavior="single" />
+
+    <group
+        android:orderInCategory="2"
+        android:id="@+id/group2">
+
+        <item
+            android:id="@+id/drawer_mail"
+            android:icon="@drawable/ic_inbox"
+            app:actionViewClass="android.widget.TextView"
+            android:title="@string/title_messages" />
+
+        <item
+            android:id="@+id/drawer_calendar"
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/title_calendario" />
+
+    </group>
+
+    <group
+        android:orderInCategory="3"
+        android:id="@+id/group3">
+
+        <item
+            android:id="@+id/drawer_website"
+            android:icon="@drawable/ic_external"
+            android:title="Website" />
+
+        <item
+            android:id="@+id/drawer_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/action_settings" />
+
+    </group>
+
+</menu>

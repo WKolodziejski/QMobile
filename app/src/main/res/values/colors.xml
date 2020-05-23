@@ -14,7 +14,6 @@
     <color name="message_not_seen">@color/colorPrimary</color>
     <color name="badge">#A70724</color>
 
-    <color name="splash">@color/black</color>
     <color name="card_stroke">@color/black_d</color>
     <color name="transparent">@android:color/transparent</color>
 

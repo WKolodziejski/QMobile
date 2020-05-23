@@ -1,4 +1,4 @@
-package com.tinf.qmobile.fragment.sheet;
+package com.tinf.qmobile.fragment.dialog;
 
 import android.content.DialogInterface;
 import android.os.Bundle;

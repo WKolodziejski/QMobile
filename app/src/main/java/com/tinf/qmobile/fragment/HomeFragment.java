@@ -9,10 +9,10 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,12 +21,11 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.WebViewActivity;
-import com.tinf.qmobile.adapter.EventsAdapter;
+import com.tinf.qmobile.activity.ScheduleActivity;
+import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.fragment.sheet.CreateFragment;
+import com.tinf.qmobile.fragment.dialog.CreateFragment;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
@@ -51,13 +50,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
     @BindView(R.id.fab_home)            ExtendedFloatingActionButton fab;
     @BindView(R.id.recycler_home)       RecyclerView recyclerView;
+    @BindView(R.id.schedule_empty_text) TextView empty;
+    @BindView(R.id.home_calendar)       LinearLayout calendar;
     private DataSubscription sub1, sub2;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getActivity().setTitle(User.getName());
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -84,6 +79,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
+
                     if (scrollY < oldScrollY && !fab.isShown())
                         fab.show();
                     else if(scrollY > oldScrollY && fab.isShown())
@@ -92,7 +88,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         fab.setOnClickListener(v -> new CreateFragment().show(getFragmentManager(), "sheet_create"));
 
-        CardView offline = (CardView) view.findViewById(R.id.home_offline);
+        LinearLayout offline = (LinearLayout) view.findViewById(R.id.home_offline);
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             offline.setVisibility(View.VISIBLE);
@@ -103,8 +99,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
             offline.setVisibility(View.GONE);
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new EventsAdapter(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        recyclerView.setAdapter(new HomeAdapter(getContext()));
     }
 
     private void updateSchedule() {
@@ -118,6 +114,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         .equal(Schedule_.year, User.getYear(pos)).and()
                         .equal(Schedule_.period, User.getPeriod(pos))
                         .build().find();
+
+                ViewGroup.LayoutParams params = weekView.getLayoutParams();
 
                 if (!schedules.isEmpty()) {
 
@@ -180,28 +178,26 @@ public class HomeFragment extends Fragment implements OnUpdate {
                             lastIndex = h;
                     }
 
-                    ViewGroup.LayoutParams params = weekView.getLayoutParams();
                     params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45) * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
-                    weekView.setLayoutParams(params);
 
                     weekView.goToDay(DayOfWeek.MONDAY);
                     weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
+                    empty.setVisibility(View.GONE);
+
+                } else {
+                    params.height = Math.round((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+
+                    empty.setVisibility(View.VISIBLE);
                 }
 
-                Log.d("Home", "View listener");
+                weekView.setLayoutParams(params);
 
                 return events;
             });
 
             weekView.post(() -> weekView.notifyDatasetChanged());
-
         }).start();
-    }
-
-    @OnClick(R.id.home_website)
-    public void openQSite(View view) {
-        startActivity(new Intent(getContext(), WebViewActivity.class));
     }
 
     @OnClick(R.id.home_calendario)
@@ -230,6 +226,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     @Override
     public void onDateChanged() {
         updateSchedule();
+        calendar.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override

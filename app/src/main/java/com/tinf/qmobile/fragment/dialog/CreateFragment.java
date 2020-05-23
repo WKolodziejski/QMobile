@@ -1,17 +1,17 @@
-package com.tinf.qmobile.fragment.sheet;
+package com.tinf.qmobile.fragment.dialog;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
-import butterknife.BindView;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 

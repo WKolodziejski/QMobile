@@ -37,6 +37,7 @@ import com.tinf.qmobile.parser.MaterialsParser;
 import com.tinf.qmobile.parser.MessageParser;
 import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
+import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -276,13 +277,15 @@ public class Client {
 
                         isLogging = false;
 
-                        //String cod = document.getElementsByTag("q_latente").get(4).val();
-                        //cod = cod.substring(cod.indexOf("=") + 1);
+                        String cod = document.getElementsByTag("q_latente").get(4).val();
+                        cod = cod.substring(cod.indexOf("=") + 1);
 
-                        //downloadImage(cod);
+                        Element img = document.getElementsByAttributeValueEnding("src", cod).first();
+
+                        if (img != null)
+                            downloadImage(cod);
 
                         callOnFinish(PG_LOGIN, 0);
-
                     }
                 }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
@@ -537,14 +540,18 @@ public class Client {
     }
 
     public void changeData(int pos) {
-        Client.pos = pos;
+        if (pos != Client.pos) {
+            Client.pos = pos;
 
-        requests.cancelAll(request -> true);
+            requests.cancelAll(request -> true);
 
-        if (onUpdates != null) {
-            for (int i = 0; i < onUpdates.size(); i++) {
-                onUpdates.get(i).onDateChanged();
+            if (onUpdates != null) {
+                for (int i = 0; i < onUpdates.size(); i++) {
+                    onUpdates.get(i).onDateChanged();
+                }
             }
+
+            loadYear(pos);
         }
     }
 
@@ -553,21 +560,12 @@ public class Client {
     }
 
     private void downloadImage(String cod) {
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION) + ".jpg");
+
+        Log.d("Picture", picture.getAbsolutePath());
 
         if (!picture.exists()) {
-
-            Log.i(TAG, "Downloading profile picture");
-
-            DownloadManager manager = (DownloadManager) getContext().getSystemService(DOWNLOAD_SERVICE);
-
-            Uri uri = Uri.parse(URL + INDEX + "1025&tipo=0&COD=" + cod);
-
-            manager.enqueue(new DownloadManager.Request(uri)
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN)
-                    .setAllowedOverRoaming(false)
-                    .setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_PICTURES, User.getCredential(User.REGISTRATION)));
+            DownloadReceiver.downloadImgae(getContext(), cod);
         }
     }
 
@@ -586,6 +584,10 @@ public class Client {
 
     public String getURL() {
         return URL;
+    }
+
+    public String getCookie() {
+        return params.get("Cookie");
     }
 
     public void loadYear(int pos) {

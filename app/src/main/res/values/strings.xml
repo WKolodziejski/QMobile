@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Q Mobile</string>
+    <string name="app_name" translatable="false">Qmobile</string>
     <string name="app_version">Versão </string>
     <string name="app_tinf">Um Projeto TINF</string>
     <string name="app_more">Mais</string>
@@ -51,6 +51,9 @@
 
     <string name="button_login">Entrar</string>
     <string name="button_wifi">Ativar Wi-Fi</string>
+
+    <string name="open_drawer">Expandir</string>
+    <string name="close_drawer">Recolher</string>
 
     <string name="dialog_quit">Sair</string>
     <string name="dialog_quit_msg">Deseja mesmo sair?</string>

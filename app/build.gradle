@@ -95,6 +95,8 @@ dependencies {
 
     implementation 'com.jakewharton:butterknife:10.2.0'
 
+    implementation 'com.shreyaspatil:MaterialNavigationView:1.2'
+
     implementation 'me.jlurena:revolvingweekview:2.0.0'
 
     testImplementation 'junit:junit:4.12'
