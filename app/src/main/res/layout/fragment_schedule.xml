@@ -9,9 +9,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/dog"
+        android:src="@drawable/draw_schedule"
         android:id="@+id/schedule_empty"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
     <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"

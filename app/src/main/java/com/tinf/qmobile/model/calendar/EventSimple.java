@@ -5,6 +5,7 @@ import com.tinf.qmobile.R;
 
 import io.objectbox.annotation.Entity;
 
+import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.calendar.EventSimple.Type.FIM;
 import static com.tinf.qmobile.model.calendar.EventSimple.Type.INICIO;
 
@@ -62,7 +63,7 @@ public class EventSimple extends EventBase {
 
     @Override
     public int getItemType() {
-        return ViewType.SIMPLE;
+        return SIMPLE;
     }
 
     @Override

@@ -7,7 +7,8 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
-import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
+
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 @Entity
 public class Message implements Queryable {

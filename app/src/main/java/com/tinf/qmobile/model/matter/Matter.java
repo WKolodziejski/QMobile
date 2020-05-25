@@ -10,7 +10,8 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
-import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
+
+import static com.tinf.qmobile.model.ViewType.HEADER;
 
 @Entity
 public class Matter implements Queryable {

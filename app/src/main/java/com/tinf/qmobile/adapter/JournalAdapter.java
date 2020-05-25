@@ -13,12 +13,14 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
+import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.journal.FooterPeriod;
 import com.tinf.qmobile.model.journal.Header;
@@ -33,11 +35,13 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERP;
-import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERJ;
-import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
-import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.Queryable.ViewType.PERIOD;
+
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.FOOTERJ;
+import static com.tinf.qmobile.model.ViewType.FOOTERP;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.PERIOD;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate {
@@ -118,7 +122,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     else if (journals.get(o) instanceof Header && updated.get(n) instanceof Header)
                         return (((Header) journals.get(o)).getPeriod().id == (((Header) updated.get(n)).getPeriod().id));
 
-                    else return false;
+                    else return journals.get(o) instanceof Empty && updated.get(n) instanceof Empty;
                 }
 
                 @Override
@@ -177,6 +181,9 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             }
         }
 
+        if (list.isEmpty())
+            list.add(new Empty());
+
         return list;
     }
 
@@ -231,6 +238,10 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             case PERIOD:
                 return new PeriodHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.period_header, parent, false));
+
+            case EMPTY:
+                return new JournalEmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.journal_empty, parent, false));
 
         }
         return null;

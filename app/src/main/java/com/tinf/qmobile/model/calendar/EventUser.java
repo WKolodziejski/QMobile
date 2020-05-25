@@ -5,6 +5,8 @@ import com.tinf.qmobile.model.matter.Matter;
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
 
+import static com.tinf.qmobile.model.ViewType.USER;
+
 @Entity
 public class EventUser extends EventBase {
     //@Id public long id;
@@ -81,7 +83,7 @@ public class EventUser extends EventBase {
 
     @Override
     public int getItemType() {
-        return ViewType.USER;
+        return USER;
     }
 
     @Override

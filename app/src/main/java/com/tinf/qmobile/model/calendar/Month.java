@@ -8,6 +8,8 @@ import java.util.Locale;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
+import static com.tinf.qmobile.model.ViewType.MONTH;
+
 @Entity
 public class Month implements CalendarBase {
     @Id public long id;
@@ -37,7 +39,7 @@ public class Month implements CalendarBase {
 
     @Override
     public int getItemType() {
-        return CalendarBase.ViewType.MONTH;
+        return MONTH;
     }
 
     @Override

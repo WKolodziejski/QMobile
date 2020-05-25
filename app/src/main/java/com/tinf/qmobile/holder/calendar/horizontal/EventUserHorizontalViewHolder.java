@@ -19,6 +19,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.model.ViewType.USER;
+
 public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser> {
     @BindView(R.id.calendar_user_title)       public TextView title;
     @BindView(R.id.calendar_user_description) public TextView description;
@@ -56,7 +58,7 @@ public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser>
 
         card.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);
-            intent.putExtra("TYPE", CalendarBase.ViewType.USER);
+            intent.putExtra("TYPE", USER);
             intent.putExtra("ID", event.id);
             context.startActivity(intent);
         });

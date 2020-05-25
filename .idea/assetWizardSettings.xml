@@ -146,8 +146,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_account" />
-                            <entry key="sourceFile" value="D:\Downloads\account_circle-24px.svg" />
+                            <entry key="outputName" value="draw_calendar" />
+                            <entry key="sourceFile" value="D:\Desktop\SVG\draw_calendar.svg" />
                           </map>
                         </option>
                       </PersistentState>

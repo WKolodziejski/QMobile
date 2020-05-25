@@ -15,6 +15,8 @@ import com.tinf.qmobile.model.journal.Journal;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> {
     @BindView(R.id.calendar_default_title)       public TextView title;
     @BindView(R.id.calendar_default_description) public TextView description;
@@ -33,7 +35,7 @@ public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> 
 
         card.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);
-            intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+            intent.putExtra("TYPE", JOURNAL);
             intent.putExtra("ID", journal.id);
             context.startActivity(intent);
         });

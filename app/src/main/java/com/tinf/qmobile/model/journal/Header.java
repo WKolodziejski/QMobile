@@ -1,9 +1,8 @@
 package com.tinf.qmobile.model.journal;
-
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Period;
 
-import static com.tinf.qmobile.model.Queryable.ViewType.PERIOD;
+import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 public class Header implements Queryable {
     private Period period;

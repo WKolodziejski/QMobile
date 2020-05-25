@@ -21,7 +21,7 @@ import com.tinf.qmobile.holder.material.EmptyViewHolder;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
 import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.material.MatterViewHolder;
-import com.tinf.qmobile.model.material.Empty;
+import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
@@ -40,9 +40,10 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-import static com.tinf.qmobile.model.Queryable.ViewType.EMPTY;
-import static com.tinf.qmobile.model.Queryable.ViewType.HEADER;
-import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
+
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate {
@@ -85,6 +86,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
                                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                                             + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + m.getFileName());
+
+                                    //TODO
 
                                     Log.d("File", m.getFileName());
 
@@ -274,34 +277,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
             list.addAll(builder.build().find());
         }
-
-        /*DataBase.get().getBoxStore().runInTx(() -> {
-
-            File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + "/" + PATH_M);
-
-            Log.d("Folder", folder.getPath());
-
-            if (folder.exists()) {
-                if (folder.listFiles() != null) {
-
-                    List<File> files = Arrays.asList(folder.listFiles());
-
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i) instanceof Material) {
-                            Material material = (Material) list.get(i);
-
-                            for (int j = 0; j < files.size(); j++) {
-                                if (material.getFileName().equals(files.get(j).getName())) {
-                                    material.isDownloaded = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });*/
 
         if (list.isEmpty())
             list.add(new Empty());

@@ -18,6 +18,8 @@ import com.tinf.qmobile.model.journal.Journal;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     @BindView(R.id.journal_view_title_text) public TextView title;
     @BindView(R.id.journal_view_weight)     public TextView weight;
@@ -40,7 +42,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journal.id);
-            intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+            intent.putExtra("TYPE", JOURNAL);
             context.startActivity(intent);
 
             itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));

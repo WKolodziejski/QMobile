@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.adapter.MaterialsAdapter;
-import com.tinf.qmobile.model.material.Empty;
+import com.tinf.qmobile.model.Empty;
 
 public class EmptyViewHolder extends MaterialBaseViewHolder<Empty> {
 

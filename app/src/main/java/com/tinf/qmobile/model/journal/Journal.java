@@ -11,7 +11,7 @@ import java.util.Locale;
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
 
-import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.journal.Journal.Type.AVALIACAO;
 
 @Entity

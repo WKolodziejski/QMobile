@@ -2,7 +2,8 @@ package com.tinf.qmobile.model.journal;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
-import static com.tinf.qmobile.model.Queryable.ViewType.FOOTERJ;
+
+import static com.tinf.qmobile.model.ViewType.FOOTERJ;
 
 public class FooterJournal implements Queryable {
     private Matter matter;

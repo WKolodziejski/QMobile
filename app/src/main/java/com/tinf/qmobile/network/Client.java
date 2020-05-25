@@ -459,28 +459,24 @@ public class Client {
     public void addOnResponseListener(OnResponse onResponse) {
         if (onResponse != null && !onResponses.contains(onResponse)) {
             onResponses.add(onResponse);
-            Log.i(TAG, "Added listener from " + onResponse);
         }
     }
 
     public void removeOnResponseListener(OnResponse onResponse) {
         if (onResponses != null && onResponse != null) {
             onResponses.remove(onResponse);
-            Log.i(TAG, "Removed listener from " + onResponse);
         }
     }
 
     public void addOnUpdateListener(OnUpdate onUpdate) {
         if (onUpdate != null && !onUpdates.contains(onUpdate)) {
             onUpdates.add(onUpdate);
-            Log.i(TAG, "Added listener from " + onUpdate);
         }
     }
 
     public void removeOnUpdateListener(OnUpdate onUpdate) {
         if (onUpdates != null && onUpdate != null) {
             onUpdates.remove(onUpdate);
-            Log.i(TAG, "Removed listener from " + onUpdate);
         }
     }
 

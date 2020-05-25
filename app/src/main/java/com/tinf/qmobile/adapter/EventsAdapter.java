@@ -15,12 +15,14 @@ import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
+import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.DayViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventJournalVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventSimpleVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
+import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -35,11 +37,20 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+
+import static com.tinf.qmobile.model.ViewType.DAY;
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MONTH;
+import static com.tinf.qmobile.model.ViewType.SIMPLE;
+import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
     private List<CalendarBase> events;
@@ -81,7 +92,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                     else if (events.get(o) instanceof Day && updated.get(n) instanceof Day)
                         return events.get(o).getDate().equals(updated.get(n).getDate());
 
-                    else return false;
+                    else return events.get(o) instanceof Empty && updated.get(n) instanceof Empty;
                 }
 
                 @Override
@@ -140,6 +151,11 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         list.addAll(eventJournalBox.query().build().find());
         list.addAll(eventSimpleBox.query().build().find());
         list.addAll(monthBox.query().build().find());
+
+        if (list.isEmpty()) {
+            list.add(new Empty());
+            return list;
+        }
 
         Collections.sort(list, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
@@ -224,29 +240,33 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     @Override
     public CalendarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case CalendarBase.ViewType.JOURNAL:
+            case JOURNAL:
                 return new EventJournalVerticalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_journal_v, parent, false));
 
-            case CalendarBase.ViewType.SIMPLE:
+            case SIMPLE:
                 return new EventSimpleVerticalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_simple_v, parent, false));
 
-            case CalendarBase.ViewType.USER:
+            case USER:
                 return new EventUserVerticalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_user_v, parent, false));
 
-            case CalendarBase.ViewType.MONTH:
+            case MONTH:
                 return new MonthViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_header_month, parent, false));
 
-            case CalendarBase.ViewType.DAY:
+            case DAY:
                 return new DayViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_header_day_range, parent, false));
 
-            case CalendarBase.ViewType.HEADER:
+            case HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_header_day_single, parent, false));
+
+            case EMPTY:
+                return new EmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.calendar_event_empty, parent, false));
         }
         return null;
     }

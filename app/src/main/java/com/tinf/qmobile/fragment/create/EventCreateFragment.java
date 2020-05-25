@@ -44,6 +44,7 @@ import butterknife.ButterKnife;
 import io.objectbox.Box;
 
 import static android.content.Context.ALARM_SERVICE;
+import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventCreateFragment extends Fragment {
     private static final String TAG = "EventCreateFragment";
@@ -333,7 +334,7 @@ public class EventCreateFragment extends Fragment {
 
             Intent intent = new Intent(getContext(), AlarmReceiver.class);
             intent.putExtra("ID", id);
-            intent.putExtra("TYPE", CalendarBase.ViewType.USER);
+            intent.putExtra("TYPE", USER);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) id, intent, 0);
 

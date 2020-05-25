@@ -25,7 +25,7 @@ import java.util.List;
 
 import io.objectbox.Box;
 
-import static com.tinf.qmobile.model.Queryable.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class SearchResultsActivity extends ListActivity {
     private List<Queryable> list;

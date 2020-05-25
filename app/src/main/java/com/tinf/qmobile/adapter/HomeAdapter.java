@@ -14,7 +14,7 @@ import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
-import com.tinf.qmobile.model.calendar.Empty;
+import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -33,10 +33,10 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
-import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.EMPTY;
-import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.SIMPLE;
-import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.USER;
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.SIMPLE;
+import static com.tinf.qmobile.model.ViewType.USER;
 
 public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
     private List<EventBase> events;

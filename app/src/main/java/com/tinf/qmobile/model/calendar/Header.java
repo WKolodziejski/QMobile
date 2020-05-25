@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.tinf.qmobile.model.calendar.CalendarBase.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.HEADER;
 
 public class Header implements CalendarBase {
     private long time;

@@ -17,7 +17,8 @@ import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.network.message.Messenger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
+
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessageViewHolder extends MessagesViewHolder<Message> {
     @BindView(R.id.message_subject)     public TextView subject;

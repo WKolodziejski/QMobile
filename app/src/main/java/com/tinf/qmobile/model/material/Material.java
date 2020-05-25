@@ -13,7 +13,7 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
-import static com.tinf.qmobile.model.Queryable.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
 
 @Entity
 public class Material implements Queryable {

@@ -12,8 +12,8 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.message.EmptyViewHolder;
 import com.tinf.qmobile.holder.message.MessageViewHolder;
 import com.tinf.qmobile.holder.message.MessagesViewHolder;
+import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.message.Empty;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.message.Messenger;
@@ -23,8 +23,8 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-import static com.tinf.qmobile.model.Queryable.ViewType.EMPTY;
-import static com.tinf.qmobile.model.Queryable.ViewType.MESSAGE;
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     private List<Queryable> messages;

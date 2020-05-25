@@ -27,6 +27,8 @@ import java.util.Locale;
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 public class JournalParser extends BaseParser {
 
     public JournalParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
@@ -208,7 +210,7 @@ public class JournalParser extends BaseParser {
     private void notifyGrade(Journal journal) {
         Intent intent = new Intent(App.getContext(), EventViewActivity.class);
         intent.putExtra("ID", journal.id);
-        intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+        intent.putExtra("TYPE", JOURNAL);
 
         Jobs.displayNotification(App.getContext(),
                 String.format(Locale.getDefault(),
@@ -222,7 +224,7 @@ public class JournalParser extends BaseParser {
     private void notifySchedule(Journal journal) {
         Intent intent = new Intent(App.getContext(), EventViewActivity.class);
         intent.putExtra("ID", journal.id);
-        intent.putExtra("TYPE", CalendarBase.ViewType.JOURNAL);
+        intent.putExtra("TYPE", JOURNAL);
 
         Jobs.displayNotification(App.getContext(),
                 String.format(Locale.getDefault(),

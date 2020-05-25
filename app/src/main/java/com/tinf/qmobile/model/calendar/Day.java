@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.tinf.qmobile.model.ViewType.DAY;
+
 public class Day implements CalendarBase {
     private Date startDate;
     private Date endDate;
@@ -35,7 +37,7 @@ public class Day implements CalendarBase {
 
     @Override
     public int getItemType() {
-        return ViewType.DAY;
+        return DAY;
     }
 
     @Override

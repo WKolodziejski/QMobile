@@ -22,6 +22,7 @@ import io.objectbox.Box;
 
 import static android.content.Context.ALARM_SERVICE;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.USER;
 
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "AlarmReceiver";
@@ -44,7 +45,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         for (EventUser event : events) {
                             Intent i = new Intent(context, AlarmReceiver.class);
                             i.putExtra("ID", event.id);
-                            i.putExtra("TYPE", CalendarBase.ViewType.USER);
+                            i.putExtra("TYPE", USER);
 
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
 

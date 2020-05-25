@@ -3,7 +3,7 @@ package com.tinf.qmobile.holder.calendar.horizontal;
 import android.content.Context;
 import android.view.View;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
-import com.tinf.qmobile.model.calendar.Empty;
+import com.tinf.qmobile.model.Empty;
 
 public class EmptyViewHolder extends CalendarViewHolder<Empty> {
 

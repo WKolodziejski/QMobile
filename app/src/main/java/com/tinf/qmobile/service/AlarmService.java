@@ -29,6 +29,7 @@ import java.util.Locale;
 import io.objectbox.Box;
 
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.USER;
 
 public class AlarmService extends JobIntentService {
     private static final String TAG = "AlarmService";
@@ -47,7 +48,7 @@ public class AlarmService extends JobIntentService {
 
             long id = intent.getExtras().getLong("ID");
 
-            if (type == CalendarBase.ViewType.USER) {
+            if (type == USER) {
 
                 channel = getString(R.string.title_calendario);
 
