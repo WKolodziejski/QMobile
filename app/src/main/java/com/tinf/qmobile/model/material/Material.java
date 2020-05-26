@@ -1,8 +1,11 @@
 package com.tinf.qmobile.model.material;
 
+import android.os.Environment;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.utility.User;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,6 +17,8 @@ import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
 @Entity
 public class Material implements Queryable {
@@ -25,8 +30,6 @@ public class Material implements Queryable {
     private String link;
     private String description;
     private long date;
-    private String path;
-    private String mime;
     private boolean seen_;
     public ToOne<Matter> matter;
 
@@ -156,19 +159,8 @@ public class Material implements Queryable {
     }
 
     public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public String getMime() {
-        return mime;
-    }
-
-    public void setMime(String mime) {
-        this.mime = mime;
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                + PATH + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + getFileName();
     }
 
     public boolean isSeen_() {

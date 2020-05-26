@@ -45,6 +45,7 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate {
     private List<Queryable> materials;
@@ -84,18 +85,13 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
                                     Material m = box.get(id);
 
-                                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                            + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + m.getFileName());
-
-                                    //TODO
+                                    File file = new File(m.getPath());
 
                                     Log.d("File", m.getFileName());
 
                                     if (file.exists()) {
                                         if (file.delete()) {
                                             selected.remove(id);
-                                            m.setMime("");
-                                            m.setPath("");
                                             box.put(m);
                                         }
                                     } else break;
