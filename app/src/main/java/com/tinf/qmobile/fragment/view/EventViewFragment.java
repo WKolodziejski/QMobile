@@ -60,9 +60,24 @@ public class EventViewFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null) {
+        if (bundle != null)
             id = bundle.getLong("ID");
-        }
+
+        DataObserver observer = data -> setText();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(EventUser.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
     }
 
     @Nullable
@@ -161,27 +176,6 @@ public class EventViewFragment extends Fragment {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        DataObserver observer = data -> setText();
-
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        sub1 = boxStore.subscribe(EventUser.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
-
-        sub2 = boxStore.subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
     }
 
     @Override

@@ -25,21 +25,6 @@ import java.util.Map;
 
 public class User {
 
-    public enum Type {
-        SEMESTRE1(0), BIMESTRE(1), UNICO(2), SEMESTRE2(3), BIMESTRE2(4), TRIMESTRE(5);
-
-        private int i;
-
-        Type(final int i) {
-            this.i = i;
-        }
-
-        public int get() {
-            return i;
-        }
-    }
-
-    private final static String TAG = "User";
     public static final String REGISTRATION = ".Reg";
     public static final String PASSWORD = ".Pass";
     private static final String INFO = ".Info";
@@ -139,13 +124,13 @@ public class User {
 
     public static int getYear(int i) {
         if (getYears().length > 0)
-            return Integer.valueOf(getYears()[i].substring(0, 4));
+            return Integer.parseInt(getYears()[i].substring(0, 4));
         else return 0;
     }
 
     public static int getPeriod(int i) {
         if (getYears().length > 0)
-            return Integer.valueOf(getYears()[i].substring(7));
+            return Integer.parseInt(getYears()[i].substring(7));
         else return 0;
     }
 

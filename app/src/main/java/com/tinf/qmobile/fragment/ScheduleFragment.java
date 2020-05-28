@@ -48,6 +48,20 @@ public class ScheduleFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(Schedule.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> weekView.notifyDatasetChanged());
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> weekView.notifyDatasetChanged());
     }
 
     @Override
@@ -166,25 +180,6 @@ public class ScheduleFragment extends Fragment {
         Intent intent = new Intent(getContext(), EventCreateActivity.class);
         intent.putExtra("TYPE", SCHEDULE);
         startActivity(intent);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        sub1 = boxStore.subscribe(Schedule.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
-
-        sub2 = boxStore.subscribe(Matter.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
     }
 
     @Override

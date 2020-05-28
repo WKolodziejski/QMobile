@@ -230,9 +230,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnUpdateListener(this);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         BoxStore boxStore = DataBase.get().getBoxStore();
 
@@ -247,6 +246,12 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> updateSchedule());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Client.get().addOnUpdateListener(this);
     }
 
     @Override

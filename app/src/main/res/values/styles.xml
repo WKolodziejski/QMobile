@@ -31,6 +31,8 @@
         <item name="colorNavigationItem">@color/drawer</item>
         <item name="colorNavigationItemSelected">@color/amber_a700</item>
         <item name="drawableNavigationItemBackground">@drawable/selector_drawable</item>
+
+        <item name="android:dialogCornerRadius">8dp</item>
     </style>
 
     <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">

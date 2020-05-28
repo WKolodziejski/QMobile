@@ -49,6 +49,17 @@ public class MessageViewFragment extends Fragment {
 
         if (bundle != null)
             id = bundle.getLong("ID");
+
+        sub1 = DataBase.get().getBoxStore()
+                .boxFor(Message.class)
+                .query()
+                .equal(Message_.id, id)
+                .build()
+                .subscribe()
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(data -> setText());
     }
 
     @Nullable
@@ -98,22 +109,6 @@ public class MessageViewFragment extends Fragment {
                 attachments.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));
             }
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        sub1 = DataBase.get().getBoxStore()
-                .boxFor(Message.class)
-                .query()
-                .equal(Message_.id, id)
-                .build()
-                .subscribe()
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> setText());
     }
 
     @Override

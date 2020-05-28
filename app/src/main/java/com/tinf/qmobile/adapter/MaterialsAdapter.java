@@ -79,7 +79,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                         .setCancelable(true)
                         .setPositiveButton(context.getString(R.string.dialog_delete), (dialogInterface, d) -> {
                             if (listener.isSelectionMode()) {
-
                                 while (!selected.isEmpty()) {
                                     long id = selected.get(0);
 
@@ -96,7 +95,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                                         }
                                     } else break;
                                 }
-
                                 listener.onSelectedCount(selected.size());
                             }
                         })

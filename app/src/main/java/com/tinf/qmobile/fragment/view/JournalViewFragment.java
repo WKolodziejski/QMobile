@@ -48,6 +48,22 @@ public class JournalViewFragment extends Fragment {
 
         if (bundle != null)
             id = bundle.getLong("ID");
+
+        DataObserver observer = data -> setText();
+
+        BoxStore boxStore = DataBase.get().getBoxStore();
+
+        sub1 = boxStore.subscribe(Journal.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
+
+        sub2 = boxStore.subscribe(Matter.class)
+                .on(AndroidScheduler.mainThread())
+                .onlyChanges()
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
     }
 
     @Nullable
@@ -85,27 +101,6 @@ public class JournalViewFragment extends Fragment {
             matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
             color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        DataObserver observer = data -> setText();
-
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        sub1 = boxStore.subscribe(Journal.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
-
-        sub2 = boxStore.subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
-                .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(observer);
     }
 
     @Override

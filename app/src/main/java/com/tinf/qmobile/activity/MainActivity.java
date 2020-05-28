@@ -27,7 +27,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.GravityCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -46,6 +45,7 @@ import com.tinf.qmobile.fragment.dialog.PopUpFragment;
 import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
+import com.tinf.qmobile.fragment.dialog.UserFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
@@ -142,15 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 item.setActionView(R.layout.action_account);
                 ImageView view = (ImageView) item.getActionView();
                 view.setImageDrawable(round.getCurrent());
-                view.setOnClickListener(v -> {
-                    new MaterialAlertDialogBuilder(MainActivity.this)
-                            .setTitle(getResources().getString(R.string.dialog_quit))
-                            .setMessage(R.string.dialog_quit_msg)
-                            .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
-                            .setNegativeButton(R.string.dialog_cancel, null)
-                            .create()
-                            .show();
-                });
+                view.setOnClickListener(v -> new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -170,13 +162,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             case R.id.action_account:
 
-                new MaterialAlertDialogBuilder(MainActivity.this)
-                        .setTitle(getResources().getString(R.string.dialog_quit))
-                        .setMessage(R.string.dialog_quit_msg)
-                        .setPositiveButton(R.string.dialog_quit, (dialog, which) -> logOut())
-                        .setNegativeButton(R.string.dialog_cancel, null)
-                        .create()
-                        .show();
+                new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user");
                 return true;
 
             case R.id.action_grades:
