@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);*/
 
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION) + ".jpg");
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
 
         if (picture.exists()) {
             Log.d("PICTURE", picture.getAbsolutePath());
@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void logOut() {
+        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.main_fragment)).commit();
         finish();
         Client.get().close();
         Jobs.cancelAllJobs();

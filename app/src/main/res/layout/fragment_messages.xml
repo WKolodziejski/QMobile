@@ -6,7 +6,7 @@
     android:id="@+id/message_refresh"
     >
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -38,13 +38,11 @@
                 android:id="@+id/message_next"
                 android:text="DELETE"/>
 
-        </LinearLayout>
+        </LinearLayout>!-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/recycler_messages" />
-
-    </LinearLayout>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

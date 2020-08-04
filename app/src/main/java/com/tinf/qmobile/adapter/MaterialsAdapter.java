@@ -149,17 +149,15 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
         Client.get().addOnUpdateListener(this);
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
         DataObserver observer = data -> update(bundle);
 
-        sub1 = boxStore.subscribe(Material.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub2 = boxStore.subscribe(Matter.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

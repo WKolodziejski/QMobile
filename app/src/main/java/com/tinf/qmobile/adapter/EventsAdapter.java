@@ -60,8 +60,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     public EventsAdapter(Context context) {
         this.context = context;
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
         events = getList();
 
         DataObserver observer = data -> {
@@ -107,31 +105,31 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             result.dispatchUpdatesTo(this);
         };
 
-        sub1 = boxStore.subscribe(EventUser.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub2 = boxStore.subscribe(Journal.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub3 = boxStore.subscribe(Matter.class)
+        sub3 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub4 = boxStore.subscribe(EventSimple.class)
+        sub4 = DataBase.get().getBoxStore().subscribe(EventSimple.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub5 = boxStore.subscribe(Month.class)
+        sub5 = DataBase.get().getBoxStore().subscribe(Month.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

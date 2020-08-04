@@ -44,7 +44,6 @@ public class SearchResultsActivity extends ListActivity {
             String query = intent.getStringExtra(SearchManager.QUERY);
             doMySearch(query);
         }
-
     }
 
     private void doMySearch(String query) {

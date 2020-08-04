@@ -56,8 +56,6 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
         Client.get().addOnUpdateListener(this);
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
         journals = getList(bundle);
 
         DataObserver observer = data -> {
@@ -137,13 +135,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             result.dispatchUpdatesTo(this);
         };
 
-        sub1 = boxStore.subscribe(Matter.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub2 = boxStore.subscribe(Journal.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

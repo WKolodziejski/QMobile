@@ -51,16 +51,14 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
         Client.get().addOnUpdateListener(this);
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
         DataObserver observer = data -> loadList();
 
-        boxStore.subscribe(Matter.class)
+        DataBase.get().getBoxStore().subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        boxStore.subscribe(Journal.class)
+        DataBase.get().getBoxStore().subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

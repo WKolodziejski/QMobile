@@ -23,7 +23,7 @@ import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class App extends Application {
-    public static final String VERSION = ".v1.3.2";
+    public static final String VERSION = ".v1.3.7";
     public static final String VERSION_INFO = ".Version";
     private static Context context;
 

@@ -36,8 +36,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         this.context = context;
         this.messenger = messenger;
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
         messages = getList();
 
         DataObserver observer = data -> {
@@ -75,7 +73,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
             result.dispatchUpdatesTo(this);
         };
 
-        sub1 = boxStore.subscribe(Message.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(Message.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e("Adapter", th.toString()))

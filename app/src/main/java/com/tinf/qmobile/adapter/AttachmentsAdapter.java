@@ -33,8 +33,7 @@ public class AttachmentsAdapter extends RecyclerView.Adapter<MessagesViewHolder>
         return isCard ?
                 new AttachmentCardViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.message_attachment_card, parent, false))
-                :
-                new AttachmentViewHolder(LayoutInflater.from(context)
+                : new AttachmentViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.message_attachment, parent, false));
     }
 

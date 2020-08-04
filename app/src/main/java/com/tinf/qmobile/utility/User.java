@@ -134,14 +134,6 @@ public class User {
         else return 0;
     }
 
-    /*public static boolean isYearLoaded(int i) {
-        return getInfo().getBoolean(getYears()[i], false);
-    }
-
-    public static void setYearLoaded(int i) {
-        getEditor().putBoolean(getYears()[i], true).apply();
-    }*/
-
     private static String encrypt(String value, String KEY_A, String KEY_B) {
         String encrypted = "", javaScriptCode = "";
 

@@ -27,13 +27,13 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
 
 
-    public Messenger(WebView webView, Context context, OnResponse onResponse) {
+    public Messenger(Context context, OnResponse onResponse) {
         this.context = context;
         this.queue = new ArrayList<>();
         this.onResponse = onResponse;
-        this.webView = webView;
+        //this.webView = webView;
 
-        //webView = new WebView(context);
+        webView = new WebView(context);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadsImagesAutomatically(false);
         webView.getSettings().setBlockNetworkImage(true);

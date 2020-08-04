@@ -49,15 +49,13 @@ public class ScheduleFragment extends Fragment {
         super.onCreate(savedInstanceState);
         bundle = getArguments();
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        sub1 = boxStore.subscribe(Schedule.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(Schedule.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> weekView.notifyDatasetChanged());
 
-        sub2 = boxStore.subscribe(Matter.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

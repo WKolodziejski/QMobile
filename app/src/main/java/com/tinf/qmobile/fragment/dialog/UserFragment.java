@@ -76,7 +76,7 @@ public class UserFragment extends DialogFragment {
                     .show();
         });
 
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION) + ".jpg");
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
 
         if (picture.exists()) {
 

@@ -25,11 +25,11 @@ import butterknife.ButterKnife;
 public class MessagesFragment extends Fragment implements OnResponse {
     @BindView(R.id.recycler_messages)   RecyclerView recyclerView;
     @BindView(R.id.message_refresh)     SwipeRefreshLayout refresh;
-    @BindView(R.id.message_next)        Button nxt;
+    /*@BindView(R.id.message_next)        Button nxt;
     @BindView(R.id.message_previous)    Button prv;
 
     @BindView(R.id.message_webview)
-    WebView webView;
+    WebView webView;*/
 
     @Nullable
     @Override
@@ -43,12 +43,12 @@ public class MessagesFragment extends Fragment implements OnResponse {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Messenger messenger = new Messenger(webView, getContext(), this);
+        Messenger messenger = new Messenger(getContext(), this);
 
-        prv.setOnClickListener(v -> messenger.loadPage(21));
+        /*prv.setOnClickListener(v -> messenger.loadPage(21));
         nxt.setOnClickListener(v -> {
             DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
-        });
+        });*/
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);

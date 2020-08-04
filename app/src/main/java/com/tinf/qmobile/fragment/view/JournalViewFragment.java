@@ -51,15 +51,13 @@ public class JournalViewFragment extends Fragment {
 
         DataObserver observer = data -> setText();
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        sub1 = boxStore.subscribe(Journal.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
 
-        sub2 = boxStore.subscribe(Matter.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

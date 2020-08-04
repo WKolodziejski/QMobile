@@ -233,15 +233,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BoxStore boxStore = DataBase.get().getBoxStore();
-
-        sub1 = boxStore.subscribe(Schedule.class)
+        sub1 = DataBase.get().getBoxStore().subscribe(Schedule.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> updateSchedule());
 
-        sub2 = boxStore.subscribe(Matter.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))

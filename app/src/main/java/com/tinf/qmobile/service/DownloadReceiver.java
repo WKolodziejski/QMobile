@@ -135,9 +135,9 @@ public class DownloadReceiver extends BroadcastReceiver {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + PATH + name;
     }
 
-    public static long downloadImgae(Context context, String cod) {
+    public static long downloadImage(Context context, String cod) {
         if (Client.isConnected()) {
-            String title = User.getCredential(User.REGISTRATION) + ".jpg";
+            String title = User.getCredential(User.REGISTRATION);
 
             String destiny = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + title;
 

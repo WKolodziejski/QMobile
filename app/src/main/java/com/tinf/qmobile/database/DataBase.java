@@ -29,6 +29,9 @@ public class DataBase implements OnUpdate {
     private DataBase() {
         Client.get().addOnUpdateListener(this);
 
+        Log.d("Box for ", User.getCredential(User.REGISTRATION));
+        assert (!User.getCredential(User.REGISTRATION).isEmpty());
+
         boxStore = MyObjectBox
                 .builder()
                 .androidContext(App.getContext())
@@ -78,9 +81,9 @@ public class DataBase implements OnUpdate {
             sub1.cancel();
             sub2.cancel();
             sub3.cancel();
+            sub4.cancel();
             boxStore.closeThreadResources();
             boxStore.close();
-            boxStore.deleteAllFiles();
             boxStore = null;
             instance = null;
         }

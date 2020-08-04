@@ -1,16 +1,12 @@
 package com.tinf.qmobile.network;
 
-import android.app.DownloadManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.MimeTypeMap;
 
 import androidx.preference.PreferenceManager;
 
@@ -26,9 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
@@ -54,7 +48,7 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
-import static android.content.Context.DOWNLOAD_SERVICE;
+
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
@@ -72,7 +66,6 @@ import static com.tinf.qmobile.network.OnResponse.PG_GENERATOR;
 import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -556,12 +549,12 @@ public class Client {
     }
 
     private void downloadImage(String cod) {
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION) + ".jpg");
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
 
         Log.d("Picture", picture.getAbsolutePath());
 
         if (!picture.exists()) {
-            DownloadReceiver.downloadImgae(getContext(), cod);
+            DownloadReceiver.downloadImage(getContext(), cod);
         }
     }
 
