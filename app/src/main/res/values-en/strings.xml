@@ -138,8 +138,8 @@
     <string name="dialog_dont_show">Don\'t show again</string>
     <string name="pref_popup_sum">Receive important notices on login</string>
     <string name="pref_popup">Notices</string>
-    <string name="pref_share_data">title_messages</string>
-    <string name="pref_share_data_sum">Share login data to help fix error in the app</string>
+    <string name="pref_share_data">Help with development</string>
+    <string name="pref_share_data_sum">Share login data to help fix errors in the app</string>
     <string name="dialog_share_data">Would you like to provide your login information to assist in correcting future application problems?</string>
     <string name="dialog_share_data_negative">Do not provide</string>
     <string name="dialog_share_data_positive">Yes, provide</string>

@@ -27,6 +27,10 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,8 +54,6 @@ public class LoginFragment extends Fragment implements OnResponse {
     private FirebaseRemoteConfig remoteConfig;
     private Map<String, String> urls;
 
-    //private int url = 0;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,7 @@ public class LoginFragment extends Fragment implements OnResponse {
                 .Builder()
                 .setMinimumFetchIntervalInSeconds(3600)
                 .build());
-        remoteConfig.setDefaultsAsync(R.xml.urls);
+        remoteConfig.setDefaultsAsync(R.xml.urls_map);
         urls = new Gson().fromJson(remoteConfig.getString("urls"),
                 new TypeToken<Map<String, String>>(){}.getType());
     }
@@ -78,19 +80,39 @@ public class LoginFragment extends Fragment implements OnResponse {
         super.onViewCreated(view, savedInstanceState);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
-        adapter.addAll(urls.keySet());
+        if (urls != null)
+            adapter.addAll(urls.keySet());
+        else {
+            List<String> urls = new ArrayList<>();
+            urls.add("IFAM");
+            urls.add("IFCE");
+            urls.add("IFES");
+            urls.add("IFG");
+            urls.add("IFGOIANO");
+            urls.add("IFMA");
+            urls.add("IFMT");
+            urls.add("IFPE");
+            urls.add("IFPI");
+            urls.add("IFRS");
+            urls.add("IFSUL");
+            adapter.addAll(urls);
+        }
+
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
         remoteConfig.fetchAndActivate()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+
                         urls = new Gson().fromJson(remoteConfig.getString("urls"),
                                 new TypeToken<Map<String, String>>(){}.getType());
 
-                        adapter.clear();
-                        adapter.addAll(urls.keySet());
-                        spinner.setAdapter(adapter);
-                        spinner.setSelection(0);
+                        if (urls != null) {
+                            adapter.clear();
+                            adapter.addAll(urls.keySet());
+                            spinner.setAdapter(adapter);
+                            spinner.setSelection(0);
+                        }
                     }
                 });
 
@@ -99,8 +121,9 @@ public class LoginFragment extends Fragment implements OnResponse {
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        //url = position;
-                        Client.get().setURL(urls.get(adapter.getItem(position)));
+                        if (urls != null)
+                            Client.get().setURL(urls.get(adapter.getItem(position)));
+
                         Log.d(TAG, Client.get().getURL());
                     }
 
@@ -127,7 +150,8 @@ public class LoginFragment extends Fragment implements OnResponse {
                 User.setCredential(REGISTRATION, user.getText().toString().toUpperCase().trim());
                 User.setCredential(PASSWORD, password.getText().toString().trim());
 
-                //Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(url));
+                if (urls == null)
+                    Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(spinner.getSelectedItemPosition()));
 
                 Crashlytics.setString("Register", User.getCredential(REGISTRATION));
                 Crashlytics.setString("URL", User.getURL());

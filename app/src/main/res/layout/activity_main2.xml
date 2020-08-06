@@ -82,6 +82,7 @@
         android:layout_height="match_parent"
         android:id="@+id/nav"
         android:layout_gravity="start"
+        android:theme="@style/Widget.NavigationView.RippleEffect"
         app:itemStyle="rounded_right"
         app:menu="@menu/drawer"
         app:headerLayout="@layout/navigation_header"

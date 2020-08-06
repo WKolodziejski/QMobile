@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         menu.getItem(0).setChecked(true);
 
-        date.setText(User.getYears()[pos]);
+        if (User.getYears().length > 0)
+            date.setText(User.getYears()[pos]);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -181,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 

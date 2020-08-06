@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="urls">
+        <item>http://qacademico.ifam.edu.br</item>          //IFAM
+        <item>https://qacademico.ifce.edu.br</item>         //IFCE
+        <item>https://academico.ifes.edu.br</item>          //IFES
+        <item>https://academicoweb.ifg.edu.br</item>        //IFG
+        <item>https://academico.ifgoiano.edu.br</item>      //IFGOIANO
+        <item>https://qacad.ifma.edu.br</item>              //IFMA
+        <item>https://academico.ifmt.edu.br</item>          //IFMT
+        <item>https://qacademico.ifpe.edu.br</item>         //IFPE
+        <item>https://academico.ifpi.edu.br</item>          //IFPI
+        <item>https://qacademico.bento.ifrs.edu.br</item>   //IFRS
+        <item>http://qacademico.ifsul.edu.br</item>         //IFSUL
+    </string-array>
+</resources>

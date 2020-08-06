@@ -582,9 +582,7 @@ public class Client {
     public void loadYear(int pos) {
         load(PG_JOURNALS, pos, (pg, year) -> {
                 load(PG_REPORT, year, (pg1, year1) -> {
-                    load(PG_SCHEDULE, year1, (pg2, year2) -> {
-                        callOnFinish(pg, year2);
-                    });
+                    load(PG_SCHEDULE, year1, (pg2, year2) -> callOnFinish(pg, year2));
                     callOnFinish(pg, year1);
                 });
             callOnFinish(pg, year);
@@ -597,9 +595,7 @@ public class Client {
 
         load(PG_JOURNALS, notify, (pg, year) -> {
             load(PG_REPORT, notify, (pg1, year1) -> {
-                load(PG_SCHEDULE, notify, (pg2, year2) -> {
-                    callOnFinish(pg, year2);
-                });
+                load(PG_SCHEDULE, notify, (pg2, year2) -> callOnFinish(pg, year2));
                 callOnFinish(pg, year1);
             });
             callOnFinish(pg, year);
