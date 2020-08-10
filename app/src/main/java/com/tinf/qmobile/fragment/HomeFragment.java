@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         fab.hide();
                 });
 
-        fab.setOnClickListener(v -> new CreateFragment().show(getFragmentManager(), "sheet_create"));
+        fab.setOnClickListener(v -> new CreateFragment().show(getChildFragmentManager(), "sheet_create"));
 
         LinearLayout offline = (LinearLayout) view.findViewById(R.id.home_offline);
 
@@ -106,6 +106,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
     private void updateSchedule() {
         new Thread(() -> {
             weekView.setWeekViewLoader(() -> {
+
                 boolean[][] hours = new boolean[24][7];
                 WeekViewEvent[] minutes = new WeekViewEvent[24];
 
@@ -184,7 +185,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
                     weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
                     empty.setVisibility(View.GONE);
-
                 } else {
                     params.height = Math.round((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
