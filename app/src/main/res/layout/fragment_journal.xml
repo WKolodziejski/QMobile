@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_journal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,9 +16,9 @@
         android:layout_marginBottom="16dp"
         android:transitionName="Fab"
         android:textColor="@color/colorPrimaryLight"
-        android:background="@color/colorAccent"
-        app:icon="@drawable/ic_expand"
-        app:iconTint="@color/colorPrimaryLight"
+        app:backgroundTint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_expand"
+        app:tint="@color/colorPrimaryLight"
         app:fabSize="normal"
         app:borderWidth="0dp" />
 

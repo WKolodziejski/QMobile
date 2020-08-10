@@ -6,9 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:id="@+id/calendario_month_title"
-    android:gravity="center_vertical"
+    android:gravity="center"
     android:textSize="@dimen/alt_font_size"
     android:textStyle="bold"
-    android:textAlignment="center"
     android:textColor="@color/colorAccent"
     tools:text="Março"/>

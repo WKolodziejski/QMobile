@@ -1,14 +1,18 @@
 package com.tinf.qmobile.activity;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -125,28 +129,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);*/
 
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+        Drawable picture = User.getProfilePicture(getContext());
 
-        if (picture.exists()) {
-            Log.d("PICTURE", picture.getAbsolutePath());
-
-            ImageDecoder.Source src = ImageDecoder.createSource(picture);
-
-            try {
-                Bitmap bitmap = ImageDecoder.decodeBitmap(src);
-                RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(getResources(),
-                        Bitmap.createBitmap(bitmap, 0,0, bitmap.getWidth(), bitmap.getWidth()));
-                round.setCircular(true);
-                round.setAntiAlias(true);
-
-                MenuItem item = menu.findItem(R.id.action_account);
-                item.setActionView(R.layout.action_account);
-                ImageView view = (ImageView) item.getActionView();
-                view.setImageDrawable(round.getCurrent());
-                view.setOnClickListener(v -> new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (picture != null) {
+            MenuItem item = menu.findItem(R.id.action_account);
+            item.setActionView(R.layout.action_account);
+            ImageView view = (ImageView) item.getActionView();
+            view.setImageDrawable(picture.getCurrent());
+            view.setOnClickListener(v -> new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user"));
         }
 
         return true;

@@ -2,16 +2,29 @@ package com.tinf.qmobile.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.ImageView;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.dialog.UserFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.tinf.qmobile.App.getContext;
 
 public class User {
 
@@ -119,6 +134,10 @@ public class User {
             }
         }
 
+        if (years.isEmpty()) {
+            years.add("N/A");
+        }
+
         return years.toArray(new String[0]);
     }
 
@@ -132,6 +151,40 @@ public class User {
         if (getYears().length > 0)
             return Integer.parseInt(getYears()[i].substring(7));
         else return 0;
+    }
+
+    public static Drawable getProfilePicture(Context context) {
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+
+        if (picture.exists()) {
+            Log.d("PICTURE", picture.getAbsolutePath());
+
+            Bitmap bitmap = null;
+
+            if (android.os.Build.VERSION.SDK_INT >= 29) {
+                try {
+                    ImageDecoder.Source src = ImageDecoder.createSource(picture);
+
+                    bitmap = ImageDecoder.decodeBitmap(src);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                bitmap = BitmapFactory.decodeFile(picture.getAbsolutePath());
+            }
+
+            if (bitmap != null) {
+                RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(context.getResources(),
+                        Bitmap.createBitmap(bitmap, 0,0, bitmap.getWidth(), bitmap.getWidth()));
+                round.setCircular(true);
+                round.setAntiAlias(true);
+
+                return round.getCurrent();
+            }
+        }
+
+        return null;
     }
 
     private static String encrypt(String value, String KEY_A, String KEY_B) {

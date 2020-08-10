@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
@@ -30,7 +30,7 @@ import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalFragment extends Fragment implements OnUpdate {
     @BindView(R.id.recycler_diarios)    RecyclerView recyclerView;
-    @BindView(R.id.fab_journal)         ExtendedFloatingActionButton fab;
+    @BindView(R.id.fab_journal)         FloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

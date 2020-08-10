@@ -43,18 +43,19 @@
         app:pastBackgroundColor="@color/transparent"
         app:todayBackgroundColor="@color/transparent" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/fab_add_schedule"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        android:background="@color/colorAccent"
         android:transitionName="Fab"
-        app:borderWidth="0dp"
+        android:textColor="@color/colorPrimaryLight"
+        app:backgroundTint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/colorPrimaryLight"
         app:fabSize="normal"
-        app:icon="@drawable/ic_add"
-        app:iconTint="@color/colorPrimaryLight" />
+        app:borderWidth="0dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

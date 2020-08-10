@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
@@ -189,7 +189,7 @@ public class CalendarFragment extends Fragment implements OnUpdate {
 
         });*/
 
-        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) view.findViewById(R.id.fab_add_calendar);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab_add_calendar);
         fab.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventCreateActivity.class);
             intent.putExtra("TYPE", EVENT);
@@ -205,14 +205,14 @@ public class CalendarFragment extends Fragment implements OnUpdate {
     public void onStart() {
         super.onStart();
         Client.get().addOnUpdateListener(this);
-        calendarView = ((CalendarActivity) Objects.requireNonNull(getActivity())).calendar;
+        calendarView = ((CalendarActivity) requireActivity()).calendar;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
-        calendarView = ((CalendarActivity) Objects.requireNonNull(getActivity())).calendar;
+        calendarView = ((CalendarActivity) requireActivity()).calendar;
     }
 
     @Override

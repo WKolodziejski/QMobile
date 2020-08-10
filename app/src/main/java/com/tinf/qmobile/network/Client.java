@@ -162,13 +162,15 @@ public class Client {
 
                                 Elements dates = document.getElementsByTag("option");
 
-                                String[] years = new String[dates.size() - 1];
+                                if (dates != null) {
+                                    String[] years = new String[dates.size() - 1];
 
-                                for (int i = 0; i < dates.size() - 1; i++) {
-                                    years[i] = dates.get(i + 1).text();
+                                    for (int i = 0; i < dates.size() - 1; i++) {
+                                        years[i] = dates.get(i + 1).text();
+                                    }
+
+                                    User.setYears(years);
                                 }
-
-                                User.setYears(years);
 
                                 callOnFinish(PG_FETCH_YEARS, 0);
 

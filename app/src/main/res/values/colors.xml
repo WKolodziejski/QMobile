@@ -12,7 +12,10 @@
     <color name="white_dividers">@color/white_d</color>
     <color name="message_seen">@color/grey_600</color>
     <color name="message_not_seen">@color/colorPrimary</color>
+    <color name="message_sign">@color/grey_50</color>
+    <color name="message_solved">@color/amber_a700</color>
     <color name="badge">#A70724</color>
+
 
     <color name="card_stroke">@color/black_d</color>
     <color name="transparent">@android:color/transparent</color>

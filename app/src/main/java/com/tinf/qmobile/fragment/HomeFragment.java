@@ -17,7 +17,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
@@ -48,7 +48,7 @@ import static com.tinf.qmobile.network.Client.pos;
 public class HomeFragment extends Fragment implements OnUpdate {
     @BindView(R.id.weekView_home)       WeekView weekView;
     @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
-    @BindView(R.id.fab_home)            ExtendedFloatingActionButton fab;
+    @BindView(R.id.fab_home)            FloatingActionButton fab;
     @BindView(R.id.recycler_home)       RecyclerView recyclerView;
     @BindView(R.id.schedule_empty_text) TextView empty;
     @BindView(R.id.home_calendar)       LinearLayout calendar;

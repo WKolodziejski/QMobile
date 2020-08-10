@@ -3,11 +3,15 @@ package com.tinf.qmobile.holder.message;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
@@ -45,7 +49,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
 
         preview.setVisibility(message.getPreview().isEmpty() ? View.GONE : View.VISIBLE);
 
-        int c = context.getColor(message.getContent().isEmpty() && !message.isSeen_() ? R.color.message_not_seen : R.color.message_seen);
+        int c = context.getResources().getColor(message.getContent().isEmpty() && !message.isSeen_() ? R.color.message_not_seen : R.color.message_seen);
         int t = message.getContent().isEmpty() && !message.isSeen_() ? Typeface.BOLD : Typeface.NORMAL;
 
         att.setImageTintList(ColorStateList.valueOf(c));
@@ -62,7 +66,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
 
         if (message.isSolved_()) {
             subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
-            subject.setCompoundDrawableTintList(ColorStateList.valueOf(context.getColor(R.color.amber_a700)));
+            TextViewCompat.setCompoundDrawableTintList(subject, ColorStateList.valueOf(context.getResources().getColor(R.color.amber_a700)));
         } else {
             subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }

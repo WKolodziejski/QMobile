@@ -18,7 +18,7 @@
         android:id="@+id/layout1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/journal_infos_header"
+        app:layout_constraintBottom_toTopOf="@id/period_infos_header"
         >
 
         <TextView

@@ -20,7 +20,8 @@
         android:tint="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/login_progressbar"/>
 
     <ProgressBar
         android:id="@+id/login_progressbar"
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:orientation="vertical"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         >
 
@@ -58,6 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -66,8 +69,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/text_user"
                 android:inputType="text"
-                android:singleLine="true"
-                android:background="@color/colorPrimaryLight" />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -78,6 +80,7 @@
             android:layout_marginBottom="16dp"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/colorAccent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             >
 
             <com.google.android.material.textfield.TextInputEditText
@@ -86,8 +89,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/text_password"
                 android:inputType="textPassword"
-                android:singleLine="true"
-                android:background="@color/colorPrimaryLight" />
+                android:singleLine="true" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,7 +110,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" /> !-->
 
-            <Spinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/login_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
@@ -120,6 +122,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
                 android:id="@+id/login_help"
                 android:text="@string/login_help"
                 android:textSize="15sp"
@@ -130,14 +133,12 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btn_login"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorAccent"
             android:text="@string/button_login"
-            android:textColor="@color/colorPrimaryLight"
-            app:cornerRadius="16dp"/>
+            android:textColor="@color/colorPrimaryLight" />
 
     </LinearLayout>
 

@@ -57,7 +57,7 @@ public class DataBase implements OnUpdate {
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
-                    countMessages(Math.toIntExact(boxStore.boxFor(Message.class)
+                    countMessages((int) (boxStore.boxFor(Message.class)
                             .query()
                             .equal(Message_.seen_, false)
                             .build()

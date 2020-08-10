@@ -2,9 +2,11 @@ package com.tinf.qmobile.fragment.dialog;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ImageDecoder;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,6 +41,8 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tinf.qmobile.App.getContext;
 
 public class UserFragment extends DialogFragment {
     @BindView(R.id.user_image)      ImageView image;
@@ -76,23 +80,10 @@ public class UserFragment extends DialogFragment {
                     .show();
         });
 
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+        Drawable picture = User.getProfilePicture(getContext());
 
-        if (picture.exists()) {
-
-            ImageDecoder.Source src = ImageDecoder.createSource(picture);
-
-            try {
-                Bitmap bitmap = ImageDecoder.decodeBitmap(src);
-                RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(getResources(),
-                        Bitmap.createBitmap(bitmap, 0,0, bitmap.getWidth(), bitmap.getWidth()));
-                round.setCircular(true);
-                round.setAntiAlias(true);
-                image.setImageDrawable(round.getCurrent());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        if (picture != null)
+            image.setImageDrawable(picture);
     }
 
     @OnClick(R.id.user_policy)

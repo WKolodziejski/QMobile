@@ -1,6 +1,9 @@
 package com.tinf.qmobile.fragment.view;
 
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -97,7 +101,7 @@ public class MessageViewFragment extends Fragment {
 
             if (message.isSolved_()) {
                 title.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
-                title.setCompoundDrawableTintList(ColorStateList.valueOf(getContext().getColor(R.color.amber_a700)));
+                TextViewCompat.setCompoundDrawableTintList(title, ColorStateList.valueOf(getResources().getColor(R.color.amber_a700)));
             }
 
             if (!message.attachments.isEmpty()) {
