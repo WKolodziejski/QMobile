@@ -7,11 +7,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.JournalAdapter;
-import com.tinf.qmobile.model.journal.Header;
+import com.tinf.qmobile.model.matter.Period;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Header> {
+public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Period> {
     @BindView(R.id.period_title)        TextView title;
     @BindView(R.id.period_color_badge)  TextView badge;
 
@@ -21,9 +21,9 @@ public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Header> {
     }
 
     @Override
-    public void bind(Context context, Header header, JournalAdapter adapter) {
-        title.setText(header.getPeriod().getTitle());
-        badge.setBackgroundTintList(ColorStateList.valueOf(header.getPeriod().matter.getTarget().getColor()));
+    public void bind(Context context, Period header, JournalAdapter adapter) {
+        title.setText(header.getTitle());
+        badge.setBackgroundTintList(ColorStateList.valueOf(header.matter.getTarget().getColor()));
     }
 
 }

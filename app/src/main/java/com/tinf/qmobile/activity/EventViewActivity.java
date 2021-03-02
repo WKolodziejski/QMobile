@@ -7,11 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.fragment.matter.ClassFragment;
+import com.tinf.qmobile.fragment.view.ClassViewFragment;
 import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
 import com.tinf.qmobile.fragment.view.MessageViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.model.ViewType.USER;
@@ -53,6 +56,10 @@ public class EventViewActivity extends AppCompatActivity {
 
                 case MESSAGE:
                     fragment = new MessageViewFragment();
+                    break;
+
+                case CLASS:
+                    fragment = new ClassViewFragment();
                     break;
 
                 default: finish();

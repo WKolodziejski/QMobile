@@ -30,7 +30,7 @@ public class Matter implements Queryable {
     public ToMany<Schedule> schedules;
     public ToMany<Material> materials;
     public ToOne<Infos> infos;
-    public ToOne<Clazz> clazz;
+    //public ToOne<Clazz> clazz;
 
     public Matter(String description, int color, int year, int period) {
         this.description_ = description;
@@ -40,11 +40,11 @@ public class Matter implements Queryable {
     }
 
     public String getAbsences() {
-        return absences_ == -1 ? "" : String.valueOf(absences_);
+        return absences_ == -1 ? "-" : String.valueOf(absences_);
     }
 
     public String getMean() {
-        return mean_ == -1 ? "" : String.valueOf(mean_);
+        return mean_ == -1 ? "-" : String.valueOf(mean_);
     }
 
     public void setAbsences(int absences) {

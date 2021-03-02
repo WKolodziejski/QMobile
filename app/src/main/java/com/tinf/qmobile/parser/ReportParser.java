@@ -2,8 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -27,10 +25,6 @@ public class ReportParser extends BaseParser {
         Log.i(TAG, "Parsing " + User.getYear(pos));
 
         Elements tables = document.getElementsByTag("tbody");
-
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.log(Log.ERROR, TAG, tables.toString());
-        }
 
         for (int k = 0; k < tables.size(); k++) {
             if (tables.get(k).getElementsByTag("tr").get(0).text().contains("Estrutura")) {

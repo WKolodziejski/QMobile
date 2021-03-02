@@ -78,19 +78,22 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
                 @Override
                 public boolean areItemsTheSame(int o, int n) {
-                    if (events.get(o) instanceof EventBase && updated.get(n) instanceof EventBase)
-                        return ((EventBase) events.get(o)).id == ((EventBase) updated.get(n)).id;
+                    CalendarBase oldC = events.get(o);
+                    CalendarBase newC = updated.get(n);
 
-                    else if (events.get(o) instanceof Month && updated.get(n) instanceof Month)
-                        return ((Month) events.get(o)).id == ((Month) updated.get(n)).id;
+                    if (oldC instanceof EventBase && newC instanceof EventBase)
+                        return ((EventBase) oldC).id == ((EventBase) newC).id;
 
-                    else if (events.get(o) instanceof Header && updated.get(n) instanceof Header)
-                        return events.get(o).getDate().equals(updated.get(n).getDate());
+                    else if (oldC instanceof Month && newC instanceof Month)
+                        return ((Month) oldC).id == ((Month) newC).id;
 
-                    else if (events.get(o) instanceof Day && updated.get(n) instanceof Day)
-                        return events.get(o).getDate().equals(updated.get(n).getDate());
+                    else if (oldC instanceof Header && newC instanceof Header)
+                        return oldC.getDate().equals(newC.getDate());
 
-                    else return events.get(o) instanceof Empty && updated.get(n) instanceof Empty;
+                    else if (oldC instanceof Day && newC instanceof Day)
+                        return oldC.getDate().equals(newC.getDate());
+
+                    else return oldC instanceof Empty && newC instanceof Empty;
                 }
 
                 @Override
@@ -164,7 +167,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
                 int j = i + 1;
 
-                if (j < list.size()) {
+                if (j < list.size() - 1) {
 
                     CalendarBase e2 = list.get(j);
 

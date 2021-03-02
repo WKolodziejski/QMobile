@@ -23,19 +23,19 @@ import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.journal.FooterPeriod;
-import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.FOOTERJ;
 import static com.tinf.qmobile.model.ViewType.FOOTERP;
@@ -105,22 +105,25 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
                 @Override
                 public boolean areItemsTheSame(int o, int n) {
-                    if (journals.get(o) instanceof Matter && updated.get(n) instanceof Matter)
-                        return (((Matter) journals.get(o)).id == (((Matter) updated.get(n)).id));
+                    Queryable oldQ = journals.get(o);
+                    Queryable newQ = updated.get(n);
 
-                    else if (journals.get(o) instanceof Journal && updated.get(n) instanceof Journal)
-                        return (((Journal) journals.get(o)).id == (((Journal) updated.get(n)).id));
+                    if (oldQ instanceof Matter && newQ instanceof Matter)
+                        return (((Matter) oldQ).id == (((Matter) newQ).id));
 
-                    else if (journals.get(o) instanceof FooterJournal && updated.get(n) instanceof FooterJournal)
-                        return (((FooterJournal) journals.get(o)).getMatter().id == (((FooterJournal) updated.get(n)).getMatter().id));
+                    else if (oldQ instanceof Journal && newQ instanceof Journal)
+                        return (((Journal) oldQ).id == (((Journal) newQ).id));
 
-                    else if (journals.get(o) instanceof FooterPeriod && updated.get(n) instanceof FooterPeriod)
-                        return (((FooterPeriod) journals.get(o)).getPeriod().id == (((FooterPeriod) updated.get(n)).getPeriod().id));
+                    else if (oldQ instanceof FooterJournal && newQ instanceof FooterJournal)
+                        return (((FooterJournal) oldQ).getMatter().id == (((FooterJournal) newQ).getMatter().id));
 
-                    else if (journals.get(o) instanceof Header && updated.get(n) instanceof Header)
-                        return (((Header) journals.get(o)).getPeriod().id == (((Header) updated.get(n)).getPeriod().id));
+                    else if (oldQ instanceof FooterPeriod && newQ instanceof FooterPeriod)
+                        return (((FooterPeriod) oldQ).period.id == (((FooterPeriod) newQ).period.id));
 
-                    else return journals.get(o) instanceof Empty && updated.get(n) instanceof Empty;
+                    else if (oldQ instanceof Period && newQ instanceof Period)
+                        return (((Period) oldQ).id == (((Period) newQ).id));
+
+                    else return oldQ instanceof Empty && newQ instanceof Empty;
                 }
 
                 @Override
@@ -164,17 +167,15 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         } else {
             Matter matter = DataBase.get().getBoxStore()
                     .boxFor(Matter.class)
-                    .query()
-                    .equal(Matter_.id, bundle.getLong("ID"))
-                    .build()
-                    .findUnique();
+                    .get(bundle.getLong("ID"));
 
-            for (int i = 0; i < matter.periods.size(); i++) {
-                if (!matter.periods.get(i).journals.isEmpty()) {
-                    list.add(new Header(matter.periods.get(i)));
-                    list.addAll(matter.periods.get(i).journals);
-                    if (!matter.periods.get(i).isSub_())
-                        list.add(new FooterPeriod(matter.periods.get(i)));
+            for (Period period : matter.periods) {
+                if (!period.journals.isEmpty()) {
+                    list.add(period);
+                    list.addAll(period.journals);
+
+                    if (!period.isSub_())
+                        list.add(new FooterPeriod(period));
                 }
             }
         }

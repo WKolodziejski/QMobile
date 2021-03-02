@@ -2,7 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
@@ -28,10 +27,6 @@ public class ScheduleParser extends BaseParser {
         Log.i(TAG, "Parsing " + User.getYear(pos));
 
         Elements tables = document.select("table");
-
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.log(Log.ERROR, TAG, tables.toString());
-        }
 
         Elements scheduleTable = tables.get(11).getElementsByTag("tr");
 

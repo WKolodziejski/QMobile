@@ -86,4 +86,21 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
             } else return false;
         });
     }
+
+    public void bind(Context context, Material material) {
+        icon.setImageDrawable(context.getDrawable(material.getIcon()));
+        title.setText(material.getTitle());
+        date.setText(material.getDateString());
+        offline.setVisibility(material.isDownloaded && !material.isDownloading? View.VISIBLE : View.GONE);
+        loading.setVisibility(View.GONE);
+
+        if (!material.getDescription().isEmpty()) {
+            description.setText(material.getDescription());
+            description.setVisibility(View.VISIBLE);
+        } else {
+            description.setText(material.getDescription());
+            description.setVisibility(View.GONE);
+        }
+    }
+
 }

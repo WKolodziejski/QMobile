@@ -22,7 +22,7 @@ public class PopUpFragment extends BottomSheetDialogFragment {
     private String t, m;
     private WebView webView;
 
-    public PopUpFragment(WebView webView, String t, String m) {
+    public void setComponents(WebView webView, String t, String m) {
         this.webView = webView;
         this.t = t;
         this.m = m;

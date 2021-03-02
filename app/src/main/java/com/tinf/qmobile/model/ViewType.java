@@ -20,7 +20,8 @@ public class ViewType {
     public final static int SIMPLE = 600;
     public final static int MONTH = 610;
     public final static int USER = 620;
-    public final static int Q = 630;
     public final static int DAY = 640;
+
+    public final static int CLASS = 700;
 
 }

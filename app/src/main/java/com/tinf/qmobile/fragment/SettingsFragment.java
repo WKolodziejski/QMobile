@@ -12,6 +12,14 @@ import androidx.preference.PreferenceManager;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.AboutActivity;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.utility.User;
+
+import io.objectbox.BoxStore;
+
+import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String CHECK = "key_check";
@@ -21,6 +29,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String NIGHT = "key_night_mode";
     public static final String POPUP = "key_popup";
     public static final String DATA = "key_share_data";
+    public static final String DB = "key_reset_db";
     public static final String SCHEDULE_HOUR = "schedule_first_hour";
     public static final String SCHEDULE_DAYS = "schedule_days";
 
@@ -62,6 +71,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
             return true;
         });
+
+        /*Preference db = findPreference(DB);
+        db.setOnPreferenceClickListener(preference -> {
+            DataBase.get().close();
+            return BoxStore.deleteAllFiles(getContext(), User.getCredential(REGISTRATION));
+        });*/
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {

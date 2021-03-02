@@ -45,9 +45,15 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     private ArrayList<Matter> rowHeader;
     private List<List<String>> cells;
     private int selected_row = -1, selected_column = -1;
+    //private OnReport onReport;
 
-    public ReportAdapter(Context context, TableView tableView) {
+    public interface OnReport {
+        void onHeader(String[] header);
+    }
+
+    public ReportAdapter(Context context, TableView tableView/*, OnReport onReport*/) {
         this.context = context;
+        //this.onReport = onReport;
 
         Client.get().addOnUpdateListener(this);
 
@@ -65,6 +71,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                 .observer(observer);
 
         tableView.setTableViewListener(new ITableViewListener() {
+
             @Override
             public void onCellClicked(@NonNull RecyclerView.ViewHolder cellView, int column, int row) {
                 if (column == 0) {
@@ -75,6 +82,8 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                 }
 
                 tableView.getSelectionHandler().clearSelection();
+
+                Log.d(String.valueOf(column), String.valueOf(row));
             }
 
             @Override
@@ -214,6 +223,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
         setAllItems(columnHeader, rowHeader, cells);
         notifyDataSetChanged();
+        //onReport.onHeader(columnHeader.toArray(new String[columnHeader.size()]));
     }
 
     @Override
@@ -256,7 +266,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         } else if (columnPosition == columnHeader.size() - 1) {
             TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
             h.situation.setText(cells.get(rowPosition).get(columnPosition));
-
+            h.situation.setTextColor(getSituationColor(cells.get(rowPosition).get(columnPosition)));
         } else {
             TableCellViewHolder h = (TableCellViewHolder) holder;
             h.text.setText(cells.get(rowPosition).get(columnPosition));
@@ -320,6 +330,19 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @Override
     public void onDateChanged() {
         loadList();
+    }
+
+    private int getSituationColor(String s) {
+        if (s.contains("Aprovado"))
+            return context.getResources().getColor(R.color.approved);
+
+        if (s.contains("Reprovado"))
+            return context.getResources().getColor(R.color.disapproved);
+
+        if (s.contains("Falta"))
+            return context.getResources().getColor(R.color.disapproved);
+
+        return context.getResources().getColor(R.color.colorPrimary);
     }
 
 }

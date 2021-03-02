@@ -5,7 +5,7 @@ import com.tinf.qmobile.model.matter.Period;
 import static com.tinf.qmobile.model.ViewType.FOOTERP;
 
 public class FooterPeriod implements Queryable {
-    private Period period;
+    public Period period;
 
     public FooterPeriod(Period period) {
         this.period = period;
@@ -14,10 +14,6 @@ public class FooterPeriod implements Queryable {
     @Override
     public int getItemType() {
         return FOOTERP;
-    }
-
-    public Period getPeriod() {
-        return period;
     }
 
 }

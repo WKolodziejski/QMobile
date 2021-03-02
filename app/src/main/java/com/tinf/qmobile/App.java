@@ -5,17 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
-
 import androidx.appcompat.app.AppCompatDelegate;
-
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-
-import io.fabric.sdk.android.Fabric;
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
@@ -31,21 +26,16 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Fabric.with(getApplicationContext(), new Crashlytics());
-
-        Fabric.with(new Fabric.Builder(getApplicationContext())
-                .kits(new CrashlyticsCore.Builder().build())
-                .debuggable(true)
-                .build());
+        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
         if (!BuildConfig.DEBUG) {
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
             if (prefs.getBoolean(DATA, false)) {
-                Crashlytics.setString("Register", User.getCredential(REGISTRATION));
-                Crashlytics.setString("Password", User.getCredential(PASSWORD));
-                Crashlytics.setString("URL", User.getURL());
+                crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
+                crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
+                crashlytics.setCustomKey("URL", User.getURL());
             }
         }
 

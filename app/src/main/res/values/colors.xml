@@ -27,6 +27,9 @@
     <color name="colorAccent">#e54b4b</color>!-->
 
     <color name="error">#B00020</color>
+    
+    <color name="approved">@color/green_500</color>
+    <color name="disapproved">@color/red_500</color>
 
     <color name="materiais_file">@color/colorAccent</color>
     <color name="materiais_ai">#556080</color>

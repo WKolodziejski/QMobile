@@ -33,6 +33,7 @@
     <string name="diarios_RP2_SegundaEtapa">Second Stage\'s Second Retake Grade</string>
     <string name="title_notas">Grades</string>
     <string name="title_calendario">Calendar</string>
+    <string name="title_class">Classes</string>
     <string name="materiais_empty">No materials available for now</string>
     <string name="calendar_end_period">Date out of school year range</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
@@ -166,4 +167,7 @@
     <string name="close_drawer">Collapse</string>
     <string name="title_messages">Messages</string>
     <string name="action_mail">Messages</string>
+    <string name="class_no_content">No content</string>
+    <string name="class_given">Given classes: %1$s</string>
+    <string name="class_absence">Absences: %1$s</string>
 </resources>

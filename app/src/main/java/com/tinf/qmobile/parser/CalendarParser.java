@@ -1,8 +1,6 @@
 package com.tinf.qmobile.parser;
 
 import android.util.Log;
-
-import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -29,10 +27,6 @@ public class CalendarParser extends BaseParser {
         Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
 
         Elements months = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
-
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.log(Log.ERROR, TAG, months.toString());
-        }
 
         int monthLast = -1;
         boolean shouldAddYear = false;

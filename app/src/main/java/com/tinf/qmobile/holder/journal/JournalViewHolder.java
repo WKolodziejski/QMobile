@@ -62,4 +62,12 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         animation.start();
     }
 
+    public void bind(Context context, Journal journal) {
+        title.setText(journal.getTitle());
+        weight.setText(journal.getWeight());
+        date.setText(journal.formatDate());
+        max.setText(journal.getMax());
+        grade.setText(journal.getGrade());
+    }
+
 }

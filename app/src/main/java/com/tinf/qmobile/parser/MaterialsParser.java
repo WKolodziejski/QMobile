@@ -2,7 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.content.Intent;
 import android.util.Log;
-import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
@@ -38,10 +37,6 @@ public class MaterialsParser extends BaseParser {
 
         Element table = document.getElementsByTag("tbody").get(10);
         Elements rotulos = table.getElementsByClass("rotulo");
-
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.log(Log.ERROR, TAG, table.toString());
-        }
 
         QueryBuilder<Material> b = materialsBox.query();
 

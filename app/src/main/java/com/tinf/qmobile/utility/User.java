@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -125,36 +127,55 @@ public class User {
                 if (array.length() > 0) {
 
                     for (int i = 0; i < array.length(); i++) {
-                        years.add(array.getString(i));
+                        years.add(array.getString(i).replaceAll("\\s+", ""));
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
         if (years.isEmpty()) {
-            years.add("N/A");
+            years.add("");
         }
 
         return years.toArray(new String[0]);
     }
 
     public static int getYear(int i) {
-        if (getYears().length > 0)
-            return Integer.parseInt(getYears()[i].substring(0, 4));
-        else return 0;
+        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+
+        if (getYears().length > 0) {
+            crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
+            crashlytics.setCustomKey("URL", User.getURL());
+            crashlytics.setCustomKey("Years", Arrays.toString(getYears()));
+
+            if (getYears()[i].contains("/")) {
+                String s = getYears()[i];
+                return Integer.parseInt(s.substring(0, s.indexOf("/")));
+
+            } else if (!getYears()[i].isEmpty()) {
+                return Integer.parseInt(getYears()[i]);
+
+            } else return 0;
+
+        } else return 0;
     }
 
     public static int getPeriod(int i) {
-        if (getYears().length > 0)
-            return Integer.parseInt(getYears()[i].substring(7));
-        else return 0;
+        if (getYears().length > 0) {
+            if (getYears()[i].contains("/")) {
+                String s = getYears()[i];
+                return Integer.parseInt(s.substring(s.indexOf("/") + 1));
+
+            } else return 0;
+
+        } else return 0;
     }
 
     public static Drawable getProfilePicture(Context context) {
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/" + User.getCredential(User.REGISTRATION));
 
         if (picture.exists()) {
             Log.d("PICTURE", picture.getAbsolutePath());
@@ -175,8 +196,10 @@ public class User {
             }
 
             if (bitmap != null) {
+                int size = Math.min(bitmap.getWidth(), bitmap.getHeight());
+
                 RoundedBitmapDrawable round = RoundedBitmapDrawableFactory.create(context.getResources(),
-                        Bitmap.createBitmap(bitmap, 0,0, bitmap.getWidth(), bitmap.getWidth()));
+                        Bitmap.createBitmap(bitmap, 0,0, size, size));
                 round.setCircular(true);
                 round.setAntiAlias(true);
 

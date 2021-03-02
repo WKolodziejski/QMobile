@@ -154,4 +154,12 @@
 
     </PreferenceCategory>
 
+    <!--<PreferenceCategory android:title="Debug">
+
+    <Preference
+        android:key="key_reset_db"
+        android:title="Reset Database" />
+
+    </PreferenceCategory>!-->
+
 </PreferenceScreen>

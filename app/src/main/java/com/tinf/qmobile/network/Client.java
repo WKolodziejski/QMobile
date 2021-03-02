@@ -21,6 +21,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.parser.BaseParser;
@@ -160,16 +161,21 @@ public class Client {
                             } else if (pg == PG_FETCH_YEARS) {
                                 Document document = Jsoup.parse(response);
 
-                                Elements dates = document.getElementsByTag("option");
+                                //Element frm = document.getElementById("frmConsultar");
 
-                                if (dates != null) {
-                                    String[] years = new String[dates.size() - 1];
+                                Element frm = document.getElementById("ANO_PERIODO2");
 
-                                    for (int i = 0; i < dates.size() - 1; i++) {
-                                        years[i] = dates.get(i + 1).text();
+                                if (frm != null) {
+                                    Elements dates = frm.getElementsByTag("option");
+
+                                    if (dates != null) {
+                                        String[] years = new String[dates.size() - 1];
+
+                                        for (int i = 0; i < dates.size() - 1; i++)
+                                            years[i] = dates.get(i + 1).text();
+
+                                        User.setYears(years);
                                     }
-
-                                    User.setYears(years);
                                 }
 
                                 callOnFinish(PG_FETCH_YEARS, 0);
@@ -196,7 +202,11 @@ public class Client {
         load(pg, pos, this::callOnFinish);
     }
 
-    public void load(Matter matter) {
+    public void load(long id) {
+        Matter matter = DataBase.get().getBoxStore()
+                .boxFor(Matter.class)
+                .get(id);
+
         createRequest(PG_CLASSES,
                 INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
                 pos, POST, new HashMap<>(), false, matter, this::callOnFinish);

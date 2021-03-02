@@ -15,6 +15,8 @@
         android:id="@+id/table_cell_matter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:padding="8dp"
         android:gravity="center"
         android:textStyle="bold"

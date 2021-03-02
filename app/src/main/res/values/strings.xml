@@ -14,6 +14,7 @@
     <string name="title_horario">Horário</string>
     <string name="title_settings">Configurações</string>
     <string name="title_messages">Mensagens</string>
+    <string name="title_class">Aulas</string>
 
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
@@ -42,6 +43,10 @@
     <string name="calendar_period_end">Fim do período letivo</string>
     <string name="calendar_empty">Sem eventos futuros</string>
     <string name="calendar_upcoming">Próximos eventos</string>
+
+    <string name="class_no_content">Sem conteúdo</string>
+    <string name="class_given">Aulas dadas: %1$s</string>
+    <string name="class_absence">Faltas: %1$s</string>
 
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
@@ -194,15 +199,5 @@
     <string name="more_william" translatable="false">William Kolodziejski</string>
     <string name="more_devs">Desenvolvido por:</string>
     <string name="more_content">O conteúdo utilizado pertence ao Qualidata © QAcadêmico</string>
-
-    <string name="message_example">ご視聴ありがとうございます！
-今回はRADWIMPSさんのトレモロをカバーさせていただきました！
-
-昔のRADWIMPSを聴くと学生時代TSUTAYAで借りまくって聴き漁ってたことを思い出します。エモい、、。笑
-「発展途上」も「無人島に持って行き忘れた一枚」も
-「おかずのごはん」も色あせないですよね。最高。歓喜。
-
-まだまだ"伸びしろ"なカバーですが、
-今回もぜひ最後まで聴いて頂けると嬉しいです！</string>
 
 </resources>

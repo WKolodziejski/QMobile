@@ -29,7 +29,7 @@ public class PopUpHandler {
 
         if (body != null) {
             String title = body.getElementsByClass("subtitulo").first().text().replaceAll("\\\\n", "\n").trim();
-            String message = body.getElementsByClass("conteudoTexto").first().getElementsByTag("p").first().text().replaceAll("\\\\n", "\n").trim();
+            String message = body.getElementsByClass("conteudoTexto").first().text().replaceAll("\\\\n", "\n").trim();
 
             onEvent.onDialog(webView, title, message);
         }

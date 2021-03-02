@@ -2,6 +2,7 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,18 +13,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.evrencoskun.tableview.TableView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
+
+import java.util.Arrays;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportFragment extends Fragment implements OnUpdate {
     @BindView(R.id.report_table)    TableView table;
-    //@BindView(R.id.fab_report)      ExtendedFloatingActionButton fab;
+    //@BindView(R.id.fab_report)      FloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +48,25 @@ public class ReportFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        table.setAdapter(new ReportAdapter(getContext(), table));
+        table.setAdapter(new ReportAdapter(getContext(), table/*, header -> {
+            boolean[] checked = new boolean[header.length];
+            Arrays.fill(checked, true);
+
+            fab.setOnClickListener(view1 -> new MaterialAlertDialogBuilder(getActivity())
+                    .setMultiChoiceItems(header, checked, (dialogInterface, i, isChecked) -> {
+                        Log.d("R", String.valueOf(i));
+                        if (isChecked) {
+                            table.showColumn(i);
+                        } else {
+                            table.hideColumn(i);
+                        }
+                        checked[i] = isChecked;
+                    })
+                    .setCancelable(true)
+                    .create()
+                    .show());
+        }*/));
+
         table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener(){
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -59,25 +83,6 @@ public class ReportFragment extends Fragment implements OnUpdate {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
-
-        /*String[] list = User.getReportList(getContext());
-        boolean[] checked = new boolean[list.length];
-
-        for (int i = 0; i < checked.length; i++)
-            checked[i] = true;
-
-        fab.setOnClickListener(view1 -> new MaterialAlertDialogBuilder(getActivity())
-                .setMultiChoiceItems(list, checked, (dialogInterface, i, isChecked) -> {
-                    if (isChecked) {
-                        table.showColumn(i);
-                    } else {
-                        table.hideColumn(i);
-                    }
-                    checked[i] = isChecked;
-                })
-                .setCancelable(true)
-                .create()
-                .show());*/
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -35,6 +36,7 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
     protected Box<Message> messageBox = DataBase.get().getBoxStore().boxFor(Message.class);
     protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
     protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
+    protected Box<Clazz> classBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
     public BaseParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
         this.page = page;

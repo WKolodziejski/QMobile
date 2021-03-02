@@ -55,10 +55,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
                 @Override
                 public boolean areItemsTheSame(int o, int n) {
-                    if (messages.get(o) instanceof Message && updated.get(n) instanceof Message)
-                        return ((Message) messages.get(o)).id == ((Message) updated.get(n)).id;
+                    Queryable oldQ = messages.get(o);
+                    Queryable newQ = updated.get(n);
 
-                    else return messages.get(o) instanceof Empty && updated.get(n) instanceof Empty;
+                    if (oldQ instanceof Message && newQ instanceof Message)
+                        return ((Message) oldQ).id == ((Message) newQ).id;
+
+                    else return oldQ instanceof Empty && newQ instanceof Empty;
                 }
 
                 @Override

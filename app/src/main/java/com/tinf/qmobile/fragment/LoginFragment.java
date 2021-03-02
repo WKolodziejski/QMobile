@@ -18,7 +18,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import com.crashlytics.android.Crashlytics;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
@@ -84,7 +85,6 @@ public class LoginFragment extends Fragment implements OnResponse {
             adapter.addAll(urls.keySet());
         else {
             List<String> urls = new ArrayList<>();
-            urls.add("IFAM");
             urls.add("IFCE");
             urls.add("IFES");
             urls.add("IFG");
@@ -94,7 +94,6 @@ public class LoginFragment extends Fragment implements OnResponse {
             urls.add("IFPE");
             urls.add("IFPI");
             urls.add("IFRS");
-            urls.add("IFSUL");
             adapter.addAll(urls);
         }
 
@@ -153,8 +152,9 @@ public class LoginFragment extends Fragment implements OnResponse {
                 if (urls == null)
                     Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(spinner.getSelectedItemPosition()));
 
-                Crashlytics.setString("Register", User.getCredential(REGISTRATION));
-                Crashlytics.setString("URL", User.getURL());
+                FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+                crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
+                crashlytics.setCustomKey("URL", User.getURL());
 
                 Client.get().login();
             }

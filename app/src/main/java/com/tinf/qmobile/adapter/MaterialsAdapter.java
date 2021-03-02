@@ -218,13 +218,16 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
             @Override
             public boolean areItemsTheSame(int o, int n) {
-                if (materials.get(o) instanceof Matter && updated.get(n) instanceof Matter)
-                    return (((Matter) materials.get(o)).id == (((Matter) updated.get(n)).id));
+                Queryable oldQ = materials.get(o);
+                Queryable newQ = updated.get(n);
 
-                else if (materials.get(o) instanceof Material && updated.get(n) instanceof Material)
-                    return (((Material) materials.get(o)).id == (((Material) updated.get(n)).id));
+                if (oldQ instanceof Matter && newQ instanceof Matter)
+                    return (((Matter) oldQ).id == (((Matter) newQ).id));
 
-                else return materials.get(o) instanceof Empty && updated.get(n) instanceof Empty;
+                else if (oldQ instanceof Material && newQ instanceof Material)
+                    return (((Material) oldQ).id == (((Material) newQ).id));
+
+                else return oldQ instanceof Empty && newQ instanceof Empty;
             }
 
             @Override

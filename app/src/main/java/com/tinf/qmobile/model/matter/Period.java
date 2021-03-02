@@ -1,5 +1,6 @@
 package com.tinf.qmobile.model.matter;
 
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 
 import java.util.Locale;
@@ -9,8 +10,10 @@ import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
+import static com.tinf.qmobile.model.ViewType.PERIOD;
+
 @Entity
-public class Period {
+public class Period implements Queryable {
     @Id public long id;
     private String title_;
     private float grade_ = -1;
@@ -19,26 +22,26 @@ public class Period {
     private boolean isSub_;
     public ToOne<Matter> matter;
     public ToMany<Journal> journals;
-    public ToMany<Aula> aulas;
+    public ToMany<Clazz> classes;
 
     public Period(String title){
         this.title_ = title;
     }
 
     public String getGrade() {
-        return grade_ == -1 ? "" : String.valueOf(grade_);
+        return grade_ == -1 ? "-" : String.valueOf(grade_);
     }
 
     public String getGradeFinal() {
-        return gradeFinal_ == -1 ? "" : String.valueOf(gradeFinal_);
+        return gradeFinal_ == -1 ? "-" : String.valueOf(gradeFinal_);
     }
 
     public String getAbsences() {
-        return absences_ == -1 ? "" : String.valueOf(absences_);
+        return absences_ == -1 ? "-" : String.valueOf(absences_);
     }
 
     public String getTitle() {
-        return title_ == null ? "" : title_;
+        return title_ == null ? "-" : title_;
     }
 
     public void setTitle(String title) {
@@ -73,7 +76,7 @@ public class Period {
     public String getGradeSumString() {
         float p = getGradeSum();
 
-        return p == -1 ? "" : String.format(Locale.getDefault(), "%.1f", p);
+        return p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p);
     }
 
     public float getPartialGrade() {
@@ -93,6 +96,11 @@ public class Period {
 
     public void setSub() {
         isSub_ = true;
+    }
+
+    @Override
+    public int getItemType() {
+        return PERIOD;
     }
 
     /*

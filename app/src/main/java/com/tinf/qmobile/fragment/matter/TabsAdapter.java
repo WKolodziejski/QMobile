@@ -37,6 +37,9 @@ public class TabsAdapter extends FragmentPagerAdapter {
 
             case 2: fragment = new MaterialsFragment();
             break;
+
+            case 3: fragment = new ClassFragment();
+            break;
         }
 
         fragment.setArguments(bundle);
@@ -45,7 +48,7 @@ public class TabsAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -58,6 +61,8 @@ public class TabsAdapter extends FragmentPagerAdapter {
             case 1: return resources.getString(R.string.title_horario);
 
             case 2: return resources.getString(R.string.title_materiais);
+
+            case 3: return resources.getString(R.string.title_class);
         }
         return "";
     }

@@ -2,7 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.content.Intent;
 import android.util.Log;
-import com.crashlytics.android.Crashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
@@ -42,28 +41,29 @@ public class JournalParser extends BaseParser {
 
         Date today = new Date();
 
-        Elements dates = document.getElementsByTag("option");
+        Element frm = document.getElementById("ANO_PERIODO2");
 
-        String[] years = new String[dates.size() - 1];
+        if (frm != null) {
+            Elements dates = frm.getElementsByTag("option");
 
-        for (int i = 0; i < dates.size() - 1; i++) {
-            years[i] = dates.get(i + 1).text();
+            if (dates != null) {
+                String[] years = new String[dates.size() - 1];
+
+                for (int i = 0; i < dates.size() - 1; i++)
+                    years[i] = dates.get(i + 1).text();
+
+                User.setYears(years);
+            }
         }
-
-        User.setYears(years);
 
         Element body = document.getElementsByTag("tbody").get(12);
         Elements contents = body.select("table.conteudoTexto");
-
-        if (!BuildConfig.DEBUG) {
-            Crashlytics.log(Log.ERROR, "Journals", body.toString());
-        }
 
         for (int i = 0; i < contents.size(); i++) {
 
             Elements header = contents.eq(i).parents().eq(0).parents().eq(0);
 
-            Element reports = header.first().child(1); //TODO
+            //Element reports = header.first().child(1); //TODO
 
             String description = header.first().child(0).text();
 
@@ -96,7 +96,7 @@ public class JournalParser extends BaseParser {
                 Elements grades = tableGrades.getElementsByClass("conteudoTexto");
                 content = content.nextElementSibling();
 
-                Period period = null;
+                Period period;
 
                 if (periodCount <= matter.periods.size() - 1) {
                     period = matter.periods.get(periodCount);
@@ -112,13 +112,7 @@ public class JournalParser extends BaseParser {
                 for (int j = 0; j < grades.size(); j++) {
                     String dateString = formatDate(grades.eq(j).first().child(1).text());
                     String infos = grades.eq(j).first().child(1).text();
-
-                    //Log.i(TAG, infos);
-
-
                     String t = formatType(infos);
-
-                    //Log.i(TAG, infos);
 
                     int type = Journal.Type.AVALIACAO.get();
 
@@ -158,11 +152,6 @@ public class JournalParser extends BaseParser {
                                     .between(Journal_.weight_, weight, weight).and()
                                     .between(Journal_.max_, max, max);
 
-                            /*builder.link(Journal_.matter)
-                                    .equal(Matter_.description_, description).and()
-                                    .equal(Matter_.year_, User.getYear(pos)).and()
-                                    .equal(Matter_.period_, User.getPeriod(pos));*/
-
                             builder.link(Journal_.period)
                                     .equal(Period_.id, period.id);
 
@@ -191,7 +180,6 @@ public class JournalParser extends BaseParser {
                                     }
                                 }
                             }
-
                         } catch (NonUniqueResultException e) {
                             e.printStackTrace();
                         }
@@ -241,6 +229,9 @@ public class JournalParser extends BaseParser {
     }
 
     private String formatJournalTitle(String s) {
+        if (s.contains(","))
+            s = s.substring(s.indexOf(",") + 1);
+
         return s.substring(s.indexOf(":") + 1).trim();
     }
 

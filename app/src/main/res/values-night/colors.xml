@@ -15,4 +15,7 @@
     <color name="message_sign">@color/grey_900</color>
     <color name="badge">#Cf6679</color>
 
+    <color name="approved">@color/green_500</color>
+    <color name="disapproved">@color/red_500</color>
+
 </resources>

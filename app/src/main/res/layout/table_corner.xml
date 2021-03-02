@@ -8,11 +8,11 @@
     android:background="@color/colorPrimaryLight"
     >
 
-    <ImageView
+    <!--<ImageView
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:rotation="-90"
         android:tint="@color/colorPrimaryDark"
-        android:src="@drawable/ic_divider"/>
+        android:src="@drawable/ic_divider"/>!-->
 
 </LinearLayout>

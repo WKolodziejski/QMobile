@@ -1,8 +1,11 @@
 package com.tinf.qmobile.activity;
 
+import android.app.SearchManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -38,6 +42,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.review.testing.FakeReviewManager;
+import com.google.android.play.core.tasks.Task;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
@@ -50,14 +60,22 @@ import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
+import com.tinf.qmobile.model.matter.Clazz;
+import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.parser.ClassParser;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.App.getContext;
@@ -108,16 +126,30 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 bottomNav.setSelectedItemId(R.id.navigation_materiais);
             }
 
-        } else
+        } else {
             changeFragment(new HomeFragment());
+            /*switch (bottomNav.getSelectedItemId()) {
+
+                case R.id.navigation_home:
+                    changeFragment(new HomeFragment());
+
+                case R.id.navigation_notas:
+                    changeFragment(new JournalFragment());
+
+                case R.id.navigation_materiais:
+                    changeFragment(new MaterialsFragment());
+            }*/
+        }
 
         if (Client.get().isLogging() && !BuildConfig.DEBUG) {
             Client.get().load(PG_FETCH_YEARS);
         }
 
-        /*DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
-        DataBase.get().getBoxStore().boxFor(Attachment.class).removeAll();
-        DataBase.get().getBoxStore().boxFor(Sender.class).removeAll();*/
+        ReviewManager manager = ReviewManagerFactory.create(this);
+        manager.requestReviewFlow().addOnCompleteListener(info -> {
+            if (info.isSuccessful())
+                 manager.launchReviewFlow(this, info.getResult());
+        });
     }
 
     @Override
@@ -416,7 +448,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onDialog(WebView webView, String title, String msg) {
-        new PopUpFragment(webView, title, msg).show(getSupportFragmentManager(), "sheet_popup");
+        PopUpFragment popup = new PopUpFragment();
+        popup.setComponents(webView, title, msg);
+        popup.show(getSupportFragmentManager(), "sheet_popup");
     }
 
     @Override

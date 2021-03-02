@@ -8,17 +8,12 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 
-import io.fabric.sdk.android.Fabric;
 
 import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
