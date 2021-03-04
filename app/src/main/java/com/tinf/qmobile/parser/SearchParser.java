@@ -1,8 +1,12 @@
 package com.tinf.qmobile.parser;
 
+import android.content.Context;
 import android.os.AsyncTask;
+
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -11,21 +15,29 @@ import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.model.message.Sender;
+import com.tinf.qmobile.model.search.Header;
 import com.tinf.qmobile.service.DownloadReceiver;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
     protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
@@ -38,66 +50,78 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
     protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
     protected Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
-    private OnSearch onSearch;
+    private final OnSearch onSearch;
+    private Context context;
 
     public interface OnSearch {
         void onSearch(List<Queryable> list);
     }
 
-    public SearchParser(OnSearch onSearch) {
+    public SearchParser(Context context, OnSearch onSearch) {
+        this.context = context;
         this.onSearch = onSearch;
     }
 
     @Override
     protected List<Queryable> doInBackground(String... strings) {
-        String query = strings[0].trim();
-        Set<Queryable> list = new HashSet<>();
+        String string = strings[0].trim();
+        String queries[] = string.split(" ");
 
-        list.addAll(journalBox.query()
-                .contains(Journal_.title, query)
-                .build()
-                .find());
+        List<Queryable> list = new ArrayList<>();
 
-        list.addAll(materialsBox.query()
-                .contains(Material_.title, query)
-                .build()
-                .find());
+        Set<Queryable> journals = new HashSet<>();
+        Set<Material> materials = new HashSet<>();
+        Set<Message> messages = new HashSet<>();
+        Set<Clazz> classes = new HashSet<>();
 
-        list.addAll(messageBox.query()
-                .contains(Message_.text_, query)
-                .or()
-                .contains(Message_.subject_, query)
-                .build()
-                .find());
+        for (String query : queries) {
 
-        list.addAll(clazzBox.query()
-            .contains(Clazz_.content_, query)
-            .or()
-            .contains(Clazz_.teacher_, query)
-            .build()
-            .find());
+            journals.addAll(journalBox.query()
+                    .contains(Journal_.title, query)
+                    .build()
+                    .find(0, 20));
 
-        /*List<Material> materials = materialsBox.query()
-                .contains(Material_.title, query)
-                .build()
-                .find();
+            materials.addAll(materialsBox.query()
+                    .contains(Material_.title, query)
+                    .build()
+                    .find(0, 20));
 
-        for (Material material : materials)
-            if (new File(DownloadReceiver.getMaterialPath(material.getFileName())).exists())
-                list.add(material);
+            messages.addAll(messageBox.query()
+                    .contains(Message_.text_, query)
+                    .or()
+                    .contains(Message_.subject_, query)
+                    .build()
+                    .find(0, 20));
 
-        List<Message> messages = messageBox.query()
-                .contains(Message_.text_, query)
-                .or()
-                .contains(Message_.subject_, query)
-                .build()
-                .find();
+            classes.addAll(clazzBox.query()
+                    .contains(Clazz_.content_, query)
+                    .or()
+                    .contains(Clazz_.teacher_, query)
+                    .build()
+                    .find(0, 20));
+        }
 
-        for (Message message : messages)
-            if (!message.getContent().isEmpty())
-                list.add(message);*/
+        if (!journals.isEmpty()) {
+            list.add(new Header(context.getResources().getString(R.string.title_diarios)));
+            list.addAll(journals);
+        }
 
-        return new ArrayList<>(list);
+        if (!materials.isEmpty()) {
+            list.add(new Header(context.getResources().getString(R.string.title_materiais)));
+            list.addAll(materials);
+        }
+
+        if (!messages.isEmpty()) {
+            list.add(new Header(context.getResources().getString(R.string.title_messages)));
+            list.addAll(messages);
+        }
+
+        if (!classes.isEmpty()) {
+            list.add(new Header(context.getResources().getString(R.string.title_class)));
+            list.addAll(classes);
+        }
+
+        return list;
     }
 
     @Override

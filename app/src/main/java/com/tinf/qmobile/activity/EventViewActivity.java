@@ -25,13 +25,8 @@ public class EventViewActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
-
-        Log.d("Fragment", "Initialized");
-
         setSupportActionBar(findViewById(R.id.toolbar_default));
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
 
         Bundle bundle = getIntent().getExtras();

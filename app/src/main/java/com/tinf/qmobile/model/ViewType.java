@@ -4,6 +4,7 @@ public class ViewType {
     public final static int EMPTY = 0;
 
     public final static int HEADER = 100;
+    public final static int HEADERSEARCH = 110;
 
     public final static int JOURNAL = 200;
     public final static int PERIOD = 210;

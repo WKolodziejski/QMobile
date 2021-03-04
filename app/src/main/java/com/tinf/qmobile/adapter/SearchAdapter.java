@@ -15,6 +15,7 @@ import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.message.MessageViewHolder;
 import com.tinf.qmobile.holder.search.SearchClassViewHolder;
 import com.tinf.qmobile.holder.search.SearchEventViewHolder;
+import com.tinf.qmobile.holder.search.SearchHeaderViewHolder;
 import com.tinf.qmobile.holder.search.SearchJournalViewHolder;
 import com.tinf.qmobile.holder.search.SearchMaterialViewHolder;
 import com.tinf.qmobile.holder.search.SearchMatterViewHolder;
@@ -32,6 +33,7 @@ import java.util.List;
 import static com.tinf.qmobile.model.ViewType.ATTACHMENT;
 import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
@@ -39,23 +41,26 @@ import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
-    private Context context;
+    private final Context context;
     private List<Queryable> list;
-    //private OnQuery onQuery;
+    private SearchParser parser;
 
-    public interface OnQuery {
-        void onQuery(long id, long id2, int type);
+    public SearchAdapter(Context context) {
+        this.context = context;
+        this.list = new ArrayList<>();
     }
 
-    public SearchAdapter(Context context, String query) {//, OnQuery onQuery) {
-        this.context = context;
-        //this.onQuery = onQuery;
-        this.list = new ArrayList<>();
+    public void query(String query) {
+        if (parser != null) {
+            parser.cancel(true);
+        }
 
-        new SearchParser(list -> {
+        parser = new SearchParser(context, list -> {
             this.list = list;
             notifyDataSetChanged();
-        }).execute(query);
+        });
+
+        parser.execute(query);
     }
 
     @Override
@@ -91,6 +96,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
             case CLASS:
                 return new SearchClassViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.search_class, parent, false));
+
+            case HEADERSEARCH:
+                return new SearchHeaderViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.search_header, parent, false));
         }
 
         return null;

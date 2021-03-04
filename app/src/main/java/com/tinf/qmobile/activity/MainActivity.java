@@ -50,7 +50,6 @@ import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
-import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
@@ -62,7 +61,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, OnUpdate,
@@ -83,11 +81,15 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        setTitle(User.getName());
+        //setTitle(User.getName());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        toolbar.setOnClickListener(view -> {
+            launcher.launch(new Intent(getContext(), SearchActivity.class));
+        });
 
         Menu menu = navigationView.getMenu();
 
@@ -139,26 +141,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void onNewIntent(Intent i) {
-        super.onNewIntent(i);
-
-        if (Intent.ACTION_SEARCH.equals(i.getAction())) {
-            String query = i.getStringExtra(SearchManager.QUERY);
-            Intent intent = new Intent(getContext(), SearchResultsActivity.class);
-            intent.putExtra("QUERY", query);
-            //startActivity(intent);
-            launcher.launch(intent);
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
 
         Drawable picture = User.getProfilePicture(getContext());
 
@@ -198,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     return changeFragment(new JournalFragment());
 
                 } else return false;
-
         }
         return super.onOptionsItemSelected(item);
     }
@@ -505,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onDateChanged() {
         date.setText(User.getYears()[pos]);
-        setTitle(User.getName());
+        //setTitle(User.getName());
     }
 
 }
