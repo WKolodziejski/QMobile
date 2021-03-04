@@ -24,6 +24,7 @@ import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.journal.FooterPeriod;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -88,6 +89,22 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                             updated.addAll(i + 1, items);
                             updated.add(i + items.size() + 1, new FooterJournal(i, matter));
                         }
+                    }
+                }
+            } else {
+                for (int i = 0; i < journals.size(); i++) {
+                    if (journals.get(i) instanceof Journal) {
+                        Journal j1 = ((Journal) journals.get(i));
+
+                        for (Queryable q : updated)
+                            if (q instanceof Journal) {
+                                Journal j2 = (Journal) q;
+
+                                if (j1.id == j2.id) {
+                                    j2.highlight = j1.highlight;
+                                    break;
+                                }
+                            }
                     }
                 }
             }
@@ -284,6 +301,24 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                 notifyItemRemoved(i);
             } else break;
         }
+    }
+
+    public int highlight(long id) {
+        for (int i = 0; i < journals.size(); i++) {
+            Queryable q = journals.get(i);
+
+            if (q instanceof Journal) {
+                Journal j = (Journal) q;
+
+                if (j.id == id) {
+                    j.highlight = true;
+                    notifyItemChanged(i);
+                    return i;
+                }
+            }
+        }
+
+        return -1;
     }
 
     @Override

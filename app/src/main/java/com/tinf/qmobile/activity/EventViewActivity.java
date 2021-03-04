@@ -71,6 +71,8 @@ public class EventViewActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.event_view_fragment, fragment)
                     .commit();
+
+            setResult(RESULT_OK);
         } else {
             finish();
         }

@@ -16,7 +16,6 @@ public class MonthViewHolder extends CalendarViewHolder<Month> {
 
     public MonthViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

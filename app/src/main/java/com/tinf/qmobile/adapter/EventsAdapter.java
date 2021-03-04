@@ -32,11 +32,18 @@ import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.TreeMap;
 
 import io.objectbox.Box;
 import io.objectbox.BoxStore;
@@ -139,7 +146,79 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                 .observer(observer);
     }
 
+    private List<CalendarBase> getList2() {
+        Map<Long, List<CalendarBase>> map = new TreeMap<>();
+
+        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
+        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
+        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+
+        for (EventBase e : eventUserBox.query().build().find()) {
+            List<CalendarBase> list = map.get(e.getStartTime());
+
+            if (list == null) {
+                list = new ArrayList<>();
+                map.put(e.getStartTime(), list);
+            }
+
+            list.add(e);
+        }
+
+        for (EventBase e : eventJournalBox.query().build().find()) {
+            List<CalendarBase> list = map.get(e.getStartTime());
+
+            if (list == null) {
+                list = new ArrayList<>();
+                map.put(e.getStartTime(), list);
+            }
+
+            list.add(e);
+        }
+
+        for (EventBase e : eventSimpleBox.query().build().find()) {
+            List<CalendarBase> list = map.get(e.getStartTime());
+
+            if (list == null) {
+                list = new ArrayList<>();
+                map.put(e.getStartTime(), list);
+            }
+
+            list.add(e);
+        }
+
+        List<CalendarBase> ret = new ArrayList<>();
+        Long lastKey = null;
+
+
+        for (Long key: map.keySet()) {
+            if (lastKey != null) {
+               if (!lastKey.equals(key))
+                   ret.add(new Day(new Date(lastKey), new Date(key)));
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date(key));
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+
+            ret.add(new Header(cal.getTimeInMillis()));
+            ret.addAll(map.get(key));
+
+
+
+            lastKey = key;
+        }
+
+        if (ret.isEmpty())
+            ret.add(new Empty());
+
+        return ret;
+    }
+
     private List<CalendarBase> getList() {
+        return getList2();/*
 
         List<CalendarBase> list = new ArrayList<>();
 
@@ -230,7 +309,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             }
         }
 
-        return list;
+        return list;*/
     }
 
     public List<CalendarBase> getEvents() {

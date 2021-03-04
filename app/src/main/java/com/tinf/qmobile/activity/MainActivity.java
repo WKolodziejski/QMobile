@@ -1,21 +1,14 @@
 package com.tinf.qmobile.activity;
 
 import android.app.SearchManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,6 +17,9 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,8 +28,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -42,12 +36,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.review.testing.FakeReviewManager;
-import com.google.android.play.core.tasks.Task;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
@@ -60,26 +50,19 @@ import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
-import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.parser.ClassParser;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, OnUpdate,
@@ -90,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @BindView(R.id.nav)                 NavigationView navigationView;
     @BindView(R.id.toolbar_main)        Toolbar toolbar;
     @BindView(R.id.main_date)           TextView date;
+
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> Client.get().restorePreviousDate());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,13 +139,26 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
+    public void onNewIntent(Intent i) {
+        super.onNewIntent(i);
+
+        if (Intent.ACTION_SEARCH.equals(i.getAction())) {
+            String query = i.getStringExtra(SearchManager.QUERY);
+            Intent intent = new Intent(getContext(), SearchResultsActivity.class);
+            intent.putExtra("QUERY", query);
+            //startActivity(intent);
+            launcher.launch(intent);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);*/
+        searchView.setIconifiedByDefault(false);
 
         Drawable picture = User.getProfilePicture(getContext());
 
@@ -209,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         if (item.getGroupId() == R.id.group1) {
             navigationView.getMenu().getItem(0).setChecked(true);
-            Client.get().changeData(item.getItemId());
+            Client.get().changeDate(item.getItemId());
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
@@ -240,16 +239,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             switch (item.getItemId()) {
 
                 case R.id.navigation_home:
-                    changeFragment(new HomeFragment());
-                    return true;
+                    return changeFragment(new HomeFragment());
 
                 case R.id.navigation_notas:
-                    changeFragment(new JournalFragment());
-                    return true;
+                    return changeFragment(new JournalFragment());
 
                 case R.id.navigation_materiais:
-                    changeFragment(new MaterialsFragment());
-                    return true;
+                    return changeFragment(new MaterialsFragment());
             }
         } else {
             Client.get().requestScroll();
@@ -276,6 +272,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    private boolean changeFragment(Fragment fragment, Bundle args) {
+        if (fragment != null)
+            fragment.setArguments(args);
+
+        return changeFragment(fragment);
     }
 
     private boolean changeFragment(Fragment fragment) {

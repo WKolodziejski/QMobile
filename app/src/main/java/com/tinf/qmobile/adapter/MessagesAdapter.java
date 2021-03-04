@@ -1,6 +1,7 @@
 package com.tinf.qmobile.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.tinf.qmobile.holder.message.MessageViewHolder;
 import com.tinf.qmobile.holder.message.MessagesViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.message.Messenger;
@@ -32,7 +34,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     private Messenger messenger;
     private DataSubscription sub1;
 
-    public MessagesAdapter(Context context, Messenger messenger) {
+    public MessagesAdapter(Context context, Messenger messenger, Bundle bundle) {
         this.context = context;
         this.messenger = messenger;
 
@@ -40,6 +42,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
         DataObserver observer = data -> {
             List<Queryable> updated = getList();
+
+            if (bundle != null) {
+                for (int i = 0; i < messages.size(); i++) {
+                    if (messages.get(i) instanceof Message) {
+                        Message m1 = ((Message) messages.get(i));
+
+                        for (Queryable q : updated)
+                            if (q instanceof Message) {
+                                Message m2 = (Message) q;
+
+                                if (m1.id == m2.id) {
+                                    m2.highlight = m1.highlight;
+                                    break;
+                                }
+                            }
+                    }
+                }
+            }
 
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
@@ -132,6 +152,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         sub1.cancel();
+    }
+
+    public int highlight(long id) {
+        for (int i = 0; i < messages.size(); i++) {
+            Queryable q = messages.get(i);
+
+            if (q instanceof Message) {
+                Message m = (Message) q;
+
+                if (m.id == id) {
+                    m.highlight = true;
+                    notifyItemChanged(i);
+                    return i;
+                }
+            }
+        }
+
+        return -1;
     }
 
 }

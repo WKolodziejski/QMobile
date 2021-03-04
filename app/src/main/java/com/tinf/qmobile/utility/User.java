@@ -173,6 +173,19 @@ public class User {
         } else return 0;
     }
 
+    public static int getPos(int year, int period) {
+        String[] years = getYears();
+
+        for (int i = 0; i < years.length; i++) {
+            String s = years[i];
+
+            if (s.contains(String.valueOf(year)) && s.contains(String.valueOf(period)))
+                return i;
+        }
+
+        return -1;
+    }
+
     public static Drawable getProfilePicture(Context context) {
         File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + "/" + User.getCredential(User.REGISTRATION));

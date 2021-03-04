@@ -22,7 +22,6 @@ public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
 
     public ClassItemViewHolder(@NonNull View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override
@@ -37,6 +36,10 @@ public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
             intent.putExtra("TYPE", CLASS);
             context.startActivity(intent);
         });
+
+        if (clazz.highlight) {
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
+        }
     }
 
 }

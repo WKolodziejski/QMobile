@@ -20,7 +20,6 @@ public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
 
     public MatterViewHolder(@NonNull View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

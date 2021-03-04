@@ -1,5 +1,6 @@
 package com.tinf.qmobile.fragment.matter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,11 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.ClassAdapter;
 import com.tinf.qmobile.network.Client;
+
+import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class ClassFragment extends Fragment {
 
@@ -28,14 +32,30 @@ public class ClassFragment extends Fragment {
 
         Client.get().load(getArguments().getLong("ID"));
 
+        ClassAdapter adapter = new ClassAdapter(getContext(), getArguments());
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        recyclerView.setAdapter(new ClassAdapter(getContext(), getArguments()));
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
+
+        /*if (getArguments() != null) {
+            long id = getArguments().getLong("ID2");
+            int p = adapter.highlight(id);
+
+            if (p >= 0) {
+                layout.scrollToPosition(p);
+                Intent intent = new Intent(getContext(), EventViewActivity.class);
+                intent.putExtra("ID", id);
+                intent.putExtra("TYPE", CLASS);
+                startActivity(intent);
+            }
+        }*/
     }
 
 }

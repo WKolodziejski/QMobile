@@ -26,9 +26,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-
         if (!BuildConfig.DEBUG) {
+
+            FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 

@@ -117,11 +117,9 @@ public class DownloadReceiver extends BroadcastReceiver {
                     .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destiny));
 
             Toast.makeText(context, context.getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-
             return id;
         } else {
             Toast.makeText(context, context.getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
-
             return 0;
         }
     }

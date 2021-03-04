@@ -16,7 +16,6 @@ public class ClassHeaderViewHolder extends ClassBaseViewHolder<Period> {
 
     public ClassHeaderViewHolder(@NonNull View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

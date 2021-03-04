@@ -122,11 +122,13 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(layout);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(adapter);
 
@@ -143,6 +145,15 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                     super.onScrollStateChanged(recyclerView, newState);
                 }
             });
+        }
+
+        if (getArguments() != null) {
+            int p = adapter.highlight(getArguments().getLong("ID2"));
+
+            if (p >= 0) {
+                layout.scrollToPosition(p);
+                adapter.handleDownload(p);
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
@@ -202,6 +203,22 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                         }
                 }
             }
+        } else {
+            for (int i = 0; i < materials.size(); i++) {
+                if (materials.get(i) instanceof Material) {
+                    Material m1 = ((Material) materials.get(i));
+
+                    for (Queryable q : updated)
+                        if (q instanceof Material) {
+                            Material m2 = (Material) q;
+
+                            if (m1.id == m2.id) {
+                                m2.highlight = m1.highlight;
+                                break;
+                            }
+                        }
+                }
+            }
         }
 
         DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -349,6 +366,37 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                                 material.getFileName(),
                                 User.getYear(pos) + "/" + User.getPeriod(pos)),
                 box.put(material));
+    }
+
+    public void handleDownload(int i) {
+        Material material = (Material) materials.get(i);
+
+        if (material.isDownloaded) {
+            DownloadReceiver.openFile(User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + material.getFileName());
+        } else {
+            material.isDownloading = true;
+            download(material);
+        }
+
+        notifyItemChanged(i);
+    }
+
+    public int highlight(long id) {
+        for (int i = 0; i < materials.size(); i++) {
+            Queryable q = materials.get(i);
+
+            if (q instanceof Material) {
+                Material m = (Material) q;
+
+                if (m.id == id) {
+                    m.highlight = true;
+                    notifyItemChanged(i);
+                    return i;
+                }
+            }
+        }
+
+        return -1;
     }
 
     public interface OnInteractListener {

@@ -11,11 +11,11 @@
         android:orderInCategory="1"
         app:showAsAction="always" />
 
-    <!--<item
+    <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         android:icon="@drawable/ic_search"
         app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"/>!-->
+        app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 
 </menu>

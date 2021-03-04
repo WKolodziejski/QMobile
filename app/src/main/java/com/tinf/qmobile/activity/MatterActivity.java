@@ -14,6 +14,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,6 +24,7 @@ public class MatterActivity extends AppCompatActivity {
     public static int GRADES = 0;
     public static int SCHEDULE = 1;
     public static int MATERIALS = 2;
+    public static int CLASS = 3;
     private Matter matter;
 
     @Override

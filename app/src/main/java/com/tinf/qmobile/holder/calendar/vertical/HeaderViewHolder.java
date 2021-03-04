@@ -15,7 +15,6 @@ public class HeaderViewHolder extends CalendarViewHolder<Header> {
 
     public HeaderViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tinf.qmobile.fragment.matter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.model.journal.Journal;
+
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class GradesFragment extends Fragment {
 
@@ -25,14 +31,30 @@ public class GradesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        JournalAdapter adapter = new JournalAdapter(getContext(), getArguments(), position -> {});
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
+
         RecyclerView recyclerView = view.findViewById(R.id.recycler_materia);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-        recyclerView.setAdapter(new JournalAdapter(getContext(), getArguments(), position -> {}));
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
+
+        /*if (getArguments() != null) {
+            long id = getArguments().getLong("ID2");
+            int p = adapter.highlight(id);
+
+            if (p >= 0) {
+                layout.scrollToPosition(p);
+                Intent intent = new Intent(getContext(), EventViewActivity.class);
+                intent.putExtra("ID", id);
+                intent.putExtra("TYPE", JOURNAL);
+                startActivity(intent);
+            }
+        }*/
     }
 
 }

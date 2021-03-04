@@ -1,5 +1,6 @@
 package com.tinf.qmobile.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,9 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.widget.Button;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -14,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.MessagesAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.message.Message;
@@ -21,6 +26,8 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesFragment extends Fragment implements OnResponse {
     @BindView(R.id.recycler_messages)   RecyclerView recyclerView;
@@ -30,6 +37,10 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
     @BindView(R.id.message_webview)
     WebView webView;*/
+
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        getActivity().finish();
+    });
 
     @Nullable
     @Override
@@ -43,19 +54,21 @@ public class MessagesFragment extends Fragment implements OnResponse {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Messenger messenger = new Messenger(getContext(), this);
-
         /*prv.setOnClickListener(v -> messenger.loadPage(21));
         nxt.setOnClickListener(v -> {
             DataBase.get().getBoxStore().boxFor(Message.class).removeAll();
         });*/
 
+        Messenger messenger = new Messenger(getContext(), this);
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
+        MessagesAdapter adapter = new MessagesAdapter(getContext(), messenger, getArguments());
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new MessagesAdapter(getContext(), messenger));
+        recyclerView.setLayoutManager(layout);
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -76,6 +89,26 @@ public class MessagesFragment extends Fragment implements OnResponse {
         });
 
         refresh.setOnRefreshListener(messenger::loadFirstPage);
+
+        if (getArguments() != null) {
+            long id = getArguments().getLong("ID2");
+            /*int p = adapter.highlight(id);
+
+            if (p >= 0) {
+                layout.scrollToPosition(p);
+                messenger.openMessage(p);
+
+                Intent intent = new Intent(getContext(), EventViewActivity.class);
+                intent.putExtra("TYPE", MESSAGE);
+                intent.putExtra("ID", id);
+                launcher.launch(intent);
+            }*/
+
+            Intent intent = new Intent(getContext(), EventViewActivity.class);
+            intent.putExtra("TYPE", MESSAGE);
+            intent.putExtra("ID", id);
+            launcher.launch(intent);
+        }
     }
 
     @Override

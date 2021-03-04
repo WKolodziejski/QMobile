@@ -35,15 +35,14 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
 
     public MessageViewHolder(@NonNull View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
     }
 
     @Override
     public void bind(Context context, Messenger messenger, Message message) {
         header.setText(message.sender.getTarget().getSign());
-        header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
+        header.setBackgroundTintList(ColorStateList.valueOf(message.getColor()));
         subject.setText(message.getSubject_());
-        sender.setText(message.sender.getTarget().getName_());
+        sender.setText(message.getSender());
         date.setText(message.formatDate());
         preview.setText(message.getPreview());
 
@@ -92,50 +91,9 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
             intent.putExtra("ID", Long.valueOf(message.id));
             context.startActivity(intent);
         });
-    }
 
-    public void bind(Context context, Message message) {
-        header.setText(message.sender.getTarget().getSign());
-        header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
-        subject.setText(message.getSubject_());
-        sender.setText(message.sender.getTarget().getName_());
-        date.setText(message.formatDate());
-        preview.setText(message.getPreview());
-
-        preview.setVisibility(message.getPreview().isEmpty() ? View.GONE : View.VISIBLE);
-
-        int c = context.getResources().getColor(message.getContent().isEmpty() && !message.isSeen_() ? R.color.message_not_seen : R.color.message_seen);
-        int t = message.getContent().isEmpty() && !message.isSeen_() ? Typeface.BOLD : Typeface.NORMAL;
-
-        att.setImageTintList(ColorStateList.valueOf(c));
-
-        subject.setTextColor(c);
-        sender.setTextColor(c);
-        date.setTextColor(c);
-
-        subject.setTypeface(null, t);
-        sender.setTypeface(null, t);
-        date.setTypeface(null, t);
-
-        att.setVisibility(message.isHasAtt_() && message.attachments.isEmpty() ? View.VISIBLE : View.GONE);
-
-        if (message.isSolved_()) {
-            subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
-            TextViewCompat.setCompoundDrawableTintList(subject, ColorStateList.valueOf(context.getResources().getColor(R.color.amber_a700)));
-        } else {
-            subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        }
-
-        if (!message.attachments.isEmpty()) {
-            attachments.setVisibility(View.VISIBLE);
-            attachments.setHasFixedSize(true);
-            attachments.setItemViewCacheSize(3);
-            attachments.setDrawingCacheEnabled(true);
-            attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            attachments.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-            attachments.setAdapter(new AttachmentsAdapter(context, message.attachments, true));
-        } else {
-            attachments.setVisibility(View.GONE);
+        if (message.highlight) {
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
         }
     }
 

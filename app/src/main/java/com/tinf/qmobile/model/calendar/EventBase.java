@@ -54,6 +54,10 @@ public abstract class EventBase extends Event implements CalendarBase {
         return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(startTime);
     }
 
+    public String getMonthHashKey() {
+        return new SimpleDateFormat("MM/yyyy", Locale.getDefault()).format(startTime);
+    }
+
     public boolean isRanged() {
         if (endTime == 0 || endTime == startTime)
             return false;

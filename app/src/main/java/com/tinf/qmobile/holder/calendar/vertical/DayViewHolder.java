@@ -16,7 +16,6 @@ public class DayViewHolder extends CalendarViewHolder<Day> {
 
     public DayViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

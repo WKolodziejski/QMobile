@@ -540,7 +540,7 @@ public class Client {
         }
     }
 
-    public void changeData(int pos) {
+    public void changeDate(int pos) {
         if (pos != Client.pos) {
             Client.pos = pos;
 
@@ -554,6 +554,22 @@ public class Client {
 
             loadYear(pos);
         }
+    }
+
+    private int posBackup = -1;
+
+    public void restorePreviousDate() {
+        if (posBackup >= 0)
+            changeDate(posBackup);
+
+        posBackup = -1;
+    }
+
+    public void changeDateWithBackup(int pos) {
+        if (posBackup == -1)
+            posBackup = Client.pos;
+
+        changeDate(pos);
     }
 
     public void requestScroll() {

@@ -22,7 +22,6 @@ public class AttachmentCardViewHolder extends MessagesViewHolder<Attachment> {
 
     public AttachmentCardViewHolder(@NonNull View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
     }
 
     @Override

@@ -24,7 +24,6 @@ public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> 
 
     public EventJournalVerticalViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

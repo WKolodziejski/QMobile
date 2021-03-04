@@ -19,7 +19,6 @@ public class EventSimpleHorizontalViewHolder extends CalendarViewHolder<EventSim
 
     public EventSimpleHorizontalViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

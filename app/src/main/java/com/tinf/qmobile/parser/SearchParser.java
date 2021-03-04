@@ -8,14 +8,19 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
+import com.tinf.qmobile.model.matter.Clazz;
+import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.model.message.Sender;
+import com.tinf.qmobile.service.DownloadReceiver;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +36,7 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
     protected Box<Message> messageBox = DataBase.get().getBoxStore().boxFor(Message.class);
     protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
     protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
+    protected Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
     private OnSearch onSearch;
 
@@ -63,6 +69,33 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
                 .contains(Message_.subject_, query)
                 .build()
                 .find());
+
+        list.addAll(clazzBox.query()
+            .contains(Clazz_.content_, query)
+            .or()
+            .contains(Clazz_.teacher_, query)
+            .build()
+            .find());
+
+        /*List<Material> materials = materialsBox.query()
+                .contains(Material_.title, query)
+                .build()
+                .find();
+
+        for (Material material : materials)
+            if (new File(DownloadReceiver.getMaterialPath(material.getFileName())).exists())
+                list.add(material);
+
+        List<Message> messages = messageBox.query()
+                .contains(Message_.text_, query)
+                .or()
+                .contains(Message_.subject_, query)
+                .build()
+                .find();
+
+        for (Message message : messages)
+            if (!message.getContent().isEmpty())
+                list.add(message);*/
 
         return new ArrayList<>(list);
     }

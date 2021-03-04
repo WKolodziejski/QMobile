@@ -25,8 +25,6 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private OnResponse onResponse;
     private Context context;
 
-
-
     public Messenger(Context context, OnResponse onResponse) {
         this.context = context;
         this.queue = new ArrayList<>();

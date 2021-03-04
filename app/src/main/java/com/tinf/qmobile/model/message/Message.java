@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
 
@@ -13,6 +14,7 @@ import static com.tinf.qmobile.model.ViewType.MESSAGE;
 @Entity
 public class Message implements Queryable {
     @Id public long id;
+    @Transient public boolean highlight;
     private int uid_;
     private float date_;
     private boolean seen_;
@@ -58,6 +60,14 @@ public class Message implements Queryable {
 
     public String getPreview() {
         return text_ == null ? "" : text_.substring(0, Math.min(text_.length(), 50));
+    }
+
+    public String getSender() {
+        return sender.getTarget().getName_();
+    }
+
+    public int getColor() {
+        return sender.getTarget().getColor_();
     }
 
     /*

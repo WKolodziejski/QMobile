@@ -29,7 +29,6 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
 
     public JournalViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override
@@ -60,14 +59,10 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
         itemView.setAnimation(animation);
         animation.start();
-    }
 
-    public void bind(Context context, Journal journal) {
-        title.setText(journal.getTitle());
-        weight.setText(journal.getWeight());
-        date.setText(journal.formatDate());
-        max.setText(journal.getMax());
-        grade.setText(journal.getGrade());
+        if (journal.highlight) {
+            itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
+        }
     }
 
 }

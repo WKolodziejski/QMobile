@@ -25,7 +25,6 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
 
     public JournalHeaderViewHolder(@NonNull View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     @Override

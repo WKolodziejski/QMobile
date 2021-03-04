@@ -16,6 +16,8 @@ import com.tinf.qmobile.holder.clazz.ClassHeaderViewHolder;
 import com.tinf.qmobile.holder.clazz.ClassItemViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
@@ -41,9 +43,25 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         classes = getList(bundle);
 
         DataObserver observer = data -> {
-            Log.d("ClassAdapter", "Update detected");
-
             List<Queryable> updated = getList(bundle);
+
+            if (bundle != null) {
+                for (int i = 0; i < classes.size(); i++) {
+                    if (classes.get(i) instanceof Clazz) {
+                        Clazz c1 = ((Clazz) classes.get(i));
+
+                        for (Queryable q : updated)
+                            if (q instanceof Clazz) {
+                                Clazz c2 = (Clazz) q;
+
+                                if (c1.id == c2.id) {
+                                    c2.highlight = c1.highlight;
+                                    break;
+                                }
+                            }
+                    }
+                }
+            }
 
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
@@ -157,6 +175,24 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         sub1.cancel();
         sub2.cancel();
+    }
+
+    public int highlight(long id) {
+        for (int i = 0; i < classes.size(); i++) {
+            Queryable q = classes.get(i);
+
+            if (q instanceof Clazz) {
+                Clazz c = (Clazz) q;
+
+                if (c.id == id) {
+                    c.highlight = true;
+                    notifyItemChanged(i);
+                    return i;
+                }
+            }
+        }
+
+        return -1;
     }
 
 }

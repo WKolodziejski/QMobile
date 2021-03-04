@@ -10,6 +10,7 @@ import java.util.Locale;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
 import static com.tinf.qmobile.model.ViewType.CLASS;
@@ -17,6 +18,7 @@ import static com.tinf.qmobile.model.ViewType.CLASS;
 @Entity
 public class Clazz implements Queryable {
     @Id public long id;
+    @Transient public boolean highlight;
     private long date_;
     private int classesCount_;
     private int absences_;
@@ -56,6 +58,14 @@ public class Clazz implements Queryable {
 
     public Date getDate() {
         return new Date(date_);
+    }
+
+    public String getMatter() {
+        return period.getTarget().matter.getTarget().getTitle();
+    }
+
+    public int getColor() {
+        return period.getTarget().matter.getTarget().getColor();
     }
 
     @Override

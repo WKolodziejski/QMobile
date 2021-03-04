@@ -6,6 +6,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.MessagesFragment;
 import com.tinf.qmobile.service.DownloadReceiver;
@@ -26,9 +28,12 @@ public class MessagesActivity extends AppCompatActivity {
 
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
 
+        Fragment fragment = new MessagesFragment();
+        fragment.setArguments(getIntent().getExtras());
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.messages_fragment, new MessagesFragment())
+                .replace(R.id.messages_fragment, fragment)
                 .commit();
 
         receiver = new DownloadReceiver((DownloadManager) getSystemService(DOWNLOAD_SERVICE), id -> {});

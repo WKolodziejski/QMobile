@@ -9,6 +9,7 @@ import com.tinf.qmobile.model.matter.Period;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
@@ -31,6 +32,7 @@ public class Journal extends EventBase implements Queryable {
         }
     }
 
+    @Transient public boolean highlight;
     private float weight_;
     private float max_;
     private float grade_;
