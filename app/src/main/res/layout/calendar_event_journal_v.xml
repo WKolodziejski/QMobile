@@ -28,7 +28,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/alt_font_size"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:id="@+id/calendar_default_title"
             android:textColor="@color/colorPrimaryLight"
@@ -38,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:id="@+id/calendar_default_description"
             android:textColor="@color/colorPrimaryLight"
             tools:text="Matemática" />

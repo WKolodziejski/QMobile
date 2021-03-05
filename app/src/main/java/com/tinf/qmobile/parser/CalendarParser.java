@@ -1,17 +1,13 @@
 package com.tinf.qmobile.parser;
 
 import android.util.Log;
-import com.tinf.qmobile.BuildConfig;
-import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.Month;
-import com.tinf.qmobile.model.calendar.Month_;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.Calendar;
-import io.objectbox.Box;
 
 public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
@@ -23,8 +19,6 @@ public class CalendarParser extends BaseParser {
     @Override
     public void parse(Document document) {
         Log.i(TAG, "Parsing");
-
-        Box<Month> monthBox = DataBase.get().getBoxStore().boxFor(Month.class);
 
         Elements months = document.getElementsByTag("table").get(10).getElementsByTag("tbody").get(2).select("#AutoNumber3");
 
@@ -193,12 +187,6 @@ public class CalendarParser extends BaseParser {
                 if (search == null) {
                     eventSimpleBox.put(new EventSimple(title, date));
                 }
-            }
-
-            Month search = monthBox.query().between(Month_.time, month.getDate(), month.getDate()).build().findFirst();
-
-            if (search == null) {
-                monthBox.put(month);
             }
         }
     }

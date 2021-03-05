@@ -35,7 +35,6 @@
     <string name="title_calendario">Calendar</string>
     <string name="title_class">Classes</string>
     <string name="materiais_empty">No materials available for now</string>
-    <string name="calendar_end_period">Date out of school year range</string>
     <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
     <string name="home_last_login">Last updated in %1s</string>
     <string name="home_footer">Check your grades on the website</string>

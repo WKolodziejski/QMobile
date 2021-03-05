@@ -6,6 +6,8 @@ import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 
+import org.joda.time.LocalDate;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -154,6 +156,11 @@ public abstract class EventBase extends Event implements CalendarBase {
             return eq;
         }
         return false;
+    }
+
+    @Override
+    public LocalDate getHashKey() {
+        return new LocalDate(getDate());
     }
 
 }

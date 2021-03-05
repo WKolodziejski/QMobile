@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 return true;
 
             case R.id.drawer_calendar:
-                startActivity(new Intent(getApplicationContext(), CalendarActivity2.class));
+                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
 

@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.calendar;
 
+import org.joda.time.LocalDate;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,9 +13,7 @@ import io.objectbox.annotation.Id;
 
 import static com.tinf.qmobile.model.ViewType.MONTH;
 
-@Entity
 public class Month implements CalendarBase {
-    @Id public long id;
     private long time;
 
     public Month(long time) {
@@ -31,8 +31,6 @@ public class Month implements CalendarBase {
     /*
      * Required methods
      */
-
-    public Month() {}
 
     public long getTime() {
         return time;
@@ -71,6 +69,11 @@ public class Month implements CalendarBase {
         }
 
         return false;
+    }
+
+    @Override
+    public LocalDate getHashKey() {
+        return new LocalDate(getDate());
     }
 
 }

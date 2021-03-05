@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.calendar;
 
+import org.joda.time.LocalDate;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,6 +46,11 @@ public class Header implements CalendarBase {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         return calendar.get(Calendar.YEAR);
+    }
+
+    @Override
+    public LocalDate getHashKey() {
+        return new LocalDate(getDate());
     }
 
     @Override

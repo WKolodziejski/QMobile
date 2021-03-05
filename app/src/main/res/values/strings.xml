@@ -37,7 +37,6 @@
     <string name="materiais_empty">Não há materiais disponíveis</string>
     <string name="materiais_downloading">Iniciando Download</string>
 
-    <string name="calendar_end_period">Data fora do período letivo</string>
     <string name="calendar_scroll">Ir para hoje</string>
     <string name="calendar_period_start">Início do período letivo</string>
     <string name="calendar_period_end">Fim do período letivo</string>
