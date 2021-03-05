@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        //setTitle(User.getName());
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
         drawerLayout.addDrawerListener(toggle);
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 return true;
 
             case R.id.drawer_calendar:
-                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+                startActivity(new Intent(getApplicationContext(), CalendarActivity2.class));
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;
 
@@ -488,7 +487,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onDateChanged() {
         date.setText(User.getYears()[pos]);
-        //setTitle(User.getName());
     }
 
 }

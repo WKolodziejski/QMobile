@@ -8,7 +8,7 @@
     <string name="button_wifi">Enable Wi-Fi</string>
     <string name="text_user">Registration</string>
     <string name="title_materiais">Materials</string>
-    <string name="title_diarios">Journal</string>
+    <string name="title_diarios">Journals</string>
     <string name="title_boletim">Report</string>
     <string name="title_home">Home</string>
     <string name="dialog_quit_msg">Are you sure?</string>
@@ -152,8 +152,8 @@
     <string name="report_absences">Absences</string>
     <string name="report_absencesTotal">Total Absences</string>
     <string name="report_matter">Subject</string>
-    <string name="report_mean">Mean</string>
-    <string name="report_meanFinal">Final Mean</string>
+    <string name="report_mean">Average</string>
+    <string name="report_meanFinal">Final Average</string>
     <string name="report_situation">Situation</string>
     <string name="event_until">(until %1$s)</string>
     <string name="action_select_all">Select all</string>

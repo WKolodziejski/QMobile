@@ -101,6 +101,11 @@ dependencies {
 
     implementation 'me.jlurena:revolvingweekview:3.0.0'
 
+
+    
+
+    implementation 'joda-time:joda-time:2.10.2'
+
     /*testImplementation 'junit:junit:4.12'
 
     androidTestImplementation 'androidx.test:runner:1.2.0'

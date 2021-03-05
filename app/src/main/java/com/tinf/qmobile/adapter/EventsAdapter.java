@@ -24,18 +24,25 @@ import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.Day;
+import com.tinf.qmobile.model.calendar.Day2;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Month2;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.Months;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -43,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import io.objectbox.Box;
@@ -149,6 +157,35 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     private List<CalendarBase> getList2() {
         Map<Long, List<CalendarBase>> map = new TreeMap<>();
 
+        LocalDate minDate = new LocalDate().minusYears(5).toDateTimeAtStartOfDay().dayOfMonth().withMinimumValue().toLocalDate();
+        LocalDate maxDate = new LocalDate().plusYears(5).toDateTimeAtStartOfDay().dayOfMonth().withMaximumValue().toLocalDate();
+        LocalDate monthCounter = minDate;
+
+        for (int i = 0; i < Months.monthsBetween(minDate, maxDate).getMonths(); i++) {
+            Month month = new Month(monthCounter.toDate().getTime());
+
+            List<CalendarBase> list = map.get(month.getTime());
+
+            if (list == null) {
+                list = new ArrayList<>();
+                map.put(month.getTime(), list);
+            }
+
+            DateTime startDay = monthCounter.dayOfMonth().withMinimumValue().toDateTimeAtStartOfDay();
+            LocalDate week = startDay.dayOfWeek().withMinimumValue().toLocalDate().minusDays(1);
+
+            while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
+                Day day = new Day(week.toDate(), week.plusDays(6).toDate());
+
+                list.add(day);
+
+                week = week.plusWeeks(1);
+            }
+
+            list.add(0, month);
+            monthCounter = monthCounter.plusMonths(1);
+        }
+
         Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
         Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
         Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
@@ -187,15 +224,8 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         }
 
         List<CalendarBase> ret = new ArrayList<>();
-        Long lastKey = null;
-
 
         for (Long key: map.keySet()) {
-            if (lastKey != null) {
-               if (!lastKey.equals(key))
-                   ret.add(new Day(new Date(lastKey), new Date(key)));
-            }
-
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date(key));
             cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -203,12 +233,12 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
 
-            ret.add(new Header(cal.getTimeInMillis()));
-            ret.addAll(map.get(key));
+            if (!(map.get(key).get(0) instanceof Month))
+                ret.add(new Header(cal.getTimeInMillis()));
 
-
-
-            lastKey = key;
+            List<CalendarBase> list = map.get(key);
+            Collections.sort(list, (t1, t2) -> (int) (t1.getDate().getTime() - t2.getDate().getTime()));
+            ret.addAll(list);
         }
 
         if (ret.isEmpty())
@@ -373,9 +403,8 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         if (e instanceof Month || e instanceof Day)
             return i;
 
-        while (!(e instanceof Header) && i > 0) {
+        while (!(e instanceof Header) && i > 0)
             e = events.get(--i);
-        }
 
         return i;
     }

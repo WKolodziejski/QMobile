@@ -20,7 +20,7 @@ public class Day implements CalendarBase {
         SimpleDateFormat month = new SimpleDateFormat("MMM", Locale.getDefault());
         SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
 
-        String period = month.format(startDate) + " " + day.format(startDate);
+        /*String period = month.format(startDate) + " " + day.format(startDate);
 
         Calendar s = Calendar.getInstance();
         s.setTime(startDate);
@@ -31,6 +31,24 @@ public class Day implements CalendarBase {
         if (s.get(Calendar.DAY_OF_MONTH) != e.get(Calendar.DAY_OF_MONTH)) {
             period += " - " + day.format(endDate);
         }
+
+        return period;*/
+
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        start.setTime(startDate);
+        end.setTime(endDate);
+
+        String period = day.format(startDate);
+
+        if (start.get(Calendar.DAY_OF_YEAR) != end.get(Calendar.DAY_OF_YEAR)) {
+            if (start.get(Calendar.DAY_OF_MONTH) > end.get(Calendar.DAY_OF_MONTH))
+                period += " " + month.format(startDate) + " - " + day.format(endDate);
+            else
+                period += " - " + day.format(endDate);
+        }
+
+        period += " " + month.format(endDate);
 
         return period;
     }
