@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import io.objectbox.annotation.BaseEntity;
 import io.objectbox.annotation.Id;
+import io.objectbox.annotation.Transient;
 
 @BaseEntity
 public abstract class EventBase extends Event implements CalendarBase {
@@ -24,8 +25,7 @@ public abstract class EventBase extends Event implements CalendarBase {
     private long endTime;
     private String description;
     @ColorInt private int color;
-
-    public transient boolean isHeader;
+    @Transient public boolean isHeader;
 
     public EventBase(String title, long startTime) {
         super(0, startTime);

@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (User.getYears().length > 0)
             date.setText(User.getYears()[pos]);
 
+        startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
+
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {

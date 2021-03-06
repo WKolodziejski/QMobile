@@ -22,12 +22,10 @@ import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.network.Client;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 
 public class CalendarFragment extends Fragment implements OnUpdate {
@@ -48,9 +46,9 @@ public class CalendarFragment extends Fragment implements OnUpdate {
 
         layout = new LinearLayoutManager(getContext());
 
-        calendarView = ((CalendarActivity) getActivity()).calendar;
+        //calendarView = ((CalendarActivity) getActivity()).calendar;
 
-        adapter = new EventsAdapter(getContext());
+        adapter = new EventsAdapter(getContext(), null);
 
         calendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         calendarView.setUseThreeLetterAbbreviation(true);
@@ -205,14 +203,14 @@ public class CalendarFragment extends Fragment implements OnUpdate {
     public void onStart() {
         super.onStart();
         Client.get().addOnUpdateListener(this);
-        calendarView = ((CalendarActivity) requireActivity()).calendar;
+        //calendarView = ((CalendarActivity) requireActivity()).calendar;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
-        calendarView = ((CalendarActivity) requireActivity()).calendar;
+        //calendarView = ((CalendarActivity) requireActivity()).calendar;
     }
 
     @Override

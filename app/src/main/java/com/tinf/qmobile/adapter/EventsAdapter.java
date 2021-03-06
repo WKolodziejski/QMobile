@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -61,10 +63,12 @@ import static com.tinf.qmobile.model.ViewType.USER;
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
     private List<CalendarBase> events;
     private Context context;
-    private DataSubscription sub1, sub2, sub3, sub4, sub5;
+    private CompactCalendarView calendar;
+    private DataSubscription sub1, sub2, sub3, sub4;
 
-    public EventsAdapter(Context context) {
+    public EventsAdapter(Context context, CompactCalendarView calendar) {
         this.context = context;
+        this.calendar = calendar;
 
         events = getList();
 
@@ -216,6 +220,8 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             list.add(e);
         }
 
+        calendar.removeAllEvents();
+
         List<CalendarBase> ret = new ArrayList<>();
 
         for (LocalDate key: map.keySet()) {
@@ -229,12 +235,18 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             List<CalendarBase> list = map.get(key);
             Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
 
+            boolean hasHeader = false;
+
             for (int i = 0; i < list.size(); i++) {
                 CalendarBase cb = list.get(i);
 
                 if (cb instanceof EventBase) {
-                    list.add(i, new Header(cal.getTimeInMillis()));
-                    break;
+                    if (!hasHeader) {
+                        hasHeader = true;
+                        list.add(i, new Header(cal.getTimeInMillis()));
+                        i++;
+                    }
+                    calendar.addEvent((EventBase) cb);
                 }
             }
 
@@ -347,7 +359,6 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         sub2.cancel();
         sub3.cancel();
         sub4.cancel();
-        sub5.cancel();
     }
 
 }
