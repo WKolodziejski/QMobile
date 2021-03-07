@@ -1,12 +1,16 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -20,6 +24,7 @@ import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.widget.CalendarRecyclerView;
 
 import java.text.SimpleDateFormat;
@@ -60,6 +65,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
         setSupportActionBar(findViewById(R.id.calendar_toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        SimpleDateFormat pattern = new SimpleDateFormat("MMMM", Locale.getDefault());
         layout = new LinearLayoutManager(this);
         adapter = new EventsAdapter(this, calendar);
 
@@ -70,6 +76,22 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!isExpanded && newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+                    calendar.setCurrentDate(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate());
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                title.setText(pattern.format(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate()));
+            }
+
+        });
 
         appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             if (appBarOffset != verticalOffset) {
@@ -103,8 +125,6 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             recyclerView.stopScroll();
             appbar.setExpanded(isExpanded, true);
         });
-
-        SimpleDateFormat pattern = new SimpleDateFormat("MMMM", Locale.getDefault());
 
         calendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
 
@@ -153,8 +173,11 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
                 break;
         }
 
-        if (i >= 0)
-            layout.scrollToPosition(i);
+        if (i >= 0) {
+            offset = i;
+            topSpace = 0;
+            layout.scrollToPositionWithOffset(i, 20);
+        }
     }
 
     @Override
@@ -191,7 +214,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             Client.get().load(PG_CALENDAR);
             return true;
         } else if (item.getItemId() == R.id.action_today) {
-            Client.get().requestScroll();
+            scrollToDate(new Date());
             return true;
         }
         return super.onOptionsItemSelected(item);

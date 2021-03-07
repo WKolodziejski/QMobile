@@ -163,7 +163,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             list.add(0, month);
 
             DateTime startDay = monthCounter.dayOfMonth().withMinimumValue().toDateTimeAtStartOfDay();
-            LocalDate week = startDay.dayOfWeek().withMaximumValue().toLocalDate().minusDays(1);
+            LocalDate week = startDay.dayOfWeek().withMaximumValue().toLocalDate();//.minusDays(1);
 
             while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
                 Day day = new Day(week.toDate(), week.plusDays(6).toDate());

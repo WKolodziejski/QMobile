@@ -10,6 +10,7 @@
         android:id="@+id/calendar_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stateListAnimator="@drawable/appbar_always_elevated"
         app:expanded="false"
         app:layout_behavior=".widget.CalendarBehavior"
         style="@style/AppTheme.AppBarOverlay"

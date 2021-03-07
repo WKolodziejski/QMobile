@@ -34,8 +34,7 @@ public class CalendarRecyclerView extends RecyclerView {
 
     @Override
     public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow, int type) {
-        if (type == ViewCompat.TYPE_NON_TOUCH && mAppBarTracking.isAppBarIdle()
-                && isNestedScrollingEnabled()) {
+        if (type == ViewCompat.TYPE_NON_TOUCH && mAppBarTracking.isAppBarIdle() && isNestedScrollingEnabled()) {
             if (dy > 0) {
                 if (mAppBarTracking.isAppBarExpanded()) {
                     consumed[1] = dy;
@@ -44,9 +43,7 @@ public class CalendarRecyclerView extends RecyclerView {
             } else {
                 View mView = mLayoutManager.findViewByPosition(mAppBarTracking.getAppBarOffset());
                 if (mView != null) {
-                    //if (-mView.getTop() + dy <= 0) {
-                        consumed[1] = dy - mView.getTop() + mAppBarTracking.getTopSpace();
-                    //}
+                    consumed[1] = dy - mView.getTop() + mAppBarTracking.getTopSpace();
                     return true;
                 }
             }
