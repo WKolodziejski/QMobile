@@ -16,16 +16,19 @@ import static com.tinf.qmobile.model.ViewType.MONTH;
 public class Month implements CalendarBase {
     private long time;
 
+    private static SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+
     public Month(long time) {
         this.time = time;
     }
 
     public String getMonth() {
-        return new SimpleDateFormat("MMMM", Locale.getDefault()).format(time);
+        return month.format(time);
     }
 
-    public String getYearString() {
-        return new SimpleDateFormat("yyyy", Locale.getDefault()).format(time);
+    @Override
+    public boolean isHeader() {
+        return true;
     }
 
     /*

@@ -146,8 +146,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_teacher" />
-                            <entry key="sourceFile" value="D:\Downloads\person-black-24dp.svg" />
+                            <entry key="outputName" value="ic_arrow_drop_up" />
+                            <entry key="sourceFile" value="D:\Downloads\arrow_drop_up-24px.svg" />
                           </map>
                         </option>
                       </PersistentState>

@@ -12,16 +12,19 @@ import static com.tinf.qmobile.model.ViewType.HEADER;
 public class Header implements CalendarBase {
     private long time;
 
+    private static SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+    private static SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
+
     public Header(long time) {
         this.time = time;
     }
 
     public String getDayString() {
-        return new SimpleDateFormat("d", Locale.getDefault()).format(time);
+        return day.format(time);
     }
 
     public String getWeekString() {
-        return new SimpleDateFormat("EE", Locale.getDefault()).format(time);
+        return week.format(time);
     }
 
     @Override
@@ -61,6 +64,11 @@ public class Header implements CalendarBase {
             return h.time == time;
         }
         return false;
+    }
+
+    @Override
+    public boolean isHeader() {
+        return true;
     }
 
 }

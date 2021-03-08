@@ -25,6 +25,10 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
     @BindView(R.id.calendar_user_matter)      public TextView matter;
     @BindView(R.id.calendar_user_card)        public LinearLayout card;
 
+    @BindView(R.id.calendar_header_simple_day_week)     TextView day;
+    @BindView(R.id.calendar_header_simple_day_number)   TextView number;
+    @BindView(R.id.calendar_header_simple_layout)       LinearLayout layout;
+
     public EventUserVerticalViewHolder(View view) {
         super(view);
     }
@@ -57,6 +61,14 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
             intent.putExtra("ID", event.id);
             context.startActivity(intent);
         });
+
+        if (event.isHeader) {
+            day.setText(event.getWeekString());
+            number.setText(event.getDayString());
+            layout.setVisibility(View.VISIBLE);
+        } else {
+            layout.setVisibility(View.INVISIBLE);
+        }
     }
 
 }

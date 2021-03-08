@@ -5,14 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -34,19 +32,15 @@ import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
-
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import io.objectbox.Box;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
@@ -245,6 +239,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                         hasHeader = true;
                         list.add(i, new Header(cal.getTimeInMillis()));
                         i++;
+                        ((EventBase) cb).isHeader = true;
                     }
                     calendar.addEvent((EventBase) cb);
                 }
@@ -289,7 +284,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             case HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.calendar_header_day_single, parent, false));
+                        .inflate(R.layout.calendar_header_empty, parent, false));
 
             case EMPTY:
                 return new EmptyViewHolder(LayoutInflater.from(context)

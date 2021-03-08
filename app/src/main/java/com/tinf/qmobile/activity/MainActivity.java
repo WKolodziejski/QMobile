@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (User.getYears().length > 0)
             date.setText(User.getYears()[pos]);
 
-        startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
-
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
@@ -236,11 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         return false;
     }
 
-    protected void showProgressbar() {
-        refreshLayout.setRefreshing(true);
-    }
-
-    public void dismissProgressbar() {
+    private void dismissProgressbar() {
         refreshLayout.setRefreshing(false);
     }
 
@@ -342,11 +336,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onStart(int pg, int pos) {
-        if (!refreshLayout.isRefreshing()) {
-            showProgressbar();
-        } /*else {
-            dismissProgressbar();
-        }*/
+        if (!refreshLayout.isRefreshing())
+            refreshLayout.setRefreshing(true);
     }
 
     @Override

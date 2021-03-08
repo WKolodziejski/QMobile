@@ -13,15 +13,16 @@ public class Day implements CalendarBase {
     private Date startDate;
     private Date endDate;
 
+    private static SimpleDateFormat year = new SimpleDateFormat("MMM, yyyy", Locale.getDefault());
+    private static SimpleDateFormat month = new SimpleDateFormat("MMM", Locale.getDefault());
+    private static SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+
     public Day(Date startDate, Date endDate) {
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
     public String getDayPeriod() {
-        SimpleDateFormat month = new SimpleDateFormat("MMM", Locale.getDefault());
-        SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
-
         Calendar start = Calendar.getInstance();
         Calendar end = Calendar.getInstance();
         start.setTime(startDate);
@@ -36,9 +37,17 @@ public class Day implements CalendarBase {
                 period += " - " + day.format(endDate);
         }
 
-        period += " " + month.format(endDate);
+        if (getYear() != new LocalDate().getYear())
+            period += " " + year.format(endDate);
+        else
+            period += " " + month.format(endDate);
 
         return period;
+    }
+
+    @Override
+    public boolean isHeader() {
+        return true;
     }
 
     @Override

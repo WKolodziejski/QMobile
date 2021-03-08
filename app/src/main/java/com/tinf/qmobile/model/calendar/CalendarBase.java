@@ -11,7 +11,7 @@ public interface CalendarBase<T extends CalendarBase> {
     int getDay();
     int getYear();
     LocalDate getHashKey();
-
+    boolean isHeader();
     boolean equals(T event);
 
 }

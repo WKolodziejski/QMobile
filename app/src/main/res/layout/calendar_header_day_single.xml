@@ -6,9 +6,12 @@
     android:layout_height="wrap_content"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
+    android:paddingTop="8dp"
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/headerBackground"
+    android:id="@+id/calendar_header_simple_layout"
+    android:layout_gravity="top"
     >
 
     <TextView

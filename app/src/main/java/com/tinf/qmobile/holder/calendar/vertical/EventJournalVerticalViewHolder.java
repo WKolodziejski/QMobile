@@ -19,9 +19,13 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> {
-    @BindView(R.id.calendar_default_title)       public TextView title;
-    @BindView(R.id.calendar_default_description) public TextView description;
-    @BindView(R.id.calendar_default_card)        public LinearLayout card;
+    @BindView(R.id.calendar_default_title)       TextView title;
+    @BindView(R.id.calendar_default_description) TextView description;
+    @BindView(R.id.calendar_default_card)        LinearLayout card;
+
+    @BindView(R.id.calendar_header_simple_day_week)     TextView day;
+    @BindView(R.id.calendar_header_simple_day_number)   TextView number;
+    @BindView(R.id.calendar_header_simple_layout)       LinearLayout layout;
 
     public EventJournalVerticalViewHolder(View view) {
         super(view);
@@ -39,6 +43,14 @@ public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> 
             intent.putExtra("ID", journal.id);
             context.startActivity(intent);
         });
+
+        if (journal.isHeader) {
+            day.setText(journal.getWeekString());
+            number.setText(journal.getDayString());
+            layout.setVisibility(View.VISIBLE);
+        } else {
+            layout.setVisibility(View.INVISIBLE);
+        }
     }
 
 }

@@ -84,8 +84,6 @@ public class CalendarParser extends BaseParser {
                 year++;
             }
 
-            Month month = new Month(getDate("1" + "/" + monthCurrent + "/" + year, true));
-
             Elements events = new Elements();
 
             if (months.get(i).nextElementSibling().childNodeSize() > 0) {

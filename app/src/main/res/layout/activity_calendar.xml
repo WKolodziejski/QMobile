@@ -1,39 +1,38 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    tools:context=".activity.CalendarActivity"
     >
 
     <com.google.android.material.appbar.AppBarLayout
-        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/calendar_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stateListAnimator="@drawable/appbar_always_elevated"
+        app:expanded="false"
+        app:layout_behavior=".widget.CalendarBehavior"
         style="@style/AppTheme.AppBarOverlay"
+        tools:targetApi="lollipop"
         >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlways"
             >
 
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
-                android:id="@+id/calendar_toolbar"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:title="@string/title_calendario" >
-
-            </androidx.appcompat.widget.Toolbar>
-
             <com.github.sundeepk.compactcalendarview.CompactCalendarView
-                android:id="@+id/compactcalendar_view"
+                android:id="@+id/calendar_view"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
+                android:layout_marginTop="?attr/actionBarSize"
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 app:compactCalendarTargetHeight="250dp"
@@ -43,16 +42,84 @@
                 app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorSecondary"
                 app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
                 app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary"
-                app:layout_constraintTop_toBottomOf="@id/calendar_toolbar"/>
+                app:layout_constraintTop_toBottomOf="@id/calendar_toolbar"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="1.0" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/calendar_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:contentInsetStart="0dp"
+                app:layout_collapseMode="pin"
+                >
+
+                <LinearLayout
+                    android:id="@+id/calendar_expand"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    >
+
+                    <TextView
+                        android:id="@+id/calendar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:textSize="17sp"
+                        android:maxLines="1" />
+
+                    <ImageView
+                        android:id="@+id/calendar_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:src="@drawable/ic_arrow_drop_up" />
+
+                </LinearLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/calendario_fragment"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:id="@+id/calendar_refresh"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+        <com.tinf.qmobile.widget.CalendarRecyclerView
+            android:id="@+id/calendar_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/calendar_fab"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorAccent"
+        android:transitionName="Fab"
+        android:textColor="@color/colorPrimaryLight"
+        app:backgroundTint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/colorPrimaryLight"
+        app:fabSize="normal"
+        app:borderWidth="0dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

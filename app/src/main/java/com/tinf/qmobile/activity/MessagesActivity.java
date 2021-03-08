@@ -21,11 +21,8 @@ public class MessagesActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messages);
-
         setSupportActionBar(findViewById(R.id.toolbar_default));
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
 
         Fragment fragment = new MessagesFragment();
