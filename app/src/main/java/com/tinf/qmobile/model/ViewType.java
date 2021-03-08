@@ -25,4 +25,6 @@ public class ViewType {
 
     public final static int CLASS = 700;
 
+    public final static int QUERY = 800;
+
 }

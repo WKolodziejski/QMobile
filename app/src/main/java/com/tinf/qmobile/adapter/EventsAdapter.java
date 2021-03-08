@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -284,7 +283,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             case HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.calendar_header_empty, parent, false));
+                        .inflate(R.layout.header_empty, parent, false));
 
             case EMPTY:
                 return new EmptyViewHolder(LayoutInflater.from(context)
@@ -326,7 +325,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         if (events.get(i) instanceof Header)
             return R.layout.calendar_header_day_single;
         else
-            return R.layout.calendar_header_empty;
+            return R.layout.header_empty;
     }
 
     @Override
@@ -342,8 +341,10 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
     @Override
     public Boolean isHeader(Integer i) {
+        CalendarBase e = events.get(i);
+
         if (i >= 0 && i < events.size())
-            return events.get(i) instanceof Header || events.get(i) instanceof Day || events.get(i) instanceof Month;
+            return e instanceof Header || e instanceof Day || e instanceof Month;
         else return false;
     }
 

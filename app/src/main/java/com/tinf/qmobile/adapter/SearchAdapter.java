@@ -10,33 +10,34 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.message.MessageViewHolder;
 import com.tinf.qmobile.holder.search.SearchClassViewHolder;
+import com.tinf.qmobile.holder.search.SearchEmptyViewHolder;
 import com.tinf.qmobile.holder.search.SearchEventViewHolder;
 import com.tinf.qmobile.holder.search.SearchHeaderViewHolder;
 import com.tinf.qmobile.holder.search.SearchJournalViewHolder;
 import com.tinf.qmobile.holder.search.SearchMaterialViewHolder;
 import com.tinf.qmobile.holder.search.SearchMatterViewHolder;
 import com.tinf.qmobile.holder.search.SearchMessageViewHolder;
+import com.tinf.qmobile.holder.search.SearchQueryViewHolder;
 import com.tinf.qmobile.holder.search.SearchViewHolder;
+import com.tinf.qmobile.model.Query;
+import com.tinf.qmobile.model.Query_;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.material.Material;
-import com.tinf.qmobile.model.message.Attachment;
-import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.parser.SearchParser;
-
 import java.util.ArrayList;
 import java.util.List;
-import static com.tinf.qmobile.model.ViewType.ATTACHMENT;
 import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
+import static com.tinf.qmobile.model.ViewType.QUERY;
 import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
@@ -44,13 +45,23 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
     private final Context context;
     private List<Queryable> list;
     private SearchParser parser;
+    private String query;
 
     public SearchAdapter(Context context) {
         this.context = context;
         this.list = new ArrayList<>();
+
+        showRecentQueries();
     }
 
     public void query(String query) {
+        this.query = query;
+
+        if (query.isEmpty()) {
+            showRecentQueries();
+            return;
+        }
+
         if (parser != null) {
             parser.cancel(true);
         }
@@ -61,6 +72,20 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
         });
 
         parser.execute(query);
+    }
+
+    private void showRecentQueries() {
+        list.clear();
+        list.addAll(DataBase
+                .get()
+                .getBoxStore()
+                .boxFor(Query.class)
+                .query()
+                .orderDesc(Query_.date)
+                .build()
+                .find(0, 5));
+
+        notifyDataSetChanged();
     }
 
     @Override
@@ -100,6 +125,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
             case HEADERSEARCH:
                 return new SearchHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.search_header, parent, false));
+
+            case EMPTY:
+                return new SearchEmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.search_empty, parent, false));
+
+            case QUERY:
+                return new SearchQueryViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.search_query, parent, false));
         }
 
         return null;
@@ -107,12 +140,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int i) {
-        holder.bind(list.get(i), context);
+        holder.bind(list.get(i), context, query, this);
     }
 
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public List<Queryable> getList() {
+        return list;
     }
 
 }

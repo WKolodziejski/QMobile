@@ -48,7 +48,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
                     if (messages.get(i) instanceof Message) {
                         Message m1 = ((Message) messages.get(i));
 
-                        for (Queryable q : updated)
+                        for (Queryable q : updated) {
                             if (q instanceof Message) {
                                 Message m2 = (Message) q;
 
@@ -57,6 +57,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
                                     break;
                                 }
                             }
+                        }
                     }
                 }
             }

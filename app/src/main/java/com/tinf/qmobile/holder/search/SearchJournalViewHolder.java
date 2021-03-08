@@ -11,12 +11,15 @@ import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.ViewType;
 import com.tinf.qmobile.model.journal.Journal;
 
 import butterknife.BindView;
 
+import static com.tinf.qmobile.activity.MatterActivity.CLASS;
 import static com.tinf.qmobile.activity.MatterActivity.GRADES;
 import static com.tinf.qmobile.activity.MatterActivity.MATERIALS;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
@@ -32,7 +35,7 @@ public class SearchJournalViewHolder extends SearchViewHolder<Journal> {
     }
 
     @Override
-    public void bind(Journal journal, Context context) {
+    public void bind(Journal journal, Context context, String query, SearchAdapter adapter) {
         title.setText(journal.getTitle());
         subtitle.setText(journal.getMatter());
         date.setText(journal.formatDate());
@@ -44,6 +47,8 @@ public class SearchJournalViewHolder extends SearchViewHolder<Journal> {
             intent.putExtra("ID", journal.id);
             intent.putExtra("TYPE", JOURNAL);
             context.startActivity(intent);
+
+            saveQuery(query);
         });
     }
 

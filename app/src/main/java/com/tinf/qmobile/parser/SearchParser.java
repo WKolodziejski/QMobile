@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -69,34 +70,34 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
 
         List<Queryable> list = new ArrayList<>();
 
-        Set<Queryable> journals = new HashSet<>();
-        Set<Material> materials = new HashSet<>();
-        Set<Message> messages = new HashSet<>();
-        Set<Clazz> classes = new HashSet<>();
+        List<Journal> journals = new ArrayList<>();
+        List<Material> materials = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+        List<Clazz> classes = new ArrayList<>();
 
         for (String query : queries) {
 
             journals.addAll(journalBox.query()
-                    .contains(Journal_.title, query)
+                    .contains(Journal_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
                     .find(0, 20));
 
             materials.addAll(materialsBox.query()
-                    .contains(Material_.title, query)
+                    .contains(Material_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
                     .find(0, 20));
 
             messages.addAll(messageBox.query()
-                    .contains(Message_.text_, query)
+                    .contains(Message_.text_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .or()
-                    .contains(Message_.subject_, query)
+                    .contains(Message_.subject_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
                     .find(0, 20));
 
             classes.addAll(clazzBox.query()
-                    .contains(Clazz_.content_, query)
+                    .contains(Clazz_.content_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .or()
-                    .contains(Clazz_.teacher_, query)
+                    .contains(Clazz_.teacher_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
                     .find(0, 20));
         }
@@ -120,6 +121,9 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
             list.add(new Header(context.getResources().getString(R.string.title_class)));
             list.addAll(classes);
         }
+
+        if (list.isEmpty())
+            list.add(new Empty());
 
         return list;
     }

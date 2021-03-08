@@ -4,11 +4,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
@@ -21,18 +25,16 @@ import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.Empty;
+import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.journal.FooterPeriod;
 import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
@@ -45,7 +47,8 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate {
+public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate,
+        KmStickyListener {
     private List<Queryable> journals;
     private Context context;
     private OnExpandListener onExpandListener;
@@ -335,6 +338,41 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
     public void onDateChanged() {
         journals = getList(null);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public Integer getHeaderPositionForItem(Integer i) {
+        Queryable q = journals.get(i);
+
+        if (q instanceof Journal)
+            while (!(q instanceof Matter) && i > 0)
+                q = journals.get(--i);
+
+        return i;
+    }
+
+    @Override
+    public Integer getHeaderLayout(Integer i) {
+        if (journals.get(i) instanceof Matter && ((Matter) journals.get(i)).isExpanded)
+            return R.layout.journal_header;
+        else
+            return R.layout.header_empty;
+    }
+
+    @Override
+    public void bindHeaderData(View header, Integer i) {
+        if (journals.get(i) instanceof Matter) {
+            //TODO
+        }
+    }
+
+    @Override
+    public Boolean isHeader(Integer i) {
+        Queryable q = journals.get(i);
+
+        if (i >= 0 && i < journals.size())
+            return !(q instanceof Journal);
+        else return false;
     }
 
     public interface OnExpandListener {

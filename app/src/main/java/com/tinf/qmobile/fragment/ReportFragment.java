@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import com.evrencoskun.tableview.TableView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -48,6 +49,12 @@ public class ReportFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        table.setShowHorizontalSeparators(false);
+        table.setShowVerticalSeparators(false);
+        table.getColumnHeaderRecyclerView().removeItemDecorationAt(0);
+        table.getRowHeaderRecyclerView().removeItemDecorationAt(0);
+        table.getCellRecyclerView().removeItemDecorationAt(0);
+
         table.setAdapter(new ReportAdapter(getContext(), table/*, header -> {
             boolean[] checked = new boolean[header.length];
             Arrays.fill(checked, true);
@@ -67,7 +74,8 @@ public class ReportFragment extends Fragment implements OnUpdate {
                     .show());
         }*/));
 
-        table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener(){
+        table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
+
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
@@ -82,6 +90,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
             }
+
         });
     }
 

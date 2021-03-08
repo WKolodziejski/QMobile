@@ -18,6 +18,7 @@ import com.tinf.qmobile.model.message.Message;
 
 import butterknife.BindView;
 
+import static com.tinf.qmobile.activity.MatterActivity.CLASS;
 import static com.tinf.qmobile.activity.MatterActivity.GRADES;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
@@ -32,18 +33,19 @@ public class SearchMessageViewHolder extends SearchViewHolder<Message> {
     }
 
     @Override
-    public void bind(Message message, Context context) {
+    public void bind(Message message, Context context, String query, SearchAdapter adapter) {
         title.setText(message.getSubject_());
         subtitle.setText(message.getSender());
         date.setText(message.formatDate());
         icon.setText(message.sender.getTarget().getSign());
         icon.setBackgroundTintList(ColorStateList.valueOf(message.getColor()));
 
-        //itemView.setOnClickListener(view -> onQuery.onQuery(0, message.id, MESSAGE));
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, MessagesActivity.class);
             intent.putExtra("ID2", message.id);
             context.startActivity(intent);
+
+            saveQuery(query);
         });
     }
 

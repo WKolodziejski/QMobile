@@ -24,7 +24,7 @@ public class SearchEventViewHolder extends SearchViewHolder<Message> {
     }
 
     @Override
-    public void bind(Message message, Context context) {
+    public void bind(Message message, Context context, String query, SearchAdapter adapter) {
         /*title.setText(material.getTitle());
         subtitle.setText(material.getMatter());
         date.setText(material.getDateString());

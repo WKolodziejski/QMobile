@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.model.search.Header;
 import butterknife.BindView;
 
@@ -16,7 +17,7 @@ public class SearchHeaderViewHolder extends SearchViewHolder<Header> {
     }
 
     @Override
-    public void bind(Header header, Context context) {
+    public void bind(Header header, Context context, String query, SearchAdapter adapter) {
         title.setText(header.getTitle());
     }
 

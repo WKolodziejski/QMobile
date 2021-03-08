@@ -25,7 +25,7 @@ public class SearchMatterViewHolder extends SearchViewHolder<Matter> {
     }
 
     @Override
-    public void bind(Matter matter, Context context) {
+    public void bind(Matter matter, Context context, String query, SearchAdapter adapter) {
        /* title.setText(material.getTitle());
         subtitle.setText(material.getMatter());
         date.setText(material.getDateString());

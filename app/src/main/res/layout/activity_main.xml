@@ -29,28 +29,33 @@
                 android:layout_height="wrap_content"
                 layout="@layout/action_bar_search" />
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/main_refresh"
+                android:orientation="vertical"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 >
 
-                <LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:textStyle="bold"
+                    android:id="@+id/main_date"
+                    tools:text="2020 / 1" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black_dividers" />
+
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
+                    android:id="@+id/main_refresh"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:layout_marginVertical="8dp"
-                        android:textStyle="bold"
-                        android:id="@+id/main_date"
-                        tools:text="2020 / 1" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
@@ -59,9 +64,9 @@
                         android:background="@color/colorPrimaryLight"
                         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-                </LinearLayout>
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </LinearLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

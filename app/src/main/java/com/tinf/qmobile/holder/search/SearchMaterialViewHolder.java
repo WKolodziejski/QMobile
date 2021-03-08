@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
+import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
@@ -17,7 +18,9 @@ import com.tinf.qmobile.utility.User;
 
 import butterknife.BindView;
 
+import static com.tinf.qmobile.activity.MatterActivity.CLASS;
 import static com.tinf.qmobile.activity.MatterActivity.MATERIALS;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
     @BindView(R.id.search_material_title)        TextView title;
@@ -30,7 +33,7 @@ public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
     }
 
     @Override
-    public void bind(Material material, Context context) {
+    public void bind(Material material, Context context, String query, SearchAdapter adapter) {
         title.setText(material.getTitle());
         subtitle.setText(material.getMatter());
         date.setText(material.getDateString());
@@ -49,6 +52,8 @@ public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
 
             if (i >= 0)
                 Client.get().changeDateWithBackup(i);
+
+            saveQuery(query);
         });
     }
 
