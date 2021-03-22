@@ -9,7 +9,6 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Month;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MonthViewHolder extends CalendarViewHolder<Month> {
     @BindView(R.id.calendario_month_title) public TextView title;

@@ -1,6 +1,7 @@
 package com.tinf.qmobile.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,9 +25,8 @@ import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
-import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.Empty;
-import com.tinf.qmobile.model.calendar.Header;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.journal.FooterPeriod;
 import com.tinf.qmobile.model.journal.Journal;
@@ -34,11 +35,14 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.FOOTERJ;
 import static com.tinf.qmobile.model.ViewType.FOOTERP;
@@ -47,8 +51,7 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate,
-        KmStickyListener {
+public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate, KmStickyListener {
     private List<Queryable> journals;
     private Context context;
     private OnExpandListener onExpandListener;
@@ -361,8 +364,22 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public void bindHeaderData(View header, Integer i) {
-        if (journals.get(i) instanceof Matter) {
-            //TODO
+        if (journals.get(i) instanceof Matter && ((Matter) journals.get(i)).isExpanded) {
+            Matter matter = (Matter) journals.get(i);
+
+            TextView title = header.findViewById(R.id.journal_title);
+            TextView badge = header.findViewById(R.id.journal_color_badge);
+
+            title.setText(matter.getTitle());
+            badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
+
+            int n = matter.getJournalNotSeenCount();
+
+            if (n > 0) {
+                badge.setText(String.valueOf(n));
+            } else {
+                badge.setText("");
+            }
         }
     }
 

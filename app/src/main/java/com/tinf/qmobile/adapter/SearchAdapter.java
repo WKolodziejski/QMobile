@@ -2,18 +2,13 @@ package com.tinf.qmobile.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.holder.journal.JournalViewHolder;
-import com.tinf.qmobile.holder.material.MaterialViewHolder;
-import com.tinf.qmobile.holder.message.MessageViewHolder;
 import com.tinf.qmobile.holder.search.SearchClassViewHolder;
 import com.tinf.qmobile.holder.search.SearchEmptyViewHolder;
 import com.tinf.qmobile.holder.search.SearchEventViewHolder;
@@ -28,8 +23,10 @@ import com.tinf.qmobile.model.Query;
 import com.tinf.qmobile.model.Query_;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.parser.SearchParser;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
@@ -72,6 +69,20 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
         });
 
         parser.execute(query);
+    }
+
+    public interface OnQuery {
+        void onQuery(String query);
+    }
+
+    private OnQuery onQuery;
+
+    public void requestHideKeyboard(String query) {
+        onQuery.onQuery(query);
+    }
+
+    public void setOnQueryListener(OnQuery onQuery) {
+        this.onQuery = onQuery;
     }
 
     private void showRecentQueries() {

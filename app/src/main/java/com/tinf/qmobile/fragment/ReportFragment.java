@@ -2,31 +2,25 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.evrencoskun.tableview.TableView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
-
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportFragment extends Fragment implements OnUpdate {
     @BindView(R.id.report_table)    TableView table;

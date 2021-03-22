@@ -2,6 +2,7 @@ package com.tinf.qmobile.model;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
+
 import static com.tinf.qmobile.model.ViewType.QUERY;
 
 @Entity

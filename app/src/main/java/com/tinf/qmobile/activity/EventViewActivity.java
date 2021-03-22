@@ -1,13 +1,12 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.fragment.matter.ClassFragment;
 import com.tinf.qmobile.fragment.view.ClassViewFragment;
 import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
@@ -27,7 +26,7 @@ public class EventViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_view);
         setSupportActionBar(findViewById(R.id.toolbar_default));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
+        getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
         Bundle bundle = getIntent().getExtras();
 

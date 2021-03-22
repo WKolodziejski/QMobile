@@ -10,12 +10,10 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.EventUser;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 
 import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.model.ViewType.USER;
 

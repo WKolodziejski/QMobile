@@ -10,9 +10,7 @@ import com.tinf.qmobile.utility.User;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;

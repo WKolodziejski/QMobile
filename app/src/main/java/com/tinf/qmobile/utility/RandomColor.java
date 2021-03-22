@@ -2,7 +2,9 @@ package com.tinf.qmobile.utility;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+
 import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Stack;

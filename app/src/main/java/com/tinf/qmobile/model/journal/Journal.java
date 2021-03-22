@@ -6,8 +6,10 @@ import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;

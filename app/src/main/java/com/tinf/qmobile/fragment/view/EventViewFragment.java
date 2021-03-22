@@ -21,8 +21,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.EventCreateActivity;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Matter;
@@ -32,7 +32,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;

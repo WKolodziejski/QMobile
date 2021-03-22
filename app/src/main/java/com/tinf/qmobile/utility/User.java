@@ -9,8 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MenuItem;
-import android.widget.ImageView;
 
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -18,12 +16,12 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.fragment.dialog.UserFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

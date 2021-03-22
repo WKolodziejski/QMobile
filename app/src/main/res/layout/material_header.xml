@@ -14,6 +14,7 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toTopOf="@id/journal_infos_header"
     android:foreground="?android:attr/selectableItemBackground"
+    android:background="@color/colorPrimaryLight"
     >
 
     <TextView

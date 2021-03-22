@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+
 import androidx.appcompat.app.AppCompatDelegate;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
+
 import io.objectbox.BoxStore;
+
 import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 import static com.tinf.qmobile.utility.User.PASSWORD;
@@ -31,7 +35,7 @@ public class App extends Application {
 
         if (!BuildConfig.DEBUG) {
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
             if (prefs.getBoolean(DATA, false)) {
                 crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
@@ -42,18 +46,18 @@ public class App extends Application {
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
-        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean(NIGHT, false) ?
+        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean(NIGHT, false) ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
-        context = getApplicationContext();
+        context = getBaseContext();
 
         if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true)) {
-            if (BoxStore.deleteAllFiles(getApplicationContext(), User.getCredential(REGISTRATION))) {
+            if (BoxStore.deleteAllFiles(getBaseContext(), User.getCredential(REGISTRATION))) {
                 Client.get().close();
                 Jobs.cancelAllJobs();
                 DataBase.get().close();
                 User.clearInfos();
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
+                PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
                 getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(VERSION, false).apply();
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }

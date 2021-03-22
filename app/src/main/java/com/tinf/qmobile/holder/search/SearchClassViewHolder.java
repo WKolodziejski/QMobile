@@ -6,12 +6,16 @@ import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.model.matter.Clazz;
+
 import butterknife.BindView;
+
 import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class SearchClassViewHolder extends SearchViewHolder<Clazz> {

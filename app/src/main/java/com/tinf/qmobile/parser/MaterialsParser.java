@@ -2,8 +2,8 @@ package com.tinf.qmobile.parser;
 
 import android.content.Intent;
 import android.util.Log;
+
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.model.material.Material;
@@ -13,9 +13,11 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
 import java.util.Locale;
 

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
@@ -15,20 +17,21 @@ import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHol
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
 import com.tinf.qmobile.model.Empty;
+import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
-import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
 import io.objectbox.Box;
-import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;

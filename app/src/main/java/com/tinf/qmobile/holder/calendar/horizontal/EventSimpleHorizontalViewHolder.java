@@ -11,7 +11,6 @@ import com.tinf.qmobile.model.calendar.EventSimple;
 import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class EventSimpleHorizontalViewHolder extends CalendarViewHolder<EventSimple> {
     @BindView(R.id.calendar_simple_title)       public TextView title;

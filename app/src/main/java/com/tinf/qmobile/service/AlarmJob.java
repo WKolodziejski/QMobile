@@ -9,7 +9,6 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.matter.Schedule;
 
 import java.text.SimpleDateFormat;
@@ -80,10 +79,10 @@ public class AlarmJob extends JobService {
                 title = getString(R.string.event_no_title);
             }
 
-            Intent intent = new Intent(getApplicationContext(), EventViewActivity.class);
+            Intent intent = new Intent(getBaseContext(), EventViewActivity.class);
             intent.putExtra("TYPE", job.getExtras().getInt("TYPE", 0));
             intent.putExtra("ID", job.getExtras().getLong("ID", 0));
-            Jobs.displayNotification(getApplicationContext(), title, desc, channel, (int) id, intent);
+            Jobs.displayNotification(getBaseContext(), title, desc, channel, (int) id, intent);
 
             Log.i(TAG, "Sending notification");
 

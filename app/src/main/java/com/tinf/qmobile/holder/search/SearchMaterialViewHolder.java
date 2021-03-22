@@ -18,9 +18,7 @@ import com.tinf.qmobile.utility.User;
 
 import butterknife.BindView;
 
-import static com.tinf.qmobile.activity.MatterActivity.CLASS;
 import static com.tinf.qmobile.activity.MatterActivity.MATERIALS;
-import static com.tinf.qmobile.model.ViewType.MATERIAL;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
     @BindView(R.id.search_material_title)        TextView title;

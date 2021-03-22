@@ -7,7 +7,6 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
@@ -16,26 +15,15 @@ import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.model.message.Sender;
 import com.tinf.qmobile.model.search.Header;
-import com.tinf.qmobile.service.DownloadReceiver;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
@@ -80,26 +68,26 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
             journals.addAll(journalBox.query()
                     .contains(Journal_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
-                    .find(0, 20));
+                    .find());
 
             materials.addAll(materialsBox.query()
                     .contains(Material_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
-                    .find(0, 20));
+                    .find());
 
             messages.addAll(messageBox.query()
                     .contains(Message_.text_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .or()
                     .contains(Message_.subject_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
-                    .find(0, 20));
+                    .find());
 
             classes.addAll(clazzBox.query()
                     .contains(Clazz_.content_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .or()
                     .contains(Clazz_.teacher_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
                     .build()
-                    .find(0, 20));
+                    .find());
         }
 
         if (!journals.isEmpty()) {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
     @BindView(R.id.journal_title)           public TextView title;

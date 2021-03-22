@@ -6,8 +6,11 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -34,7 +37,7 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     public void more(View v){
-        startActivity(new Intent(getApplicationContext(), MoreActivity.class));
+        startActivity(new Intent(getBaseContext(), MoreActivity.class));
     }
 
     @Override

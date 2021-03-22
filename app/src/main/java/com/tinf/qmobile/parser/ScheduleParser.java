@@ -2,7 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.util.Log;
 
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;

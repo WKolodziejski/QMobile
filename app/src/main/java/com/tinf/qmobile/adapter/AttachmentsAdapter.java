@@ -6,13 +6,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.holder.message.AttachmentCardViewHolder;
 import com.tinf.qmobile.holder.message.AttachmentViewHolder;
 import com.tinf.qmobile.holder.message.MessagesViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.message.Attachment;
-import com.tinf.qmobile.network.message.Messenger;
+
 import java.util.ArrayList;
 import java.util.List;
 

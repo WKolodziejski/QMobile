@@ -5,7 +5,7 @@
 
     <item>
         <shape>
-            <solid android:color="@color/colorPrimaryLight" />
+            <solid android:color="#000000" />
         </shape>
     </item>
 
@@ -13,6 +13,6 @@
         android:height="240dp"
         android:width="240dp"
         android:gravity="center"
-        android:drawable="@drawable/ic_launcher_dark"/>
+        android:drawable="@drawable/ic_launcher_white" />
 
 </layer-list>

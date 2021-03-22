@@ -15,16 +15,15 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -42,19 +41,18 @@ import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnDataChange;
 import com.tinf.qmobile.fragment.HomeFragment;
-import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.fragment.dialog.PopUpFragment;
-import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
+import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.fragment.ReportFragment;
+import com.tinf.qmobile.fragment.dialog.PopUpFragment;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.tinf.qmobile.App.getContext;
@@ -92,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         for (int i = 0; i < User.getYears().length; i++) {
             menu.add(R.id.group1, i, Menu.NONE, User.getYears()[i]);
-            menu.getItem(i).setIcon(getDrawable(R.drawable.ic_label));
+            menu.getItem(i).setIcon(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_label));
             menu.getItem(i).setCheckable(true);
         }
 
@@ -156,76 +154,73 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
 
-            case android.R.id.home:
+        if (itemId == android.R.id.home) {
+            onBackPressed();
+            return true;
 
-                onBackPressed();
-                return true;
+        } else if (itemId == R.id.action_account) {
+            new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user");
+            return true;
 
-            case R.id.action_account:
+        } else if (itemId == R.id.action_grades) {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
 
-                new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user");
-                return true;
+            if (fragment instanceof JournalFragment) {
+                return changeFragment(new ReportFragment());
 
-            case R.id.action_grades:
+            } else if (fragment instanceof ReportFragment) {
+                return changeFragment(new JournalFragment());
 
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
-
-                if (fragment instanceof JournalFragment) {
-                    return changeFragment(new ReportFragment());
-
-                } else if (fragment instanceof ReportFragment) {
-                    return changeFragment(new JournalFragment());
-
-                } else return false;
+            } else return false;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int groupId = item.getGroupId();
+        int itemId = item.getItemId();
 
-        if (item.getGroupId() == R.id.group1) {
-            navigationView.getMenu().getItem(0).setChecked(true);
-            Client.get().changeDate(item.getItemId());
+        if (groupId == R.id.group1) {
+            navigationView.getMenu().getItem(itemId).setChecked(true);
+            Client.get().changeDate(itemId);
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
 
-        switch (item.getItemId()) {
-            case R.id.drawer_mail:
-                startActivity(new Intent(getApplicationContext(), MessagesActivity.class));
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+        if (itemId == R.id.drawer_mail) {
+            startActivity(new Intent(getBaseContext(), MessagesActivity.class));
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
 
-            case R.id.drawer_calendar:
-                startActivity(new Intent(getApplicationContext(), CalendarActivity.class));
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+        } else if (itemId == R.id.drawer_calendar) {
+            startActivity(new Intent(getBaseContext(), CalendarActivity.class));
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
 
-            case R.id.drawer_website:
-                startActivity(new Intent(getApplicationContext(), WebViewActivity.class));
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+        } else if (itemId == R.id.drawer_website) {
+            startActivity(new Intent(getBaseContext(), WebViewActivity.class));
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
 
-            case R.id.drawer_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+        } else if (itemId == R.id.drawer_settings) {
+            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         }
 
-        if (item.getItemId() != bottomNav.getSelectedItemId()) {
-            switch (item.getItemId()) {
+        if (itemId != bottomNav.getSelectedItemId()) {
 
-                case R.id.navigation_home:
-                    return changeFragment(new HomeFragment());
+            if (itemId == R.id.navigation_home) {
+                return changeFragment(new HomeFragment());
 
-                case R.id.navigation_notas:
-                    return changeFragment(new JournalFragment());
+            } else if (itemId == R.id.navigation_notas) {
+                return changeFragment(new JournalFragment());
 
-                case R.id.navigation_materiais:
-                    return changeFragment(new MaterialsFragment());
+            } else if (itemId == R.id.navigation_materiais) {
+                return changeFragment(new MaterialsFragment());
             }
         } else {
             Client.get().requestScroll();
@@ -245,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Jobs.cancelAllJobs();
         DataBase.get().close();
         User.clearInfos();
-        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().clear().apply();
+        PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         startActivity(new Intent(this, LoginActivity.class));
     }
@@ -270,13 +265,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private void reload() {
         if (Client.isConnected()) {
-            switch (bottomNav.getSelectedItemId()) {
-                case R.id.navigation_home: Client.get().login();
-                    break;
-                case R.id.navigation_notas: Client.get().loadYear(pos);
-                    break;
-                case R.id.navigation_materiais: Client.get().load(PG_MATERIALS);
-                    break;
+            int selectedItemId = bottomNav.getSelectedItemId();
+
+            if (selectedItemId == R.id.navigation_home) {
+                Client.get().login();
+
+            } else if (selectedItemId == R.id.navigation_notas) {
+                Client.get().loadYear(pos);
+
+            } else if (selectedItemId == R.id.navigation_materiais) {
+                Client.get().load(PG_MATERIALS);
             }
         } else {
             dismissProgressbar();
@@ -327,8 +325,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
+
         } else if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             bottomNav.setSelectedItemId(R.id.navigation_home);
+
         } else {
             super.onBackPressed();
         }
@@ -346,11 +346,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         if (pg == PG_LOGIN) {
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
             if (prefs.getBoolean(POPUP, true)) {
 
-                WebView webView = new WebView(getApplicationContext());
+                WebView webView = new WebView(getBaseContext());
                 webView.getSettings().setJavaScriptEnabled(true);
                 webView.getSettings().setLoadsImagesAutomatically(false);
                 webView.getSettings().setBlockNetworkImage(true);
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onError(int pg, String error) {
         dismissProgressbar();
-        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .show();
 
         } else {
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -415,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getApplicationContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
             } else {
                 Client.get().load(PG_MATERIALS);
             }
@@ -436,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 .setMessage(getResources().getString(R.string.dialog_renewal_txt))
                 .setCancelable(true)
                 .setPositiveButton(getResources().getString(R.string.dialog_open_site), (dialogInterface, i) -> {
-                    startActivity(new Intent(getApplicationContext(), WebViewActivity.class));
+                    startActivity(new Intent(getBaseContext(), WebViewActivity.class));
                 })
                 .setNegativeButton(getResources().getString(R.string.dialog_later), null)
                 .create()

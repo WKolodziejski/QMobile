@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     @Override
     public void onError(int pg, String error) {
-        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
 
         Log.e(TAG, error);
     }
@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                     .show();
 
        } else {
-           Toast.makeText(getApplicationContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
+           Toast.makeText(getBaseContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
        }
 
        Log.v(TAG, message);

@@ -2,7 +2,9 @@ package com.tinf.qmobile.holder.journal;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.Empty;
 

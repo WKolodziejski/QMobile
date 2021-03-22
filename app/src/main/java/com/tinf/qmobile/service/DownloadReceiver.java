@@ -10,12 +10,16 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.core.content.FileProvider;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
+
 import java.io.File;
 import java.net.URLConnection;
+
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static android.content.Intent.ACTION_VIEW;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -91,7 +95,7 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     public static void openFile(String path) {
-        openFile(FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName(),
+        openFile(FileProvider.getUriForFile(getContext(), getContext().getPackageName(),
                 new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         + PATH + path)));
     }

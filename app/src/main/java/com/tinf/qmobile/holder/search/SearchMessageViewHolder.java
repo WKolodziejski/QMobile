@@ -4,23 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MessagesActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
-import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.message.Message;
 
 import butterknife.BindView;
-
-import static com.tinf.qmobile.activity.MatterActivity.CLASS;
-import static com.tinf.qmobile.activity.MatterActivity.GRADES;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class SearchMessageViewHolder extends SearchViewHolder<Message> {
     @BindView(R.id.search_message_title)        TextView title;

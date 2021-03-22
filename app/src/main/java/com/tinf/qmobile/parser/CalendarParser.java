@@ -1,12 +1,14 @@
 package com.tinf.qmobile.parser;
 
 import android.util.Log;
+
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
-import com.tinf.qmobile.model.calendar.Month;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
 
 public class CalendarParser extends BaseParser {

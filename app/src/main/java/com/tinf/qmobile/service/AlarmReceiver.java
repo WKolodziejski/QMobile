@@ -11,7 +11,6 @@ import android.util.Log;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 

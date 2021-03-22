@@ -18,7 +18,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginVertical="16dp"
+            android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
             android:textStyle="bold"
             android:textSize="@dimen/alt_font_size"

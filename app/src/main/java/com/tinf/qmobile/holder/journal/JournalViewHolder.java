@@ -12,11 +12,9 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 

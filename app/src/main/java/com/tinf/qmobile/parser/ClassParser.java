@@ -2,12 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.util.Log;
 
-import com.google.android.gms.common.util.IOUtils;
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Matter;
@@ -16,19 +10,11 @@ import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Period_;
 import com.tinf.qmobile.network.Client;
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Calendar;
-import java.util.Properties;
 
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;

@@ -34,10 +34,12 @@ import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -46,6 +48,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
@@ -57,16 +60,16 @@ import static com.tinf.qmobile.fragment.SettingsFragment.NOTIFY;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.MESSAGES;
 import static com.tinf.qmobile.network.OnResponse.PG_ACCESS_DENIED;
-import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
-import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
-import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
 import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
 import static com.tinf.qmobile.network.OnResponse.PG_GENERATOR;
-import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
+import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
+import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
+import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 
 public class Client {
     private final static String TAG = "Network Client";

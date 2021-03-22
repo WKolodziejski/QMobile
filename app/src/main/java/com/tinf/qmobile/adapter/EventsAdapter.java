@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
@@ -22,24 +24,27 @@ import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
+import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
-import com.tinf.qmobile.model.calendar.CalendarBase;
-import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import io.objectbox.Box;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
@@ -331,11 +336,13 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     @Override
     public void bindHeaderData(View header, Integer i) {
         if (events.get(i) instanceof Header) {
+            Header h = (Header) events.get(i);
+
             TextView n = header.findViewById(R.id.calendar_header_simple_day_number);
             TextView w = header.findViewById(R.id.calendar_header_simple_day_week);
 
-            n.setText(((Header) events.get(i)).getDayString());
-            w.setText(((Header) events.get(i)).getWeekString());
+            n.setText(h.getDayString());
+            w.setText(h.getWeekString());
         }
     }
 

@@ -12,10 +12,7 @@ import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.journal.FooterJournal;
 
-import java.util.Locale;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal> {
     @BindView(R.id.journal_partial_grade_text)  public TextView partial;

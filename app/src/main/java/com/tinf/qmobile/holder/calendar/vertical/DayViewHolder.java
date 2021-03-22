@@ -9,7 +9,6 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Day;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class DayViewHolder extends CalendarViewHolder<Day> {
     @BindView(R.id.calendario_day_title) public TextView title;

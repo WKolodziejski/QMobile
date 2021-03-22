@@ -33,7 +33,7 @@ public class MoreActivity extends AppCompatActivity {
             Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             Objects.requireNonNull(vibrator).vibrate(1000);
 
-            Toast toast = Toast.makeText(getApplicationContext(), "\ud83d\udc03", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(getBaseContext(), "\ud83d\udc03", Toast.LENGTH_SHORT);
             ViewGroup group = (ViewGroup) toast.getView();
             TextView messageTextView = (TextView) group.getChildAt(0);
             messageTextView.setTextSize(35);

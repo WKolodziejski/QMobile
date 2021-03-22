@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.message.Message;
 
 import butterknife.BindView;
 

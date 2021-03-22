@@ -5,10 +5,7 @@ import android.util.Log;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MessagesActivity;
-import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
@@ -19,10 +16,13 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.OnMessages;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.RandomColor;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 

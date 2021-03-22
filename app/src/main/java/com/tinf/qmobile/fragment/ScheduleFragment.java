@@ -28,7 +28,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataSubscription;
@@ -82,11 +81,7 @@ public class ScheduleFragment extends Fragment {
             startActivity(intent);
         });
 
-        updateSchedule();
-    }
-
-    private void updateSchedule() {
-        new Thread(() -> weekView.setWeekViewLoader(() -> {
+        weekView.setWeekViewLoader(() -> {
             boolean[][] hours = new boolean[24][7];
             WeekViewEvent[] minutes = new WeekViewEvent[24];
 
@@ -170,7 +165,7 @@ public class ScheduleFragment extends Fragment {
             }
 
             return events;
-        })).start();
+        });
     }
 
     @OnClick(R.id.fab_add_schedule)

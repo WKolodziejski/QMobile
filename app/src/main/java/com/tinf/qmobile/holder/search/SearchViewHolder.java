@@ -1,8 +1,8 @@
 package com.tinf.qmobile.holder.search;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 

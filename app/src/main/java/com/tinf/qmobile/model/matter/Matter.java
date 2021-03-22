@@ -5,6 +5,7 @@ import androidx.annotation.ColorInt;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;

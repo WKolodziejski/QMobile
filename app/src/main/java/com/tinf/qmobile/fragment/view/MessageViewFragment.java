@@ -1,9 +1,6 @@
 package com.tinf.qmobile.fragment.view;
 
 import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,16 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
-import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
-import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class MessageViewFragment extends Fragment {

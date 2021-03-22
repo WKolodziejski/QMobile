@@ -1,22 +1,20 @@
 package com.tinf.qmobile.fragment.matter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.ClassAdapter;
 import com.tinf.qmobile.network.Client;
-
-import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class ClassFragment extends Fragment {
 

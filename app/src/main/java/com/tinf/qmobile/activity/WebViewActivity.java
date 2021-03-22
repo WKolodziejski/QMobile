@@ -1,12 +1,6 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -16,19 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_HOME;
-import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 
 public class WebViewActivity extends AppCompatActivity {
     @BindView(R.id.webview)     WebView webView;

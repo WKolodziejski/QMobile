@@ -2,10 +2,8 @@ package com.tinf.qmobile.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
 

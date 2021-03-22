@@ -1,12 +1,10 @@
 package com.tinf.qmobile.parser;
 
 import android.content.Intent;
-import android.util.Log;
+
 import com.tinf.qmobile.App;
-import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.journal.Journal_;
 import com.tinf.qmobile.model.matter.Matter;
@@ -16,9 +14,11 @@ import com.tinf.qmobile.model.matter.Period_;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.RandomColor;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;

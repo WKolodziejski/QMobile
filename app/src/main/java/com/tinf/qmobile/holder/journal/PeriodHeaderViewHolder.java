@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.matter.Period;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Period> {
     @BindView(R.id.period_title)        TextView title;

@@ -1,19 +1,24 @@
 package com.tinf.qmobile.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.util.LongSparseArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
@@ -31,12 +36,13 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import io.objectbox.Box;
-import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
@@ -46,9 +52,8 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
-public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate {
+public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate, KmStickyListener {
     private List<Queryable> materials;
     private List<Long> selected;
     private LongSparseArray<Long> downloading;
@@ -397,6 +402,55 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         }
 
         return -1;
+    }
+
+    @Override
+    public Integer getHeaderPositionForItem(Integer i) {
+        Queryable q = materials.get(i);
+
+        if (q instanceof Material)
+            while (!(q instanceof Matter) && i > 0)
+                q = materials.get(--i);
+
+        return i;
+    }
+
+    @Override
+    public Integer getHeaderLayout(Integer i) {
+        if (materials.get(i) instanceof Matter)
+            return R.layout.material_header;
+        else
+            return R.layout.header_empty;
+    }
+
+    @Override
+    public void bindHeaderData(View header, Integer i) {
+        if (materials.get(i) instanceof Matter) {
+            Matter matter = (Matter) materials.get(i);
+
+            TextView title = header.findViewById(R.id.material_title);
+            TextView badge = header.findViewById(R.id.material_color_badge);
+
+            title.setText(matter.getTitle());
+            badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
+
+            int n = matter.getJournalNotSeenCount();
+
+            if (n > 0) {
+                badge.setText(String.valueOf(n));
+            } else {
+                badge.setText("");
+            }
+        }
+    }
+
+    @Override
+    public Boolean isHeader(Integer i) {
+        Queryable q = materials.get(i);
+
+        if (i >= 0 && i < materials.size())
+            return !(q instanceof Material);
+        else return false;
     }
 
     public interface OnInteractListener {

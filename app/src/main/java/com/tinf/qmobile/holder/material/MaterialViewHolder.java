@@ -1,13 +1,14 @@
 package com.tinf.qmobile.holder.material;
 
 import android.content.Context;
-import android.os.Environment;
 import android.view.ActionMode;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.model.material.Material;
@@ -15,11 +16,10 @@ import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
 
 import java.io.File;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
 public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     @BindView(R.id.materiais_type)          public ImageView icon;

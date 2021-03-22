@@ -9,9 +9,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 

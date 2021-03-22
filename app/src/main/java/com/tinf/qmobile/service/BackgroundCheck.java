@@ -25,7 +25,7 @@ public class BackgroundCheck extends JobService {
             @Override
             public void onStart(int pg, int pos) {
                 /*if (BuildConfig.DEBUG) {
-                    Jobs.displayNotification(getApplicationContext(), "Debug", "Verificando notas", "Debug", 0, new Intent(App.getContext(), SplashActivity.class));
+                    Jobs.displayNotification(getBaseContext(), "Debug", "Verificando notas", "Debug", 0, new Intent(App.getContext(), SplashActivity.class));
                 }*/
             }
 
@@ -61,7 +61,7 @@ public class BackgroundCheck extends JobService {
 
             @Override
             public void onAccessDenied(int pg, String message) {
-                Jobs.displayNotification(getApplicationContext(), getResources().getString(R.string.dialog_access_denied),
+                Jobs.displayNotification(getBaseContext(), getResources().getString(R.string.dialog_access_denied),
                         getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, new Intent(App.getContext(), SplashActivity.class));
                 Client.get().removeOnResponseListener(this);
                 onStopJob(job);

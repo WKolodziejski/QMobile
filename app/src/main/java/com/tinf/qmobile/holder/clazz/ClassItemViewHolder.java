@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.model.matter.Clazz;
+
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.model.ViewType.CLASS;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
     @BindView(R.id.class_date)          public TextView date;

@@ -26,19 +26,21 @@ import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.widget.CalendarRecyclerView;
+
 import org.joda.time.LocalDate;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 
-public class CalendarActivity extends AppCompatActivity implements CalendarRecyclerView.AppBarTracking,
-        OnResponse{
+public class CalendarActivity extends AppCompatActivity implements CalendarRecyclerView.AppBarTracking, OnResponse {
     @BindView(R.id.calendar_appbar)     AppBarLayout appbar;
     @BindView(R.id.calendar_recycler)   CalendarRecyclerView recyclerView;
     @BindView(R.id.calendar_arrow)      ImageView arrow;

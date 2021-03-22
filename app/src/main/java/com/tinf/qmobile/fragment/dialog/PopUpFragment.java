@@ -8,10 +8,13 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.tinf.qmobile.R;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

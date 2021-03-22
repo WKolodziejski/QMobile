@@ -14,7 +14,6 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +43,7 @@ public class MatterActivity extends AppCompatActivity {
             getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
             getSupportActionBar().setTitle(matter.getTitle());
 
-            TabsAdapter adapter = new TabsAdapter(getApplicationContext(), getSupportFragmentManager(), getIntent().getExtras());
+            TabsAdapter adapter = new TabsAdapter(getBaseContext(), getSupportFragmentManager(), getIntent().getExtras());
 
             ViewPager viewPager = (ViewPager) findViewById(R.id.pager_matter);
             viewPager.setAdapter(adapter);

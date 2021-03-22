@@ -4,7 +4,6 @@ import android.webkit.JavascriptInterface;
 
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.OnMessages;
-import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.MessageParser;
 
 public class MessagesHandler {

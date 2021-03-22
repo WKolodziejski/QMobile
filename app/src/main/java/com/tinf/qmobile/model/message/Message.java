@@ -1,8 +1,10 @@
 package com.tinf.qmobile.model.message;
 
 import com.tinf.qmobile.model.Queryable;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;

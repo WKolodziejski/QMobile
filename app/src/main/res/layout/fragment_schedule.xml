@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:src="@drawable/draw_schedule"
         android:id="@+id/schedule_empty"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"

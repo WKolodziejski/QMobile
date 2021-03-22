@@ -2,7 +2,9 @@ package com.tinf.qmobile.activity.settings;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.SettingsFragment;
 import com.tinf.qmobile.service.Jobs;

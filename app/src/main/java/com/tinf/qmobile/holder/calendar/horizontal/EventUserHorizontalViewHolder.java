@@ -3,7 +3,6 @@ package com.tinf.qmobile.holder.calendar.horizontal;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -11,13 +10,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 
 import java.util.Locale;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tinf.qmobile.model.ViewType.USER;
 
