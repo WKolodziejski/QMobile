@@ -35,6 +35,7 @@ public class ClassViewFragment extends Fragment {
     @BindView(R.id.class_view_absences)             TextView absences_txt;
     @BindView(R.id.class_view_given)                TextView given_txt;
     @BindView(R.id.class_view_teacher)              TextView teacher_txt;
+    @BindView(R.id.class_view_content_text)         TextView content_txt;
     @BindView(R.id.class_view_color_img)            ImageView color_img;
     private DataSubscription sub1, sub2;
     private long id;
@@ -85,12 +86,13 @@ public class ClassViewFragment extends Fragment {
 
             SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-            title_txt.setText(clazz.getContent());
+            title_txt.setText(clazz.getMatter());
             absences_txt.setText(String.format(getString(R.string.class_absence), String.valueOf(clazz.getAbsences_())));
             given_txt.setText(String.format(getString(R.string.class_given), String.valueOf(clazz.getClassesCount_())));
             teacher_txt.setText(clazz.getTeacher());
             date_txt.setText(date.format(clazz.getDate()));
-            matter_txt.setText(clazz.period.getTarget().matter.getTarget().getTitle() + "・" + clazz.period.getTarget().getTitle());
+            matter_txt.setText(clazz.getPeriod());
+            content_txt.setText(clazz.getContent());
             color_img.setImageTintList(ColorStateList.valueOf(clazz.period.getTarget().matter.getTarget().getColor()));
         }
     }

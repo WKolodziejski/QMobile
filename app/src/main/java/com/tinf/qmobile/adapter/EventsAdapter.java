@@ -18,6 +18,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.DayViewHolder;
+import com.tinf.qmobile.holder.calendar.vertical.EventClazzVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventJournalVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventSimpleVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
@@ -32,6 +33,7 @@ import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 
 import org.joda.time.DateTime;
@@ -50,6 +52,7 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.DAY;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
@@ -62,7 +65,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     private List<CalendarBase> events;
     private Context context;
     private CompactCalendarView calendar;
-    private DataSubscription sub1, sub2, sub3, sub4;
+    private DataSubscription sub1, sub2, sub3, sub4, sub5;
 
     public EventsAdapter(Context context, CompactCalendarView calendar) {
         this.context = context;
@@ -139,6 +142,12 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(observer);
+
+        sub5 = DataBase.get().getBoxStore().subscribe(Clazz.class)
+                .onlyChanges()
+                .on(AndroidScheduler.mainThread())
+                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .observer(observer);
     }
 
     private List<CalendarBase> getList() {
@@ -150,6 +159,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
         for (int i = 0; i < Months.monthsBetween(minDate, maxDate).getMonths(); i++) {
             Month month = new Month(monthCounter.toDate().getTime());
+            //Log.d(month.getMonth(), String.valueOf(monthCounter.toDate().getTime()));
 
             List<CalendarBase> list = map.get(month.getHashKey());
 
@@ -165,6 +175,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
                 Day day = new Day(week.toDate(), week.plusDays(6).toDate());
+                //Log.d(day.getDayPeriod(), String.valueOf(week.toDate().getTime()));
 
                 List<CalendarBase> list2 = map.get(day.getHashKey());
 
@@ -173,7 +184,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                     map.put(day.getHashKey(), list2);
                 }
 
-                list2.add(0, day);
+                list2.add(day);
 
                 week = week.plusWeeks(1);
             }
@@ -184,6 +195,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
         Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
         Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+        Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
         for (EventBase e : eventUserBox.query().build().find()) {
             List<CalendarBase> list = map.get(e.getHashKey());
@@ -208,6 +220,17 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         }
 
         for (EventBase e : eventSimpleBox.query().build().find()) {
+            List<CalendarBase> list = map.get(e.getHashKey());
+
+            if (list == null) {
+                list = new ArrayList<>();
+                map.put(e.getHashKey(), list);
+            }
+
+            list.add(e);
+        }
+
+        for (EventBase e : clazzBox.query().build().find()) {
             List<CalendarBase> list = map.get(e.getHashKey());
 
             if (list == null) {
@@ -277,6 +300,10 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             case USER:
                 return new EventUserVerticalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_user_v, parent, false));
+
+            case CLASS:
+                return new EventClazzVerticalViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.calendar_event_clazz_v, parent, false));
 
             case MONTH:
                 return new MonthViewHolder(LayoutInflater.from(context)
@@ -362,6 +389,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         sub2.cancel();
         sub3.cancel();
         sub4.cancel();
+        sub5.cancel();
     }
 
 }

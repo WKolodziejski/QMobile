@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,43 +23,67 @@
         app:cardElevation="0dp"
         >
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:padding="8dp"
             android:id="@+id/calendar_user_card"
             android:foreground="?android:attr/selectableItemBackground"
             tools:background="@color/colorPrimary"
             >
 
-            <TextView
+            <!-- <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/calendar_user_title"
-                android:textSize="@dimen/alt_font_size"
-                android:textStyle="bold"
-                android:textColor="@color/colorPrimaryLight"
-                tools:text="Prova de trigonometria" />
+                android:id="@+id/calendar_user_icon"
+                android:src="@drawable/ic_touch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:tint="@color/colorPrimaryLight" /> !-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:id="@+id/calendar_user_description"
-                android:textSize="@dimen/main_font_size"
-                android:textColor="@color/colorPrimaryLight"
-                tools:text="Conteúdo no drive" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/calendar_user_img"
+                >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:id="@+id/calendar_user_matter"
-                android:textColor="@color/colorPrimaryLight"
-                tools:text="MATEMATICA"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/calendar_user_title"
+                    android:textSize="@dimen/alt_font_size"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryLight"
+                    tools:text="Prova de trigonometria" />
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/calendar_user_description"
+                    android:textSize="@dimen/main_font_size"
+                    android:textColor="@color/colorPrimaryLight"
+                    tools:text="Conteúdo no drive" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:id="@+id/calendar_user_img"
+                android:src="@drawable/ic_account"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 </LinearLayout>

@@ -9,13 +9,11 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,20 +23,18 @@ import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.utility.User;
 import com.tinf.qmobile.widget.CalendarRecyclerView;
-
 import org.joda.time.LocalDate;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.network.Client.pos;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarRecyclerView.AppBarTracking, OnResponse {
     @BindView(R.id.calendar_appbar)     AppBarLayout appbar;
@@ -71,6 +67,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
         getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
 
         Client.get().load(PG_CALENDAR);
+        //Client.get().loadYear(pos);
 
         layout = new LinearLayoutManager(this);
         adapter = new EventsAdapter(this, calendar);
@@ -172,9 +169,28 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             recyclerView.setNestedScrollingEnabled(enabled);
     }
 
+    private int lastYear;
+
     private void setDateTitle(Date date) {
-        if (new LocalDate(date).getYear() != new LocalDate().getYear()) {
+        LocalDate newDate = new LocalDate(date);
+        LocalDate currDate = new LocalDate();
+
+        if (currDate.getYear() != newDate.getYear()) {
             title.setText(year.format(date));
+
+            if (newDate.getYear() != lastYear) {
+                lastYear = newDate.getYear();
+
+                String[] years = User.getYears();
+
+                for (int i = 0; i < years.length; i++) {
+                    String y = years[i];
+
+                    if (y.contains(String.valueOf(lastYear))) {
+                        Client.get().loadYear(i);
+                    }
+                }
+            }
         } else {
             title.setText(month.format(date));
         }

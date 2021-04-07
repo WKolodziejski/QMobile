@@ -13,6 +13,6 @@
         android:height="240dp"
         android:width="240dp"
         android:gravity="center"
-        android:drawable="@drawable/ic_launcher_white" />
+        android:drawable="@drawable/ic_launcher_foreground" />
 
 </layer-list>

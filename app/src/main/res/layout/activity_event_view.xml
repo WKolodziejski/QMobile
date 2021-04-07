@@ -11,9 +11,16 @@
         android:layout_width="match_parent"
         layout="@layout/action_bar_default"/>
 
-    <FrameLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/event_view_fragment"/>
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/event_view_fragment"/>
+
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

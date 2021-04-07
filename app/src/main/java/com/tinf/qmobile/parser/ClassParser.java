@@ -82,9 +82,10 @@ public class ClassParser extends BaseParser {
                                 content = cs;
 
                                 if (content.contains("Data"))
-                                    content = content.substring(0, content.indexOf("Data"));
+                                    content = content.substring(0, content.indexOf("Data")).trim();
 
-                                content = content.trim();
+                                if (content.startsWith("-"))
+                                    content = content.substring(content.indexOf("-") + 1).trim();
                             }
 
                             try {

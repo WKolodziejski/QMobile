@@ -17,6 +17,7 @@ import com.tinf.qmobile.utility.User;
 import io.objectbox.BoxStore;
 
 import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
+import static com.tinf.qmobile.fragment.SettingsFragment.DB;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
@@ -24,6 +25,8 @@ import static com.tinf.qmobile.utility.User.REGISTRATION;
 public class App extends Application {
     public static final String VERSION = ".v1.3.7";
     public static final String VERSION_INFO = ".Version";
+    public static final String DATABASE_INFO = ".DB";
+    public static final String DB_CLASS = ".class";
     private static Context context;
 
     @Override
@@ -31,7 +34,7 @@ public class App extends Application {
         super.onCreate();
 
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCrashlyticsCollectionEnabled(false);
+        crashlytics.setCrashlyticsCollectionEnabled(true);
 
         if (!BuildConfig.DEBUG) {
 

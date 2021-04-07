@@ -17,7 +17,7 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> {
     @BindView(R.id.calendar_default_title)       TextView title;
-    @BindView(R.id.calendar_default_description) TextView description;
+    //@BindView(R.id.calendar_default_description) TextView description;
     @BindView(R.id.calendar_default_card)        LinearLayout card;
 
     @BindView(R.id.calendar_header_simple_day_week)     TextView day;
@@ -31,7 +31,7 @@ public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> 
     @Override
     public void bind(Journal journal, Context context) {
         title.setText(journal.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : journal.getTitle());
-        description.setText(journal.matter.getTarget().getTitle());
+        //description.setText(journal.matter.getTarget().getTitle());
         card.setBackgroundColor(journal.getColor());
 
         card.setOnClickListener(v -> {

@@ -104,8 +104,8 @@ public class AlarmService extends JobIntentService {
         bigText.setBigContentTitle(title);
         bigText.setSummaryText(channelID);
 
-        mBuilder.setSmallIcon(R.drawable.ic_launcher_white);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.ic_launcher_white));
+        mBuilder.setSmallIcon(R.drawable.ic_launcher);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.ic_launcher));
         mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
         mBuilder.setContentTitle(title);
         mBuilder.setContentText(txt);

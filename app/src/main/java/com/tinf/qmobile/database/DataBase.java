@@ -1,5 +1,6 @@
 package com.tinf.qmobile.database;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.tinf.qmobile.App;
@@ -7,6 +8,7 @@ import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
+import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.message.Message;
@@ -21,6 +23,10 @@ import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.tinf.qmobile.App.DATABASE_INFO;
+import static com.tinf.qmobile.App.DB_CLASS;
+import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class DataBase implements OnUpdate {
@@ -34,11 +40,11 @@ public class DataBase implements OnUpdate {
         Client.get().addOnUpdateListener(this);
 
         Log.d("Box for ", User.getCredential(User.REGISTRATION));
-        assert (!User.getCredential(User.REGISTRATION).isEmpty());
+        //assert (!User.getCredential(User.REGISTRATION).isEmpty());
 
         boxStore = MyObjectBox
                 .builder()
-                .androidContext(App.getContext())
+                .androidContext(getContext())
                 .name(User.getCredential(User.REGISTRATION))
                 .build();
 
@@ -60,13 +66,16 @@ public class DataBase implements OnUpdate {
         sub4 = boxStore.subscribe(Message.class)
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> {
-                    countMessages((int) (boxStore.boxFor(Message.class)
-                            .query()
-                            .equal(Message_.seen_, false)
-                            .build()
-                            .count()));
-                });
+                .observer(data -> countMessages((int) (boxStore.boxFor(Message.class)
+                        .query()
+                        .equal(Message_.seen_, false)
+                        .build()
+                        .count())));
+
+        if (getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).getBoolean(DB_CLASS, true)) {
+            getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).edit().putBoolean(DB_CLASS, false).apply();
+            boxStore.boxFor(Clazz.class).removeAll();
+        }
     }
 
     public static synchronized DataBase get() {

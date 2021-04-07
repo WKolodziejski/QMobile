@@ -118,6 +118,7 @@ public class Journal extends EventBase implements Queryable {
         return format.format(getDate());
     }
 
+    @Override
     public int getColor() {
         return matter.getTarget().getColor();
     }

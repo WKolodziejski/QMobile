@@ -372,6 +372,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 });
                 webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
             }
+        } else if (pg == PG_FETCH_YEARS || pg == PG_JOURNALS) {
+            Menu menu = navigationView.getMenu();
+            menu.removeGroup(R.id.group1);
+
+            for (int i = 0; i < User.getYears().length; i++) {
+                menu.add(R.id.group1, i, Menu.NONE, User.getYears()[i]);
+                menu.getItem(i).setIcon(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_label));
+                menu.getItem(i).setCheckable(true);
+            }
+
+            menu.getItem(pos).setChecked(true);
         }
     }
 

@@ -16,13 +16,13 @@
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
         android:src="@drawable/ic_absence"
-        android:tint="@color/error"
         android:id="@+id/class_absence"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/class_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="invisible"/>
+        tools:visibility="invisible"
+        app:tint="@color/error" />
 
     <TextView
         android:layout_width="0dp"

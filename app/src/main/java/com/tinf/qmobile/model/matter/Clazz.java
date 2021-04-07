@@ -3,6 +3,7 @@ package com.tinf.qmobile.model.matter;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.calendar.EventBase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,8 +17,7 @@ import io.objectbox.relation.ToOne;
 import static com.tinf.qmobile.model.ViewType.CLASS;
 
 @Entity
-public class Clazz implements Queryable {
-    @Id public long id;
+public class Clazz extends EventBase implements Queryable {
     @Transient public boolean highlight;
     private long date_;
     private int classesCount_;
@@ -27,6 +27,7 @@ public class Clazz implements Queryable {
     public ToOne<Period> period;
 
     public Clazz(long date_, int classesCount_, int absences_, String teacher_, String content_, Period period) {
+        super(content_, date_);
         this.date_ = date_;
         this.classesCount_ = classesCount_;
         this.absences_ = absences_;
@@ -64,6 +65,11 @@ public class Clazz implements Queryable {
         return period.getTarget().matter.getTarget().getTitle();
     }
 
+    public String getPeriod() {
+        return period.getTarget().getTitle();
+    }
+
+    @Override
     public int getColor() {
         return period.getTarget().matter.getTarget().getColor();
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Debug;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
@@ -24,6 +25,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
@@ -94,7 +96,7 @@ public class Client {
     }
 
     private Client() {
-        try {
+        /*try {
             HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, new X509TrustManager[]{
@@ -106,7 +108,7 @@ public class Client {
             HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         requests = Volley.newRequestQueue(getContext(), new HurlStack());
         queue = new ArrayList<>();
         params = new HashMap<>();
@@ -209,6 +211,12 @@ public class Client {
         Matter matter = DataBase.get().getBoxStore()
                 .boxFor(Matter.class)
                 .get(id);
+
+        load(matter);
+    }
+
+    public void load(Matter matter) {
+        Log.d("Client", "loading " + matter.getTitle());
 
         createRequest(PG_CLASSES,
                 INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
@@ -409,6 +417,7 @@ public class Client {
                             if (h.getValue().contains("QSESSIONID")) {
                                 params.put("Set-Cookie", h.getValue());
                                 cookieManager.setCookie(Client.get().getURL(),  h.getValue());
+                                break;
                             }
                         }
 
@@ -613,7 +622,19 @@ public class Client {
     public void loadYear(int pos) {
         load(PG_JOURNALS, pos, (pg, year) -> {
                 load(PG_REPORT, year, (pg1, year1) -> {
-                    load(PG_SCHEDULE, year1, (pg2, year2) -> callOnFinish(pg, year2));
+                    load(PG_SCHEDULE, year1, (pg2, year2) -> {
+                        for (Matter m : DataBase.get().getBoxStore()
+                                .boxFor(Matter.class)
+                                .query()
+                                .equal(Matter_.year_, User.getYear(year2))
+                                .and()
+                                .equal(Matter_.period_, User.getPeriod(year2))
+                                .build()
+                                .find()) {
+                            Client.get().load(m);
+                        }
+                        callOnFinish(pg, year2);
+                    });
                     callOnFinish(pg, year1);
                 });
             callOnFinish(pg, year);

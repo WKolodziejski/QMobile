@@ -73,8 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_school" />
+            app:srcCompat="@drawable/ic_school"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -106,8 +106,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_absence" />
+            app:srcCompat="@drawable/ic_absence"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -138,8 +138,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_teacher" />
+            app:srcCompat="@drawable/ic_teacher"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -169,22 +169,52 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_time" />
+            app:srcCompat="@drawable/ic_time"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:layout_gravity="center_vertical"
             android:id="@+id/class_view_time_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="Mar 21, 2019" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        android:id="@+id/class_view_content_layout"
+        app:layout_constraintTop_toBottomOf="@id/class_view_time_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:srcCompat="@drawable/ic_tag"
+            app:tint="@color/colorAccent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/class_view_content_text"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="conteúdo" />
 
     </LinearLayout>
 
