@@ -138,11 +138,11 @@
             android:summary="@string/home_bugreport_description"
             android:title="@string/menu_bug" />!-->
 
-        <SwitchPreference
+        <!--<SwitchPreference
             android:title="@string/pref_share_data"
             android:key="key_share_data"
             android:defaultValue="false"
-            android:summary="@string/pref_share_data_sum"/>
+            android:summary="@string/pref_share_data_sum"/>!-->
 
         <Preference
             android:key="key_about"

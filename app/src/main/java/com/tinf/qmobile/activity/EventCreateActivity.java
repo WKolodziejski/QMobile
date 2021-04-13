@@ -6,10 +6,12 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.ActivityEventCreateBinding;
 import com.tinf.qmobile.fragment.create.EventCreateFragment;
 import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
 
@@ -17,22 +19,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EventCreateActivity extends AppCompatActivity {
+    public ActivityEventCreateBinding binding;
     public final static int EVENT = 1;
     public final static int SCHEDULE = 2;
-    @BindView(R.id.event_add) public Button add;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_create);
-
-        ButterKnife.bind(this);
-
-        setSupportActionBar(findViewById(R.id.toolbar_events));
-
+        binding = ActivityEventCreateBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
         Bundle bundle = getIntent().getExtras();
 

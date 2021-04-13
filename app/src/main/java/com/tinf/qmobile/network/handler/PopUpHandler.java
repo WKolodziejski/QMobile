@@ -10,8 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class PopUpHandler {
-    private WebView webView;
-    private OnEvent onEvent;
+    private final WebView webView;
+    private final OnEvent onEvent;
 
     public PopUpHandler(WebView webView, OnEvent onEvent) {
         this.webView = webView;

@@ -6,8 +6,8 @@ import com.tinf.qmobile.model.matter.Matter;
 import static com.tinf.qmobile.model.ViewType.FOOTERJ;
 
 public class FooterJournal implements Queryable {
-    private Matter matter;
-    private int i;
+    private final Matter matter;
+    private final int i;
 
     public FooterJournal(int i, Matter matter) {
         this.i = i;

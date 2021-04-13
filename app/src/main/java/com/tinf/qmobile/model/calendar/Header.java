@@ -10,10 +10,10 @@ import java.util.Locale;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 
 public class Header implements CalendarBase {
-    private long time;
+    private final long time;
 
-    private static SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
-    private static SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
+    private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+    private static final SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
 
     public Header(long time) {
         this.time = time;

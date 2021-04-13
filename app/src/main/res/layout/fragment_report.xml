@@ -22,7 +22,7 @@
         app:borderWidth="0dp" />!-->
 
     <com.evrencoskun.tableview.TableView
-        android:id="@+id/report_table"
+        android:id="@+id/table"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:unselected_color="@color/colorPrimaryLight"

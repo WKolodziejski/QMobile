@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
-            android:id="@+id/about_version"
+            android:id="@+id/version"
             android:text="@string/app_version"
             android:layout_marginTop="4dp"/>
 
@@ -48,8 +48,8 @@
         <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/more"
             android:text="@string/app_more"
-            android:onClick="more"
             style="@style/Widget.MaterialComponents.Button.TextButton"/>
 
     </LinearLayout>

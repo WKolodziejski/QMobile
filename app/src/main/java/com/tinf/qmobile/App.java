@@ -2,22 +2,16 @@ package com.tinf.qmobile;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
-
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-
 import io.objectbox.BoxStore;
-
-import static com.tinf.qmobile.fragment.SettingsFragment.DATA;
-import static com.tinf.qmobile.fragment.SettingsFragment.DB;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
@@ -32,37 +26,28 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getBaseContext();
 
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCrashlyticsCollectionEnabled(true);
-
-        if (!BuildConfig.DEBUG) {
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-            if (prefs.getBoolean(DATA, false)) {
-                crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
-                crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
-                crashlytics.setCustomKey("URL", User.getURL());
-            }
-        }
+        crashlytics.setCrashlyticsCollectionEnabled(false);
+        crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
+        crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
+        crashlytics.setCustomKey("URL", User.getURL());
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
         AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean(NIGHT, false) ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
-        context = getBaseContext();
-
         if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true)) {
             if (BoxStore.deleteAllFiles(getBaseContext(), User.getCredential(REGISTRATION))) {
-                Client.get().close();
-                Jobs.cancelAllJobs();
-                DataBase.get().close();
-                User.clearInfos();
-                PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
+                //Client.get().close();
+                //Jobs.cancelAllJobs();
+                //DataBase.get().close();
+                //User.clearInfos();
+                //PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
                 getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(VERSION, false).apply();
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
     }

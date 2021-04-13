@@ -10,14 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/draw_schedule"
-        android:id="@+id/schedule_empty"
+        android:id="@+id/empty"
         android:visibility="gone"/>
 
     <me.jlurena.revolvingweekview.WeekView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionName="Horario"
-        android:id="@+id/weekView_horario"
+        android:id="@+id/weekView"
         app:headerColumnPadding="8dp"
         app:noOfVisibleDays="7"
         app:eventCornerRadius="8dp"
@@ -46,7 +46,7 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fab_add_schedule"
+        android:id="@+id/fab"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"

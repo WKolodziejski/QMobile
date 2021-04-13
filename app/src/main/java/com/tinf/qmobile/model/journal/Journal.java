@@ -23,7 +23,7 @@ public class Journal extends EventBase implements Queryable {
     public enum Type {
         AVALIACAO(0), PROVA(1), TRABALHO(2), EXERCICIO(3), QUALITATIVA(4);
 
-        private int i;
+        private final int i;
 
         Type(final int i) {
             this.i = i;

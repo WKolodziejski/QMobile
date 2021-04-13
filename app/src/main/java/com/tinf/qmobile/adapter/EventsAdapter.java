@@ -62,10 +62,14 @@ import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
-    private List<CalendarBase> events;
-    private Context context;
-    private CompactCalendarView calendar;
-    private DataSubscription sub1, sub2, sub3, sub4, sub5;
+    private final List<CalendarBase> events;
+    private final Context context;
+    private final CompactCalendarView calendar;
+    private final DataSubscription sub1;
+    private final DataSubscription sub2;
+    private final DataSubscription sub3;
+    private final DataSubscription sub4;
+    private final DataSubscription sub5;
 
     public EventsAdapter(Context context, CompactCalendarView calendar) {
         this.context = context;
@@ -96,7 +100,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                         return ((EventBase) oldC).id == ((EventBase) newC).id;
 
                     else if (oldC instanceof Month && newC instanceof Month)
-                        return ((Month) oldC).getDate().equals(((Month) newC).getDate());
+                        return oldC.getDate().equals(newC.getDate());
 
                     else if (oldC instanceof Header && newC instanceof Header)
                         return oldC.getDate().equals(newC.getDate());
@@ -104,7 +108,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
                     else if (oldC instanceof Day && newC instanceof Day)
                         return oldC.getDate().equals(newC.getDate());
 
-                    else return oldC instanceof Empty && newC instanceof Empty;
+                    else return false;
                 }
 
                 @Override
@@ -377,7 +381,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     public Boolean isHeader(Integer i) {
         CalendarBase e = events.get(i);
 
-        if (i >= 0 && i < events.size())
+        if (i >= 0)
             return e instanceof Header || e instanceof Day || e instanceof Month;
         else return false;
     }

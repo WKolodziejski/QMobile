@@ -1,25 +1,22 @@
 package com.tinf.qmobile.activity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
+import androidx.core.content.ContextCompat;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.ActivityMatterBinding;
 import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class MatterActivity extends AppCompatActivity {
-    @BindView(R.id.tab_matter)      TabLayout tabLayout;
+    private ActivityMatterBinding binding;
     public static int GRADES = 0;
     public static int SCHEDULE = 1;
     public static int MATERIALS = 2;
@@ -29,31 +26,43 @@ public class MatterActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_matter);
-
-        ButterKnife.bind(this);
+        binding = ActivityMatterBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
         Bundle bundle = getIntent().getExtras();
 
-        if (bundle != null) {
-            matter = DataBase.get().getBoxStore().boxFor(Matter.class).get(bundle.getLong("ID"));
-
-            setSupportActionBar(findViewById(R.id.toolbar_matter));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
-            getSupportActionBar().setTitle(matter.getTitle());
-
-            TabsAdapter adapter = new TabsAdapter(getBaseContext(), getSupportFragmentManager(), getIntent().getExtras());
-
-            ViewPager viewPager = (ViewPager) findViewById(R.id.pager_matter);
-            viewPager.setAdapter(adapter);
-
-            tabLayout.setupWithViewPager(viewPager);
-            tabLayout.setSelectedTabIndicatorColor(matter.getColor());
-
-            viewPager.setCurrentItem(bundle.getInt("PAGE"));
-        } else
+        if (bundle == null)
             finish();
+
+        matter = DataBase.get().getBoxStore().boxFor(Matter.class).get(bundle.getLong("ID"));
+
+        getSupportActionBar().setTitle(matter.getTitle());
+
+        binding.pager.setAdapter(new TabsAdapter(getSupportFragmentManager(), getLifecycle(),
+                getIntent().getExtras()));
+
+        new TabLayoutMediator(binding.tab, binding.pager, (tab, position) -> {
+            Resources resources = getBaseContext().getResources();
+            switch (position) {
+                case 0: tab.setText(resources.getString(R.string.title_notas));
+                break;
+
+                case 1: tab.setText(resources.getString(R.string.title_horario));
+                break;
+
+                case 2: tab.setText(resources.getString(R.string.title_materiais));
+                break;
+
+                case 3: tab.setText(resources.getString(R.string.title_class));
+                break;
+            }
+        }).attach();
+
+        binding.tab.setSelectedTabIndicatorColor(matter.getColor());
+        binding.pager.setCurrentItem(bundle.getInt("PAGE"));
     }
 
     @Override
@@ -73,7 +82,7 @@ public class MatterActivity extends AppCompatActivity {
                         .setPositiveButton(getString(R.string.dialog_select), (dialog, selectedColor, allColors) -> {
                             matter.setColor(selectedColor);
                             DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
-                            tabLayout.setSelectedTabIndicatorColor(matter.getColor());
+                            binding.tab.setSelectedTabIndicatorColor(matter.getColor());
                         })
                         .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
                         .build()

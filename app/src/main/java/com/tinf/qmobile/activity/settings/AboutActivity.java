@@ -4,25 +4,17 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.tinf.qmobile.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.tinf.qmobile.databinding.ActivityAboutBinding;
 
 public class AboutActivity extends AppCompatActivity {
-    @BindView(R.id.about_version)       TextView version;
+    private ActivityAboutBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-
-        ButterKnife.bind(this);
+        binding = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         String v = "";
 
@@ -33,11 +25,9 @@ public class AboutActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        version.setText(v);
-    }
+        binding.version.setText(v);
 
-    public void more(View v){
-        startActivity(new Intent(getBaseContext(), MoreActivity.class));
+        binding.more.setOnClickListener(view -> startActivity(new Intent(getBaseContext(), MoreActivity.class)));
     }
 
     @Override

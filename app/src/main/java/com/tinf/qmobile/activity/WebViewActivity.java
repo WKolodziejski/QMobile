@@ -1,5 +1,6 @@
 package com.tinf.qmobile.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -8,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.ActivityWebviewBinding;
 import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
@@ -17,18 +19,18 @@ import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_HOME;
 
 public class WebViewActivity extends AppCompatActivity {
-    @BindView(R.id.webview)     WebView webView;
+    private ActivityWebviewBinding binding;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_webview);
+        binding = ActivityWebviewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        ButterKnife.bind(this);
-
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setUseWideViewPort(true);
-        webView.setWebViewClient(new WebViewClient() {
+        binding.webview.getSettings().setJavaScriptEnabled(true);
+        binding.webview.getSettings().setUseWideViewPort(true);
+        binding.webview.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
@@ -48,7 +50,7 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
 
-        webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
+        binding.webview.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
     }
 
 }

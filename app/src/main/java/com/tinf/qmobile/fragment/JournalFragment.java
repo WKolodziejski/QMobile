@@ -2,7 +2,6 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,18 +17,17 @@ import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
+import com.tinf.qmobile.databinding.FragmentJournalBinding;
 import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class JournalFragment extends Fragment implements OnUpdate {
-    @BindView(R.id.recycler_diarios)    RecyclerView recyclerView;
-    @BindView(R.id.fab_journal)         FloatingActionButton fab;
+    private FragmentJournalBinding binding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_journal, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentJournalBinding.bind(view);
         return view;
     }
 
@@ -64,27 +62,26 @@ public class JournalFragment extends Fragment implements OnUpdate {
             }
         });
 
-        fab.setOnClickListener(v -> adapter.toggle());
+        binding.fab.setOnClickListener(v -> adapter.toggle());
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(layout);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        //recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recycler.setHasFixedSize(true);
+        binding.recycler.setItemViewCacheSize(20);
+        binding.recycler.setDrawingCacheEnabled(true);
+        binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        binding.recycler.setLayoutManager(layout);
+        binding.recycler.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        binding.recycler.setAdapter(adapter);
+        binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
 
-                if (dy < 0 && !fab.isShown())
-                    fab.show();
-                else if(dy > 0 && fab.isShown())
-                    fab.hide();
+                if (dy < 0 && !binding.fab.isShown())
+                    binding.fab.show();
+                else if(dy > 0 && binding.fab.isShown())
+                    binding.fab.hide();
             }
 
             @Override
@@ -104,8 +101,8 @@ public class JournalFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onScrollRequest() {
-        if (recyclerView != null) {
-            recyclerView.smoothScrollToPosition(0);
+        if (binding.recycler != null) {
+            binding.recycler.smoothScrollToPosition(0);
         }
     }
 

@@ -9,19 +9,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
-
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -99,6 +95,10 @@ public class User {
         return App.getContext().getSharedPreferences(INFO, Context.MODE_PRIVATE);
     }
 
+    /*private static SharedPreferences getInfo() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext());
+    }*/
+
     private static SharedPreferences.Editor getEditor() {
         return getInfo().edit();
     }
@@ -107,7 +107,7 @@ public class User {
         JSONArray array = new JSONArray();
 
         for (String z : years) {
-            array.put((String) z);
+            array.put(z);
         }
 
         getEditor().putString(YEARS, array.toString()).apply();

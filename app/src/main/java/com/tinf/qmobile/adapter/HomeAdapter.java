@@ -42,9 +42,12 @@ import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
-    private List<EventBase> events;
-    private Context context;
-    private DataSubscription sub1, sub2, sub3, sub4;
+    private final List<EventBase> events;
+    private final Context context;
+    private final DataSubscription sub1;
+    private final DataSubscription sub2;
+    private final DataSubscription sub3;
+    private final DataSubscription sub4;
 
     public HomeAdapter(Context context) {
         this.context = context;

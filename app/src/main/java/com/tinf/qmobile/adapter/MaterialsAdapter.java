@@ -55,15 +55,16 @@ import static com.tinf.qmobile.network.Client.pos;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate, KmStickyListener {
     private List<Queryable> materials;
-    private List<Long> selected;
-    private LongSparseArray<Long> downloading;
-    private Context context;
-    private OnInteractListener listener;
-    private DataSubscription sub1, sub2;
+    private final List<Long> selected;
+    private final LongSparseArray<Long> downloading;
+    private final Context context;
+    private final OnInteractListener listener;
+    private final DataSubscription sub1;
+    private final DataSubscription sub2;
 
-    private Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
+    private final Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
 
-    private ActionMode.Callback callback = new ActionMode.Callback() {
+    private final ActionMode.Callback callback = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             return listener.onCreateActionMode(actionMode, menu);
@@ -81,7 +82,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                         .setTitle(context.getString(R.string.dialog_delete))
                         .setMessage(selected.size() > 1 ? String.format(Locale.getDefault(),
                                 context.getString(R.string.contextual_remove_txt_plu),
-                                String.valueOf(selected.size())) : context.getString(R.string.contextual_remove_txt_sing))
+                                selected.size()) : context.getString(R.string.contextual_remove_txt_sing))
                         .setCancelable(true)
                         .setPositiveButton(context.getString(R.string.dialog_delete), (dialogInterface, d) -> {
                             if (listener.isSelectionMode()) {

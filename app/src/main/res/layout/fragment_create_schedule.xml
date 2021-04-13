@@ -14,7 +14,7 @@
         android:layout_marginStart="48dp"
         android:layout_marginEnd="16dp"
         android:background="@color/transparent"
-        android:id="@+id/schedule_create_title"
+        android:id="@+id/title_edt"
         android:hint="@string/event_title"
         android:textStyle="bold"
         android:textSize="24sp"
@@ -28,7 +28,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_title"
+        app:layout_constraintTop_toBottomOf="@id/title_edt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -36,8 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/schedule_create_matter_layout"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_title"
+        android:id="@+id/matter_layout"
+        app:layout_constraintTop_toBottomOf="@id/title_edt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"
@@ -49,8 +49,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_school" />
+            app:srcCompat="@drawable/ic_school"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:layout_marginEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/schedule_create_matter_text"
+            android:id="@+id/matter_text"
             android:hint="@string/event_matter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,18 +70,18 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/schedule_create_matter_decoration"
+        android:id="@+id/matter_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_matter_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/matter_layout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/schedule_create_time_layout"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_matter_layout"
+        android:id="@+id/time_layout"
+        app:layout_constraintTop_toBottomOf="@id/matter_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
@@ -95,8 +95,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_time" />
+            app:srcCompat="@drawable/ic_time"
+            app:tint="@color/colorAccent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -109,7 +109,7 @@
                 android:layout_marginBottom="8dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:id="@+id/schedule_create_start_day"
+                android:id="@+id/start_day"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -122,11 +122,11 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:padding="8dp"
-                android:id="@+id/schedule_create_start_time"
+                android:id="@+id/start_time"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/schedule_create_end_time"
+                app:layout_constraintBottom_toTopOf="@id/end_time"
                 tools:text="18:00" />
 
             <TextView
@@ -135,9 +135,9 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:padding="8dp"
-                android:id="@+id/schedule_create_end_time"
+                android:id="@+id/end_time"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toBottomOf="@id/schedule_create_start_time"
+                app:layout_constraintTop_toBottomOf="@id/start_time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:text="19:00" />
@@ -150,14 +150,14 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_time_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/time_layout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/schedule_create_room_layout"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_time_layout"
+        android:id="@+id/room_layout"
+        app:layout_constraintTop_toBottomOf="@id/time_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:foreground="?android:attr/selectableItemBackground"
@@ -168,8 +168,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:layout_margin="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_room" />
+            app:srcCompat="@drawable/ic_room"
+            app:tint="@color/colorAccent" />
 
         <EditText
             android:layout_width="match_parent"
@@ -180,7 +180,7 @@
             android:hint="@string/event_room"
             android:inputType="textCapSentences"
             android:background="@color/transparent"
-            android:id="@+id/schedule_create_room"
+            android:id="@+id/room_edt"
             android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -193,16 +193,16 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_room_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/room_layout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:orientation="horizontal"
-        android:id="@+id/schedule_create_alarm_layout"
+        android:id="@+id/alarm_layout"
         android:foreground="?android:attr/selectableItemBackground"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_room_layout"
+        app:layout_constraintTop_toBottomOf="@id/room_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -211,8 +211,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_notification" />
+            app:srcCompat="@drawable/ic_notification"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -221,7 +221,7 @@
             android:layout_marginTop="12dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/schedule_create_alarm_text"
+            android:id="@+id/alarm_text"
             android:hint="@string/event_alarm"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -231,18 +231,18 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/schedule_create_alarm_decoration"
+        android:id="@+id/alarm_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_alarm_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/alarm_layout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/schedule_create_color_layout"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_alarm_layout"
+        android:id="@+id/color_layout"
+        app:layout_constraintTop_toBottomOf="@id/alarm_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:paddingTop="8dp"
@@ -253,7 +253,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:id="@+id/schedule_create_color_img"
+            android:id="@+id/color_img"
             app:srcCompat="@drawable/ic_dot" />
 
         <TextView
@@ -264,7 +264,7 @@
             android:layout_marginEnd="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/schedule_create_color_text"
+            android:id="@+id/color_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -274,18 +274,18 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/schedule_create_color_decoration"
+        android:id="@+id/color_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_color_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/color_layout"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/schedule_create_description_layout"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_color_layout"
+        android:id="@+id/description_layout"
+        app:layout_constraintTop_toBottomOf="@id/color_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:foreground="?android:attr/selectableItemBackground"
@@ -296,8 +296,8 @@
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:layout_margin="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_note" />
+            app:srcCompat="@drawable/ic_note"
+            app:tint="@color/colorAccent" />
 
         <EditText
             android:layout_width="match_parent"
@@ -308,7 +308,7 @@
             android:hint="@string/event_note"
             android:inputType="textCapSentences"
             android:background="@color/transparent"
-            android:id="@+id/schedule_create_description"
+            android:id="@+id/description_edt"
             android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -321,6 +321,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/black_dividers"
-        app:layout_constraintTop_toBottomOf="@id/schedule_create_description_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/description_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

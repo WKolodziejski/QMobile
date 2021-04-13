@@ -17,13 +17,14 @@ import com.evrencoskun.tableview.TableView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
+import com.tinf.qmobile.databinding.FragmentReportBinding;
 import com.tinf.qmobile.network.Client;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ReportFragment extends Fragment implements OnUpdate {
-    @BindView(R.id.report_table)    TableView table;
+    private FragmentReportBinding binding;
     //@BindView(R.id.fab_report)      FloatingActionButton fab;
 
     @Override
@@ -35,7 +36,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_report, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentReportBinding.bind(view);
         return view;
     }
 
@@ -43,13 +44,13 @@ public class ReportFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        table.setShowHorizontalSeparators(false);
-        table.setShowVerticalSeparators(false);
-        table.getColumnHeaderRecyclerView().removeItemDecorationAt(0);
-        table.getRowHeaderRecyclerView().removeItemDecorationAt(0);
-        table.getCellRecyclerView().removeItemDecorationAt(0);
+        binding.table.setShowHorizontalSeparators(false);
+        binding.table.setShowVerticalSeparators(false);
+        binding.table.getColumnHeaderRecyclerView().removeItemDecorationAt(0);
+        binding.table.getRowHeaderRecyclerView().removeItemDecorationAt(0);
+        binding.table.getCellRecyclerView().removeItemDecorationAt(0);
 
-        table.setAdapter(new ReportAdapter(getContext(), table/*, header -> {
+        binding.table.setAdapter(new ReportAdapter(getContext(), binding.table/*, header -> {
             boolean[] checked = new boolean[header.length];
             Arrays.fill(checked, true);
 
@@ -68,12 +69,12 @@ public class ReportFragment extends Fragment implements OnUpdate {
                     .show());
         }*/));
 
-        table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
                 /*if (dy < 0 && !fab.isShown())
                     fab.show();
                 else if(dy > 0 && fab.isShown())
@@ -97,9 +98,9 @@ public class ReportFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onScrollRequest() {
-        if (table != null) {
-            table.scrollToRowPosition(0);
-            table.scrollToColumnPosition(0);
+        if (binding.table != null) {
+            binding.table.scrollToRowPosition(0);
+            binding.table.scrollToColumnPosition(0);
         }
     }
 

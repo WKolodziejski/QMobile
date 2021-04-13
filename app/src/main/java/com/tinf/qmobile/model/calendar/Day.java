@@ -10,12 +10,12 @@ import java.util.Locale;
 import static com.tinf.qmobile.model.ViewType.DAY;
 
 public class Day implements CalendarBase {
-    private Date startDate;
-    private Date endDate;
+    private final Date startDate;
+    private final Date endDate;
 
-    private static SimpleDateFormat year = new SimpleDateFormat("MMM, yyyy", Locale.getDefault());
-    private static SimpleDateFormat month = new SimpleDateFormat("MMM", Locale.getDefault());
-    private static SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+    private static final SimpleDateFormat year = new SimpleDateFormat("MMM, yyyy", Locale.getDefault());
+    private static final SimpleDateFormat month = new SimpleDateFormat("MMM", Locale.getDefault());
+    private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
 
     public Day(Date startDate, Date endDate) {
         this.startDate = startDate;

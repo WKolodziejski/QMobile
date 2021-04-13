@@ -31,7 +31,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
 import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
 
 public class MessageParser extends BaseParser {
-    private OnMessages onMessages;
+    private final OnMessages onMessages;
 
     public MessageParser(OnMessages onMessages, OnResponse onResponse) {
         super(PG_MESSAGES, 0, false, onResponse::onFinish, onResponse::onError);

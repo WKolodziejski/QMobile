@@ -32,7 +32,7 @@ public class UserFragment extends DialogFragment {
     @BindView(R.id.user_name)       TextView name;
     @BindView(R.id.user_reg)        TextView reg;
     @BindView(R.id.user_logout)     MaterialCardView logout;
-    private OnLogout onLogout;
+    private final OnLogout onLogout;
 
     public UserFragment(OnLogout onLogout) {
         this.onLogout = onLogout;
@@ -72,7 +72,7 @@ public class UserFragment extends DialogFragment {
     @OnClick(R.id.user_policy)
     public void onPolicyClick(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://sites.google.com/view/qmobileapp"));
+                Uri.parse("https://sites.google.com/view/qmobileapp/política-de-privacidade"));
         startActivity(intent);
     }
 

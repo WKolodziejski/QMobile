@@ -34,7 +34,10 @@ public class DataBase implements OnUpdate {
     private static DataBase instance;
     private BoxStore boxStore;
     private List<OnDataChange> listeners;
-    private DataSubscription sub1, sub2, sub3, sub4;
+    private final DataSubscription sub1;
+    private final DataSubscription sub2;
+    private final DataSubscription sub3;
+    private final DataSubscription sub4;
 
     private DataBase() {
         Client.get().addOnUpdateListener(this);

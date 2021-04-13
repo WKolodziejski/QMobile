@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.MessagesAdapter;
+import com.tinf.qmobile.databinding.FragmentMessagesBinding;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
 
@@ -27,13 +28,7 @@ import butterknife.ButterKnife;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesFragment extends Fragment implements OnResponse {
-    @BindView(R.id.recycler_messages)   RecyclerView recyclerView;
-    @BindView(R.id.message_refresh)     SwipeRefreshLayout refresh;
-    /*@BindView(R.id.message_next)        Button nxt;
-    @BindView(R.id.message_previous)    Button prv;
-
-    @BindView(R.id.message_webview)
-    WebView webView;*/
+    private FragmentMessagesBinding binding;
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         getActivity().finish();
@@ -43,7 +38,7 @@ public class MessagesFragment extends Fragment implements OnResponse {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentMessagesBinding.bind(view);
         return view;
     }
 
@@ -60,20 +55,20 @@ public class MessagesFragment extends Fragment implements OnResponse {
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
         MessagesAdapter adapter = new MessagesAdapter(getContext(), messenger, getArguments());
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(layout);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recycler.setHasFixedSize(true);
+        binding.recycler.setItemViewCacheSize(20);
+        binding.recycler.setDrawingCacheEnabled(true);
+        binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        binding.recycler.setLayoutManager(layout);
+        binding.recycler.setAdapter(adapter);
+        binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                refresh.setEnabled(p == 0);
+                binding.refresh.setEnabled(p == 0);
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
@@ -85,7 +80,7 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
         });
 
-        refresh.setOnRefreshListener(messenger::loadFirstPage);
+        binding.refresh.setOnRefreshListener(messenger::loadFirstPage);
 
         if (getArguments() != null) {
             long id = getArguments().getLong("ID2");
@@ -110,22 +105,22 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
     @Override
     public void onStart(int pg, int pos) {
-        refresh.setRefreshing(true);
+        binding.refresh.setRefreshing(true);
     }
 
     @Override
     public void onFinish(int pg, int pos) {
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onError(int pg, String error) {
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
 }

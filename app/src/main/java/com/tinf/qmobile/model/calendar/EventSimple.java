@@ -14,7 +14,7 @@ public class EventSimple extends EventBase {
     public enum Type {
         INICIO(1), FIM(2);
 
-        private int i;
+        private final int i;
 
         Type(final int i) {
             this.i = i;

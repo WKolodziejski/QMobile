@@ -7,8 +7,8 @@ import com.tinf.qmobile.network.message.OnMessages;
 import com.tinf.qmobile.parser.MessageParser;
 
 public class MessagesHandler {
-    private OnMessages onMessages;
-    private OnResponse onResponse;
+    private final OnMessages onMessages;
+    private final OnResponse onResponse;
 
     public MessagesHandler(OnMessages onMessages, OnResponse onResponse) {
         this.onMessages = onMessages;

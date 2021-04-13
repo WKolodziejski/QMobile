@@ -32,10 +32,10 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
-    private List<Queryable> messages;
-    private Context context;
-    private Messenger messenger;
-    private DataSubscription sub1;
+    private final List<Queryable> messages;
+    private final Context context;
+    private final Messenger messenger;
+    private final DataSubscription sub1;
 
     public MessagesAdapter(Context context, Messenger messenger, Bundle bundle) {
         this.context = context;

@@ -35,9 +35,9 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
-    private List<Queryable> classes;
-    private Context context;
-    private DataSubscription sub1, sub2;
+    private final List<Queryable> classes;
+    private final Context context;
+    private final DataSubscription sub1, sub2;
 
     public ClassAdapter(Context context, Bundle bundle) {
         this.context = context;
@@ -47,21 +47,19 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         DataObserver observer = data -> {
             List<Queryable> updated = getList(bundle);
 
-            if (bundle != null) {
-                for (int i = 0; i < classes.size(); i++) {
-                    if (classes.get(i) instanceof Clazz) {
-                        Clazz c1 = ((Clazz) classes.get(i));
+            for (int i = 0; i < classes.size(); i++) {
+                if (classes.get(i) instanceof Clazz) {
+                    Clazz c1 = ((Clazz) classes.get(i));
 
-                        for (Queryable q : updated)
-                            if (q instanceof Clazz) {
-                                Clazz c2 = (Clazz) q;
+                    for (Queryable q : updated)
+                        if (q instanceof Clazz) {
+                            Clazz c2 = (Clazz) q;
 
-                                if (c1.id == c2.id) {
-                                    c2.highlight = c1.highlight;
-                                    break;
-                                }
+                            if (c1.id == c2.id) {
+                                c2.highlight = c1.highlight;
+                                break;
                             }
-                    }
+                        }
                 }
             }
 
@@ -143,7 +141,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         switch (viewType) {
             case CLASS:
                 return new ClassItemViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.class_item, parent, false));
+                        .inflate(R.layout.class_item, parent, false));
 
             case PERIOD:
                 return new ClassHeaderViewHolder(LayoutInflater.from(context)

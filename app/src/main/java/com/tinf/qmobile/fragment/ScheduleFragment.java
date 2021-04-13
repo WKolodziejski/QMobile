@@ -16,6 +16,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.FragmentScheduleBinding;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -38,8 +39,7 @@ import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ScheduleFragment extends Fragment {
-    @BindView(R.id.weekView_horario)    WeekView weekView;
-    @BindView(R.id.schedule_empty)      ImageView empty;
+    private FragmentScheduleBinding binding;
     private DataSubscription sub1, sub2;
     private Bundle bundle;
 
@@ -52,19 +52,19 @@ public class ScheduleFragment extends Fragment {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> binding.weekView.notifyDatasetChanged());
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> binding.weekView.notifyDatasetChanged());
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentScheduleBinding.bind(view);
         return view;
     }
 
@@ -72,16 +72,16 @@ public class ScheduleFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        weekView.setWeekViewLoader(ArrayList::new);
+        binding.weekView.setWeekViewLoader(ArrayList::new);
 
-        weekView.setOnEventClickListener((event, eventRect) -> {
+        binding.weekView.setOnEventClickListener((event, eventRect) -> {
             Intent intent = new Intent(getActivity(), EventViewActivity.class);
             intent.putExtra("TYPE", SCHEDULE);
             intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
             startActivity(intent);
         });
 
-        weekView.setWeekViewLoader(() -> {
+        binding.weekView.setWeekViewLoader(() -> {
             boolean[][] hours = new boolean[24][7];
             WeekViewEvent[] minutes = new WeekViewEvent[24];
 
@@ -153,26 +153,25 @@ public class ScheduleFragment extends Fragment {
                     }
                 }
 
-                weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
-                weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
-                weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
-                empty.setVisibility(View.GONE);
+                binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
+                binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
+                binding.empty.setVisibility(View.GONE);
 
             } else {
-                weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
-                weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
-                empty.setVisibility(View.VISIBLE);
+                binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
+                binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
+                binding.empty.setVisibility(View.VISIBLE);
             }
 
             return events;
         });
-    }
 
-    @OnClick(R.id.fab_add_schedule)
-    public void onClick(View view) {
-        Intent intent = new Intent(getContext(), EventCreateActivity.class);
-        intent.putExtra("TYPE", SCHEDULE);
-        startActivity(intent);
+        binding.fab.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), EventCreateActivity.class);
+            intent.putExtra("TYPE", SCHEDULE);
+            startActivity(intent);
+        });
     }
 
     @Override

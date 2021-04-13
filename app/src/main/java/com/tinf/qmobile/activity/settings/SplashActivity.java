@@ -13,7 +13,6 @@ import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 
 public class SplashActivity extends AppCompatActivity {
-    private static final String TAG = "SplashActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +24,6 @@ public class SplashActivity extends AppCompatActivity {
             Jobs.scheduleJob(false);
             if (!Client.get().isValid()) {
                 Client.get().login();
-                Log.d(TAG, "Calling login");
             }
 
             intent = new Intent(this, MainActivity.class);

@@ -194,7 +194,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(scrollY == 0);
+                    ((MainActivity) getActivity()).binding.refresh.setEnabled(scrollY == 0);
 
                     if (scrollY < oldScrollY && !fab.isShown())
                         fab.show();
@@ -204,12 +204,12 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         fab.setOnClickListener(v -> new CreateFragment().show(getChildFragmentManager(), "sheet_create"));
 
-        LinearLayout offline = (LinearLayout) view.findViewById(R.id.home_offline);
+        LinearLayout offline = view.findViewById(R.id.home_offline);
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             offline.setVisibility(View.VISIBLE);
 
-            TextView text = (TextView) view.findViewById(R.id.offline_last_update);
+            TextView text = view.findViewById(R.id.offline_last_update);
             text.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
         } else {
             offline.setVisibility(View.GONE);

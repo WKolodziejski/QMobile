@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.ActivityEventCreateBinding;
+import com.tinf.qmobile.databinding.ActivityEventViewBinding;
 import com.tinf.qmobile.fragment.view.ClassViewFragment;
 import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
@@ -19,11 +21,13 @@ import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventViewActivity extends AppCompatActivity {
+    private ActivityEventViewBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_view);
+        binding = ActivityEventViewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setSupportActionBar(findViewById(R.id.toolbar_default));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));

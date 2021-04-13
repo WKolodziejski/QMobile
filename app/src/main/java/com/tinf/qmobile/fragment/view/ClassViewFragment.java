@@ -87,8 +87,8 @@ public class ClassViewFragment extends Fragment {
             SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
             title_txt.setText(clazz.getMatter());
-            absences_txt.setText(String.format(getString(R.string.class_absence), String.valueOf(clazz.getAbsences_())));
-            given_txt.setText(String.format(getString(R.string.class_given), String.valueOf(clazz.getClassesCount_())));
+            absences_txt.setText(String.format(getString(R.string.class_absence), clazz.getAbsences_()));
+            given_txt.setText(String.format(getString(R.string.class_given), clazz.getClassesCount_()));
             teacher_txt.setText(clazz.getTeacher());
             date_txt.setText(date.format(clazz.getDate()));
             matter_txt.setText(clazz.getPeriod());

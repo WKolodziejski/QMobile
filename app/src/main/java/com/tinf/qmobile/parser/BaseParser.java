@@ -1,8 +1,9 @@
 package com.tinf.qmobile.parser;
 
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.journal.Journal;
@@ -15,17 +16,18 @@ import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Sender;
 import com.tinf.qmobile.utility.User;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-
+import java.util.concurrent.Executors;
 import io.objectbox.Box;
+import static com.tinf.qmobile.App.getContext;
 
-public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
+public abstract class BaseParser {
     protected OnFinish onFinish;
     protected OnError onError;
     protected final int pos, page;
     protected final boolean notify;
+    private boolean success;
 
     protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
     protected Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
@@ -46,27 +48,28 @@ public abstract class BaseParser extends AsyncTask<String, Void, Boolean> {
         this.onError = onError;
     }
 
-    @Override
-    protected Boolean doInBackground(String... strings) {
-        Log.i(String.valueOf(page), User.getYear(pos) + "/" + User.getPeriod(pos));
-        try {
-            return DataBase.get().getBoxStore().callInTx(() -> {
-                parse(Jsoup.parse(strings[0]));
-                return true;
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    public void execute(String string) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            Log.i(String.valueOf(page), User.getYear(pos) + "/" + User.getPeriod(pos));
 
-    @Override
-    protected void onPostExecute(Boolean result) {
-        super.onPostExecute(result);
-        if (result)
-            onFinish.onFinish(page, pos);
-        else
-            onError.onError(page, "Problema ao processar página");
+            try {
+                DataBase.get().getBoxStore().callInTx(() -> {
+                    parse(Jsoup.parse(string));
+                    success = true;
+                    return true;
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                success = false;
+            }
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (success)
+                    onFinish.onFinish(page, pos);
+                else
+                    onError.onError(page, getContext().getString(R.string.client_error));
+            });
+        });
     }
 
     public interface OnError {

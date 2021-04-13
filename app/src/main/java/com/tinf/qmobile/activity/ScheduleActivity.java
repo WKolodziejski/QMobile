@@ -8,29 +8,23 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.ActivityScheduleBinding;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.utility.User;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
-
 public class ScheduleActivity extends AppCompatActivity implements OnResponse {
-    @BindView(R.id.schedule_refresh)    SwipeRefreshLayout refresh;
+    private ActivityScheduleBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_schedule);
-        ButterKnife.bind(this);
+        binding = ActivityScheduleBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setSupportActionBar(findViewById(R.id.toolbar_default));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
@@ -42,7 +36,7 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
                 .replace(R.id.schedule_fragment, new ScheduleFragment())
                 .commit();
 
-        refresh.setEnabled(false);
+        binding.refresh.setEnabled(false);
     }
 
     @Override
@@ -57,25 +51,25 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
     @Override
     public void onStart(int pg, int pos) {
         if (pg == PG_CALENDAR)
-            refresh.setRefreshing(true);
+            binding.refresh.setRefreshing(true);
     }
 
     @Override
     public void onFinish(int pg, int pos) {
         if (pg == PG_SCHEDULE)
-            refresh.setRefreshing(false);
+            binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onError(int pg, String error) {
         if (pg == PG_SCHEDULE)
-            refresh.setRefreshing(false);
+            binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         if (pg == PG_SCHEDULE)
-            refresh.setRefreshing(false);
+            binding.refresh.setRefreshing(false);
     }
 
     @Override
@@ -94,14 +88,14 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
     protected void onStop() {
         super.onStop();
         Client.get().removeOnResponseListener(this);
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Client.get().removeOnResponseListener(this);
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
 }

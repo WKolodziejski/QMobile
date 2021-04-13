@@ -10,7 +10,8 @@ import java.util.Collections;
 import java.util.Stack;
 
 public class RandomColor {
-    private Stack<Integer> recycle, colors;
+    private final Stack<Integer> recycle;
+    private final Stack<Integer> colors;
 
     public RandomColor() {
         colors = new Stack<>();

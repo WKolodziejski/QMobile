@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttachmentsAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
-    private List<Queryable> attachments;
-    private Context context;
-    private boolean isCard;
+    private final List<Queryable> attachments;
+    private final Context context;
+    private final boolean isCard;
 
     public AttachmentsAdapter(Context context, List<Attachment> attachments, boolean isCard) {
         this.attachments = new ArrayList<>(attachments);

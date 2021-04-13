@@ -47,6 +47,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
     public SearchAdapter(Context context) {
         this.context = context;
         this.list = new ArrayList<>();
+        this.parser = new SearchParser(context, list -> {
+            this.list = list;
+            notifyDataSetChanged();
+        });
 
         showRecentQueries();
     }
@@ -58,15 +62,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
             showRecentQueries();
             return;
         }
-
-        if (parser != null) {
-            parser.cancel(true);
-        }
-
-        parser = new SearchParser(context, list -> {
-            this.list = list;
-            notifyDataSetChanged();
-        });
 
         parser.execute(query);
     }

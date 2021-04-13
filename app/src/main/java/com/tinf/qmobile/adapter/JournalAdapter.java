@@ -53,9 +53,10 @@ import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate, KmStickyListener {
     private List<Queryable> journals;
-    private Context context;
-    private OnExpandListener onExpandListener;
-    private DataSubscription sub1, sub2;
+    private final Context context;
+    private final OnExpandListener onExpandListener;
+    private final DataSubscription sub1;
+    private final DataSubscription sub2;
 
     public JournalAdapter(Context context, Bundle bundle, OnExpandListener onExpandListener) {
         this.context = context;
@@ -146,7 +147,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                     else if (oldQ instanceof Period && newQ instanceof Period)
                         return (((Period) oldQ).id == (((Period) newQ).id));
 
-                    else return oldQ instanceof Empty && newQ instanceof Empty;
+                    else return false;
                 }
 
                 @Override

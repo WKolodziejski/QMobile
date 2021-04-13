@@ -31,7 +31,7 @@ import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class DownloadReceiver extends BroadcastReceiver {
     public static final String PATH = "/QMobile/" + User.getCredential(REGISTRATION) + "/";
-    private OnDownload onDownload;
+    private final OnDownload onDownload;
     private final DownloadManager manager;
     public static long id;
 

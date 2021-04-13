@@ -172,7 +172,7 @@ public class ScheduleViewFragment extends Fragment {
                         .setMessage(getString(R.string.dialog_delete_txt))
                         .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
                             DataBase.get().getBoxStore().boxFor(Schedule.class).remove(id);
-                            ((EventViewActivity) getActivity()).finish();
+                            getActivity().finish();
                             Toast.makeText(getContext(), getString(R.string.event_removed), Toast.LENGTH_SHORT).show();
                         })
                         .setNegativeButton(R.string.dialog_cancel, null)

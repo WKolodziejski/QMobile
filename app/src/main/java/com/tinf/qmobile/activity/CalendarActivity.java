@@ -6,20 +6,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.EventsAdapter;
+import com.tinf.qmobile.databinding.ActivityCalendarBinding;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
@@ -31,20 +27,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarRecyclerView.AppBarTracking, OnResponse {
-    @BindView(R.id.calendar_appbar)     AppBarLayout appbar;
-    @BindView(R.id.calendar_recycler)   CalendarRecyclerView recyclerView;
-    @BindView(R.id.calendar_arrow)      ImageView arrow;
-    @BindView(R.id.calendar_expand)     LinearLayout expand;
-    @BindView(R.id.calendar_title)      TextView title;
-    @BindView(R.id.calendar_view)       CompactCalendarView calendar;
-    @BindView(R.id.calendar_refresh)    SwipeRefreshLayout refresh;
-    @BindView(R.id.calendar_fab)        FloatingActionButton fab;
+    private ActivityCalendarBinding binding;
 
     private int appBarOffset = 0;
     private int offset = 0;
@@ -54,40 +40,39 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     private LinearLayoutManager layout;
     private EventsAdapter adapter;
 
-    private static SimpleDateFormat month = new SimpleDateFormat("MMMM", Locale.getDefault());
-    private static SimpleDateFormat year = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+    private static final SimpleDateFormat month = new SimpleDateFormat("MMMM", Locale.getDefault());
+    private static final SimpleDateFormat year = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
-        ButterKnife.bind(this);
-        setSupportActionBar(findViewById(R.id.calendar_toolbar));
+        binding = ActivityCalendarBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(getDrawable(R.drawable.ic_cancel));
+        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
         Client.get().load(PG_CALENDAR);
-        //Client.get().loadYear(pos);
 
         layout = new LinearLayoutManager(this);
-        adapter = new EventsAdapter(this, calendar);
+        adapter = new EventsAdapter(this, binding.calendar);
 
-        refresh.setEnabled(false);
+        binding.refresh.setEnabled(false);
 
-        recyclerView.setAppBarTracking(this);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(layout);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.recycler.setAppBarTracking(this);
+        binding.recycler.setItemViewCacheSize(20);
+        binding.recycler.setDrawingCacheEnabled(true);
+        binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        binding.recycler.setLayoutManager(layout);
+        binding.recycler.setAdapter(adapter);
+        binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
+        binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!isExpanded && newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
-                    calendar.setCurrentDate(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate());
+                    binding.calendar.setCurrentDate(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate());
             }
 
             @Override
@@ -95,28 +80,28 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
                 super.onScrolled(recyclerView, dx, dy);
                 setDateTitle(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate());
 
-                if (dy < 0 && !fab.isShown())
-                    fab.show();
-                else if(dy > 0 && fab.isShown())
-                    fab.hide();
+                if (dy < 0 && !binding.fab.isShown())
+                    binding.fab.show();
+                else if(dy > 0 && binding.fab.isShown())
+                    binding.fab.hide();
             }
 
         });
 
-        fab.setOnClickListener(v -> {
+        binding.fab.setOnClickListener(v -> {
             Intent intent = new Intent(getBaseContext(), EventCreateActivity.class);
             intent.putExtra("TYPE", EVENT);
             startActivity(intent);
         });
 
-        appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
+        binding.appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
             if (appBarOffset != verticalOffset) {
                 appBarOffset = verticalOffset;
                 int totalScrollRange = appBarLayout.getTotalScrollRange();
                 float progress = (float) (-verticalOffset) / (float) totalScrollRange;
-                arrow.setRotation(-progress * 180);
+                binding.arrow.setRotation(-progress * 180);
                 isExpanded = verticalOffset == 0;
-                isIdle = appBarOffset >= 0 || appBarOffset <= 0;
+                isIdle = true;
 
                 if (appBarOffset == -appBarLayout.getTotalScrollRange()) {
                     isExpanded = false;
@@ -127,7 +112,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
 
                 if (appBarOffset == 0) {
                     if (isExpanded) {
-                        recyclerView.stopScroll();
+                        binding.recycler.stopScroll();
                         isExpanded = true;
                         offset = layout.findFirstVisibleItemPosition();
                         topSpace = layout.findViewByPosition(layout.findFirstVisibleItemPosition()).getTop();
@@ -136,13 +121,13 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             }
         });
 
-        expand.setOnClickListener(v -> {
+        binding.expand.setOnClickListener(v -> {
             isExpanded = !isExpanded;
-            recyclerView.stopScroll();
-            appbar.setExpanded(isExpanded, true);
+            binding.recycler.stopScroll();
+            binding.appbar.setExpanded(isExpanded, true);
         });
 
-        calendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+        binding.calendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
 
             @Override
             public void onDayClick(Date dateClicked) {
@@ -157,16 +142,17 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
 
         });
 
-        setDateTitle(new Date());
-        scrollToDate(new Date());
-        calendar.setFirstDayOfWeek(Calendar.SUNDAY);
-        calendar.setUseThreeLetterAbbreviation(true);
-        calendar.shouldDrawIndicatorsBelowSelectedDays(true);
+        Date today = new Date();
+        setDateTitle(today);
+        scrollToDate(today);
+        binding.calendar.setFirstDayOfWeek(Calendar.SUNDAY);
+        binding.calendar.setUseThreeLetterAbbreviation(true);
+        binding.calendar.shouldDrawIndicatorsBelowSelectedDays(true);
     }
 
     private void setExpandAndCollapseEnabled(boolean enabled) {
-        if (recyclerView.isNestedScrollingEnabled() != enabled)
-            recyclerView.setNestedScrollingEnabled(enabled);
+        if (binding.recycler.isNestedScrollingEnabled() != enabled)
+            binding.recycler.setNestedScrollingEnabled(enabled);
     }
 
     private int lastYear;
@@ -176,7 +162,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
         LocalDate currDate = new LocalDate();
 
         if (currDate.getYear() != newDate.getYear()) {
-            title.setText(year.format(date));
+            binding.title.setText(year.format(date));
 
             if (newDate.getYear() != lastYear) {
                 lastYear = newDate.getYear();
@@ -192,7 +178,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
                 }
             }
         } else {
-            title.setText(month.format(date));
+            binding.title.setText(month.format(date));
         }
     }
 
@@ -212,13 +198,16 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             else if (0 > comp)
                 start = i + 1;
 
-            else if (0 == comp)
-                break;
+            else break;
         }
 
         if (i >= 0) {
             offset = i;
             topSpace = 0;
+
+            if (i - 1 >= 0 && !isExpanded)
+                i -= 1;
+
             layout.scrollToPositionWithOffset(i, 0);
         }
     }
@@ -263,25 +252,25 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     @Override
     public void onStart(int pg, int pos) {
         if (pg == PG_CALENDAR)
-            refresh.setRefreshing(true);
+            binding.refresh.setRefreshing(true);
     }
 
     @Override
     public void onFinish(int pg, int pos) {
         if (pg == PG_CALENDAR)
-            refresh.setRefreshing(false);
+            binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onError(int pg, String error) {
         if (pg == PG_CALENDAR)
-            refresh.setRefreshing(false);
+            binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         if (pg == PG_CALENDAR)
-            refresh.setRefreshing(false);
+            binding.refresh.setRefreshing(false);
     }
 
     @Override
@@ -300,14 +289,14 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     protected void onStop() {
         super.onStop();
         Client.get().removeOnResponseListener(this);
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         Client.get().removeOnResponseListener(this);
-        refresh.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
 }

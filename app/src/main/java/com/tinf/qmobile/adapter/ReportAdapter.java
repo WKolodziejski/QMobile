@@ -42,7 +42,7 @@ import io.objectbox.reactive.DataObserver;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> implements OnUpdate {
-    private Context context;
+    private final Context context;
     private ArrayList<String> columnHeader;
     private ArrayList<Matter> rowHeader;
     private List<List<String>> cells;

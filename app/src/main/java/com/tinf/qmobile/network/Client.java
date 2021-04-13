@@ -3,7 +3,10 @@ package com.tinf.qmobile.network;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Environment;
 import android.util.Log;
@@ -78,13 +81,13 @@ public class Client {
     private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
     private static Client instance;
-    private List<RequestHelper> queue;
+    private final List<RequestHelper> queue;
     private String URL;
-    private List<OnResponse> onResponses;
-    private List<OnUpdate> onUpdates;
-    private RequestQueue requests;
+    private final List<OnResponse> onResponses;
+    private final List<OnUpdate> onUpdates;
+    private final RequestQueue requests;
     //private String COOKIE;
-    private Map<String, String> params;
+    private final Map<String, String> params;
     private String KEY_A;
     private String KEY_B;
     public static int pos = 0;
@@ -286,7 +289,17 @@ public class Client {
                         isValid = true;
 
                         Document document = Jsoup.parse(response);
-                        String name = document.getElementsByClass("barraRodape").get(1).text();
+                        Elements sub = document.getElementsByClass("barraRodape");
+                        Elements sub2 = document.getElementsByClass("titulo");
+
+                        String name = "";
+
+                        if (sub.size() >= 1) {
+                            name = sub.get(1).text();
+                        } else if (sub2.size() >= 1) {
+                            name = sub2.get(1).text();
+                            name = name.substring(name.indexOf(",") + 1).trim();
+                        }
 
                         User.setName(name);
                         User.setLastLogin(new Date().getTime());
@@ -465,12 +478,19 @@ public class Client {
     }
 
     public static boolean isConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            NetworkInfo info = cm.getActiveNetworkInfo();
-            return (info != null && info.isConnected());
+        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Network nw = connectivityManager.getActiveNetwork();
+            if (nw == null) return false;
+            NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
+            return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                    || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                    || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                    || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
+        } else {
+            NetworkInfo nwInfo = connectivityManager.getActiveNetworkInfo();
+            return nwInfo != null && nwInfo.isConnected();
         }
-        return false;
     }
 
     public void addOnResponseListener(OnResponse onResponse) {

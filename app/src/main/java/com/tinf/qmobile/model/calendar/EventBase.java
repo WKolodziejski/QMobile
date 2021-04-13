@@ -27,8 +27,8 @@ public abstract class EventBase extends Event implements CalendarBase {
     @ColorInt private int color;
     @Transient public boolean isHeader;
 
-    private static SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
-    private static SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
+    private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+    private static final SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
 
     public EventBase(String title, long startTime) {
         super(0, startTime);

@@ -80,7 +80,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         .getBoolean(preference.getKey(), true));
     }
 
-    private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, newValue) -> {
+    private final Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = (preference, newValue) -> {
         String stringValue = newValue.toString();
 
         if (preference instanceof ListPreference) {

@@ -5,7 +5,7 @@ import com.tinf.qmobile.model.Queryable;
 import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
 
 public class Header implements Queryable {
-    private String title;
+    private final String title;
 
     public Header(String title) {
         this.title = title;

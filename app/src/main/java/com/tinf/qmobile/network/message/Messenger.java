@@ -22,10 +22,10 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private boolean hasNextPage;
     private boolean hasPreviousPage;
     private int pg;
-    private WebView webView;
-    private List<String> queue;
-    private OnResponse onResponse;
-    private Context context;
+    private final WebView webView;
+    private final List<String> queue;
+    private final OnResponse onResponse;
+    private final Context context;
 
     public Messenger(Context context, OnResponse onResponse) {
         this.context = context;

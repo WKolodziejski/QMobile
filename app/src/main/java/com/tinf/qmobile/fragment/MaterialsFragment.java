@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,10 +22,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
+import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
 
@@ -37,7 +36,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 
 public class MaterialsFragment extends Fragment implements OnUpdate {
-    @BindView(R.id.recycler_materiais)        RecyclerView recyclerView;
+    private FragmentMaterialBinding binding;
     private ActionMode action;
     private MaterialsAdapter adapter;
     private BroadcastReceiver receiver;
@@ -67,7 +66,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                 action = getActivity().startActionMode(callback);
 
                 if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(false);
+                    ((MainActivity) getActivity()).binding.refresh.setEnabled(false);
             }
 
             @Override
@@ -83,7 +82,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(false);
+                    ((MainActivity) getActivity()).binding.refresh.setEnabled(false);
 
                 MenuInflater menuInflater = getActivity().getMenuInflater();
                 menuInflater.inflate(R.menu.materials, menu);
@@ -95,7 +94,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                 action = null;
 
                 if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(true);
+                    ((MainActivity) getActivity()).binding.refresh.setEnabled(true);
             }
 
         });
@@ -107,22 +106,21 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
 
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setLayoutManager(layout);
-        //recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(adapter);
+        binding.recycler.setHasFixedSize(true);
+        binding.recycler.setItemViewCacheSize(20);
+        binding.recycler.setDrawingCacheEnabled(true);
+        binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        binding.recycler.setLayoutManager(layout);
+        binding.recycler.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        binding.recycler.setAdapter(adapter);
 
         if (getActivity() instanceof MainActivity) {
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                    ((MainActivity) getActivity()).refreshLayout.setEnabled(p == 0);
+                    ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
                 }
 
                 @Override
@@ -157,14 +155,14 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_material, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentMaterialBinding.bind(view);
         return view;
     }
 
     @Override
     public void onScrollRequest() {
-        if (recyclerView != null) {
-            recyclerView.smoothScrollToPosition(0);
+        if (binding.recycler != null) {
+            binding.recycler.smoothScrollToPosition(0);
         }
     }
 

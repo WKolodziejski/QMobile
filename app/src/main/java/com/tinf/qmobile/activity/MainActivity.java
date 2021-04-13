@@ -1,12 +1,13 @@
 package com.tinf.qmobile.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import androidx.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,12 +25,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
@@ -40,6 +38,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnDataChange;
+import com.tinf.qmobile.databinding.ActivityMainBinding;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
@@ -61,12 +60,7 @@ import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, OnUpdate,
         BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
-    @BindView(R.id.main_refresh)        public SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.navigation)          BottomNavigationView bottomNav;
-    @BindView(R.id.drawer)              DrawerLayout drawerLayout;
-    @BindView(R.id.nav)                 NavigationView navigationView;
-    @BindView(R.id.toolbar_main)        Toolbar toolbar;
-    @BindView(R.id.main_date)           TextView date;
+    public ActivityMainBinding binding;
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result -> Client.get().restorePreviousDate());
@@ -74,19 +68,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_drawer, R.string.close_drawer);
-        drawerLayout.addDrawerListener(toggle);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.open_drawer, R.string.close_drawer);
+        binding.drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        toolbar.setOnClickListener(view -> {
+        binding.toolbar.setOnClickListener(view -> {
             launcher.launch(new Intent(getContext(), SearchActivity.class));
         });
 
-        Menu menu = navigationView.getMenu();
+        Menu menu = binding.nav.getMenu();
 
         for (int i = 0; i < User.getYears().length; i++) {
             menu.add(R.id.group1, i, Menu.NONE, User.getYears()[i]);
@@ -97,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         menu.getItem(0).setChecked(true);
 
         if (User.getYears().length > 0)
-            date.setText(User.getYears()[pos]);
+            binding.date.setText(User.getYears()[pos]);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -106,25 +100,25 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             if (pg != 0) {
                 changeFragment(new MaterialsFragment());
-                bottomNav.setSelectedItemId(R.id.navigation_materiais);
+                binding.navigation.setSelectedItemId(R.id.navigation_materiais);
             }
 
         } else {
             changeFragment(new HomeFragment());
             /*switch (bottomNav.getSelectedItemId()) {
 
-                case R.id.navigation_home:
+                case R.id.binding.navigation_home:
                     changeFragment(new HomeFragment());
 
-                case R.id.navigation_notas:
+                case R.id.binding.navigation_notas:
                     changeFragment(new JournalFragment());
 
-                case R.id.navigation_materiais:
+                case R.id.binding.navigation_materiais:
                     changeFragment(new MaterialsFragment());
             }*/
         }
 
-        if (Client.get().isLogging() && !BuildConfig.DEBUG) {
+        if (Client.get().isLogging()) {
             Client.get().load(PG_FETCH_YEARS);
         }
 
@@ -184,34 +178,34 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         int itemId = item.getItemId();
 
         if (groupId == R.id.group1) {
-            navigationView.getMenu().getItem(itemId).setChecked(true);
+            binding.nav.getMenu().getItem(itemId).setChecked(true);
             Client.get().changeDate(itemId);
-            drawerLayout.closeDrawer(GravityCompat.START);
+            binding.drawer.closeDrawer(GravityCompat.START);
             return true;
         }
 
         if (itemId == R.id.drawer_mail) {
             startActivity(new Intent(getBaseContext(), MessagesActivity.class));
-            drawerLayout.closeDrawer(GravityCompat.START);
+            binding.drawer.closeDrawer(GravityCompat.START);
             return true;
 
         } else if (itemId == R.id.drawer_calendar) {
             startActivity(new Intent(getBaseContext(), CalendarActivity.class));
-            drawerLayout.closeDrawer(GravityCompat.START);
+            binding.drawer.closeDrawer(GravityCompat.START);
             return true;
 
         } else if (itemId == R.id.drawer_website) {
             startActivity(new Intent(getBaseContext(), WebViewActivity.class));
-            drawerLayout.closeDrawer(GravityCompat.START);
+            binding.drawer.closeDrawer(GravityCompat.START);
             return true;
 
         } else if (itemId == R.id.drawer_settings) {
             startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-            drawerLayout.closeDrawer(GravityCompat.START);
+            binding.drawer.closeDrawer(GravityCompat.START);
             return true;
         }
 
-        if (itemId != bottomNav.getSelectedItemId()) {
+        if (itemId != binding.navigation.getSelectedItemId()) {
 
             if (itemId == R.id.navigation_home) {
                 return changeFragment(new HomeFragment());
@@ -230,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void dismissProgressbar() {
-        refreshLayout.setRefreshing(false);
+        binding.refresh.setRefreshing(false);
     }
 
     private void logOut() {
@@ -265,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private void reload() {
         if (Client.isConnected()) {
-            int selectedItemId = bottomNav.getSelectedItemId();
+            int selectedItemId = binding.navigation.getSelectedItemId();
 
             if (selectedItemId == R.id.navigation_home) {
                 Client.get().login();
@@ -287,9 +281,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().addOnResponseListener(this);
         Client.get().addOnUpdateListener(this);
         DataBase.get().addOnDataChangeListener(this);
-        refreshLayout.setOnRefreshListener(this::reload);
-        bottomNav.setOnNavigationItemSelectedListener(this);
-        navigationView.setNavigationItemSelectedListener(this);
+        binding.refresh.setOnRefreshListener(this::reload);
+        binding.navigation.setOnNavigationItemSelectedListener(this);
+        binding.nav.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -307,9 +301,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().addOnResponseListener(this);
         Client.get().addOnUpdateListener(this);
         DataBase.get().addOnDataChangeListener(this);
-        bottomNav.setOnNavigationItemSelectedListener(this);
-        refreshLayout.setOnRefreshListener(this::reload);
-        navigationView.setNavigationItemSelectedListener(this);
+        binding.navigation.setOnNavigationItemSelectedListener(this);
+        binding.refresh.setOnRefreshListener(this::reload);
+        binding.nav.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -323,11 +317,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
+            binding.drawer.closeDrawer(GravityCompat.START);
 
-        } else if (bottomNav.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            bottomNav.setSelectedItemId(R.id.navigation_home);
+        } else if (binding.navigation.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            binding.navigation.setSelectedItemId(R.id.navigation_home);
 
         } else {
             super.onBackPressed();
@@ -336,10 +330,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onStart(int pg, int pos) {
-        if (!refreshLayout.isRefreshing())
-            refreshLayout.setRefreshing(true);
+        if (!binding.refresh.isRefreshing())
+            binding.refresh.setRefreshing(true);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public void onFinish(int pg, int pos) {
         dismissProgressbar();
@@ -373,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
             }
         } else if (pg == PG_FETCH_YEARS || pg == PG_JOURNALS) {
-            Menu menu = navigationView.getMenu();
+            Menu menu = binding.nav.getMenu();
             menu.removeGroup(R.id.group1);
 
             for (int i = 0; i < User.getYears().length; i++) {
@@ -457,19 +452,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void countNotifications(int count1, int count2) {
         if (count1 <= 0)
-            bottomNav.removeBadge(R.id.navigation_notas);
+            binding.navigation.removeBadge(R.id.navigation_notas);
         else
-            bottomNav.getOrCreateBadge(R.id.navigation_notas).setNumber(Math.min(count1, 99));
+            binding.navigation.getOrCreateBadge(R.id.navigation_notas).setNumber(Math.min(count1, 99));
 
         if (count2 <= 0)
-            bottomNav.removeBadge(R.id.navigation_materiais);
+            binding.navigation.removeBadge(R.id.navigation_materiais);
         else
-            bottomNav.getOrCreateBadge(R.id.navigation_materiais).setNumber(Math.min(count2, 99));
+            binding.navigation.getOrCreateBadge(R.id.navigation_materiais).setNumber(Math.min(count2, 99));
     }
 
     @Override
     public void countMessages(int count) {
-        TextView txt = (TextView) navigationView.getMenu().findItem(R.id.drawer_mail).getActionView();
+        TextView txt = (TextView) binding.nav.getMenu().findItem(R.id.drawer_mail).getActionView();
 
         if (count > 0) {
             txt.setGravity(Gravity.CENTER_VERTICAL);
@@ -488,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onDateChanged() {
-        date.setText(User.getYears()[pos]);
+        binding.date.setText(User.getYears()[pos]);
     }
 
 }

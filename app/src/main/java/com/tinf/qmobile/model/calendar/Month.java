@@ -10,9 +10,9 @@ import java.util.Locale;
 import static com.tinf.qmobile.model.ViewType.MONTH;
 
 public class Month implements CalendarBase {
-    private long time;
+    private final long time;
 
-    private static SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+    private static final SimpleDateFormat month = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
     public Month(long time) {
         this.time = time;

@@ -21,14 +21,14 @@
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
-                android:id="@+id/toolbar_search" />
+                android:id="@+id/toolbar" />
 
             <androidx.appcompat.widget.SearchView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="56dp"
                 android:layout_gravity="center_vertical"
-                android:id="@+id/search_searchbar"
+                android:id="@+id/search_bar"
                 app:defaultQueryHint="@string/action_search"
                 app:closeIcon="@drawable/ic_cancel" />
 
@@ -39,6 +39,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recycler_search" />
+        android:id="@+id/recycler" />
 
 </LinearLayout>

@@ -7,23 +7,31 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.ActivityLoginBinding;
 import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 
+import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
+
 public class LoginActivity extends AppCompatActivity implements OnResponse {
-    private static String TAG = "LoginActivity";
+    private ActivityLoginBinding binding;
+    private static final String TAG = "LoginActivity";
     Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         if (savedInstanceState != null) {
             fragment = getSupportFragmentManager().getFragment(savedInstanceState, "loginFragment");

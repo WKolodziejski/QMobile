@@ -2,6 +2,9 @@ package com.tinf.qmobile.parser;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -21,14 +24,22 @@ import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.model.message.Sender;
 import com.tinf.qmobile.model.search.Header;
+import com.tinf.qmobile.utility.User;
+
+import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 
-public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
+import static com.tinf.qmobile.App.getContext;
+
+public class SearchParser  {
     protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
     protected Box<Journal> journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
     protected Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
@@ -40,7 +51,8 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
     protected Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
     private final OnSearch onSearch;
-    private Context context;
+    private final Context context;
+    private final ExecutorService executor;
 
     public interface OnSearch {
         void onSearch(List<Queryable> list);
@@ -49,77 +61,74 @@ public class SearchParser extends AsyncTask<String, Void, List<Queryable>> {
     public SearchParser(Context context, OnSearch onSearch) {
         this.context = context;
         this.onSearch = onSearch;
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
-    @Override
-    protected List<Queryable> doInBackground(String... strings) {
-        String string = strings[0].trim();
-        String queries[] = string.split(" ");
+    public void execute(String... strings) {
+        executor.execute(() -> {
 
-        List<Queryable> list = new ArrayList<>();
+            String string = strings[0].trim();
+            String[] queries = string.split(" ");
 
-        List<Journal> journals = new ArrayList<>();
-        List<Material> materials = new ArrayList<>();
-        List<Message> messages = new ArrayList<>();
-        List<Clazz> classes = new ArrayList<>();
+            List<Queryable> list = new ArrayList<>();
 
-        for (String query : queries) {
+            List<Journal> journals = new ArrayList<>();
+            List<Material> materials = new ArrayList<>();
+            List<Message> messages = new ArrayList<>();
+            List<Clazz> classes = new ArrayList<>();
 
-            journals.addAll(journalBox.query()
-                    .contains(Journal_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                    .build()
-                    .find());
+            for (String query : queries) {
 
-            materials.addAll(materialsBox.query()
-                    .contains(Material_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                    .build()
-                    .find());
+                journals.addAll(journalBox.query()
+                        .contains(Journal_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                        .build()
+                        .find());
 
-            messages.addAll(messageBox.query()
-                    .contains(Message_.text_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                    .or()
-                    .contains(Message_.subject_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                    .build()
-                    .find());
+                materials.addAll(materialsBox.query()
+                        .contains(Material_.title, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                        .build()
+                        .find());
 
-            classes.addAll(clazzBox.query()
-                    .contains(Clazz_.content_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                    .or()
-                    .contains(Clazz_.teacher_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
-                    .build()
-                    .find());
-        }
+                messages.addAll(messageBox.query()
+                        .contains(Message_.text_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                        .or()
+                        .contains(Message_.subject_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                        .build()
+                        .find());
 
-        if (!journals.isEmpty()) {
-            list.add(new Header(context.getResources().getString(R.string.title_diarios)));
-            list.addAll(journals);
-        }
+                classes.addAll(clazzBox.query()
+                        .contains(Clazz_.content_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                        .or()
+                        .contains(Clazz_.teacher_, query, QueryBuilder.StringOrder.CASE_INSENSITIVE)
+                        .build()
+                        .find());
+            }
 
-        if (!materials.isEmpty()) {
-            list.add(new Header(context.getResources().getString(R.string.title_materiais)));
-            list.addAll(materials);
-        }
+            if (!journals.isEmpty()) {
+                list.add(new Header(context.getResources().getString(R.string.title_diarios)));
+                list.addAll(journals);
+            }
 
-        if (!messages.isEmpty()) {
-            list.add(new Header(context.getResources().getString(R.string.title_messages)));
-            list.addAll(messages);
-        }
+            if (!materials.isEmpty()) {
+                list.add(new Header(context.getResources().getString(R.string.title_materiais)));
+                list.addAll(materials);
+            }
 
-        if (!classes.isEmpty()) {
-            list.add(new Header(context.getResources().getString(R.string.title_class)));
-            list.addAll(classes);
-        }
+            if (!messages.isEmpty()) {
+                list.add(new Header(context.getResources().getString(R.string.title_messages)));
+                list.addAll(messages);
+            }
 
-        if (list.isEmpty())
-            list.add(new Empty());
+            if (!classes.isEmpty()) {
+                list.add(new Header(context.getResources().getString(R.string.title_class)));
+                list.addAll(classes);
+            }
 
-        return list;
-    }
+            if (list.isEmpty())
+                list.add(new Empty());
 
-    @Override
-    protected void onPostExecute(List<Queryable> list) {
-        super.onPostExecute(list);
-        onSearch.onSearch(list);
+            new Handler(Looper.getMainLooper()).post(() -> onSearch.onSearch(list));
+        });
     }
 
 }

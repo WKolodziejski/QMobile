@@ -19,7 +19,7 @@ import io.objectbox.Box;
 
 public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
 
-    private static Box<Query> queryBox = DataBase.get().getBoxStore().boxFor(Query.class);
+    private static final Box<Query> queryBox = DataBase.get().getBoxStore().boxFor(Query.class);
 
     public SearchViewHolder(@NonNull View view) {
         super(view);
