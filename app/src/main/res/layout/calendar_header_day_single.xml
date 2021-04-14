@@ -10,7 +10,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/headerBackground"
-    android:id="@+id/calendar_header_simple_layout"
+    android:id="@+id/layout"
     android:layout_gravity="top"
     >
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="13sp"
-        android:id="@+id/calendar_header_simple_day_week"
+        android:id="@+id/day"
         android:textAllCaps="true"
         tools:text="wed"/>
 
@@ -30,7 +30,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         android:maxLines="1"
-        android:id="@+id/calendar_header_simple_day_number"
+        android:id="@+id/number"
         android:textAlignment="center"
         tools:text="7" />
 

@@ -369,8 +369,8 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         if (events.get(i) instanceof Header) {
             Header h = (Header) events.get(i);
 
-            TextView n = header.findViewById(R.id.calendar_header_simple_day_number);
-            TextView w = header.findViewById(R.id.calendar_header_simple_day_week);
+            TextView n = header.findViewById(R.id.number);
+            TextView w = header.findViewById(R.id.day);
 
             n.setText(h.getDayString());
             w.setText(h.getWeekString());

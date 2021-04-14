@@ -8,7 +8,7 @@
     >
 
     <include
-        layout="@layout/calendar_header_day_import"
+        layout="@layout/calendar_header_day_single"
         android:id="@+id/header" />
 
     <LinearLayout
