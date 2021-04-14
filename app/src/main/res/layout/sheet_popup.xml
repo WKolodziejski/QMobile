@@ -52,7 +52,7 @@
                 android:layout_margin="8dp"
                 android:autoLink="web|all"
                 android:linksClickable="true"
-                android:id="@+id/msg"
+                android:id="@+id/message"
                 tools:text="@string/message_example" />
 
             <CheckBox

@@ -19,6 +19,7 @@ public class BackgroundCheck extends JobService {
     @Override
     public boolean onStartJob(JobParameters job) {
 
+        Client.background = true;
         Client.get().login();
 
         Client.get().addOnResponseListener(new OnResponse() {

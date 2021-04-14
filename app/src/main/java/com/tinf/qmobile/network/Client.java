@@ -83,6 +83,7 @@ public class Client {
     private String KEY_A;
     private String KEY_B;
     public static int pos = 0;
+    public static boolean background = false;
     private boolean isValid;
     private boolean isLogging;
 
@@ -303,7 +304,7 @@ public class Client {
 
                         Element img = document.getElementsByAttributeValueEnding("src", cod).first();
 
-                        if (img != null)
+                        if (img != null && !background)
                             downloadImage(cod);
 
                         callOnFinish(PG_LOGIN);
