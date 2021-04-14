@@ -15,7 +15,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
-    private JournalItemBinding binding;
+    private final JournalItemBinding binding;
 
     public JournalViewHolder(View view) {
         super(view);

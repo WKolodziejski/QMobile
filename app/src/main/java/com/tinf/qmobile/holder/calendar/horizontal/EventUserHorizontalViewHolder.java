@@ -12,7 +12,7 @@ import java.util.Locale;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser> {
-    private CalendarEventUserHBinding binding;
+    private final CalendarEventUserHBinding binding;
 
     public EventUserHorizontalViewHolder(View view) {
         super(view);

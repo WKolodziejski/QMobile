@@ -7,7 +7,7 @@ import com.tinf.qmobile.databinding.ClassHeaderBinding;
 import com.tinf.qmobile.model.matter.Period;
 
 public class ClassHeaderViewHolder extends ClassBaseViewHolder<Period> {
-    private ClassHeaderBinding binding;
+    private final ClassHeaderBinding binding;
 
     public ClassHeaderViewHolder(View view) {
         super(view);

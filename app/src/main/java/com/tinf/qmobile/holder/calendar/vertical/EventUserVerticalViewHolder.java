@@ -17,7 +17,7 @@ import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
-    private CalendarEventUserVBinding binding;
+    private final CalendarEventUserVBinding binding;
 
     private final static Drawable picture = User.getProfilePicture(getContext());
 

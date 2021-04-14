@@ -14,7 +14,7 @@ import java.io.File;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
-    private MaterialItemBinding binding;
+    private final MaterialItemBinding binding;
 
     public MaterialViewHolder(@NonNull View view) {
         super(view);

@@ -13,7 +13,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class SearchJournalViewHolder extends SearchViewHolder<Journal> {
-    private SearchJournalBinding binding;
+    private final SearchJournalBinding binding;
 
     public SearchJournalViewHolder(@NonNull View view) {
         super(view);

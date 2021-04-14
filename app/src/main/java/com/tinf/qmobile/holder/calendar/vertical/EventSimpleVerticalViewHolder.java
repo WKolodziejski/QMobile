@@ -9,7 +9,7 @@ import com.tinf.qmobile.model.calendar.EventSimple;
 import java.util.Locale;
 
 public class EventSimpleVerticalViewHolder extends CalendarViewHolder<EventSimple> {
-    private CalendarEventSimpleVBinding binding;
+    private final CalendarEventSimpleVBinding binding;
 
     public EventSimpleVerticalViewHolder(View view) {
         super(view);

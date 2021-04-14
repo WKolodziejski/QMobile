@@ -8,7 +8,7 @@ import com.tinf.qmobile.databinding.JournalHeaderBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
 public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
-    private JournalHeaderBinding binding;
+    private final JournalHeaderBinding binding;
 
     public JournalHeaderViewHolder(View view) {
         super(view);

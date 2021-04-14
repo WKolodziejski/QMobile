@@ -8,7 +8,7 @@ import com.tinf.qmobile.databinding.SearchQueryBinding;
 import com.tinf.qmobile.model.Query;
 
 public class SearchQueryViewHolder extends SearchViewHolder<Query>  {
-    private SearchQueryBinding binding;
+    private final SearchQueryBinding binding;
 
     public SearchQueryViewHolder(@NonNull View view) {
         super(view);

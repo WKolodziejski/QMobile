@@ -10,7 +10,7 @@ import com.tinf.qmobile.model.matter.Clazz;
 import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class EventClazzVerticalViewHolder extends CalendarViewHolder<Clazz> {
-    private CalendarEventClazzVBinding binding;
+    private final CalendarEventClazzVBinding binding;
 
     public EventClazzVerticalViewHolder(View view) {
         super(view);

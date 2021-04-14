@@ -17,7 +17,7 @@ import com.tinf.qmobile.network.message.Messenger;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessageViewHolder extends MessagesViewHolder<Message> {
-    private MessageHeaderBinding binding;
+    private final MessageHeaderBinding binding;
 
     public MessageViewHolder(View view) {
         super(view);

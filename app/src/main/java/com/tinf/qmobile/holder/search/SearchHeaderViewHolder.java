@@ -8,7 +8,7 @@ import com.tinf.qmobile.databinding.SearchHeaderBinding;
 import com.tinf.qmobile.model.search.Header;
 
 public class SearchHeaderViewHolder extends SearchViewHolder<Header> {
-    private SearchHeaderBinding binding;
+    private final SearchHeaderBinding binding;
 
     public SearchHeaderViewHolder(@NonNull View view) {
         super(view);

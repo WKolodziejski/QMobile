@@ -9,7 +9,7 @@ import com.tinf.qmobile.databinding.JournalFooterBinding;
 import com.tinf.qmobile.model.journal.FooterJournal;
 
 public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal> {
-    private JournalFooterBinding binding;
+    private final JournalFooterBinding binding;
 
     public JournalFooterViewHolder(View view) {
         super(view);

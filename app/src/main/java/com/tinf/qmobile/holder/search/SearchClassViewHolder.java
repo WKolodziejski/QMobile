@@ -11,7 +11,7 @@ import com.tinf.qmobile.model.matter.Clazz;
 import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class SearchClassViewHolder extends SearchViewHolder<Clazz> {
-    private SearchClassBinding binding;
+    private final SearchClassBinding binding;
 
     public SearchClassViewHolder(View view) {
         super(view);

@@ -9,7 +9,7 @@ import com.tinf.qmobile.databinding.PeriodHeaderBinding;
 import com.tinf.qmobile.model.matter.Period;
 
 public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Period> {
-    private PeriodHeaderBinding binding;
+    private final PeriodHeaderBinding binding;
 
     public PeriodHeaderViewHolder(@NonNull View view) {
         super(view);

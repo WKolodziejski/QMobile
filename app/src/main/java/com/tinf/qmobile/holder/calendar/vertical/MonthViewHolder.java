@@ -7,7 +7,7 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Month;
 
 public class MonthViewHolder extends CalendarViewHolder<Month> {
-    private CalendarHeaderMonthBinding binding;
+    private final CalendarHeaderMonthBinding binding;
 
     public MonthViewHolder(View view) {
         super(view);

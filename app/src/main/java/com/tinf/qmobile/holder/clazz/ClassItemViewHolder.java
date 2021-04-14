@@ -10,7 +10,7 @@ import com.tinf.qmobile.model.matter.Clazz;
 import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
-    private ClassItemBinding binding;
+    private final ClassItemBinding binding;
 
     public ClassItemViewHolder(View view) {
         super(view);

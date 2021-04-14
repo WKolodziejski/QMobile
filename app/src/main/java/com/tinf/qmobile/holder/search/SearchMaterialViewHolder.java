@@ -15,7 +15,7 @@ import com.tinf.qmobile.utility.User;
 import static com.tinf.qmobile.activity.MatterActivity.MATERIALS;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
-    private SearchMaterialBinding binding;
+    private final SearchMaterialBinding binding;
 
     public SearchMaterialViewHolder(@NonNull View view) {
         super(view);

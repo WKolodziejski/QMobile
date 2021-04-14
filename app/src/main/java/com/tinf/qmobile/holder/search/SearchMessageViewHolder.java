@@ -11,7 +11,7 @@ import com.tinf.qmobile.databinding.SearchMessageBinding;
 import com.tinf.qmobile.model.message.Message;
 
 public class SearchMessageViewHolder extends SearchViewHolder<Message> {
-    private SearchMessageBinding binding;
+    private final SearchMessageBinding binding;
 
     public SearchMessageViewHolder(@NonNull View view) {
         super(view);

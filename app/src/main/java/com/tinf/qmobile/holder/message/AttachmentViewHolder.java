@@ -10,7 +10,7 @@ import com.tinf.qmobile.service.DownloadReceiver;
 import java.io.File;
 
 public class AttachmentViewHolder extends MessagesViewHolder<Attachment> {
-    private MessageAttachmentBinding binding;
+    private final MessageAttachmentBinding binding;
 
     public AttachmentViewHolder(View view) {
         super(view);

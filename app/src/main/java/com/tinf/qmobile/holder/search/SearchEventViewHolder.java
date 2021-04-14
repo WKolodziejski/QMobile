@@ -7,7 +7,7 @@ import com.tinf.qmobile.databinding.SearchEventBinding;
 import com.tinf.qmobile.model.message.Message;
 
 public class SearchEventViewHolder extends SearchViewHolder<Message> {
-    private SearchEventBinding binding;
+    private final SearchEventBinding binding;
 
     public SearchEventViewHolder(View view) {
         super(view);

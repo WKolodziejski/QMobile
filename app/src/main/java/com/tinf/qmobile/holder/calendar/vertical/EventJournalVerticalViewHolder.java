@@ -13,7 +13,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> {
-    private CalendarEventJournalVBinding binding;
+    private final CalendarEventJournalVBinding binding;
 
     public EventJournalVerticalViewHolder(View view) {
         super(view);

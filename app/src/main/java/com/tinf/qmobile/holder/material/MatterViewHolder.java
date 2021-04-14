@@ -12,7 +12,7 @@ import com.tinf.qmobile.databinding.MaterialHeaderBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
 public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
-    private MaterialHeaderBinding binding;
+    private final MaterialHeaderBinding binding;
 
     public MatterViewHolder(@NonNull View view) {
         super(view);

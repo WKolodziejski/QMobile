@@ -7,7 +7,7 @@ import com.tinf.qmobile.databinding.PeriodFooterBinding;
 import com.tinf.qmobile.model.journal.FooterPeriod;
 
 public class PeriodFooterViewHolder extends JournalBaseViewHolder<FooterPeriod> {
-    private PeriodFooterBinding binding;
+    private final PeriodFooterBinding binding;
 
     public PeriodFooterViewHolder(View view) {
         super(view);
