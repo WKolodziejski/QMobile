@@ -48,32 +48,32 @@
         app:layout_constraintGuide_percent="0.75" />
 
     <TextView
-        android:id="@+id/period_partial_grade_text"
+        android:id="@+id/partial_grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/period_final_grade_text"
+        app:layout_constraintBottom_toTopOf="@id/final_grade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
         tools:text="39,7" />
 
     <TextView
-        android:id="@+id/period_final_grade_text"
+        android:id="@+id/final_grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/period_partial_grade_text"
-        app:layout_constraintBottom_toTopOf="@+id/period_absences_text"
+        app:layout_constraintTop_toBottomOf="@id/partial_grade"
+        app:layout_constraintBottom_toTopOf="@+id/absences"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
         tools:text="40" />
 
     <TextView
-        android:id="@+id/period_absences_text"
+        android:id="@+id/absences"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/period_final_grade_text"
+        app:layout_constraintTop_toBottomOf="@id/final_grade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"

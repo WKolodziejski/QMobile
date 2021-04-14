@@ -8,7 +8,9 @@
     android:orientation="horizontal"
     >
 
-    <include layout="@layout/calendar_header_day_single" />
+    <include
+        layout="@layout/calendar_header_day_import"
+        android:id="@+id/header" />
 
     <com.google.android.material.card.MaterialCardView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"
-            android:id="@+id/calendar_user_card"
+            android:id="@+id/card"
             android:foreground="?android:attr/selectableItemBackground"
             tools:background="@color/colorPrimary"
             >
@@ -35,7 +37,7 @@
             <!-- <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/calendar_user_icon"
+                android:id="@+id/icon"
                 android:src="@drawable/ic_touch"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -51,13 +53,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/calendar_user_img"
+                app:layout_constraintEnd_toStartOf="@id/image"
                 >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/calendar_user_title"
+                    android:id="@+id/title"
                     android:textSize="@dimen/alt_font_size"
                     android:textStyle="bold"
                     android:textColor="@color/colorPrimaryLight"
@@ -66,7 +68,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/calendar_user_description"
+                    android:id="@+id/description"
                     android:textSize="@dimen/main_font_size"
                     android:textColor="@color/colorPrimaryLight"
                     tools:text="Conteúdo no drive" />
@@ -76,7 +78,7 @@
             <ImageView
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:id="@+id/calendar_user_img"
+                android:id="@+id/image"
                 android:src="@drawable/ic_account"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -7,9 +7,6 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;

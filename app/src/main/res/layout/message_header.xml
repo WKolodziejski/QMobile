@@ -21,7 +21,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_margin="16dp"
-            android:id="@+id/message_header"
+            android:id="@+id/header"
             android:background="@drawable/layout_round"
             android:gravity="center"
             android:textColor="@color/colorPrimaryLight"
@@ -40,9 +40,9 @@
             android:gravity="center_vertical"
             app:layout_constraintWidth_default="spread"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/message_att"
+            app:layout_constraintEnd_toStartOf="@id/att"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/message_header"
+            app:layout_constraintStart_toEndOf="@id/header"
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_bias="0"
             >
@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/message_sender"
+                android:id="@+id/sender"
                 android:maxLines="1"
                 android:ellipsize="end"
                 tools:text="Remetente"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:id="@+id/message_subject"
+                android:id="@+id/subject"
                 tools:text="Assunto"/>
 
             <TextView
@@ -73,7 +73,7 @@
                 android:textColor="@color/message_seen"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:id="@+id/message_preview"
+                android:id="@+id/preview"
                 tools:text="Preview"
                 tools:visibility="visible"/>
 
@@ -83,9 +83,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:id="@+id/message_att"
+            android:id="@+id/att"
             app:srcCompat="@drawable/ic_attachment"
-            app:layout_constraintEnd_toStartOf="@id/message_date"
+            app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:id="@+id/message_date"
+            android:id="@+id/date"
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -107,6 +107,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="68dp"
-        android:id="@+id/message_attachments" />
+        android:id="@+id/attachments" />
 
 </LinearLayout>

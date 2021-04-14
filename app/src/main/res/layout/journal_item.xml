@@ -11,7 +11,7 @@
     >
 
     <TextView
-        android:id="@+id/journal_view_title_text"
+        android:id="@+id/title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textStyle="bold"
@@ -23,22 +23,22 @@
         tools:text="Title" />
 
     <TextView
-        android:id="@+id/journal_view_date"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline1"
-        app:layout_constraintTop_toBottomOf="@id/journal_view_title_text"
+        app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintHorizontal_bias="0"
         tools:text="22/03/1999" />
 
     <TextView
-        android:id="@+id/journal_view_weight"
+        android:id="@+id/weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/guideline1"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
-        app:layout_constraintTop_toBottomOf="@id/journal_view_title_text"
+        app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="1" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -49,12 +49,12 @@
         app:layout_constraintGuide_percent="0.25" />
 
     <TextView
-        android:id="@+id/journal_view_max"
+        android:id="@+id/max"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintEnd_toEndOf="@id/guideline3"
-        app:layout_constraintTop_toBottomOf="@id/journal_view_title_text"
+        app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="2" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -65,13 +65,13 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/journal_view_grade"
+        android:id="@+id/grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/journal_view_title_text"
+        app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="10" />
 
     <androidx.constraintlayout.widget.Guideline

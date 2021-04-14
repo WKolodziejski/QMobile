@@ -3,27 +3,21 @@ package com.tinf.qmobile.holder.clazz;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.View;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-
-import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.ClassHeaderBinding;
 import com.tinf.qmobile.model.matter.Period;
 
-import butterknife.BindView;
-
 public class ClassHeaderViewHolder extends ClassBaseViewHolder<Period> {
-    @BindView(R.id.class_period)                public TextView title;
-    @BindView(R.id.class_period_color_badge)    public TextView badge;
+    private ClassHeaderBinding binding;
 
-    public ClassHeaderViewHolder(@NonNull View view) {
+    public ClassHeaderViewHolder(View view) {
         super(view);
+        binding = ClassHeaderBinding.bind(view);
     }
 
     @Override
     public void bind(Context context, Period period) {
-        title.setText(period.getTitle());
-        badge.setBackgroundTintList(ColorStateList.valueOf(period.matter.getTarget().getColor()));
+        binding.period.setText(period.getTitle());
+        binding.badge.setBackgroundTintList(ColorStateList.valueOf(period.matter.getTarget().getColor()));
     }
 
 }

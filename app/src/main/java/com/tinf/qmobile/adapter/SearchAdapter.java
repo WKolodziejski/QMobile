@@ -41,7 +41,7 @@ import static com.tinf.qmobile.model.ViewType.USER;
 public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
     private final Context context;
     private List<Queryable> list;
-    private SearchParser parser;
+    private final SearchParser parser;
     private String query;
 
     public SearchAdapter(Context context) {

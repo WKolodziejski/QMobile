@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.databinding.ActivityEventCreateBinding;
 import com.tinf.qmobile.databinding.ActivityEventViewBinding;
 import com.tinf.qmobile.fragment.view.ClassViewFragment;
 import com.tinf.qmobile.fragment.view.EventViewFragment;

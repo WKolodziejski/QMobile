@@ -3,46 +3,34 @@ package com.tinf.qmobile.holder.material;
 import android.content.Context;
 import android.view.ActionMode;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
+import com.tinf.qmobile.databinding.MaterialItemBinding;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
-
 import java.io.File;
-
-import butterknife.BindView;
-
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
-    @BindView(R.id.materiais_type)          public ImageView icon;
-    @BindView(R.id.materiais_title)         public TextView title;
-    @BindView(R.id.materiais_date)          public TextView date;
-    @BindView(R.id.materiais_description)   public TextView description;
-    @BindView(R.id.material_offline)        public ImageView offline;
-    @BindView(R.id.material_loading)        public ProgressBar loading;
+    private MaterialItemBinding binding;
 
     public MaterialViewHolder(@NonNull View view) {
         super(view);
+        binding = MaterialItemBinding.bind(view);
     }
 
     @Override
     public void bind(Context context, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter, ActionMode.Callback callback, Material material) {
         material.isDownloaded = new File(DownloadReceiver.getMaterialPath(material.getFileName())).exists();
 
-        icon.setImageDrawable(context.getDrawable(material.getIcon()));
+        binding.icon.setImageDrawable(context.getDrawable(material.getIcon()));
 
-        title.setText(material.getTitle());
-        date.setText(material.getDateString());
-        offline.setVisibility(material.isDownloaded && !material.isDownloading? View.VISIBLE : View.GONE);
-        loading.setVisibility(material.isDownloading ? View.VISIBLE : View.GONE);
+        binding.title.setText(material.getTitle());
+        binding.date.setText(material.getDateString());
+        binding.offline.setVisibility(material.isDownloaded && !material.isDownloading? View.VISIBLE : View.GONE);
+        binding.loading.setVisibility(material.isDownloading ? View.VISIBLE : View.GONE);
 
         if (material.isSelected) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));
@@ -51,11 +39,11 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
         }
 
         if (!material.getDescription().isEmpty()) {
-            description.setText(material.getDescription());
-            description.setVisibility(View.VISIBLE);
+            binding.description.setText(material.getDescription());
+            binding.description.setVisibility(View.VISIBLE);
         } else {
-            description.setText(material.getDescription());
-            description.setVisibility(View.GONE);
+            binding.description.setText(material.getDescription());
+            binding.description.setVisibility(View.GONE);
         }
 
         itemView.setOnClickListener(view -> {

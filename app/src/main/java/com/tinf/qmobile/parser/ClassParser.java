@@ -26,8 +26,8 @@ public class ClassParser extends BaseParser {
     private final static String TAG = "ClassParser";
     private final Matter matter;
 
-    public ClassParser(Matter matter, int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
-        super(page, pos, notify, onFinish, onError);
+    public ClassParser(Matter matter, int page, int year, int period, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, year, period, notify, onFinish, onError);
         this.matter = matter;
     }
 

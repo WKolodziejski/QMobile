@@ -5,7 +5,6 @@ import android.util.Log;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.utility.User;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -17,13 +16,13 @@ import io.objectbox.relation.ToMany;
 public class ScheduleParser extends BaseParser {
     private final static String TAG = "ScheduleParser";
 
-    public ScheduleParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
-        super(page, pos, notify, onFinish, onError);
+    public ScheduleParser(int page, int year, int period, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, year, period, notify, onFinish, onError);
     }
 
     @Override
     public void parse(Document document) {
-        Log.i(TAG, "Parsing " + User.getYear(pos));
+        Log.i(TAG, "Parsing " + year);
 
         Elements tables = document.select("table");
 
@@ -32,8 +31,8 @@ public class ScheduleParser extends BaseParser {
         if (scheduleTable != null) {
 
             List<Matter> matters = matterBox.query()
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .equal(Matter_.year_, year).and()
+                    .equal(Matter_.period_, period)
                     .build().find();
 
             for (int i = 0; i < matters.size(); i++) {
@@ -61,15 +60,16 @@ public class ScheduleParser extends BaseParser {
 
                         while (k < divs.size()) {
 
-                            Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time), getEndHour(time), getEndMinute(time), User.getYear(pos), User.getPeriod(pos));
+                            Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
+                                    getEndHour(time), getEndMinute(time), year, period);
 
                             String matterTitle = formatTitle(divs.get(k).attr("title"));
 
                             if (matterTitle != null) {
                                 Matter matter = matterBox.query()
                                         .equal(Matter_.title_, matterTitle).and()
-                                        .equal(Matter_.year_, User.getYear(pos)).and()
-                                        .equal(Matter_.period_, User.getPeriod(pos))//.and()
+                                        .equal(Matter_.year_, year).and()
+                                        .equal(Matter_.period_, period)//.and()
                                         //.contains(Matter_.description_, clazz)
                                         .build().findUnique();
 

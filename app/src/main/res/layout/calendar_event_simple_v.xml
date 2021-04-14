@@ -7,7 +7,9 @@
     android:orientation="horizontal"
     >
 
-    <include layout="@layout/calendar_header_day_single" />
+    <include
+        layout="@layout/calendar_header_day_import"
+        android:id="@+id/header" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,7 +25,7 @@
             android:gravity="center_vertical"
             android:textStyle="bold"
             android:textSize="@dimen/alt_font_size"
-            android:id="@+id/calendar_simple_title"
+            android:id="@+id/title"
             android:textColor="@color/colorPrimary"
             tools:text="Sábado Letivo"/>
 

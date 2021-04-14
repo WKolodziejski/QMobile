@@ -368,8 +368,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         if (journals.get(i) instanceof Matter && ((Matter) journals.get(i)).isExpanded) {
             Matter matter = (Matter) journals.get(i);
 
-            TextView title = header.findViewById(R.id.journal_title);
-            TextView badge = header.findViewById(R.id.journal_color_badge);
+            TextView title = header.findViewById(R.id.title);
+            TextView badge = header.findViewById(R.id.badge);
 
             title.setText(matter.getTitle());
             badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));

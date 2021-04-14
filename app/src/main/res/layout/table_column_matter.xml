@@ -11,7 +11,7 @@
     >
 
     <TextView
-        android:id="@+id/table_column_matter"
+        android:id="@+id/matter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:maxLines="2"

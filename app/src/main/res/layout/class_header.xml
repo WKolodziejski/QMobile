@@ -22,7 +22,7 @@
         >
 
         <TextView
-            android:id="@+id/class_period_color_badge"
+            android:id="@+id/badge"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_square"
@@ -35,7 +35,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/class_period"
+            android:id="@+id/period"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="4dp"

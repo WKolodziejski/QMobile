@@ -7,7 +7,6 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.CookieManager;
@@ -46,17 +45,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
 
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
@@ -86,7 +79,6 @@ public class Client {
     private final List<OnResponse> onResponses;
     private final List<OnUpdate> onUpdates;
     private final RequestQueue requests;
-    //private String COOKIE;
     private final Map<String, String> params;
     private String KEY_A;
     private String KEY_B;
@@ -127,12 +119,12 @@ public class Client {
         return instance;
     }
 
-    private void createRequest(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter, BaseParser.OnFinish onFinish) {
+    private void createRequest(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter, BaseParser.OnFinish onFinish) {
         if (!isValid) {
             if (!isLogging) {
                 login();
             }
-            addToQueue(pg, url, pos, method, form, notify, matter);
+            addToQueue(pg, url, year, period, method, form, notify, matter);
         } else {
             Log.i(TAG, "Request for: " + pg);
             addRequest(new StringRequest(method, URL + url,
@@ -140,31 +132,31 @@ public class Client {
                         Resp r = testResponse(response);
 
                         if (r == Resp.DENIED) {
-                            addToQueue(pg, url, pos, method, form, notify, matter);
+                            addToQueue(pg, url, year, period, method, form, notify, matter);
                             login();
                             callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
 
                         } else if (r == Resp.OK) {
                             if (pg == PG_JOURNALS) {
-                                new JournalParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new JournalParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_REPORT) {
-                                new ReportParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new ReportParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_SCHEDULE) {
-                                new ScheduleParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new ScheduleParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_MATERIALS) {
-                                new MaterialsParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new MaterialsParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_CALENDAR) {
-                                new CalendarParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new CalendarParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_MESSAGES) {
-                                new MessageParser(pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new MessageParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_CLASSES) {
-                                new ClassParser(matter, pg, pos, notify, onFinish, this::callOnError).execute(response);
+                                new ClassParser(matter, pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
                             } else if (pg == PG_FETCH_YEARS) {
                                 Document document = Jsoup.parse(response);
@@ -186,7 +178,7 @@ public class Client {
                                     }
                                 }
 
-                                callOnFinish(PG_FETCH_YEARS, 0);
+                                callOnFinish(PG_FETCH_YEARS);
 
                                 loadYear(0);
                             }
@@ -202,12 +194,12 @@ public class Client {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     return !form.isEmpty() ? form : super.getParams();
                 }
-            }, pg, pos);
+            }, pg);
         }
     }
 
     public void load(int pg) {
-        load(pg, pos, this::callOnFinish);
+        load(pg, User.getYear(pos), User.getPeriod(pos), this::callOnFinish);
     }
 
     public void load(long id) {
@@ -223,18 +215,18 @@ public class Client {
 
         createRequest(PG_CLASSES,
                 INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
-                pos, POST, new HashMap<>(), false, matter, this::callOnFinish);
+                matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter, this::callOnFinish);
     }
 
-    private void load(int pg, int pos, BaseParser.OnFinish onFinish) {
-        load(pg, pos, onFinish, false);
+    private void load(int pg, int year, int period, BaseParser.OnFinish onFinish) {
+        load(pg, year, period, onFinish, false);
     }
 
     private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
-        load(pg, 0, onFinish, notify);
+        load(pg, User.getYear(pos), User.getPeriod(pos), onFinish, notify);
     }
 
-    private void load(int pg, int pos, BaseParser.OnFinish onFinish, boolean notify) {
+    private void load(int pg, int year, int period, BaseParser.OnFinish onFinish, boolean notify) {
         int method = GET;
         String url = INDEX + pg;
         Map<String, String> form = new HashMap<>();
@@ -246,28 +238,28 @@ public class Client {
         } else {
             switch (pg) {
                 case PG_JOURNALS: method = POST;
-                    form.put("ANO_PERIODO2", User.getYear(pos) + "_" + User.getPeriod(pos));
+                    form.put("ANO_PERIODO2", year + "_" + period);
                     break;
 
                 case PG_REPORT:
 
                 case PG_SCHEDULE:
                     method = GET;
-                    url = url.concat("&cmbanos=" + User.getYear(pos) + "&cmbperiodos=" + User.getPeriod(pos));
+                    url = url.concat("&cmbanos=" + year + "&cmbperiodos=" + period);
                     break;
 
                 case PG_MATERIALS: method = POST;
-                    form.put("ANO_PERIODO", User.getYear(pos) + "_" + User.getPeriod(pos));
+                    form.put("ANO_PERIODO", year + "_" + period);
                     break;
             }
         }
 
-        createRequest(pg, url, pos, method, form, notify, null, onFinish);
+        createRequest(pg, url, year, period, method, form, notify, null, onFinish);
     }
 
-    private <T> void addRequest(Request<T> request, int pg, int pos) {
+    private <T> void addRequest(Request<T> request, int pg) {
         if (isConnected()) {
-            callOnStart(pg, pos);
+            callOnStart(pg);
             request.setRetryPolicy(new DefaultRetryPolicy());
             requests.add(request);
             Log.v(TAG, "Loading: " + request);
@@ -314,7 +306,7 @@ public class Client {
                         if (img != null)
                             downloadImage(cod);
 
-                        callOnFinish(PG_LOGIN, 0);
+                        callOnFinish(PG_LOGIN);
                     }
                 }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
@@ -333,7 +325,7 @@ public class Client {
                         return Priority.IMMEDIATE;
                     }
 
-        }, PG_LOGIN, 0));
+        }, PG_LOGIN));
     }
 
     private Resp testResponse(String response) {
@@ -377,23 +369,23 @@ public class Client {
     private void checkQueue() {
         while (!queue.isEmpty()) {
             RequestHelper helper = queue.get(0);
-            createRequest(helper.pg, helper.url, helper.pos, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
+            createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
             queue.remove(0);
         }
     }
 
-    private void addToQueue(int pg, String url, int pos, int method, Map<String, String> form, boolean notify, Matter matter) {
+    private void addToQueue(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter) {
         boolean isNew = true;
 
         for (RequestHelper h : queue)
-            if (h.pg == pg && h.pos == pos) {
+            if (h.pg == pg && h.year == year && h.period == period) {
                 isNew = false;
                 break;
             }
 
         if (isNew) {
-            queue.add(new RequestHelper(pg, url, pos, method, form, notify, matter));
-            Log.i(TAG, "Queued: " + pg + " for " + User.getYears()[pos]);
+            queue.add(new RequestHelper(pg, url, year, period, method, form, notify, matter));
+            //Log.i(TAG, "Queued: " + pg + " for " + User.getYears()[pos]);
         }
     }
 
@@ -444,7 +436,7 @@ public class Client {
                         return Priority.IMMEDIATE;
                     }
 
-        }, PG_GENERATOR,0);
+        }, PG_GENERATOR);
     }
 
     public void close() {
@@ -528,20 +520,20 @@ public class Client {
         }
     }
 
-    private void callOnStart(int pg, int pos) {
+    private void callOnStart(int pg) {
         Log.v(TAG, "Start: " + pg);
         if (onResponses != null) {
             for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onStart(pg, pos);
+                onResponses.get(i).onStart(pg);
             }
         }
     }
 
-    private void callOnFinish(int pg, int pos) {
+    private void callOnFinish(int pg) {
         Log.v(TAG, "Finish: " + pg);
         if (onResponses != null) {
             for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onFinish(pg, pos);
+                onResponses.get(i).onFinish(pg);
             }
         }
         checkQueue();
@@ -640,24 +632,26 @@ public class Client {
     }
 
     public void loadYear(int pos) {
-        load(PG_JOURNALS, pos, (pg, year) -> {
-                load(PG_REPORT, year, (pg1, year1) -> {
-                    load(PG_SCHEDULE, year1, (pg2, year2) -> {
+        int year = User.getYear(pos);
+        int period = User.getPeriod(pos);
+        load(PG_JOURNALS, year, period, pg -> {
+                load(PG_REPORT, year, period, pg1 -> {
+                    load(PG_SCHEDULE, year, period, pg2 -> {
                         for (Matter m : DataBase.get().getBoxStore()
                                 .boxFor(Matter.class)
                                 .query()
-                                .equal(Matter_.year_, User.getYear(year2))
+                                .equal(Matter_.year_, year)
                                 .and()
-                                .equal(Matter_.period_, User.getPeriod(year2))
+                                .equal(Matter_.period_, period)
                                 .build()
                                 .find()) {
                             Client.get().load(m);
                         }
-                        callOnFinish(pg, year2);
+                        callOnFinish(pg);
                     });
-                    callOnFinish(pg, year1);
+                    callOnFinish(pg);
                 });
-            callOnFinish(pg, year);
+            callOnFinish(pg);
         });
     }
 
@@ -665,15 +659,15 @@ public class Client {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         boolean notify = prefs.getBoolean(NOTIFY, true);
 
-        load(PG_JOURNALS, notify, (pg, year) -> {
-            load(PG_REPORT, notify, (pg1, year1) -> {
-                load(PG_SCHEDULE, notify, (pg2, year2) -> callOnFinish(pg, year2));
-                callOnFinish(pg, year1);
+        load(PG_JOURNALS, notify, pg -> {
+            load(PG_REPORT, notify, pg1 -> {
+                load(PG_SCHEDULE, notify, pg2 -> callOnFinish(pg));
+                callOnFinish(pg);
             });
-            callOnFinish(pg, year);
+            callOnFinish(pg);
 
-            load(PG_MESSAGES, notify, (pg1, year1) -> callOnFinish(PG_MESSAGES, 0));
-            load(PG_MATERIALS, notify, (pg1, year1) -> callOnFinish(PG_MATERIALS, 0));
+            load(PG_MESSAGES, notify, (pg1) -> callOnFinish(PG_MESSAGES));
+            load(PG_MATERIALS, notify, (pg1) -> callOnFinish(PG_MATERIALS));
         });
     }
 

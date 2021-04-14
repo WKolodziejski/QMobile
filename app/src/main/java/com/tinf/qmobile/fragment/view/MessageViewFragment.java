@@ -6,35 +6,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.FragmentViewMessageBinding;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
 
 public class MessageViewFragment extends Fragment {
-    @BindView(R.id.message_view_title)          TextView title;
-    @BindView(R.id.message_view_content)        TextView content;
-    @BindView(R.id.message_view_sender)         TextView sender;
-    @BindView(R.id.message_view_date)           TextView date;
-    @BindView(R.id.message_view_header)         TextView header;
-    @BindView(R.id.message_view_recycler)       RecyclerView attachments;
-    @BindView(R.id.message_view_progressBar)    ProgressBar progressBar;
+    private FragmentViewMessageBinding binding;
     private DataSubscription sub1;
     private long id;
 
@@ -63,7 +51,7 @@ public class MessageViewFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_message, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentViewMessageBinding.bind(view);
         return view;
     }
 
@@ -83,27 +71,27 @@ public class MessageViewFragment extends Fragment {
                 DataBase.get().getBoxStore().boxFor(Message.class).put(message);
             }
 
-            progressBar.setVisibility(message.getText_() == null ? View.VISIBLE : View.GONE);
+            binding.progressBar.setVisibility(message.getText_() == null ? View.VISIBLE : View.GONE);
 
-            title.setText(message.getSubject_());
-            date.setText(message.formatDate());
-            sender.setText(message.sender.getTarget().getName_());
-            header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
-            header.setText(message.sender.getTarget().getSign());
-            content.setText(message.getContent());
+            binding.title.setText(message.getSubject_());
+            binding.date.setText(message.formatDate());
+            binding.sender.setText(message.sender.getTarget().getName_());
+            binding.header.setBackgroundTintList(ColorStateList.valueOf(message.sender.getTarget().getColor_()));
+            binding.header.setText(message.sender.getTarget().getSign());
+            binding.content.setText(message.getContent());
 
             if (message.isSolved_()) {
-                title.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
-                TextViewCompat.setCompoundDrawableTintList(title, ColorStateList.valueOf(getResources().getColor(R.color.amber_a700)));
+                binding.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
+                TextViewCompat.setCompoundDrawableTintList(binding.title, ColorStateList.valueOf(getResources().getColor(R.color.amber_a700)));
             }
 
             if (!message.attachments.isEmpty()) {
-                attachments.setHasFixedSize(true);
-                attachments.setItemViewCacheSize(3);
-                attachments.setDrawingCacheEnabled(true);
-                attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-                attachments.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-                attachments.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));
+                binding.recycler.setHasFixedSize(true);
+                binding.recycler.setItemViewCacheSize(3);
+                binding.recycler.setDrawingCacheEnabled(true);
+                binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+                binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+                binding.recycler.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));
             }
         }
     }

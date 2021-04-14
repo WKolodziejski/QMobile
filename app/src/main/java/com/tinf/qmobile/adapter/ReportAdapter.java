@@ -263,15 +263,15 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     public void onBindCellViewHolder(@NonNull AbstractViewHolder holder, @Nullable String cellItemModel, int columnPosition, int rowPosition) {
         if (columnPosition == 0) {
             TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
-            h.matter.setText(cells.get(rowPosition).get(columnPosition));
+            h.binding.matter.setText(cells.get(rowPosition).get(columnPosition));
 
         } else if (columnPosition == columnHeader.size() - 1) {
             TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
-            h.situation.setText(cells.get(rowPosition).get(columnPosition));
-            h.situation.setTextColor(getSituationColor(cells.get(rowPosition).get(columnPosition)));
+            h.binding.situation.setText(cells.get(rowPosition).get(columnPosition));
+            h.binding.situation.setTextColor(getSituationColor(cells.get(rowPosition).get(columnPosition)));
         } else {
             TableCellViewHolder h = (TableCellViewHolder) holder;
-            h.text.setText(cells.get(rowPosition).get(columnPosition));
+            h.binding.text.setText(cells.get(rowPosition).get(columnPosition));
         }
     }
 
@@ -290,10 +290,10 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     public void onBindColumnHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable String columnHeaderItemModel, int columnPosition) {
         if (columnPosition == 0 ||  columnPosition == columnHeader.size() - 1) {
             TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
-            h.matter.setText(columnHeader.get(columnPosition));
+            h.binding.matter.setText(columnHeader.get(columnPosition));
         } else {
             TableColumnHeaderViewHolder h = (TableColumnHeaderViewHolder) holder;
-            h.text.setText(columnHeader.get(columnPosition));
+            h.binding.text.setText(columnHeader.get(columnPosition));
         }
     }
 
@@ -307,14 +307,14 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @Override
     public void onBindRowHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable Matter rowHeaderItemModel, int rowPosition) {
         TableRowHeaderViewHolder h = (TableRowHeaderViewHolder) holder;
-        h.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(rowPosition).getColor()));
+        h.binding.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(rowPosition).getColor()));
 
         int n = rowHeader.get(rowPosition).getJournalNotSeenCount();
 
         if (n > 0) {
-            h.badge.setText(String.valueOf(n));
+            h.binding.badge.setText(String.valueOf(n));
         } else {
-            h.badge.setText("");
+            h.binding.badge.setText("");
         }
     }
 

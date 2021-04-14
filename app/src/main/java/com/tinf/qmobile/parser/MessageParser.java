@@ -16,6 +16,7 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.OnMessages;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.RandomColor;
+import com.tinf.qmobile.utility.User;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,12 +35,12 @@ public class MessageParser extends BaseParser {
     private final OnMessages onMessages;
 
     public MessageParser(OnMessages onMessages, OnResponse onResponse) {
-        super(PG_MESSAGES, 0, false, onResponse::onFinish, onResponse::onError);
+        super(PG_MESSAGES, User.getYear(0), User.getPeriod(0), false, onResponse::onFinish, onResponse::onError);
         this.onMessages = onMessages;
     }
 
-    public MessageParser(int pg, int pos, boolean notify, OnFinish onFinish, OnError onError) {
-        super(pg, pos, notify, onFinish, onError);
+    public MessageParser(int pg, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
+        super(pg, year, period, notify, onFinish, onError);
         onMessages = new OnMessages() {
             @Override
             public void onFinish(int pg, boolean hasMorePages) {

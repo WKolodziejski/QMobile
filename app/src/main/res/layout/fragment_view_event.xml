@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/event_view_header_layout"
+        android:id="@+id/header_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
-            android:id="@+id/event_view_color_img"
+            android:id="@+id/color_img"
             app:srcCompat="@drawable/ic_square" />
 
         <LinearLayout
@@ -41,14 +41,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="4dp"
-                android:id="@+id/event_view_title"
+                android:id="@+id/title"
                 android:textSize="24sp"
                 tools:text="Title dsadsad sadsad sadsadsad sadas" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/event_view_matter_text"
+                android:id="@+id/matter_text"
                 tools:text="Matter" />
 
         </LinearLayout>
@@ -59,10 +59,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:id="@+id/event_view_time_layout"
+        android:id="@+id/time_layout"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintTop_toBottomOf="@id/event_view_header_layout"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -73,8 +73,8 @@
             android:layout_marginTop="4dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_time" />
+            app:srcCompat="@drawable/ic_time"
+            app:tint="@color/colorAccent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -86,19 +86,19 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:id="@+id/event_view_start_time"
+                android:id="@+id/start_time"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/event_view_end_time"
+                app:layout_constraintBottom_toTopOf="@id/end_time"
                 tools:text="Mar 21, 2019 - 11:15" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:id="@+id/event_view_end_time"
-                app:layout_constraintTop_toBottomOf="@id/event_view_start_time"
+                android:id="@+id/end_time"
+                app:layout_constraintTop_toBottomOf="@id/start_time"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -116,8 +116,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
-        android:id="@+id/event_view_notification_layout"
-        app:layout_constraintTop_toBottomOf="@id/event_view_time_layout"
+        android:id="@+id/notification_layout"
+        app:layout_constraintTop_toBottomOf="@id/time_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -127,13 +127,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_notification" />
+            app:srcCompat="@drawable/ic_notification"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/event_view_notification_text"
+            android:id="@+id/notification_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -148,8 +148,8 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/event_view_description_layout"
-        app:layout_constraintTop_toBottomOf="@id/event_view_notification_layout"
+        android:id="@+id/description_layout"
+        app:layout_constraintTop_toBottomOf="@id/notification_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -159,13 +159,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:tint="@color/colorAccent"
-            app:srcCompat="@drawable/ic_note" />
+            app:srcCompat="@drawable/ic_note"
+            app:tint="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/event_view_description"
+            android:id="@+id/description"
             android:layout_gravity="center_vertical"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

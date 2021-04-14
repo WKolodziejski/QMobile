@@ -4,17 +4,10 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityWebviewBinding;
 import com.tinf.qmobile.network.Client;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_HOME;
 

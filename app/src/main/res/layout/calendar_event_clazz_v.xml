@@ -8,7 +8,9 @@
     android:orientation="horizontal"
     >
 
-    <include layout="@layout/calendar_header_day_single" />
+    <include
+        layout="@layout/calendar_header_day_import"
+        android:id="@+id/header" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -16,7 +18,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
-        android:id="@+id/calendar_class_card"
+        android:id="@+id/card"
         app:cardCornerRadius="4dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/colorPrimaryLight"
@@ -38,7 +40,7 @@
                 android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:id="@+id/calendar_class_title"
+                android:id="@+id/title"
                 android:textColor="@color/colorPrimary"
                 tools:text="Aula de matemática"/>
 
@@ -46,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:id="@+id/calendar_class_matter"
+                android:id="@+id/matter"
                 android:textColor="@color/colorPrimaryLight"
                 tools:text="Matemática" />
 

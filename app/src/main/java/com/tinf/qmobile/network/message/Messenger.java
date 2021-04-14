@@ -56,7 +56,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 isLoading = true;
-                onResponse.onStart(pg, 0);
+                onResponse.onStart(pg);
             }
 
             @Override
@@ -88,7 +88,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                     Log.d("HANDLER", "added");
 
                     isLoading = false;
-                    onResponse.onFinish(pg, 0);
+                    onResponse.onFinish(pg);
                 }
             }
 
@@ -96,7 +96,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
         if (Client.get().isLogging()) {
             isLoading = true;
-            onResponse.onStart(PG_LOGIN, 0);
+            onResponse.onStart(PG_LOGIN);
             Client.get().addOnResponseListener(this);
         }
         else
@@ -118,7 +118,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                     enqueue(request);
                 else {
                     isLoading = true;
-                    onResponse.onStart(pg, 0);
+                    onResponse.onStart(pg);
                     webView.loadUrl(request);
                 }
     }
@@ -133,7 +133,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                 enqueue(request);
             else {
                 isLoading = true;
-                onResponse.onStart(pg, 0);
+                onResponse.onStart(pg);
                 webView.loadUrl(request);
             }
     }
@@ -148,7 +148,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                 enqueue(request);
             else {
                 isLoading = true;
-                onResponse.onStart(pg, 0);
+                onResponse.onStart(pg);
                 webView.loadUrl(request);
             }
     }
@@ -167,7 +167,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             enqueue(request);
         } else {
             isLoading = true;
-            onResponse.onStart(pg, 0);
+            onResponse.onStart(pg);
             webView.loadUrl(request);
         }
     }
@@ -189,7 +189,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
         if (!queue.isEmpty())
             webView.post(() -> {
                 isLoading = true;
-                onResponse.onStart(pg, 0);
+                onResponse.onStart(pg);
                 webView.loadUrl(queue.remove(0));
             });
 
@@ -203,7 +203,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
         if (!queue.isEmpty())
             webView.post(() -> {
                 isLoading = true;
-                onResponse.onStart(pg, 0);
+                onResponse.onStart(pg);
                 webView.loadUrl(queue.remove(0));
             });
     }
@@ -225,12 +225,12 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int pos) {
+    public void onStart(int pg) {
 
     }
 
     @Override
-    public void onFinish(int pg, int pos) {
+    public void onFinish(int pg) {
         if (pg == PG_LOGIN) {
             loadFirstPage();
             Client.get().removeOnResponseListener(this);

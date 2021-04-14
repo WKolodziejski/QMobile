@@ -20,7 +20,7 @@
         >
 
         <TextView
-            android:id="@+id/table_row_color_badge"
+            android:id="@+id/badge"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_square"

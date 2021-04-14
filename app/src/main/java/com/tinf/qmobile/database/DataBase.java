@@ -1,9 +1,7 @@
 package com.tinf.qmobile.database;
 
-import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.journal.Journal;

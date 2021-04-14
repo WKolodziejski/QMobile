@@ -2,25 +2,16 @@ package com.tinf.qmobile.holder.search;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.SearchAdapter;
+import com.tinf.qmobile.databinding.SearchEventBinding;
 import com.tinf.qmobile.model.message.Message;
 
-import butterknife.BindView;
-
 public class SearchEventViewHolder extends SearchViewHolder<Message> {
-    @BindView(R.id.search_material_title)        TextView title;
-    @BindView(R.id.search_material_subtitle)     TextView subtitle;
-    @BindView(R.id.search_material_date)         TextView date;
-    @BindView(R.id.search_material_icon)         ImageView icon;
+    private SearchEventBinding binding;
 
-    public SearchEventViewHolder(@NonNull View view) {
+    public SearchEventViewHolder(View view) {
         super(view);
+        binding = SearchEventBinding.bind(view);
     }
 
     @Override

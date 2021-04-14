@@ -250,13 +250,13 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     }
 
     @Override
-    public void onStart(int pg, int pos) {
+    public void onStart(int pg) {
         if (pg == PG_CALENDAR)
             binding.refresh.setRefreshing(true);
     }
 
     @Override
-    public void onFinish(int pg, int pos) {
+    public void onFinish(int pg) {
         if (pg == PG_CALENDAR)
             binding.refresh.setRefreshing(false);
     }

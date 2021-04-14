@@ -26,7 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:id="@+id/search_query_title"
+        android:id="@+id/title"
         android:maxLines="1"
         android:ellipsize="end"
         android:textStyle="bold"

@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 

@@ -5,36 +5,28 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.databinding.CalendarEventJournalVBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.journal.Journal;
-
-import butterknife.BindView;
-
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> {
-    @BindView(R.id.calendar_default_title)       TextView title;
-    //@BindView(R.id.calendar_default_description) TextView description;
-    @BindView(R.id.calendar_default_card)        LinearLayout card;
-
-    @BindView(R.id.calendar_header_simple_day_week)     TextView day;
-    @BindView(R.id.calendar_header_simple_day_number)   TextView number;
-    @BindView(R.id.calendar_header_simple_layout)       LinearLayout layout;
+    private CalendarEventJournalVBinding binding;
 
     public EventJournalVerticalViewHolder(View view) {
         super(view);
+        binding = CalendarEventJournalVBinding.bind(view);
     }
 
     @Override
     public void bind(Journal journal, Context context) {
-        title.setText(journal.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : journal.getTitle());
+        binding.title.setText(journal.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : journal.getTitle());
         //description.setText(journal.matter.getTarget().getTitle());
-        card.setBackgroundColor(journal.getColor());
+        binding.card.setBackgroundColor(journal.getColor());
 
-        card.setOnClickListener(v -> {
+        binding.card.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", JOURNAL);
             intent.putExtra("ID", journal.id);
@@ -42,11 +34,11 @@ public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> 
         });
 
         if (journal.isHeader) {
-            day.setText(journal.getWeekString());
-            number.setText(journal.getDayString());
-            layout.setVisibility(View.VISIBLE);
+            binding.header.day.setText(journal.getWeekString());
+            binding.header.number.setText(journal.getDayString());
+            binding.header.layout.setVisibility(View.VISIBLE);
         } else {
-            layout.setVisibility(View.INVISIBLE);
+            binding.header.layout.setVisibility(View.INVISIBLE);
         }
     }
 

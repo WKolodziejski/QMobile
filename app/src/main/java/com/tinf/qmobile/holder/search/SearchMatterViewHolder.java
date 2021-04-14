@@ -2,25 +2,17 @@ package com.tinf.qmobile.holder.search;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
-import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.SearchAdapter;
+import com.tinf.qmobile.databinding.SearchMatterBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
-import butterknife.BindView;
-
 public class SearchMatterViewHolder extends SearchViewHolder<Matter> {
-    @BindView(R.id.search_material_title)        TextView title;
-    @BindView(R.id.search_material_subtitle)     TextView subtitle;
-    @BindView(R.id.search_material_date)         TextView date;
-    @BindView(R.id.search_material_icon)         ImageView icon;
+    private final SearchMatterBinding binding;
 
     public SearchMatterViewHolder(@NonNull View view) {
         super(view);
+        binding = SearchMatterBinding.bind(view);
     }
 
     @Override

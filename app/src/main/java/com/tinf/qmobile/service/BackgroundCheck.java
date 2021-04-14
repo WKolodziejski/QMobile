@@ -23,14 +23,14 @@ public class BackgroundCheck extends JobService {
 
         Client.get().addOnResponseListener(new OnResponse() {
             @Override
-            public void onStart(int pg, int pos) {
+            public void onStart(int pg) {
                 /*if (BuildConfig.DEBUG) {
                     Jobs.displayNotification(getBaseContext(), "Debug", "Verificando notas", "Debug", 0, new Intent(App.getContext(), SplashActivity.class));
                 }*/
             }
 
             @Override
-            public void onFinish(int pg, int pos) {
+            public void onFinish(int pg) {
 
                 if (pg == PG_LOGIN) {
                     Client.get().checkChanges();

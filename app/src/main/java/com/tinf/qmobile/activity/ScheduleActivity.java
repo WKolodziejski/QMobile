@@ -1,21 +1,15 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityScheduleBinding;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ScheduleActivity extends AppCompatActivity implements OnResponse {
     private ActivityScheduleBinding binding;
@@ -49,13 +43,13 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
 
 
     @Override
-    public void onStart(int pg, int pos) {
+    public void onStart(int pg) {
         if (pg == PG_CALENDAR)
             binding.refresh.setRefreshing(true);
     }
 
     @Override
-    public void onFinish(int pg, int pos) {
+    public void onFinish(int pg) {
         if (pg == PG_SCHEDULE)
             binding.refresh.setRefreshing(false);
     }

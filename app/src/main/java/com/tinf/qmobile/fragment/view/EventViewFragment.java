@@ -10,45 +10,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
-import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.FragmentViewEventBinding;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Matter;
-
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-
 import static android.view.View.GONE;
 import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 
 public class EventViewFragment extends Fragment {
-    @BindView(R.id.event_view_start_time)          TextView startTime_txt;
-    @BindView(R.id.event_view_end_time)            TextView endTime_txt;
-    @BindView(R.id.event_view_matter_text)         TextView matter_txt;
-    @BindView(R.id.event_view_description)         TextView description_txt;
-    @BindView(R.id.event_view_title)               TextView title_txt;
-    @BindView(R.id.event_view_notification_text)   TextView notification_txt;
-    @BindView(R.id.event_view_color_img)           ImageView color_img;
-    @BindView(R.id.event_view_description_layout)  LinearLayout description_layout;
-    @BindView(R.id.event_view_notification_layout) LinearLayout notification_layout;
+    private FragmentViewEventBinding binding;
     private DataSubscription sub1, sub2;
     private long id;
 
@@ -81,7 +63,7 @@ public class EventViewFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_event, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentViewEventBinding.bind(view);
         return view;
     }
 
@@ -98,19 +80,19 @@ public class EventViewFragment extends Fragment {
 
             SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
 
-            title_txt.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
-            startTime_txt.setText(date.format(event.getStartTime()));
-            color_img.setImageTintList(ColorStateList.valueOf(event.getColor()));
+            binding.title.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
+            binding.startTime.setText(date.format(event.getStartTime()));
+            binding.colorImg.setImageTintList(ColorStateList.valueOf(event.getColor()));
 
             if (event.getDescription().isEmpty()) {
-                description_layout.setVisibility(GONE);
+                binding.descriptionLayout.setVisibility(GONE);
             } else {
-                description_layout.setVisibility(View.VISIBLE);
-                description_txt.setText(event.getDescription());
+                binding.descriptionLayout.setVisibility(View.VISIBLE);
+                binding.description.setText(event.getDescription());
             }
 
             if (event.getAlarm() == 0) {
-                notification_layout.setVisibility(GONE);
+                binding.notificationLayout.setVisibility(GONE);
             } else {
                 String[] strings = new String[4];
 
@@ -119,22 +101,22 @@ public class EventViewFragment extends Fragment {
                 strings[2] = getString(R.string.alarm_1h);
                 strings[3] = getString(R.string.alarm_1d);
 
-                notification_layout.setVisibility(View.VISIBLE);
-                notification_txt.setText(strings[event.getDifference()]);
+                binding.notificationLayout.setVisibility(View.VISIBLE);
+                binding.notificationText.setText(strings[event.getDifference()]);
             }
 
             if (event.getEndTime() == 0) {
-                endTime_txt.setVisibility(GONE);
+                binding.endTime.setVisibility(GONE);
             } else {
-                endTime_txt.setVisibility(View.VISIBLE);
-                endTime_txt.setText(date.format(event.getEndTime()));
+                binding.endTime.setVisibility(View.VISIBLE);
+                binding.endTime.setText(date.format(event.getEndTime()));
             }
 
             if (event.getMatter().isEmpty()) {
-                matter_txt.setVisibility(GONE);
+                binding.matterText.setVisibility(GONE);
             } else {
-                matter_txt.setVisibility(View.VISIBLE);
-                matter_txt.setText(event.getMatter());
+                binding.matterText.setVisibility(View.VISIBLE);
+                binding.matterText.setText(event.getMatter());
             }
         }
     }
@@ -147,29 +129,27 @@ public class EventViewFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+        int itemId = item.getItemId();
 
-            case R.id.action_edit:
+        if (itemId == R.id.action_edit) {
+            Intent intent = new Intent(getContext(), EventCreateActivity.class);
+            intent.putExtra("TYPE", EVENT);
+            intent.putExtra("ID", id);
+            startActivity(intent);
+            return true;
 
-                Intent intent = new Intent(getContext(), EventCreateActivity.class);
-                intent.putExtra("TYPE", EVENT);
-                intent.putExtra("ID", id);
-                startActivity(intent);
-                return true;
-
-            case R.id.action_delete:
-
-                new MaterialAlertDialogBuilder(getActivity())
-                        .setMessage(getString(R.string.dialog_delete_txt))
-                        .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
-                            DataBase.get().getBoxStore().boxFor(EventUser.class).remove(id);
-                            getActivity().finish();
-                            Toast.makeText(getContext(), getString(R.string.event_removed), Toast.LENGTH_SHORT).show();
-                        })
-                        .setNegativeButton(R.string.dialog_cancel, null)
-                        .create()
-                        .show();
-                return true;
+        } else if (itemId == R.id.action_delete) {
+            new MaterialAlertDialogBuilder(getActivity())
+                    .setMessage(getString(R.string.dialog_delete_txt))
+                    .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
+                        DataBase.get().getBoxStore().boxFor(EventUser.class).remove(id);
+                        getActivity().finish();
+                        Toast.makeText(getContext(), getString(R.string.event_removed), Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, null)
+                    .create()
+                    .show();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

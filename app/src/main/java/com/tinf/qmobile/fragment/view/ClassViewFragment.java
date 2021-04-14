@@ -6,37 +6,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.FragmentViewClassBinding;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
-
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class ClassViewFragment extends Fragment {
-    @BindView(R.id.class_view_time_text)            TextView date_txt;
-    @BindView(R.id.class_view_title)                TextView title_txt;
-    @BindView(R.id.class_view_matter_text)          TextView matter_txt;
-    @BindView(R.id.class_view_absences)             TextView absences_txt;
-    @BindView(R.id.class_view_given)                TextView given_txt;
-    @BindView(R.id.class_view_teacher)              TextView teacher_txt;
-    @BindView(R.id.class_view_content_text)         TextView content_txt;
-    @BindView(R.id.class_view_color_img)            ImageView color_img;
+    private FragmentViewClassBinding binding;
     private DataSubscription sub1, sub2;
     private long id;
 
@@ -69,7 +55,7 @@ public class ClassViewFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_class, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentViewClassBinding.bind(view);
         return view;
     }
 
@@ -86,14 +72,14 @@ public class ClassViewFragment extends Fragment {
 
             SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-            title_txt.setText(clazz.getMatter());
-            absences_txt.setText(String.format(getString(R.string.class_absence), clazz.getAbsences_()));
-            given_txt.setText(String.format(getString(R.string.class_given), clazz.getClassesCount_()));
-            teacher_txt.setText(clazz.getTeacher());
-            date_txt.setText(date.format(clazz.getDate()));
-            matter_txt.setText(clazz.getPeriod());
-            content_txt.setText(clazz.getContent());
-            color_img.setImageTintList(ColorStateList.valueOf(clazz.period.getTarget().matter.getTarget().getColor()));
+            binding.title.setText(clazz.getMatter());
+            binding.absences.setText(String.format(getString(R.string.class_absence), clazz.getAbsences_()));
+            binding.given.setText(String.format(getString(R.string.class_given), clazz.getClassesCount_()));
+            binding.teacher.setText(clazz.getTeacher());
+            binding.timeText.setText(date.format(clazz.getDate()));
+            binding.matterText.setText(clazz.getPeriod());
+            binding.contentText.setText(clazz.getContent());
+            binding.colorImg.setImageTintList(ColorStateList.valueOf(clazz.period.getTarget().matter.getTarget().getColor()));
         }
     }
 

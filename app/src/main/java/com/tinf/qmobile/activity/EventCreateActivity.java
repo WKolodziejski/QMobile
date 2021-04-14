@@ -2,7 +2,6 @@ package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +13,6 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityEventCreateBinding;
 import com.tinf.qmobile.fragment.create.EventCreateFragment;
 import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class EventCreateActivity extends AppCompatActivity {
     public ActivityEventCreateBinding binding;

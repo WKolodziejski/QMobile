@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:id="@+id/calendar_simple_date"
+            android:id="@+id/date"
             android:textColor="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,12 +39,12 @@
             android:textSize="@dimen/alt_font_size"
             android:maxLines="2"
             android:ellipsize="end"
-            android:id="@+id/calendar_simple_title"
+            android:id="@+id/title"
             android:textColor="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calendar_simple_date"
+            app:layout_constraintTop_toBottomOf="@id/date"
             app:layout_constraintVertical_bias="1"
             tools:text="Sábado Letivo"/>
 

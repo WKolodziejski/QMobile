@@ -3,39 +3,31 @@ package com.tinf.qmobile.holder.search;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
-import com.tinf.qmobile.R;
+import androidx.core.content.ContextCompat;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
+import com.tinf.qmobile.databinding.SearchMaterialBinding;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
-import butterknife.BindView;
-
 import static com.tinf.qmobile.activity.MatterActivity.MATERIALS;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
-    @BindView(R.id.search_material_title)        TextView title;
-    @BindView(R.id.search_material_subtitle)     TextView subtitle;
-    @BindView(R.id.search_material_date)         TextView date;
-    @BindView(R.id.search_material_icon)         ImageView icon;
+    private SearchMaterialBinding binding;
 
     public SearchMaterialViewHolder(@NonNull View view) {
         super(view);
+        binding = SearchMaterialBinding.bind(view);
     }
 
     @Override
     public void bind(Material material, Context context, String query, SearchAdapter adapter) {
-        title.setText(material.getTitle());
-        subtitle.setText(material.getMatter());
-        date.setText(material.getDateString());
-        icon.setImageDrawable(context.getDrawable(material.getIcon()));
+        binding.title.setText(material.getTitle());
+        binding.subtitle.setText(material.getMatter());
+        binding.date.setText(material.getDateString());
+        binding.icon.setImageDrawable(ContextCompat.getDrawable(context, material.getIcon()));
 
         //itemView.setOnClickListener(view -> onQuery.onQuery(material.matter.getTargetId(), material.id, MATERIALS));
         itemView.setOnClickListener(view -> {

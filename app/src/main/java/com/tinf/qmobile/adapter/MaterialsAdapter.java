@@ -28,7 +28,6 @@ import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
@@ -429,8 +428,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         if (materials.get(i) instanceof Matter) {
             Matter matter = (Matter) materials.get(i);
 
-            TextView title = header.findViewById(R.id.material_title);
-            TextView badge = header.findViewById(R.id.material_color_badge);
+            TextView title = header.findViewById(R.id.title);
+            TextView badge = header.findViewById(R.id.badge);
 
             title.setText(matter.getTitle());
             badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));

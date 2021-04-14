@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:id="@+id/search_class_icon"
+        android:id="@+id/icon"
         android:src="@drawable/ic_teacher"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,9 +29,9 @@
         android:gravity="center_vertical"
         app:layout_constraintWidth_default="spread"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/search_class_date"
+        app:layout_constraintEnd_toStartOf="@id/date"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/search_class_icon"
+        app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constrainedWidth="true"
         app:layout_constraintHorizontal_bias="0"
         >
@@ -39,7 +39,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/search_class_title"
+            android:id="@+id/title"
             android:maxLines="1"
             android:ellipsize="end"
             android:textStyle="bold"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:ellipsize="end"
-            android:id="@+id/search_class_subtitle"
+            android:id="@+id/subtitle"
             tools:text="Subtítulo"/>
 
     </LinearLayout>
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:id="@+id/search_class_date"
+        android:id="@+id/date"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

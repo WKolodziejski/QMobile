@@ -8,7 +8,9 @@
     android:orientation="horizontal"
     >
 
-    <include layout="@layout/calendar_header_day_single" />
+    <include
+        layout="@layout/calendar_header_day_import"
+        android:id="@+id/header" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -25,7 +27,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="8dp"
-            android:id="@+id/calendar_default_card"
+            android:id="@+id/card"
             android:foreground="?android:attr/selectableItemBackground"
             tools:background="@color/colorPrimary"
             >
@@ -35,18 +37,18 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:id="@+id/calendar_default_title"
+                android:id="@+id/title"
                 android:textColor="@color/colorPrimaryLight"
                 tools:text="Prova de trigonometria"/>
 
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
-                android:id="@+id/calendar_default_description"
+                android:id="@+id/description"
                 android:textColor="@color/colorPrimaryLight"
-                tools:text="Matemática" />
+                tools:text="Matemática" />!-->
 
         </LinearLayout>
 

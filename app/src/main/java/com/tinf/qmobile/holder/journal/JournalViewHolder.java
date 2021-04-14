@@ -6,36 +6,29 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.TextView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.JournalItemBinding;
 import com.tinf.qmobile.model.journal.Journal;
-
-import butterknife.BindView;
-
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
-    @BindView(R.id.journal_view_title_text) public TextView title;
-    @BindView(R.id.journal_view_weight)     public TextView weight;
-    @BindView(R.id.journal_view_date)       public TextView date;
-    @BindView(R.id.journal_view_max)        public TextView max;
-    @BindView(R.id.journal_view_grade)      public TextView grade;
+    private JournalItemBinding binding;
 
     public JournalViewHolder(View view) {
         super(view);
+        binding = JournalItemBinding.bind(view);
     }
 
     @Override
     public void bind(Context context, Journal journal, JournalAdapter adapter) {
-        title.setText(journal.getTitle());
-        weight.setText(journal.getWeight());
-        date.setText(journal.formatDate());
-        max.setText(journal.getMax());
-        grade.setText(journal.getGrade());
+        binding.title.setText(journal.getTitle());
+        binding.weight.setText(journal.getWeight());
+        binding.date.setText(journal.formatDate());
+        binding.max.setText(journal.getMax());
+        binding.grade.setText(journal.getGrade());
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journal.id);

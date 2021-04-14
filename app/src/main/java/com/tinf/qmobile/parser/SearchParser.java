@@ -1,10 +1,8 @@
 package com.tinf.qmobile.parser;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -24,20 +22,14 @@ import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.model.message.Sender;
 import com.tinf.qmobile.model.search.Header;
-import com.tinf.qmobile.utility.User;
-
-import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
-
-import static com.tinf.qmobile.App.getContext;
 
 public class SearchParser  {
     protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);

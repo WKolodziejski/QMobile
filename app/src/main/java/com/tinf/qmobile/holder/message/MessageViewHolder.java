@@ -5,80 +5,68 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
+import com.tinf.qmobile.databinding.MessageHeaderBinding;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.network.message.Messenger;
-
-import butterknife.BindView;
-
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessageViewHolder extends MessagesViewHolder<Message> {
-    @BindView(R.id.message_subject)     public TextView subject;
-    @BindView(R.id.message_header)      public TextView header;
-    @BindView(R.id.message_date)        public TextView date;
-    @BindView(R.id.message_sender)      public TextView sender;
-    @BindView(R.id.message_preview)     public TextView preview;
-    @BindView(R.id.message_att)         public ImageView att;
-    @BindView(R.id.message_attachments) public RecyclerView attachments;
+    private MessageHeaderBinding binding;
 
-    public MessageViewHolder(@NonNull View itemView) {
-        super(itemView);
+    public MessageViewHolder(View view) {
+        super(view);
+        binding = MessageHeaderBinding.bind(view);
     }
 
     @Override
     public void bind(Context context, Messenger messenger, Message message) {
-        header.setText(message.sender.getTarget().getSign());
-        header.setBackgroundTintList(ColorStateList.valueOf(message.getColor()));
-        subject.setText(message.getSubject_());
-        sender.setText(message.getSender());
-        date.setText(message.formatDate());
-        preview.setText(message.getPreview());
+        binding.header.setText(message.sender.getTarget().getSign());
+        binding.header.setBackgroundTintList(ColorStateList.valueOf(message.getColor()));
+        binding.subject.setText(message.getSubject_());
+        binding.sender.setText(message.getSender());
+        binding.date.setText(message.formatDate());
+        binding.preview.setText(message.getPreview());
 
-        preview.setVisibility(message.getPreview().isEmpty() ? View.GONE : View.VISIBLE);
+        binding.preview.setVisibility(message.getPreview().isEmpty() ? View.GONE : View.VISIBLE);
 
         int c = context.getResources().getColor(message.getContent().isEmpty() && !message.isSeen_() ? R.color.message_not_seen : R.color.message_seen);
         int t = message.getContent().isEmpty() && !message.isSeen_() ? Typeface.BOLD : Typeface.NORMAL;
 
-        att.setImageTintList(ColorStateList.valueOf(c));
+        binding.att.setImageTintList(ColorStateList.valueOf(c));
 
-        subject.setTextColor(c);
-        sender.setTextColor(c);
-        date.setTextColor(c);
+        binding.subject.setTextColor(c);
+        binding.sender.setTextColor(c);
+        binding.date.setTextColor(c);
 
-        subject.setTypeface(null, t);
-        sender.setTypeface(null, t);
-        date.setTypeface(null, t);
+        binding.subject.setTypeface(null, t);
+        binding.sender.setTypeface(null, t);
+        binding.date.setTypeface(null, t);
 
-        att.setVisibility(message.isHasAtt_() && message.attachments.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.att.setVisibility(message.isHasAtt_() && message.attachments.isEmpty() ? View.VISIBLE : View.GONE);
 
         if (message.isSolved_()) {
-            subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
-            TextViewCompat.setCompoundDrawableTintList(subject, ColorStateList.valueOf(context.getResources().getColor(R.color.amber_a700)));
+            binding.subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
+            TextViewCompat.setCompoundDrawableTintList(binding.subject, ColorStateList.valueOf(context.getResources().getColor(R.color.amber_a700)));
         } else {
-            subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            binding.subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
 
         if (!message.attachments.isEmpty()) {
-            attachments.setVisibility(View.VISIBLE);
-            attachments.setHasFixedSize(true);
-            attachments.setItemViewCacheSize(3);
-            attachments.setDrawingCacheEnabled(true);
-            attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-            attachments.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-            attachments.setAdapter(new AttachmentsAdapter(context, message.attachments, true));
+            binding.attachments.setVisibility(View.VISIBLE);
+            binding.attachments.setHasFixedSize(true);
+            binding.attachments.setItemViewCacheSize(3);
+            binding.attachments.setDrawingCacheEnabled(true);
+            binding.attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+            binding.attachments.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+            binding.attachments.setAdapter(new AttachmentsAdapter(context, message.attachments, true));
         } else {
-            attachments.setVisibility(View.GONE);
+            binding.attachments.setVisibility(View.GONE);
         }
 
         itemView.setOnClickListener(v -> {

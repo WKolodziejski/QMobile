@@ -17,21 +17,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.utility.User;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class UserFragment extends DialogFragment {
-    @BindView(R.id.user_image)      ImageView image;
-    @BindView(R.id.user_name)       TextView name;
-    @BindView(R.id.user_reg)        TextView reg;
-    @BindView(R.id.user_logout)     MaterialCardView logout;
     private final OnLogout onLogout;
 
     public UserFragment(OnLogout onLogout) {
@@ -42,7 +33,7 @@ public class UserFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.sheet_user, container, false);
-        ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -50,7 +41,7 @@ public class UserFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        name.setText(User.getName());
+        /*name.setText(User.getName());
         reg.setText(User.getCredential(User.REGISTRATION));
 
         logout.setOnClickListener(v -> {
@@ -66,10 +57,9 @@ public class UserFragment extends DialogFragment {
         Drawable picture = User.getProfilePicture(getContext());
 
         if (picture != null)
-            image.setImageDrawable(picture);
+            image.setImageDrawable(picture);*/
     }
 
-    @OnClick(R.id.user_policy)
     public void onPolicyClick(View view) {
         Intent intent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://sites.google.com/view/qmobileapp/política-de-privacidade"));

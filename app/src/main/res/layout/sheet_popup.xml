@@ -43,7 +43,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:textStyle="bold"
-                android:id="@+id/sheet_popup_title"
+                android:id="@+id/title"
                 tools:text="title" />
 
             <TextView
@@ -52,7 +52,7 @@
                 android:layout_margin="8dp"
                 android:autoLink="web|all"
                 android:linksClickable="true"
-                android:id="@+id/sheet_popup_msg"
+                android:id="@+id/msg"
                 tools:text="@string/message_example" />
 
             <CheckBox
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:buttonTint="@color/colorPrimary"
-                android:id="@+id/sheet_popup_checkBox"
+                android:id="@+id/checkBox"
                 android:text="@string/dialog_dont_show"/>
 
         </LinearLayout>

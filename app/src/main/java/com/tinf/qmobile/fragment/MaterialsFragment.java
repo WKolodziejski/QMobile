@@ -21,17 +21,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 

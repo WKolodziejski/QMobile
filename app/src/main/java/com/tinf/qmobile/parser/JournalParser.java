@@ -30,8 +30,8 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class JournalParser extends BaseParser {
 
-    public JournalParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
-        super(page, pos, notify, onFinish, onError);
+    public JournalParser(int page, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
+        super(page, year, period, notify, onFinish, onError);
     }
 
     @Override
@@ -71,12 +71,12 @@ public class JournalParser extends BaseParser {
 
             Matter matter = matterBox.query()
                     .equal(Matter_.description_, description).and()
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .equal(Matter_.year_, year).and()
+                    .equal(Matter_.period_, period)
                     .build().findUnique();
 
             if (matter == null) {
-                matter = new Matter(description, colors.getColor(), User.getYear(pos), User.getPeriod(pos));
+                matter = new Matter(description, colors.getColor(), year, period);
                 matterBox.put(matter);
                 isFirstParse = true;
             }

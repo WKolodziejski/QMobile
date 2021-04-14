@@ -1,22 +1,15 @@
 package com.tinf.qmobile.holder.report;
 
 import android.view.View;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
-import com.tinf.qmobile.R;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.tinf.qmobile.databinding.TableRowBinding;
 
 public class TableRowHeaderViewHolder extends AbstractViewHolder {
-    @BindView(R.id.table_row_color_badge)     public TextView badge;
+    public TableRowBinding binding;
 
-    public TableRowHeaderViewHolder(@NonNull View view) {
+    public TableRowHeaderViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
+        binding = TableRowBinding.bind(view);
     }
 
 }

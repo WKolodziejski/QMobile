@@ -7,25 +7,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.evrencoskun.tableview.TableView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.databinding.FragmentReportBinding;
 import com.tinf.qmobile.network.Client;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ReportFragment extends Fragment implements OnUpdate {
     private FragmentReportBinding binding;
-    //@BindView(R.id.fab_report)      FloatingActionButton fab;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,10 +91,8 @@ public class ReportFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onScrollRequest() {
-        if (binding.table != null) {
-            binding.table.scrollToRowPosition(0);
-            binding.table.scrollToColumnPosition(0);
-        }
+        binding.table.scrollToRowPosition(0);
+        binding.table.scrollToColumnPosition(0);
     }
 
     @Override

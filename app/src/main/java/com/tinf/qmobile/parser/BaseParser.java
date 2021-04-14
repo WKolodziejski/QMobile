@@ -15,7 +15,7 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Sender;
-import com.tinf.qmobile.utility.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import java.util.concurrent.Executors;
@@ -25,7 +25,9 @@ import static com.tinf.qmobile.App.getContext;
 public abstract class BaseParser {
     protected OnFinish onFinish;
     protected OnError onError;
-    protected final int pos, page;
+    protected final int page;
+    protected final int year;
+    protected final int period;
     protected final boolean notify;
     private boolean success;
 
@@ -40,9 +42,10 @@ public abstract class BaseParser {
     protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
     protected Box<Clazz> classBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
-    public BaseParser(int page, int pos, boolean notify, OnFinish onFinish, OnError onError) {
+    public BaseParser(int page, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
         this.page = page;
-        this.pos = pos;
+        this.year = year;
+        this.period = period;
         this.notify = notify;
         this.onFinish = onFinish;
         this.onError = onError;
@@ -50,7 +53,7 @@ public abstract class BaseParser {
 
     public void execute(String string) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            Log.i(String.valueOf(page), User.getYear(pos) + "/" + User.getPeriod(pos));
+            Log.i(String.valueOf(page), year + "/" + period);
 
             try {
                 DataBase.get().getBoxStore().callInTx(() -> {
@@ -65,7 +68,7 @@ public abstract class BaseParser {
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (success)
-                    onFinish.onFinish(page, pos);
+                    onFinish.onFinish(page);
                 else
                     onError.onError(page, getContext().getString(R.string.client_error));
             });
@@ -77,7 +80,7 @@ public abstract class BaseParser {
     }
 
     public interface OnFinish {
-        void onFinish(int pg, int year);
+        void onFinish(int pg);
     }
 
     public abstract void parse(final Document document);

@@ -2,41 +2,33 @@ package com.tinf.qmobile.holder.calendar.vertical;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.CalendarEventSimpleVBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.EventSimple;
-
 import java.util.Locale;
 
-import butterknife.BindView;
-
 public class EventSimpleVerticalViewHolder extends CalendarViewHolder<EventSimple> {
-    @BindView(R.id.calendar_simple_title)       public TextView title;
-
-    @BindView(R.id.calendar_header_simple_day_week)     TextView day;
-    @BindView(R.id.calendar_header_simple_day_number)   TextView number;
-    @BindView(R.id.calendar_header_simple_layout)       LinearLayout layout;
+    private CalendarEventSimpleVBinding binding;
 
     public EventSimpleVerticalViewHolder(View view) {
         super(view);
+        binding = CalendarEventSimpleVBinding.bind(view);
     }
 
     @Override
     public void bind(EventSimple event, Context context) {
-        title.setText(event.getTitle());
+        binding.title.setText(event.getTitle());
 
         if (event.isRanged())
-            title.append(" " + String.format(Locale.getDefault(), context.getString(R.string.event_until), event.getEndDateString()));
+            binding.title.append(" " + String.format(Locale.getDefault(), context.getString(R.string.event_until), event.getEndDateString()));
 
         if (event.isHeader) {
-            day.setText(event.getWeekString());
-            number.setText(event.getDayString());
-            layout.setVisibility(View.VISIBLE);
+            binding.header.day.setText(event.getWeekString());
+            binding.header.number.setText(event.getDayString());
+            binding.header.layout.setVisibility(View.VISIBLE);
         } else {
-            layout.setVisibility(View.INVISIBLE);
+            binding.header.layout.setVisibility(View.INVISIBLE);
         }
     }
 

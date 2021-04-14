@@ -18,11 +18,11 @@
         android:id="@+id/layout1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/period_infos_header"
+        app:layout_constraintBottom_toTopOf="@id/infos_header"
         >
 
         <TextView
-            android:id="@+id/period_color_badge"
+            android:id="@+id/badge"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_square"
@@ -35,7 +35,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/period_title"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="4dp"
@@ -51,7 +51,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/period_infos_header"
+        android:id="@+id/infos_header"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="52dp"
         app:layout_constraintTop_toBottomOf="@id/layout1"

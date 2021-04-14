@@ -11,10 +11,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.Query;
 import com.tinf.qmobile.model.Query_;
 import com.tinf.qmobile.model.Queryable;
-
 import java.util.Date;
-
-import butterknife.ButterKnife;
 import io.objectbox.Box;
 
 public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
@@ -23,7 +20,6 @@ public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView
 
     public SearchViewHolder(@NonNull View view) {
         super(view);
-        ButterKnife.bind(this, view);
     }
 
     public abstract void bind(T item, Context context, String query, SearchAdapter adapter);

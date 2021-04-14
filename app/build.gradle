@@ -99,16 +99,7 @@ dependencies {
     implementation 'org.mozilla:rhino:1.7.12'
 
     implementation 'com.evrencoskun.library:tableview:0.8.9'
-    implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'com.shreyaspatil:MaterialNavigationView:1.2'
     implementation 'me.jlurena:revolvingweekview:3.0.0'
     implementation 'joda-time:joda-time:2.10.2'
-
-    /*testImplementation 'junit:junit:4.12'
-
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'*/
-
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
-
 }

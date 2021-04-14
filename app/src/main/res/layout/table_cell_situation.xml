@@ -8,7 +8,7 @@
     >
 
     <TextView
-        android:id="@+id/table_cell_situation"
+        android:id="@+id/situation"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:maxLines="2"

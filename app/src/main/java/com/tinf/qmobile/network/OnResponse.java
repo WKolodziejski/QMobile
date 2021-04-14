@@ -17,8 +17,8 @@ public interface OnResponse {
     int PG_CLASSES = 5;
     int PG_MESSAGES = 6;
 
-    void onStart(int pg, int pos);
-    void onFinish(int pg, int pos);
+    void onStart(int pg);
+    void onFinish(int pg);
     void onError(int pg, String error);
     void onAccessDenied(int pg, String message);
 

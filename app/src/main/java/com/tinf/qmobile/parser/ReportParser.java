@@ -1,11 +1,8 @@
 package com.tinf.qmobile.parser;
 
-import android.util.Log;
-
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
-import com.tinf.qmobile.utility.User;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,14 +13,12 @@ import io.objectbox.exception.NonUniqueResultException;
 public class ReportParser extends BaseParser {
     private final static String TAG = "ReportParser";
 
-    public ReportParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
-        super(page, pos, notify, onFinish, onError);
+    public ReportParser(int page, int year, int period, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, year, period, notify, onFinish, onError);
     }
 
     @Override
     public void parse(Document document) {
-        Log.i(TAG, "Parsing " + User.getYear(pos));
-
         Elements tables = document.getElementsByTag("tbody");
 
         for (int k = 0; k < tables.size(); k++) {
@@ -46,8 +41,8 @@ public class ReportParser extends BaseParser {
                         try {
                             matter = matterBox.query()
                                     .contains(Matter_.description_, matterTitle).and()
-                                    .equal(Matter_.year_, User.getYear(pos)).and()
-                                    .equal(Matter_.period_, User.getPeriod(pos)).and()
+                                    .equal(Matter_.year_, year).and()
+                                    .equal(Matter_.period_, period).and()
                                     .contains(Matter_.description_, clazz).and()
                                     .contains(Matter_.description_, qid)
                                     .build().findUnique();

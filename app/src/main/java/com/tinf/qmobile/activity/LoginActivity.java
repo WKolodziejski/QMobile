@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
@@ -18,8 +17,6 @@ import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
-
-import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private ActivityLoginBinding binding;
@@ -45,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onFinish(int pg, int pos) {
+    public void onFinish(int pg) {
         if (pg == PG_LOGIN) {
             Client.get().load(PG_FETCH_YEARS);
         } else if (pg == PG_JOURNALS) {
@@ -81,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int pos) {
+    public void onStart(int pg) {
         Log.v(TAG, "Started loading " + pg);
     }
 

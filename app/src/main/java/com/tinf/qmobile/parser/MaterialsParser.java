@@ -12,7 +12,6 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Jobs;
-import com.tinf.qmobile.utility.User;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -29,8 +28,8 @@ import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 public class MaterialsParser extends BaseParser {
     private final static String TAG = "MateriaisParser";
 
-    public MaterialsParser(int page, int pos, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
-        super(page, pos, notify, onFinish, onError);
+    public MaterialsParser(int page, int year, int period, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
+        super(page, year, period, notify, onFinish, onError);
     }
 
     @Override
@@ -43,8 +42,8 @@ public class MaterialsParser extends BaseParser {
         QueryBuilder<Material> b = materialsBox.query();
 
         b.link(Material_.matter)
-                .equal(Matter_.year_, User.getYear(pos)).and()
-                .equal(Matter_.period_, User.getPeriod(pos));
+                .equal(Matter_.year_, year).and()
+                .equal(Matter_.period_, period);
 
         boolean isFirstParse = b.build().find().isEmpty();
 
@@ -54,8 +53,8 @@ public class MaterialsParser extends BaseParser {
 
             Matter matter = matterBox.query()
                     .contains(Matter_.description_, description).and()
-                    .equal(Matter_.year_, User.getYear(pos)).and()
-                    .equal(Matter_.period_, User.getPeriod(pos))
+                    .equal(Matter_.year_, year).and()
+                    .equal(Matter_.period_, period)
                     .build().findUnique();
 
             if (matter != null) {

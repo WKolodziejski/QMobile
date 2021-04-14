@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:id="@+id/sheet_create_title"
+            android:id="@+id/title"
             android:text="@string/dialog_create_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -41,14 +41,14 @@
             android:layout_marginBottom="8dp"
             android:padding="16dp"
             android:drawableTop="@drawable/ic_calendar"
-            android:id="@+id/sheet_create_event"
+            android:id="@+id/event"
             android:text="@string/dialog_create_event"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintTop_toBottomOf="@id/sheet_create_title"
+            app:layout_constraintTop_toBottomOf="@id/title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/sheet_create_schedule"/>
+            app:layout_constraintEnd_toStartOf="@id/schedule"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -57,13 +57,13 @@
             android:layout_marginBottom="8dp"
             android:padding="16dp"
             android:drawableTop="@drawable/ic_alarm"
-            android:id="@+id/sheet_create_schedule"
+            android:id="@+id/schedule"
             android:text="@string/dialog_create_schedule"
             android:foreground="?android:attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintTop_toBottomOf="@id/sheet_create_title"
-            app:layout_constraintStart_toEndOf="@id/sheet_create_event"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toEndOf="@id/event"
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

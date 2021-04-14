@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -13,18 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.MessagesAdapter;
 import com.tinf.qmobile.databinding.FragmentMessagesBinding;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesFragment extends Fragment implements OnResponse {
@@ -104,12 +97,12 @@ public class MessagesFragment extends Fragment implements OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int pos) {
+    public void onStart(int pg) {
         binding.refresh.setRefreshing(true);
     }
 
     @Override
-    public void onFinish(int pg, int pos) {
+    public void onFinish(int pg) {
         binding.refresh.setRefreshing(false);
     }
 

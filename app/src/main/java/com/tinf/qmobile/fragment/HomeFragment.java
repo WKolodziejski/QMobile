@@ -11,17 +11,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
@@ -29,43 +25,30 @@ import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.FragmentHomeBinding;
 import com.tinf.qmobile.fragment.dialog.CreateFragment;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
 import org.threeten.bp.DayOfWeek;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
-import me.jlurena.revolvingweekview.WeekView;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {
-    @BindView(R.id.weekView_home)       WeekView weekView;
-    @BindView(R.id.home_scroll)         NestedScrollView nestedScrollView;
-    @BindView(R.id.fab_home)            FloatingActionButton fab;
-    @BindView(R.id.recycler_home)       RecyclerView recyclerView;
-    @BindView(R.id.schedule_empty_text) TextView empty;
-    @BindView(R.id.home_calendar)       LinearLayout calendar;
-    @BindView(R.id.home_horario)        LinearLayout schedule;
+    private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentHomeBinding.bind(view);
         return view;
     }
 
@@ -74,24 +57,24 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        calendar.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
 
-        weekView.setWeekViewLoader(ArrayList::new);
+        binding.weekView.setWeekViewLoader(ArrayList::new);
 
-        weekView.setOnTouchListener((view1, motionEvent) -> {
+        binding.weekView.setOnTouchListener((view1, motionEvent) -> {
             if (motionEvent.getAxisValue(MotionEvent.AXIS_Y) <= 90) {
-                schedule.dispatchTouchEvent(motionEvent);
+                binding.scheduleLayout.dispatchTouchEvent(motionEvent);
                 return true;
 
             } else {
                 if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL)
-                    schedule.dispatchTouchEvent(motionEvent);
+                    binding.scheduleLayout.dispatchTouchEvent(motionEvent);
 
                 return false;
             }
         });
 
-        weekView.setOnEventClickListener((event, eventRect) -> {
+        binding.weekView.setOnEventClickListener((event, eventRect) -> {
             Log.d("WEEK", event.getName());
             Intent intent = new Intent(getActivity(), EventViewActivity.class);
             intent.putExtra("TYPE", SCHEDULE);
@@ -99,7 +82,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             startActivity(intent);
         });
 
-        weekView.setWeekViewLoader(() -> {
+        binding.weekView.setWeekViewLoader(() -> {
 
             boolean[][] hours = new boolean[24][7];
             WeekViewEvent[] minutes = new WeekViewEvent[24];
@@ -110,7 +93,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                     .equal(Schedule_.period, User.getPeriod(pos))
                     .build().find();
 
-            ViewGroup.LayoutParams params = weekView.getLayoutParams();
+            ViewGroup.LayoutParams params = binding.weekView.getLayoutParams();
 
             if (!schedules.isEmpty()) {
 
@@ -177,75 +160,69 @@ public class HomeFragment extends Fragment implements OnUpdate {
                         - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45)
                         * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
 
-                weekView.goToDay(DayOfWeek.MONDAY);
-                weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                binding.weekView.goToDay(DayOfWeek.MONDAY);
+                binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
-                empty.setVisibility(View.GONE);
+                binding.empty.setVisibility(View.GONE);
             } else {
                 params.height = Math.round((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
-                empty.setVisibility(View.VISIBLE);
+                binding.empty.setVisibility(View.VISIBLE);
             }
 
-            weekView.setLayoutParams(params);
+            binding.weekView.setLayoutParams(params);
 
             return events;
         });
 
-        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+        binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
                     ((MainActivity) getActivity()).binding.refresh.setEnabled(scrollY == 0);
 
-                    if (scrollY < oldScrollY && !fab.isShown())
-                        fab.show();
-                    else if(scrollY > oldScrollY && fab.isShown())
-                        fab.hide();
+                    if (scrollY < oldScrollY && !binding.fab.isShown())
+                        binding.fab.show();
+                    else if(scrollY > oldScrollY && binding.fab.isShown())
+                        binding.fab.hide();
                 });
 
-        fab.setOnClickListener(v -> new CreateFragment().show(getChildFragmentManager(), "sheet_create"));
-
-        LinearLayout offline = view.findViewById(R.id.home_offline);
+        binding.fab.setOnClickListener(v -> new CreateFragment().show(getChildFragmentManager(), "sheet_create"));
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-            offline.setVisibility(View.VISIBLE);
+            binding.offline.setVisibility(View.VISIBLE);
 
             TextView text = view.findViewById(R.id.offline_last_update);
             text.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
         } else {
-            offline.setVisibility(View.GONE);
+            binding.offline.setVisibility(View.GONE);
         }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-        recyclerView.setAdapter(new HomeAdapter(getContext()));
-    }
+        binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        binding.recycler.setAdapter(new HomeAdapter(getContext()));
 
-    @OnClick(R.id.home_calendario)
-    public void openCalendar(View view) {
-        startActivity(new Intent(getActivity(), CalendarActivity.class),
-                ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                        Pair.create(fab, fab.getTransitionName()))
-                        .toBundle());
-    }
+        binding.calendarLayout.setOnClickListener(view1 -> {
+            startActivity(new Intent(getActivity(), CalendarActivity.class),
+                    ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(binding.fab, binding.fab.getTransitionName()))
+                            .toBundle());
+        });
 
-    @OnClick(R.id.home_horario)
-    public void openSchedule(View view) {
-        startActivity(new Intent(getActivity(), ScheduleActivity.class),
-                ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                        Pair.create(fab, fab.getTransitionName()))
-                        .toBundle());
+        binding.scheduleLayout.setOnClickListener(view1 -> {
+            startActivity(new Intent(getActivity(), ScheduleActivity.class),
+                    ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(binding.fab, binding.fab.getTransitionName()))
+                            .toBundle());
+        });
     }
 
     @Override
     public void onScrollRequest() {
-        if (nestedScrollView != null) {
-            nestedScrollView.smoothScrollTo(0, 0);
-        }
+        binding.scroll.smoothScrollTo(0, 0);
     }
 
     @Override
     public void onDateChanged() {
-        weekView.notifyDatasetChanged();
-        calendar.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.weekView.notifyDatasetChanged();
+        binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -256,13 +233,13 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> binding.weekView.notifyDatasetChanged());
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> weekView.notifyDatasetChanged());
+                .observer(data -> binding.weekView.notifyDatasetChanged());
     }
 
     @Override

@@ -10,35 +10,23 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.databinding.FragmentLoginBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -47,13 +35,7 @@ import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class LoginFragment extends Fragment implements OnResponse {
     private static final String TAG = "LoginFragment";
-    @BindView(R.id.login_progressbar)       ProgressBar progressBar;
-    @BindView(R.id.login_textLoading)       TextView textView;
-    @BindView(R.id.user_input_login)        EditText user;
-    @BindView(R.id.password_input_login)    EditText password;
-    @BindView(R.id.btn_login)               Button btn;
-    @BindView(R.id.login_spinner)           Spinner spinner;
-
+    private FragmentLoginBinding binding;
     private FirebaseRemoteConfig remoteConfig;
     private Map<String, String> urls;
 
@@ -74,7 +56,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentLoginBinding.bind(view);
         return view;
     }
 
@@ -111,14 +93,14 @@ public class LoginFragment extends Fragment implements OnResponse {
                         if (urls != null) {
                             adapter.clear();
                             adapter.addAll(urls.keySet());
-                            spinner.setAdapter(adapter);
-                            spinner.setSelection(0);
+                            binding.spinner.setAdapter(adapter);
+                            binding.spinner.setSelection(0);
                         }
                     }
                 });
 
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(
+        binding.spinner.setAdapter(adapter);
+        binding.spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -132,27 +114,27 @@ public class LoginFragment extends Fragment implements OnResponse {
                     public void onNothingSelected(AdapterView<?> parentView) {}
 
                 });
-        spinner.setSelection(0);
+        binding.spinner.setSelection(0);
 
-        btn.setOnClickListener(v -> {
+        binding.btn.setOnClickListener(v -> {
 
-            if (user.getText().toString().isEmpty()) {
-                user.setError(getResources().getString(R.string.text_empty));
+            if (binding.userInput.getText().toString().isEmpty()) {
+                binding.userInput.setError(getResources().getString(R.string.text_empty));
             }
 
-            if (password.getText().toString().isEmpty()) {
-                password.setError(getResources().getString(R.string.text_empty));
+            if (binding.passwordInput.getText().toString().isEmpty()) {
+                binding.passwordInput.setError(getResources().getString(R.string.text_empty));
             }
 
-            if (!user.getText().toString().isEmpty() && !password.getText().toString().isEmpty()) {
+            if (!binding.userInput.getText().toString().isEmpty() && !binding.passwordInput.getText().toString().isEmpty()) {
                 hideKeyboard();
-                user.setError(null);
+                binding.userInput.setError(null);
 
-                User.setCredential(REGISTRATION, user.getText().toString().toUpperCase().trim());
-                User.setCredential(PASSWORD, password.getText().toString().trim());
+                User.setCredential(REGISTRATION, binding.userInput.getText().toString().toUpperCase().trim());
+                User.setCredential(PASSWORD, binding.passwordInput.getText().toString().trim());
 
                 if (urls == null)
-                    Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(spinner.getSelectedItemPosition()));
+                    Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(binding.spinner.getSelectedItemPosition()));
 
                 FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
                 crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
@@ -160,6 +142,12 @@ public class LoginFragment extends Fragment implements OnResponse {
 
                 Client.get().login();
             }
+        });
+
+        binding.help.setOnClickListener(view1 -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://sites.google.com/view/qmobileapp/ajuda"));
+            startActivity(browserIntent);
         });
     }
 
@@ -174,53 +162,46 @@ public class LoginFragment extends Fragment implements OnResponse {
     }
 
     @Override
-    public void onStart(int pg, int pos) {
-        progressBar.setVisibility(VISIBLE);
-        textView.setVisibility(View.VISIBLE);
-        btn.setEnabled(false);
+    public void onStart(int pg) {
+        binding.progressBar.setVisibility(VISIBLE);
+        binding.textLoading.setVisibility(View.VISIBLE);
+        binding.btn.setEnabled(false);
 
         if (pg == PG_GENERATOR) {
-            textView.setText(getResources().getString(R.string.login_token));
+            binding.textLoading.setText(getResources().getString(R.string.login_token));
 
         } else if (pg == PG_LOGIN) {
-            textView.setText(getResources().getString(R.string.login_validating));
+            binding.textLoading.setText(getResources().getString(R.string.login_validating));
 
         } else if (pg == PG_FETCH_YEARS) {
-            textView.setText(getResources().getString(R.string.login_checking));
+            binding.textLoading.setText(getResources().getString(R.string.login_checking));
 
         } else {
-            textView.setText(getResources().getString(R.string.login_loading));
+            binding.textLoading.setText(getResources().getString(R.string.login_loading));
         }
 
         Log.v(TAG, "Started loading");
     }
 
-    @OnClick(R.id.login_help)
-    public void openHelp(View view) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://sites.google.com/view/qmobileapp/ajuda"));
-        startActivity(browserIntent);
-    }
-
     @Override
-    public void onFinish(int pg, int pos) {
+    public void onFinish(int pg) {
         Log.v(TAG, "Finished loading");
     }
 
     @Override
     public void onError(int pg, String error) {
-        progressBar.setVisibility(GONE);
-        textView.setVisibility(View.GONE);
-        btn.setEnabled(true);
+        binding.progressBar.setVisibility(GONE);
+        binding.textLoading.setVisibility(View.GONE);
+        binding.btn.setEnabled(true);
         Log.e(TAG, error);
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        progressBar.setVisibility(GONE);
-        textView.setVisibility(View.GONE);
-        btn.setEnabled(true);
-        user.setError("");
+        binding.progressBar.setVisibility(GONE);
+        binding.textLoading.setVisibility(View.GONE);
+        binding.btn.setEnabled(true);
+        binding.userInput.setError("");
         Log.v(TAG, "Access denied");
     }
 

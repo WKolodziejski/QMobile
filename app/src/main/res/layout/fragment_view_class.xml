@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/class_view_header_layout"
+        android:id="@+id/header_layout"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
-            android:id="@+id/class_view_color_img"
+            android:id="@+id/color_img"
             app:srcCompat="@drawable/ic_square" />
 
         <LinearLayout
@@ -41,14 +41,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="4dp"
-                android:id="@+id/class_view_title"
+                android:id="@+id/title"
                 android:textSize="24sp"
                 tools:text="Title" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/class_view_matter_text"
+                android:id="@+id/matter_text"
                 tools:text="Matter" />
 
         </LinearLayout>
@@ -62,8 +62,8 @@
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:id="@+id/class_view_grade_layout"
-        app:layout_constraintTop_toBottomOf="@id/class_view_header_layout"
+        android:id="@+id/grade_layout"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -79,7 +79,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/class_view_given"
+            android:id="@+id/given"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -95,8 +95,8 @@
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:id="@+id/class_view_weight_layout"
-        app:layout_constraintTop_toBottomOf="@id/class_view_grade_layout"
+        android:id="@+id/weight_layout"
+        app:layout_constraintTop_toBottomOf="@id/grade_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -112,7 +112,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/class_view_absences"
+            android:id="@+id/absences"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,8 +127,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/class_view_type_layout"
-        app:layout_constraintTop_toBottomOf="@id/class_view_weight_layout"
+        android:id="@+id/type_layout"
+        app:layout_constraintTop_toBottomOf="@id/weight_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -144,7 +144,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/class_view_teacher"
+            android:id="@+id/teacher"
             android:layout_gravity="center_vertical"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,8 +160,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/class_view_time_layout"
-        app:layout_constraintTop_toBottomOf="@id/class_view_type_layout"
+        android:id="@+id/time_layout"
+        app:layout_constraintTop_toBottomOf="@id/type_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -178,7 +178,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:id="@+id/class_view_time_text"
+            android:id="@+id/time_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -192,8 +192,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/class_view_content_layout"
-        app:layout_constraintTop_toBottomOf="@id/class_view_time_layout"
+        android:id="@+id/content_layout"
+        app:layout_constraintTop_toBottomOf="@id/time_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         >
@@ -210,7 +210,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:id="@+id/class_view_content_text"
+            android:id="@+id/content_text"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

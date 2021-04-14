@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:id="@+id/calendario_month_title"
+    android:id="@+id/month"
     android:gravity="center"
     android:textSize="@dimen/alt_font_size"
     android:textStyle="bold"

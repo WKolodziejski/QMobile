@@ -6,36 +6,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.FragmentViewJournalBinding;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
-
 import java.text.SimpleDateFormat;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class JournalViewFragment extends Fragment {
-    @BindView(R.id.journal_view_time_text)           TextView time_txt;
-    @BindView(R.id.journal_view_grade_text)          TextView grade_txt;
-    @BindView(R.id.journal_view_matter_text)         TextView matter_txt;
-    @BindView(R.id.journal_view_weight_text)         TextView weight_txt;
-    @BindView(R.id.journal_view_title)               TextView title_txt;
-    @BindView(R.id.journal_view_type_text)           TextView type_txt;
-    @BindView(R.id.journal_view_type_short)          TextView short_txt;
-    @BindView(R.id.journal_view_color_img)           ImageView color_img;
+    private FragmentViewJournalBinding binding;
     private DataSubscription sub1, sub2;
     private long id;
 
@@ -67,7 +53,7 @@ public class JournalViewFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_journal, container, false);
-        ButterKnife.bind(this, view);
+        binding = FragmentViewJournalBinding.bind(view);
         return view;
     }
 
@@ -89,14 +75,14 @@ public class JournalViewFragment extends Fragment {
 
             SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-            title_txt.setText(journal.getTitle());
-            grade_txt.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
-            weight_txt.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
-            short_txt.setText(journal.getShort());
-            type_txt.setText(journal.getType());
-            time_txt.setText(date.format(journal.getDate()));
-            matter_txt.setText(journal.getMatter() + "・" + journal.getPeriod());
-            color_img.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+            binding.title.setText(journal.getTitle());
+            binding.grade.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
+            binding.weight.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
+            binding.typeShort.setText(journal.getShort());
+            binding.type.setText(journal.getType());
+            binding.time.setText(date.format(journal.getDate()));
+            binding.matter.setText(journal.getMatter() + "・" + journal.getPeriod());
+            binding.colorImg.setImageTintList(ColorStateList.valueOf(journal.getColor()));
         }
     }
 

@@ -31,7 +31,7 @@
     <string name="client_host">Servidor inalcançável</string>
     <string name="client_error">Algo inesperado ocorreu, tente novamente mais tarde</string>
 
-    <string name="contextual_remove_txt_plu">Tem certeza que deseja remover %1$s arquivos?</string>
+    <string name="contextual_remove_txt_plu">Tem certeza que deseja remover %1$d arquivos?</string>
     <string name="contextual_remove_txt_sing">Tem certeza que deseja remover esse arquivo?</string>
 
     <string name="materiais_empty">Não há materiais disponíveis</string>
@@ -44,8 +44,8 @@
     <string name="calendar_upcoming">Próximos eventos</string>
 
     <string name="class_no_content">Sem conteúdo</string>
-    <string name="class_given">Aulas dadas: %1$s</string>
-    <string name="class_absence">Faltas: %1$s</string>
+    <string name="class_given">Aulas dadas: %1$d</string>
+    <string name="class_absence">Faltas: %1$d</string>
 
     <string name="text_user">Matrícula</string>
     <string name="text_password">Senha</string>
