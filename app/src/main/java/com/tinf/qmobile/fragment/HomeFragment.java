@@ -31,6 +31,7 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 import org.threeten.bp.DayOfWeek;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class HomeFragment extends Fragment implements OnUpdate {
+public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
 
@@ -189,9 +190,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             binding.offline.setVisibility(View.VISIBLE);
-
-            TextView text = view.findViewById(R.id.offline_last_update);
-            text.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
+            binding.offlineLastUpdate.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
         } else {
             binding.offline.setVisibility(View.GONE);
         }
@@ -246,24 +245,28 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onStart() {
         super.onStart();
         Client.get().addOnUpdateListener(this);
+        Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
+        Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Client.get().removeOnUpdateListener(this);
+        Client.get().removeOnResponseListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Client.get().removeOnUpdateListener(this);
+        Client.get().removeOnResponseListener(this);
     }
 
     @Override
@@ -271,6 +274,36 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onDestroy();
         sub1.cancel();
         sub2.cancel();
+    }
+
+    @Override
+    public void onStart(int pg) {
+
+    }
+
+    @Override
+    public void onFinish(int pg) {
+        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
+            binding.offline.setVisibility(View.VISIBLE);
+            binding.offlineLastUpdate.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
+        } else {
+            binding.offline.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onError(int pg, String error) {
+
+    }
+
+    @Override
+    public void onAccessDenied(int pg, String message) {
+        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
+            binding.offline.setVisibility(View.VISIBLE);
+            binding.offlineLastUpdate.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
+        } else {
+            binding.offline.setVisibility(View.GONE);
+        }
     }
 
 }

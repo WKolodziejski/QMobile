@@ -41,8 +41,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         bindPreferenceSummaryToValue(findPreference(POPUP));
 
-        bindPreferenceSummaryToValue(findPreference(DATA));
-
         Preference about = findPreference("key_about");
         about.setOnPreferenceClickListener(preference -> {
             startActivity(new Intent(getActivity(), AboutActivity.class));

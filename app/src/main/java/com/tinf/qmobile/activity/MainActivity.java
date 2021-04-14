@@ -17,7 +17,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -29,7 +28,6 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
@@ -53,7 +51,8 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.service.Jobs;
 import com.tinf.qmobile.utility.User;
-
+import static com.tinf.qmobile.App.USE_COUNT;
+import static com.tinf.qmobile.App.USE_INFO;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
@@ -122,11 +121,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             Client.get().load(PG_FETCH_YEARS);
         }
 
-        ReviewManager manager = ReviewManagerFactory.create(this);
-        manager.requestReviewFlow().addOnCompleteListener(info -> {
-            if (info.isSuccessful())
-                 manager.launchReviewFlow(this, info.getResult());
-        });
+        int uses = getSharedPreferences(USE_INFO, MODE_PRIVATE).getInt(USE_COUNT, 0);
+        getSharedPreferences(USE_INFO, MODE_PRIVATE).edit().putInt(USE_COUNT, uses + 1).apply();
+
+        if (uses > 10) {
+            ReviewManager manager = ReviewManagerFactory.create(this);
+            manager.requestReviewFlow().addOnCompleteListener(info -> {
+                if (info.isSuccessful())
+                    manager.launchReviewFlow(this, info.getResult());
+            });
+        }
     }
 
     @Override

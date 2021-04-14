@@ -8,9 +8,9 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
--keepclassmembers class fqcn.of.javascript.interface.for.webview {
-   public class com.tinf.qmobile.network.JavaScripthandler;
-}
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#   public class com.tinf.qmobile.network.JavaScripthandler;
+#}
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
@@ -20,11 +20,11 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.chad.library.adapter.** {
-*;
-}
--keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
--keep public class * extends com.chad.library.adapter.base.BaseViewHolder
--keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
-     <init>(...);
-}
+#-keep class com.chad.library.adapter.** {
+#*;
+#}
+#-keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
+#-keep public class * extends com.chad.library.adapter.base.BaseViewHolder
+#-keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
+#     <init>(...);
+#}

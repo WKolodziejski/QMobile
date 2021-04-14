@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.utility.User;
 import io.objectbox.BoxStore;
@@ -18,6 +19,8 @@ public class App extends Application {
     public static final String VERSION_INFO = ".Version";
     public static final String DATABASE_INFO = ".DB";
     public static final String DB_CLASS = ".class";
+    public static final String USE_INFO = ".use";
+    public static final String USE_COUNT = ".count";
     private static Context context;
 
     @Override
@@ -26,14 +29,15 @@ public class App extends Application {
         context = getBaseContext();
 
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCrashlyticsCollectionEnabled(false);
+        crashlytics.setCrashlyticsCollectionEnabled(true);
         crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
         crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
         crashlytics.setCustomKey("URL", User.getURL());
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
-        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean(NIGHT, false) ?
+        AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(
+                getBaseContext()).getBoolean(NIGHT, false) ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true)) {
