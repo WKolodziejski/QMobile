@@ -144,7 +144,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             item.setActionView(R.layout.action_account);
             ImageView view = (ImageView) item.getActionView();
             view.setImageDrawable(picture.getCurrent());
-            view.setOnClickListener(v -> new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user"));
+            view.setOnClickListener(v -> {
+                UserFragment fragment = new UserFragment();
+                fragment.setListener(this::logOut);
+                fragment.show(getSupportFragmentManager(), "sheet_user");
+            });
         }
 
         return true;
@@ -159,7 +163,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             return true;
 
         } else if (itemId == R.id.action_account) {
-            new UserFragment(this::logOut).show(getSupportFragmentManager(), "sheet_user");
+           UserFragment fragment = new UserFragment();
+           fragment.setListener(this::logOut);
+           fragment.show(getSupportFragmentManager(), "sheet_user");
             return true;
 
         } else if (itemId == R.id.action_grades) {

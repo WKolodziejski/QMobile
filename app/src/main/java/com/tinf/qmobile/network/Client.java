@@ -643,9 +643,9 @@ public class Client {
                                 .find()) {
                             Client.get().load(m);
                         }
-                        callOnFinish(pg);
+                        callOnFinish(pg2);
                     });
-                    callOnFinish(pg);
+                    callOnFinish(pg1);
                 });
             callOnFinish(pg);
         });

@@ -39,9 +39,9 @@ public class JournalParser extends BaseParser {
 
         RandomColor colors = new RandomColor();
 
-        Date today = new Date();
+        //Date today = new Date();
 
-        Element frm = document.getElementById("ANO_PERIODO2");
+        /*Element frm = document.getElementById("ANO_PERIODO2");
 
         if (frm != null) {
             Elements dates = frm.getElementsByTag("option");
@@ -54,7 +54,7 @@ public class JournalParser extends BaseParser {
 
                 User.setYears(years);
             }
-        }
+        }*/
 
         Element body = document.getElementsByTag("tbody").get(12);
         Elements contents = body.select("table.conteudoTexto");
@@ -165,7 +165,7 @@ public class JournalParser extends BaseParser {
                                 journalBox.put(newJournal);
 
                                 if (notify) {
-                                    if (grade != -1 && date <= today.getTime())
+                                    if (grade != -1 && date <= new Date().getTime())
                                         notifyGrade(newJournal);
                                     else
                                         notifySchedule(newJournal);

@@ -3,6 +3,7 @@ package com.tinf.qmobile.fragment;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -38,6 +39,14 @@ import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.ComboLineColumnChartData;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
@@ -107,7 +116,12 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                     int day = event.getStartTime().getDay().getValue();
                     int hour = event.getStartTime().getHour();
 
-                    if (!hours[hour][day]) {
+                    if (minutes[hour] != null) {
+                        if (event.getEndTime().isAfter(minutes[hour].getEndTime())) {
+                            minutes[hour] = event;
+                            hours[hour][day] = true;
+                        }
+                    } else {
                         minutes[hour] = event;
                         hours[hour][day] = true;
                     }
@@ -211,6 +225,36 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                             Pair.create(binding.fab, binding.fab.getTransitionName()))
                             .toBundle());
         });
+
+        /*List<PointValue> values1 = new ArrayList<PointValue>();
+        values1.add(new PointValue(0, 2));
+        values1.add(new PointValue(1, 4));
+        values1.add(new PointValue(2, 3));
+        values1.add(new PointValue(3, 4));
+
+        Line line1 = new Line(values1).setColor(Color.CYAN).setCubic(true).setHasLabels(true).setFilled(false);
+        List<Line> lines = new ArrayList<Line>();
+        lines.add(line1);
+
+        List<SubcolumnValue> values2 = new ArrayList<>();
+        values2.add(new SubcolumnValue(1));
+
+        List<Column> columns = new ArrayList<>();
+        columns.add(new Column(values2));
+
+        LineChartData ld = new LineChartData();
+        ld.setLines(lines);
+        ld.setValueLabelBackgroundEnabled(false);
+        ld.setValueLabelsTextColor(Color.CYAN);
+
+        ColumnChartData cd = new ColumnChartData();
+        cd.setColumns(columns);
+
+        ComboLineColumnChartData data = new ComboLineColumnChartData();
+        data.setLineChartData(ld);
+        data.setColumnChartData(cd);
+
+        binding.chart.setComboLineColumnChartData(data);*/
     }
 
     @Override

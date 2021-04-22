@@ -8,6 +8,7 @@ import com.tinf.qmobile.network.OnEvent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class PopUpHandler {
     private final WebView webView;
@@ -34,12 +35,17 @@ public class PopUpHandler {
             onEvent.onDialog(webView, title, message);
         }
 
-        Element renewal = document.getElementsByClass("conteudoLink").get(2);
+        Elements conteudoLink = document.getElementsByClass("conteudoLink");
 
-        if (renewal != null) {
+        if (conteudoLink.size() >= 3) {
 
-            if (renewal.text().contains("matrícula")) {
-                onEvent.onRenewalAvailable();
+            Element renewal = conteudoLink.get(2);
+
+            if (renewal != null) {
+
+                if (renewal.text().contains("matrícula")) {
+                    onEvent.onRenewalAvailable();
+                }
             }
         }
     }

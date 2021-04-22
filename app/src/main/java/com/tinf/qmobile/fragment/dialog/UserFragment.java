@@ -28,9 +28,9 @@ public class UserFragment extends DialogFragment {
     private MaterialCardView logout;
     private ImageView image;
     private Button policy;
-    private final OnLogout onLogout;
+    private OnLogout onLogout;
 
-    public UserFragment(OnLogout onLogout) {
+    public void setListener(OnLogout onLogout) {
         this.onLogout = onLogout;
     }
 
