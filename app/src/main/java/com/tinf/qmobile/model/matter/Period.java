@@ -79,9 +79,9 @@ public class Period implements Queryable {
         return p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p);
     }
 
-    public float getPartialGrade() {
+    public float getPlotGrade() {
         if (journals.isEmpty())
-            return -1;
+            return 0;
 
         float sum = getGradeSum();
 
@@ -89,9 +89,13 @@ public class Period implements Queryable {
 
         for (Journal j : journals)
             if (j.getWeight_() != -1)
-                weight = +j.getWeight_();
+                weight += j.getMax_();
 
-        return sum / weight;
+        return (sum / weight) * 10;
+    }
+
+    public String getLabel() {
+        return String.format(Locale.getDefault(), "%.1f", getPlotGrade());
     }
 
     public void setSub() {

@@ -3,22 +3,29 @@ package com.tinf.qmobile;
 import android.app.Application;
 import android.content.Context;
 import android.os.StrictMode;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.utility.User;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class App extends Application {
-    public static final String VERSION = ".v1.3.7";
+    public static final String VERSION = ".v1.6.0";
     public static final String VERSION_INFO = ".Version";
     public static final String DATABASE_INFO = ".DB";
-    public static final String DB_CLASS = ".class";
+    //public static final String DB_CLASS = ".class";
     public static final String USE_INFO = ".use";
     public static final String USE_COUNT = ".count";
     private static Context context;

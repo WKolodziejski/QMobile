@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
@@ -41,11 +42,19 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
+
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
@@ -63,6 +72,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
 import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
 import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
+import static com.tinf.qmobile.network.OnResponse.PG_UPDATE;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -83,7 +93,7 @@ public class Client {
     private boolean isLogging;
 
     public enum Resp {
-        OK, HOST, DENIED, EGRESS
+        OK, HOST, DENIED, EGRESS, UPDATE
     }
 
     private Client() {
@@ -123,63 +133,65 @@ public class Client {
             addToQueue(pg, url, year, period, method, form, notify, matter);
         } else {
             Log.i(TAG, "Request for: " + pg);
-            addRequest(new StringRequest(method, URL + url,
-                    response -> {
-                        Resp r = testResponse(response);
+            addRequest(new StringRequest(method, URL + url, responseASCII -> {
+                String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
-                        if (r == Resp.DENIED) {
-                            addToQueue(pg, url, year, period, method, form, notify, matter);
-                            login();
-                            callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
+                Resp r = testResponse(response);
 
-                        } else if (r == Resp.OK) {
-                            if (pg == PG_JOURNALS) {
-                                new JournalParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                if (r == Resp.DENIED) {
+                    addToQueue(pg, url, year, period, method, form, notify, matter);
+                    login();
+                    callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
 
-                            } else if (pg == PG_REPORT) {
-                                new ReportParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                } else if (r == Resp.OK) {
+                    if (pg == PG_JOURNALS) {
+                        new JournalParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_SCHEDULE) {
-                                new ScheduleParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                    } else if (pg == PG_REPORT) {
+                        new ReportParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_MATERIALS) {
-                                new MaterialsParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                    } else if (pg == PG_SCHEDULE) {
+                        new ScheduleParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_CALENDAR) {
-                                new CalendarParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                    } else if (pg == PG_MATERIALS) {
+                        new MaterialsParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_MESSAGES) {
-                                new MessageParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                    } else if (pg == PG_CALENDAR) {
+                        new CalendarParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_CLASSES) {
-                                new ClassParser(matter, pg, year, period, notify, onFinish, this::callOnError).execute(response);
+                    } else if (pg == PG_MESSAGES) {
+                        new MessageParser(pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                            } else if (pg == PG_FETCH_YEARS) {
-                                Document document = Jsoup.parse(response);
+                    } else if (pg == PG_CLASSES) {
+                        new ClassParser(matter, pg, year, period, notify, onFinish, this::callOnError).execute(response);
 
-                                //Element frm = document.getElementById("frmConsultar");
+                    } else if (pg == PG_FETCH_YEARS) {
+                        Document document = Jsoup.parse(response);
 
-                                Element frm = document.getElementById("ANO_PERIODO2");
+                        //Element frm = document.getElementById("frmConsultar");
 
-                                if (frm != null) {
-                                    Elements dates = frm.getElementsByTag("option");
+                        Element frm = document.getElementById("ANO_PERIODO2");
 
-                                    if (dates != null) {
-                                        String[] years = new String[dates.size() - 1];
+                        if (frm != null) {
+                            Elements dates = frm.getElementsByTag("option");
 
-                                        for (int i = 0; i < dates.size() - 1; i++)
-                                            years[i] = dates.get(i + 1).text();
+                            if (dates != null) {
+                                String[] years = new String[dates.size() - 1];
 
-                                        User.setYears(years);
-                                    }
-                                }
+                                for (int i = 0; i < dates.size() - 1; i++)
+                                    years[i] = dates.get(i + 1).text();
 
-                                callOnFinish(PG_FETCH_YEARS);
-
-                                loadYear(0);
+                                User.setYears(years);
                             }
                         }
-                    }, error -> onError(pg, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+
+                        callOnFinish(PG_FETCH_YEARS);
+
+                        loadYear(0);
+                    }
+                }
+            }, error -> onError(pg, error.getMessage() == null ?
+                    getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
                 @Override
                 public Map<String, String> getHeaders() {
@@ -190,6 +202,7 @@ public class Client {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     return !form.isEmpty() ? form : super.getParams();
                 }
+
             }, pg);
         }
     }
@@ -266,60 +279,64 @@ public class Client {
 
     public void login() {
         isLogging = true;
-        fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA,
-                response -> {
-                    Resp r = testResponse(response);
+        fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
+            String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
-                    if (r == Resp.DENIED) {
-                        callOnAccessDenied(PG_LOGIN, "");
+            Resp r = testResponse(response);
 
-                    } else if (r == Resp.OK) {
-                        isValid = true;
+            if (r == Resp.DENIED) {
+                callOnAccessDenied(PG_LOGIN, "");
 
-                        Document document = Jsoup.parse(response);
-                        Elements sub = document.getElementsByClass("barraRodape");
-                        Elements sub2 = document.getElementsByClass("titulo");
+            } else if (r == Resp.OK) {
 
-                        String name = "";
+                isValid = true;
 
-                        if (sub.size() >= 1) {
-                            name = sub.get(1).text();
-                        } else if (sub2.size() >= 1) {
-                            name = sub2.get(1).text();
-                            name = name.substring(name.indexOf(",") + 1).trim();
-                        }
+                Document document = Jsoup.parse(response);
+                Elements sub = document.getElementsByClass("barraRodape");
+                Elements sub2 = document.getElementsByClass("titulo");
 
-                        User.setName(name);
-                        User.setLastLogin(new Date().getTime());
+                String name = "";
 
-                        isLogging = false;
+                if (sub.size() >= 2) {
+                    name = sub.get(1).text();
+                } else if (sub2.size() >= 2) {
+                    name = sub2.get(1).text();
+                    name = name.substring(name.indexOf(",") + 1).trim();
+                }
 
-                        String cod = document.getElementsByTag("q_latente").get(4).val();
-                        cod = cod.substring(cod.indexOf("=") + 1);
+                User.setName(name);
+                User.setLastLogin(new Date().getTime());
 
-                        Element img = document.getElementsByAttributeValueEnding("src", cod).first();
+                isLogging = false;
 
-                        if (img != null && !background)
-                            downloadImage(cod);
+                String cod = document.getElementsByTag("q_latente").get(4).val();
+                cod = cod.substring(cod.indexOf("=") + 1);
 
-                        callOnFinish(PG_LOGIN);
-                    }
-                }, error -> onError(PG_LOGIN, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+                Element img = document.getElementsByAttributeValueEnding("src", cod).first();
 
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        return params;
-                    }
+                if (img != null && !background)
+                    downloadImage(cod);
 
-                    @Override
-                    protected Map<String, String> getParams() {
-                        return User.getLoginParams(KEY_A, KEY_B);
-                    }
+                callOnFinish(PG_LOGIN);
+            }
 
-                    @Override
-                    public Priority getPriority() {
-                        return Priority.IMMEDIATE;
-                    }
+        }, error -> onError(PG_LOGIN, error.getMessage() == null ?
+                getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                return User.getLoginParams(KEY_A, KEY_B);
+            }
+
+            @Override
+            public Priority getPriority() {
+                return Priority.IMMEDIATE;
+            }
 
         }, PG_LOGIN));
     }
@@ -328,6 +345,8 @@ public class Client {
         Document document = Jsoup.parse(response);
 
         Element strong = document.getElementsByTag("strong").first();
+        Element p = document.getElementsByTag("p").first();
+        Element form = document.getElementsByClass("conteudoTexto").first();
 
         if (strong != null) {
             String s = strong.text().trim();
@@ -349,16 +368,25 @@ public class Client {
 
                 return Resp.DENIED;
             }
-        } else {
-            Element p = document.getElementsByTag("p").first();
 
-            if (p != null) {
-                if (p.text().contains("inacessível")) {
-                    callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
-                    return Resp.HOST;
-                }
+        }
+
+        if (p != null) {
+            if (p.text().contains("inacessível")) {
+                callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
+                return Resp.HOST;
+            }
+
+        }
+
+        if (form != null) {
+            if (form.text().contains("senha")) {
+                String msg = form.text().replaceAll("\\\\n", "\n").trim();
+                callOnAccessDenied(PG_UPDATE, msg);
+                return Resp.UPDATE;
             }
         }
+
         return Resp.OK;
     }
 
@@ -386,51 +414,58 @@ public class Client {
     }
 
     private void fetchParams(Response.Listener<String> listener) {
-        addRequest(new StringRequest(GET, URL + GERADOR,
-                response ->  {
-                    try {
-                        String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));
-                        keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
+        addRequest(new StringRequest(GET, URL + GERADOR, responseASCII ->  {
+            String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
-                        KEY_A = keys.substring(0, keys.indexOf("\""));
-                        Log.d("Key A", KEY_A);
-                        KEY_B = keys.substring(keys.lastIndexOf("\"") + 1);
-                        Log.d("Key B", KEY_B);
+            try {
+                String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));
+                keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
 
-                        Log.v(TAG, "Keys fetched");
-                    } catch (IndexOutOfBoundsException ignored) {}
+                KEY_A = keys.substring(0, keys.indexOf("\""));
+                Log.d("Key A", KEY_A);
+                KEY_B = keys.substring(keys.lastIndexOf("\"") + 1);
+                Log.d("Key B", KEY_B);
 
-                    listener.onResponse(response);
+                Log.v(TAG, "Keys fetched");
+            } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
+            }
 
-                }, error -> onError(PG_GENERATOR, error.getMessage() == null ? getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+            listener.onResponse(response);
 
-                    @Override
-                    protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                        CookieManager cookieManager = CookieManager.getInstance();
-                        cookieManager.setAcceptCookie(true);
+        }, error -> onError(PG_GENERATOR, error.getMessage() == null ?
+                getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
 
-                        String c1 = response.headers.get("Set-Cookie");
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                CookieManager cookieManager = CookieManager.getInstance();
+                cookieManager.setAcceptCookie(true);
 
-                        params.put("Cookie", c1);
-                        cookieManager.setCookie(Client.get().getURL(), c1);
+                String c1 = response.headers.get("Set-Cookie");
 
-                        for (Header h : response.allHeaders) {
-                            if (h.getValue().contains("QSESSIONID")) {
-                                params.put("Set-Cookie", h.getValue());
-                                cookieManager.setCookie(Client.get().getURL(),  h.getValue());
-                                break;
-                            }
-                        }
+                params.put("Cookie", c1);
+                cookieManager.setCookie(Client.get().getURL(), c1);
 
-                        Log.d("Cookies", params.toString());
-
-                        return super.parseNetworkResponse(response);
+                for (Header h : response.allHeaders) {
+                    if (h.getValue().contains("QSESSIONID")) {
+                        params.put("Set-Cookie", h.getValue());
+                        cookieManager.setCookie(Client.get().getURL(),  h.getValue());
+                        break;
                     }
+                }
 
-                    @Override
-                    public Priority getPriority() {
-                        return Priority.IMMEDIATE;
-                    }
+                //params.put("Accept", "text/html");
+                //params.put("Content-Type", "text/html; charset=utf-8");
+
+                Log.d("Cookies", params.toString());
+
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public Priority getPriority() {
+                return Priority.IMMEDIATE;
+            }
 
         }, PG_GENERATOR);
     }

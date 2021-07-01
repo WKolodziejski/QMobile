@@ -1,29 +1,21 @@
 package com.tinf.qmobile.database;
 
 import android.util.Log;
-
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
-import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.tinf.qmobile.App.DATABASE_INFO;
-import static com.tinf.qmobile.App.DB_CLASS;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -41,7 +33,6 @@ public class DataBase implements OnUpdate {
         Client.get().addOnUpdateListener(this);
 
         Log.d("Box for ", User.getCredential(User.REGISTRATION));
-        //assert (!User.getCredential(User.REGISTRATION).isEmpty());
 
         boxStore = MyObjectBox
                 .builder()
@@ -73,10 +64,10 @@ public class DataBase implements OnUpdate {
                         .build()
                         .count())));
 
-        if (getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).getBoolean(DB_CLASS, true)) {
+        /*if (getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).getBoolean(DB_CLASS, true)) {
             getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).edit().putBoolean(DB_CLASS, false).apply();
             boxStore.boxFor(Clazz.class).removeAll();
-        }
+        }*/
     }
 
     public static synchronized DataBase get() {

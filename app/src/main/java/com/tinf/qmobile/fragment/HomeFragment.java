@@ -3,7 +3,6 @@ package com.tinf.qmobile.fragment;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -12,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,29 +24,30 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MainActivity;
+import com.tinf.qmobile.activity.PerformanceActivity;
 import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentHomeBinding;
 import com.tinf.qmobile.fragment.dialog.CreateFragment;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
+
 import org.threeten.bp.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.ComboLineColumnChartData;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
@@ -226,36 +228,72 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                             .toBundle());
         });
 
-        /*List<PointValue> values1 = new ArrayList<PointValue>();
-        values1.add(new PointValue(0, 2));
-        values1.add(new PointValue(1, 4));
-        values1.add(new PointValue(2, 3));
-        values1.add(new PointValue(3, 4));
+        /*binding.chartText.setOnClickListener(view1 -> {
+            startActivity(new Intent(getActivity(), PerformanceActivity.class),
+                    ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(binding.fab, binding.fab.getTransitionName()))
+                            .toBundle());
+        });
 
-        Line line1 = new Line(values1).setColor(Color.CYAN).setCubic(true).setHasLabels(true).setFilled(false);
-        List<Line> lines = new ArrayList<Line>();
-        lines.add(line1);
-
-        List<SubcolumnValue> values2 = new ArrayList<>();
-        values2.add(new SubcolumnValue(1));
-
-        List<Column> columns = new ArrayList<>();
-        columns.add(new Column(values2));
-
-        LineChartData ld = new LineChartData();
-        ld.setLines(lines);
-        ld.setValueLabelBackgroundEnabled(false);
-        ld.setValueLabelsTextColor(Color.CYAN);
-
-        ColumnChartData cd = new ColumnChartData();
-        cd.setColumns(columns);
-
-        ComboLineColumnChartData data = new ComboLineColumnChartData();
-        data.setLineChartData(ld);
-        data.setColumnChartData(cd);
-
-        binding.chart.setComboLineColumnChartData(data);*/
+        updateChart();*/
     }
+
+    /*private void updateChart() {
+        List<Matter> matters = DataBase.get().getBoxStore()
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, User.getYear(pos))
+                .and()
+                .equal(Matter_.period_, User.getPeriod(pos))
+                .build()
+                .find();
+
+        List<AxisValue> axisMatter = new ArrayList<>();
+        List<Column> columns = new ArrayList<>();
+
+        for (int i = 0; i < matters.size(); i++) {
+            Matter matter = matters.get(i);
+
+            axisMatter.add(new AxisValue(i).setLabel(matter.getLabel()));
+
+            List<SubcolumnValue> values = new ArrayList<>();
+            values.add(new SubcolumnValue(matter.getLastPeriod().getPlotGrade(),
+                    matter.getColor())
+                    .setLabel(matter.getLastPeriod().getLabel()));
+            columns.add(new Column(values)
+                    .setHasLabels(true));
+                    //.setHasLabelsOnlyForSelected(true));
+        }
+
+        List<AxisValue> axisValues = new ArrayList<>();
+        axisValues.add(new AxisValue(6).setLabel(""));
+        ColumnChartData data = new ColumnChartData();
+        data.setColumns(columns);
+        data.setValueLabelBackgroundEnabled(false);
+        data.setValueLabelsTextColor(getResources().getColor(R.color.colorPrimaryLight));
+        data.setAxisYLeft(new Axis(axisValues)
+                .setHasLines(true)
+                .setLineColor(ContextCompat.getColor(getContext(), R.color.error))
+                .setHasSeparationLine(false)
+                .setHasTiltedLabels(false));
+        data.setAxisXBottom(new Axis(axisMatter));
+        binding.chart.setColumnChartData(data);
+        binding.chart.setZoomEnabled(false);
+        binding.chart.setOnValueTouchListener(new ColumnChartOnValueSelectListener() {
+
+            @Override
+            public void onValueSelected(int i, int i1, SubcolumnValue subcolumnValue) {
+                Toast.makeText(getContext(), matters.get(i).getTitle(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onValueDeselected() {
+
+            }
+
+        });
+    }*/
 
     @Override
     public void onScrollRequest() {
@@ -266,6 +304,7 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
     public void onDateChanged() {
         binding.weekView.notifyDatasetChanged();
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        //updateChart();
     }
 
     @Override
@@ -276,13 +315,19 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> binding.weekView.notifyDatasetChanged());
+                .observer(data -> {
+                    binding.weekView.notifyDatasetChanged();
+                    //updateChart();
+                });
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> binding.weekView.notifyDatasetChanged());
+                .observer(data -> {
+                    binding.weekView.notifyDatasetChanged();
+                    //updateChart();
+                });
     }
 
     @Override

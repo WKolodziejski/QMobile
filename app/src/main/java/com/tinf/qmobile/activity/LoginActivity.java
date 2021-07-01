@@ -70,6 +70,13 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                     .create()
                     .show();
 
+       } else if (pg == PG_UPDATE) {
+           new MaterialAlertDialogBuilder(LoginActivity.this)
+                   .setTitle(getResources().getString(R.string.dialog_update_password))
+                   .setMessage(getResources().getString(R.string.dialog_update_password_msg))
+                   .setCancelable(true)
+                   .create()
+                   .show();
        } else {
            Toast.makeText(getBaseContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
        }

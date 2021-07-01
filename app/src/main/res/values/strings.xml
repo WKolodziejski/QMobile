@@ -65,6 +65,8 @@
     <string name="dialog_date_confirm">Trocar</string>
     <string name="dialog_cancel">Cancelar</string>
     <string name="dialog_access_denied">Acesso Negado</string>
+    <string name="dialog_update_password">Senha Temporária</string>
+    <string name="dialog_update_password_msg">Você está utilizando uma senha temporária gerada pelo sistema. Para sua segurança, acesse o site por um navegador e preencha o formulário requerido.</string>
     <string name="dialog_check_login">Verifique suas credenciais</string>
     <string name="dialog_access_changed">Não foi possível acessar sua conta. Você alterou sua senha?</string>
     <string name="dialog_try_again">Tentar novamente</string>

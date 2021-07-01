@@ -3,6 +3,8 @@ package com.tinf.qmobile.parser;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -62,6 +64,7 @@ public abstract class BaseParser {
                     return true;
                 });
             } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
                 e.printStackTrace();
                 success = false;
             }

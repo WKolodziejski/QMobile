@@ -15,7 +15,7 @@
     <color name="message_sign">@color/grey_50</color>
     <color name="message_solved">@color/amber_a700</color>
     <color name="badge">#A70724</color>
-
+    <color name="cardText">@color/black</color>
 
     <color name="card_stroke">@color/black_d</color>
     <color name="transparent">@android:color/transparent</color>

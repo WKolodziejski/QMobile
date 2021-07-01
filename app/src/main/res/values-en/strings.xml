@@ -169,4 +169,6 @@
     <string name="class_no_content">No content</string>
     <string name="class_given">Given classes: %1$d</string>
     <string name="class_absence">Absences: %1$d</string>
+    <string name="dialog_update_password_msg">You are using a system-generated temporary password. For your safety, access the website through a browser and fill in the required form.</string>
+    <string name="dialog_update_password">Temporary Password</string>
 </resources>

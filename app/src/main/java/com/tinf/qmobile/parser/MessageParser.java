@@ -127,12 +127,16 @@ public class MessageParser extends BaseParser {
             }
 
             Element footer = trs.last();
-            Elements tds = footer.getElementsByTag("tbody").first().child(0).children();
+            Element tbody = footer.getElementsByTag("tbody").first();
 
-            for (int i = 0; i < tds.size(); i++) {
-                if (tds.get(i).child(0).tagName().equals("span")) {
-                    onMessages.onFinish(Integer.parseInt(tds.get(i).child(0).text()), i < tds.size() - 1);
-                    break;
+            if (tbody.childNodeSize() > 0) {
+                Elements tds = tbody.child(0).children();
+
+                for (int i = 0; i < tds.size(); i++) {
+                    if (tds.get(i).child(0).tagName().equals("span")) {
+                        onMessages.onFinish(Integer.parseInt(tds.get(i).child(0).text()), i < tds.size() - 1);
+                        break;
+                    }
                 }
             }
         } else {

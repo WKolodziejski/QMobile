@@ -106,6 +106,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.PerformanceActivity"
+            android:label="">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".activity.CalendarActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />

@@ -92,7 +92,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                         Matter matter = (Matter) updated.get(i);
 
                         if (matter.isExpanded) {
-                            List<Journal> items = matter.getLastPeriod().journals;
+                            List<Journal> items = matter.getLastJournals();
                             updated.addAll(i + 1, items);
                             updated.add(i + items.size() + 1, new FooterJournal(i, matter));
                         }
@@ -285,7 +285,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
         notifyItemChanged(i);
 
-        List<Journal> items = matter.getLastPeriod().journals;
+        List<Journal> items = matter.getLastJournals();
 
         journals.addAll(i + 1, items);
         notifyItemRangeInserted(i + 1, items.size());

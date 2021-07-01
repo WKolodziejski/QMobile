@@ -135,6 +135,10 @@ public class Journal extends EventBase implements Queryable {
         seen_ = true;
     }
 
+    public float getPlotGrade() {
+        return (grade_ / max_) * 10;
+    }
+
     /*
      * Required methods
      */

@@ -1,10 +1,15 @@
 package com.tinf.qmobile.model.matter;
 
+import android.util.Log;
+
 import androidx.annotation.ColorInt;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -90,11 +95,37 @@ public class Matter implements Queryable {
             }
         }
 
+        if (periods.isEmpty())
+            return null;
+
         return periods.get(k);
+    }
+
+    public List<Journal> getLastJournals() {
+        List<Journal> journals = new ArrayList<>();
+
+        Period period = getLastPeriod();
+
+        if (period != null)
+            journals.addAll(period.journals);
+
+        return journals;
+    }
+
+    public boolean hasJournals() {
+        Period period = getLastPeriod();
+
+        if (period == null)
+            return false;
+
+        return period.journals.isEmpty();
     }
 
     public int getJournalNotSeenCount() {
         Period period = getLastPeriod();
+
+        if (period == null)
+            return 0;
 
         int sum = 0;
 
@@ -115,8 +146,48 @@ public class Matter implements Queryable {
         return sum;
     }
 
+    public String getLastGradeSum() {
+        Period period = getLastPeriod();
+
+        if (period == null)
+            return "-";
+
+        return period.getGradeSumString();
+    }
+
     public int getQID() {
         return Integer.parseInt(description_.substring(0, description_.indexOf('-') - 1));
+    }
+
+    public String getLabel() {
+        String label = getTitle();
+        label = label.replace(" - ", " ");
+        label = label.replace(" e ", " ");
+        String[] tokens = label.split(" ");
+        String ret = "";
+        int length = Math.min(3, tokens.length);
+
+        if (tokens.length <= 2)
+            ret = label.substring(0, Math.min(label.length() - 1, 3));
+        else
+            for (int i = 0; i < length; i++) {
+                String token = tokens[i];
+
+                if (token.isEmpty())
+                    continue;
+
+                if (!token.startsWith("I") && !token.endsWith("I"))
+                    ret += token.substring(0, 1);
+            }
+
+        return ret.toUpperCase();
+    }
+
+    public String getChartValue() {
+        float sg = getLastPeriod().getGradeSum();
+        float fg = getLastPeriod().getGradeFinal_();
+
+        return String.valueOf(Math.max(sg, fg));
     }
 
     /*

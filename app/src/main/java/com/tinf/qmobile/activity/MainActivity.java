@@ -421,6 +421,15 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .create()
                     .show();
 
+        } else if (pg == PG_UPDATE) {
+            new MaterialAlertDialogBuilder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_update_password))
+                    .setMessage(getResources().getString(R.string.dialog_update_password_msg))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
+                    .create()
+                    .show();
+
         } else {
             Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
         }

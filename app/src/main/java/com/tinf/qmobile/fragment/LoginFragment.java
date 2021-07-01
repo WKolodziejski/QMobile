@@ -23,6 +23,10 @@ import com.tinf.qmobile.databinding.FragmentLoginBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,6 +142,7 @@ public class LoginFragment extends Fragment implements OnResponse {
 
                 FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
                 crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
+                crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
                 crashlytics.setCustomKey("URL", User.getURL());
 
                 Client.get().login();
@@ -194,6 +199,24 @@ public class LoginFragment extends Fragment implements OnResponse {
         binding.textLoading.setVisibility(View.GONE);
         binding.btn.setEnabled(true);
         Log.e(TAG, error);
+
+        try {
+            int pid = android.os.Process.myPid();
+            String command = "logcat --pid=" + pid + " -d";
+            Process process = Runtime.getRuntime().exec(command);
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+            StringBuilder log = new StringBuilder();
+            String line = "";
+
+            while ((line = bufferedReader.readLine()) != null) {
+                log.append(line +"\n");
+            }
+
+            FirebaseCrashlytics.getInstance().log(log.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -89,6 +89,11 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             }
 
             @Override
+            public void onCellDoubleClicked(@NonNull RecyclerView.ViewHolder cellView, int column, int row) {
+
+            }
+
+            @Override
             public void onCellLongPressed(@NonNull RecyclerView.ViewHolder cellView, int column, int row) {
 
             }
@@ -105,6 +110,11 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             }
 
             @Override
+            public void onColumnHeaderDoubleClicked(@NonNull RecyclerView.ViewHolder columnHeaderView, int column) {
+
+            }
+
+            @Override
             public void onColumnHeaderLongPressed(@NonNull RecyclerView.ViewHolder columnHeaderView, int column) {
 
             }
@@ -118,6 +128,11 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                     selected_row = row;
                     selected_column = -1;
                 }
+            }
+
+            @Override
+            public void onRowHeaderDoubleClicked(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
+
             }
 
             @Override
@@ -143,13 +158,25 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         rowHeader = new ArrayList<>();
         cells = new ArrayList<>();
 
+        int s = 0;
+        int k = 0;
+
+        for (int i = 0; i < matters.size(); i++) {
+            int ss = matters.get(i).periods.size();
+
+            if (ss > s) {
+                s = ss;
+                k = i;
+            }
+        }
+
         if (!matters.isEmpty()) {
             columnHeader.add(context.getResources().getString(R.string.report_matter));
             columnHeader.add(context.getResources().getString(R.string.report_absencesTotal));
             columnHeader.add(context.getResources().getString(R.string.report_meanFinal));
 
-            for (int i = 0; i < matters.get(0).periods.size(); i++) {
-                Period period = matters.get(0).periods.get(i);
+            for (int i = 0; i < s; i++) {
+                Period period = matters.get(k).periods.get(i);
 
                 if (!period.isSub_()) {
 
@@ -157,13 +184,13 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
                     boolean skip = false;
 
-                    if (i < matters.get(0).periods.size() - 1) {
-                        period = matters.get(0).periods.get(i + 1);
+                    if (i < s - 1) {
+                        period = matters.get(k).periods.get(i + 1);
 
                         if (period.isSub_()) {
                             columnHeader.add(period.getTitle());
 
-                            period = matters.get(0).periods.get(i);
+                            period = matters.get(k).periods.get(i);
 
                             columnHeader.add(context.getResources().getString(R.string.report_mean) + " " + period.getTitle());
 
@@ -189,8 +216,20 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             row.add(matters.get(i).getAbsences());
             row.add(matters.get(i).getMean());
 
-            for (int j = 0; j < matters.get(i).periods.size(); j++) {
-                Period period = matters.get(i).periods.get(j);
+            for (int j = 0; j < s; j++) {
+                Period period = null;
+
+                List<Period> periods = matters.get(i).periods;
+
+                if (!periods.isEmpty()) {
+                    if (j < periods.size()) {
+                        period = periods.get(j);
+                    }
+                }
+
+                if (period == null) {
+                    period = new Period();
+                }
 
                 if (!period.isSub_()) {
 
@@ -222,9 +261,9 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
             cells.add(row);
         }
-
+        
         setAllItems(columnHeader, rowHeader, cells);
-        notifyDataSetChanged();
+        //notifyDataSetChanged();
         //onReport.onHeader(columnHeader.toArray(new String[columnHeader.size()]));
     }
 
@@ -256,7 +295,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
         else
             return new TableCellViewHolder(LayoutInflater.from(context)
-            .inflate(R.layout.table_cell_common, parent, false));
+                    .inflate(R.layout.table_cell_common, parent, false));
     }
 
     @Override

@@ -41,7 +41,6 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     public void onStart(int pg) {
         if (pg == PG_CALENDAR)

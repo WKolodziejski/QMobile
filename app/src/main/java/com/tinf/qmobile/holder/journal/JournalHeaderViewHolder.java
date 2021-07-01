@@ -19,7 +19,7 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
     public void bind(Context context, Matter matter, JournalAdapter adapter) {
         binding.title.setText(matter.getTitle());
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
-        binding.header.setVisibility(matter.isExpanded && !matter.getLastPeriod().journals.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.header.setVisibility(matter.isExpanded && !matter.hasJournals() ? View.VISIBLE : View.GONE);
         binding.arrow.setRotation(matter.isExpanded ? 180 : 0);
         itemView.setOnClickListener(view -> {
             if (matter.isExpanded) {

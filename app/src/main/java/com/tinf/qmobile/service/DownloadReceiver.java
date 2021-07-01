@@ -138,25 +138,29 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     public static long downloadImage(Context context, String cod) {
-        if (Client.isConnected()) {
-            String title = User.getCredential(User.REGISTRATION);
+        try {
+            if (Client.isConnected()) {
+                String title = User.getCredential(User.REGISTRATION);
 
-            String destiny = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + title;
+                String destiny = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + title;
 
-            Log.d("Download", destiny);
+                Log.d("Download", destiny);
 
-            DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-            id = dm.enqueue(new DownloadManager.Request(Uri.parse((Client.get().getURL() + INDEX + "1025&tipo=0&COD=" + cod)))
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setAllowedOverRoaming(false)
-                    .setMimeType("image/jpeg")
-                    .setTitle(title)
-                    .addRequestHeader("Cookie", Client.get().getCookie())
-                    .setDestinationInExternalFilesDir(getContext(), Environment.DIRECTORY_PICTURES, title));
+                DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+                id = dm.enqueue(new DownloadManager.Request(Uri.parse((Client.get().getURL() + INDEX + "1025&tipo=0&COD=" + cod)))
+                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setAllowedOverRoaming(false)
+                        .setMimeType("image/jpeg")
+                        .setTitle(title)
+                        .addRequestHeader("Cookie", Client.get().getCookie())
+                        .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_PICTURES, title));
 
-            return id;
-        } else {
+                return id;
+            } else {
+                return 0;
+            }
+        } catch (Exception e) {
             return 0;
         }
     }
