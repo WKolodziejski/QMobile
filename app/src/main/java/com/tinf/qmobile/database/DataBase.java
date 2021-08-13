@@ -63,16 +63,19 @@ public class DataBase implements OnUpdate {
                         .equal(Message_.seen_, false)
                         .build()
                         .count())));
-
-        /*if (getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).getBoolean(DB_CLASS, true)) {
-            getContext().getSharedPreferences(DATABASE_INFO, MODE_PRIVATE).edit().putBoolean(DB_CLASS, false).apply();
-            boxStore.boxFor(Clazz.class).removeAll();
-        }*/
     }
 
     public static synchronized DataBase get() {
         if (instance == null)
             instance = new DataBase();
+
+        if (instance.boxStore.isClosed())
+            instance.boxStore = MyObjectBox
+                    .builder()
+                    .androidContext(getContext())
+                    .name(User.getCredential(User.REGISTRATION))
+                    .build();
+
         return instance;
     }
 
@@ -82,6 +85,7 @@ public class DataBase implements OnUpdate {
 
     public void close() {
         Client.get().removeOnUpdateListener(this);
+
         if (boxStore != null) {
             sub1.cancel();
             sub2.cancel();

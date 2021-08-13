@@ -1,6 +1,7 @@
 package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +13,10 @@ import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentScheduleBinding;
+import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -61,6 +64,15 @@ public class ScheduleFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (bundle != null) {
+            long id = bundle.getLong("ID");
+
+            if (id != 0) {
+                binding.fab.setBackgroundTintList(ColorStateList.valueOf(DataBase
+                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor()));
+            }
+        }
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
 
@@ -160,6 +172,11 @@ public class ScheduleFragment extends Fragment {
         binding.fab.setOnClickListener(view1 -> {
             Intent intent = new Intent(getContext(), EventCreateActivity.class);
             intent.putExtra("TYPE", SCHEDULE);
+
+            if (getActivity() instanceof MatterActivity) {
+                intent.putExtra("ID2", bundle.getLong("ID"));
+            }
+
             startActivity(intent);
         });
     }

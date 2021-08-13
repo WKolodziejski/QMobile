@@ -30,6 +30,7 @@
     <string name="client_no_connection">Sem conexão com a Internet</string>
     <string name="client_host">Servidor inalcançável</string>
     <string name="client_error">Algo inesperado ocorreu, tente novamente mais tarde</string>
+    <string name="client_unknown">Erro desconhecido</string>
 
     <string name="contextual_remove_txt_plu">Tem certeza que deseja remover %1$d arquivos?</string>
     <string name="contextual_remove_txt_sing">Tem certeza que deseja remover esse arquivo?</string>
@@ -92,6 +93,8 @@
     <string name="dialog_create_event">Evento</string>
     <string name="dialog_create_schedule">Horário</string>
     <string name="dialog_create_title">Criar novo</string>
+    <string name="dialog_questionary_title">Questionário obrigatório</string>
+    <string name="dialog_questionary_text">Enquanto houver um questionário obrigatório a ser respondido, você não poderá acessar o restante do sistema.</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>

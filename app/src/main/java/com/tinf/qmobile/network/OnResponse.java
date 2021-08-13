@@ -11,6 +11,7 @@ public interface OnResponse {
     int PG_MATERIALS = 2061;
     int PG_CALENDAR = 2020;
     int PG_UPDATE = 1013;
+    int PG_QUEST = 1020;
     int PG_ERROR = 1;
     int PG_GENERATOR = 2;
     int PG_ACCESS_DENIED = 3;

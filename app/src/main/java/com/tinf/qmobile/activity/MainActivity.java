@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -57,12 +58,14 @@ import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange, OnUpdate,
-        BottomNavigationView.OnNavigationItemSelectedListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange,
+        OnUpdate, BottomNavigationView.OnNavigationItemSelectedListener,
+        NavigationView.OnNavigationItemSelectedListener {
     public ActivityMainBinding binding;
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> Client.get().restorePreviousDate());
+            new ActivityResultContracts.StartActivityForResult(), result ->
+                    Client.get().restorePreviousDate());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +74,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.open_drawer, R.string.close_drawer);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawer,
+                binding.toolbar, R.string.open_drawer, R.string.close_drawer);
         binding.drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        binding.toolbar.setOnClickListener(view -> {
-            launcher.launch(new Intent(getContext(), SearchActivity.class));
-        });
+        binding.toolbar.setOnClickListener(view ->
+                launcher.launch(new Intent(getContext(), SearchActivity.class)));
 
         Menu menu = binding.nav.getMenu();
 
@@ -216,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
 
         if (itemId != binding.navigation.getSelectedItemId()) {
-
             if (itemId == R.id.navigation_home) {
                 return changeFragment(new HomeFragment());
 
@@ -238,7 +240,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void logOut() {
-        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentById(R.id.main_fragment)).commit();
+        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager()
+                .findFragmentById(R.id.main_fragment)).commit();
         finish();
         Client.get().close();
         Jobs.cancelAllJobs();
@@ -330,7 +333,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
             binding.drawer.closeDrawer(GravityCompat.START);
 
-        } else if (binding.navigation.getSelectedItemId() != R.id.navigation_home && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+        } else if (binding.navigation.getSelectedItemId() != R.id.navigation_home
+                && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             binding.navigation.setSelectedItemId(R.id.navigation_home);
 
         } else {
@@ -406,8 +410,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setTitle(getResources().getString(R.string.dialog_access_denied))
                     .setMessage(getResources().getString(R.string.dialog_access_changed))
                     .setCancelable(false)
-                    .setPositiveButton(getResources().getString(R.string.dialog_try_again), (dialogInterface, i) -> Client.get().login())
-                    .setNegativeButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
+                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                    .setNegativeButton(getResources().getString(R.string.action_logout),
+                            (dialogInterface, i) -> logOut())
                     .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
                     .create()
                     .show();
@@ -418,6 +424,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setMessage(message)
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
+                    .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
                     .create()
                     .show();
 
@@ -426,21 +433,38 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setTitle(getResources().getString(R.string.dialog_update_password))
                     .setMessage(getResources().getString(R.string.dialog_update_password_msg))
                     .setCancelable(false)
-                    .setPositiveButton(getResources().getString(R.string.action_logout), (dialogInterface, i) -> logOut())
+                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                    .setNegativeButton(getResources().getString(R.string.action_logout),
+                            (dialogInterface, i) -> logOut())
+                    .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
                     .create()
                     .show();
 
+        } else if (pg == PG_QUEST) {
+            new MaterialAlertDialogBuilder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_questionary_title))
+                    .setMessage(getResources().getString(R.string.dialog_questionary_text))
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                    .setNegativeButton(getResources().getString(R.string.action_logout),
+                            (dialogInterface, i) -> logOut())
+                    .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
+                    .create()
+                    .show();
         } else {
             Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getBaseContext(), getResources().getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), getResources()
+                        .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
             } else {
                 Client.get().load(PG_MATERIALS);
             }
@@ -460,9 +484,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 .setTitle(getResources().getString(R.string.dialog_renewal_title))
                 .setMessage(getResources().getString(R.string.dialog_renewal_txt))
                 .setCancelable(true)
-                .setPositiveButton(getResources().getString(R.string.dialog_open_site), (dialogInterface, i) -> {
-                    startActivity(new Intent(getBaseContext(), WebViewActivity.class));
-                })
+                .setPositiveButton(getResources().getString(R.string.dialog_open_site), (dialogInterface, i) ->
+                        startActivity(new Intent(getBaseContext(), WebViewActivity.class)))
                 .setNegativeButton(getResources().getString(R.string.dialog_later), null)
                 .create()
                 .show();

@@ -70,6 +70,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
+import static com.tinf.qmobile.network.OnResponse.PG_QUEST;
 import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
 import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 import static com.tinf.qmobile.network.OnResponse.PG_UPDATE;
@@ -93,7 +94,7 @@ public class Client {
     private boolean isLogging;
 
     public enum Resp {
-        OK, HOST, DENIED, EGRESS, UPDATE
+        OK, HOST, DENIED, EGRESS, UPDATE, QUEST, UNKNOWN
     }
 
     private Client() {
@@ -292,19 +293,7 @@ public class Client {
                 isValid = true;
 
                 Document document = Jsoup.parse(response);
-                Elements sub = document.getElementsByClass("barraRodape");
-                Elements sub2 = document.getElementsByClass("titulo");
 
-                String name = "";
-
-                if (sub.size() >= 2) {
-                    name = sub.get(1).text();
-                } else if (sub2.size() >= 2) {
-                    name = sub2.get(1).text();
-                    name = name.substring(name.indexOf(",") + 1).trim();
-                }
-
-                User.setName(name);
                 User.setLastLogin(new Date().getTime());
 
                 isLogging = false;
@@ -345,8 +334,6 @@ public class Client {
         Document document = Jsoup.parse(response);
 
         Element strong = document.getElementsByTag("strong").first();
-        Element p = document.getElementsByTag("p").first();
-        Element form = document.getElementsByClass("conteudoTexto").first();
 
         if (strong != null) {
             String s = strong.text().trim();
@@ -362,22 +349,22 @@ public class Client {
                         User.clearInfos();
                         callOnAccessDenied(PG_ACCESS_DENIED, msg);
                         return Resp.EGRESS;
-
                     }
                 }
-
                 return Resp.DENIED;
             }
-
         }
+
+        Element p = document.getElementsByTag("p").first();
 
         if (p != null) {
             if (p.text().contains("inacessível")) {
                 callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
                 return Resp.HOST;
             }
-
         }
+
+        Element form = document.getElementsByClass("conteudoTexto").first();
 
         if (form != null) {
             if (form.text().contains("senha")) {
@@ -386,6 +373,37 @@ public class Client {
                 return Resp.UPDATE;
             }
         }
+
+        Element quest = document.getElementsByClass("TEXTO_TITULO").first();
+
+        if (quest != null) {
+            if (quest.text().contains("Questionários")) {
+                String msg = "";
+                if (form != null) {
+                    msg = form.text().replaceAll("\\\\n", "\n").trim();
+                }
+                callOnAccessDenied(PG_QUEST, msg);
+                return Resp.QUEST;
+            }
+        }
+
+        Elements sub = document.getElementsByClass("barraRodape");
+        Elements sub2 = document.getElementsByClass("titulo");
+
+        String name;
+
+        if (sub.size() >= 2) {
+            name = sub.get(1).text();
+        } else if (sub2.size() >= 2) {
+            name = sub2.get(1).text();
+            name = name.substring(name.indexOf(",") + 1).trim();
+        } else {
+            callOnAccessDenied(0, getContext().getString(R.string.client_error));
+            FirebaseCrashlytics.getInstance().recordException(new Exception(document.toString()));
+            return Resp.UNKNOWN;
+        }
+
+        User.setName(name);
 
         return Resp.OK;
     }

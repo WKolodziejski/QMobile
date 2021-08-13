@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
     private DataSubscription sub1, sub2;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         binding = FragmentHomeBinding.bind(view);
         return view;

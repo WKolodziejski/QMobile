@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +43,7 @@ public class ScheduleCreateFragment extends Fragment {
     private int color, matter, alarmDif;
     private List<Matter> matters;
     private String title, description, room;
-    private long id, alarm;
+    private long id, alarm, id2;
     private DayTime start, end;
 
     @Override
@@ -64,6 +65,7 @@ public class ScheduleCreateFragment extends Fragment {
         if (bundle != null) {
 
             id = bundle.getLong("ID");
+            id2 = bundle.getLong("ID2");
 
             if (id != 0) {
 
@@ -94,6 +96,17 @@ public class ScheduleCreateFragment extends Fragment {
                 }
             } else {
                 color = getResources().getColor(R.color.colorPrimary);
+            }
+
+            if (id2 != 0) {
+                color = DataBase.get().getBoxStore().boxFor(Matter.class).get(id2).getColor();
+
+                for (int i = 0; i < matters.size(); i++) {
+                    if (matters.get(i).id == id2) {
+                        matter = i + 1;
+                        break;
+                    }
+                }
             }
         }
     }
@@ -233,6 +246,11 @@ public class ScheduleCreateFragment extends Fragment {
             binding.alarmDecoration.setVisibility(GONE);
             binding.matterDecoration.setVisibility(GONE);
             binding.colorDecoration.setVisibility(GONE);
+        }
+
+        if (id2 != 0) {
+            binding.colorLayout.setClickable(false);
+            binding.matterLayout.setClickable(false);
         }
 
         ((EventCreateActivity) getActivity()).binding.add.setOnClickListener(v -> {

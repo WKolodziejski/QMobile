@@ -68,13 +68,15 @@ public class MessageParser extends BaseParser {
 
         Element table = document.getElementsByClass("txt").first().child(0);
         Elements trs = table.children();
+        Element footer = trs.last();
+        Element tbody = footer.getElementsByTag("tbody").first();
 
         if (textarea == null) {
             Log.d("Parsing", "Page");
 
             RandomColor colors = new RandomColor();
 
-            for (int i = 2; i < trs.size() - 1; i++) {
+            for (int i = tbody == null ? 1: 2; tbody == null ? i < trs.size() : i < trs.size() - 1; i++) {
                 Elements tds = trs.get(i).children();
 
                 boolean seen = !trs.get(i).attributes().get("style").contains("bold");
@@ -84,6 +86,8 @@ public class MessageParser extends BaseParser {
                 String subject = tds.get(4).text();
                 String sender = tds.get(5).text();
                 long date = getDate(tds.get(6).text());
+
+                Log.d(subject, sender);
 
                 try {
                     Sender search1 = senderBox.query()
@@ -126,16 +130,15 @@ public class MessageParser extends BaseParser {
                 }
             }
 
-            Element footer = trs.last();
-            Element tbody = footer.getElementsByTag("tbody").first();
+            if (tbody != null) {
+                if (tbody.childNodeSize() > 0) {
+                    Elements tds = tbody.child(0).children();
 
-            if (tbody.childNodeSize() > 0) {
-                Elements tds = tbody.child(0).children();
-
-                for (int i = 0; i < tds.size(); i++) {
-                    if (tds.get(i).child(0).tagName().equals("span")) {
-                        onMessages.onFinish(Integer.parseInt(tds.get(i).child(0).text()), i < tds.size() - 1);
-                        break;
+                    for (int j = 0; j < tds.size(); j++) {
+                        if (tds.get(j).child(0).tagName().equals("span")) {
+                            onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
+                            break;
+                        }
                     }
                 }
             }
@@ -162,6 +165,11 @@ public class MessageParser extends BaseParser {
                             search.setText(txt == null ? "" : txt);
 
                             Element table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
+
+                            if (table2 == null) {
+                                table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_grdMensagens");
+                            }
+
                             Elements trs2 = table2.getElementsByTag("tbody").first().children();
 
                             for (int j = 1; j < trs2.size(); j++) {

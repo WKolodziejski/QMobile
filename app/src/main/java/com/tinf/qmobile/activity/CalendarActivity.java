@@ -251,25 +251,25 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
 
     @Override
     public void onStart(int pg) {
-        if (pg == PG_CALENDAR)
+        if (pg == PG_CALENDAR || pg == PG_CLASSES)
             binding.refresh.setRefreshing(true);
     }
 
     @Override
     public void onFinish(int pg) {
-        if (pg == PG_CALENDAR)
+        if (pg == PG_CALENDAR || pg == PG_CLASSES)
             binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onError(int pg, String error) {
-        if (pg == PG_CALENDAR)
+        if (pg == PG_CALENDAR || pg == PG_CLASSES)
             binding.refresh.setRefreshing(false);
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        if (pg == PG_CALENDAR)
+        if (pg == PG_CALENDAR || pg == PG_CLASSES)
             binding.refresh.setRefreshing(false);
     }
 

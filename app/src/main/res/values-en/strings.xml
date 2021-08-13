@@ -171,4 +171,7 @@
     <string name="class_absence">Absences: %1$d</string>
     <string name="dialog_update_password_msg">You are using a system-generated temporary password. For your safety, access the website through a browser and fill in the required form.</string>
     <string name="dialog_update_password">Temporary Password</string>
+    <string name="client_unknown">"Unknown error "</string>
+    <string name="dialog_questionary_title">Mandatory questionnaire</string>
+    <string name="dialog_questionary_text">As long as there is a mandatory questionnaire to be completed, you will not be able to access the rest of the system.</string>
 </resources>

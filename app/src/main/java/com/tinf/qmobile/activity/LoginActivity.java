@@ -1,6 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -75,6 +76,16 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                    .setTitle(getResources().getString(R.string.dialog_update_password))
                    .setMessage(getResources().getString(R.string.dialog_update_password_msg))
                    .setCancelable(true)
+                   .create()
+                   .show();
+
+       } else if (pg == PG_QUEST) {
+           new MaterialAlertDialogBuilder(LoginActivity.this)
+                   .setTitle(getResources().getString(R.string.dialog_questionary_title))
+                   .setMessage(getResources().getString(R.string.dialog_questionary_text))
+                   .setCancelable(true)
+                   .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                           (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
                    .create()
                    .show();
        } else {
