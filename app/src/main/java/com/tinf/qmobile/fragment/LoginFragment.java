@@ -224,7 +224,7 @@ public class LoginFragment extends Fragment implements OnResponse {
         binding.progressBar.setVisibility(GONE);
         binding.textLoading.setVisibility(View.GONE);
         binding.btn.setEnabled(true);
-        binding.userInput.setError("");
+        binding.userInput.setError(message);
         Log.v(TAG, "Access denied");
     }
 

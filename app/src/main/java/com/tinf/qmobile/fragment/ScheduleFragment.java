@@ -1,5 +1,6 @@
 package com.tinf.qmobile.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +34,7 @@ import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends Fragment implements OnUpdate {
     private FragmentScheduleBinding binding;
     private DataSubscription sub1, sub2;
     private Bundle bundle;
@@ -186,6 +189,59 @@ public class ScheduleFragment extends Fragment {
         super.onDestroy();
         sub1.cancel();
         sub2.cancel();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Client.get().addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Client.get().addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Client.get().addOnUpdateListener(this);
+    }
+
+    @Override
+    public void onScrollRequest() {
+        if (bundle != null) {
+            long id = bundle.getLong("ID");
+
+            if (id != 0) {
+                binding.fab.setBackgroundTintList(ColorStateList.valueOf(DataBase
+                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor()));
+            }
+        }
+    }
+
+    @Override
+    public void onDateChanged() {
+
     }
 
 }

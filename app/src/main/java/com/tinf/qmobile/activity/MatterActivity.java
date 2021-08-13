@@ -14,6 +14,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.ActivityMatterBinding;
 import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.network.Client;
 
 public class MatterActivity extends AppCompatActivity {
     private ActivityMatterBinding binding;
@@ -83,6 +84,7 @@ public class MatterActivity extends AppCompatActivity {
                             matter.setColor(selectedColor);
                             DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
                             binding.tab.setSelectedTabIndicatorColor(matter.getColor());
+                            Client.get().requestScroll();
                         })
                         .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
                         .build()

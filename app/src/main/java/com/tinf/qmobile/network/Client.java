@@ -286,7 +286,7 @@ public class Client {
             Resp r = testResponse(response);
 
             if (r == Resp.DENIED) {
-                callOnAccessDenied(PG_LOGIN, "");
+                callOnAccessDenied(PG_LOGIN, getContext().getString(R.string.login_invalid));
 
             } else if (r == Resp.OK) {
 

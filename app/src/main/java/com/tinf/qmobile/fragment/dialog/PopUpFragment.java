@@ -53,7 +53,7 @@ public class PopUpFragment extends BottomSheetDialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        if (checkBox.isChecked())
+        if (checkBox.isChecked() && webView != null)
             webView.loadUrl("javascript:(function() {" +
                     "MarcarComoLida(mensagens[indiceMensagens].cod_mensagem);" +
                     "})()");

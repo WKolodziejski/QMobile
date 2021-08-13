@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -23,9 +25,8 @@ import static com.tinf.qmobile.model.ViewType.MESSAGE;
 public class MessagesFragment extends Fragment implements OnResponse {
     private FragmentMessagesBinding binding;
 
-    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        getActivity().finish();
-    });
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> getActivity().finish());
 
     @Nullable
     @Override
@@ -63,9 +64,9 @@ public class MessagesFragment extends Fragment implements OnResponse {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 binding.refresh.setEnabled(p == 0);
 
-                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                LinearLayoutManager layout = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                int j = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+                int j = layout.findLastCompletelyVisibleItemPosition();
 
                 if (j == recyclerView.getAdapter().getItemCount() - 1)
                     messenger.loadPage(Math.round(j / 20) + 2);
@@ -109,11 +110,13 @@ public class MessagesFragment extends Fragment implements OnResponse {
     @Override
     public void onError(int pg, String error) {
         binding.refresh.setRefreshing(false);
+        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         binding.refresh.setRefreshing(false);
+        Toast.makeText(getContext(), getContext().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
     }
 
 }

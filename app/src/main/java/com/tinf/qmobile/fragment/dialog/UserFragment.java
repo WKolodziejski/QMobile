@@ -26,12 +26,13 @@ public class UserFragment extends DialogFragment {
     private TextView name;
     private TextView reg;
     private MaterialCardView logout;
+    private MaterialCardView alerts;
     private ImageView image;
     private Button policy;
-    private OnLogout onLogout;
+    private OnButton onButton;
 
-    public void setListener(OnLogout onLogout) {
-        this.onLogout = onLogout;
+    public void setListener(OnButton onButton) {
+        this.onButton = onButton;
     }
 
     @Nullable
@@ -43,6 +44,7 @@ public class UserFragment extends DialogFragment {
         logout = view.findViewById(R.id.logout);
         image = view.findViewById(R.id.image);
         policy = view.findViewById(R.id.policy);
+        alerts = view.findViewById(R.id.alerts);
         return view;
     }
 
@@ -56,10 +58,12 @@ public class UserFragment extends DialogFragment {
         logout.setOnClickListener(v -> new MaterialAlertDialogBuilder(getContext())
                 .setTitle(getResources().getString(R.string.dialog_quit))
                 .setMessage(R.string.dialog_quit_msg)
-                .setPositiveButton(R.string.dialog_quit, (dialog, which) -> onLogout.onLogout())
+                .setPositiveButton(R.string.dialog_quit, (dialog, which) -> onButton.onLogout())
                 .setNegativeButton(R.string.dialog_cancel, null)
                 .create()
                 .show());
+
+        alerts.setOnClickListener(v -> onButton.onAlerts());
 
         Drawable picture = User.getProfilePicture(getContext());
 
@@ -73,8 +77,9 @@ public class UserFragment extends DialogFragment {
         });
     }
 
-    public interface OnLogout {
+    public interface OnButton {
         void onLogout();
+        void onAlerts();
     }
 
     @Override

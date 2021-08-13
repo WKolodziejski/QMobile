@@ -248,11 +248,6 @@ public class ScheduleCreateFragment extends Fragment {
             binding.colorDecoration.setVisibility(GONE);
         }
 
-        if (id2 != 0) {
-            binding.colorLayout.setClickable(false);
-            binding.matterLayout.setClickable(false);
-        }
-
         ((EventCreateActivity) getActivity()).binding.add.setOnClickListener(v -> {
             end = new DayTime(start.getDayValue(), end.getHour(), end.getMinute());
 

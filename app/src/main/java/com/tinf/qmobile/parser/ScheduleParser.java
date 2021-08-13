@@ -113,12 +113,12 @@ public class ScheduleParser extends BaseParser {
 
     private int formatHour(String string) {
         string = string.substring(0, string.indexOf(":"));
-        return Integer.valueOf(string);
+        return Integer.parseInt(string);
     }
 
     private int formatMinute(String string) {
         string = string.substring(string.indexOf(":") + 1);
-        return Integer.valueOf(string);
+        return Integer.parseInt(string);
     }
 
     private String formatStart(String string) {

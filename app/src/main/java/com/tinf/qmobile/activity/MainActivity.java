@@ -59,8 +59,7 @@ import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange,
-        OnUpdate, BottomNavigationView.OnNavigationItemSelectedListener,
-        NavigationView.OnNavigationItemSelectedListener {
+        OnUpdate, NavigationView.OnNavigationItemSelectedListener {
     public ActivityMainBinding binding;
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
@@ -81,6 +80,26 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         binding.toolbar.setOnClickListener(view ->
                 launcher.launch(new Intent(getContext(), SearchActivity.class)));
+
+        binding.navigation.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId != binding.navigation.getSelectedItemId()) {
+                if (itemId == R.id.navigation_home) {
+                    return changeFragment(new HomeFragment());
+
+                } else if (itemId == R.id.navigation_notas) {
+                    return changeFragment(new JournalFragment());
+
+                } else if (itemId == R.id.navigation_materiais) {
+                    return changeFragment(new MaterialsFragment());
+                }
+            } else {
+                Client.get().requestScroll();
+            }
+
+            return false;
+        });
 
         Menu menu = binding.nav.getMenu();
 
@@ -149,7 +168,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             view.setImageDrawable(picture.getCurrent());
             view.setOnClickListener(v -> {
                 UserFragment fragment = new UserFragment();
-                fragment.setListener(this::logOut);
+                fragment.setListener(new UserFragment.OnButton() {
+                    @Override
+                    public void onLogout() {
+                        logOut();
+                    }
+
+                    @Override
+                    public void onAlerts() {
+                        displayAlerts(true);
+                    }
+                });
                 fragment.show(getSupportFragmentManager(), "sheet_user");
             });
         }
@@ -167,7 +196,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         } else if (itemId == R.id.action_account) {
            UserFragment fragment = new UserFragment();
-           fragment.setListener(this::logOut);
+           fragment.setListener(new UserFragment.OnButton() {
+               @Override
+               public void onLogout() {
+                   logOut();
+               }
+
+               @Override
+               public void onAlerts() {
+                    displayAlerts(true);
+               }
+           });
            fragment.show(getSupportFragmentManager(), "sheet_user");
             return true;
 
@@ -216,20 +255,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             startActivity(new Intent(getBaseContext(), SettingsActivity.class));
             binding.drawer.closeDrawer(GravityCompat.START);
             return true;
-        }
-
-        if (itemId != binding.navigation.getSelectedItemId()) {
-            if (itemId == R.id.navigation_home) {
-                return changeFragment(new HomeFragment());
-
-            } else if (itemId == R.id.navigation_notas) {
-                return changeFragment(new JournalFragment());
-
-            } else if (itemId == R.id.navigation_materiais) {
-                return changeFragment(new MaterialsFragment());
-            }
-        } else {
-            Client.get().requestScroll();
         }
 
         return false;
@@ -295,7 +320,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().addOnUpdateListener(this);
         DataBase.get().addOnDataChangeListener(this);
         binding.refresh.setOnRefreshListener(this::reload);
-        binding.navigation.setOnNavigationItemSelectedListener(this);
         binding.nav.setNavigationItemSelectedListener(this);
     }
 
@@ -314,7 +338,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().addOnResponseListener(this);
         Client.get().addOnUpdateListener(this);
         DataBase.get().addOnDataChangeListener(this);
-        binding.navigation.setOnNavigationItemSelectedListener(this);
         binding.refresh.setOnRefreshListener(this::reload);
         binding.nav.setNavigationItemSelectedListener(this);
     }
@@ -349,38 +372,42 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @SuppressLint("SetJavaScriptEnabled")
+    private void displayAlerts(boolean requested) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+        if (prefs.getBoolean(POPUP, true)) {
+
+            WebView webView = new WebView(getBaseContext());
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setLoadsImagesAutomatically(false);
+            webView.getSettings().setBlockNetworkImage(true);
+            webView.addJavascriptInterface(new PopUpHandler(webView, this, requested), "handler");
+            webView.setWebViewClient(new WebViewClient() {
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    super.onPageFinished(view, url);
+
+                    Log.d("Webview", url);
+
+                    if (!url.contains("javascript")) {
+                        webView.loadUrl("javascript:window.handler.handleLogin"
+                                + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                    }
+                }
+
+            });
+            webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
+        }
+    }
+
     @Override
     public void onFinish(int pg) {
         dismissProgressbar();
 
         if (pg == PG_LOGIN) {
+            displayAlerts(false);
 
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-            if (prefs.getBoolean(POPUP, true)) {
-
-                WebView webView = new WebView(getBaseContext());
-                webView.getSettings().setJavaScriptEnabled(true);
-                webView.getSettings().setLoadsImagesAutomatically(false);
-                webView.getSettings().setBlockNetworkImage(true);
-                webView.addJavascriptInterface(new PopUpHandler(webView, this), "handler");
-                webView.setWebViewClient(new WebViewClient() {
-
-                    @Override
-                    public void onPageFinished(WebView view, String url) {
-                        super.onPageFinished(view, url);
-
-                        Log.d("Webview", url);
-
-                        if (!url.contains("javascript")) {
-                            webView.loadUrl("javascript:window.handler.handleLogin"
-                                    + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
-                        }
-                    }
-
-                });
-                webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
-            }
         } else if (pg == PG_FETCH_YEARS || pg == PG_JOURNALS) {
             Menu menu = binding.nav.getMenu();
             menu.removeGroup(R.id.group1);

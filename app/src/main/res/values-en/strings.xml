@@ -174,4 +174,6 @@
     <string name="client_unknown">"Unknown error "</string>
     <string name="dialog_questionary_title">Mandatory questionnaire</string>
     <string name="dialog_questionary_text">As long as there is a mandatory questionnaire to be completed, you will not be able to access the rest of the system.</string>
+    <string name="dialog_no_alerts">There are no alerts</string>
+    <string name="dialog_alerts">Alerts</string>
 </resources>
