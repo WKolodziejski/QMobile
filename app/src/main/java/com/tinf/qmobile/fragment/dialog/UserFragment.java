@@ -16,20 +16,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
 public class UserFragment extends DialogFragment {
     private TextView name;
     private TextView reg;
+    private TextView last;
     private MaterialCardView logout;
     private MaterialCardView alerts;
     private ImageView image;
     private Button policy;
     private OnButton onButton;
+    private ConstraintLayout offline;
 
     public void setListener(OnButton onButton) {
         this.onButton = onButton;
@@ -45,6 +49,8 @@ public class UserFragment extends DialogFragment {
         image = view.findViewById(R.id.image);
         policy = view.findViewById(R.id.policy);
         alerts = view.findViewById(R.id.alerts);
+        last = view.findViewById(R.id.last);
+        offline = view.findViewById(R.id.offline);
         return view;
     }
 
@@ -75,6 +81,13 @@ public class UserFragment extends DialogFragment {
                     Uri.parse("https://sites.google.com/view/qmobileapp/política-de-privacidade"));
             startActivity(intent);
         });
+
+        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
+            offline.setVisibility(View.VISIBLE);
+            last.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
+        } else {
+            offline.setVisibility(View.GONE);
+        }
     }
 
     public interface OnButton {

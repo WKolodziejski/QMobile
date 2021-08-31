@@ -65,20 +65,21 @@ public class ScheduleParser extends BaseParser {
 
                             String matterTitle = formatTitle(divs.get(k).attr("title"));
 
+                            //Log.d(matterTitle, String.valueOf(year));
+
                             if (matterTitle != null) {
                                 Matter matter = matterBox.query()
                                         .equal(Matter_.title_, matterTitle).and()
                                         .equal(Matter_.year_, year).and()
                                         .equal(Matter_.period_, period)//.and()
                                         //.contains(Matter_.description_, clazz)
-                                        .build().findUnique();
+                                        .build().findFirst(); //fix temporário para matérias duplicadas
 
                                 if (matter != null) {
                                     String room = divs.get(k + 1).attr("title");
 
-                                    if (room != null) {
+                                    if (room != null)
                                         schedule.setRoom(room);
-                                    }
 
                                     schedule.matter.setTarget(matter);
                                     scheduleBox.put(schedule);

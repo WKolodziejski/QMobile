@@ -53,7 +53,7 @@ import me.jlurena.revolvingweekview.WeekViewEvent;
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
-public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
+public class HomeFragment extends Fragment implements OnUpdate {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
 
@@ -160,6 +160,7 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                 }
 
                 int lastIndex = firstIndex;
+                int maxInterval = 0;
 
                 for (int h = firstIndex; h < 24; h++) {
                     int sum = 0;
@@ -168,10 +169,16 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                             sum++;
                     }
                     if (sum == 0)
+                        maxInterval++;
+
+                    if (maxInterval > 1)
                         break;
                     else
                         lastIndex = h;
                 }
+
+                while (minutes[lastIndex] == null)
+                    lastIndex--;
 
                 params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute())
                         - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45)
@@ -203,13 +210,6 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
                 });
 
         binding.fab.setOnClickListener(v -> new CreateFragment().show(getChildFragmentManager(), "sheet_create"));
-
-        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-            binding.offline.setVisibility(View.VISIBLE);
-            binding.offlineLastUpdate.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
-        } else {
-            binding.offline.setVisibility(View.GONE);
-        }
 
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         binding.recycler.setAdapter(new HomeAdapter(getContext()));
@@ -334,28 +334,24 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
     public void onStart() {
         super.onStart();
         Client.get().addOnUpdateListener(this);
-        Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Client.get().addOnUpdateListener(this);
-        Client.get().addOnResponseListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Client.get().removeOnUpdateListener(this);
-        Client.get().removeOnResponseListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Client.get().removeOnUpdateListener(this);
-        Client.get().removeOnResponseListener(this);
     }
 
     @Override
@@ -363,36 +359,6 @@ public class HomeFragment extends Fragment implements OnUpdate, OnResponse {
         super.onDestroy();
         sub1.cancel();
         sub2.cancel();
-    }
-
-    @Override
-    public void onStart(int pg) {
-
-    }
-
-    @Override
-    public void onFinish(int pg) {
-        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-            binding.offline.setVisibility(View.VISIBLE);
-            binding.offlineLastUpdate.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
-        } else {
-            binding.offline.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onError(int pg, String error) {
-
-    }
-
-    @Override
-    public void onAccessDenied(int pg, String message) {
-        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-            binding.offline.setVisibility(View.VISIBLE);
-            binding.offlineLastUpdate.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
-        } else {
-            binding.offline.setVisibility(View.GONE);
-        }
     }
 
 }

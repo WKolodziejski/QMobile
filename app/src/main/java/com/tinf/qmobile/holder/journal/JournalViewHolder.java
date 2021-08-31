@@ -46,10 +46,10 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
             DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
         }
 
-        Animation animation = AnimationUtils.loadAnimation(context, R.anim.item_slide_down);
+        /*Animation animation = AnimationUtils.loadAnimation(context, R.anim.item_slide_down);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
         itemView.setAnimation(animation);
-        animation.start();
+        animation.start();*/
 
         if (journal.highlight) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));

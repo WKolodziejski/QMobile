@@ -43,7 +43,7 @@ public class ReportFragment extends Fragment implements OnUpdate {
         binding.table.getRowHeaderRecyclerView().removeItemDecorationAt(0);
         binding.table.getCellRecyclerView().removeItemDecorationAt(0);
 
-        binding.table.setAdapter(new ReportAdapter(getContext(), binding.table/*, header -> {
+        binding.table.setAdapter(new ReportAdapter(getContext(), binding.table, binding.empty/*, header -> {
             boolean[] checked = new boolean[header.length];
             Arrays.fill(checked, true);
 

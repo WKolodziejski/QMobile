@@ -64,6 +64,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     private final Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
 
     private final ActionMode.Callback callback = new ActionMode.Callback() {
+
         @Override
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             return listener.onCreateActionMode(actionMode, menu);
@@ -142,6 +143,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 }
             listener.onDestroyActionMode(actionMode);
         }
+
     };
 
     public MaterialsAdapter(Context context, Bundle bundle, OnInteractListener listener) {
@@ -254,7 +256,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
             @Override
             public boolean areContentsTheSame(int o, int n) {
-                return (materials.get(o).equals(updated.get(n)));
+                return materials.get(o).equals(updated.get(n));
             }
 
         }, true);

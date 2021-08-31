@@ -176,9 +176,8 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
             Intent intent = new Intent(getContext(), EventCreateActivity.class);
             intent.putExtra("TYPE", SCHEDULE);
 
-            if (getActivity() instanceof MatterActivity) {
+            if (getActivity() instanceof MatterActivity)
                 intent.putExtra("ID2", bundle.getLong("ID"));
-            }
 
             startActivity(intent);
         });

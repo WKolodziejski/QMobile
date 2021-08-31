@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     >
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         app:srcCompat="@drawable/ic_expand"
         app:tint="@color/colorPrimaryLight"
         app:fabSize="normal"
-        app:borderWidth="0dp" />
+        app:borderWidth="0dp" />!-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"

@@ -10,6 +10,7 @@ public class ViewType {
     public final static int PERIOD = 210;
     public final static int FOOTERJ = 230;
     public final static int FOOTERP = 240;
+    public final static int JOURNALEMPTY = 250;
 
     public final static int MATERIAL = 300;
 

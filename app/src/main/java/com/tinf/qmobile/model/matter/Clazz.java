@@ -8,6 +8,7 @@ import com.tinf.qmobile.model.calendar.EventBase;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Transient;
@@ -103,4 +104,23 @@ public class Clazz extends EventBase implements Queryable {
     public String getContent_() {
         return content_;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Clazz)) return false;
+        if (!super.equals(o)) return false;
+        Clazz clazz = (Clazz) o;
+        return  getDate_() == clazz.getDate_() &&
+                getClassesCount_() == clazz.getClassesCount_() &&
+                getAbsences_() == clazz.getAbsences_() &&
+                Objects.equals(getTeacher_(), clazz.getTeacher_()) &&
+                Objects.equals(getContent_(), clazz.getContent_());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), date_, classesCount_, absences_, teacher_, content_);
+    }
+
 }

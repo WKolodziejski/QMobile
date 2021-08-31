@@ -40,7 +40,7 @@ public class Jobs {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(App.getContext());
 
         if (prefs.getBoolean(CHECK, true)) {
-            Job.Builder diarios = dispatcher.newJobBuilder()
+            Job.Builder builder = dispatcher.newJobBuilder()
                     .setService(BackgroundCheck.class)
                     .setTag("Background")
                     .setRecurring(false)
@@ -50,24 +50,24 @@ public class Jobs {
                     .setConstraints(Constraint.ON_UNMETERED_NETWORK);
 
             if (prefs.getBoolean(MOBILE, false)) {
-                diarios.addConstraint(Constraint.ON_ANY_NETWORK);
+                builder.addConstraint(Constraint.ON_ANY_NETWORK);
                 Log.i(TAG, "Mobile data on");
             }
 
             if (retryError) {
-                diarios.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(1), (int) HOURS.toSeconds(2)));
+                builder.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(1), (int) HOURS.toSeconds(2)));
                 Log.i(TAG, "Retry");
             } else {
                 if (prefs.getBoolean(ALERT, false)) {
-                    diarios.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(3), (int) HOURS.toSeconds(5)));
+                    builder.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(3), (int) HOURS.toSeconds(5)));
                     Log.i(TAG, "Alert mode");
                 } else {
-                    diarios.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(20), (int) HOURS.toSeconds(24)));
+                    builder.setTrigger(Trigger.executionWindow((int) HOURS.toSeconds(20), (int) HOURS.toSeconds(24)));
                     Log.i(TAG, "Normal mode");
                 }
             }
             dispatcher.cancel("Background");
-            dispatcher.schedule(diarios.build());
+            dispatcher.schedule(builder.build());
             Log.i(TAG, "Job scheduled");
 
         } else {

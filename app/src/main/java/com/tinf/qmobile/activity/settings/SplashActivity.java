@@ -21,9 +21,9 @@ public class SplashActivity extends AppCompatActivity {
 
         if (User.isValid()) {
             Jobs.scheduleJob(false);
-            if (!Client.get().isValid()) {
+
+            if (!Client.get().isValid())
                 Client.get().login();
-            }
 
             intent = new Intent(this, MainActivity.class);
         } else {

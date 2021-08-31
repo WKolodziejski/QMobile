@@ -9,7 +9,9 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -21,13 +23,16 @@ import static com.tinf.qmobile.model.ViewType.HEADER;
 
 @Entity
 public class Matter implements Queryable {
-    @Transient public boolean isExpanded;
-    @Transient public boolean shouldAnimate;
+    //@Transient public boolean isExpanded;
+    //@Transient public boolean shouldAnimate;
     @Id public long id;
     @ColorInt private int color_;
     private String title_;
     private String description_;
     private String situation_;
+    private String teacher_;
+    private float hours_;
+    private int classes_;
     private int absences_ = -1;
     private float mean_ = -1;
     private int year_;
@@ -35,12 +40,12 @@ public class Matter implements Queryable {
     public ToMany<Period> periods;
     public ToMany<Schedule> schedules;
     public ToMany<Material> materials;
-    public ToOne<Infos> infos;
-    //public ToOne<Clazz> clazz;
 
-    public Matter(String description, int color, int year, int period) {
+    public Matter(String description, int color, float hours, int classes, int year, int period) {
         this.description_ = description;
         this.color_ = color;
+        this.hours_ = hours;
+        this.classes_ = classes;
         this.year_ = year;
         this.period_ = period;
     }
@@ -76,6 +81,10 @@ public class Matter implements Queryable {
 
     public String getSituation() {
         return situation_ == null ? "" : situation_;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher_ = teacher;
     }
 
     public void setTitle(String title) {
@@ -118,7 +127,7 @@ public class Matter implements Queryable {
         if (period == null)
             return false;
 
-        return period.journals.isEmpty();
+        return !period.journals.isEmpty();
     }
 
     public int getJournalNotSeenCount() {
@@ -146,13 +155,22 @@ public class Matter implements Queryable {
         return sum;
     }
 
-    public String getLastGradeSum() {
+    public String getLastGradeSumString() {
         Period period = getLastPeriod();
 
         if (period == null)
             return "-";
 
         return period.getGradeSumString();
+    }
+
+    public float getLastGradeSum() {
+        Period period = getLastPeriod();
+
+        if (period == null)
+            return -1;
+
+        return period.getGradeSum();
     }
 
     public int getQID() {
@@ -190,34 +208,16 @@ public class Matter implements Queryable {
         return String.valueOf(Math.max(sg, fg));
     }
 
+
+
     /*
      * Auto-generated methods
      */
 
     public Matter() {}
 
-    public int getColor_() {
-        return color_;
-    }
-
     public String getTitle_() {
         return title_;
-    }
-
-    public int getAbsences_() {
-        return absences_;
-    }
-
-    public float getMean_() {
-        return mean_;
-    }
-
-    public int getYear_() {
-        return year_;
-    }
-
-    public int getPeriod_() {
-        return period_;
     }
 
     public String getDescription_() {
@@ -228,9 +228,67 @@ public class Matter implements Queryable {
         return situation_;
     }
 
+    public String getTeacher_() {
+        return teacher_;
+    }
+
+    public float getMean_() {
+        return mean_;
+    }
+
+    public int getColor_() {
+        return color_;
+    }
+
+    public int getAbsences_() {
+        return absences_;
+    }
+
+    public int getYear_() {
+        return year_;
+    }
+
+    public int getPeriod_() {
+        return period_;
+    }
+
+    public float getHours_() {
+        return hours_;
+    }
+
+    public int getClasses_() {
+        return classes_;
+    }
+
     @Override
     public int getItemType() {
         return HEADER;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Matter)) return false;
+        Matter matter = (Matter) o;
+        return id == matter.id &&
+                getColor_() == matter.getColor_() &&
+                Float.compare(matter.getHours_(), getHours_()) == 0 &&
+                getClasses_() == matter.getClasses_() &&
+                getAbsences_() == matter.getAbsences_() &&
+                Float.compare(matter.getMean_(), getMean_()) == 0 &&
+                getYear_() == matter.getYear_() &&
+                getPeriod_() == matter.getPeriod_() &&
+                Objects.equals(getTitle_(), matter.getTitle_()) &&
+                Objects.equals(getDescription_(), matter.getDescription_()) &&
+                Objects.equals(getSituation_(), matter.getSituation_()) &&
+                Objects.equals(getTeacher_(), matter.getTeacher_());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, getColor_(), getTitle_(), getDescription_(), getSituation_(),
+                getTeacher_(), getHours_(), getClasses_(), getAbsences_(), getMean_(), getYear_(),
+                getPeriod_());
     }
 
 }

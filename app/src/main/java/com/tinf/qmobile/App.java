@@ -2,6 +2,7 @@ package com.tinf.qmobile;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -36,7 +37,7 @@ public class App extends Application {
         context = getBaseContext();
 
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCrashlyticsCollectionEnabled(true);
+        crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
         crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
         crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
         crashlytics.setCustomKey("URL", User.getURL());
@@ -58,6 +59,8 @@ public class App extends Application {
                 //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
+
+        Log.d("SENHA", User.getCredential(PASSWORD));
     }
 
     public static Context getContext() {

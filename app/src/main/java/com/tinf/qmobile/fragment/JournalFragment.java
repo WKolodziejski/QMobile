@@ -49,14 +49,14 @@ public class JournalFragment extends Fragment implements OnUpdate {
             }
         };
 
-        JournalAdapter adapter = new JournalAdapter(getContext(), null, position -> {
+        JournalAdapter adapter = new JournalAdapter(getContext(), null/*, position -> {
             if (position != 0) {
                 smoothScroller.setTargetPosition(position);
                 layout.startSmoothScroll(smoothScroller);
             }
-        });
+        }*/);
 
-        binding.fab.setOnClickListener(v -> adapter.toggle());
+        //binding.fab.setOnClickListener(v -> adapter.toggle());
 
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
@@ -72,10 +72,10 @@ public class JournalFragment extends Fragment implements OnUpdate {
                 int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
                 ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
 
-                if (dy < 0 && !binding.fab.isShown())
+                /*if (dy < 0 && !binding.fab.isShown())
                     binding.fab.show();
                 else if(dy > 0 && binding.fab.isShown())
-                    binding.fab.hide();
+                    binding.fab.hide();*/
             }
 
             @Override

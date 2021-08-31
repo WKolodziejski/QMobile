@@ -4,6 +4,7 @@ import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -131,6 +132,24 @@ public class Period implements Queryable {
 
     public boolean isSub_() {
         return isSub_;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Period)) return false;
+        Period period = (Period) o;
+        return  id == period.id &&
+                Float.compare(period.getGrade_(), getGrade_()) == 0 &&
+                Float.compare(period.getGradeFinal_(), getGradeFinal_()) == 0 &&
+                getAbsences_() == period.getAbsences_() &&
+                isSub_() == period.isSub_() &&
+                Objects.equals(getTitle_(), period.getTitle_());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title_, grade_, gradeFinal_, absences_, isSub_);
     }
 
 }

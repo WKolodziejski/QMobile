@@ -26,10 +26,10 @@ public class GradesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        JournalAdapter adapter = new JournalAdapter(getContext(), getArguments(), position -> {});
+        JournalAdapter adapter = new JournalAdapter(getContext(), getArguments());//, position -> {});
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_materia);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_grades);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);

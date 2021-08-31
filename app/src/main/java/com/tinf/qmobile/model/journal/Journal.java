@@ -9,6 +9,7 @@ import com.tinf.qmobile.model.matter.Period;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Transient;
@@ -163,6 +164,23 @@ public class Journal extends EventBase implements Queryable {
 
     public int getType_() {
         return type_;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Journal)) return false;
+        if (!super.equals(o)) return false;
+        Journal journal = (Journal) o;
+        return  Float.compare(journal.getWeight_(), getWeight_()) == 0 &&
+                Float.compare(journal.getMax_(), getMax_()) == 0 &&
+                Float.compare(journal.getGrade_(), getGrade_()) == 0 &&
+                getType_() == journal.getType_();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), weight_, max_, grade_, type_);
     }
 
 }

@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.objectbox.annotation.BaseEntity;
 import io.objectbox.annotation.Id;
@@ -24,7 +25,7 @@ public abstract class EventBase extends Event implements CalendarBase {
     private long startTime;
     private long endTime;
     private String description;
-    @ColorInt private int color;
+    private int color;
     @Transient public boolean isHeader;
 
     private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
@@ -171,6 +172,11 @@ public abstract class EventBase extends Event implements CalendarBase {
             return eq;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id, title, startTime, endTime, description, color);
     }
 
     @Override

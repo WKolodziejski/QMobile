@@ -110,6 +110,8 @@ public class ClassParser extends BaseParser {
                                     classBox.put(search);
                                 }
 
+                                matter.setTeacher(teacher);
+
                                 periodBox.put(period);
                                 matterBox.put(matter);
                             } catch (NonUniqueResultException e) {

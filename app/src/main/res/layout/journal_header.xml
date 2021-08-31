@@ -19,7 +19,7 @@
         android:id="@+id/layout1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/arrow"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/header"
         >
 
@@ -51,7 +51,7 @@
 
     </LinearLayout>
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
         app:layout_constraintTop_toTopOf="@id/layout1"
         app:layout_constraintBottom_toBottomOf="@id/layout1"
         app:srcCompat="@drawable/ic_more"
-        app:tint="@color/colorAccent" />
+        app:tint="@color/colorAccent" />!-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

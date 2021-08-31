@@ -1,6 +1,7 @@
 package com.tinf.qmobile.parser;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
@@ -63,9 +64,18 @@ public class JournalParser extends BaseParser {
 
             Elements header = contents.eq(i).parents().eq(0).parents().eq(0);
 
-            //Element reports = header.first().child(1); //TODO
+            Element reports = header.first().child(1);
+            Elements trs = reports.getElementsByTag("tr");
 
             String description = header.first().child(0).text();
+            String teacher = description.substring(description.lastIndexOf('-') + 1).trim();
+            String hs = trs.get(0).getElementsByTag("td").get(1).text();
+            hs = hs.substring(0, hs.indexOf("Hrs"));
+
+            float hours = Float.parseFloat(hs);
+            int classes = Integer.parseInt(trs.get(1).getElementsByTag("td").get(1).text());
+
+            Log.d(description, hours + ", " + classes);
 
             boolean isFirstParse = false;
 
@@ -76,7 +86,8 @@ public class JournalParser extends BaseParser {
                     .build().findUnique();
 
             if (matter == null) {
-                matter = new Matter(description, colors.getColor(), year, period);
+                matter = new Matter(description, colors.getColor(), hours, classes, year, period);
+                matter.setTeacher(teacher);
                 matterBox.put(matter);
                 isFirstParse = true;
             }

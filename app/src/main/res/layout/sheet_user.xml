@@ -125,11 +125,78 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_goneMarginTop="8dp"
-        android:id="@+id/div1"
         android:layout_marginTop="8dp"
+        android:id="@+id/div1"
         android:background="@color/black_dividers"
+        app:layout_goneMarginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/logout" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/offline"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/div1"
+        tools:visibility="visible"
+        >
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="16dp"
+            android:id="@+id/icon"
+            android:src="@drawable/ic_offline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/layout2"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias="0"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textStyle="bold"
+                android:text="Offline" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/message_seen"
+                android:id="@+id/last"
+                tools:text="Last update on 22/03/2017"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:id="@+id/div2"
+            android:background="@color/black_dividers"
+            app:layout_goneMarginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/layout2" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -142,7 +209,7 @@
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/div1"
+        app:layout_constraintTop_toBottomOf="@id/offline"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

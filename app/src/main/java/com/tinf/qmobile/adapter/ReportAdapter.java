@@ -3,10 +3,12 @@ package com.tinf.qmobile.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.evrencoskun.tableview.listener.ITableViewListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.databinding.JournalEmptyBinding;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.holder.report.TableCellMatterViewHolder;
 import com.tinf.qmobile.holder.report.TableCellSituationViewHolder;
@@ -48,13 +51,15 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     private List<List<String>> cells;
     private int selected_row = -1, selected_column = -1;
     //private OnReport onReport;
+    private final JournalEmptyBinding empty;
 
     public interface OnReport {
         void onHeader(String[] header);
     }
 
-    public ReportAdapter(Context context, TableView tableView/*, OnReport onReport*/) {
+    public ReportAdapter(Context context, TableView tableView, JournalEmptyBinding empty/*, OnReport onReport*/) {
         this.context = context;
+        this.empty = empty;
         //this.onReport = onReport;
 
         Client.get().addOnUpdateListener(this);
@@ -143,6 +148,10 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     }
 
     private void loadList() {
+        columnHeader = new ArrayList<>();
+        rowHeader = new ArrayList<>();
+        cells = new ArrayList<>();
+
         List<Matter> matters = new ArrayList<>(
                 DataBase.get().getBoxStore()
                 .boxFor(Matter.class)
@@ -153,10 +162,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                 .equal(Matter_.period_, User.getPeriod(pos))
                 .build()
                 .find());
-
-        columnHeader = new ArrayList<>();
-        rowHeader = new ArrayList<>();
-        cells = new ArrayList<>();
 
         int s = 0;
         int k = 0;
@@ -171,99 +176,66 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         }
 
         if (!matters.isEmpty()) {
+            Matter m = matters.get(k);
+            boolean[] subPeriods = new boolean[s];
+
             columnHeader.add(context.getResources().getString(R.string.report_matter));
             columnHeader.add(context.getResources().getString(R.string.report_absencesTotal));
             columnHeader.add(context.getResources().getString(R.string.report_meanFinal));
 
             for (int i = 0; i < s; i++) {
-                Period period = matters.get(k).periods.get(i);
+                Period period = m.periods.get(i);
 
-                if (!period.isSub_()) {
+                subPeriods[i] = period.isSub_();
 
-                    columnHeader.add(period.getTitle());
+                columnHeader.add(period.getTitle());
 
-                    boolean skip = false;
-
-                    if (i < s - 1) {
-                        period = matters.get(k).periods.get(i + 1);
-
-                        if (period.isSub_()) {
-                            columnHeader.add(period.getTitle());
-
-                            period = matters.get(k).periods.get(i);
-
-                            columnHeader.add(context.getResources().getString(R.string.report_mean) + " " + period.getTitle());
-
-                            skip = true;
-                        }
-                    }
-
+                if (!period.isSub_())
                     columnHeader.add(context.getResources().getString(R.string.report_absences) + " " + period.getTitle());
-
-                    if (skip)
-                        i++;
-                }
             }
 
             columnHeader.add(context.getResources().getString(R.string.report_situation));
-        }
 
-        for (int i = 0; i < matters.size(); i++) {
-            ArrayList<String> row = new ArrayList<>();
+            for (int i = 0; i < matters.size(); i++) {
+                ArrayList<String> row = new ArrayList<>();
+                Matter matter = matters.get(i);
 
-            rowHeader.add(matters.get(i));
-            row.add(matters.get(i).getTitle());
-            row.add(matters.get(i).getAbsences());
-            row.add(matters.get(i).getMean());
+                rowHeader.add(matter);
+                row.add(matter.getTitle());
+                row.add(matter.getAbsences());
+                row.add(matter.getMean());
 
-            for (int j = 0; j < s; j++) {
-                Period period = null;
+                for (int j = 0; j < s; j++) {
+                    List<Period> periods = matter.periods;
 
-                List<Period> periods = matters.get(i).periods;
+                    if (!periods.isEmpty()) {
+                        Period period;
 
-                if (!periods.isEmpty()) {
-                    if (j < periods.size()) {
-                        period = periods.get(j);
-                    }
-                }
+                        if (j < periods.size()) {
+                            period = periods.get(j);
+                        } else {
+                            period = new Period();
 
-                if (period == null) {
-                    period = new Period();
-                }
-
-                if (!period.isSub_()) {
-
-                    row.add(period.getGrade());
-
-                    boolean skip = false;
-
-                    if (j < matters.get(i).periods.size() - 1) {
-                        period = matters.get(i).periods.get(j + 1);
-
-                        if (period.isSub_()) {
-                            row.add(period.getGrade());
-                            row.add(matters.get(i).getMean());
-                            skip = true;
+                            if (subPeriods[j])
+                                period.setSub();
                         }
 
-                        period = matters.get(i).periods.get(j);
+                        row.add(period.getGrade());
 
+                        if (!period.isSub_())
+                            row.add(period.getAbsences());
                     }
-
-                    row.add(period.getAbsences());
-
-                    if (skip)
-                        j++;
                 }
+
+                row.add(matter.getSituation());
+
+                cells.add(row);
             }
-
-            row.add(matters.get(i).getSituation());
-
-            cells.add(row);
         }
-        
+
         setAllItems(columnHeader, rowHeader, cells);
-        //notifyDataSetChanged();
+        empty.getRoot().setVisibility(matters.isEmpty() ? View.VISIBLE : View.GONE);
+        notifyDataSetChanged();
         //onReport.onHeader(columnHeader.toArray(new String[columnHeader.size()]));
     }
 
@@ -299,24 +271,26 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     }
 
     @Override
-    public void onBindCellViewHolder(@NonNull AbstractViewHolder holder, @Nullable String cellItemModel, int c, int r) {
-        if (c == 0) {
-            TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
-            h.binding.matter.setText(cells.get(r).get(c));
+    public void onBindCellViewHolder(AbstractViewHolder holder, String cellItemModel, int c, int r) {
+        try {
+            if (c == 0) {
+                TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
+                h.binding.matter.setText(cells.get(r).get(c));
 
-        } else if (c == columnHeader.size() - 1) {
-            TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
-            h.binding.situation.setText(cells.get(r).get(c));
-            h.binding.situation.setTextColor(getSituationColor(cells.get(r).get(c)));
-        } else {
-            TableCellViewHolder h = (TableCellViewHolder) holder;
-            h.binding.text.setText(cells.get(r).get(c));
-        }
+            } else if (c == columnHeader.size() - 1) {
+                TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
+                h.binding.situation.setText(cells.get(r).get(c));
+                h.binding.situation.setTextColor(getSituationColor(cells.get(r).get(c)));
+            } else {
+                TableCellViewHolder h = (TableCellViewHolder) holder;
+                h.binding.text.setText(cells.get(r).get(c));
+            }
+        } catch (Exception ignored) {}
     }
 
     @NonNull
     @Override
-    public AbstractViewHolder onCreateColumnHeaderViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AbstractViewHolder onCreateColumnHeaderViewHolder(ViewGroup parent, int viewType) {
         if (viewType == 0 || viewType == columnHeader.size() - 1)
             return new TableColumnMatterHeaderViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.table_column_matter, parent, false));
@@ -326,35 +300,39 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     }
 
     @Override
-    public void onBindColumnHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable String columnHeaderItemModel, int c) {
-        if (c == 0 || c == columnHeader.size() - 1) {
-            TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
-            h.binding.matter.setText(columnHeader.get(c));
-        } else {
-            TableColumnHeaderViewHolder h = (TableColumnHeaderViewHolder) holder;
-            h.binding.text.setText(columnHeader.get(c));
-        }
+    public void onBindColumnHeaderViewHolder(AbstractViewHolder holder, String columnHeaderItemModel, int c) {
+        try {
+            if (c == 0 || c == columnHeader.size() - 1) {
+                TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
+                h.binding.matter.setText(columnHeader.get(c));
+            } else {
+                TableColumnHeaderViewHolder h = (TableColumnHeaderViewHolder) holder;
+                h.binding.text.setText(columnHeader.get(c));
+            }
+        } catch (Exception ignored) {}
     }
 
     @NonNull
     @Override
-    public AbstractViewHolder onCreateRowHeaderViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AbstractViewHolder onCreateRowHeaderViewHolder(ViewGroup parent, int viewType) {
         return new TableRowHeaderViewHolder(LayoutInflater.from(context)
                 .inflate(R.layout.table_row, parent, false));
     }
 
     @Override
-    public void onBindRowHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable Matter rowHeaderItemModel, int r) {
-        TableRowHeaderViewHolder h = (TableRowHeaderViewHolder) holder;
-        h.binding.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(r).getColor()));
+    public void onBindRowHeaderViewHolder(AbstractViewHolder holder, Matter rowHeaderItemModel, int r) {
+        try {
+            TableRowHeaderViewHolder h = (TableRowHeaderViewHolder) holder;
+            h.binding.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(r).getColor()));
 
-        int n = rowHeader.get(r).getJournalNotSeenCount();
+            int n = rowHeader.get(r).getJournalNotSeenCount();
 
-        if (n > 0) {
-            h.binding.badge.setText(String.valueOf(n));
-        } else {
-            h.binding.badge.setText("");
-        }
+            if (n > 0) {
+                h.binding.badge.setText(String.valueOf(n));
+            } else {
+                h.binding.badge.setText("");
+            }
+        } catch (Exception ignored) {}
     }
 
     @NonNull

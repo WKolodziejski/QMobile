@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
     <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -27,5 +28,11 @@
         android:layout_height="match_parent"
         app:unselected_color="@color/colorPrimaryLight"
         app:selected_color="@color/notificationBackground" />
+
+    <include
+        layout="@layout/journal_empty"
+        android:id="@+id/empty"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

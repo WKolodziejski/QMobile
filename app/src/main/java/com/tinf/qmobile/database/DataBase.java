@@ -70,8 +70,7 @@ public class DataBase implements OnUpdate {
             instance = new DataBase();
 
         if (instance.boxStore.isClosed())
-            instance.boxStore = MyObjectBox
-                    .builder()
+            instance.boxStore = MyObjectBox.builder()
                     .androidContext(getContext())
                     .name(User.getCredential(User.REGISTRATION))
                     .build();

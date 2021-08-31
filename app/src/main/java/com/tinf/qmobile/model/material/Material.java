@@ -11,6 +11,7 @@ import com.tinf.qmobile.utility.User;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -49,11 +50,7 @@ public class Material implements Queryable {
     }
 
     public int getIcon() {
-        if (link.contains(".")) {
-            return Design.parseIcon(link.substring(link.lastIndexOf(".")).toLowerCase());
-        } else {
-            return R.drawable.ic_file;
-        }
+        return link.contains(".") ? Design.parseIcon(link.substring(link.lastIndexOf(".")).toLowerCase()) : R.drawable.ic_file;
     }
 
     public String getFileName() {
@@ -69,9 +66,9 @@ public class Material implements Queryable {
 
     }
 
-    private String format(String input) {
+    /*private String format(String input) {
         return input.replaceAll("[:\\\\/*\"%?|<>'.]", "-");
-    }
+    }*/
 
     public void see() {
         seen_ = true;
@@ -115,6 +112,23 @@ public class Material implements Queryable {
     @Override
     public int getItemType() {
         return MATERIAL;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Material)) return false;
+        Material material = (Material) o;
+        return  id == material.id &&
+                getDate() == material.getDate() &&
+                Objects.equals(getTitle(), material.getTitle()) &&
+                Objects.equals(getLink(), material.getLink()) &&
+                Objects.equals(getDescription(), material.getDescription()) ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, link, description, date);
     }
 
 }

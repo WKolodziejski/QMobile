@@ -29,7 +29,7 @@ import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.play.core.review.ReviewManager;
@@ -85,18 +85,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             int itemId = item.getItemId();
 
             if (itemId != binding.navigation.getSelectedItemId()) {
-                if (itemId == R.id.navigation_home) {
+                if (itemId == R.id.navigation_home)
                     return changeFragment(new HomeFragment());
 
-                } else if (itemId == R.id.navigation_notas) {
+                else if (itemId == R.id.navigation_notas)
                     return changeFragment(new JournalFragment());
 
-                } else if (itemId == R.id.navigation_materiais) {
+                else if (itemId == R.id.navigation_materiais)
                     return changeFragment(new MaterialsFragment());
-                }
-            } else {
+
+            } else
                 Client.get().requestScroll();
-            }
 
             return false;
         });
@@ -125,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             }
 
         } else {
-            changeFragment(new HomeFragment());
+            changeFragment(new JournalFragment());
+            binding.navigation.setSelectedItemId(R.id.navigation_notas);
             /*switch (bottomNav.getSelectedItemId()) {
 
                 case R.id.binding.navigation_home:
@@ -159,29 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-        Drawable picture = User.getProfilePicture(getContext());
-
-        if (picture != null) {
-            MenuItem item = menu.findItem(R.id.action_account);
-            item.setActionView(R.layout.action_account);
-            ImageView view = (ImageView) item.getActionView();
-            view.setImageDrawable(picture.getCurrent());
-            view.setOnClickListener(v -> {
-                UserFragment fragment = new UserFragment();
-                fragment.setListener(new UserFragment.OnButton() {
-                    @Override
-                    public void onLogout() {
-                        logOut();
-                    }
-
-                    @Override
-                    public void onAlerts() {
-                        displayAlerts(true);
-                    }
-                });
-                fragment.show(getSupportFragmentManager(), "sheet_user");
-            });
-        }
+        updateMenuIcon();
 
         return true;
     }
@@ -262,6 +240,39 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     private void dismissProgressbar() {
         binding.refresh.setRefreshing(false);
+    }
+
+    private void updateMenuIcon() {
+        MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_account);
+        item.setActionView(R.layout.action_account);
+        ImageView view = (ImageView) item.getActionView();
+
+        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
+            view.setImageDrawable(getDrawable(R.drawable.ic_offline));
+        } else {
+            Drawable picture = User.getProfilePicture(getContext());
+
+            if (picture != null)
+                view.setImageDrawable(picture.getCurrent());
+            else
+                view.setImageDrawable(getDrawable(R.drawable.ic_account));
+        }
+
+        view.setOnClickListener(v -> {
+            UserFragment fragment = new UserFragment();
+            fragment.setListener(new UserFragment.OnButton() {
+                @Override
+                public void onLogout() {
+                    logOut();
+                }
+
+                @Override
+                public void onAlerts() {
+                    displayAlerts(true);
+                }
+            });
+            fragment.show(getSupportFragmentManager(), "sheet_user");
+        });
     }
 
     private void logOut() {
@@ -404,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onFinish(int pg) {
         dismissProgressbar();
+        updateMenuIcon();
 
         if (pg == PG_LOGIN) {
             displayAlerts(false);
@@ -425,12 +437,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onError(int pg, String error) {
         dismissProgressbar();
+        updateMenuIcon();
         Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         dismissProgressbar();
+        updateMenuIcon();
 
         if (pg == PG_LOGIN) {
             new MaterialAlertDialogBuilder(MainActivity.this)
