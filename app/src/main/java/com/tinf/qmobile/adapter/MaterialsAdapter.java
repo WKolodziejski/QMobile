@@ -34,6 +34,7 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
+import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
 
 import java.io.File;
@@ -60,6 +61,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     private final OnInteractListener listener;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
+    private final Design.OnDesign onDesign;
 
     private final Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
 
@@ -146,9 +148,10 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     };
 
-    public MaterialsAdapter(Context context, Bundle bundle, OnInteractListener listener) {
+    public MaterialsAdapter(Context context, Bundle bundle, OnInteractListener listener, Design.OnDesign onDesign) {
         this.context = context;
         this.listener = listener;
+        this.onDesign = onDesign;
 
         this.materials = getList(bundle);
 
@@ -297,8 +300,12 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
             list.addAll(builder.build().find());
         }
 
-        if (list.isEmpty())
+        if (list.isEmpty()) {
+            onDesign.onToolbar(false);
             list.add(new Empty());
+        } else {
+            onDesign.onToolbar(true);
+        }
 
         return list;
     }

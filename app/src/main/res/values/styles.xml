@@ -38,6 +38,7 @@
     </style>
 
     <style name="ActionMode" parent="@style/Widget.AppCompat.ActionMode">
+        <item name="height">70dp</item>
         <item name="background">@color/colorPrimaryLight</item>
         <item name="actionMenuTextColor">@color/colorPrimary</item>
     </style>

@@ -17,16 +17,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
+import com.tinf.qmobile.utility.Design;
+
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 
@@ -35,6 +42,15 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     private ActionMode action;
     private MaterialsAdapter adapter;
     private BroadcastReceiver receiver;
+    private MaterialToolbar toolbar;
+    private NestedScrollView scroll;
+    private SwipeRefreshLayout refresh;
+
+    public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh) {
+        this.toolbar = toolbar;
+        this.scroll = scroll;
+        this.refresh = refresh;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +64,13 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             Client.get().load(PG_MATERIALS);
         else
             requestPermission();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
         adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
 
@@ -61,23 +84,29 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                 action = getActivity().startActionMode(callback);
 
                 if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).binding.refresh.setEnabled(false);
+                    refresh.setEnabled(false);
             }
 
             @Override
             public void onSelectedCount(int size) {
-                if (size > 0)
+                if (size > 0) {
                     action.setTitle(String.valueOf(size));
-                else {
+
+                    if (getActivity() instanceof MainActivity)
+                        Design.syncToolbar(toolbar, false);
+                } else {
                     action.finish();
                     action = null;
+
+                    if (getActivity() instanceof MainActivity)
+                        Design.syncToolbar(toolbar, true);
                 }
             }
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
                 if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).binding.refresh.setEnabled(false);
+                    refresh.setEnabled(false);
 
                 MenuInflater menuInflater = getActivity().getMenuInflater();
                 menuInflater.inflate(R.menu.materials, menu);
@@ -88,18 +117,16 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             public void onDestroyActionMode(ActionMode actionMode) {
                 action = null;
 
-                if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).binding.refresh.setEnabled(true);
+                if (getActivity() instanceof MainActivity) {
+                    Design.syncToolbar(toolbar, true);
+                    refresh.setEnabled(true);
+                }
             }
 
+        }, canExpand -> {
+            if (getActivity() instanceof MainActivity)
+                Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand);
         });
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
@@ -110,20 +137,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         binding.recycler.setAdapter(adapter);
 
         if (getActivity() instanceof MainActivity) {
-            binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-                @Override
-                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                    int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                    ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
-                }
-
-                @Override
-                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                }
-
-            });
+            binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
         }
 
         if (getArguments() != null) {

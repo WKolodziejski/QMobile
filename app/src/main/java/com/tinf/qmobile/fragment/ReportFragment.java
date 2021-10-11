@@ -9,16 +9,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.appbar.MaterialToolbar;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.databinding.FragmentReportBinding;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.Design;
 
 public class ReportFragment extends Fragment implements OnUpdate {
     private FragmentReportBinding binding;
+    private SwipeRefreshLayout refresh;
+
+    public void setParams(SwipeRefreshLayout refresh) {
+        this.refresh = refresh;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,44 +52,8 @@ public class ReportFragment extends Fragment implements OnUpdate {
         binding.table.getColumnHeaderRecyclerView().removeItemDecorationAt(0);
         binding.table.getRowHeaderRecyclerView().removeItemDecorationAt(0);
         binding.table.getCellRecyclerView().removeItemDecorationAt(0);
-
-        binding.table.setAdapter(new ReportAdapter(getContext(), binding.table, binding.empty/*, header -> {
-            boolean[] checked = new boolean[header.length];
-            Arrays.fill(checked, true);
-
-            fab.setOnClickListener(view1 -> new MaterialAlertDialogBuilder(getActivity())
-                    .setMultiChoiceItems(header, checked, (dialogInterface, i, isChecked) -> {
-                        Log.d("R", String.valueOf(i));
-                        if (isChecked) {
-                            table.showColumn(i);
-                        } else {
-                            table.hideColumn(i);
-                        }
-                        checked[i] = isChecked;
-                    })
-                    .setCancelable(true)
-                    .create()
-                    .show());
-        }*/));
-
-        binding.table.getCellRecyclerView().addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
-                /*if (dy < 0 && !fab.isShown())
-                    fab.show();
-                else if(dy > 0 && fab.isShown())
-                    fab.hide();*/
-            }
-
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-        });
+        binding.table.setAdapter(new ReportAdapter(getContext(), binding.table, binding.empty));
+        binding.table.getCellRecyclerView().addOnScrollListener(Design.getRefreshBehavior(refresh));
     }
 
     @Override

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sheet_popup"
@@ -16,21 +15,18 @@
     app:strokeColor="@color/card_stroke"
     app:strokeWidth="1dp"
     app:cardBackgroundColor="@color/colorPrimaryDark"
-    android:tag="sheet_popup"
-    >
+    android:tag="sheet_popup">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
-            >
+            android:gravity="center_horizontal">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -61,7 +57,7 @@
                 android:textColor="@color/colorPrimary"
                 android:buttonTint="@color/colorPrimary"
                 android:id="@+id/checkBox"
-                android:text="@string/dialog_dont_show"/>
+                android:text="@string/dialog_dont_show" />
 
         </LinearLayout>
 

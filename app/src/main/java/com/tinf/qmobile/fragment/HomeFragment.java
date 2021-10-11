@@ -11,31 +11,29 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.PerformanceActivity;
 import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentHomeBinding;
-import com.tinf.qmobile.fragment.dialog.CreateFragment;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
 
 import org.threeten.bp.DayOfWeek;
@@ -43,19 +41,23 @@ import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
-import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.WeekViewEvent;
+
 import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
+    private FloatingActionButton fab;
+    private SwipeRefreshLayout refresh;
+    private MaterialToolbar toolbar;
+
+    public void setParams(SwipeRefreshLayout refresh, FloatingActionButton fab, MaterialToolbar toolbar) {
+        this.refresh = refresh;
+        this.fab = fab;
+        this.toolbar = toolbar;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -201,15 +203,15 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    ((MainActivity) getActivity()).binding.refresh.setEnabled(scrollY == 0);
+                    refresh.setEnabled(scrollY == 0);
 
-                    if (scrollY < oldScrollY && !binding.fab.isShown())
-                        binding.fab.show();
-                    else if(scrollY > oldScrollY && binding.fab.isShown())
-                        binding.fab.hide();
+                    if (scrollY < oldScrollY && !fab.isShown())
+                        fab.show();
+                    else if(scrollY > oldScrollY && fab.isShown())
+                        fab.hide();
                 });
 
-        binding.fab.setOnClickListener(v -> new CreateFragment().show(getChildFragmentManager(), "sheet_create"));
+        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
 
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         binding.recycler.setAdapter(new HomeAdapter(getContext()));
@@ -217,14 +219,14 @@ public class HomeFragment extends Fragment implements OnUpdate {
         binding.calendarLayout.setOnClickListener(view1 -> {
             startActivity(new Intent(getActivity(), CalendarActivity.class),
                     ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(binding.fab, binding.fab.getTransitionName()))
+                            Pair.create(fab, fab.getTransitionName()))
                             .toBundle());
         });
 
         binding.scheduleLayout.setOnClickListener(view1 -> {
             startActivity(new Intent(getActivity(), ScheduleActivity.class),
                     ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(binding.fab, binding.fab.getTransitionName()))
+                            Pair.create(fab, fab.getTransitionName()))
                             .toBundle());
         });
 
@@ -305,6 +307,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         binding.weekView.notifyDatasetChanged();
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
         //updateChart();
+        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
     }
 
     @Override
@@ -318,6 +321,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
                     //updateChart();
+                    Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
                 });
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -327,6 +331,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
                     //updateChart();
+                    Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
                 });
     }
 

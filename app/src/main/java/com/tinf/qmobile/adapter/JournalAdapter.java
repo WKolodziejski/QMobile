@@ -33,6 +33,7 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
 
 import java.util.ArrayList;
@@ -54,13 +55,13 @@ import static com.tinf.qmobile.network.Client.pos;
 public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate, KmStickyListener {
     private List<Queryable> journals;
     private final Context context;
-    //private final OnExpandListener onExpandListener;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
+    private final Design.OnDesign onDesign;
 
-    public JournalAdapter(Context context, Bundle bundle) {//, OnExpandListener onExpandListener) {
+    public JournalAdapter(Context context, Bundle bundle, Design.OnDesign onDesign) {
         this.context = context;
-        //this.onExpandListener = onExpandListener;
+        this.onDesign = onDesign;
 
         Client.get().addOnUpdateListener(this);
 
@@ -70,35 +71,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
             List<Queryable> updated = getList(bundle);
 
-            if (bundle == null) {
-                /*for (int i = 0; i < journals.size(); i++) {
-                    if (journals.get(i) instanceof Matter) {
-                        Matter m1 = (Matter) journals.get(i);
-                        for (Queryable jb : updated) {
-                            if (jb instanceof Matter) {
-                                Matter m2 = (Matter) jb;
-                                if (m1.id == m2.id) {
-                                    m2.isExpanded = m1.isExpanded;
-                                    m2.shouldAnimate = m1.shouldAnimate;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (int i = 0; i < updated.size(); i++) {
-                    if (updated.get(i) instanceof Matter) {
-                        Matter matter = (Matter) updated.get(i);
-
-                        if (matter.isExpanded) {
-                            List<Journal> items = matter.getLastJournals();
-                            updated.addAll(i + 1, items);
-                            updated.add(i + items.size() + 1, new FooterJournal(i, matter));
-                        }
-                    }
-                }*/
-            } else {
+            if (bundle != null) {
                 for (int i = 0; i < journals.size(); i++) {
                     if (journals.get(i) instanceof Journal) {
                         Journal j1 = ((Journal) journals.get(i));
@@ -222,39 +195,15 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             }
         }
 
-        if (list.isEmpty())
+        if (list.isEmpty()) {
+            onDesign.onToolbar(false);
             list.add(new Empty());
+        } else {
+            onDesign.onToolbar(true);
+        }
 
         return list;
     }
-
-    /*public void toggle() {
-        int open = 0, closed = 0;
-
-        for (Queryable jb : journals)
-            if (jb instanceof Matter)
-                if (((Matter) jb).isExpanded)
-                    open++;
-                else
-                    closed++;
-
-        if (closed > open) {
-            for (int i = 0; i < journals.size(); i++)
-                if (journals.get(i) instanceof Matter)
-                    if (!((Matter) journals.get(i)).isExpanded)
-                        expand(i, (Matter) journals.get(i), false);
-
-            Toast.makeText(context, R.string.diarios_expanded, Toast.LENGTH_SHORT).show();
-
-        } else {
-            for (int i = 0; i < journals.size(); i++)
-                if (journals.get(i) instanceof Matter)
-                    if (((Matter) journals.get(i)).isExpanded)
-                        collapse(i, (Matter) journals.get(i));
-
-            Toast.makeText(context, R.string.diarios_collapsed, Toast.LENGTH_SHORT).show();
-        }
-    }*/
 
     @NonNull
     @Override
@@ -301,36 +250,6 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
     public void onBindViewHolder(@NonNull JournalBaseViewHolder holder, int i) {
         holder.bind(context, journals.get(i), this);
     }
-
-    /*public void expand(int i, Matter matter, boolean scroll) {
-        matter.isExpanded = true;
-
-        notifyItemChanged(i);
-
-        List<Journal> items = matter.getLastJournals();
-
-        journals.addAll(i + 1, items);
-        notifyItemRangeInserted(i + 1, items.size());
-
-        journals.add(i + items.size() + 1, new FooterJournal(i, matter));
-        notifyItemInserted(i + items.size() + 1);
-
-        if (scroll)
-            onExpandListener.onExpand(i + items.size() + 1);
-    }
-
-    public void collapse(int i, Matter matter) {
-        matter.isExpanded = false;
-
-        notifyItemChanged(i);
-        i++;
-        while (i < journals.size()) {
-            if (journals.get(i) instanceof Journal || journals.get(i) instanceof FooterJournal) {
-                journals.remove(i);
-                notifyItemRemoved(i);
-            } else break;
-        }
-    }*/
 
     public int highlight(long id) {
         for (int i = 0; i < journals.size(); i++) {
@@ -413,10 +332,6 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         if (i >= 0)
             return !(q instanceof Journal);
         else return false;
-    }
-
-    public interface OnExpandListener {
-        void onExpand(int position);
     }
 
     @Override

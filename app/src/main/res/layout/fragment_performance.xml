@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-    <lecho.lib.hellocharts.view.LineChartView
+    <!--<lecho.lib.hellocharts.view.LineChartView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:id="@+id/lineChart"
@@ -23,6 +23,6 @@
         app:layout_constraintTop_toBottomOf="@id/lineChart"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>!-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

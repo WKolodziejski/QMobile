@@ -1,6 +1,10 @@
 package com.tinf.qmobile.database;
 
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.util.Log;
+
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.journal.Journal;
@@ -11,13 +15,13 @@ import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class DataBase implements OnUpdate {
     private static final String TAG = "DataBase";

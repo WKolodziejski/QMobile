@@ -6,17 +6,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SelectedValue;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.model.Viewport;
-import lecho.lib.hellocharts.provider.ColumnChartDataProvider;
-import lecho.lib.hellocharts.renderer.AbstractChartRenderer;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.Chart;
-
-public class ColumnChartRenderer extends AbstractChartRenderer {
+/*public class ColumnChartRenderer extends AbstractChartRenderer {
     public static final int DEFAULT_SUBCOLUMN_SPACING_DP = 1;
     public static final int DEFAULT_COLUMN_TOUCH_ADDITIONAL_WIDTH_DP = 4;
 
@@ -26,29 +16,14 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
 
     private ColumnChartDataProvider dataProvider;
 
-    /**
-     * Additional width for hightlighted column, used to give tauch feedback.
-     */
     private int touchAdditionalWidth;
 
-    /**
-     * Spacing between sub-columns.
-     */
     private int subcolumnSpacing;
 
-    /**
-     * Paint used to draw every column.
-     */
     private Paint columnPaint = new Paint();
 
-    /**
-     * Holds coordinates for currently processed column/sub-column.
-     */
     private RectF drawRect = new RectF();
 
-    /**
-     * Coordinated of user tauch.
-     */
     private PointF touchedPoint = new PointF();
 
     private float fillRatio;
@@ -418,4 +393,4 @@ public class ColumnChartRenderer extends AbstractChartRenderer {
                 columnValue.getDarkenColor());
 
     }
-}
+}*/

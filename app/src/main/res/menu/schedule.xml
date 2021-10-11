@@ -6,6 +6,6 @@
         android:id="@+id/action_refresh"
         android:title="@string/home_refresh"
         android:icon="@drawable/ic_refresh"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
 </menu>

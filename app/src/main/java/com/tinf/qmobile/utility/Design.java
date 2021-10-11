@@ -1,6 +1,22 @@
 package com.tinf.qmobile.utility;
 
+import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS;
+import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
+import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP;
+
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ScrollView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.MainActivity;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +66,43 @@ public class Design {
             icon = R.drawable.ic_file;
 
         return icon;
+    }
+
+    public static void syncToolbar(MaterialToolbar toolbar, boolean canExpand) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        params.setScrollFlags(canExpand ? SCROLL_FLAG_SCROLL | SCROLL_FLAG_ENTER_ALWAYS | SCROLL_FLAG_SNAP : 0);
+        toolbar.setLayoutParams(params);
+    }
+
+    public static boolean canScroll(FrameLayout scroll) {
+        View child = scroll.getChildAt(0);
+        if (child != null) {
+            int childHeight = child.getHeight();
+            return scroll.getHeight() < childHeight;
+        }
+        return false;
+    }
+
+    public static RecyclerView.OnScrollListener getRefreshBehavior(SwipeRefreshLayout refresh) {
+        return new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                refresh.setEnabled(p == 0);
+            }
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+        };
+    }
+
+
+    public interface OnDesign {
+        void onToolbar(boolean canExpand);
     }
 
 }

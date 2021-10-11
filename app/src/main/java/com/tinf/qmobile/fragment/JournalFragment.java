@@ -7,21 +7,36 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.appbar.MaterialToolbar;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.databinding.FragmentJournalBinding;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.Design;
 
 public class JournalFragment extends Fragment implements OnUpdate {
     private FragmentJournalBinding binding;
+    private MaterialToolbar toolbar;
+    private NestedScrollView scroll;
+    private SwipeRefreshLayout refresh;
+
+    public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh) {
+        this.toolbar = toolbar;
+        this.scroll = scroll;
+        this.refresh = refresh;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,21 +57,8 @@ public class JournalFragment extends Fragment implements OnUpdate {
 
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
-        RecyclerView.SmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
-            @Override
-            protected int getVerticalSnapPreference() {
-                return LinearSmoothScroller.SNAP_TO_ANY;
-            }
-        };
-
-        JournalAdapter adapter = new JournalAdapter(getContext(), null/*, position -> {
-            if (position != 0) {
-                smoothScroller.setTargetPosition(position);
-                layout.startSmoothScroll(smoothScroller);
-            }
-        }*/);
-
-        //binding.fab.setOnClickListener(v -> adapter.toggle());
+        JournalAdapter adapter = new JournalAdapter(getContext(), null,
+                canExpand -> Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand));
 
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
@@ -65,25 +67,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
         binding.recycler.setLayoutManager(layout);
         binding.recycler.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         binding.recycler.setAdapter(adapter);
-        binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                ((MainActivity) getActivity()).binding.refresh.setEnabled(p == 0);
-
-                /*if (dy < 0 && !binding.fab.isShown())
-                    binding.fab.show();
-                else if(dy > 0 && binding.fab.isShown())
-                    binding.fab.hide();*/
-            }
-
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-        });
+        binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
     }
 
     @Override

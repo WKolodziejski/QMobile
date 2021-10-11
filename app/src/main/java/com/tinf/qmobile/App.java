@@ -23,9 +23,9 @@ import static com.tinf.qmobile.utility.User.PASSWORD;
 import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 public class App extends Application {
-    public static final String VERSION = ".v1.6.0";
+    public static final String VERSION = ".v1.6.2";
     public static final String VERSION_INFO = ".Version";
-    public static final String DATABASE_INFO = ".DB";
+    //public static final String DATABASE_INFO = ".DB";
     //public static final String DB_CLASS = ".class";
     public static final String USE_INFO = ".use";
     public static final String USE_COUNT = ".count";

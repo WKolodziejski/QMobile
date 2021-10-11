@@ -7,7 +7,7 @@
             android:title="@string/pref_dark_mode"
             android:key="key_night_mode"
             android:defaultValue="false"
-            android:summary="@string/pref_dark_mode_sum"/>
+            android:summary="@string/pref_dark_mode_sum" />
 
     </PreferenceCategory>
 
@@ -92,7 +92,7 @@
             android:key="key_notifications"
             android:defaultValue="true"
             android:summary="@string/pref_notifications_sum"
-            android:dependency="key_check"/>
+            android:dependency="key_check" />
 
         <!--<CheckBoxPreference
             android:title="Diarios"

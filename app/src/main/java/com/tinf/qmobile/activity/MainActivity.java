@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -32,6 +33,8 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.shape.CornerFamily;
+import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.tinf.qmobile.R;
@@ -44,6 +47,7 @@ import com.tinf.qmobile.fragment.JournalFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.fragment.ReportFragment;
+import com.tinf.qmobile.fragment.dialog.CreateFragment;
 import com.tinf.qmobile.fragment.dialog.PopUpFragment;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
 import com.tinf.qmobile.network.Client;
@@ -51,6 +55,7 @@ import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
 import static com.tinf.qmobile.App.USE_COUNT;
 import static com.tinf.qmobile.App.USE_INFO;
@@ -60,7 +65,11 @@ import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange,
         OnUpdate, NavigationView.OnNavigationItemSelectedListener {
-    public ActivityMainBinding binding;
+    private ActivityMainBinding binding;
+    /*private HomeFragment homeFragment;
+    private JournalFragment journalFragment;
+    private ReportFragment reportFragment;
+    private MaterialsFragment materialsFragment;*/
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result ->
@@ -81,20 +90,20 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         binding.toolbar.setOnClickListener(view ->
                 launcher.launch(new Intent(getContext(), SearchActivity.class)));
 
+        MaterialShapeDrawable toolbarBackground = (MaterialShapeDrawable) binding.toolbar.getBackground();
+        toolbarBackground.setShapeAppearanceModel(
+                toolbarBackground.getShapeAppearanceModel()
+                        .toBuilder()
+                        .setAllCorners(CornerFamily.ROUNDED, getResources().getDimension(R.dimen.nav_item_background_inset_right))
+                        .build()
+        );
+
         binding.navigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId != binding.navigation.getSelectedItemId()) {
-                if (itemId == R.id.navigation_home)
-                    return changeFragment(new HomeFragment());
-
-                else if (itemId == R.id.navigation_notas)
-                    return changeFragment(new JournalFragment());
-
-                else if (itemId == R.id.navigation_materiais)
-                    return changeFragment(new MaterialsFragment());
-
-            } else
+            if (itemId != binding.navigation.getSelectedItemId())
+                return changeFragment(itemId);
+             else
                 Client.get().requestScroll();
 
             return false;
@@ -119,13 +128,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             int pg = bundle.getInt("FRAGMENT");
 
             if (pg != 0) {
-                changeFragment(new MaterialsFragment());
-                binding.navigation.setSelectedItemId(R.id.navigation_materiais);
+                changeFragment(R.id.navigation_materials);
+                binding.navigation.setSelectedItemId(R.id.navigation_materials);
             }
 
         } else {
-            changeFragment(new JournalFragment());
-            binding.navigation.setSelectedItemId(R.id.navigation_notas);
+            changeFragment(R.id.navigation_grades);
+            binding.navigation.setSelectedItemId(R.id.navigation_grades);
             /*switch (bottomNav.getSelectedItemId()) {
 
                 case R.id.binding.navigation_home:
@@ -192,10 +201,15 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
 
             if (fragment instanceof JournalFragment) {
-                return changeFragment(new ReportFragment());
+                ReportFragment rFragment = new ReportFragment();
+                rFragment.setParams(binding.refresh);
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                transaction.replace(R.id.main_fragment, rFragment).commit();
 
             } else if (fragment instanceof ReportFragment) {
-                return changeFragment(new JournalFragment());
+                return changeFragment(R.id.navigation_grades);
 
             } else return false;
         }
@@ -248,14 +262,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         ImageView view = (ImageView) item.getActionView();
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-            view.setImageDrawable(getDrawable(R.drawable.ic_offline));
+            view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_offline));
         } else {
             Drawable picture = User.getProfilePicture(getContext());
 
             if (picture != null)
                 view.setImageDrawable(picture.getCurrent());
             else
-                view.setImageDrawable(getDrawable(R.drawable.ic_account));
+                view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
         }
 
         view.setOnClickListener(v -> {
@@ -288,22 +302,46 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         startActivity(new Intent(this, LoginActivity.class));
     }
 
-    private boolean changeFragment(Fragment fragment, Bundle args) {
-        if (fragment != null)
-            fragment.setArguments(args);
+    private boolean changeFragment(int id) {
+        Fragment fragment = null;
 
-        return changeFragment(fragment);
-    }
+        if (id == R.id.navigation_home) {
+            HomeFragment homeFragment = new HomeFragment();
+            homeFragment.setParams(binding.refresh, binding.fab, binding.toolbar);
 
-    private boolean changeFragment(Fragment fragment) {
-        if (fragment != null) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-            transaction.replace(R.id.main_fragment, fragment).commit();
+            binding.fab.show();
+            binding.fab.setOnClickListener(v -> new CreateFragment().show(
+                    getSupportFragmentManager(), "sheet_create"));
 
-            return true;
+            fragment = homeFragment;
+
+        } else if (id == R.id.navigation_grades) {
+            binding.fab.hide();
+            binding.fab.setOnClickListener(null);
+
+            JournalFragment journalFragment = new JournalFragment();
+            journalFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
+
+            fragment = journalFragment;
+
+        } else if (id == R.id.navigation_materials) {
+            binding.fab.hide();
+            binding.fab.setOnClickListener(null);
+
+            MaterialsFragment materialsFragment = new MaterialsFragment();
+            materialsFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
+
+            fragment = materialsFragment;
         }
-        return false;
+
+        if (fragment == null)
+            return false;
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        transaction.replace(R.id.main_fragment, fragment).commit();
+
+        return true;
     }
 
     private void reload() {
@@ -313,10 +351,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             if (selectedItemId == R.id.navigation_home) {
                 Client.get().login();
 
-            } else if (selectedItemId == R.id.navigation_notas) {
+            } else if (selectedItemId == R.id.navigation_grades) {
                 Client.get().loadYear(pos);
 
-            } else if (selectedItemId == R.id.navigation_materiais) {
+            } else if (selectedItemId == R.id.navigation_materials) {
                 Client.get().load(PG_MATERIALS);
             }
         } else {
@@ -535,14 +573,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void countNotifications(int count1, int count2) {
         if (count1 <= 0)
-            binding.navigation.removeBadge(R.id.navigation_notas);
+            binding.navigation.removeBadge(R.id.navigation_grades);
         else
-            binding.navigation.getOrCreateBadge(R.id.navigation_notas).setNumber(Math.min(count1, 99));
+            binding.navigation.getOrCreateBadge(R.id.navigation_grades).setNumber(Math.min(count1, 99));
 
         if (count2 <= 0)
-            binding.navigation.removeBadge(R.id.navigation_materiais);
+            binding.navigation.removeBadge(R.id.navigation_materials);
         else
-            binding.navigation.getOrCreateBadge(R.id.navigation_materiais).setNumber(Math.min(count2, 99));
+            binding.navigation.getOrCreateBadge(R.id.navigation_materials).setNumber(Math.min(count2, 99));
     }
 
     @Override

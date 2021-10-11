@@ -1,16 +1,6 @@
 package com.tinf.qmobile.widget;
 
-import android.content.Context;
-import android.util.AttributeSet;
-import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
-import lecho.lib.hellocharts.listener.DummyColumnChartOnValueSelectListener;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SelectedValue;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.provider.ColumnChartDataProvider;
-import lecho.lib.hellocharts.view.AbstractChartView;
-
-public class ColumnChart extends AbstractChartView implements ColumnChartDataProvider {
+/*public class ColumnChart extends AbstractChartView implements ColumnChartDataProvider {
 
     private static final String TAG = "ColumnChartView";
     private ColumnChartData data;
@@ -75,4 +65,4 @@ public class ColumnChart extends AbstractChartView implements ColumnChartDataPro
         }
     }
 
-}
+}*/

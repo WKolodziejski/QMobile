@@ -15,11 +15,6 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import java.util.ArrayList;
 import java.util.List;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
 
 public class PerformanceFragment extends Fragment {
     private FragmentPerformanceBinding binding;
@@ -42,7 +37,7 @@ public class PerformanceFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //List<Line> lines = new ArrayList<>();
-        List<Matter> matters = DataBase.get().getBoxStore()
+        /*List<Matter> matters = DataBase.get().getBoxStore()
                 .boxFor(Matter.class)
                 .query()
                 .order(Matter_.title_)
@@ -67,20 +62,20 @@ public class PerformanceFragment extends Fragment {
             columns.add(new Column(values)
                     .setHasLabels(true)
                     .setHasLabelsOnlyForSelected(true));
-            /*List<PointValue> points = new ArrayList<>();
+            List<PointValue> points = new ArrayList<>();
             List<Journal> journals = matter.getLastPeriod().journals;
 
             for (int i = 0; i < journals.size(); i++) {
                 points.add(new PointValue(i, journals.get(i).getPlotGrade()));
             }
 
-            lines.add(new Line(points).setColor(matter.getColor()));*/
+            lines.add(new Line(points).setColor(matter.getColor()));
         }
 
-        /*LineChartData ld = new LineChartData();
+        LineChartData ld = new LineChartData();
         ld.setLines(lines);
         ld.setValueLabelBackgroundEnabled(false);
-        ld.setValueLabelsTextColor(Color.CYAN);*/
+        ld.setValueLabelsTextColor(Color.CYAN);
 
         List<AxisValue> axisValues = new ArrayList<>();
         axisValues.add(new AxisValue(6).setLabel(""));
@@ -93,7 +88,7 @@ public class PerformanceFragment extends Fragment {
                 .setHasTiltedLabels(false));
         data.setAxisXBottom(new Axis(axisMatter));
         binding.columnChart.setColumnChartData(data);
-        binding.columnChart.setZoomEnabled(false);
+        binding.columnChart.setZoomEnabled(false);*/
     }
 
 }

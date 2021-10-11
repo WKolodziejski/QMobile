@@ -31,7 +31,8 @@
 
         <activity
             android:name=".activity.settings.SplashActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -42,7 +43,8 @@
             android:name=".activity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
-            android:label="">
+            android:label=""
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -53,7 +55,8 @@
         <activity android:name=".activity.SearchActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysVisible"
-            android:label="">
+            android:label=""
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.SEARCH"/>
@@ -65,13 +68,15 @@
 
         <activity
             android:name=".activity.LoginActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.settings.AboutActivity">
+        <activity android:name=".activity.settings.AboutActivity"
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
@@ -79,7 +84,8 @@
 
         <activity
             android:name=".activity.EventCreateActivity"
-            android:label="">
+            android:label=""
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -87,39 +93,45 @@
 
         <activity
             android:name=".activity.EventViewActivity"
-            android:label="">
+            android:label=""
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.settings.MoreActivity">
+        <activity android:name=".activity.settings.MoreActivity"
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.INFO" />
             </intent-filter>
         </activity>
 
         <activity android:name=".activity.ScheduleActivity"
-            android:label="">
+            android:label=""
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <activity android:name=".activity.PerformanceActivity"
-            android:label="">
+            android:label=""
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.CalendarActivity">
+        <activity android:name=".activity.CalendarActivity"
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.MatterActivity">
+        <activity android:name=".activity.MatterActivity"
+            android:exported="false">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
