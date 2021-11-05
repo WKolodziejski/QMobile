@@ -22,6 +22,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
 
 public class UserFragment extends DialogFragment {
@@ -105,7 +106,7 @@ public class UserFragment extends DialogFragment {
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.TOP;
-        params.y = Math.round(60 * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+        params.y = Design.dpiToPixels(getContext(), 60);
 
         window.setAttributes(params);
     }

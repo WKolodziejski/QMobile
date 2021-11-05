@@ -182,16 +182,16 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 while (minutes[lastIndex] == null)
                     lastIndex--;
 
-                params.height = Math.round((((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute())
-                        - ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45)
-                        * ((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT));
+                params.height = Design.dpiToPixels(getContext(),
+                            ((minutes[lastIndex].getEndTime().getHour()    * 60) + minutes[lastIndex].getEndTime().getMinute()) -
+                                ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45);
 
                 binding.weekView.goToDay(DayOfWeek.MONDAY);
                 binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
                 binding.empty.setVisibility(View.GONE);
             } else {
-                params.height = Math.round((float) getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+                params.height = Design.dpiToPixels(getContext(), 0);
 
                 binding.empty.setVisibility(View.VISIBLE);
             }

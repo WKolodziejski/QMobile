@@ -59,8 +59,6 @@ public class App extends Application {
                 //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
-
-        Log.d("SENHA", User.getCredential(PASSWORD));
     }
 
     public static Context getContext() {

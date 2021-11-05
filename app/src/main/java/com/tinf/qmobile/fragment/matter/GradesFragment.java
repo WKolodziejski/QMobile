@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.JournalAdapter;
+import com.tinf.qmobile.widget.MultipleItemDivider;
 
 public class GradesFragment extends Fragment {
 
@@ -34,7 +35,7 @@ public class GradesFragment extends Fragment {
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new MultipleItemDivider(getContext(), 52));
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
 

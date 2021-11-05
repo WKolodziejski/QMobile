@@ -11,6 +11,7 @@ import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -25,6 +26,7 @@ import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.databinding.FragmentJournalBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.widget.MultipleItemDivider;
 
 public class JournalFragment extends Fragment implements OnUpdate {
     private FragmentJournalBinding binding;
@@ -65,7 +67,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
-        binding.recycler.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        binding.recycler.addItemDecoration(new MultipleItemDivider(getContext(), 52));
         binding.recycler.setAdapter(adapter);
         binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
     }

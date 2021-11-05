@@ -100,9 +100,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginTop="8dp"
                 android:id="@+id/calendar_layout"
                 >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black_dividers" />
 
                 <TextView
                     android:layout_width="match_parent"

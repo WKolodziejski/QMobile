@@ -4,6 +4,9 @@ import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROL
 import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL;
 import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
@@ -98,6 +101,14 @@ public class Design {
             }
 
         };
+    }
+
+    public static int dpiToPixels(Context context, int dpi) {
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dpi,
+                context.getResources().getDisplayMetrics()
+        );
     }
 
 
