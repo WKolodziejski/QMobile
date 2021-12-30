@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:stateListAnimator="@drawable/appbar_always_elevated"
         app:expanded="false"
-        app:layout_behavior=".widget.CalendarBehavior"
+        app:layout_behavior=".widget.calendar.CalendarBehavior"
         style="@style/AppTheme.AppBarOverlay"
         tools:targetApi="lollipop"
         >
@@ -98,7 +98,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
 
-        <com.tinf.qmobile.widget.CalendarRecyclerView
+        <com.tinf.qmobile.widget.calendar.CalendarRecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

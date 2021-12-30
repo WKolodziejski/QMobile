@@ -130,7 +130,7 @@
 
             </LinearLayout>
 
-            <!--<LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -153,14 +153,14 @@
                     android:clickable="true"
                     android:id="@+id/chart_text"/>
 
-                <com.tinf.qmobile.widget.ColumnChart
+                <com.tinf.qmobile.widget.performance.PerformanceChart
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginVertical="8dp"
                     android:id="@+id/chart" />
 
-            </LinearLayout>!-->
+            </LinearLayout>
 
         </LinearLayout>
 

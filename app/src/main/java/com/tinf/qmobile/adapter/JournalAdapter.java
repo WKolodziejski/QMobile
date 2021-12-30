@@ -126,7 +126,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
                 @Override
                 public boolean areContentsTheSame(int o, int n) {
-                    return (journals.get(o).equals(updated.get(n)));
+                    return journals.get(o).equals(updated.get(n));
                 }
 
             }, true);

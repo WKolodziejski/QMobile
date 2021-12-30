@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
 
@@ -103,11 +104,11 @@ public class Design {
         };
     }
 
-    public static int dpiToPixels(Context context, int dpi) {
+    public static int dpiToPixels(int dpi) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 dpi,
-                context.getResources().getDisplayMetrics()
+                App.getContext().getResources().getDisplayMetrics()
         );
     }
 

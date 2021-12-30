@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/columnChart"/>
 
-    <com.tinf.qmobile.widget.ColumnChart
+    <com.tinf.qmobile.widget.performance.PerformanceChart
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginEnd="16dp"

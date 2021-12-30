@@ -20,7 +20,7 @@ import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.User;
-import com.tinf.qmobile.widget.CalendarRecyclerView;
+import com.tinf.qmobile.widget.calendar.CalendarRecyclerView;
 import org.joda.time.LocalDate;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

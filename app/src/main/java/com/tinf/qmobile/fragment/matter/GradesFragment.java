@@ -8,13 +8,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.JournalAdapter;
-import com.tinf.qmobile.widget.MultipleItemDivider;
+import com.tinf.qmobile.widget.divider.JournalItemDivider;
 
 public class GradesFragment extends Fragment {
 
@@ -35,7 +34,7 @@ public class GradesFragment extends Fragment {
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.addItemDecoration(new MultipleItemDivider(getContext(), 52));
+        recyclerView.addItemDecoration(new JournalItemDivider(getContext(), 52));
         recyclerView.setLayoutManager(layout);
         recyclerView.setAdapter(adapter);
 

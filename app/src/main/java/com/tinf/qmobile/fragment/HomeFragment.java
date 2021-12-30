@@ -1,19 +1,23 @@
 package com.tinf.qmobile.fragment;
 
+import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,11 +29,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.PerformanceActivity;
 import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentHomeBinding;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
@@ -37,14 +44,19 @@ import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
 
 import org.threeten.bp.DayOfWeek;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
+import lecho.lib.hellocharts.model.Column;
+import lecho.lib.hellocharts.model.ColumnChartData;
+import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class HomeFragment extends Fragment implements OnUpdate {
     private FragmentHomeBinding binding;
@@ -96,110 +108,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             startActivity(intent);
         });
 
-        binding.weekView.setWeekViewLoader(() -> {
-
-            boolean[][] hours = new boolean[24][7];
-            WeekViewEvent[] minutes = new WeekViewEvent[24];
-
-            List<WeekViewEvent> events = new ArrayList<>();
-            List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                    .equal(Schedule_.year, User.getYear(pos)).and()
-                    .equal(Schedule_.period, User.getPeriod(pos))
-                    .build().find();
-
-            ViewGroup.LayoutParams params = binding.weekView.getLayoutParams();
-
-            if (!schedules.isEmpty()) {
-
-                for (Schedule schedule : schedules) {
-                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                            schedule.getStartTime(), schedule.getEndTime());
-                    event.setColor(schedule.getColor());
-                    events.add(event);
-
-                    int day = event.getStartTime().getDay().getValue();
-                    int hour = event.getStartTime().getHour();
-
-                    if (minutes[hour] != null) {
-                        if (event.getEndTime().isAfter(minutes[hour].getEndTime())) {
-                            minutes[hour] = event;
-                            hours[hour][day] = true;
-                        }
-                    } else {
-                        minutes[hour] = event;
-                        hours[hour][day] = true;
-                    }
-                }
-
-                int firstIndex = 0;
-                int parc1 = 0;
-
-                for (int h = 0; h < 24; h++) {
-                    int sum = 0;
-                    for (int d = 0; d < 7; d++) {
-                        if (hours[h][d]) {
-                            sum++;
-                        }
-                    }
-                    if (sum > parc1) {
-                        firstIndex = h;
-                        parc1 = sum;
-                    }
-                }
-
-                boolean r = true;
-                int d1 = 0;
-
-                while (r) {
-                    if (!hours[firstIndex - 1][d1] && d1 < 7) {
-                        d1++;
-                        if (d1 == 7)
-                            r = false;
-                    } else {
-                        firstIndex--;
-                        d1 = 0;
-                    }
-                }
-
-                int lastIndex = firstIndex;
-                int maxInterval = 0;
-
-                for (int h = firstIndex; h < 24; h++) {
-                    int sum = 0;
-                    for (int d = 0; d < 7; d++) {
-                        if (hours[h][d])
-                            sum++;
-                    }
-                    if (sum == 0)
-                        maxInterval++;
-
-                    if (maxInterval > 1)
-                        break;
-                    else
-                        lastIndex = h;
-                }
-
-                while (minutes[lastIndex] == null)
-                    lastIndex--;
-
-                params.height = Design.dpiToPixels(getContext(),
-                            ((minutes[lastIndex].getEndTime().getHour()    * 60) + minutes[lastIndex].getEndTime().getMinute()) -
-                                ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45);
-
-                binding.weekView.goToDay(DayOfWeek.MONDAY);
-                binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
-
-                binding.empty.setVisibility(View.GONE);
-            } else {
-                params.height = Design.dpiToPixels(getContext(), 0);
-
-                binding.empty.setVisibility(View.VISIBLE);
-            }
-
-            binding.weekView.setLayoutParams(params);
-
-            return events;
-        });
+        binding.weekView.setWeekViewLoader(this::updateSchedule);
 
         binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -207,7 +116,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                     if (scrollY < oldScrollY && !fab.isShown())
                         fab.show();
-                    else if(scrollY > oldScrollY && fab.isShown())
+                    else if (scrollY > oldScrollY && fab.isShown())
                         fab.hide();
                 });
 
@@ -216,31 +125,133 @@ public class HomeFragment extends Fragment implements OnUpdate {
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         binding.recycler.setAdapter(new HomeAdapter(getContext()));
 
-        binding.calendarLayout.setOnClickListener(view1 -> {
-            startActivity(new Intent(getActivity(), CalendarActivity.class),
-                    ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(fab, fab.getTransitionName()))
-                            .toBundle());
-        });
+        binding.calendarLayout.setOnClickListener(view1 ->
+                startActivity(new Intent(getActivity(), CalendarActivity.class),
+                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                                Pair.create(fab, fab.getTransitionName()))
+                                .toBundle()));
 
-        binding.scheduleLayout.setOnClickListener(view1 -> {
-            startActivity(new Intent(getActivity(), ScheduleActivity.class),
-                    ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(fab, fab.getTransitionName()))
-                            .toBundle());
-        });
+        binding.scheduleLayout.setOnClickListener(view1 ->
+                startActivity(new Intent(getActivity(), ScheduleActivity.class),
+                        ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                                Pair.create(fab, fab.getTransitionName()))
+                                .toBundle()));
 
-        /*binding.chartText.setOnClickListener(view1 -> {
+        binding.chartText.setOnClickListener(view1 -> {
             startActivity(new Intent(getActivity(), PerformanceActivity.class),
                     ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(binding.fab, binding.fab.getTransitionName()))
+                            Pair.create(fab, fab.getTransitionName()))
                             .toBundle());
         });
 
-        updateChart();*/
+        updateChart();
     }
 
-    /*private void updateChart() {
+    private List<WeekViewEvent> updateSchedule() {
+        boolean[][] hours = new boolean[24][7];
+        WeekViewEvent[] minutes = new WeekViewEvent[24];
+
+        List<WeekViewEvent> events = new ArrayList<>();
+        List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                .equal(Schedule_.year, User.getYear(pos)).and()
+                .equal(Schedule_.period, User.getPeriod(pos))
+                .build().find();
+
+        ViewGroup.LayoutParams params = binding.weekView.getLayoutParams();
+
+        if (!schedules.isEmpty()) {
+
+            for (Schedule schedule : schedules) {
+                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                        schedule.getStartTime(), schedule.getEndTime());
+                event.setColor(schedule.getColor());
+                events.add(event);
+
+                int day = event.getStartTime().getDay().getValue();
+                int hour = event.getStartTime().getHour();
+
+                if (minutes[hour] != null) {
+                    if (event.getEndTime().isAfter(minutes[hour].getEndTime())) {
+                        minutes[hour] = event;
+                        hours[hour][day] = true;
+                    }
+                } else {
+                    minutes[hour] = event;
+                    hours[hour][day] = true;
+                }
+            }
+
+            int firstIndex = 0;
+            int parc1 = 0;
+
+            for (int h = 0; h < 24; h++) {
+                int sum = 0;
+                for (int d = 0; d < 7; d++) {
+                    if (hours[h][d]) {
+                        sum++;
+                    }
+                }
+                if (sum > parc1) {
+                    firstIndex = h;
+                    parc1 = sum;
+                }
+            }
+
+            boolean r = true;
+            int d1 = 0;
+
+            while (r) {
+                if (!hours[firstIndex - 1][d1] && d1 < 7) {
+                    d1++;
+                    if (d1 == 7)
+                        r = false;
+                } else {
+                    firstIndex--;
+                    d1 = 0;
+                }
+            }
+
+            int lastIndex = firstIndex;
+            int maxInterval = 0;
+
+            for (int h = firstIndex; h < 24; h++) {
+                int sum = 0;
+                for (int d = 0; d < 7; d++) {
+                    if (hours[h][d])
+                        sum++;
+                }
+                if (sum == 0)
+                    maxInterval++;
+
+                if (maxInterval > 1)
+                    break;
+                else
+                    lastIndex = h;
+            }
+
+            while (minutes[lastIndex] == null)
+                lastIndex--;
+
+            params.height = Design.dpiToPixels(
+                    ((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) -
+                    ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45);
+
+            binding.weekView.goToDay(DayOfWeek.MONDAY);
+            binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+
+            binding.empty.setVisibility(View.GONE);
+        } else {
+            params.height = Design.dpiToPixels(0);
+
+            binding.empty.setVisibility(View.VISIBLE);
+        }
+
+        binding.weekView.setLayoutParams(params);
+
+        return events;
+    }
+
+    private void updateChart() {
         List<Matter> matters = DataBase.get().getBoxStore()
                 .boxFor(Matter.class)
                 .query()
@@ -254,18 +265,25 @@ public class HomeFragment extends Fragment implements OnUpdate {
         List<AxisValue> axisMatter = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
 
+        boolean allEmpty = true;
+
         for (int i = 0; i < matters.size(); i++) {
             Matter matter = matters.get(i);
 
             axisMatter.add(new AxisValue(i).setLabel(matter.getLabel()));
 
             List<SubcolumnValue> values = new ArrayList<>();
-            values.add(new SubcolumnValue(matter.getLastPeriod().getPlotGrade(),
-                    matter.getColor())
-                    .setLabel(matter.getLastPeriod().getLabel()));
+            Period period = matter.getLastPeriod();
+
+            if (period != null)
+                allEmpty = false;
+
+            values.add(new SubcolumnValue(period == null ? 0 : period.getPlotGrade(), matter.getColor())
+                    .setLabel(period == null ? "" : period.getLabel()));
+
             columns.add(new Column(values)
                     .setHasLabels(true));
-                    //.setHasLabelsOnlyForSelected(true));
+            //.setHasLabelsOnlyForSelected(true));
         }
 
         List<AxisValue> axisValues = new ArrayList<>();
@@ -295,7 +313,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             }
 
         });
-    }*/
+    }
 
     @Override
     public void onScrollRequest() {
@@ -306,7 +324,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
     public void onDateChanged() {
         binding.weekView.notifyDatasetChanged();
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        //updateChart();
+        updateSchedule();
+        updateChart();
         Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
     }
 
@@ -320,7 +339,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
-                    //updateChart();
+                    updateSchedule();
+                    updateChart();
                     Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
                 });
 
@@ -330,7 +350,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
-                    //updateChart();
+                    updateSchedule();
+                    updateChart();
                     Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
                 });
     }

@@ -1,5 +1,10 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -47,11 +52,6 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-
-import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.HEADER;
-import static com.tinf.qmobile.model.ViewType.MATERIAL;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate, KmStickyListener {
     private List<Queryable> materials;
@@ -330,7 +330,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
             case EMPTY:
                 return new EmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.material_empty, parent, false));
-
         }
         return null;
     }
@@ -346,7 +345,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     }
 
     @Override
-    public void onScrollRequest() { }
+    public void onScrollRequest() {
+    }
 
     @Override
     public void onDateChanged() {
@@ -464,9 +464,13 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     public interface OnInteractListener {
         boolean isSelectionMode();
+
         void setSelectionMode(ActionMode.Callback callback);
+
         void onSelectedCount(int size);
+
         boolean onCreateActionMode(ActionMode actionMode, Menu menu);
+
         void onDestroyActionMode(ActionMode actionMode);
     }
 

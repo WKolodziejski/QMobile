@@ -180,13 +180,17 @@ public class Matter implements Queryable {
     public String getLabel() {
         String label = getTitle();
         label = label.replace(" - ", " ");
+        label = label.replace("-", " ");
         label = label.replace(" e ", " ");
+        label = label.replace(" de ", " ");
+        label = label.replace(" da ", " ");
+        label = label.replace(" em ", " ");
         String[] tokens = label.split(" ");
-        String ret = "";
+        StringBuilder ret = new StringBuilder();
         int length = Math.min(3, tokens.length);
 
         if (tokens.length <= 2)
-            ret = label.substring(0, Math.min(label.length() - 1, 3));
+            ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
         else
             for (int i = 0; i < length; i++) {
                 String token = tokens[i];
@@ -195,10 +199,10 @@ public class Matter implements Queryable {
                     continue;
 
                 if (!token.startsWith("I") && !token.endsWith("I"))
-                    ret += token.substring(0, 1);
+                    ret.append(token.charAt(0));
             }
 
-        return ret.toUpperCase();
+        return ret.toString().toUpperCase();
     }
 
     public String getChartValue() {

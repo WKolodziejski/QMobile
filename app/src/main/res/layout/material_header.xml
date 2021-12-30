@@ -14,7 +14,6 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toTopOf="@id/header"
     android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/colorPrimaryLight"
     >
 
     <TextView
@@ -29,7 +28,7 @@
         android:maxLines="1"
         android:textColor="@color/colorPrimaryLight"
         android:textStyle="bold"
-        android:text="9" />
+        tools:text="9" />
 
     <TextView
         android:id="@+id/title"

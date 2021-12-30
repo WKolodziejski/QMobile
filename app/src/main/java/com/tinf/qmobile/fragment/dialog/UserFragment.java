@@ -106,7 +106,7 @@ public class UserFragment extends DialogFragment {
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
         params.height = WindowManager.LayoutParams.WRAP_CONTENT;
         params.gravity = Gravity.TOP;
-        params.y = Design.dpiToPixels(getContext(), 60);
+        params.y = Design.dpiToPixels(60);
 
         window.setAttributes(params);
     }

@@ -19,12 +19,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
@@ -33,6 +30,8 @@ import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.widget.divider.JournalItemDivider;
+import com.tinf.qmobile.widget.divider.MaterialItemDivider;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
@@ -133,7 +132,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
-        binding.recycler.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
+        binding.recycler.addItemDecoration(new MaterialItemDivider(getContext(), 72));
         binding.recycler.setAdapter(adapter);
 
         if (getActivity() instanceof MainActivity) {

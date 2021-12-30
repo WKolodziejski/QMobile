@@ -1,0 +1,827 @@
+<rules>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>Default ECB mode should not be used</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*AES[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(AES)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>ECB doesn't provide serious message confidentiality</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*AES\/ECB[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(AES\/ECB)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>ECB doesn't provide serious message confidentiality</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*Blowfish\/ECB\/PKCS5Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(Blowfish\/ECB\/PKCS5Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>ECB doesn't provide serious message confidentiality</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*DES\/ECB\/PKCS5Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(DES\/ECB\/PKCS5Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>CBC with PKCS5 is vulnerable to oracle padding attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*AES\/CBC\/PKCS5Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(AES\/CBC\/PKCS5Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>CBC with PKCS5 is vulnerable to oracle padding attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*Blowfish\/CBC\/PKCS5Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(Blowfish\/CBC\/PKCS5Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>CBC with PKCS5 is vulnerable to oracle padding attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*DES\/CBC\/PKCS5Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(DES\/CBC\/PKCS5Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>CBC with PKCS7 is vulnerable to oracle padding attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*AES\/CBC\/PKCS7Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(AES\/CBC\/PKCS7Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>CBC with PKCS7 is vulnerable to oracle padding attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*Blowfish\/CBC\/PKCS7Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(Blowfish\/CBC\/PKCS7Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>CBC with PKCS7 is vulnerable to oracle padding attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*DES\/CBC\/PKCS7Padding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(DES\/CBC\/PKCS7Padding)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>DES works with 56-bit keys allow attacks via exhaustive search</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*DES[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(DES)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>Triple DES is vulnerable to meet-in-the-middle attack</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*DESede[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(DESede)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>RC2 is vulnerable to a related-key attack</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*RC2.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(RC2)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>vulnerable to several attacks (see https://en.wikipedia.org/wiki/RC4#Security)</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*RC4.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(RC4)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>Blowfish use a 64-bit block size makes it vulnerable to birthday attacks</briefDescription>
+		<explanation>AES and GCM mode should be used to improve security</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*Blowfish.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using AES/GCM/NoPadding</fixName>
+		<fixOld>(Blowfish)</fixOld>
+		<fixNew>AES/GCM/NoPadding</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CipherGetInstance</ID>
+		<briefDescription>RSA without OAEP padding scheme is not recommended</briefDescription>
+		<explanation>OAEP padding should be used for RSA</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.Cipher</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*RSA\/NONE\/NoPadding[^\/].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using RSA/None/OAEPWITHSHA-256ANDMGF1PADDING</fixName>
+		<fixOld>(RSA\/NONE\/NoPadding)</fixOld>
+		<fixNew>RSA/None/OAEPWITHSHA-256ANDMGF1PADDING</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SensitiveDataLoggingW</ID>
+		<briefDescription>Sensitive data may be logged</briefDescription>
+		<explanation>Sensitve data such as password should not be logged</explanation>
+		<priority>5</priority>
+		<className>android.util.Log</className>
+		<methodName>w</methodName>
+		<paramPattern>(.*pass.*)|(.*pw.*)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SensitiveDataLoggingD</ID>
+		<briefDescription>Sensitive data may be logged</briefDescription>
+		<explanation>Sensitve data such as password should not be logged</explanation>
+		<priority>5</priority>
+		<className>android.util.Log</className>
+		<methodName>d</methodName>
+		<paramPattern>(.*pass.*)|(.*pw.*)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SensitiveDataLoggingE</ID>
+		<briefDescription>Sensitive data may be logged</briefDescription>
+		<explanation>Sensitve data such as password should not be logged</explanation>
+		<priority>5</priority>
+		<className>android.util.Log</className>
+		<methodName>e</methodName>
+		<paramPattern>(.*pass.*)|(.*pw.*)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SensitiveDataLoggingI</ID>
+		<briefDescription>Sensitive data may be logged</briefDescription>
+		<explanation>Sensitve data such as password should not be logged</explanation>
+		<priority>5</priority>
+		<className>android.util.Log</className>
+		<methodName>i</methodName>
+		<paramPattern>(.*pass.*)|(.*pw.*)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SensitiveDataLoggingV</ID>
+		<briefDescription>Sensitive data may be logged</briefDescription>
+		<explanation>Sensitve data such as password should not be logged</explanation>
+		<priority>5</priority>
+		<className>android.util.Log</className>
+		<methodName>v</methodName>
+		<paramPattern>(.*pass.*)|(.*pw.*)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>KeyPairInit</ID>
+		<briefDescription>Cryptographic keys should be rubust</briefDescription>
+		<explanation>Key lenght should be >= 2048</explanation>
+		<priority>5</priority>
+		<className>java.security.KeyPairGenerator</className>
+		<methodName>initialize</methodName>
+		<paramPattern>(1024)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>(1024)</fixOld>
+		<fixNew>2048</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>KeyInit</ID>
+		<briefDescription>Cryptographic keys should be rubust</briefDescription>
+		<explanation>Key lenght should be >= 128</explanation>
+		<priority>5</priority>
+		<className>java.security.KeyGenerator</className>
+		<methodName>init</methodName>
+		<paramPattern>(64)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>(64)</fixOld>
+		<fixNew>128</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>ECGenParameterSpec</ID>
+		<briefDescription>Cryptographic keys should be rubust</briefDescription>
+		<explanation>Cryptographic keys should be rubust</explanation>
+		<priority>5</priority>
+		<className>java.security.spec.ECGenParameterSpec</className>
+		<methodName> </methodName>
+		<paramPattern>(secp112r1)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>(secp112r1)</fixOld>
+		<fixNew>secp224k1</fixNew>
+		<type>CONSTRUCTOR_PARAM</type>
+	</rule>
+	<rule>
+		<ID>DriverManagerGetConnection</ID>
+		<briefDescription>A secure password should be used when connecting to a database</briefDescription>
+		<explanation>A secure password should be used when connecting to a database</explanation>
+		<priority>5</priority>
+		<className>java.sql.DriverManager</className>
+		<methodName>getConnection</methodName>
+		<paramPattern>()</paramPattern>
+		<paramIndex>2</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>()</fixOld>
+		<fixNew>secur3P@ssw0rd</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>PasswordEncoder</ID>
+		<briefDescription>Passwords should not be stored in plain-text or with a fast hashing algorithm</briefDescription>
+		<explanation>Passwords should not be stored in plain-text or with a fast hashing algorithm</explanation>
+		<priority>5</priority>
+		<className>org.springframework.security.crypto.password.StandardPasswordEncoder</className>
+		<methodName> </methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>(StandardPasswordEncoder)</fixOld>
+		<fixNew>BCryptPasswordEncoder</fixNew>
+		<type>CONSTRUCTOR</type>
+	</rule>
+	<rule>
+		<ID>SecureRandomSeed</ID>
+		<briefDescription>"SecureRandom" seeds should not be predictable</briefDescription>
+		<explanation>"SecureRandom" seeds should not be predictable</explanation>
+		<priority>5</priority>
+		<className>java.security.SecureRandom</className>
+		<methodName> </methodName>
+		<paramPattern>(.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>(SecureRandom.*)</fixOld>
+		<fixNew>SecureRandom()</fixNew>
+		<type>CONSTRUCTOR_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SecureRandomSeed</ID>
+		<briefDescription>"SecureRandom" seeds should not be predictable</briefDescription>
+		<explanation>"SecureRandom" seeds should not be predictable</explanation>
+		<priority>5</priority>
+		<className>java.security.SecureRandom</className>
+		<methodName> </methodName>
+		<paramPattern>(.*setSeed.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security</fixName>
+		<fixOld>(.*setSeed.*)</fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>SSLContext</ID>
+		<briefDescription>Weak SSL/TLS protocols should not be used</briefDescription>
+		<explanation>Weak SSL/TLS protocols should not be used</explanation>
+		<priority>5</priority>
+		<className>javax.net.ssl.SSLContext</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*SSLv3.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using TLSv1.2</fixName>
+		<fixOld>(SSLv3)</fixOld>
+		<fixNew>TLSv1.2</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>NullCipher</ID>
+		<briefDescription>NullCipher should not be used</briefDescription>
+		<explanation>NullCipher should not be used</explanation>
+		<priority>5</priority>
+		<className>javax.crypto.NullCipher</className>
+		<methodName> </methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>CONSTRUCTOR</type>
+	</rule>
+	<rule>
+		<ID>MessageDigest</ID>
+		<briefDescription>SHA-1 and Message-Digest hash algorithms should not be used in secure contexts</briefDescription>
+		<explanation>SHA-1 and Message-Digest hash algorithms should not be used in secure contexts</explanation>
+		<priority>5</priority>
+		<className>java.security.MessageDigest</className>
+		<methodName>getInstance</methodName>
+		<paramPattern>(.*SHA1.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Improve security by using SHA256</fixName>
+		<fixOld>(SHA1)</fixOld>
+		<fixNew>SHA-256</fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>PredictableRandom</ID>
+		<briefDescription>Predictable pseudorandom number generator</briefDescription>
+		<explanation>The use of a predictable random value can lead to vulnerabilities</explanation>
+		<priority>5</priority>
+		<className>java.util.Random</className>
+		<methodName> </methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>1</needFix>
+		<fixName>Use SecureRandom</fixName>
+		<fixOld>Random[^~]*Random[(][)]</fixOld>
+		<fixNew>SecureRandom ${oldText} = new SecureRandom();\nbyte[] result = new byte[32];\n${oldText}.nextBytes(result)</fixNew>
+		<type>CONSTRUCTOR</type>
+	</rule>
+	<rule>
+		<ID>PathTraversalPotential</ID>
+		<briefDescription>Potential Path Traversal.</briefDescription>
+		<explanation>A path traversal attack (also known as directory traversal) aims to access files and directories that are stored outside the root folder</explanation>
+		<priority>5</priority>
+		<className>java.io.File</className>
+		<methodName> </methodName>
+		<paramPattern>(^\".*\"$)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Add path traversal filter</fixName>
+		<fixOld>,(.*?)\)</fixOld>
+		<fixNew>${oldText}.substring(${oldText}.lastIndexOf("/"))</fixNew>
+		<type>CONSTRUCTOR_PARAM</type>
+	</rule>
+	<rule>
+		<ID>CommandInjectionPotential</ID>
+		<briefDescription>Potential Command Injection.</briefDescription>
+		<explanation>Execute command with user input may trigger command injection</explanation>
+		<priority>5</priority>
+		<className>java.lang.Runtime</className>
+		<methodName>exec</methodName>
+		<paramPattern>^.*\+.*$</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletContentType</ID>
+		<briefDescription>Untrusted Content-Type header</briefDescription>
+		<explanation>The HTTP header Content-Type can be controlled by the client. You may need to validate or sanitize those values before passing them to sensitive APIs</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequest</className>
+		<methodName>getContentType</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletContentType (HttpServletRequestWrapper)</ID>
+		<briefDescription>Untrusted Content-Type header</briefDescription>
+		<explanation>The HTTP header Content-Type can be controlled by the client. You may need to validate or sanitize those values before passing them to sensitive APIs</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequestWrapper</className>
+		<methodName>getContentType</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletServerName</ID>
+		<briefDescription>Untrusted Hostname header</briefDescription>
+		<explanation>The hostname header can be controlled by the client. You may need to validate or sanitize those values before passing them to sensitive APIs.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequest</className>
+		<methodName>getServerName</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletServerName (HttpServletRequestWrapper)</ID>
+		<briefDescription>Untrusted Hostname header</briefDescription>
+		<explanation>The hostname header can be controlled by the client. You may need to validate or sanitize those values before passing them to sensitive APIs.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequestWrapper</className>
+		<methodName>getServerName</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletSessionId</ID>
+		<briefDescription>Untrusted session cookie value</briefDescription>
+		<explanation>The value can be altered by the client. The following HTTP request illustrates the potential modification.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequest</className>
+		<methodName>getSession</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletSessionId (HttpServletRequestWrapper)</ID>
+		<briefDescription>Untrusted session cookie value</briefDescription>
+		<explanation>The value can be altered by the client. The following HTTP request illustrates the potential modification.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequestWrapper</className>
+		<methodName>getSession</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletSessionId</ID>
+		<briefDescription>Untrusted session cookie value</briefDescription>
+		<explanation>The value can be altered by the client. The following HTTP request illustrates the potential modification.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequest</className>
+		<methodName>getRequestedSessionId</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletSessionId (HttpServletRequestWrapper)</ID>
+		<briefDescription>Untrusted session cookie value</briefDescription>
+		<explanation>The value can be altered by the client. The following HTTP request illustrates the potential modification.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequestWrapper</className>
+		<methodName>getRequestedSessionId</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletQueryString</ID>
+		<briefDescription>Untrusted query string</briefDescription>
+		<explanation>You may need to validate or sanitize anything pulled from the query string before passing it to sensitive APIs.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequest</className>
+		<methodName>getQueryString</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>UntrustedServletQueryString (HttpServletRequestWrapper)</ID>
+		<briefDescription>Untrusted query string</briefDescription>
+		<explanation>You may need to validate or sanitize anything pulled from the query string before passing it to sensitive APIs.</explanation>
+		<priority>5</priority>
+		<className>javax.servlet.http.HttpServletRequestWrapper</className>
+		<methodName>getQueryString</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>AndroidExportedComponent</ID>
+		<briefDescription>Exported Component</briefDescription>
+		<explanation>The Android application exports a component for use by other applications, but does not properly restrict which applications can launch the component or access the data it contains.</explanation>
+		<priority>5</priority>
+		<className> </className>
+		<methodName>exported</methodName>
+		<paramPattern>true</paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>1</needFix>
+		<fixName>Change to android:exported="false"</fixName>
+		<fixOld>true</fixOld>
+		<fixNew>false</fixNew>
+		<type>XMLATTRIBUTE</type>
+	</rule>
+	<rule>
+		<ID>DebugEnable</ID>
+		<briefDescription>Debug is enabled</briefDescription>
+		<explanation>Information written to log files can be of a sensitive nature</explanation>
+		<priority>5</priority>
+		<className> </className>
+		<methodName>debuggable</methodName>
+		<paramPattern>true</paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>1</needFix>
+		<fixName>Change to android:debuggable="false"</fixName>
+		<fixOld>true</fixOld>
+		<fixNew>false</fixNew>
+		<type>XMLATTRIBUTE</type>
+	</rule>
+	<rule>
+		<ID>ScriptEngineCodeInjection</ID>
+		<briefDescription>Potential Command Injection by Script Engine</briefDescription>
+		<explanation>Eval method with user input may trigger command injection</explanation>
+		<priority>10</priority>
+		<className>javax.script.ScriptEngine</className>
+		<methodName>eval</methodName>
+		<paramPattern>^.*\+.*$</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>XPathInjection</ID>
+		<briefDescription>Potential XPath Injection</briefDescription>
+		<explanation>The parameter in compile method should be whitelisted</explanation>
+		<priority>10</priority>
+		<className>javax.xml.xpath.XPath</className>
+		<methodName>compile</methodName>
+		<paramPattern>^.*\+.*$</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>PatternLoad</ID>
+		<briefDescription>Use double slashes for escape characters</briefDescription>
+		<explanation>Remember to use double slashes for escape characters.</explanation>
+		<priority>0</priority>
+		<className>java.util.regex.Pattern</className>
+		<methodName>compile</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>PreventArbitraryFileUpload</ID>
+		<briefDescription>Copy method may cause unsafe file upload</briefDescription>
+		<explanation>Metadata should be checked to prevent unsafe file upload</explanation>
+		<priority>10</priority>
+		<className>android.os.FileUtils</className>
+		<methodName>copy</methodName>
+		<paramPattern>(.*up.*)|(.*load.*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>METHOD_PARAM</type>
+	</rule>
+	<rule>
+		<ID>SensitiveCookie</ID>
+		<briefDescription>Sensitive information in cookie</briefDescription>
+		<explanation>Do not store unencrypted sensitive information on the client side</explanation>
+		<priority>5</priority>
+		<className>java.net.HttpCookie</className>
+		<methodName> </methodName>
+		<paramPattern>(.*pass.*)|(.*pw.*)|(.*private.*)</paramPattern>
+		<paramIndex>1</paramIndex>
+		<needFix>0</needFix>
+		<fixName> </fixName>
+		<fixOld> </fixOld>
+		<fixNew> </fixNew>
+		<type>CONSTRUCTOR_PARAM</type>
+	</rule>
+	<rule>
+		<ID>ReadUnshared</ID>
+		<briefDescription>Use the serialization methods readUnshared() with care</briefDescription>
+		<explanation>readUnshared() may produce unexpected results when used for the round-trip serialization</explanation>
+		<priority>5</priority>
+		<className>java.io.ObjectInputStream</className>
+		<methodName>readUnshared</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>1</needFix>
+		<fixName>Use readObject() to ensure that the object referred to only one target</fixName>
+		<fixOld>readUnshared</fixOld>
+		<fixNew>readObject</fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>WriteUnshared</ID>
+		<briefDescription>Use the serialization methods writeUnshared() with care</briefDescription>
+		<explanation>writeUnshared() may produce unexpected results when used for the round-trip serialization</explanation>
+		<priority>5</priority>
+		<className>java.io.ObjectOutputStream</className>
+		<methodName>writeUnshared</methodName>
+		<paramPattern> </paramPattern>
+		<paramIndex> </paramIndex>
+		<needFix>1</needFix>
+		<fixName>Use writeObject() to ensure that the object referred to only one target</fixName>
+		<fixOld>writeUnshared</fixOld>
+		<fixNew>writeObject</fixNew>
+		<type>METHOD</type>
+	</rule>
+	<rule>
+		<ID>MissingUrlEncode</ID>
+		<briefDescription>Url should be encoded</briefDescription>
+		<explanation>Proper input sanitization can prevent insertion of malicious data into a subsystem such as a database</explanation>
+		<priority>5</priority>
+		<className>java.net.URL</className>
+		<methodName> </methodName>
+		<paramPattern>^([^\(\)])*$</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Use java.util.Base64 to encode and decode data</fixName>
+		<fixOld>\((.*?)\)</fixOld>
+		<fixNew>Base64.getUrlEncoder().encodeToString(${oldText}.getBytes())</fixNew>
+		<type>CONSTRUCTOR_PARAM</type>
+	</rule>
+	<rule>
+		<ID>HttpProtocol</ID>
+		<briefDescription>Http is not safe</briefDescription>
+		<explanation>Http protocol transfer plaintext</explanation>
+		<priority>5</priority>
+		<className>java.net.URL</className>
+		<methodName> </methodName>
+		<paramPattern>(?i)(.*http[^s].*)</paramPattern>
+		<paramIndex>0</paramIndex>
+		<needFix>1</needFix>
+		<fixName>Use https instead</fixName>
+		<fixOld>http</fixOld>
+		<fixNew>https</fixNew>
+		<type>CONSTRUCTOR_PARAM</type>
+	</rule>
+</rules>
