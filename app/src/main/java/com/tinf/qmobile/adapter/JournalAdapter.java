@@ -236,8 +236,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
             case EMPTY:
                 return new JournalEmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_empty, parent, false));
-
         }
+
         return null;
     }
 
@@ -283,6 +283,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
     public void onDateChanged() {
         journals = getList(null);
         notifyDataSetChanged();
+
+        Log.d("JournalAdapter", "onDateChanged");
     }
 
     @Override
@@ -339,6 +341,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         super.onDetachedFromRecyclerView(recyclerView);
         sub1.cancel();
         sub2.cancel();
+
+        Log.d("JournalAdapter", "onDetachedFromRecyclerView");
     }
 
 }

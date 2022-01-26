@@ -1,5 +1,10 @@
 package com.tinf.qmobile.activity;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,11 +23,6 @@ import com.tinf.qmobile.network.Client;
 
 public class MatterActivity extends AppCompatActivity {
     private ActivityMatterBinding binding;
-    /*public final static int GRADES = 0;
-    public final static int SCHEDULE = 1;
-    public final static int MATERIALS = 2;
-    public final static int CLASS = 3;
-    public final static int MESSAGES = 4;*/
     private Matter matter;
 
     @Override
@@ -49,22 +49,44 @@ public class MatterActivity extends AppCompatActivity {
         new TabLayoutMediator(binding.tab, binding.pager, (tab, position) -> {
             Resources resources = getBaseContext().getResources();
             switch (position) {
-                case 0: tab.setText(resources.getString(R.string.title_notas));
+                case 0:
+                    tab.setText(resources.getString(R.string.title_notas));
                 break;
 
-                case 1: tab.setText(resources.getString(R.string.title_horario));
+                case 1:
+                    tab.setText(resources.getString(R.string.title_horario));
                 break;
 
-                case 2: tab.setText(resources.getString(R.string.title_materiais));
+                case 2:
+                    tab.setText(resources.getString(R.string.title_materiais));
                 break;
 
-                case 3: tab.setText(resources.getString(R.string.title_class));
+                case 3:
+                    tab.setText(resources.getString(R.string.title_class));
                 break;
             }
         }).attach();
 
         binding.tab.setSelectedTabIndicatorColor(matter.getColor());
-        binding.pager.setCurrentItem(bundle.getInt("PAGE"));
+        binding.pager.setCurrentItem(getPage(bundle.getInt("PAGE")));
+    }
+
+    private int getPage(int page) {
+        switch (page) {
+            case JOURNAL:
+                return 0;
+
+            case SCHEDULE:
+                return 1;
+
+            case MATERIAL:
+                return 2;
+
+            case CLASS:
+                return 3;
+        }
+
+        return 0;
     }
 
     @Override

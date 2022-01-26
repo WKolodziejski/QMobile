@@ -28,7 +28,7 @@
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog</item>
         <item name="actionModeStyle">@style/ActionMode</item>
 
-        <item name="android:dialogCornerRadius">8dp</item>
+        <item name="dialogCornerRadius">8dp</item>
     </style>
 
     <style name="Widget.Custom.NavigationView" parent="Widget.Design.NavigationView">

@@ -29,6 +29,7 @@ public class SearchClassViewHolder extends SearchViewHolder<Clazz> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", clazz.id);
             intent.putExtra("TYPE", CLASS);
+            intent.putExtra("LOOKUP", true);
             context.startActivity(intent);
 
             saveQuery(query);

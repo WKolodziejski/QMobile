@@ -91,7 +91,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
-    implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+    //implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
 
     implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'

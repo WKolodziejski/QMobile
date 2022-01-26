@@ -98,6 +98,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
             Intent intent = new Intent(getActivity(), EventViewActivity.class);
             intent.putExtra("TYPE", SCHEDULE);
             intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
+            intent.putExtra("LOOKUP", true);
             startActivity(intent);
         });
 
@@ -232,11 +233,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
             binding.weekView.goToDay(DayOfWeek.MONDAY);
             binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
 
-            binding.empty.setVisibility(View.GONE);
+            binding.emptySchedule.setVisibility(View.GONE);
         } else {
             params.height = Design.dpiToPixels(0);
 
-            binding.empty.setVisibility(View.VISIBLE);
+            binding.emptySchedule.setVisibility(View.VISIBLE);
         }
 
         binding.weekView.setLayoutParams(params);
@@ -306,6 +307,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
             }
 
         });
+
+        binding.chartLayout.setVisibility(allEmpty ? View.GONE : View.VISIBLE);
     }
 
     @Override

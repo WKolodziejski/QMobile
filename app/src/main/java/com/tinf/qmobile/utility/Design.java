@@ -73,18 +73,25 @@ public class Design {
     }
 
     public static void syncToolbar(MaterialToolbar toolbar, boolean canExpand) {
+        if (toolbar == null)
+            return;
+
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         params.setScrollFlags(canExpand ? SCROLL_FLAG_SCROLL | SCROLL_FLAG_ENTER_ALWAYS | SCROLL_FLAG_SNAP : 0);
         toolbar.setLayoutParams(params);
     }
 
     public static boolean canScroll(FrameLayout scroll) {
+        if (scroll == null)
+            return false;
+
         View child = scroll.getChildAt(0);
-        if (child != null) {
-            int childHeight = child.getHeight();
-            return scroll.getHeight() < childHeight;
-        }
-        return false;
+
+        if (child == null)
+            return false;
+
+        int childHeight = child.getHeight();
+        return scroll.getHeight() < childHeight;
     }
 
     public static RecyclerView.OnScrollListener getRefreshBehavior(SwipeRefreshLayout refresh) {

@@ -16,6 +16,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Schedule;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Locale;
 import io.objectbox.Box;
 
@@ -32,6 +33,7 @@ public class AlarmWorker extends Worker {
 
         String title = "";
         String desc = "";
+        long alarm = 0;
         //String channel = "";
 
         long id = getInputData().getLong("ID", 0);
@@ -55,6 +57,8 @@ public class AlarmWorker extends Worker {
                     desc = desc.concat(" ー " + time.format(event.getEndTime()));
                 }
 
+                alarm = event.getAlarm();
+
             }
         } else if (type == SCHEDULE) {
 
@@ -72,6 +76,8 @@ public class AlarmWorker extends Worker {
                 if (!schedule.getEndTime().equals(schedule.getStartTime())) {
                     desc = desc.concat(" ー " + String.format(Locale.getDefault(), "%02d:%02d", schedule.getEndTime().getHour(), schedule.getEndTime().getMinute()));
                 }
+
+                alarm = schedule.getAlarm();
             }
         }
 
@@ -80,6 +86,9 @@ public class AlarmWorker extends Worker {
         if (title.isEmpty()) {
             title = getContext().getString(R.string.event_no_title);
         }
+
+        if (alarm < Calendar.getInstance().getTimeInMillis())
+            return Result.failure();
 
         Intent intent = new Intent(getContext(), EventViewActivity.class);
         intent.putExtra("TYPE", type);

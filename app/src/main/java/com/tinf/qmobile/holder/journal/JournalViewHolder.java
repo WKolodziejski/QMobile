@@ -33,6 +33,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journal.id);
             intent.putExtra("TYPE", JOURNAL);
+            intent.putExtra("LOOKUP", false);
             context.startActivity(intent);
 
             itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
@@ -54,6 +55,30 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         if (journal.highlight) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
         }
+
+        if (journal.getGrade().equals("-")) {
+            binding.grade.setTextColor(context.getResources().getColor(R.color.colorPrimary));
+            binding.color.setCardBackgroundColor(context.getResources().getColor(R.color.transparent));
+        } else {
+            binding.grade.setTextColor(context.getResources().getColor(R.color.white));
+            binding.color.setCardBackgroundColor(getColor(context, journal.getGrade_() / journal.getMax_() * 10));
+        }
+    }
+
+    private static int getColor(Context context, float grade) {
+        if (grade <= 2.5)
+            return context.getResources().getColor(R.color.red_500);
+
+        if (grade <= 5.0)
+            return context.getResources().getColor(R.color.yellow_500);
+
+        if (grade <= 7.5)
+            return context.getResources().getColor(R.color.blue_500);
+
+        if (grade <= 10.0)
+            return context.getResources().getColor(R.color.green_500);
+
+        return context.getResources().getColor(R.color.transparent);
     }
 
 }

@@ -48,6 +48,7 @@ public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser>
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", EVENT);
             intent.putExtra("ID", event.id);
+            intent.putExtra("LOOKUP", true);
             context.startActivity(intent);
         });
     }

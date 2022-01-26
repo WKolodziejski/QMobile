@@ -13,6 +13,8 @@ import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
+
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import io.objectbox.Box;
@@ -52,6 +54,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                             Intent i = new Intent(context, AlarmReceiver.class);
                             i.putExtra("ID", event.id);
                             i.putExtra("TYPE", EVENT);
+
+                            if (event.getAlarm() < Calendar.getInstance().getTimeInMillis())
+                                continue;
 
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
 

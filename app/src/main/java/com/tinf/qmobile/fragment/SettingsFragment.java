@@ -1,8 +1,12 @@
 package com.tinf.qmobile.fragment;
 
+import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.utility.User.REGISTRATION;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.ListPreference;
@@ -12,6 +16,11 @@ import androidx.preference.PreferenceManager;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.AboutActivity;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.User;
+
+import io.objectbox.BoxStore;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String CHECK = "key_check";
@@ -40,6 +49,23 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         bindPreferenceSummaryToValue(findPreference(NIGHT));
 
         bindPreferenceSummaryToValue(findPreference(POPUP));
+
+        Preference reset = findPreference(DB);
+        reset.setOnPreferenceClickListener(preference -> {
+            /*DataBase.get().close();
+
+            if (BoxStore.deleteAllFiles(getContext(), User.getCredential(REGISTRATION))) {
+                Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_success), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_fail), Toast.LENGTH_SHORT).show();
+            }*/
+
+            Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_success), Toast.LENGTH_SHORT).show();
+
+            DataBase.get().getBoxStore().removeAllObjects();
+            Client.get().changeDate(pos);
+            return true;
+        });
 
         Preference about = findPreference("key_about");
         about.setOnPreferenceClickListener(preference -> {

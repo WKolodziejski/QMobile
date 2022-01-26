@@ -1,5 +1,9 @@
 package com.tinf.qmobile.fragment.view;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentViewJournalBinding;
 import com.tinf.qmobile.model.journal.Journal;
@@ -24,6 +29,7 @@ public class JournalViewFragment extends Fragment {
     private FragmentViewJournalBinding binding;
     private DataSubscription sub1, sub2;
     private long id;
+    private boolean lookup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,8 +37,10 @@ public class JournalViewFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null)
+        if (bundle != null) {
             id = bundle.getLong("ID");
+            lookup = bundle.getBoolean("LOOKUP", false);
+        }
 
         DataObserver observer = data -> setText();
 
@@ -66,23 +74,35 @@ public class JournalViewFragment extends Fragment {
     private void setText() {
         Journal journal = DataBase.get().getBoxStore().boxFor(Journal.class).get(id);
 
-        if (journal != null) {
+        if (journal == null) {
+            return;
+        }
 
-            if (!journal.isSeen_()) {
-                journal.see();
-                DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
-            }
+        if (!journal.isSeen_()) {
+            journal.see();
+            DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
+        }
 
-            SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+        SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
-            binding.title.setText(journal.getTitle());
-            binding.grade.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
-            binding.weight.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
-            binding.typeShort.setText(journal.getShort());
-            binding.type.setText(journal.getType());
-            binding.time.setText(date.format(journal.getDate()));
-            binding.matter.setText(journal.getMatter() + "・" + journal.getPeriod());
-            binding.colorImg.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+        binding.title.setText(journal.getTitle());
+        binding.grade.setText(String.format(getString(R.string.diarios_Nota), journal.getGrade(), journal.getMax()));
+        binding.weight.setText(String.format(getString(R.string.diarios_Peso), journal.getWeight()));
+        binding.typeShort.setText(journal.getShort());
+        binding.type.setText(journal.getType());
+        binding.time.setText(date.format(journal.getDate()));
+        binding.matter.setText(journal.getMatter() + "・" + journal.getPeriod());
+        binding.colorImg.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+
+        if (lookup && !journal.matter.isNull()) {
+            binding.headerLayout.setOnClickListener(view -> {
+                Intent intent = new Intent(getContext(), MatterActivity.class);
+                intent.putExtra("ID", journal.matter.getTargetId());
+                intent.putExtra("PAGE", JOURNAL);
+                getContext().startActivity(intent);
+            });
+        } else {
+            binding.headerLayout.setOnClickListener(null);
         }
     }
 

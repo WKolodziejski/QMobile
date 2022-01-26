@@ -16,6 +16,7 @@
     <string name="title_messages">Mensagens</string>
     <string name="title_class">Aulas</string>
     <string name="title_organization">Organização</string>
+    <string name="title_performance">Desempenho</string>
 
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
@@ -186,6 +187,10 @@
     <string name="pref_popup_sum">Receber avisos importantes ao fazer login</string>
     <string name="pref_share_data">Ajudar no desenvolvimento</string>
     <string name="pref_share_data_sum">Compartilhar dados de login para ajudar na correção de erros no aplicativo</string>
+    <string name="pref_reset_db">Apagar dados locais</string>
+
+    <string name="toast_reset_db_success">Dados apagados</string>
+    <string name="toast_reset_db_fail">Não foi possível apagar os dados</string>
 
     <string name="sigla_Avaliacao">A</string>
     <string name="sigla_Prova">P</string>

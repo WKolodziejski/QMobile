@@ -1,6 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,7 +9,9 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,10 +67,6 @@ import static com.tinf.qmobile.network.Client.pos;
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange,
         OnUpdate, NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
-    /*private HomeFragment homeFragment;
-    private JournalFragment journalFragment;
-    private ReportFragment reportFragment;
-    private MaterialsFragment materialsFragment;*/
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result ->
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             menu.getItem(i).setCheckable(true);
         }
 
-        menu.getItem(0).setChecked(true);
+        menu.getItem(pos).setChecked(true);
 
         if (User.getYears().length > 0)
             binding.date.setText(User.getYears()[pos]);

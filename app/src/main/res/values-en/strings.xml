@@ -11,6 +11,7 @@
     <string name="title_diarios">Journals</string>
     <string name="title_boletim">Report</string>
     <string name="title_home">Home</string>
+    <string name="title_performance">Performance</string>
     <string name="dialog_quit_msg">Are you sure?</string>
     <string name="title_horario">Schedule</string>
     <string name="dialog_date_change">Select a year</string>
@@ -115,7 +116,7 @@
     <string name="alarm_30min">30 minutes before</string>
     <string name="alarm_1h">1 hour before</string>
     <string name="alarm_1d">1 day before</string>
-    <string name="event_matter">Link period</string>
+    <string name="event_matter">Link matter</string>
     <string name="event_default_color">Default color</string>
     <string name="event_no_title">(No title)</string>
     <string name="event_custom_color">Custom color</string>
@@ -125,6 +126,8 @@
     <string name="diarios_expand">Expand</string>
     <string name="event_save">Save</string>
     <string name="action_search">Search</string>
+
+    <string name="pref_reset_db">Delete local data</string>
     <string name="pref_dark_mode">Dark Mode</string>
     <string name="pref_dark_mode_sum">Change app theme</string>
     <string name="pref_general">General</string>
@@ -177,4 +180,7 @@
     <string name="dialog_no_alerts">There are no alerts</string>
     <string name="dialog_alerts">Alerts</string>
     <string name="title_organization">Organization</string>
+
+    <string name="toast_reset_db_success">Data deleted</string>
+    <string name="toast_reset_db_fail">It was not possible to delete the data</string>
 </resources>

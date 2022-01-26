@@ -32,6 +32,7 @@ public class SearchJournalViewHolder extends SearchViewHolder<Journal> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journal.id);
             intent.putExtra("TYPE", JOURNAL);
+            intent.putExtra("LOOKUP", true);
             context.startActivity(intent);
 
             saveQuery(query);

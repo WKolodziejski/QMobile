@@ -1,5 +1,10 @@
 package com.tinf.qmobile.fragment.matter;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,16 +28,20 @@ public class TabsAdapter extends FragmentStateAdapter {
         Fragment fragment = null;
 
         switch (position) {
-            case 0: fragment = new GradesFragment();
+            case 0:
+                fragment = new GradesFragment();
                 break;
 
-            case 1: fragment = new ScheduleFragment();
+            case 1:
+                fragment = new ScheduleFragment();
                 break;
 
-            case 2: fragment = new MaterialsFragment();
+            case 2:
+                fragment = new MaterialsFragment();
                 break;
 
-            case 3: fragment = new ClassFragment();
+            case 3:
+                fragment = new ClassFragment();
                 break;
         }
 

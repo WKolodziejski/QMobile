@@ -27,6 +27,7 @@ public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", clazz.id);
             intent.putExtra("TYPE", CLASS);
+            intent.putExtra("LOOKUP", false);
             context.startActivity(intent);
         });
 

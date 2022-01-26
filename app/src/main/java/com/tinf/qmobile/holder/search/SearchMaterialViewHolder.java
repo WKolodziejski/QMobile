@@ -36,6 +36,7 @@ public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
             intent.putExtra("ID", material.matter.getTargetId());
             intent.putExtra("ID2", material.id);
             intent.putExtra("PAGE", MATERIAL);
+            intent.putExtra("LOOKUP", false);
             context.startActivity(intent);
 
             Matter m = material.matter.getTarget();

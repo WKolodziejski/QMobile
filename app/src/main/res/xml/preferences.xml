@@ -9,6 +9,10 @@
             android:defaultValue="false"
             android:summary="@string/pref_dark_mode_sum" />
 
+        <Preference
+            android:key="key_reset_db"
+            android:title="@string/pref_reset_db" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_services">

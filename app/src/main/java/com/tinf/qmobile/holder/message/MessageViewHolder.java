@@ -76,6 +76,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", MESSAGE);
             intent.putExtra("ID", Long.valueOf(message.id));
+            intent.putExtra("LOOKUP", false);
             context.startActivity(intent);
         });
 

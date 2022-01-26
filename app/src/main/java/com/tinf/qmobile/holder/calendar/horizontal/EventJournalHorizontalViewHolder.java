@@ -29,6 +29,7 @@ public class EventJournalHorizontalViewHolder extends CalendarViewHolder<Journal
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", JOURNAL);
             intent.putExtra("ID", journal.id);
+            intent.putExtra("LOOKUP", true);
             context.startActivity(intent);
         });
     }

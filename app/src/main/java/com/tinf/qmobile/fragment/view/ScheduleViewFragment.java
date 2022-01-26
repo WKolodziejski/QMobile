@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentViewScheduleBinding;
 import com.tinf.qmobile.model.matter.Matter;
@@ -29,12 +30,14 @@ import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.DayTime;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 
 public class ScheduleViewFragment extends Fragment {
     private FragmentViewScheduleBinding binding;
     private DataSubscription sub1, sub2;
     private long id;
+    private boolean lookup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,8 +46,10 @@ public class ScheduleViewFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null)
+        if (bundle != null) {
             id = bundle.getLong("ID");
+            lookup = bundle.getBoolean("LOOKUP", false);
+        }
 
         DataObserver observer = data -> setText();
 
@@ -78,53 +83,65 @@ public class ScheduleViewFragment extends Fragment {
     private void setText() {
         Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
 
-        if (schedule != null) {
+        if (schedule == null) {
+            return;
+        }
 
-            DayTime start = schedule.getStartTime();
-            DayTime end = schedule.getEndTime();
+        DayTime start = schedule.getStartTime();
+        DayTime end = schedule.getEndTime();
 
-            binding.title.setText(schedule.getTitle().isEmpty() ? getString(R.string.event_no_title) : schedule.getTitle());
-            binding.startTime.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", start.getHour(), start.getMinute()));
-            binding.colorImg.setImageTintList(ColorStateList.valueOf(schedule.getColor()));
+        binding.title.setText(schedule.getTitle().isEmpty() ? getString(R.string.event_no_title) : schedule.getTitle());
+        binding.startTime.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "・" + String.format("%02d:%02d", start.getHour(), start.getMinute()));
+        binding.colorImg.setImageTintList(ColorStateList.valueOf(schedule.getColor()));
 
-            if (schedule.getRoom().isEmpty()) {
-                binding.roomLayout.setVisibility(GONE);
-            } else {
-                binding.roomLayout.setVisibility(VISIBLE);
-                binding.room.setText(schedule.getRoom());
-            }
+        if (schedule.getRoom().isEmpty()) {
+            binding.roomLayout.setVisibility(GONE);
+        } else {
+            binding.roomLayout.setVisibility(VISIBLE);
+            binding.room.setText(schedule.getRoom());
+        }
 
-            if (schedule.getDescription().isEmpty()) {
-                binding.descriptionLayout.setVisibility(GONE);
-            } else {
-                binding.descriptionLayout.setVisibility(VISIBLE);
-                binding.description.setText(schedule.getDescription());
-            }
+        if (schedule.getDescription().isEmpty()) {
+            binding.descriptionLayout.setVisibility(GONE);
+        } else {
+            binding.descriptionLayout.setVisibility(VISIBLE);
+            binding.description.setText(schedule.getDescription());
+        }
 
-            if (schedule.getAlarm() == 0) {
-                binding.notificationLayout.setVisibility(GONE);
-            } else {
-                String[] strings = new String[4];
+        if (schedule.getAlarm() == 0) {
+            binding.notificationLayout.setVisibility(GONE);
+        } else {
+            String[] strings = new String[4];
 
-                strings[0] = getString(R.string.event_no_alarm);
-                strings[1] = getString(R.string.alarm_30min);
-                strings[2] = getString(R.string.alarm_1h);
-                strings[3] = getString(R.string.alarm_1d);
+            strings[0] = getString(R.string.event_no_alarm);
+            strings[1] = getString(R.string.alarm_30min);
+            strings[2] = getString(R.string.alarm_1h);
+            strings[3] = getString(R.string.alarm_1d);
 
-                binding.notificationLayout.setVisibility(VISIBLE);
-                binding.notificationText.setText(strings[schedule.getDifference()]);
-            }
+            binding.notificationLayout.setVisibility(VISIBLE);
+            binding.notificationText.setText(strings[schedule.getDifference()]);
+        }
 
-            if (!end.equals(start)) {
-                binding.startTime.append(" ー " + String.format( Locale.getDefault(), "%02d:%02d", end.getHour(), end.getMinute()));
-            }
+        if (!end.equals(start)) {
+            binding.startTime.append(" ー " + String.format( Locale.getDefault(), "%02d:%02d", end.getHour(), end.getMinute()));
+        }
 
-            if (schedule.getMatter().isEmpty()) {
-                binding.matterText.setVisibility(GONE);
-            } else {
-                binding.matterText.setVisibility(VISIBLE);
-                binding.matterText.setText(schedule.getMatter());
-            }
+        if (schedule.getMatter().isEmpty()) {
+            binding.matterText.setVisibility(GONE);
+        } else {
+            binding.matterText.setVisibility(VISIBLE);
+            binding.matterText.setText(schedule.getMatter());
+        }
+
+        if (lookup && !schedule.matter.isNull()) {
+            binding.headerLayout.setOnClickListener(view -> {
+                Intent intent = new Intent(getContext(), MatterActivity.class);
+                intent.putExtra("ID", schedule.matter.getTargetId());
+                intent.putExtra("PAGE", SCHEDULE);
+                getContext().startActivity(intent);
+            });
+        } else {
+            binding.headerLayout.setOnClickListener(null);
         }
     }
 

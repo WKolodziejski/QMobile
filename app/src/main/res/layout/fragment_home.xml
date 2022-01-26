@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:textSize="@dimen/main_font_size"
-                        android:id="@+id/empty"
+                        android:id="@+id/empty_schedule"
                         android:visibility="gone"
                         android:text="@string/schedule_empty"
                         tools:visibility="visible"/>
@@ -138,6 +138,11 @@
                 android:id="@+id/chart_layout"
                 >
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black_dividers" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -146,7 +151,7 @@
                     android:drawablePadding="8dp"
                     android:drawableTint="@color/colorAccent"
                     android:gravity="center_vertical"
-                    android:text="Desempenho"
+                    android:text="@string/title_performance"
                     android:textSize="17sp"
                     android:textStyle="bold"
                     android:foreground="?android:attr/selectableItemBackground"

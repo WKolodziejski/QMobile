@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.splashscreen.SplashScreen;
 
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.network.Client;
@@ -26,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
         if (User.isValid()) {
             Works.schedule(false);
 
-            if (!Client.get().isValid())
+            if (!Client.get().isValid() && !BuildConfig.DEBUG)
                 Client.get().login();
 
             intent = new Intent(this, MainActivity.class);

@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentViewEventBinding;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -28,11 +29,13 @@ import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 import static android.view.View.GONE;
 import static com.tinf.qmobile.model.ViewType.EVENT;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 
 public class EventViewFragment extends Fragment {
     private FragmentViewEventBinding binding;
     private DataSubscription sub1, sub2;
     private long id;
+    private boolean lookup;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,8 +44,10 @@ public class EventViewFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null)
+        if (bundle != null) {
             id = bundle.getLong("ID");
+            lookup = bundle.getBoolean("LOOKUP", false);
+        }
 
         DataObserver observer = data -> setText();
 
@@ -76,48 +81,60 @@ public class EventViewFragment extends Fragment {
     private void setText() {
         EventUser event = DataBase.get().getBoxStore().boxFor(EventUser.class).get(id);
 
-        if (event != null) {
+        if (event == null) {
+            return;
+        }
 
-            SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
+        SimpleDateFormat date = new SimpleDateFormat("dd MMM yyyy ・ HH:mm", Locale.getDefault());
 
-            binding.title.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
-            binding.startTime.setText(date.format(event.getStartTime()));
-            binding.colorImg.setImageTintList(ColorStateList.valueOf(event.getColor()));
+        binding.title.setText(event.getTitle().isEmpty() ? getString(R.string.event_no_title) : event.getTitle());
+        binding.startTime.setText(date.format(event.getStartTime()));
+        binding.colorImg.setImageTintList(ColorStateList.valueOf(event.getColor()));
 
-            if (event.getDescription().isEmpty()) {
-                binding.descriptionLayout.setVisibility(GONE);
-            } else {
-                binding.descriptionLayout.setVisibility(View.VISIBLE);
-                binding.description.setText(event.getDescription());
-            }
+        if (event.getDescription().isEmpty()) {
+            binding.descriptionLayout.setVisibility(GONE);
+        } else {
+            binding.descriptionLayout.setVisibility(View.VISIBLE);
+            binding.description.setText(event.getDescription());
+        }
 
-            if (event.getAlarm() == 0) {
-                binding.notificationLayout.setVisibility(GONE);
-            } else {
-                String[] strings = new String[4];
+        if (event.getAlarm() == 0) {
+            binding.notificationLayout.setVisibility(GONE);
+        } else {
+            String[] strings = new String[4];
 
-                strings[0] = getString(R.string.event_no_alarm);
-                strings[1] = getString(R.string.alarm_30min);
-                strings[2] = getString(R.string.alarm_1h);
-                strings[3] = getString(R.string.alarm_1d);
+            strings[0] = getString(R.string.event_no_alarm);
+            strings[1] = getString(R.string.alarm_30min);
+            strings[2] = getString(R.string.alarm_1h);
+            strings[3] = getString(R.string.alarm_1d);
 
-                binding.notificationLayout.setVisibility(View.VISIBLE);
-                binding.notificationText.setText(strings[event.getDifference()]);
-            }
+            binding.notificationLayout.setVisibility(View.VISIBLE);
+            binding.notificationText.setText(strings[event.getDifference()]);
+        }
 
-            if (event.getEndTime() == 0) {
-                binding.endTime.setVisibility(GONE);
-            } else {
-                binding.endTime.setVisibility(View.VISIBLE);
-                binding.endTime.setText(date.format(event.getEndTime()));
-            }
+        if (event.getEndTime() == 0) {
+            binding.endTime.setVisibility(GONE);
+        } else {
+            binding.endTime.setVisibility(View.VISIBLE);
+            binding.endTime.setText(date.format(event.getEndTime()));
+        }
 
-            if (event.getMatter().isEmpty()) {
-                binding.matterText.setVisibility(GONE);
-            } else {
-                binding.matterText.setVisibility(View.VISIBLE);
-                binding.matterText.setText(event.getMatter());
-            }
+        if (event.getMatter().isEmpty()) {
+            binding.matterText.setVisibility(GONE);
+        } else {
+            binding.matterText.setVisibility(View.VISIBLE);
+            binding.matterText.setText(event.getMatter());
+        }
+
+        if (lookup && !event.matter.isNull()) {
+            binding.headerLayout.setOnClickListener(view -> {
+                Intent intent = new Intent(getContext(), MatterActivity.class);
+                intent.putExtra("ID", event.matter.getTargetId());
+                intent.putExtra("PAGE", EVENT);
+                getContext().startActivity(intent);
+            });
+        } else {
+            binding.headerLayout.setOnClickListener(null);
         }
     }
 

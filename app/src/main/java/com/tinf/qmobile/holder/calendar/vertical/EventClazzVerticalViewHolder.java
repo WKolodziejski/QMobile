@@ -29,6 +29,7 @@ public class EventClazzVerticalViewHolder extends CalendarViewHolder<Clazz> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("TYPE", CLASS);
             intent.putExtra("ID", clazz.id);
+            intent.putExtra("LOOKUP", true);
             context.startActivity(intent);
         });
 

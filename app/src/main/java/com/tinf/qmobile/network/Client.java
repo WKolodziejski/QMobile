@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.webkit.CookieManager;
 import androidx.preference.PreferenceManager;
@@ -549,12 +550,14 @@ public class Client {
     public void addOnUpdateListener(OnUpdate onUpdate) {
         if (onUpdate != null && !onUpdates.contains(onUpdate)) {
             onUpdates.add(onUpdate);
+            Log.v(TAG, "addOnUpdateListener: " + onUpdate);
         }
     }
 
     public void removeOnUpdateListener(OnUpdate onUpdate) {
         if (onUpdates != null && onUpdate != null) {
             onUpdates.remove(onUpdate);
+            Log.v(TAG, "removeOnUpdateListener: " + onUpdate);
         }
     }
 
@@ -597,7 +600,7 @@ public class Client {
         params.clear();
         KEY_A = "";
         KEY_B = "";
-        pos = 0;
+        //pos = 0;
         if (onResponses != null) {
             for (int i = 0; i < onResponses.size(); i++) {
                 onResponses.get(i).onAccessDenied(pg, message);
@@ -647,6 +650,16 @@ public class Client {
 
     public void requestScroll() {
         callOnScrollRequest();
+    }
+
+    public void requestDelayedUpdate() {
+        new Handler().postDelayed(() -> {
+            if (onUpdates != null) {
+                for (int i = 0; i < onUpdates.size(); i++) {
+                    onUpdates.get(i).onDateChanged();
+                }
+            }
+        }, 10);
     }
 
     private void downloadImage(String cod) {

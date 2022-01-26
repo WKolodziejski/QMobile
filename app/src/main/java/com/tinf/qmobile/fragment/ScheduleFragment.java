@@ -75,14 +75,7 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (bundle != null) {
-            long id = bundle.getLong("ID");
-
-            if (id != 0) {
-                binding.fab.setBackgroundTintList(ColorStateList.valueOf(DataBase
-                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor()));
-            }
-        }
+        updateFABColor();
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
 
@@ -90,6 +83,7 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
             Intent intent = new Intent(getActivity(), EventViewActivity.class);
             intent.putExtra("TYPE", SCHEDULE);
             intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
+            intent.putExtra("LOOKUP", bundle == null);
             startActivity(intent);
         });
 
