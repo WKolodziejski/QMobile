@@ -22,14 +22,12 @@
         {
           "id": "3:8063215935254670962",
           "name": "startTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "4:8113138107864594616",
           "name": "endTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "5:8383383067737724685",
@@ -39,14 +37,12 @@
         {
           "id": "6:6172134109592226890",
           "name": "color",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "7:8194358074351231938",
           "name": "type",
-          "type": 5,
-          "flags": 4
+          "type": 5
         }
       ],
       "relations": []
@@ -70,14 +66,12 @@
         {
           "id": "3:750237029761839831",
           "name": "startTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "4:1285277653616477128",
           "name": "endTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "5:5714555111611711217",
@@ -87,27 +81,24 @@
         {
           "id": "6:3210454209676005111",
           "name": "color",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "7:4581766455631148964",
           "name": "alarm",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "8:3068638648655730968",
           "name": "difference",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "9:2506416612648704818",
           "name": "matterId",
           "indexId": "1:9113425291416922588",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Matter"
         }
       ],
@@ -132,14 +123,12 @@
         {
           "id": "3:2123818373803532922",
           "name": "startTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "4:8543068304146183447",
           "name": "endTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "5:1203746054340320235",
@@ -149,45 +138,39 @@
         {
           "id": "6:4492775779132621279",
           "name": "color",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "7:1935624409415614018",
           "name": "weight_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "8:4803516695344261157",
           "name": "max_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "9:537774684948976014",
           "name": "grade_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "10:837160816058116567",
           "name": "type_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "11:8861123558697752911",
           "name": "seen_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "12:1611322319641855080",
           "name": "periodId",
           "indexId": "2:8382111820494267962",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Period"
         },
         {
@@ -195,7 +178,7 @@
           "name": "matterId",
           "indexId": "3:7038222982699065437",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Matter"
         }
       ],
@@ -230,21 +213,19 @@
         {
           "id": "5:1263007083773128791",
           "name": "date",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "6:5994071673569973543",
           "name": "seen_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "7:300742464638694288",
           "name": "matterId",
           "indexId": "4:8890035092062492452",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Matter"
         }
       ],
@@ -269,14 +250,12 @@
         {
           "id": "3:1757788746796622437",
           "name": "startTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "4:1072581101075821050",
           "name": "endTime",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "5:182311795867237067",
@@ -286,26 +265,22 @@
         {
           "id": "6:3707749508470349862",
           "name": "color",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "7:9145174984284514548",
           "name": "date_",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "8:3568572308672918273",
           "name": "classesCount_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "9:5026395964133734311",
           "name": "absences_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "10:7686533919310280138",
@@ -322,7 +297,7 @@
           "name": "periodId",
           "indexId": "5:4819253014218299946",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Period"
         }
       ],
@@ -342,8 +317,7 @@
         {
           "id": "2:5335987273760484476",
           "name": "color_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "3:2593725408789992346",
@@ -368,38 +342,32 @@
         {
           "id": "7:5217819421164414422",
           "name": "hours_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "8:4717285502811472622",
           "name": "classes_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "9:3517594999741121589",
           "name": "absences_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "10:7304706466073959678",
           "name": "mean_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "11:2777679136495606108",
           "name": "year_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "12:3763220073563955988",
           "name": "period_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         }
       ],
       "relations": [
@@ -439,33 +407,29 @@
         {
           "id": "3:5364837794754731368",
           "name": "grade_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "4:6293424743298068565",
           "name": "gradeFinal_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "5:1677480991763481402",
           "name": "absences_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "6:5250441222773638911",
           "name": "isSub_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "7:5708499613802534497",
           "name": "matterId",
           "indexId": "6:2668173955435990093",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Matter"
         }
       ],
@@ -496,44 +460,37 @@
         {
           "id": "2:5664626073194255783",
           "name": "startDay_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "3:4872418715123508188",
           "name": "startHour_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "4:3473728475847655918",
           "name": "startMinute_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "5:2423056090469904610",
           "name": "endHour_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "6:4390425227197601893",
           "name": "endMinute_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "7:3530668039994621848",
           "name": "color_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "8:3891462916939474757",
           "name": "alarm_",
-          "type": 6,
-          "flags": 4
+          "type": 6
         },
         {
           "id": "9:21699397338291637",
@@ -553,33 +510,29 @@
         {
           "id": "12:6936834303428814149",
           "name": "isFromSite_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "13:2826008297967572661",
           "name": "difference",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "14:2033877060040447144",
           "name": "year",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "15:3592808096441880172",
           "name": "period",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "16:3701512711390153930",
           "name": "matterId",
           "indexId": "7:6874303353458621272",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Matter"
         }
       ],
@@ -616,7 +569,7 @@
           "name": "messageId",
           "indexId": "8:7480087044932547710",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Message"
         }
       ],
@@ -636,32 +589,27 @@
         {
           "id": "2:3891316924989867354",
           "name": "uid_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "3:361099162706162131",
           "name": "date_",
-          "type": 7,
-          "flags": 4
+          "type": 7
         },
         {
           "id": "4:8199165180123375136",
           "name": "seen_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "5:2348195596845548064",
           "name": "hasAtt_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "6:14400357957011464",
           "name": "isSolved_",
-          "type": 1,
-          "flags": 4
+          "type": 1
         },
         {
           "id": "7:5137197782348694048",
@@ -678,7 +626,7 @@
           "name": "senderId",
           "indexId": "9:8981549187187634170",
           "type": 11,
-          "flags": 1548,
+          "flags": 520,
           "relationTarget": "Sender"
         }
       ],
@@ -704,8 +652,7 @@
         {
           "id": "2:35028163650075738",
           "name": "color_",
-          "type": 5,
-          "flags": 4
+          "type": 5
         },
         {
           "id": "3:2160277418773532964",
@@ -740,8 +687,7 @@
         {
           "id": "3:7703712322198845507",
           "name": "date",
-          "type": 6,
-          "flags": 4
+          "type": 6
         }
       ],
       "relations": []

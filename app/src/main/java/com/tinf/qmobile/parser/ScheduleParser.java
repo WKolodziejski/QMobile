@@ -1,5 +1,7 @@
 package com.tinf.qmobile.parser;
 
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.util.Log;
 
 import com.tinf.qmobile.model.matter.Matter;
@@ -69,7 +71,7 @@ public class ScheduleParser extends BaseParser {
 
                             if (matterTitle != null) {
                                 Matter matter = matterBox.query()
-                                        .equal(Matter_.title_, matterTitle).and()
+                                        .equal(Matter_.title_, matterTitle, CASE_INSENSITIVE).and()
                                         .equal(Matter_.year_, year).and()
                                         .equal(Matter_.period_, period)//.and()
                                         //.contains(Matter_.description_, clazz)

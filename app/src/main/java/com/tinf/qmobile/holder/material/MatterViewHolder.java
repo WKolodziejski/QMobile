@@ -1,5 +1,7 @@
 package com.tinf.qmobile.holder.material;
 
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -36,7 +38,7 @@ public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
             if (!listener.isSelectionMode()) {
                 Intent intent = new Intent(context, MatterActivity.class);
                 intent.putExtra("ID", matter.id);
-                intent.putExtra("PAGE", MatterActivity.MATERIALS);
+                intent.putExtra("PAGE", MATERIAL);
                 context.startActivity(intent);
             }
         });

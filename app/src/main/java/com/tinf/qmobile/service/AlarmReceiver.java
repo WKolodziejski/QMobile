@@ -7,21 +7,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
-
 import java.util.Date;
 import java.util.List;
-
 import io.objectbox.Box;
-
 import static android.content.Context.ALARM_SERVICE;
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.model.ViewType.EVENT;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.model.ViewType.USER;
+
+import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String TAG = "AlarmReceiver";
@@ -29,6 +33,9 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Broadcast received");
+
+        if (BuildConfig.DEBUG)
+            Works.displayNotification("Alarm", "Received", -1, 0, new Intent());
 
         if (intent.getAction() != null && context != null) {
             if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
@@ -44,7 +51,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                         for (EventUser event : events) {
                             Intent i = new Intent(context, AlarmReceiver.class);
                             i.putExtra("ID", event.id);
-                            i.putExtra("TYPE", USER);
+                            i.putExtra("TYPE", EVENT);
 
                             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) event.id, i, 0);
 
@@ -71,23 +78,22 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if (intent.getExtras() != null) {
             long id = intent.getExtras().getLong("ID", 0);
+            int type = intent.getExtras().getInt("TYPE", 0);
 
             if (id != 0) {
                 if (context != null) {
                     Log.i(TAG, "Calling alarm service");
 
-                    AlarmService.enqueueWork(context, AlarmService.class, (int) id, intent);
+                    Data input = new Data.Builder()
+                            .putLong("ID", id)
+                            .putInt("TYPE", type)
+                            .build();
 
-                    /*FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+                    OneTimeWorkRequest.Builder workRequest = new OneTimeWorkRequest.Builder(AlarmWorker.class)
+                            .setInputData(input);
 
-                    Job.Builder alarm = dispatcher.newJobBuilder()
-                            .setService(AlarmJob.class)
-                            .setTag(String.valueOf(id))
-                            .setRecurring(false)
-                            .setLifetime(Lifetime.FOREVER)
-                            .setReplaceCurrent(true);
-
-                    dispatcher.schedule(alarm.build());*/
+                    WorkManager.getInstance(getContext())
+                            .enqueueUniqueWork(String.valueOf(id), ExistingWorkPolicy.REPLACE, workRequest.build());
 
                     setResultCode(Activity.RESULT_OK);
                 }

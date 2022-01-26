@@ -43,9 +43,14 @@
         <item name="actionMenuTextColor">@color/colorPrimary</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
+    <!--<style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@drawable/layout_splash</item>
         <item name="android:windowFullscreen">false</item>
+    </style>!-->
+
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Light">

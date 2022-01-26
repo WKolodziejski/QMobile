@@ -1,5 +1,8 @@
 package com.tinf.qmobile.activity;
 
+import static com.tinf.qmobile.model.ViewType.EVENT;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,8 +19,8 @@ import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
 
 public class EventCreateActivity extends AppCompatActivity {
     public ActivityEventCreateBinding binding;
-    public final static int EVENT = 1;
-    public final static int SCHEDULE = 2;
+    //public final static int EVENT = 1;
+    //public final static int SCHEDULE = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

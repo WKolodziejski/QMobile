@@ -1,33 +1,37 @@
 package com.tinf.qmobile.service;
-
+import android.content.Context;
 import android.content.Intent;
-
-import com.firebase.jobdispatcher.JobParameters;
-import com.firebase.jobdispatcher.JobService;
+import androidx.annotation.NonNull;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import com.tinf.qmobile.App;
+import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 
-public class BackgroundCheck extends JobService {
+public class ParserWorker extends Worker {
     private boolean errorOccurred;
     private boolean messagesLoaded;
     private boolean scheduleLoaded;
     private boolean materialsLoaded;
 
-    @Override
-    public boolean onStartJob(JobParameters job) {
+    public ParserWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+        super(context, workerParams);
+    }
 
+    @NonNull
+    @Override
+    public Result doWork() {
         Client.background = true;
         Client.get().login();
 
         Client.get().addOnResponseListener(new OnResponse() {
             @Override
             public void onStart(int pg) {
-                /*if (BuildConfig.DEBUG) {
-                    Jobs.displayNotification(getBaseContext(), "Debug", "Verificando notas", "Debug", 0, new Intent(App.getContext(), SplashActivity.class));
-                }*/
+                if (BuildConfig.DEBUG)
+                    Works.displayNotification("Debug", "Background check", -1, 0, new Intent(App.getContext(), SplashActivity.class));
             }
 
             @Override
@@ -46,36 +50,32 @@ public class BackgroundCheck extends JobService {
                 if (pg == PG_MATERIALS)
                     materialsLoaded = true;
 
-                if (messagesLoaded && scheduleLoaded && materialsLoaded) {
-                    errorOccurred = false;
+                if (messagesLoaded && scheduleLoaded && materialsLoaded)
                     Client.get().removeOnResponseListener(this);
-                    onStopJob(job);
-                }
             }
 
             @Override
             public void onError(int pg, String error) {
                 errorOccurred = true;
                 Client.get().removeOnResponseListener(this);
-                onStopJob(job);
             }
 
             @Override
             public void onAccessDenied(int pg, String message) {
-                Jobs.displayNotification(getBaseContext(), getResources().getString(R.string.dialog_access_denied),
-                        getResources().getString(R.string.dialog_check_login), getResources().getString(R.string.app_name), 0, new Intent(App.getContext(), SplashActivity.class));
+                Works.displayNotification(getApplicationContext().getResources().getString(R.string.dialog_access_denied),
+                        getApplicationContext().getResources().getString(R.string.dialog_check_login),
+                        10,
+                        0, new Intent(App.getContext(), SplashActivity.class));
                 Client.get().removeOnResponseListener(this);
-                onStopJob(job);
             }
         });
 
-        return true;
+        return Result.success();
     }
 
     @Override
-    public boolean onStopJob(JobParameters job) {
-        Jobs.scheduleJob(errorOccurred);
-        return false;
+    public void onStopped() {
+        super.onStopped();
+        Works.schedule(errorOccurred);
     }
-
 }

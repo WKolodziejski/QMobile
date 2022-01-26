@@ -1,5 +1,7 @@
 package com.tinf.qmobile.holder.search;
 
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.content.Context;
 import android.view.View;
 
@@ -13,6 +15,7 @@ import com.tinf.qmobile.model.Query_;
 import com.tinf.qmobile.model.Queryable;
 import java.util.Date;
 import io.objectbox.Box;
+import io.objectbox.query.QueryBuilder;
 
 public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
 
@@ -25,7 +28,11 @@ public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView
     public abstract void bind(T item, Context context, String query, SearchAdapter adapter);
 
     protected void saveQuery(String query) {
-        Query q = queryBox.query().equal(Query_.query, query).build().findUnique();
+        Query q = queryBox
+                .query()
+                .equal(Query_.query, query, CASE_INSENSITIVE)
+                .build()
+                .findUnique();
 
         if (q == null)
             q = new Query();

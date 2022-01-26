@@ -2,13 +2,14 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.3'
+        classpath 'com.android.tools.build:gradle:7.0.4'
         classpath 'com.google.gms:google-services:4.3.10'
-        classpath "io.objectbox:objectbox-gradle-plugin:2.5.1"
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.0'
+        classpath "io.objectbox:objectbox-gradle-plugin:3.1.0"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
     }
 }
 
@@ -16,6 +17,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
         maven {
             url 'https://maven.google.com/'
         }

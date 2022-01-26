@@ -1,5 +1,7 @@
 package com.tinf.qmobile.parser;
 
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -40,11 +42,11 @@ public class ReportParser extends BaseParser {
 
                         try {
                             matter = matterBox.query()
-                                    .contains(Matter_.description_, matterTitle).and()
+                                    .contains(Matter_.description_, matterTitle, CASE_INSENSITIVE).and()
                                     .equal(Matter_.year_, year).and()
                                     .equal(Matter_.period_, period).and()
-                                    .contains(Matter_.description_, clazz).and()
-                                    .contains(Matter_.description_, qid)
+                                    .contains(Matter_.description_, clazz, CASE_INSENSITIVE).and()
+                                    .contains(Matter_.description_, qid, CASE_INSENSITIVE)
                                     .build().findUnique();
                         } catch (NonUniqueResultException e) {
                             e.printStackTrace();

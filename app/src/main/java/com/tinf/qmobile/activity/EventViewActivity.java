@@ -13,10 +13,11 @@ import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
 import com.tinf.qmobile.fragment.view.MessageViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
 import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.EVENT;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventViewActivity extends AppCompatActivity {
@@ -39,7 +40,7 @@ public class EventViewActivity extends AppCompatActivity {
 
             switch (bundle.getInt("TYPE")) {
 
-                case USER:
+                case EVENT:
                     fragment = new EventViewFragment();
                     break;
 

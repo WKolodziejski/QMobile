@@ -35,7 +35,7 @@ import io.objectbox.Box;
 import me.jlurena.revolvingweekview.DayTime;
 import static android.content.Context.ALARM_SERVICE;
 import static android.view.View.GONE;
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 
 public class ScheduleCreateFragment extends Fragment {
     private FragmentCreateScheduleBinding binding;

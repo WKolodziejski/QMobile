@@ -1,5 +1,7 @@
 package com.tinf.qmobile.holder.journal;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -27,7 +29,7 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", MatterActivity.GRADES);
+            intent.putExtra("PAGE", JOURNAL);
             context.startActivity(intent);
             /*if (matter.isExpanded) {
                 adapter.collapse(getAdapterPosition(), matter);

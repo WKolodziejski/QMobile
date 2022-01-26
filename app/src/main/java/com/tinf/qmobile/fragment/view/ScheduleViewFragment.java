@@ -29,7 +29,7 @@ import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.DayTime;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 
 public class ScheduleViewFragment extends Fragment {
     private FragmentViewScheduleBinding binding;

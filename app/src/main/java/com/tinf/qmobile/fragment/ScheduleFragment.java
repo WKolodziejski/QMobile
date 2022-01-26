@@ -31,7 +31,8 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ScheduleFragment extends Fragment implements OnUpdate {
@@ -48,13 +49,19 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> binding.weekView.notifyDatasetChanged());
+                .observer(data -> {
+                    updateFABColor();
+                    binding.weekView.notifyDatasetChanged();
+                });
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
                 .onError(th -> Log.e(th.getMessage(), th.toString()))
-                .observer(data -> binding.weekView.notifyDatasetChanged());
+                .observer(data -> {
+                    updateFABColor();
+                    binding.weekView.notifyDatasetChanged();
+                });
     }
 
     @Override
@@ -183,6 +190,17 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         });
     }
 
+    private void updateFABColor() {
+        if (bundle != null) {
+            long id = bundle.getLong("ID");
+
+            if (id != 0) {
+                binding.fab.setBackgroundTintList(ColorStateList.valueOf(DataBase
+                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor()));
+            }
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -228,14 +246,7 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onScrollRequest() {
-        if (bundle != null) {
-            long id = bundle.getLong("ID");
-
-            if (id != 0) {
-                binding.fab.setBackgroundTintList(ColorStateList.valueOf(DataBase
-                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor()));
-            }
-        }
+        updateFABColor();
     }
 
     @Override

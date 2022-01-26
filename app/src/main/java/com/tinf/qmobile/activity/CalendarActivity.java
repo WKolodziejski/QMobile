@@ -1,5 +1,7 @@
 package com.tinf.qmobile.activity;
 
+import static com.tinf.qmobile.model.ViewType.EVENT;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,7 +29,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
 
 public class CalendarActivity extends AppCompatActivity implements CalendarRecyclerView.AppBarTracking, OnResponse {
     private ActivityCalendarBinding binding;

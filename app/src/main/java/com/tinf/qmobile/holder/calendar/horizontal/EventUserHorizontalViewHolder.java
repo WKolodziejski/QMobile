@@ -9,6 +9,8 @@ import com.tinf.qmobile.databinding.CalendarEventUserHBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.EventUser;
 import java.util.Locale;
+
+import static com.tinf.qmobile.model.ViewType.EVENT;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser> {
@@ -44,7 +46,7 @@ public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser>
 
         binding.card.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);
-            intent.putExtra("TYPE", USER);
+            intent.putExtra("TYPE", EVENT);
             intent.putExtra("ID", event.id);
             context.startActivity(intent);
         });

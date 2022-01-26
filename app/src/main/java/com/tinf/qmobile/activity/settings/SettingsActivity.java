@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.SettingsFragment;
-import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.service.Works;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -28,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        Jobs.scheduleJob(false);
+        Works.schedule(false);
     }
 
     @Override

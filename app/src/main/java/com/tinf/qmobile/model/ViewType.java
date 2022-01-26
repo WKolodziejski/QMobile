@@ -28,4 +28,8 @@ public class ViewType {
 
     public final static int QUERY = 800;
 
+    public final static int SCHEDULE = 900;
+
+    public final static int EVENT = 1000;
+
 }

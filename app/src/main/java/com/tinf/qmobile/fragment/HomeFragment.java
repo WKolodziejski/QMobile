@@ -1,8 +1,6 @@
 package com.tinf.qmobile.fragment;
-
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
-
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -23,7 +20,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.R;
@@ -42,12 +38,9 @@ import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.User;
-
 import org.threeten.bp.DayOfWeek;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;

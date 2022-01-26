@@ -12,22 +12,18 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Period_;
-import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.RandomColor;
-import com.tinf.qmobile.utility.User;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class JournalParser extends BaseParser {
 
@@ -80,7 +76,7 @@ public class JournalParser extends BaseParser {
             boolean isFirstParse = false;
 
             Matter matter = matterBox.query()
-                    .equal(Matter_.description_, description).and()
+                    .equal(Matter_.description_, description, CASE_INSENSITIVE).and()
                     .equal(Matter_.year_, year).and()
                     .equal(Matter_.period_, period)
                     .build().findUnique();
@@ -157,7 +153,7 @@ public class JournalParser extends BaseParser {
 
                         try {
                             QueryBuilder<Journal> builder = journalBox.query()
-                                    .equal(Journal_.title, title).and()
+                                    .equal(Journal_.title, title, CASE_INSENSITIVE).and()
                                     .equal(Journal_.type_, type).and()
                                     .between(Journal_.startTime, date, date).and()
                                     .between(Journal_.weight_, weight, weight).and()
@@ -211,13 +207,13 @@ public class JournalParser extends BaseParser {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", JOURNAL);
 
-        Jobs.displayNotification(App.getContext(),
+        Works.displayNotification(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_journal_title),
                         journal.getType(),
                         journal.matter.getTarget().getTitle()),
                 journal.getTitle(),
-                App.getContext().getResources().getString(R.string.title_diarios), (int) journal.id, intent);
+                JOURNAL, (int) journal.id, intent);
     }
 
     private void notifySchedule(Journal journal) {
@@ -225,13 +221,13 @@ public class JournalParser extends BaseParser {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", JOURNAL);
 
-        Jobs.displayNotification(App.getContext(),
+        Works.displayNotification(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_journal_title),
                         journal.getType(),
                         journal.matter.getTarget().getTitle()),
                 journal.formatDate(),
-                App.getContext().getResources().getString(R.string.title_diarios), (int) journal.id, intent);
+                JOURNAL, (int) journal.id, intent);
     }
 
     private String formatType(String s) {

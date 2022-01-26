@@ -13,7 +13,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -54,8 +53,7 @@ import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.PopUpHandler;
-import com.tinf.qmobile.service.Jobs;
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.User;
 import static com.tinf.qmobile.App.USE_COUNT;
 import static com.tinf.qmobile.App.USE_INFO;
@@ -162,6 +160,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     manager.launchReviewFlow(this, info.getResult());
             });
         }
+
+        Works.schedule(false);
     }
 
     @Override
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 .findFragmentById(R.id.main_fragment)).commit();
         finish();
         Client.get().close();
-        Jobs.cancelAllJobs();
+        Works.cancelAll();
         DataBase.get().close();
         User.clearInfos();
         PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();

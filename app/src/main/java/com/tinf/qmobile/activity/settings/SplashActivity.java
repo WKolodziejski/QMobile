@@ -1,14 +1,16 @@
 package com.tinf.qmobile.activity.settings;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.User;
 
 public class SplashActivity extends AppCompatActivity {
@@ -17,10 +19,12 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        SplashScreen.installSplashScreen(this).setKeepOnScreenCondition(() -> true);
+
         Intent intent;
 
         if (User.isValid()) {
-            Jobs.scheduleJob(false);
+            Works.schedule(false);
 
             if (!Client.get().isValid())
                 Client.get().login();

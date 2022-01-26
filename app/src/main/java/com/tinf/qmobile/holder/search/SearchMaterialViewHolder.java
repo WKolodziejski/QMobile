@@ -1,5 +1,7 @@
 package com.tinf.qmobile.holder.search;
 
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -12,7 +14,6 @@ import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
-import static com.tinf.qmobile.activity.MatterActivity.MATERIALS;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
     private final SearchMaterialBinding binding;
@@ -34,7 +35,7 @@ public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", material.matter.getTargetId());
             intent.putExtra("ID2", material.id);
-            intent.putExtra("PAGE", MATERIALS);
+            intent.putExtra("PAGE", MATERIAL);
             context.startActivity(intent);
 
             Matter m = material.matter.getTarget();

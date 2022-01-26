@@ -21,6 +21,7 @@ import io.objectbox.query.QueryBuilder;
 
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class ClassParser extends BaseParser {
     private final static String TAG = "ClassParser";
@@ -52,7 +53,7 @@ public class ClassParser extends BaseParser {
 
                 try {
                     QueryBuilder<Period> builder1 = periodBox.query()
-                            .equal(Period_.title_, p);
+                            .equal(Period_.title_, p, CASE_INSENSITIVE);
 
                     builder1.link(Period_.matter)
                             .equal(Matter_.id, matter.id);
@@ -92,7 +93,7 @@ public class ClassParser extends BaseParser {
 
                                 QueryBuilder<Clazz> builder2 = classBox.query()
                                         .equal(Clazz_.classesCount_, classesCount).and()
-                                        .equal(Clazz_.teacher_, teacher).and()
+                                        .equal(Clazz_.teacher_, teacher, CASE_INSENSITIVE).and()
                                         .between(Clazz_.date_, dateLong, dateLong);
 
                                 builder2.link(Clazz_.period)

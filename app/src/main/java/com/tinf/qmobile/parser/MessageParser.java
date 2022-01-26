@@ -2,7 +2,6 @@ package com.tinf.qmobile.parser;
 
 import android.content.Intent;
 import android.util.Log;
-
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MessagesActivity;
@@ -14,22 +13,20 @@ import com.tinf.qmobile.model.message.Sender_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.OnMessages;
-import com.tinf.qmobile.service.Jobs;
+import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.RandomColor;
 import com.tinf.qmobile.utility.User;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.Calendar;
-
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-
 import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
 import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class MessageParser extends BaseParser {
     private final OnMessages onMessages;
@@ -91,7 +88,7 @@ public class MessageParser extends BaseParser {
 
                 try {
                     Sender search1 = senderBox.query()
-                            .equal(Sender_.name_, sender)
+                            .equal(Sender_.name_, sender, CASE_INSENSITIVE)
                             .build().findUnique();
 
                     if (search1 == null) {
@@ -101,7 +98,7 @@ public class MessageParser extends BaseParser {
 
                     QueryBuilder<Message> builder = messageBox.query()
                             .equal(Message_.uid_, uid).and()
-                            .equal(Message_.subject_, subject).and()
+                            .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
                             .between(Message_.date_, date, date);
 
                     builder.link(Message_.sender)
@@ -156,7 +153,7 @@ public class MessageParser extends BaseParser {
                     try {
                         Message search = messageBox.query()
                                 .equal(Message_.uid_, uid).and()
-                                .equal(Message_.subject_, subject).and()
+                                .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
                                 .between(Message_.date_, date, date)
                                 .build().findUnique();
 
@@ -217,8 +214,8 @@ public class MessageParser extends BaseParser {
     private void sendNotification(Message message) {
         Intent intent = new Intent(App.getContext(), MessagesActivity.class);
 
-        Jobs.displayNotification(App.getContext(), message.getSubject_(), message.sender.getTarget().getName_(),
-                App.getContext().getResources().getString(R.string.title_messages), (int) message.id, intent);
+        Works.displayNotification(message.getSubject_(), message.sender.getTarget().getName_(),
+                MESSAGE, (int) message.id, intent);
     }
 
 }

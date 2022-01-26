@@ -18,10 +18,11 @@ import com.tinf.qmobile.network.Client;
 
 public class MatterActivity extends AppCompatActivity {
     private ActivityMatterBinding binding;
-    public static int GRADES = 0;
-    public static int SCHEDULE = 1;
-    public static int MATERIALS = 2;
-    public static int CLASS = 3;
+    /*public final static int GRADES = 0;
+    public final static int SCHEDULE = 1;
+    public final static int MATERIALS = 2;
+    public final static int CLASS = 3;
+    public final static int MESSAGES = 4;*/
     private Matter matter;
 
     @Override

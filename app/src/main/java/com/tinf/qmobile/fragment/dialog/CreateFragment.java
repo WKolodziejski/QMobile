@@ -6,14 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
-import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
-import static com.tinf.qmobile.activity.EventCreateActivity.SCHEDULE;
+import static com.tinf.qmobile.model.ViewType.EVENT;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 
 public class CreateFragment extends BottomSheetDialogFragment {
     private TextView event;

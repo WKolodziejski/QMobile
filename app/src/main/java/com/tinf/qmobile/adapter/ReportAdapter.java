@@ -42,6 +42,7 @@ import java.util.List;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> implements OnUpdate {
@@ -80,7 +81,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                 if (column == 0) {
                     Intent intent = new Intent(context, MatterActivity.class);
                     intent.putExtra("ID", rowHeader.get(row).id);
-                    intent.putExtra("PAGE", MatterActivity.GRADES);
+                    intent.putExtra("PAGE", JOURNAL);
                     context.startActivity(intent);
                 }
 

@@ -144,6 +144,7 @@ public class Period implements Queryable {
                 Float.compare(period.getGradeFinal_(), getGradeFinal_()) == 0 &&
                 getAbsences_() == period.getAbsences_() &&
                 isSub_() == period.isSub_() &&
+                matter.getTarget().equals(period.matter.getTarget()) &&
                 Objects.equals(getTitle_(), period.getTitle_());
     }
 

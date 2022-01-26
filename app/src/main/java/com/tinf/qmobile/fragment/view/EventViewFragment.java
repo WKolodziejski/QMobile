@@ -27,7 +27,7 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 import static android.view.View.GONE;
-import static com.tinf.qmobile.activity.EventCreateActivity.EVENT;
+import static com.tinf.qmobile.model.ViewType.EVENT;
 
 public class EventViewFragment extends Fragment {
     private FragmentViewEventBinding binding;

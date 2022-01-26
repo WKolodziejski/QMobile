@@ -1,5 +1,7 @@
 package com.tinf.qmobile.parser;
 
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.util.Log;
 
 import com.tinf.qmobile.model.calendar.EventSimple;
@@ -10,6 +12,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
+
+import io.objectbox.query.QueryBuilder;
 
 public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
@@ -116,7 +120,7 @@ public class CalendarParser extends BaseParser {
 
                                 if (!title.contains("'")) {
 
-                                    EventSimple search = eventSimpleBox.query().equal(EventSimple_.title, title).and()
+                                    EventSimple search = eventSimpleBox.query().equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
                                             .between(EventSimple_.startTime, date, date).build().findFirst();
 
                                     if (search == null)
@@ -137,7 +141,7 @@ public class CalendarParser extends BaseParser {
                                     long end = getDate(endTime + "/" + year, false);
 
                                     EventSimple search = eventSimpleBox.query()
-                                            .equal(EventSimple_.title, title).and()
+                                            .equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
                                             .between(EventSimple_.startTime, start, start).and()
                                             .between(EventSimple_.endTime, end, end)
                                             .build().findFirst();
