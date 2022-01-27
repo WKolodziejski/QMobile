@@ -305,7 +305,7 @@
     },
     {
       "id": "6:3680553640773774313",
-      "lastPropertyId": "12:3763220073563955988",
+      "lastPropertyId": "15:7209045109044554853",
       "name": "Matter",
       "properties": [
         {
@@ -345,11 +345,6 @@
           "type": 7
         },
         {
-          "id": "8:4717285502811472622",
-          "name": "classes_",
-          "type": 5
-        },
-        {
           "id": "9:3517594999741121589",
           "name": "absences_",
           "type": 5
@@ -367,6 +362,21 @@
         {
           "id": "12:3763220073563955988",
           "name": "period_",
+          "type": 5
+        },
+        {
+          "id": "13:200833401479843218",
+          "name": "classesTotal_",
+          "type": 5
+        },
+        {
+          "id": "14:8913098147200866066",
+          "name": "classesGiven_",
+          "type": 5
+        },
+        {
+          "id": "15:7209045109044554853",
+          "name": "classesLeft_",
           "type": 5
         }
       ],
@@ -701,7 +711,9 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    4717285502811472622
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

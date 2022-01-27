@@ -29,13 +29,13 @@
         android:layout_width="match_parent"
         android:layout_height="6dp"
         android:id="@+id/div1"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

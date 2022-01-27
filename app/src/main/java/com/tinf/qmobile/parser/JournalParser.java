@@ -65,15 +65,25 @@ public class JournalParser extends BaseParser {
 
             String description = header.first().child(0).text();
             String teacher = description.substring(description.lastIndexOf('-') + 1).trim();
-            String hs = trs.get(0).getElementsByTag("td").get(1).text();
-            hs = hs.substring(0, hs.indexOf("Hrs"));
+            String cTotal = trs.get(1).getElementsByTag("td").get(1).text().trim();
+            String cLeft = trs.get(3).getElementsByTag("td").get(1).text().trim();
+            String hs = trs.get(0).getElementsByTag("td").get(1).text().trim();
+            hs = hs.substring(0, hs.indexOf("Hrs")).trim();
+            String cGiven = trs.get(2).getElementsByTag("td").get(1).text().trim();
+            if (cGiven.contains("[")) {
+                cGiven = cGiven.substring(0, cGiven.indexOf(" ")).trim();
+            }
 
             float hours = Float.parseFloat(hs);
-            int classes = Integer.parseInt(trs.get(1).getElementsByTag("td").get(1).text());
+            int classesTotal = Integer.parseInt(cTotal);
+            int classesGiven = Integer.parseInt(cGiven);
+            int classesLeft = Integer.parseInt(cLeft);
 
-            Log.d(description, hours + ", " + classes);
+            Log.d(description, hours + ", " + classesTotal + ", " + classesGiven + ", " + classesLeft);
 
             boolean isFirstParse = false;
+
+            long newID = 0;
 
             Matter matter = matterBox.query()
                     .equal(Matter_.description_, description, CASE_INSENSITIVE).and()
@@ -82,11 +92,14 @@ public class JournalParser extends BaseParser {
                     .build().findUnique();
 
             if (matter == null) {
-                matter = new Matter(description, colors.getColor(), hours, classes, year, period);
+                matter = new Matter(description, colors.getColor(), hours, classesTotal, year, period);
                 matter.setTeacher(teacher);
-                matterBox.put(matter);
+                //newID = matterBox.put(matter); //Is it really necessary? Can't the matter be put only at the very end?
                 isFirstParse = true;
             }
+
+            matter.setClassesGiven(classesGiven);
+            matter.setClassesLeft(classesLeft);
 
             Element content = null;
 
@@ -198,7 +211,11 @@ public class JournalParser extends BaseParser {
                 periodBox.put(period);
             }
 
-            matterBox.put(matter);
+            long oldID = matterBox.put(matter);
+
+            Log.d("JournalParser", oldID + ", " + newID);
+            //Assert that if a matter is recently created, it has the same ID when updated in the DB
+            assert newID == 0 || (newID == oldID);
         }
     }
 

@@ -45,7 +45,6 @@ public class PerformanceChart extends AbstractChartView implements ColumnChartDa
         }
 
         super.onChartDataChange();
-
     }
 
     @Override
@@ -58,9 +57,13 @@ public class PerformanceChart extends AbstractChartView implements ColumnChartDa
         SelectedValue selectedValue = chartRenderer.getSelectedValue();
 
         if (selectedValue.isSet()) {
-            SubcolumnValue value = data.getColumns().get(selectedValue.getFirstIndex()).getValues()
-                    .get(selectedValue.getSecondIndex());
-            onValueTouchListener.onValueSelected(selectedValue.getFirstIndex(), selectedValue.getSecondIndex(), value);
+            SubcolumnValue value = data.getColumns().get(
+                    selectedValue.getFirstIndex()).getValues()
+                        .get(selectedValue.getSecondIndex());
+            onValueTouchListener.onValueSelected(
+                    selectedValue.getFirstIndex(),
+                    selectedValue.getSecondIndex(),
+                    value);
         } else {
             onValueTouchListener.onValueDeselected();
         }

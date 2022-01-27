@@ -1,7 +1,5 @@
 package com.tinf.qmobile.model.matter;
 
-import android.util.Log;
-
 import androidx.annotation.ColorInt;
 
 import com.tinf.qmobile.model.Queryable;
@@ -9,15 +7,12 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
-import io.objectbox.relation.ToOne;
 
 import static com.tinf.qmobile.model.ViewType.HEADER;
 
@@ -32,7 +27,9 @@ public class Matter implements Queryable {
     private String situation_;
     private String teacher_;
     private float hours_;
-    private int classes_;
+    private int classesTotal_;
+    private int classesGiven_ = -1;
+    private int classesLeft_ = -1;
     private int absences_ = -1;
     private float mean_ = -1;
     private int year_;
@@ -41,11 +38,11 @@ public class Matter implements Queryable {
     public ToMany<Schedule> schedules;
     public ToMany<Material> materials;
 
-    public Matter(String description, int color, float hours, int classes, int year, int period) {
+    public Matter(String description, int color, float hours, int classesTotal, int year, int period) {
         this.description_ = description;
         this.color_ = color;
         this.hours_ = hours;
-        this.classes_ = classes;
+        this.classesTotal_ = classesTotal;
         this.year_ = year;
         this.period_ = period;
     }
@@ -56,6 +53,14 @@ public class Matter implements Queryable {
 
     public String getMean() {
         return mean_ == -1 ? "-" : String.valueOf(mean_);
+    }
+
+    public void setClassesGiven(int classesGiven) {
+        this.classesGiven_ = classesGiven;
+    }
+
+    public void setClassesLeft(int classesLeft) {
+        this.classesLeft_ = classesLeft;
     }
 
     public void setAbsences(int absences) {
@@ -212,8 +217,6 @@ public class Matter implements Queryable {
         return String.valueOf(Math.max(sg, fg));
     }
 
-
-
     /*
      * Auto-generated methods
      */
@@ -260,8 +263,16 @@ public class Matter implements Queryable {
         return hours_;
     }
 
-    public int getClasses_() {
-        return classes_;
+    public int getClassesTotal_() {
+        return classesTotal_;
+    }
+
+    public int getClassesGiven_() {
+        return classesGiven_;
+    }
+
+    public int getClassesLeft_() {
+        return classesLeft_;
     }
 
     @Override
@@ -277,7 +288,7 @@ public class Matter implements Queryable {
         return id == matter.id &&
                 getColor_() == matter.getColor_() &&
                 Float.compare(matter.getHours_(), getHours_()) == 0 &&
-                getClasses_() == matter.getClasses_() &&
+                getClassesTotal_() == matter.getClassesTotal_() &&
                 getAbsences_() == matter.getAbsences_() &&
                 Float.compare(matter.getMean_(), getMean_()) == 0 &&
                 getYear_() == matter.getYear_() &&
@@ -291,7 +302,7 @@ public class Matter implements Queryable {
     @Override
     public int hashCode() {
         return Objects.hash(id, getColor_(), getTitle_(), getDescription_(), getSituation_(),
-                getTeacher_(), getHours_(), getClasses_(), getAbsences_(), getMean_(), getYear_(),
+                getTeacher_(), getHours_(), getClassesTotal_(), getAbsences_(), getMean_(), getYear_(),
                 getPeriod_());
     }
 

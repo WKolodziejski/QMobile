@@ -160,13 +160,13 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 }
 
                 binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
-                binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
-                binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
+                //binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
+                //binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
                 binding.empty.setVisibility(View.GONE);
 
             } else {
-                binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
-                binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
+                //binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
+                //binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
                 binding.empty.setVisibility(View.VISIBLE);
             }
 

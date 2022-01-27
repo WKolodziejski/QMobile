@@ -344,13 +344,13 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
     private int getSituationColor(String s) {
         if (s.contains("Aprovado"))
-            return context.getResources().getColor(R.color.approved);
+            return context.getResources().getColor(R.color.good);
 
         if (s.contains("Reprovado"))
-            return context.getResources().getColor(R.color.disapproved);
+            return context.getResources().getColor(R.color.bad);
 
         if (s.contains("Falta"))
-            return context.getResources().getColor(R.color.disapproved);
+            return context.getResources().getColor(R.color.bad);
 
         return context.getResources().getColor(R.color.colorPrimary);
     }

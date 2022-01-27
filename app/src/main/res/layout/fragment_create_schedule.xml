@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/title_edt"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -73,7 +73,7 @@
         android:id="@+id/matter_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/matter_layout"/>
 
     <LinearLayout
@@ -149,7 +149,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/time_layout"/>
 
     <LinearLayout
@@ -192,7 +192,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/room_layout"/>
 
     <LinearLayout
@@ -234,7 +234,7 @@
         android:id="@+id/alarm_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/alarm_layout"/>
 
     <LinearLayout
@@ -277,7 +277,7 @@
         android:id="@+id/color_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/color_layout"/>
 
     <LinearLayout
@@ -320,7 +320,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_dividers"
+        android:background="@color/blackDividers"
         app:layout_constraintTop_toBottomOf="@id/description_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

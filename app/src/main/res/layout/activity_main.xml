@@ -43,7 +43,7 @@
                     android:focusable="true"
                     android:elevation="4dp"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:background="@color/colorPrimaryLight"
+                    android:background="@color/actionBar"
                     app:layout_scrollFlags="scroll|enterAlways|snap"
                     >
 
@@ -154,7 +154,7 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="@color/black_dividers" />
+                            android:background="@color/blackDividers" />
 
                         <FrameLayout
                             android:id="@+id/main_fragment"

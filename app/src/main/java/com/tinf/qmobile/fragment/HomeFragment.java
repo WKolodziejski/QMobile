@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
 
-        binding.weekView.setOnTouchListener((view1, motionEvent) -> {
+        /*binding.weekView.setOnTouchListener((view1, motionEvent) -> {
             if (motionEvent.getAxisValue(MotionEvent.AXIS_Y) <= 90) {
                 binding.scheduleLayout.dispatchTouchEvent(motionEvent);
                 return true;
@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
                 return false;
             }
-        });
+        });*/
 
         binding.weekView.setOnEventClickListener((event, eventRect) -> {
             Log.d("WEEK", event.getName());
@@ -175,35 +175,47 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 }
             }
 
-            int firstIndex = 0;
-            int parc1 = 0;
+            int firstIndex = 0; //First index
+            int parc1 = 0;      //Last biggest sum
 
+            // For each hour of the day
             for (int h = 0; h < 24; h++) {
                 int sum = 0;
+
+                // For each day of the week
                 for (int d = 0; d < 7; d++) {
+
+                    // Sum of events in the same hour, for the whole week
                     if (hours[h][d]) {
                         sum++;
                     }
                 }
+
+                // If sum is bigger than the last one, the first index is set to the current hour
                 if (sum > parc1) {
                     firstIndex = h;
                     parc1 = sum;
                 }
             }
 
-            boolean r = true;
-            int d1 = 0;
+            /*boolean r = true;   // Keep searching
+            int d1 = 0;         // Day of week
 
+            // Searches for first index
             while (r) {
-                if (!hours[firstIndex - 1][d1] && d1 < 7) {
-                    d1++;
-                    if (d1 == 7)
-                        r = false;
-                } else {
+
+                // If there's an event before the first hour index, decreases the first hour
+                if (hours[firstIndex - 1][d1] || d1 >= 7) {
                     firstIndex--;
                     d1 = 0;
+
+                } else {
+                    d1++; // Next day
+
+                    if (d1 == 7)    // last day; stop search
+                        r = false;
                 }
-            }
+            }*/
 
             int lastIndex = firstIndex;
             int maxInterval = 0;
@@ -228,7 +240,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             params.height = Design.dpiToPixels(
                     ((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) -
-                    ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 45);
+                    ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 8);
 
             binding.weekView.goToDay(DayOfWeek.MONDAY);
             binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
@@ -280,17 +292,17 @@ public class HomeFragment extends Fragment implements OnUpdate {
             //.setHasLabelsOnlyForSelected(true));
         }
 
-        List<AxisValue> axisValues = new ArrayList<>();
-        axisValues.add(new AxisValue(6).setLabel(""));
+        //List<AxisValue> axisValues = new ArrayList<>();
+        //axisValues.add(new AxisValue(6).setLabel(""));
         ColumnChartData data = new ColumnChartData();
         data.setColumns(columns);
         data.setValueLabelBackgroundEnabled(false);
         data.setValueLabelsTextColor(getResources().getColor(R.color.colorPrimaryLight));
-        data.setAxisYLeft(new Axis(axisValues)
+        /*data.setAxisYLeft(new Axis(axisValues)
                 .setHasLines(true)
                 .setLineColor(ContextCompat.getColor(getContext(), R.color.error))
                 .setHasSeparationLine(false)
-                .setHasTiltedLabels(false));
+                .setHasTiltedLabels(false));*/
         data.setAxisXBottom(new Axis(axisMatter));
         binding.chart.setColumnChartData(data);
         binding.chart.setZoomEnabled(false);

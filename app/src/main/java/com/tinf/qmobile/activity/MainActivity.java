@@ -21,6 +21,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -58,10 +59,15 @@ import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.User;
+
 import static com.tinf.qmobile.App.USE_COUNT;
 import static com.tinf.qmobile.App.USE_INFO;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
+import static com.tinf.qmobile.model.ViewType.EVENT;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange,
@@ -100,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             if (itemId != binding.navigation.getSelectedItemId())
                 return changeFragment(itemId);
-             else
+            else
                 Client.get().requestScroll();
 
             return false;
@@ -121,28 +127,37 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         Bundle bundle = getIntent().getExtras();
 
-        if (bundle != null) {
+        if (savedInstanceState != null) {
+            int pg = savedInstanceState.getInt("FRAGMENT");
+            int id = R.id.navigation_grades;
+
+            switch (pg) {
+                case SCHEDULE:
+                    id = R.id.navigation_home;
+                    break;
+
+                case JOURNAL:
+                    id = R.id.navigation_grades;
+                    break;
+
+                case MATERIAL:
+                    id = R.id.navigation_materials;
+                    break;
+            }
+
+            changeFragment(id);
+            binding.navigation.setSelectedItemId(id);
+
+        } else if (bundle != null) {
             int pg = bundle.getInt("FRAGMENT");
 
             if (pg != 0) {
                 changeFragment(R.id.navigation_materials);
                 binding.navigation.setSelectedItemId(R.id.navigation_materials);
             }
-
         } else {
             changeFragment(R.id.navigation_grades);
             binding.navigation.setSelectedItemId(R.id.navigation_grades);
-            /*switch (bottomNav.getSelectedItemId()) {
-
-                case R.id.binding.navigation_home:
-                    changeFragment(new HomeFragment());
-
-                case R.id.binding.navigation_notas:
-                    changeFragment(new JournalFragment());
-
-                case R.id.binding.navigation_materiais:
-                    changeFragment(new MaterialsFragment());
-            }*/
         }
 
         if (Client.get().isLogging()) {
@@ -181,19 +196,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             return true;
 
         } else if (itemId == R.id.action_account) {
-           UserFragment fragment = new UserFragment();
-           fragment.setListener(new UserFragment.OnButton() {
-               @Override
-               public void onLogout() {
-                   logOut();
-               }
+            UserFragment fragment = new UserFragment();
+            fragment.setListener(new UserFragment.OnButton() {
+                @Override
+                public void onLogout() {
+                    logOut();
+                }
 
-               @Override
-               public void onAlerts() {
+                @Override
+                public void onAlerts() {
                     displayAlerts(true);
-               }
-           });
-           fragment.show(getSupportFragmentManager(), "sheet_user");
+                }
+            });
+            fragment.show(getSupportFragmentManager(), "sheet_user");
             return true;
 
         } else if (itemId == R.id.action_grades) {
@@ -604,6 +619,27 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onDateChanged() {
         binding.date.setText(User.getYears()[pos]);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("FRAGMENT", getNavigationPosition());
+    }
+
+    private int getNavigationPosition() {
+        int selectedItemId = binding.navigation.getSelectedItemId();
+
+        if (selectedItemId == R.id.navigation_home)
+            return SCHEDULE;
+
+        if (selectedItemId == R.id.navigation_grades)
+            return JOURNAL;
+
+        if (selectedItemId == R.id.navigation_materials)
+            return MATERIAL;
+
+        return JOURNAL;
     }
 
 }

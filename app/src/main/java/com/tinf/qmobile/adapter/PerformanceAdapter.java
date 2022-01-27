@@ -101,20 +101,16 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
         List<Queryable> list = new ArrayList<>();
 
         for (Matter matter : matters) {
-            boolean empty = true;
+            int i = 0;
 
-            if (!matter.periods.isEmpty()) {
-                for (Period period : matter.periods) {
-                    if (!period.journals.isEmpty()) {
-                        empty = false;
-                        break;
-                    }
-                }
-            }
+            if (!matter.periods.isEmpty())
+                for (Period period : matter.periods)
+                    if (!period.journals.isEmpty())
+                        i++;
 
-            if (!empty) {
+            Log.d(matter.getTitle(), String.valueOf(i));
+            if (i > 1)
                 list.add(matter);
-            }
         }
 
         if (list.isEmpty())

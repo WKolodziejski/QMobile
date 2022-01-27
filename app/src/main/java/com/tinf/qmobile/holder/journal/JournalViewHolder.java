@@ -66,17 +66,17 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     }
 
     private static int getColor(Context context, float grade) {
-        if (grade <= 2.5)
-            return context.getResources().getColor(R.color.red_500);
+        if (grade < 6.0)
+            return context.getResources().getColor(R.color.bad);
 
-        if (grade <= 5.0)
-            return context.getResources().getColor(R.color.yellow_500);
+        //if (grade <= 5.0)
+            //return context.getResources().getColor(R.color.yellow_500);
 
-        if (grade <= 7.5)
-            return context.getResources().getColor(R.color.blue_500);
+        if (grade < 8)
+            return context.getResources().getColor(R.color.ok);
 
         if (grade <= 10.0)
-            return context.getResources().getColor(R.color.green_500);
+            return context.getResources().getColor(R.color.good);
 
         return context.getResources().getColor(R.color.transparent);
     }

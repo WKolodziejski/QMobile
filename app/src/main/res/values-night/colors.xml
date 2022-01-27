@@ -2,21 +2,25 @@
 <resources>
     <color name="colorPrimary">@color/white</color>
     <color name="colorPrimaryDark">@color/grey_900</color>
-    <color name="colorPrimaryLight">@color/black</color>
+    <color name="colorPrimaryLight">@color/grey_1000</color>
     <color name="colorAccent">@color/grey_300</color>
     <color name="colorSecondary">@color/grey_700</color>
     <color name="notificationBackground">@color/grey_900</color>
     <color name="headerBackground">#121212</color>
     <color name="selectionBackground">@color/red_200</color>
-    <color name="black_dividers">@color/white_d</color>
-    <color name="white_dividers">@color/black_d</color>
-    <color name="message_seen">@color/grey_600</color>
+    <color name="blackDividers">@color/white_d</color>
+    <color name="whiteDividers">@color/black_d</color>
+    <color name="message_seen">@color/grey_500</color>
     <color name="message_not_seen">@color/white</color>
     <color name="message_sign">@color/grey_900</color>
     <color name="badge">#Cf6679</color>
     <color name="cardText">@color/grey_50</color>
+    <color name="cardBackground">@color/grey_900</color>
 
-    <color name="approved">@color/green_500</color>
-    <color name="disapproved">@color/red_500</color>
+    <color name="actionBar">@color/grey_900</color>
+
+    <color name="good">@color/green_600</color>
+    <color name="ok">@color/blue_600</color>
+    <color name="bad">@color/red_600</color>
 
 </resources>
