@@ -1,6 +1,8 @@
 package com.tinf.qmobile.service;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
@@ -12,34 +14,36 @@ import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 
 public class ParserWorker extends Worker {
-    private boolean errorOccurred;
+    private static final String TAG = "ParserWorker";
     private boolean messagesLoaded;
     private boolean scheduleLoaded;
     private boolean materialsLoaded;
 
     public ParserWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        Log.d(TAG, "Work created");
     }
 
     @NonNull
     @Override
     public Result doWork() {
+        Log.d(TAG, "Starting work...");
+
         Client.background = true;
-        Client.get().login();
 
         Client.get().addOnResponseListener(new OnResponse() {
+
             @Override
             public void onStart(int pg) {
                 if (BuildConfig.DEBUG)
-                    Works.displayNotification("Debug", "Background check", -1, 0, new Intent(App.getContext(), SplashActivity.class));
+                    Works.displayNotification("Debug", "Background check starting", -1, 0, new Intent(App.getContext(), SplashActivity.class));
             }
 
             @Override
             public void onFinish(int pg) {
 
-                if (pg == PG_LOGIN) {
+                if (pg == PG_LOGIN)
                     Client.get().checkChanges();
-                }
 
                 if (pg == PG_SCHEDULE)
                     scheduleLoaded = true;
@@ -56,7 +60,6 @@ public class ParserWorker extends Worker {
 
             @Override
             public void onError(int pg, String error) {
-                errorOccurred = true;
                 Client.get().removeOnResponseListener(this);
             }
 
@@ -70,12 +73,12 @@ public class ParserWorker extends Worker {
             }
         });
 
+        Client.get().login();
+
+        Log.d(TAG, "Work stopped");
+        Works.schedule();
+
         return Result.success();
     }
 
-    @Override
-    public void onStopped() {
-        super.onStopped();
-        Works.schedule(errorOccurred);
-    }
 }

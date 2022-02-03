@@ -1,6 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,8 @@ public class EventViewActivity extends AppCompatActivity {
         setSupportActionBar(findViewById(R.id.toolbar_default));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+
+        Log.d("EventView", String.valueOf(getParent()));
 
         Bundle bundle = getIntent().getExtras();
 

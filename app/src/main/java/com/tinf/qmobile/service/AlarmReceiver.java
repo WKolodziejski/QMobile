@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.database.DataBase;
@@ -71,7 +72,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                             i.putExtra("ID", schedule.id);
                             i.putExtra("TYPE", SCHEDULE);
 
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) schedule.id, i, 0);
+                                PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                                    PendingIntent.getBroadcast(context, (int) schedule.id, i,
+                                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE) :
+                                    PendingIntent.getBroadcast(context, (int) schedule.id, i,
+                                            PendingIntent.FLAG_UPDATE_CURRENT);
 
                             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, schedule.getAlarm(), 24 * 7 * 60 * 60 * 1000, pendingIntent);
                         }

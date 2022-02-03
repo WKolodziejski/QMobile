@@ -35,7 +35,6 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
             intent.putExtra("TYPE", JOURNAL);
             intent.putExtra("LOOKUP", false);
             context.startActivity(intent);
-
             itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         });
 

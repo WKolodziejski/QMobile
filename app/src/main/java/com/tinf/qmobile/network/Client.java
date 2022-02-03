@@ -537,6 +537,10 @@ public class Client {
 
     public void addOnResponseListener(OnResponse onResponse) {
         if (onResponse != null && !onResponses.contains(onResponse)) {
+            if (background) {
+                onResponses.clear();
+            }
+
             onResponses.add(onResponse);
         }
     }

@@ -11,6 +11,7 @@ import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static java.util.concurrent.TimeUnit.HOURS;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -21,6 +22,7 @@ import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
+
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 import androidx.work.Constraints;
@@ -28,6 +30,7 @@ import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
@@ -35,7 +38,7 @@ import com.tinf.qmobile.activity.MatterActivity;
 public class Works {
     private final static String TAG = "Scheduler";
 
-    public static void schedule(boolean retry) {
+    public static void schedule() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         if (!prefs.getBoolean(CHECK, true)) {
@@ -53,15 +56,11 @@ public class Works {
             Log.i(TAG, "Mobile data on");
         }
 
-        if (!retry) {
-            workRequest.setInitialDelay(prefs.getBoolean(ALERT, false) ? 5 : 24, HOURS);
-        }
+        workRequest.setInitialDelay(prefs.getBoolean(ALERT, false) ? 5 : 24, HOURS);
 
-        WorkManager.getInstance(getContext())
-                .cancelAllWorkByTag("background");
-
-        WorkManager.getInstance(getContext())
-                .enqueueUniqueWork("background", ExistingWorkPolicy.REPLACE, workRequest.build());
+        WorkManager.getInstance(getContext()).cancelAllWorkByTag("background");
+        WorkManager.getInstance(getContext()).enqueueUniqueWork("background",
+                ExistingWorkPolicy.REPLACE, workRequest.build());
 
         Log.i(TAG, "Work scheduled");
     }
@@ -71,42 +70,47 @@ public class Works {
     }
 
     public static void displayNotification(String title, String txt, int channelID, int id, Intent intent) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(App.getContext(), getChannelName(channelID));
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), getChannelName(channelID));
 
         NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
         bigText.bigText(txt);
         bigText.setBigContentTitle(title);
         bigText.setSummaryText(getChannelName(channelID));
 
-        mBuilder.setSmallIcon(R.drawable.ic_launcher);
-        mBuilder.setLargeIcon(BitmapFactory.decodeResource(App.getContext().getResources(), R.drawable.ic_launcher));
-        mBuilder.setPriority(Notification.PRIORITY_DEFAULT);
-        mBuilder.setContentTitle(title);
-        mBuilder.setContentText(txt);
-        mBuilder.setStyle(bigText);
+        builder.setSmallIcon(R.drawable.ic_launcher);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher));
+        builder.setPriority(Notification.PRIORITY_DEFAULT);
+        builder.setContentTitle(title);
+        builder.setContentText(txt);
+        builder.setStyle(bigText);
 
-        NotificationManager mNotificationManager = (NotificationManager) App.getContext().getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getContext()
+                .getSystemService(NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mNotificationManager != null) {
             if (mNotificationManager.getNotificationChannel(String.valueOf(channelID)) == null) {
-                mNotificationManager.createNotificationChannel(new NotificationChannel(String.valueOf(channelID), getChannelName(channelID),
-                        NotificationManager.IMPORTANCE_DEFAULT));
+                mNotificationManager.createNotificationChannel(
+                        new NotificationChannel(String.valueOf(channelID), getChannelName(channelID),
+                                NotificationManager.IMPORTANCE_DEFAULT));
             }
         }
 
-        mBuilder.setChannelId(String.valueOf(channelID));
-        mBuilder.setAutoCancel(true);
+        builder.setChannelId(String.valueOf(channelID));
+        builder.setAutoCancel(true);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(App.getContext());
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addParentStack(MatterActivity.class);
         stackBuilder.addNextIntent(intent);
 
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                stackBuilder.getPendingIntent(id,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE) :
+                stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        mBuilder.setContentIntent(resultPendingIntent);
+        builder.setContentIntent(pendingIntent);
 
         if (mNotificationManager != null) {
-            mNotificationManager.notify(id, mBuilder.build());
+            mNotificationManager.notify(id, builder.build());
         }
     }
 

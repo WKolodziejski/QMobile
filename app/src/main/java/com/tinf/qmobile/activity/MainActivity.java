@@ -62,6 +62,7 @@ import com.tinf.qmobile.utility.User;
 
 import static com.tinf.qmobile.App.USE_COUNT;
 import static com.tinf.qmobile.App.USE_INFO;
+import static com.tinf.qmobile.App.USE_RATED;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.model.ViewType.EVENT;
@@ -165,24 +166,78 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
 
         int uses = getSharedPreferences(USE_INFO, MODE_PRIVATE).getInt(USE_COUNT, 0);
-        getSharedPreferences(USE_INFO, MODE_PRIVATE).edit().putInt(USE_COUNT, uses + 1).apply();
+        boolean rated = getSharedPreferences(USE_INFO, MODE_PRIVATE).getBoolean(USE_RATED, false);
 
-        if (uses > 10) {
-            ReviewManager manager = ReviewManagerFactory.create(this);
-            manager.requestReviewFlow().addOnCompleteListener(info -> {
-                if (info.isSuccessful())
-                    manager.launchReviewFlow(this, info.getResult());
-            });
+        if (uses > 20 && !rated) {
+            new MaterialAlertDialogBuilder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_evaluate_title))
+                    .setMessage(getResources().getString(R.string.dialog_evaluate_text))
+                    .setCancelable(true)
+                    .setPositiveButton(getResources().getString(R.string.dialog_evaluate_now), (dialogInterface, i) -> {
+                        ReviewManager manager = ReviewManagerFactory.create(this);
+                        manager.requestReviewFlow().addOnCompleteListener(info -> {
+                            if (info.isSuccessful()) {
+                                manager.launchReviewFlow(this, info.getResult());
+                                getSharedPreferences(USE_INFO, MODE_PRIVATE)
+                                        .edit()
+                                        .putBoolean(USE_RATED, true)
+                                        .apply();
+                            } else {
+                                getSharedPreferences(USE_INFO, MODE_PRIVATE)
+                                        .edit()
+                                        .putInt(USE_COUNT, 0)
+                                        .apply();
+                            }
+                        });
+                    })
+                    .setNegativeButton(getResources().getString(R.string.dialog_evaluate_no), (dialogInterface, i) ->
+                            getSharedPreferences(USE_INFO, MODE_PRIVATE)
+                                    .edit()
+                                    .putBoolean(USE_RATED, true)
+                                    .apply())
+                    .setNeutralButton(getResources().getString(R.string.dialog_evaluate_later), (dialogInterface, i) ->
+                            getSharedPreferences(USE_INFO, MODE_PRIVATE)
+                                    .edit()
+                                    .putInt(USE_COUNT, 0).apply())
+                    .create()
+                    .show();
         }
-
-        Works.schedule(false);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-        updateMenuIcon();
+        MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_account);
+        item.setActionView(R.layout.action_account);
+        ImageView view = (ImageView) item.getActionView();
+
+        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
+            view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_offline));
+        } else {
+            Drawable picture = User.getProfilePicture(getContext());
+
+            if (picture != null)
+                view.setImageDrawable(picture.getCurrent());
+            else
+                view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
+        }
+
+        view.setOnClickListener(v -> {
+            UserFragment fragment = new UserFragment();
+            fragment.setListener(new UserFragment.OnButton() {
+                @Override
+                public void onLogout() {
+                    logOut();
+                }
+
+                @Override
+                public void onAlerts() {
+                    displayAlerts(true);
+                }
+            });
+            fragment.show(getSupportFragmentManager(), "sheet_user");
+        });
 
         return true;
     }
@@ -270,38 +325,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         binding.refresh.setRefreshing(false);
     }
 
-    private void updateMenuIcon() {
-        MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_account);
-        item.setActionView(R.layout.action_account);
-        ImageView view = (ImageView) item.getActionView();
-
-        if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-            view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_offline));
-        } else {
-            Drawable picture = User.getProfilePicture(getContext());
-
-            if (picture != null)
-                view.setImageDrawable(picture.getCurrent());
-            else
-                view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
-        }
-
-        view.setOnClickListener(v -> {
-            UserFragment fragment = new UserFragment();
-            fragment.setListener(new UserFragment.OnButton() {
-                @Override
-                public void onLogout() {
-                    logOut();
-                }
-
-                @Override
-                public void onAlerts() {
-                    displayAlerts(true);
-                }
-            });
-            fragment.show(getSupportFragmentManager(), "sheet_user");
-        });
-    }
 
     private void logOut() {
         getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager()
@@ -467,7 +490,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onFinish(int pg) {
         dismissProgressbar();
-        updateMenuIcon();
+        invalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
+        //updateMenuIcon();
 
         if (pg == PG_LOGIN) {
             displayAlerts(false);
@@ -489,14 +514,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onError(int pg, String error) {
         dismissProgressbar();
-        updateMenuIcon();
+        invalidateOptionsMenu();
+        //updateMenuIcon();
         Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         dismissProgressbar();
-        updateMenuIcon();
+        invalidateOptionsMenu();
+        //updateMenuIcon();
 
         if (pg == PG_LOGIN) {
             new MaterialAlertDialogBuilder(MainActivity.this)

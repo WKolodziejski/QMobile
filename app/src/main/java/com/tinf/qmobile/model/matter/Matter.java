@@ -7,6 +7,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -123,6 +124,7 @@ public class Matter implements Queryable {
         if (period != null)
             journals.addAll(period.journals);
 
+        //Collections.reverse(journals);
         return journals;
     }
 

@@ -52,18 +52,14 @@ public class JournalFragment extends Fragment implements OnUpdate {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayoutManager layout = new LinearLayoutManager(getContext());
-
-        JournalAdapter adapter = new JournalAdapter(getContext(), null,
-                canExpand -> Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand));
-
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        binding.recycler.setLayoutManager(layout);
+        binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recycler.addItemDecoration(new JournalItemDivider(getContext(), 52));
-        binding.recycler.setAdapter(adapter);
+        binding.recycler.setAdapter(new JournalAdapter(getContext(), null,
+                canExpand -> Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand)));
         binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
     }
 

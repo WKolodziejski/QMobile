@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        Works.schedule(false);
+        Works.schedule();
         Client.get().requestDelayedUpdate();
     }
 

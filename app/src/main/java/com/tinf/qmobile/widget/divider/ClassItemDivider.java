@@ -12,14 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.model.ViewType;
 import com.tinf.qmobile.utility.Design;
 
-public class JournalItemDivider extends RecyclerView.ItemDecoration {
+public class ClassItemDivider extends RecyclerView.ItemDecoration {
 
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
 
     private final Drawable divider;
     private final int padding;
 
-    public JournalItemDivider(Context context, int margin) {
+    public ClassItemDivider(Context context, int margin) {
         final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
         divider = styledAttributes.getDrawable(0);
         padding = Design.dpiToPixels(margin);
@@ -64,13 +64,18 @@ public class JournalItemDivider extends RecyclerView.ItemDecoration {
             int p = parent.getChildAdapterPosition(child);
 
             int viewType = adapter.getItemViewType(p);
+            int nextType = ViewType.CLASS;
 
             if (p < 0 || p > childCount)
             {
-                viewType = ViewType.JOURNAL;
+                viewType = ViewType.CLASS;
             }
 
-            if (viewType == ViewType.FOOTERJ || viewType == ViewType.FOOTERP) {
+            if (parent.getChildAt(i + 1) != null) {
+                nextType = adapter.getItemViewType(p + 1);
+            }
+
+            if (viewType == ViewType.PERIOD || nextType == ViewType.PERIOD) {
                 divider.setBounds(left, top, right, bottom);
             } else {
                 divider.setBounds(left + padding, top, right, bottom);

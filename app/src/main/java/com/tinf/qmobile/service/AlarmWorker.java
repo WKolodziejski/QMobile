@@ -21,6 +21,7 @@ import java.util.Locale;
 import io.objectbox.Box;
 
 public class AlarmWorker extends Worker {
+    private static final String TAG = "AlarmWorker";
 
     public AlarmWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);

@@ -29,6 +29,7 @@ public class App extends Application {
     //public static final String DB_CLASS = ".class";
     public static final String USE_INFO = ".use";
     public static final String USE_COUNT = ".count";
+    public static final String USE_RATED = ".rated";
     private static Context context;
 
     @Override

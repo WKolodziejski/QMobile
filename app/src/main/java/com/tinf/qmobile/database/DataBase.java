@@ -1,10 +1,14 @@
 package com.tinf.qmobile.database;
 
+import static android.content.Context.ACTIVITY_SERVICE;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.utility.User.REGISTRATION;
 
+import android.app.ActivityManager;
 import android.util.Log;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
 import com.tinf.qmobile.model.journal.Journal;
@@ -21,6 +25,7 @@ import java.util.List;
 
 import io.objectbox.BoxStore;
 import io.objectbox.android.AndroidScheduler;
+import io.objectbox.exception.DbSchemaException;
 import io.objectbox.reactive.DataSubscription;
 
 public class DataBase implements OnUpdate {
@@ -38,11 +43,35 @@ public class DataBase implements OnUpdate {
 
         Log.d("Box for ", User.getCredential(User.REGISTRATION));
 
-        boxStore = MyObjectBox
-                .builder()
-                .androidContext(getContext())
-                .name(User.getCredential(User.REGISTRATION))
-                .build();
+        try {
+            boxStore = MyObjectBox
+                    .builder()
+                    .androidContext(getContext())
+                    .name(User.getCredential(User.REGISTRATION))
+                    .build();
+        } catch (DbSchemaException e) {
+            e.printStackTrace();
+
+            FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+            crashlytics.setCustomKey("DB", "SCHEMA FAILED");
+
+            if (BoxStore.deleteAllFiles(getContext(), User.getCredential(REGISTRATION))) {
+                Log.d(TAG, "DB deleted");
+
+                crashlytics.setCustomKey("DB", "DB DELETED");
+
+                boxStore = MyObjectBox
+                        .builder()
+                        .androidContext(getContext())
+                        .name(User.getCredential(User.REGISTRATION))
+                        .build();
+            } else {
+                crashlytics.setCustomKey("DB", "APP DATA DELETED");
+
+                ((ActivityManager) getContext().getSystemService(ACTIVITY_SERVICE))
+                        .clearApplicationUserData();
+            }
+        }
 
         sub1 = boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,11 @@ public class MaterialItemDivider extends RecyclerView.ItemDecoration {
 
         int childCount = parent.getChildCount() - 1;
 
+        RecyclerView.Adapter adapter = parent.getAdapter();
+
+        if (adapter == null)
+            return;
+
         for (int i = 0; i < childCount; i++) {
             View child = parent.getChildAt(i);
 
@@ -56,9 +62,20 @@ public class MaterialItemDivider extends RecyclerView.ItemDecoration {
             int bottom = top + divider.getIntrinsicHeight();
 
             int p = parent.getChildAdapterPosition(child);
-            int viewType = parent.getAdapter().getItemViewType(p);
 
-            if (viewType == ViewType.HEADER) {
+            int viewType = adapter.getItemViewType(p);
+            int nextType = ViewType.MATERIAL;
+
+            if (p < 0 || p > childCount)
+            {
+                viewType = ViewType.MATERIAL;
+            }
+
+            if (parent.getChildAt(i + 1) != null) {
+                nextType = adapter.getItemViewType(p + 1);
+            }
+
+            if (viewType == ViewType.HEADER || nextType == ViewType.HEADER) {
                 divider.setBounds(left, top, right, bottom);
             } else {
                 divider.setBounds(left + padding, top, right, bottom);

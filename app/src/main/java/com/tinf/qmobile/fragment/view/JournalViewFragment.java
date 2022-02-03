@@ -18,10 +18,16 @@ import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentViewJournalBinding;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.model.matter.Clazz;
+import com.tinf.qmobile.model.matter.Clazz_;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Period_;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import io.objectbox.android.AndroidScheduler;
+import io.objectbox.exception.NonUniqueResultException;
+import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
@@ -91,7 +97,7 @@ public class JournalViewFragment extends Fragment {
         binding.typeShort.setText(journal.getShort());
         binding.type.setText(journal.getType());
         binding.time.setText(date.format(journal.getDate()));
-        binding.matter.setText(journal.getMatter() + "・" + journal.getPeriod());
+        binding.matter.setText(String.format("%s・%s", journal.getMatter(), journal.getPeriod()));
         binding.colorImg.setImageTintList(ColorStateList.valueOf(journal.getColor()));
 
         if (lookup && !journal.matter.isNull()) {
@@ -104,6 +110,30 @@ public class JournalViewFragment extends Fragment {
         } else {
             binding.headerLayout.setOnClickListener(null);
         }
+
+        QueryBuilder<Clazz> clazzBuilder = DataBase.get().getBoxStore().boxFor(Clazz.class)
+                .query().between(Clazz_.date_, journal.getStartTime(), journal.getStartTime());//.and()
+                //.equal(Clazz_.title, journal.getTitle(), QueryBuilder.StringOrder.CASE_INSENSITIVE);
+
+        clazzBuilder.link(Clazz_.period)
+                .equal(Period_.id, journal.period.getTargetId());
+
+        Clazz clazz = null;
+
+        try {
+            clazz = clazzBuilder.build().findUnique();
+        } catch (NonUniqueResultException e) {
+            e.printStackTrace();
+        }
+
+        if (clazz != null) {
+            binding.presenceLayout.setVisibility(clazz.getAbsences_() > 0 ? View.VISIBLE : View.GONE);
+            binding.absences.setText(String.format(getString(R.string.class_absence), clazz.getAbsences_()));
+        } else {
+            binding.presenceLayout.setVisibility(View.GONE);
+        }
+
+        Log.d(journal.getTitle(), String.valueOf(clazz));
     }
 
     @Override

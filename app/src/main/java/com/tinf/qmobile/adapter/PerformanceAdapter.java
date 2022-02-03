@@ -21,6 +21,7 @@ import com.tinf.qmobile.holder.performance.HeaderViewHolder;
 import com.tinf.qmobile.holder.performance.PerformanceViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -106,9 +107,12 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
             if (!matter.periods.isEmpty())
                 for (Period period : matter.periods)
                     if (!period.journals.isEmpty())
-                        i++;
+                        for (Journal journal : period.journals)
+                            if (journal.getGrade_() >= 0)
+                                i++;
 
             Log.d(matter.getTitle(), String.valueOf(i));
+
             if (i > 1)
                 list.add(matter);
         }

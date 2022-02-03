@@ -1,20 +1,18 @@
 package com.tinf.qmobile.fragment;
+
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
-import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,7 +69,6 @@ public class HomeFragment extends Fragment implements OnUpdate {
         return view;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -131,12 +128,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
                                 Pair.create(fab, fab.getTransitionName()))
                                 .toBundle()));
 
-        binding.chartText.setOnClickListener(view1 -> {
-            startActivity(new Intent(getActivity(), PerformanceActivity.class),
-                    ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                            Pair.create(fab, fab.getTransitionName()))
-                            .toBundle());
-        });
+        binding.chartText.setOnClickListener(view1 ->
+                startActivity(new Intent(getActivity(), PerformanceActivity.class),
+                ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        Pair.create(fab, fab.getTransitionName()))
+                        .toBundle()));
 
         updateChart();
     }

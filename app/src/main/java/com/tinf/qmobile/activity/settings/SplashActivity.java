@@ -1,5 +1,8 @@
 package com.tinf.qmobile.activity.settings;
 
+import static com.tinf.qmobile.App.USE_COUNT;
+import static com.tinf.qmobile.App.USE_INFO;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,10 +28,13 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent;
 
         if (User.isValid()) {
-            Works.schedule(false);
+            Works.schedule();
 
             if (!Client.get().isValid() && !BuildConfig.DEBUG)
                 Client.get().login();
+
+            getSharedPreferences(USE_INFO, MODE_PRIVATE).edit().putInt(USE_COUNT,
+                    getSharedPreferences(USE_INFO, MODE_PRIVATE).getInt(USE_COUNT, 0) + 1).apply();
 
             intent = new Intent(this, MainActivity.class);
         } else {

@@ -99,6 +99,11 @@
     <string name="dialog_questionary_text">Enquanto houver um questionário obrigatório a ser respondido, você não poderá acessar o restante do sistema.</string>
     <string name="dialog_no_alerts">Não há alertas</string>
     <string name="dialog_alerts">Alertas</string>
+    <string name="dialog_evaluate_title">Avalie esse app</string>
+    <string name="dialog_evaluate_text">Se você está gostando de usar esse app, você se importaria em tirar um momento para avaliá-lo? Não irá levar mais do que um minuto. Obrigado pelo seu apoio!</string>
+    <string name="dialog_evaluate_now">Avaliar agora</string>
+    <string name="dialog_evaluate_later">Depois</string>
+    <string name="dialog_evaluate_no">Não, obrigado</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>

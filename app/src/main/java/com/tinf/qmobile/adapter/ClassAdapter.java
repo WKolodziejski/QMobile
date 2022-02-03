@@ -121,13 +121,24 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                 .boxFor(Matter.class)
                 .get(bundle.getLong("ID"));
 
-        for (Period p : matter.periods)
+        for (int i = 0; i < matter.periods.size(); i++) {
+            Period p = matter.periods.get(i);
+
+            if (!p.classes.isEmpty()) {
+                list.add(p);
+                List<Clazz> cls = p.classes;
+                //Collections.reverse(cls);
+                list.addAll(cls);
+            }
+        }
+
+        /*for (Period p : matter.periods)
             if (!p.classes.isEmpty()) {
                 list.add(p);
                 List<Clazz> cls = p.classes;
                 Collections.reverse(cls);
                 list.addAll(cls);
-            }
+            }*/
 
         if (list.isEmpty())
             list.add(new Empty());

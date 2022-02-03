@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.ClassAdapter;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.widget.divider.ClassItemDivider;
 
 public class ClassFragment extends Fragment {
 
@@ -30,17 +31,14 @@ public class ClassFragment extends Fragment {
 
         Client.get().load(getArguments().getLong("ID"));
 
-        ClassAdapter adapter = new ClassAdapter(getContext(), getArguments());
-        LinearLayoutManager layout = new LinearLayoutManager(getContext());
-
         RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        recyclerView.setLayoutManager(layout);
-        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new ClassItemDivider(getContext(), 52));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(new ClassAdapter(getContext(), getArguments()));
 
         /*if (getArguments() != null) {
             long id = getArguments().getLong("ID2");

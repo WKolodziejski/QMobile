@@ -183,4 +183,9 @@
 
     <string name="toast_reset_db_success">Data deleted</string>
     <string name="toast_reset_db_fail">It was not possible to delete the data</string>
+    <string name="dialog_evaluate_no">No, thanks</string>
+    <string name="dialog_evaluate_later">Later</string>
+    <string name="dialog_evaluate_now">Rate now</string>
+    <string name="dialog_evaluate_title">Rate this app</string>
+    <string name="dialog_evaluate_text">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
 </resources>

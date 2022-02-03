@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.JournalAdapter;
+import com.tinf.qmobile.widget.divider.ClassItemDivider;
 import com.tinf.qmobile.widget.divider.JournalItemDivider;
 
 public class GradesFragment extends Fragment {
