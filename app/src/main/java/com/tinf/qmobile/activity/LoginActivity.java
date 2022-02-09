@@ -88,6 +88,17 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
                    .create()
                    .show();
+
+       } else if (pg == PG_REGISTRATION) {
+           new MaterialAlertDialogBuilder(LoginActivity.this)
+                   .setTitle(getResources().getString(R.string.dialog_registration_title))
+                   .setMessage(getResources().getString(R.string.dialog_registration_text))
+                   .setCancelable(true)
+                   .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                           (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                   .create()
+                   .show();
+
        } else {
            Toast.makeText(getBaseContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
        }

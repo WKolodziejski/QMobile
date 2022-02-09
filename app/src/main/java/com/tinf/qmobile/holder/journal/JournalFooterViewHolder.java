@@ -18,7 +18,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     }
 
     @Override
-    public void bind(Context context, FooterJournal footer, JournalAdapter adapter) {
+    public void bind(Context context, FooterJournal footer, JournalAdapter adapter, boolean lookup) {
         Matter matter = footer.getMatter();
 
         binding.partialGrade.setText(matter.getLastGradeSumString());

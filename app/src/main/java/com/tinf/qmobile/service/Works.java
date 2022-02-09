@@ -48,7 +48,7 @@ public class Works {
         Constraints.Builder constraints = new Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.UNMETERED);
 
-        OneTimeWorkRequest.Builder workRequest = new OneTimeWorkRequest.Builder(ParserWorker.class)
+        OneTimeWorkRequest.Builder work = new OneTimeWorkRequest.Builder(ParserWorker.class)
                 .setConstraints(constraints.build());
 
         if (prefs.getBoolean(MOBILE, false)) {
@@ -56,11 +56,11 @@ public class Works {
             Log.i(TAG, "Mobile data on");
         }
 
-        workRequest.setInitialDelay(prefs.getBoolean(ALERT, false) ? 5 : 24, HOURS);
+        work.setInitialDelay(prefs.getBoolean(ALERT, false) ? 5 : 24, HOURS);
 
         WorkManager.getInstance(getContext()).cancelAllWorkByTag("background");
         WorkManager.getInstance(getContext()).enqueueUniqueWork("background",
-                ExistingWorkPolicy.REPLACE, workRequest.build());
+                ExistingWorkPolicy.REPLACE, work.build());
 
         Log.i(TAG, "Work scheduled");
     }
@@ -72,24 +72,24 @@ public class Works {
     public static void displayNotification(String title, String txt, int channelID, int id, Intent intent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), getChannelName(channelID));
 
-        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
-        bigText.bigText(txt);
-        bigText.setBigContentTitle(title);
-        bigText.setSummaryText(getChannelName(channelID));
+        NotificationCompat.BigTextStyle text = new NotificationCompat.BigTextStyle();
+        text.bigText(txt);
+        text.setBigContentTitle(title);
+        text.setSummaryText(getChannelName(channelID));
 
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher));
         builder.setPriority(Notification.PRIORITY_DEFAULT);
         builder.setContentTitle(title);
         builder.setContentText(txt);
-        builder.setStyle(bigText);
+        builder.setStyle(text);
 
-        NotificationManager mNotificationManager = (NotificationManager) getContext()
+        NotificationManager manager = (NotificationManager) getContext()
                 .getSystemService(NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && mNotificationManager != null) {
-            if (mNotificationManager.getNotificationChannel(String.valueOf(channelID)) == null) {
-                mNotificationManager.createNotificationChannel(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && manager != null) {
+            if (manager.getNotificationChannel(String.valueOf(channelID)) == null) {
+                manager.createNotificationChannel(
                         new NotificationChannel(String.valueOf(channelID), getChannelName(channelID),
                                 NotificationManager.IMPORTANCE_DEFAULT));
             }
@@ -98,19 +98,19 @@ public class Works {
         builder.setChannelId(String.valueOf(channelID));
         builder.setAutoCancel(true);
 
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
-        stackBuilder.addParentStack(MatterActivity.class);
-        stackBuilder.addNextIntent(intent);
+        TaskStackBuilder stack = TaskStackBuilder.create(getContext());
+        stack.addParentStack(MatterActivity.class);
+        stack.addNextIntent(intent);
 
         PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                stackBuilder.getPendingIntent(id,
+                stack.getPendingIntent(id,
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE) :
-                stackBuilder.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
+                stack.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(pendingIntent);
 
-        if (mNotificationManager != null) {
-            mNotificationManager.notify(id, builder.build());
+        if (manager != null) {
+            manager.notify(id, builder.build());
         }
     }
 

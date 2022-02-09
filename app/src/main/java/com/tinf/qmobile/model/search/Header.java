@@ -20,4 +20,14 @@ public class Header implements Queryable {
         return HEADERSEARCH;
     }
 
+    @Override
+    public long getId() {
+        return HEADERSEARCH;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
 }

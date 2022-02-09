@@ -43,6 +43,7 @@ public abstract class BaseParser {
     protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
     protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
     protected Box<Clazz> classBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
+    protected FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
     public BaseParser(int page, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
         this.page = page;

@@ -109,14 +109,18 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
     @Override
     public void onError(int pg, String error) {
-        binding.refresh.setRefreshing(false);
-        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+        getActivity().runOnUiThread(() -> {
+            binding.refresh.setRefreshing(false);
+            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+        });
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        binding.refresh.setRefreshing(false);
-        Toast.makeText(getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
+        getActivity().runOnUiThread(() -> {
+            binding.refresh.setRefreshing(false);
+            Toast.makeText(getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
+        });
     }
 
 }

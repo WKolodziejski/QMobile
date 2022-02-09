@@ -188,4 +188,6 @@
     <string name="dialog_evaluate_now">Rate now</string>
     <string name="dialog_evaluate_title">Rate this app</string>
     <string name="dialog_evaluate_text">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
+    <string name="dialog_registration_title">Data Change Request</string>
+    <string name="dialog_registration_text">Before continuing your access, it is necessary that you confirm your registration data.</string>
 </resources>

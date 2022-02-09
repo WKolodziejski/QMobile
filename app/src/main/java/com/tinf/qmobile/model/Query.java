@@ -18,4 +18,14 @@ public class Query implements Queryable {
         return QUERY;
     }
 
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
 }

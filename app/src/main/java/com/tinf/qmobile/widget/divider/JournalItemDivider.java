@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.model.ViewType;
@@ -27,7 +28,7 @@ public class JournalItemDivider extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(@NonNull Canvas canvas, RecyclerView parent, @NonNull RecyclerView.State state) {
         if (parent.getLayoutManager() == null || divider == null)
             return;
 
@@ -63,11 +64,10 @@ public class JournalItemDivider extends RecyclerView.ItemDecoration {
 
             int p = parent.getChildAdapterPosition(child);
 
-            int viewType = adapter.getItemViewType(p);
+            int viewType = ViewType.JOURNAL;
 
-            if (p < 0 || p > childCount)
-            {
-                viewType = ViewType.JOURNAL;
+            if (p > 0 && p < childCount) {
+                viewType = adapter.getItemViewType(p);
             }
 
             if (viewType == ViewType.FOOTERJ || viewType == ViewType.FOOTERP) {

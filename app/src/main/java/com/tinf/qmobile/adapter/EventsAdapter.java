@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventBase;
@@ -62,8 +64,9 @@ import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements KmStickyListener {
-    private final List<CalendarBase> events;
+    //private final List<CalendarBase> events;
     private final Context context;
+    private final AsyncListDiffer<CalendarBase> events;
     private final CompactCalendarView calendar;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
@@ -74,13 +77,24 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     public EventsAdapter(Context context, CompactCalendarView calendar) {
         this.context = context;
         this.calendar = calendar;
+        this.events = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull CalendarBase oldItem, @NonNull CalendarBase newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
 
-        events = getList();
+            @Override
+            public boolean areContentsTheSame(@NonNull CalendarBase oldItem, @NonNull CalendarBase newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
+
+        events.submitList(getList());
 
         DataObserver observer = data -> {
-            List<CalendarBase> updated = getList();
+            //List<CalendarBase> updated = getList();
 
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
                     return events.size();
@@ -120,7 +134,8 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             events.clear();
             events.addAll(updated);
-            result.dispatchUpdatesTo(this);
+            result.dispatchUpdatesTo(this);*/
+            events.submitList(getList());
         };
 
         sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
@@ -286,7 +301,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     }
 
     public List<CalendarBase> getEvents() {
-        return events;
+        return events.getCurrentList();
     }
 
     @NonNull
@@ -330,35 +345,35 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
     @Override
     public int getItemViewType(int i) {
-        return events.get(i).getItemType();
+        return events.getCurrentList().get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int i) {
-        holder.bind(events.get(i), context);
+        holder.bind(events.getCurrentList().get(i), context);
     }
 
     @Override
     public int getItemCount() {
-        return events.size();
+        return events.getCurrentList().size();
     }
 
     @Override
     public Integer getHeaderPositionForItem(Integer i) {
-        CalendarBase e = events.get(i);
+        CalendarBase e = events.getCurrentList().get(i);
 
         if (e instanceof Month || e instanceof Day)
             return i;
 
         while (!(e instanceof Header) && i > 0)
-            e = events.get(--i);
+            e = events.getCurrentList().get(--i);
 
         return i;
     }
 
     @Override
     public Integer getHeaderLayout(Integer i) {
-        if (events.get(i) instanceof Header)
+        if (events.getCurrentList().get(i) instanceof Header)
             return R.layout.calendar_header_day_single;
         else
             return R.layout.header_empty;
@@ -366,8 +381,8 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
     @Override
     public void bindHeaderData(View header, Integer i) {
-        if (events.get(i) instanceof Header) {
-            Header h = (Header) events.get(i);
+        if (events.getCurrentList().get(i) instanceof Header) {
+            Header h = (Header) events.getCurrentList().get(i);
 
             TextView n = header.findViewById(R.id.number);
             TextView w = header.findViewById(R.id.day);
@@ -379,7 +394,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
     @Override
     public Boolean isHeader(Integer i) {
-        CalendarBase e = events.get(i);
+        CalendarBase e = events.getCurrentList().get(i);
 
         if (i >= 0)
             return e instanceof Header || e instanceof Day || e instanceof Month;

@@ -17,7 +17,7 @@ public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Period> {
     }
 
     @Override
-    public void bind(Context context, Period header, JournalAdapter adapter) {
+    public void bind(Context context, Period header, JournalAdapter adapter, boolean lookup) {
         binding.title.setText(header.getTitle());
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(header.matter.getTarget().getColor()));
     }

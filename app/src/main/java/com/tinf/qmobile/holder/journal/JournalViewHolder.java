@@ -23,7 +23,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     }
 
     @Override
-    public void bind(Context context, Journal journal, JournalAdapter adapter) {
+    public void bind(Context context, Journal journal, JournalAdapter adapter, boolean lookup) {
         binding.title.setText(journal.getTitle());
         binding.weight.setText(journal.getWeight());
         binding.date.setText(journal.formatDate());
@@ -33,7 +33,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
             Intent intent = new Intent(context, EventViewActivity.class);
             intent.putExtra("ID", journal.id);
             intent.putExtra("TYPE", JOURNAL);
-            intent.putExtra("LOOKUP", false);
+            intent.putExtra("LOOKUP", lookup);
             context.startActivity(intent);
             itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         });

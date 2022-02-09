@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -311,7 +312,11 @@ public class EventCreateFragment extends Fragment {
             intent.putExtra("ID", id);
             intent.putExtra("TYPE", EVENT);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) id, intent, 0);
+            PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                    PendingIntent.getBroadcast(getContext(), (int)id, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE) :
+                    PendingIntent.getBroadcast(getContext(), (int) id, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
 
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
 

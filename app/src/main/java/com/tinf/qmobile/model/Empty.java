@@ -21,4 +21,14 @@ public class Empty extends EventBase implements Queryable {
         return type;
     }
 
+    @Override
+    public long getId() {
+        return EMPTY;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
 }

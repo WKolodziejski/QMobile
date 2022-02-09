@@ -573,6 +573,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
                     .create()
                     .show();
+
+        } else if (pg == PG_REGISTRATION) {
+            new MaterialAlertDialogBuilder(MainActivity.this)
+                    .setTitle(getResources().getString(R.string.dialog_registration_title))
+                    .setMessage(getResources().getString(R.string.dialog_registration_text))
+                    .setCancelable(true)
+                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                    .create()
+                    .show();
+
         } else {
             Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
         }

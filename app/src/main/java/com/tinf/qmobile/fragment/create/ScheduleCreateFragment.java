@@ -5,15 +5,18 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -26,13 +29,17 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.service.AlarmReceiver;
 import com.tinf.qmobile.utility.User;
+
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.format.TextStyle;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
 import io.objectbox.Box;
 import me.jlurena.revolvingweekview.DayTime;
+
 import static android.content.Context.ALARM_SERVICE;
 import static android.view.View.GONE;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
@@ -196,7 +203,8 @@ public class ScheduleCreateFragment extends Fragment {
                         color = selectedColor;
                         updateText();
                     })
-                    .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
+                    .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {
+                    })
                     .build()
                     .show());
 
@@ -260,18 +268,22 @@ public class ScheduleCreateFragment extends Fragment {
 
             switch (alarmDif) {
 
-                case 0: alarm = 0;
+                case 0:
+                    alarm = 0;
                     break;
 
-                case 1: alarmTime.add(Calendar.MINUTE, -30);
+                case 1:
+                    alarmTime.add(Calendar.MINUTE, -30);
                     alarm = alarmTime.getTimeInMillis();
                     break;
 
-                case 2: alarmTime.add(Calendar.HOUR_OF_DAY, -1);
+                case 2:
+                    alarmTime.add(Calendar.HOUR_OF_DAY, -1);
                     alarm = alarmTime.getTimeInMillis();
                     break;
 
-                case 3: alarmTime.add(Calendar.DAY_OF_WEEK, -1);
+                case 3:
+                    alarmTime.add(Calendar.DAY_OF_WEEK, -1);
                     alarm = alarmTime.getTimeInMillis();
                     break;
             }
@@ -300,16 +312,17 @@ public class ScheduleCreateFragment extends Fragment {
             intent.putExtra("ID", id);
             intent.putExtra("TYPE", SCHEDULE);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), (int) id, intent, PendingIntent.FLAG_UPDATE_CURRENT
-                    | PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                    PendingIntent.getBroadcast(getContext(), (int) id, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE) :
+                    PendingIntent.getBroadcast(getContext(), (int) id, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
 
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
 
             if (alarmManager != null) {
                 if (alarmDif != 0) {
-
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, schedule.getAlarm(), 24 * 7 * 60 * 60 * 1000,  pendingIntent);
-
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, schedule.getAlarm(), 24 * 7 * 60 * 60 * 1000, pendingIntent);
                 } else {
                     alarmManager.cancel(pendingIntent);
                     pendingIntent.cancel();

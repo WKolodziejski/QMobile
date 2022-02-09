@@ -9,6 +9,8 @@ import java.util.Locale;
 
 import static com.tinf.qmobile.model.ViewType.HEADER;
 
+import com.tinf.qmobile.model.Queryable;
+
 public class Header implements CalendarBase {
     private final long time;
 
@@ -69,6 +71,16 @@ public class Header implements CalendarBase {
     @Override
     public boolean isHeader() {
         return true;
+    }
+
+    @Override
+    public long getId() {
+        return HEADER;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
     }
 
 }

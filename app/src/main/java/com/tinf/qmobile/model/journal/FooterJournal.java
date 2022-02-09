@@ -27,4 +27,14 @@ public class FooterJournal implements Queryable {
         return i;
     }
 
+    @Override
+    public long getId() {
+        return getMatter().id;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
 }

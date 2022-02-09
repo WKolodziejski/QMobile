@@ -72,6 +72,7 @@ import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
 import static com.tinf.qmobile.network.OnResponse.PG_QUEST;
+import static com.tinf.qmobile.network.OnResponse.PG_REGISTRATION;
 import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
 import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
 import static com.tinf.qmobile.network.OnResponse.PG_UPDATE;
@@ -95,7 +96,7 @@ public class Client {
     private boolean isLogging;
 
     public enum Resp {
-        OK, HOST, DENIED, EGRESS, UPDATE, QUEST, UNKNOWN
+        OK, HOST, DENIED, EGRESS, UPDATE, QUEST, REG, UNKNOWN
     }
 
     private Client() {
@@ -135,6 +136,19 @@ public class Client {
             addToQueue(pg, url, year, period, method, form, notify, matter);
         } else {
             Log.i(TAG, "Request for: " + pg);
+
+            boolean isNew = true;
+
+            for (RequestHelper h : queue)
+                if (h.pg == pg && h.year == year && h.period == period) {
+                    isNew = false;
+                    break;
+                }
+
+            if (!isNew) {
+                return;
+            }
+
             addRequest(new StringRequest(method, URL + url, responseASCII -> {
                 String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
@@ -386,6 +400,11 @@ public class Client {
                 callOnAccessDenied(PG_QUEST, msg);
                 return Resp.QUEST;
             }
+
+            if (quest.text().contains("Alteração")) {
+                callOnAccessDenied(PG_REGISTRATION, "");
+                return Resp.REG;
+            }
         }
 
         Elements sub = document.getElementsByClass("barraRodape");
@@ -412,8 +431,8 @@ public class Client {
     private void checkQueue() {
         while (!queue.isEmpty()) {
             RequestHelper helper = queue.get(0);
-            createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
             queue.remove(0);
+            createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
         }
     }
 

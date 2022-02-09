@@ -15,7 +15,7 @@ public class JournalEmptyViewHolder extends JournalBaseViewHolder<Empty> {
     }
 
     @Override
-    public void bind(Context context, Empty empty, JournalAdapter adapter) {
+    public void bind(Context context, Empty empty, JournalAdapter adapter, boolean lookup) {
 
     }
 

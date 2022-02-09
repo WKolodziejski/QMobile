@@ -106,6 +106,16 @@ public class Clazz extends EventBase implements Queryable {
     }
 
     @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Clazz)) return false;

@@ -2,6 +2,8 @@ package com.tinf.qmobile.parser;
 
 import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
+import android.util.Log;
+
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -40,7 +42,12 @@ public class ReportParser extends BaseParser {
 
                         Matter matter = null;
 
+                        Log.d("Matter", matterTitle);
+                        Log.d("CLAZZ", clazz);
+                        Log.d("QID", qid);
+
                         try {
+                            crashlytics.setCustomKey("Matter", matterTitle);
                             matter = matterBox.query()
                                     .contains(Matter_.description_, matterTitle, CASE_INSENSITIVE).and()
                                     .equal(Matter_.year_, year).and()

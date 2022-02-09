@@ -211,10 +211,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:id="@+id/content_text"
+            android:autoLink="web|all"
+            android:linksClickable="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="conteúdo" />
+            tools:text="Content" />
 
     </LinearLayout>
 

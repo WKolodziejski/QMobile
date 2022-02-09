@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,24 +33,36 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
-    private final List<Queryable> messages;
+    //private final List<Queryable> messages;
     private final Context context;
+    private final AsyncListDiffer<Queryable> messages;
     private final Messenger messenger;
     private final DataSubscription sub1;
 
     public MessagesAdapter(Context context, Messenger messenger, Bundle bundle) {
         this.context = context;
         this.messenger = messenger;
+        this.messages = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
 
-        messages = getList();
+            @Override
+            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
+
+        messages.submitList(getList());
 
         DataObserver observer = data -> {
             List<Queryable> updated = getList();
 
             if (bundle != null) {
-                for (int i = 0; i < messages.size(); i++) {
-                    if (messages.get(i) instanceof Message) {
-                        Message m1 = ((Message) messages.get(i));
+                for (int i = 0; i < messages.getCurrentList().size(); i++) {
+                    if (messages.getCurrentList().get(i) instanceof Message) {
+                        Message m1 = ((Message) messages.getCurrentList().get(i));
 
                         for (Queryable q : updated) {
                             if (q instanceof Message) {
@@ -65,7 +78,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
                 }
             }
 
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
                 @Override
                 public int getOldListSize() {
@@ -97,7 +110,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
             messages.clear();
             messages.addAll(updated);
-            result.dispatchUpdatesTo(this);
+            result.dispatchUpdatesTo(this);*/
+            messages.submitList(updated);
         };
 
         sub1 = DataBase.get().getBoxStore().subscribe(Message.class)
@@ -123,7 +137,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
     @Override
     public int getItemViewType(int i) {
-        return messages.get(i).getItemType();
+        return messages.getCurrentList().get(i).getItemType();
     }
 
     @NonNull
@@ -144,12 +158,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MessagesViewHolder holder, int i) {
-        holder.bind(context, messenger, messages.get(i));
+        holder.bind(context, messenger, messages.getCurrentList().get(i));
     }
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return messages.getCurrentList().size();
     }
 
     @Override
@@ -159,8 +173,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     }
 
     public int highlight(long id) {
-        for (int i = 0; i < messages.size(); i++) {
-            Queryable q = messages.get(i);
+        for (int i = 0; i < messages.getCurrentList().size(); i++) {
+            Queryable q = messages.getCurrentList().get(i);
 
             if (q instanceof Message) {
                 Message m = (Message) q;

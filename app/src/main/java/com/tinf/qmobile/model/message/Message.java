@@ -111,4 +111,14 @@ public class Message implements Queryable {
         return MESSAGE;
     }
 
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
 }

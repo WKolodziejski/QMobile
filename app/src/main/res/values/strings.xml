@@ -97,6 +97,8 @@
     <string name="dialog_create_title">Criar novo</string>
     <string name="dialog_questionary_title">Questionário obrigatório</string>
     <string name="dialog_questionary_text">Enquanto houver um questionário obrigatório a ser respondido, você não poderá acessar o restante do sistema.</string>
+    <string name="dialog_registration_title">Pedido de Alteração de Dados</string>
+    <string name="dialog_registration_text">Antes de continuar seu acesso, é necessário que você confirme seus dados cadastrais.</string>
     <string name="dialog_no_alerts">Não há alertas</string>
     <string name="dialog_alerts">Alertas</string>
     <string name="dialog_evaluate_title">Avalie esse app</string>

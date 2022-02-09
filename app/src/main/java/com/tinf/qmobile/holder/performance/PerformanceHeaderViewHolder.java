@@ -1,8 +1,14 @@
 package com.tinf.qmobile.holder.performance;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import androidx.annotation.NonNull;
+
+import com.tinf.qmobile.activity.EventViewActivity;
+import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.databinding.ChartHeaderBinding;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
@@ -16,10 +22,10 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.model.Viewport;
 
-public class HeaderViewHolder extends PerformanceViewHolder<Matter> {
+public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
     private final ChartHeaderBinding binding;
 
-    public HeaderViewHolder(@NonNull View view) {
+    public PerformanceHeaderViewHolder(@NonNull View view) {
         super(view);
         binding = ChartHeaderBinding.bind(view);
     }
@@ -38,6 +44,13 @@ public class HeaderViewHolder extends PerformanceViewHolder<Matter> {
         v.bottom = -10;
         binding.chart.setMaximumViewport(v);
         binding.chart.setCurrentViewport(v);
+
+        binding.title.setOnClickListener(view -> {
+            Intent intent = new Intent(context, MatterActivity.class);
+            intent.putExtra("ID", matter.id);
+            intent.putExtra("PAGE", JOURNAL);
+            context.startActivity(intent);
+        });
     }
 
     private static LineChartData getChartData(Matter matter) {

@@ -7,9 +7,9 @@ import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.model.Empty;
 
-public class EmptyViewHolder extends PerformanceViewHolder<Empty> {
+public class PerformanceEmptyViewHolder extends PerformanceViewHolder<Empty> {
 
-    public EmptyViewHolder(@NonNull View itemView) {
+    public PerformanceEmptyViewHolder(@NonNull View itemView) {
         super(itemView);
     }
 

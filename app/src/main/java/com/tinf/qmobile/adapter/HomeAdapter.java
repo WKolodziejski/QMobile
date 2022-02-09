@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,8 @@ import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHol
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
 import com.tinf.qmobile.model.Empty;
+import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
@@ -42,8 +45,9 @@ import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
-    private final List<EventBase> events;
+    //private final List<EventBase> events;
     private final Context context;
+    private final AsyncListDiffer<CalendarBase> events;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
     private final DataSubscription sub3;
@@ -51,11 +55,22 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     public HomeAdapter(Context context) {
         this.context = context;
+        this.events = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull CalendarBase oldItem, @NonNull CalendarBase newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
 
-        events = getList();
+            @Override
+            public boolean areContentsTheSame(@NonNull CalendarBase oldItem, @NonNull CalendarBase newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
+
+        events.submitList(getList());
 
         DataObserver observer = data -> {
-            List<EventBase> updated = getList();
+            /*List<EventBase> updated = getList();
 
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
@@ -83,7 +98,8 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
             events.clear();
             events.addAll(updated);
-            result.dispatchUpdatesTo(this);
+            result.dispatchUpdatesTo(this);*/
+            events.submitList(getList());
         };
 
         sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
@@ -111,9 +127,8 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
                 .observer(observer);
     }
 
-    private List<EventBase> getList() {
-
-        List<EventBase> list = new ArrayList<>();
+    private List<CalendarBase> getList() {
+        List<CalendarBase> list = new ArrayList<>();
 
         Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
         Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
@@ -165,13 +180,13 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         //if (events.isEmpty())
             //return EMPTY;
         //else
-            return events.get(i).getItemType();
+            return events.getCurrentList().get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int i) {
         //if (!events.isEmpty())
-            holder.bind(events.get(i), context);
+            holder.bind(events.getCurrentList().get(i), context);
     }
 
     @Override
@@ -179,7 +194,7 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
         //if (events.isEmpty())
             //return 1;
         //else
-            return events.size();
+            return events.getCurrentList().size();
     }
 
     @Override

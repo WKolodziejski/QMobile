@@ -10,14 +10,14 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
-import com.tinf.qmobile.holder.performance.EmptyViewHolder;
-import com.tinf.qmobile.holder.performance.HeaderViewHolder;
+import com.tinf.qmobile.holder.performance.PerformanceEmptyViewHolder;
+import com.tinf.qmobile.holder.performance.PerformanceHeaderViewHolder;
 import com.tinf.qmobile.holder.performance.PerformanceViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
@@ -35,18 +35,31 @@ import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHolder> {
-    private final List<Queryable> matters;
+    //private final List<Queryable> matters;
     private final Context context;
+    private final AsyncListDiffer<Queryable> matters;
     private final DataSubscription sub1;
 
     public PerformanceAdapter(Context context) {
         this.context = context;
-        this.matters = getList();
+        this.matters = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
+
+        matters.submitList(getList());
 
         DataObserver observer = data -> {
-            List<Queryable> updated = getList();
+            //List<Queryable> updated = getList();
 
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
                 @Override
                 public int getOldListSize() {
@@ -78,7 +91,8 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
 
             matters.clear();
             matters.addAll(updated);
-            result.dispatchUpdatesTo(this);
+            result.dispatchUpdatesTo(this);*/
+            matters.submitList(getList());
         };
 
         sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -125,7 +139,7 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
 
     @Override
     public int getItemViewType(int i) {
-        return matters.get(i).getItemType();
+        return matters.getCurrentList().get(i).getItemType();
     }
 
     @NonNull
@@ -133,11 +147,11 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
     public PerformanceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.chart_header, parent, false));
+                return new PerformanceHeaderViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.chart_header, parent, false));
 
             case EMPTY:
-                return new EmptyViewHolder(LayoutInflater.from(context)
+                return new PerformanceEmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.chart_empty, parent, false));
         }
 
@@ -146,12 +160,12 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
 
     @Override
     public void onBindViewHolder(@NonNull PerformanceViewHolder holder, int i) {
-        holder.bind(context, matters.get(i));
+        holder.bind(context, matters.getCurrentList().get(i));
     }
 
     @Override
     public int getItemCount() {
-        return matters.size();
+        return matters.getCurrentList().size();
     }
 
     @Override

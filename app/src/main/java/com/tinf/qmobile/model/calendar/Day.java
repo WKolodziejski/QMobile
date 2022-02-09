@@ -9,6 +9,8 @@ import java.util.Locale;
 
 import static com.tinf.qmobile.model.ViewType.DAY;
 
+import com.tinf.qmobile.model.Queryable;
+
 public class Day implements CalendarBase {
     private final Date startDate;
     private final Date endDate;
@@ -56,6 +58,16 @@ public class Day implements CalendarBase {
     }
 
     @Override
+    public long getId() {
+        return DAY;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return false;
+    }
+
+    @Override
     public Date getDate() {
         return startDate;
     }
@@ -87,5 +99,7 @@ public class Day implements CalendarBase {
     public LocalDate getHashKey() {
         return new LocalDate(startDate);
     }
+
+
 
 }

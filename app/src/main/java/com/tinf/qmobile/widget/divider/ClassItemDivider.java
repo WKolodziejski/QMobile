@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.model.ViewType;
@@ -27,7 +28,7 @@ public class ClassItemDivider extends RecyclerView.ItemDecoration {
     }
 
     @Override
-    public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+    public void onDraw(@NonNull Canvas canvas, RecyclerView parent, @NonNull RecyclerView.State state) {
         if (parent.getLayoutManager() == null || divider == null)
             return;
 
@@ -54,25 +55,35 @@ public class ClassItemDivider extends RecyclerView.ItemDecoration {
             return;
 
         for (int i = 0; i < childCount; i++) {
-            View child = parent.getChildAt(i);
+            View child1 = parent.getChildAt(i);
+            View child2 = null;
 
-            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
-
-            int top = child.getBottom() + params.bottomMargin;
-            int bottom = top + divider.getIntrinsicHeight();
-
-            int p = parent.getChildAdapterPosition(child);
-
-            int viewType = adapter.getItemViewType(p);
-            int nextType = ViewType.CLASS;
-
-            if (p < 0 || p > childCount)
-            {
-                viewType = ViewType.CLASS;
+            if (i + 1 < childCount) {
+                child2 = parent.getChildAt(i + 1);
             }
 
-            if (parent.getChildAt(i + 1) != null) {
-                nextType = adapter.getItemViewType(p + 1);
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child1.getLayoutParams();
+
+            int top = child1.getBottom() + params.bottomMargin;
+            int bottom = top + divider.getIntrinsicHeight();
+
+            int p1 = parent.getChildAdapterPosition(child1);
+            int p2 = -1;
+
+            if (child2 != null) {
+                p2 = parent.getChildAdapterPosition(child2);
+            }
+
+            int viewType = ViewType.CLASS;
+            int nextType = ViewType.CLASS;
+
+            if (p1 > 0 && p1 < childCount)
+            {
+                viewType = adapter.getItemViewType(p1);
+            }
+
+            if (p2 > 0 && p2 < childCount) {
+                nextType = adapter.getItemViewType(p2);
             }
 
             if (viewType == ViewType.PERIOD || nextType == ViewType.PERIOD) {

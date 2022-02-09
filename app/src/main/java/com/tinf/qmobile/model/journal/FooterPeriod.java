@@ -16,4 +16,14 @@ public class FooterPeriod implements Queryable {
         return FOOTERP;
     }
 
+    @Override
+    public long getId() {
+        return period.id;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
+    }
+
 }

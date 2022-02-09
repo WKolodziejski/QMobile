@@ -9,6 +9,8 @@ import java.util.Locale;
 
 import static com.tinf.qmobile.model.ViewType.MONTH;
 
+import com.tinf.qmobile.model.Queryable;
+
 public class Month implements CalendarBase {
     private final long time;
 
@@ -73,6 +75,16 @@ public class Month implements CalendarBase {
     @Override
     public LocalDate getHashKey() {
         return new LocalDate(getDate());
+    }
+
+    @Override
+    public long getId() {
+        return MONTH;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
     }
 
 }

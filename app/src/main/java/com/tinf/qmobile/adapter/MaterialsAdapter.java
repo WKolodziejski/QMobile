@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -54,10 +55,11 @@ import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> implements OnUpdate, KmStickyListener {
-    private List<Queryable> materials;
+    //private List<Queryable> materials;
+    private final Context context;
     private final List<Long> selected;
     private final LongSparseArray<Long> downloading;
-    private final Context context;
+    private final AsyncListDiffer<Queryable> materials;
     private final OnInteractListener listener;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
@@ -114,9 +116,9 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 return true;
 
             } else if (menuItem.getItemId() == R.id.action_select) {
-                for (int i = 0; i < materials.size(); i++)
-                    if (materials.get(i) instanceof Material) {
-                        Material material = ((Material) materials.get(i));
+                for (int i = 0; i < materials.getCurrentList().size(); i++)
+                    if (materials.getCurrentList().get(i) instanceof Material) {
+                        Material material = ((Material) materials.getCurrentList().get(i));
 
                         if (material.isDownloaded) {
                             if (!selected.contains(material.id)) {
@@ -138,9 +140,9 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
             selected.clear();
-            for (int i = 0; i < materials.size(); i++)
-                if (materials.get(i) instanceof Material) {
-                    ((Material) materials.get(i)).isSelected = false;
+            for (int i = 0; i < materials.getCurrentList().size(); i++)
+                if (materials.getCurrentList().get(i) instanceof Material) {
+                    ((Material) materials.getCurrentList().get(i)).isSelected = false;
                     notifyItemChanged(i);
                 }
             listener.onDestroyActionMode(actionMode);
@@ -152,15 +154,64 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         this.context = context;
         this.listener = listener;
         this.onDesign = onDesign;
-
-        this.materials = getList(bundle);
-
         this.selected = new ArrayList<>();
-        this.downloading = new LongSparseArray();
+        this.downloading = new LongSparseArray<>();
+        this.materials = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
 
         Client.get().addOnUpdateListener(this);
 
-        DataObserver observer = data -> update(bundle);
+        materials.submitList(getList(bundle));
+
+        DataObserver observer = data -> {
+            List<Queryable> updated = getList(bundle);
+
+            if (bundle == null) {
+                for (int i = 0; i < materials.getCurrentList().size(); i++) {
+                    if (materials.getCurrentList().get(i) instanceof Material) {
+                        Material m1 = ((Material) materials.getCurrentList().get(i));
+
+                        for (Queryable q : updated)
+                            if (q instanceof Material) {
+                                Material m2 = (Material) q;
+
+                                if (m1.id == m2.id) {
+                                    m2.isDownloading = m1.isDownloading;
+                                    m2.isSelected = m1.isSelected;
+                                    break;
+                                }
+                            }
+                    }
+                }
+            } else {
+                for (int i = 0; i < materials.getCurrentList().size(); i++) {
+                    if (materials.getCurrentList().get(i) instanceof Material) {
+                        Material m1 = ((Material) materials.getCurrentList().get(i));
+
+                        for (Queryable q : updated)
+                            if (q instanceof Material) {
+                                Material m2 = (Material) q;
+
+                                if (m1.id == m2.id) {
+                                    m2.highlight = m1.highlight;
+                                    break;
+                                }
+                            }
+                    }
+                }
+            }
+
+            materials.submitList(updated);
+        };
 
         sub1 = DataBase.get().getBoxStore().subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
@@ -179,9 +230,9 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         Long id = downloading.get(download);
 
         if (id != null)
-            for (int i = 0; i < materials.size(); i++)
-                if (materials.get(i) instanceof Material) {
-                    Material material = (Material) materials.get(i);
+            for (int i = 0; i < materials.getCurrentList().size(); i++)
+                if (materials.getCurrentList().get(i) instanceof Material) {
+                    Material material = (Material) materials.getCurrentList().get(i);
 
                     if (material.id == id) {
                         material.isDownloaded = true;
@@ -193,81 +244,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                 }
     }
 
-    private void update(Bundle bundle) {
-        List<Queryable> updated = getList(bundle);
-
-        if (bundle == null) {
-            for (int i = 0; i < materials.size(); i++) {
-                if (materials.get(i) instanceof Material) {
-                    Material m1 = ((Material) materials.get(i));
-
-                    for (Queryable q : updated)
-                        if (q instanceof Material) {
-                            Material m2 = (Material) q;
-
-                            if (m1.id == m2.id) {
-                                m2.isDownloading = m1.isDownloading;
-                                m2.isSelected = m1.isSelected;
-                                break;
-                            }
-                        }
-                }
-            }
-        } else {
-            for (int i = 0; i < materials.size(); i++) {
-                if (materials.get(i) instanceof Material) {
-                    Material m1 = ((Material) materials.get(i));
-
-                    for (Queryable q : updated)
-                        if (q instanceof Material) {
-                            Material m2 = (Material) q;
-
-                            if (m1.id == m2.id) {
-                                m2.highlight = m1.highlight;
-                                break;
-                            }
-                        }
-                }
-            }
-        }
-
-        DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-
-            @Override
-            public int getOldListSize() {
-                return materials.size();
-            }
-
-            @Override
-            public int getNewListSize() {
-                return updated.size();
-            }
-
-            @Override
-            public boolean areItemsTheSame(int o, int n) {
-                Queryable oldQ = materials.get(o);
-                Queryable newQ = updated.get(n);
-
-                if (oldQ instanceof Matter && newQ instanceof Matter)
-                    return (((Matter) oldQ).id == (((Matter) newQ).id));
-
-                else if (oldQ instanceof Material && newQ instanceof Material)
-                    return (((Material) oldQ).id == (((Material) newQ).id));
-
-                else return oldQ instanceof Empty && newQ instanceof Empty;
-            }
-
-            @Override
-            public boolean areContentsTheSame(int o, int n) {
-                return materials.get(o).equals(updated.get(n));
-            }
-
-        }, true);
-
-        materials.clear();
-        materials.addAll(updated);
-        result.dispatchUpdatesTo(this);
-    }
 
     private List<Queryable> getList(Bundle bundle) {
 
@@ -312,7 +288,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public int getItemViewType(int i) {
-        return materials.get(i).getItemType();
+        return materials.getCurrentList().get(i).getItemType();
     }
 
     @NonNull
@@ -336,12 +312,12 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int position) {
-        holder.bind(context, listener, this, callback, materials.get(position));
+        holder.bind(context, listener, this, callback, materials.getCurrentList().get(position));
     }
 
     @Override
     public int getItemCount() {
-        return materials.size();
+        return materials.getCurrentList().size();
     }
 
     @Override
@@ -350,8 +326,7 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void onDateChanged() {
-        materials = getList(null);
-        notifyDataSetChanged();
+        materials.submitList(getList(null));
     }
 
     @Override
@@ -380,10 +355,12 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
                                 material.getFileName(),
                                 User.getYear(pos) + "/" + User.getPeriod(pos)),
                 box.put(material));
+
+        Log.d(material.getTitle(), "Downloading...");
     }
 
     public void handleDownload(int i) {
-        Material material = (Material) materials.get(i);
+        Material material = (Material) materials.getCurrentList().get(i);
 
         if (material.isDownloaded) {
             DownloadReceiver.openFile(User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + material.getFileName());
@@ -396,8 +373,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
     }
 
     public int highlight(long id) {
-        for (int i = 0; i < materials.size(); i++) {
-            Queryable q = materials.get(i);
+        for (int i = 0; i < materials.getCurrentList().size(); i++) {
+            Queryable q = materials.getCurrentList().get(i);
 
             if (q instanceof Material) {
                 Material m = (Material) q;
@@ -415,18 +392,18 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public Integer getHeaderPositionForItem(Integer i) {
-        Queryable q = materials.get(i);
+        Queryable q = materials.getCurrentList().get(i);
 
         if (q instanceof Material)
             while (!(q instanceof Matter) && i > 0)
-                q = materials.get(--i);
+                q = materials.getCurrentList().get(--i);
 
         return i;
     }
 
     @Override
     public Integer getHeaderLayout(Integer i) {
-        if (materials.get(i) instanceof Matter)
+        if (materials.getCurrentList().get(i) instanceof Matter)
             return R.layout.material_header;
         else
             return R.layout.header_empty;
@@ -434,8 +411,8 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public void bindHeaderData(View header, Integer i) {
-        if (materials.get(i) instanceof Matter) {
-            Matter matter = (Matter) materials.get(i);
+        if (materials.getCurrentList().get(i) instanceof Matter) {
+            Matter matter = (Matter) materials.getCurrentList().get(i);
 
             TextView title = header.findViewById(R.id.title);
             TextView badge = header.findViewById(R.id.badge);
@@ -455,9 +432,9 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
 
     @Override
     public Boolean isHeader(Integer i) {
-        Queryable q = materials.get(i);
+        Queryable q = materials.getCurrentList().get(i);
 
-        if (i >= 0 && i < materials.size())
+        if (i >= 0 && i < materials.getCurrentList().size())
             return !(q instanceof Material);
         else return false;
     }

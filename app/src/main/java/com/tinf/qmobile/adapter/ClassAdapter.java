@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,21 +36,33 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
-    private final List<Queryable> classes;
+    //private final List<Queryable> classes;
     private final Context context;
+    private final AsyncListDiffer<Queryable> classes;
     private final DataSubscription sub1, sub2;
 
     public ClassAdapter(Context context, Bundle bundle) {
         this.context = context;
+        this.classes = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
 
-        classes = getList(bundle);
+            @Override
+            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
+
+        classes.submitList(getList(bundle));
 
         DataObserver observer = data -> {
             List<Queryable> updated = getList(bundle);
 
-            for (int i = 0; i < classes.size(); i++) {
-                if (classes.get(i) instanceof Clazz) {
-                    Clazz c1 = ((Clazz) classes.get(i));
+            for (int i = 0; i < classes.getCurrentList().size(); i++) {
+                if (classes.getCurrentList().get(i) instanceof Clazz) {
+                    Clazz c1 = ((Clazz) classes.getCurrentList().get(i));
 
                     for (Queryable q : updated)
                         if (q instanceof Clazz) {
@@ -63,7 +76,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                 }
             }
 
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
                 @Override
                 public int getOldListSize() {
@@ -94,11 +107,12 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                     return (classes.get(o).equals(updated.get(n)));
                 }
 
-            }, true);
+            }, true);*/
 
-            classes.clear();
-            classes.addAll(updated);
-            result.dispatchUpdatesTo(this);
+            //classes.clear();
+            //classes.addAll(updated);
+            //result.dispatchUpdatesTo(this);
+            classes.submitList(updated);
         };
 
         sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -168,17 +182,17 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
 
     @Override
     public int getItemViewType(int i) {
-        return classes.get(i).getItemType();
+        return classes.getCurrentList().get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull ClassBaseViewHolder holder, int i) {
-        holder.bind(context, classes.get(i));
+        holder.bind(context, classes.getCurrentList().get(i));
     }
 
     @Override
     public int getItemCount() {
-        return classes.size();
+        return classes.getCurrentList().size();
     }
 
     @Override
@@ -189,8 +203,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
     }
 
     public int highlight(long id) {
-        for (int i = 0; i < classes.size(); i++) {
-            Queryable q = classes.get(i);
+        for (int i = 0; i < classes.getCurrentList().size(); i++) {
+            Queryable q = classes.getCurrentList().get(i);
 
             if (q instanceof Clazz) {
                 Clazz c = (Clazz) q;

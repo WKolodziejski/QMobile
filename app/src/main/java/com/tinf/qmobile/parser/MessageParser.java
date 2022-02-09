@@ -2,6 +2,7 @@ package com.tinf.qmobile.parser;
 
 import android.content.Intent;
 import android.util.Log;
+
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MessagesActivity;
@@ -16,12 +17,16 @@ import com.tinf.qmobile.network.message.OnMessages;
 import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.RandomColor;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
+
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
@@ -38,17 +43,7 @@ public class MessageParser extends BaseParser {
 
     public MessageParser(int pg, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
         super(pg, year, period, notify, onFinish, onError);
-        onMessages = new OnMessages() {
-            @Override
-            public void onFinish(int pg, boolean hasMorePages) {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-        };
+        onMessages = null;
     }
 
     @Override
@@ -62,8 +57,15 @@ public class MessageParser extends BaseParser {
             }
 
         Element textarea = document.getElementsByTag("textarea").first();
+        Element txt = document.getElementsByClass("txt").first();
 
-        Element table = document.getElementsByClass("txt").first().child(0);
+        if (txt == null) {
+            if (onMessages != null)
+                onMessages.onFinish();
+            return;
+        }
+
+        Element table = txt.child(0);
         Elements trs = table.children();
         Element footer = trs.last();
         Element tbody = footer.getElementsByTag("tbody").first();
@@ -73,7 +75,7 @@ public class MessageParser extends BaseParser {
 
             RandomColor colors = new RandomColor();
 
-            for (int i = tbody == null ? 1: 2; tbody == null ? i < trs.size() : i < trs.size() - 1; i++) {
+            for (int i = tbody == null ? 1 : 2; tbody == null ? i < trs.size() : i < trs.size() - 1; i++) {
                 Elements tds = trs.get(i).children();
 
                 boolean seen = !trs.get(i).attributes().get("style").contains("bold");
@@ -133,7 +135,8 @@ public class MessageParser extends BaseParser {
 
                     for (int j = 0; j < tds.size(); j++) {
                         if (tds.get(j).child(0).tagName().equals("span")) {
-                            onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
+                            if (onMessages != null)
+                                onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
                             break;
                         }
                     }
@@ -158,8 +161,8 @@ public class MessageParser extends BaseParser {
                                 .build().findUnique();
 
                         if (search != null && search.attachments.isEmpty()) {
-                            String txt = textarea.text();
-                            search.setText(txt == null ? "" : txt);
+                            String text = textarea.text();
+                            search.setText(text == null ? "" : text);
 
                             Element table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
 
@@ -194,7 +197,8 @@ public class MessageParser extends BaseParser {
                     break;
                 }
             }
-            onMessages.onFinish();
+            if (onMessages != null)
+                onMessages.onFinish();
         }
     }
 

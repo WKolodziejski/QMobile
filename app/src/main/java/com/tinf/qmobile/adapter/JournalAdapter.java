@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,30 +54,86 @@ import static com.tinf.qmobile.model.ViewType.PERIOD;
 import static com.tinf.qmobile.network.Client.pos;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnUpdate, KmStickyListener {
-    private List<Queryable> journals;
+    //private List<Queryable> journals;
     private final Context context;
+    private final AsyncListDiffer<Queryable> journals;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
     private final Design.OnDesign onDesign;
+    private final boolean lookup;
 
     public JournalAdapter(Context context, Bundle bundle, Design.OnDesign onDesign) {
         this.context = context;
         this.onDesign = onDesign;
+        this.lookup = bundle == null;
+        this.journals = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+            }
+
+            @Override
+            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
+                return oldItem.isSame(newItem);
+            }
+        });
 
         Client.get().addOnUpdateListener(this);
 
-        journals = getList(bundle);
+        /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+
+            @Override
+            public int getOldListSize() {
+                return journals.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return updated.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int o, int n) {
+                Queryable oldQ = journals.getCurrentList().get(o);
+                Queryable newQ = updated.get(n);
+
+                if (oldQ instanceof Matter && newQ instanceof Matter)
+                    return (((Matter) oldQ).id == (((Matter) newQ).id));
+
+                else if (oldQ instanceof Journal && newQ instanceof Journal)
+                    return (((Journal) oldQ).id == (((Journal) newQ).id));
+
+                else if (oldQ instanceof FooterJournal && newQ instanceof FooterJournal)
+                    return (((FooterJournal) oldQ).getMatter().id == (((FooterJournal) newQ).getMatter().id));
+
+                else if (oldQ instanceof FooterPeriod && newQ instanceof FooterPeriod)
+                    return (((FooterPeriod) oldQ).period.id == (((FooterPeriod) newQ).period.id));
+
+                else if (oldQ instanceof Period && newQ instanceof Period)
+                    return (((Period) oldQ).id == (((Period) newQ).id));
+
+                else return oldQ instanceof Empty && newQ instanceof Empty;
+            }
+
+            @Override
+            public boolean areContentsTheSame(int o, int n) {
+                return journals.getCurrentList().get(o).equals(updated.get(n));
+            }
+
+        }, true);*/
+
+        journals.submitList(getList(bundle));
 
         DataObserver observer = data -> {
 
             List<Queryable> updated = getList(bundle);
 
             if (bundle != null) {
-                for (int i = 0; i < journals.size(); i++) {
-                    if (journals.get(i) instanceof Journal) {
-                        Journal j1 = ((Journal) journals.get(i));
+                for (int i = 0; i < journals.getCurrentList().size(); i++) {
+                    if (journals.getCurrentList().get(i) instanceof Journal) {
+                        Journal j1 = ((Journal) journals.getCurrentList().get(i));
 
-                        for (Queryable q : updated)
+                        for (Queryable q : updated) {
                             if (q instanceof Journal) {
                                 Journal j2 = (Journal) q;
 
@@ -85,55 +142,15 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                                     break;
                                 }
                             }
+                        }
                     }
                 }
             }
 
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-
-                @Override
-                public int getOldListSize() {
-                    return journals.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return updated.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int o, int n) {
-                    Queryable oldQ = journals.get(o);
-                    Queryable newQ = updated.get(n);
-
-                    if (oldQ instanceof Matter && newQ instanceof Matter)
-                        return (((Matter) oldQ).id == (((Matter) newQ).id));
-
-                    else if (oldQ instanceof Journal && newQ instanceof Journal)
-                        return (((Journal) oldQ).id == (((Journal) newQ).id));
-
-                    else if (oldQ instanceof FooterJournal && newQ instanceof FooterJournal)
-                        return (((FooterJournal) oldQ).getMatter().id == (((FooterJournal) newQ).getMatter().id));
-
-                    else if (oldQ instanceof FooterPeriod && newQ instanceof FooterPeriod)
-                        return (((FooterPeriod) oldQ).period.id == (((FooterPeriod) newQ).period.id));
-
-                    else if (oldQ instanceof Period && newQ instanceof Period)
-                        return (((Period) oldQ).id == (((Period) newQ).id));
-
-                    else return oldQ instanceof Empty && newQ instanceof Empty;
-                }
-
-                @Override
-                public boolean areContentsTheSame(int o, int n) {
-                    return journals.get(o).equals(updated.get(n));
-                }
-
-            }, true);
-
-            journals.clear();
-            journals.addAll(updated);
-            result.dispatchUpdatesTo(this);
+            //journals.clear();
+            //journals.addAll(updated);
+            //result.dispatchUpdatesTo(this);
+            journals.submitList(updated);
         };
 
         sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -243,17 +260,17 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public int getItemViewType(int i) {
-        return journals.get(i).getItemType();
+        return journals.getCurrentList().get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull JournalBaseViewHolder holder, int i) {
-        holder.bind(context, journals.get(i), this);
+        holder.bind(context, journals.getCurrentList().get(i), this, lookup);
     }
 
     public int highlight(long id) {
-        for (int i = 0; i < journals.size(); i++) {
-            Queryable q = journals.get(i);
+        for (int i = 0; i < journals.getCurrentList().size(); i++) {
+            Queryable q = journals.getCurrentList().get(i);
 
             if (q instanceof Journal) {
                 Journal j = (Journal) q;
@@ -271,7 +288,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public int getItemCount() {
-        return journals.size();
+        return journals.getCurrentList().size();
     }
 
     @Override
@@ -281,26 +298,27 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public void onDateChanged() {
-        journals = getList(null);
-        notifyDataSetChanged();
+        //journals = getList(null);
+        //notifyDataSetChanged();
+        journals.submitList(getList(null));
 
         Log.d("JournalAdapter", "onDateChanged");
     }
 
     @Override
     public Integer getHeaderPositionForItem(Integer i) {
-        Queryable q = journals.get(i);
+        Queryable q = journals.getCurrentList().get(i);
 
         if (q instanceof Journal)
             while (!(q instanceof Matter) && i > 0)
-                q = journals.get(--i);
+                q = journals.getCurrentList().get(--i);
 
         return i;
     }
 
     @Override
     public Integer getHeaderLayout(Integer i) {
-        if (journals.get(i) instanceof Matter) //&& ((Matter) journals.get(i)).isExpanded)
+        if (journals.getCurrentList().get(i) instanceof Matter) //&& ((Matter) journals.getCurrentList().get(i)).isExpanded)
             return R.layout.journal_header;
         else
             return R.layout.header_empty;
@@ -308,8 +326,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public void bindHeaderData(View header, Integer i) {
-        if (journals.get(i) instanceof Matter) {// && ((Matter) journals.get(i)).isExpanded) {
-            Matter matter = (Matter) journals.get(i);
+        if (journals.getCurrentList().get(i) instanceof Matter) {// && ((Matter) journals.getCurrentList().get(i)).isExpanded) {
+            Matter matter = (Matter) journals.getCurrentList().get(i);
 
             TextView title = header.findViewById(R.id.title);
             TextView badge = header.findViewById(R.id.badge);
@@ -329,7 +347,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
     @Override
     public Boolean isHeader(Integer i) {
-        Queryable q = journals.get(i);
+        Queryable q = journals.getCurrentList().get(i);
 
         if (i >= 0)
             return !(q instanceof Journal);

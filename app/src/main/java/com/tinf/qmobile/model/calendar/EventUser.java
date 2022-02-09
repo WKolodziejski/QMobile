@@ -1,5 +1,6 @@
 package com.tinf.qmobile.model.calendar;
 
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
 
 import io.objectbox.annotation.Entity;
@@ -103,6 +104,16 @@ public class EventUser extends EventBase {
             }
         }
         return false;
+    }
+
+    @Override
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public boolean isSame(Queryable queryable) {
+        return queryable.equals(this);
     }
 
 }

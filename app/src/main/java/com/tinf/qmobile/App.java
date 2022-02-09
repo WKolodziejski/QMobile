@@ -41,6 +41,7 @@ public class App extends Application {
         crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
         crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
         crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
+        crashlytics.setCustomKey("Name", User.getName());
         crashlytics.setCustomKey("URL", User.getURL());
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
