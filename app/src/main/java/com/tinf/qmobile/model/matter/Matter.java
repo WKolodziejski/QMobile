@@ -52,6 +52,10 @@ public class Matter implements Queryable {
         return absences_ == -1 ? "-" : String.valueOf(absences_);
     }
 
+    public String getPresences() {
+        return absences_ == -1 || classesGiven_ == -1 ? "-" : String.valueOf(classesGiven_ - absences_);
+    }
+
     public String getMean() {
         return mean_ == -1 ? "-" : String.valueOf(mean_);
     }
@@ -85,8 +89,16 @@ public class Matter implements Queryable {
         return title_ == null ? description_ : title_;
     }
 
+    public String getPeriod() {
+        return year_ + "/" + period_;
+    }
+
     public String getSituation() {
         return situation_ == null ? "" : situation_;
+    }
+
+    public float getGivenHours() {
+        return classesGiven_ * (hours_ / classesTotal_);
     }
 
     public void setTeacher(String teacher) {
@@ -114,6 +126,36 @@ public class Matter implements Queryable {
             return null;
 
         return periods.get(k);
+    }
+
+    public float getAllMaxGradesSum() {
+        float sum = 0;
+        for (Period period : periods) {
+            if (period != null) {
+                for (Journal journal : period.journals) {
+                    if (journal.getMax_() > -1) {
+                        sum += journal.getMax_();
+                    }
+                }
+            }
+        }
+
+        return sum;
+    }
+
+    public float getAllGradesSum() {
+        float sum = 0;
+        for (Period period : periods) {
+            if (period != null) {
+                for (Journal journal : period.journals) {
+                    if (journal.getGrade_() > -1) {
+                        sum += journal.getGrade_();
+                    }
+                }
+            }
+        }
+
+        return sum;
     }
 
     public List<Journal> getLastJournals() {

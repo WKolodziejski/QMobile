@@ -1,5 +1,6 @@
 package com.tinf.qmobile.holder.journal;
 
+import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 import android.content.Context;
@@ -29,7 +30,7 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", JOURNAL);
+            intent.putExtra("PAGE", HEADER);
             context.startActivity(intent);
             /*if (matter.isExpanded) {
                 adapter.collapse(getAdapterPosition(), matter);

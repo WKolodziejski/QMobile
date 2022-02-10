@@ -29,18 +29,22 @@ public class TabsAdapter extends FragmentStateAdapter {
 
         switch (position) {
             case 0:
-                fragment = new GradesFragment();
+                fragment = new InfoFragment();
                 break;
 
             case 1:
-                fragment = new ScheduleFragment();
+                fragment = new GradesFragment();
                 break;
 
             case 2:
-                fragment = new MaterialsFragment();
+                fragment = new ScheduleFragment();
                 break;
 
             case 3:
+                fragment = new MaterialsFragment();
+                break;
+
+            case 4:
                 fragment = new ClassFragment();
                 break;
         }
@@ -51,7 +55,7 @@ public class TabsAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 4;
+        return 5;
     }
 
 }

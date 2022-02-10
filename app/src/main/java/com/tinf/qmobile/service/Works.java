@@ -56,7 +56,7 @@ public class Works {
             Log.i(TAG, "Mobile data on");
         }
 
-        work.setInitialDelay(prefs.getBoolean(ALERT, false) ? 5 : 24, HOURS);
+        work.setInitialDelay(prefs.getBoolean(ALERT, false) ? 1 : 5, HOURS);
 
         WorkManager.getInstance(getContext()).cancelAllWorkByTag("background");
         WorkManager.getInstance(getContext()).enqueueUniqueWork("background",

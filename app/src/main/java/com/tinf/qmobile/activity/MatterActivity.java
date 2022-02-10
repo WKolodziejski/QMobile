@@ -1,6 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
@@ -50,20 +51,24 @@ public class MatterActivity extends AppCompatActivity {
             Resources resources = getBaseContext().getResources();
             switch (position) {
                 case 0:
-                    tab.setText(resources.getString(R.string.title_notas));
-                break;
+                    tab.setText("Infos");
+                    break;
 
                 case 1:
-                    tab.setText(resources.getString(R.string.title_horario));
-                break;
+                    tab.setText(resources.getString(R.string.title_notas));
+                    break;
 
                 case 2:
-                    tab.setText(resources.getString(R.string.title_materiais));
-                break;
+                    tab.setText(resources.getString(R.string.title_horario));
+                    break;
 
                 case 3:
+                    tab.setText(resources.getString(R.string.title_materiais));
+                    break;
+
+                case 4:
                     tab.setText(resources.getString(R.string.title_class));
-                break;
+                    break;
             }
         }).attach();
 
@@ -73,17 +78,20 @@ public class MatterActivity extends AppCompatActivity {
 
     private int getPage(int page) {
         switch (page) {
-            case JOURNAL:
+            case HEADER:
                 return 0;
 
-            case SCHEDULE:
+            case JOURNAL:
                 return 1;
 
-            case MATERIAL:
+            case SCHEDULE:
                 return 2;
 
-            case CLASS:
+            case MATERIAL:
                 return 3;
+
+            case CLASS:
+                return 4;
         }
 
         return 0;

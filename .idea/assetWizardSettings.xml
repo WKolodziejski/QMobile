@@ -326,8 +326,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_topic" />
-                            <entry key="sourceFile" value="D:\Downloads\topic_black_24dp.svg" />
+                            <entry key="outputName" value="ic_chart" />
+                            <entry key="sourceFile" value="D:\Downloads\show_chart_black_24dp.svg" />
                           </map>
                         </option>
                       </PersistentState>
