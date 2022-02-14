@@ -60,7 +60,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         DataObserver observer = data -> {
             List<Queryable> updated = getList(bundle);
 
-            for (int i = 0; i < classes.getCurrentList().size(); i++) {
+            /*for (int i = 0; i < classes.getCurrentList().size(); i++) {
                 if (classes.getCurrentList().get(i) instanceof Clazz) {
                     Clazz c1 = ((Clazz) classes.getCurrentList().get(i));
 
@@ -74,7 +74,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                             }
                         }
                 }
-            }
+            }*/
 
             /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
@@ -118,13 +118,13 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub2 = DataBase.get().getBoxStore().subscribe(Clazz.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
     }
 
@@ -202,7 +202,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         sub2.cancel();
     }
 
-    public int highlight(long id) {
+    /*public int highlight(long id) {
         for (int i = 0; i < classes.getCurrentList().size(); i++) {
             Queryable q = classes.getCurrentList().get(i);
 
@@ -218,6 +218,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         }
 
         return -1;
-    }
+    }*/
 
 }

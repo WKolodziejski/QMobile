@@ -24,6 +24,7 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.utility.ColorUtils;
 import com.tinf.qmobile.utility.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         sub1 = DataBase.get().getBoxStore().subscribe(Schedule.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     updateFABColor();
                     binding.weekView.notifyDatasetChanged();
@@ -57,7 +58,7 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     updateFABColor();
                     binding.weekView.notifyDatasetChanged();
@@ -189,8 +190,12 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
             long id = bundle.getLong("ID");
 
             if (id != 0) {
-                binding.fab.setBackgroundTintList(ColorStateList.valueOf(DataBase
-                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor()));
+                int color = DataBase
+                        .get().getBoxStore().boxFor(Matter.class).get(id).getColor();
+
+                color = ColorUtils.INSTANCE.lighten(color, 0.25f);
+
+                binding.fab.setBackgroundTintList(ColorStateList.valueOf(color));
             }
         }
     }

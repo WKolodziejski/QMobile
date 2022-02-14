@@ -49,13 +49,13 @@ public class ClassViewFragment extends Fragment {
         sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
     }
 

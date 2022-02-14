@@ -3,15 +3,12 @@ package com.tinf.qmobile.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.evrencoskun.tableview.TableView;
@@ -63,13 +60,13 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
         DataBase.get().getBoxStore().subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         DataBase.get().getBoxStore().subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         tableView.setTableViewListener(new ITableViewListener() {
@@ -193,7 +190,7 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
                 rowHeader.add(matter);
                 row.add(matter.getTitle());
-                row.add(matter.getAbsences());
+                row.add(matter.getAbsencesString());
                 row.add(matter.getMean());
 
                 for (int j = 0; j < columns; j++) {

@@ -216,13 +216,13 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialBaseViewHolde
         sub1 = DataBase.get().getBoxStore().subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
     }
 

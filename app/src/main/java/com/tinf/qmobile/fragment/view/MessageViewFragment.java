@@ -43,7 +43,7 @@ public class MessageViewFragment extends Fragment {
                 .subscribe()
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> setText());
     }
 

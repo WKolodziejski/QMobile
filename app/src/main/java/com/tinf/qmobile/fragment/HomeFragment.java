@@ -28,6 +28,7 @@ import com.tinf.qmobile.activity.ScheduleActivity;
 import com.tinf.qmobile.adapter.HomeAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentHomeBinding;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
@@ -113,7 +114,11 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
 
+        binding.recycler.setItemViewCacheSize(20);
+        binding.recycler.setDrawingCacheEnabled(true);
+        binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+        binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new HomeAdapter(getContext()));
 
         binding.calendarLayout.setOnClickListener(view1 ->
@@ -267,7 +272,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         List<AxisValue> axisMatter = new ArrayList<>();
         List<Column> columns = new ArrayList<>();
 
-        boolean allEmpty = true;
+        int m = 0;
 
         for (int i = 0; i < matters.size(); i++) {
             Matter matter = matters.get(i);
@@ -278,7 +283,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
             Period period = matter.getLastPeriod();
 
             if (period != null)
-                allEmpty = false;
+                for (Journal journal : period.journals)
+                    if (journal.getGrade_() >= 0)
+                        m++;
 
             values.add(new SubcolumnValue(period == null ? 0 : period.getPlotGrade(), matter.getColor())
                     .setLabel(period == null ? "" : period.getLabel()));
@@ -316,7 +323,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         });
 
-        binding.chartLayout.setVisibility(allEmpty ? View.GONE : View.VISIBLE);
+        binding.chartLayout.setVisibility(m > 1 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -340,7 +347,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         sub1 = DataBase.get().getBoxStore().subscribe(Schedule.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
                     updateSchedule();
@@ -351,7 +358,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
                     updateSchedule();

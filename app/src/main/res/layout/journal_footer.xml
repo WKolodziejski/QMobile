@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/layout"
+    android:foreground="?android:attr/selectableItemBackground"
     >
 
     <LinearLayout
@@ -67,6 +68,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/guideline5"
                 tools:text="1" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                app:indicatorColor="@color/green_800"
+                app:indicatorSize="28dp"
+                app:trackColor="@color/transparent"
+                app:layout_constraintTop_toTopOf="@id/absences"
+                app:layout_constraintBottom_toBottomOf="@id/absences"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline5"
+                tools:progress="100"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

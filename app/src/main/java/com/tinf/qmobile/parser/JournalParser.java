@@ -67,6 +67,7 @@ public class JournalParser extends BaseParser {
             String teacher = description.substring(description.lastIndexOf('-') + 1).trim();
             String cTotal = trs.get(1).getElementsByTag("td").get(1).text().trim();
             String cLeft = trs.get(3).getElementsByTag("td").get(1).text().trim();
+            String abs = trs.get(4).getElementsByTag("td").get(1).text().trim();
             String hs = trs.get(0).getElementsByTag("td").get(1).text().trim();
             hs = hs.substring(0, hs.indexOf("Hrs")).trim();
             String cGiven = trs.get(2).getElementsByTag("td").get(1).text().trim();
@@ -78,6 +79,7 @@ public class JournalParser extends BaseParser {
             int classesTotal = Integer.parseInt(cTotal);
             int classesGiven = Integer.parseInt(cGiven);
             int classesLeft = Integer.parseInt(cLeft);
+            int absences = Integer.parseInt(abs);
 
             Log.d(description, hours + ", " + classesTotal + ", " + classesGiven + ", " + classesLeft);
 
@@ -98,8 +100,10 @@ public class JournalParser extends BaseParser {
                 isFirstParse = true;
             }
 
+            matter.setClassesTotal(classesTotal);
             matter.setClassesGiven(classesGiven);
             matter.setClassesLeft(classesLeft);
+            matter.setAbsences(absences);
 
             Element content = null;
 

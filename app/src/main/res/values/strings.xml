@@ -163,6 +163,18 @@
     <string name="event_save">Salvar</string>
     <string name="event_until">(até %1$s)</string>
 
+    <string name="infos_about">Informações</string>
+    <string name="infos_hours">Horas</string>
+    <string name="infos_classes">Aulas</string>
+    <string name="infos_class">Turma</string>
+    <string name="infos_teacher">Professor</string>
+    <string name="infos_attendance">Frequência</string>
+    <string name="infos_presences">Presenças</string>
+    <string name="infos_absences">Faltas</string>
+    <string name="infos_progress">Progresso</string>
+    <string name="infos_grades">Notas</string>
+    <string name="infos_history">Histórico</string>
+
     <string name="schedule_empty">Sem horários disponíveis</string>
 
     <string name="alarm_30min">30 minutos antes</string>

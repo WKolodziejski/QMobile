@@ -1,6 +1,7 @@
 package com.tinf.qmobile.fragment.matter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public class ClassFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Client.get().load(getArguments().getLong("ID"));
+
+        Log.d("CLASS", String.valueOf(getArguments().getLong("ID")));
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
         recyclerView.setHasFixedSize(true);

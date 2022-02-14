@@ -27,8 +27,8 @@ public class Matter implements Queryable {
     private String description_;
     private String situation_;
     private String teacher_;
-    private float hours_;
-    private int classesTotal_;
+    private float hours_ = -1;
+    private int classesTotal_ = -1;
     private int classesGiven_ = -1;
     private int classesLeft_ = -1;
     private int absences_ = -1;
@@ -48,11 +48,11 @@ public class Matter implements Queryable {
         this.period_ = period;
     }
 
-    public String getAbsences() {
+    public String getAbsencesString() {
         return absences_ == -1 ? "-" : String.valueOf(absences_);
     }
 
-    public String getPresences() {
+    public String getPresencesString() {
         return absences_ == -1 || classesGiven_ == -1 ? "-" : String.valueOf(classesGiven_ - absences_);
     }
 
@@ -62,6 +62,10 @@ public class Matter implements Queryable {
 
     public void setClassesGiven(int classesGiven) {
         this.classesGiven_ = classesGiven;
+    }
+
+    public void setClassesTotal(int classesTotal) {
+        this.classesTotal_ = classesTotal;
     }
 
     public void setClassesLeft(int classesLeft) {
@@ -259,6 +263,43 @@ public class Matter implements Queryable {
         float fg = getLastPeriod().getGradeFinal_();
 
         return String.valueOf(Math.max(sg, fg));
+    }
+
+    public String getClazz() {
+        return title_ == null ? "" :
+                description_.substring(description_.indexOf('-') + 1, description_.indexOf(title_) - 2).trim();
+    }
+    
+    public String getTeacher() {
+        return teacher_ == null ? "" : teacher_;
+    }
+
+    public int getClassesGiven() {
+        return classesGiven_ == -1 ? 0 : classesGiven_;
+    }
+
+    public int getClassesTotal() {
+        return classesTotal_ == -1 ? getClassesGiven() : classesTotal_;
+    }
+
+    public float getHours() {
+        return hours_ == -1 ? 0 : hours_;
+    }
+
+    public int getAbsences() {
+        return absences_ == -1 ? 0 : absences_;
+    }
+
+    public String getHoursString() {
+        return hours_ <= 0 ? "-" : String.valueOf(hours_);
+    }
+
+    public String getClassesTotalString() {
+        return classesTotal_ <= 0 ? "-" : String.valueOf(getClassesTotal());
+    }
+
+    public String getClassesGivenString() {
+        return classesGiven_ == -1 ? "-" : String.valueOf(classesGiven_);
     }
 
     /*

@@ -51,9 +51,9 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         itemView.setAnimation(animation);
         animation.start();*/
 
-        if (journal.highlight) {
+        /*if (journal.highlight) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
-        }
+        }*/
 
         if (journal.getGrade().equals("-")) {
             binding.grade.setTextColor(context.getResources().getColor(R.color.colorPrimary));

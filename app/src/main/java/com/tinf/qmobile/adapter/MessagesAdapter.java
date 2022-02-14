@@ -59,7 +59,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         DataObserver observer = data -> {
             List<Queryable> updated = getList();
 
-            if (bundle != null) {
+            /*if (bundle != null) {
                 for (int i = 0; i < messages.getCurrentList().size(); i++) {
                     if (messages.getCurrentList().get(i) instanceof Message) {
                         Message m1 = ((Message) messages.getCurrentList().get(i));
@@ -76,7 +76,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
                         }
                     }
                 }
-            }
+            }*/
 
             /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
 
@@ -122,7 +122,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     }
 
     private List<Queryable> getList() {
-        List<Queryable> list = new ArrayList<>(DataBase.get().getBoxStore()
+        List<Queryable> list = new ArrayList<>(
+                DataBase.get().getBoxStore()
                 .boxFor(Message.class)
                 .query()
                 .orderDesc(Message_.date_)
@@ -172,7 +173,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         sub1.cancel();
     }
 
-    public int highlight(long id) {
+    /*public int highlight(long id) {
         for (int i = 0; i < messages.getCurrentList().size(); i++) {
             Queryable q = messages.getCurrentList().get(i);
 
@@ -188,6 +189,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         }
 
         return -1;
-    }
+    }*/
 
 }

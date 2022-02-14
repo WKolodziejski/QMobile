@@ -141,31 +141,31 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
         sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub3 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub4 = DataBase.get().getBoxStore().subscribe(EventSimple.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub5 = DataBase.get().getBoxStore().subscribe(Clazz.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
     }
 

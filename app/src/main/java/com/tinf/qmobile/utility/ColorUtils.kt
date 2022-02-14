@@ -18,4 +18,8 @@ object ColorUtils {
         return color.complimentary()
     }
 
+    fun string(color: Int): String {
+        return String.format("#%06X", (0xFFFFFF and color))
+    }
+
 }

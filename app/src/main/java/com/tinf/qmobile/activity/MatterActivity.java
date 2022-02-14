@@ -51,7 +51,7 @@ public class MatterActivity extends AppCompatActivity {
             Resources resources = getBaseContext().getResources();
             switch (position) {
                 case 0:
-                    tab.setText("Infos");
+                    tab.setText(resources.getString(R.string.title_home));
                     break;
 
                 case 1:

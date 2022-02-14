@@ -35,7 +35,7 @@
         <lecho.lib.hellocharts.view.LineChartView
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginHorizontal="8dp"
+            android:layout_margin="8dp"
             android:id="@+id/chart"/>
 
     </LinearLayout>

@@ -13,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -58,6 +60,7 @@ public class JournalFragment extends Fragment implements OnUpdate {
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recycler.addItemDecoration(new JournalItemDivider(getContext(), 52));
+        binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new JournalAdapter(getContext(), null,
                 canExpand -> Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand)));
         binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));

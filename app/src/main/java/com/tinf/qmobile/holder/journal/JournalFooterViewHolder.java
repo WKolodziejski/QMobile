@@ -1,7 +1,12 @@
 package com.tinf.qmobile.holder.journal;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.JournalAdapter;
@@ -20,23 +25,24 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     @Override
     public void bind(Context context, FooterJournal footer, JournalAdapter adapter, boolean lookup) {
         Matter matter = footer.getMatter();
+        int classes = matter.getClassesGiven();
+        int absences = matter.getAbsences();
+        int presences = classes - absences;
+        int percentage = classes <= 0 ? 0 : (int) ((float) presences / classes * 100f);
 
         binding.partialGrade.setText(matter.getLastGradeSumString());
-        binding.absences.setText(matter.getAbsences());
+        binding.absences.setText(matter.getAbsencesString());
+        binding.progress.setIndicatorColor(matter.getColor());
+        binding.progress.setProgress(percentage);
+        binding.progress.setVisibility(classes > 0 ? VISIBLE : INVISIBLE);
 
-        /*binding.details.setTextColor(footer.getMatter().getColor());
-
-        binding.details.setOnClickListener(view -> {
+        binding.layout.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
-            intent.putExtra("ID", footer.getMatter().id);
-            intent.putExtra("PAGE", MatterActivity.GRADES);
+            intent.putExtra("ID", matter.id);
+            intent.putExtra("PAGE", HEADER);
+            intent.putExtra("LOOKUP", lookup);
             context.startActivity(intent);
         });
-
-        itemView.setOnClickListener(view -> {
-            footer.getMatter().isExpanded = false;
-            adapter.collapse(footer.getPosition(), footer.getMatter());
-        });*/
     }
 
 }

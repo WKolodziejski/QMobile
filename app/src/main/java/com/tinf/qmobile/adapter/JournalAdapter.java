@@ -128,7 +128,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
 
             List<Queryable> updated = getList(bundle);
 
-            if (bundle != null) {
+            /*if (bundle != null) {
                 for (int i = 0; i < journals.getCurrentList().size(); i++) {
                     if (journals.getCurrentList().get(i) instanceof Journal) {
                         Journal j1 = ((Journal) journals.getCurrentList().get(i));
@@ -145,7 +145,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
                         }
                     }
                 }
-            }
+            }*/
 
             //journals.clear();
             //journals.addAll(updated);
@@ -156,13 +156,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .onlyChanges()
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
     }
 
@@ -268,7 +268,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         holder.bind(context, journals.getCurrentList().get(i), this, lookup);
     }
 
-    public int highlight(long id) {
+    /*public int highlight(long id) {
         for (int i = 0; i < journals.getCurrentList().size(); i++) {
             Queryable q = journals.getCurrentList().get(i);
 
@@ -284,7 +284,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> 
         }
 
         return -1;
-    }
+    }*/
 
     @Override
     public int getItemCount() {

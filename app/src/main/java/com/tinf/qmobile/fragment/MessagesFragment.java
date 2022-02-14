@@ -12,14 +12,19 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.MessagesAdapter;
 import com.tinf.qmobile.databinding.FragmentMessagesBinding;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
+import com.tinf.qmobile.widget.divider.JournalItemDivider;
+import com.tinf.qmobile.widget.divider.MessageItemDivider;
+
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesFragment extends Fragment implements OnResponse {
@@ -47,7 +52,7 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
         Messenger messenger = new Messenger(getContext(), this);
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
-        MessagesAdapter adapter = new MessagesAdapter(getContext(), messenger, getArguments());
+        RecyclerView.Adapter adapter = new MessagesAdapter(getContext(), messenger, getArguments());
 
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
@@ -55,23 +60,23 @@ public class MessagesFragment extends Fragment implements OnResponse {
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
         binding.recycler.setAdapter(adapter);
+        binding.recycler.addItemDecoration(new MessageItemDivider(getContext(), 70));
+        binding.recycler.setItemAnimator(null);
         binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                int p = (recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                int p = (recyclerView.getChildCount() == 0) ?
+                        0 :
+                        recyclerView.getChildAt(0).getTop();
                 binding.refresh.setEnabled(p == 0);
-
-                LinearLayoutManager layout = (LinearLayoutManager) recyclerView.getLayoutManager();
 
                 int j = layout.findLastCompletelyVisibleItemPosition();
 
-                if (j == recyclerView.getAdapter().getItemCount() - 1)
-                    messenger.loadPage(Math.round(j / 20) + 2);
+                if (j == adapter.getItemCount() - 1)
+                    messenger.loadPage((j / 20) + 2);
             }
-
         });
 
         binding.refresh.setOnRefreshListener(messenger::loadFirstPage);

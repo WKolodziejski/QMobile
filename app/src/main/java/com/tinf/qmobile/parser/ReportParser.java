@@ -35,7 +35,7 @@ public class ReportParser extends BaseParser {
 
                         String matterTitle = formatTitle(rows.get(i).child(0).text());
                         String clazz = formatClass(rows.get(i).child(2).text());
-                        String absencesTotal = formatNumber(rows.get(i).child(3).text());
+                        //String absencesTotal = formatNumber(rows.get(i).child(3).text());
                         String finalMean = formatNumber(rows.get(i).child(4).text());
                         String situation = rows.get(i).child(rows.get(1).children().size() - 1).text();
                         String qid = formatQID(rows.get(i).child(0).getElementsByTag("q_latente").attr("value"));
@@ -60,7 +60,7 @@ public class ReportParser extends BaseParser {
                         }
 
                         if (matter != null) {
-                            matter.setAbsences(absencesTotal.isEmpty() ? -1 : Integer.parseInt(absencesTotal));
+                            //matter.setAbsences(absencesTotal.isEmpty() ? -1 : Integer.parseInt(absencesTotal));
                             matter.setMean(finalMean.isEmpty() ? -1 : Float.parseFloat(finalMean));
                             matter.setTitle(matterTitle);
                             matter.setSituation(situation);

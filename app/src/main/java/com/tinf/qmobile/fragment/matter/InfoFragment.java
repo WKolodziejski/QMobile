@@ -1,10 +1,12 @@
 package com.tinf.qmobile.fragment.matter;
 
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.utility.ChartUtils.getChartData;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,25 +16,35 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MatterActivity;
+import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentInfoBinding;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.utility.ColorUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PieChartData;
+import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.SelectedValue;
 import lecho.lib.hellocharts.model.SliceValue;
+import lecho.lib.hellocharts.model.ValueShape;
 import lecho.lib.hellocharts.model.Viewport;
 
 public class InfoFragment extends Fragment {
@@ -50,18 +62,18 @@ public class InfoFragment extends Fragment {
             id = bundle.getLong("ID");
         }
 
-        DataObserver observer = data -> setText();
+        DataObserver observer = data -> setText(false);
 
         sub1 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
                 .onlyChanges()
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
     }
 
@@ -79,75 +91,206 @@ public class InfoFragment extends Fragment {
         if (id == 0)
             return;
 
-        setText();
+        setText(true);
     }
 
-    private void setText() {
+    private void setText(boolean onCreate) {
         Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).get(id);
 
         if (matter == null)
             return;
 
-        int color = matter.getColor();
-        int color2 = ColorUtils.INSTANCE.lighten(color, 0.25f);
-        int classes = matter.getClassesGiven_();
-        int absences = matter.getAbsences_();
-        int presences = classes - absences;
+        int color1 = matter.getColor();
+        int color2 = ColorUtils.INSTANCE.lighten(color1, 0.25f);
+        int classesGiven = matter.getClassesGiven();
+        int classesTotal = matter.getClassesTotal();
+        int absences = matter.getAbsences();
+        int presences = classesGiven - absences;
+        float maxSum = matter.getAllMaxGradesSum();
+        int classesProgress = classesTotal == 0 ? 0 : (int) ((classesGiven / classesTotal) * 100f);
+        int averageProgress = maxSum == 0 ? 0 : (int) ((matter.getAllGradesSum() / maxSum) * 100f);
+
+        Log.d(matter.getAbsencesString(), String.valueOf(presences));
 
         List<SliceValue> values = new ArrayList<>();
 
-        values.add(new SliceValue(presences)
-                .setColor(color)
-                .setLabel(String.valueOf(((float) presences / classes) * 100f) + "%"));
-        values.add(new SliceValue(matter.getAbsences_())
-                .setColor(color2)
-                .setLabel(""));
+        if (presences > 0) {
+            values.add(new SliceValue(presences)
+                    .setColor(color1)
+                    .setLabel(""));
+        } else {
+            values.add(new SliceValue(1)
+                    .setColor(color2)
+                    .setLabel(""));
+        }
+
+        if (absences > 0) {
+            values.add(new SliceValue(absences)
+                    .setColor(color2)
+                    .setLabel(""));
+        }
 
         binding.chartPresence.setPieChartData(new PieChartData(values)
                 .setHasCenterCircle(true)
                 .setCenterCircleScale(0.35f)
                 .setHasLabelsOnlyForSelected(true));
-        binding.chartPresence.selectValue(new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
         binding.chartPresence.setChartRotation(-90, true);
+        binding.chartPresence.setInteractive(false);
 
-        binding.presenceIc.setImageTintList(ColorStateList.valueOf(color));
-        binding.absenceIc.setImageTintList(ColorStateList.valueOf(color2));
+        if (absences > 0) {
+            binding.chartPresence.selectValue(
+                    new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
+        }
 
-        binding.presenceTxt.setText(matter.getPresences());
-        binding.absenceTxt.setText(matter.getAbsences());
+        binding.totalHoursTxt.setText(matter.getHoursString());
+        binding.totalClassesTxt.setText(matter.getClassesTotalString());
+        binding.clazzTxt.setText(matter.getClazz());
+        binding.teacherTxt.setText(matter.getTeacher());
 
-        binding.hoursTxt.setText(String.valueOf(matter.getGivenHours()));
-        binding.teacherTxt.setText(matter.getTeacher_());
-
-        binding.classesTxtL.setText(String.valueOf(matter.getClassesGiven_()));
-        binding.classesTxtR.setText(String.valueOf(matter.getClassesTotal_()));
-        binding.classesProgress.setIndicatorColor(color);
+        binding.classesTxtL.setText(matter.getClassesGivenString());
+        binding.classesTxtR.setText(matter.getClassesTotalString());
+        binding.classesProgress.setIndicatorColor(color1);
         binding.classesProgress.setTrackColor(color2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.classesProgress.setProgress(matter.getClassesGiven_() / matter.getClassesTotal_() * 100, true);
+            binding.classesProgress.setProgress(classesProgress, true);
         } else {
-            binding.classesProgress.setProgress(matter.getClassesGiven_() / matter.getClassesTotal_() * 100);
+            binding.classesProgress.setProgress(classesProgress);
         }
 
         binding.averageTxtL.setText(String.valueOf(matter.getAllGradesSum()));
         binding.averageTxtR.setText(String.valueOf(matter.getAllMaxGradesSum()));
-        binding.averageProgress.setIndicatorColor(color);
+        binding.averageProgress.setIndicatorColor(color1);
         binding.averageProgress.setTrackColor(color2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.averageProgress.setProgress((int) (matter.getAllGradesSum() / matter.getAllMaxGradesSum() * 100), true);
+            binding.averageProgress.setProgress(averageProgress, true);
         } else {
-            binding.averageProgress.setProgress((int) (matter.getAllGradesSum() / matter.getAllMaxGradesSum() * 100));
+            binding.averageProgress.setProgress(averageProgress);
         }
 
-        binding.chartGrades.setLineChartData(getChartData(matter));
+        for (Drawable drawable : binding.presenceIc.getCompoundDrawables()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(color1, PorterDuff.Mode.SRC_IN));
+            }
+        }
+
+        for (Drawable drawable : binding.absenceIc.getCompoundDrawables()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(color1, PorterDuff.Mode.SRC_IN));
+            }
+        }
+
+        //binding.presenceIc.setImageTintList(ColorStateList.valueOf(color1));
+        //binding.absenceIc.setImageTintList(ColorStateList.valueOf(color2));
+
+        binding.presenceTxt.setText(matter.getPresencesString());
+        binding.absenceTxt.setText(matter.getAbsencesString());
+
+        int x = 0;
+
+        List<PointValue> points = new ArrayList<>();
+        List<Journal> journals = new ArrayList<>();
+        List<AxisValue> axisX = new ArrayList<>();
+
+        for (int i = 0; i < matter.periods.size(); i++) {
+            Period period = matter.periods.get(i);
+
+            for (int j = 0; j < period.journals.size(); j++) {
+                Journal journal = period.journals.get(j);
+
+                if (journal.getGrade_() >= 0) {
+                    axisX.add(new AxisValue(x));
+                    points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
+                            .setLabel(journal.getGrade()));
+                    journals.add(journal);
+                }
+            }
+        }
+
+        Line line = new Line(points);
+        line.setColor(ColorUtils.INSTANCE.lighten(matter.getColor(), 0.25f));
+        line.setPointColor(matter.getColor());
+        line.setShape(ValueShape.CIRCLE);
+        line.setCubic(true);
+        line.setFilled(false);
+        line.setHasLabels(true);
+
+        LineChartData data = new LineChartData(Collections.singletonList(line));
+        data.setAxisYLeft(new Axis());
+        data.setAxisXBottom(new Axis(axisX));
+
+        binding.layoutGrades.setVisibility(points.isEmpty() ? View.GONE : View.VISIBLE);
+        binding.chartGrades.setLineChartData(data);
         binding.chartGrades.setZoomEnabled(false);
         binding.chartGrades.setScrollEnabled(false);
         binding.chartGrades.setViewportCalculationEnabled(false);
-        final Viewport v = new Viewport(binding.chartGrades.getMaximumViewport());
-        v.top = 20;
-        v.bottom = -10;
-        binding.chartGrades.setMaximumViewport(v);
-        binding.chartGrades.setCurrentViewport(v);
+
+        if (onCreate) {
+            final Viewport v = new Viewport(binding.chartGrades.getMaximumViewport());
+
+            v.top += 1;
+            v.bottom = 0;
+
+            binding.chartGrades.setMaximumViewport(v);
+            binding.chartGrades.setCurrentViewport(v);
+        }
+
+        binding.chartGrades.setOnValueTouchListener(new LineChartOnValueSelectListener() {
+            @Override
+            public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
+                Intent intent = new Intent(getContext(), EventViewActivity.class);
+                intent.putExtra("ID", journals.get(pointIndex).id);
+                intent.putExtra("TYPE", JOURNAL);
+                intent.putExtra("LOOKUP", false);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onValueDeselected() {
+
+            }
+        });
+
+//        Radar radar = AnyChart.radar();
+//        //radar.title("WoW base stats comparison radar chart: Shaman vs Warrior vs Priest");
+//
+//        //radar.yScale().minimum(0d);
+//        //radar.yScale().minimumGap(0d);
+//        //radar.yScale().ticks().interval(50d);
+//
+//        //radar.xAxis().labels().padding(5d, 5d, 5d, 5d);
+//
+//        radar.legend(false);
+//        radar.title(false);
+//        radar.fullScreen(true);
+//
+//        List<DataEntry> data = new ArrayList<>();
+//        for (Journal journal : matter.getLastJournals()) {
+//            data.add(new ValueDataEntry(journal.getTitle().substring(0, 3), journal.getGrade_()));
+//        }
+//
+//        Set set = Set.instantiate();
+//        set.data(data);
+//        Mapping map = set.mapAs("{ x: 'x', value: 'value' }");
+//
+//        Area area = radar.area(data);
+//        area.color(ColorUtils.INSTANCE.string(color));
+//        //shamanLine.name("Shaman");
+//        //shamanLine.markers()
+//                //.enabled(true)
+//                //.type(MarkerType.CIRCLE)
+//                //.size(3d);
+//
+//        //radar.tooltip().format("Value: {%Value}");
+//
+//        binding.radar.setChart(radar);
+//        binding.radar.setBackgroundColor("RED");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        sub1.cancel();
+        sub2.cancel();
     }
 
 }

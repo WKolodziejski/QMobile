@@ -75,22 +75,22 @@ public class DataBase implements OnUpdate {
 
         sub1 = boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub2 = boxStore.subscribe(Journal.class)
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub3 = boxStore.subscribe(Material.class)
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub4 = boxStore.subscribe(Message.class)
                 .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e(th.getMessage(), th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(data -> countMessages((int) (boxStore.boxFor(Message.class)
                         .query()
                         .equal(Message_.seen_, false)

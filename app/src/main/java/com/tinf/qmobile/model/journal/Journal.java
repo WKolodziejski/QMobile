@@ -35,7 +35,7 @@ public class Journal extends EventBase implements Queryable {
         }
     }
 
-    @Transient public boolean highlight;
+    //@Transient public boolean highlight;
     private float weight_;
     private float max_;
     private float grade_;

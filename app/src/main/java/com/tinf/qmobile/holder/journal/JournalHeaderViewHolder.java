@@ -30,7 +30,8 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", HEADER);
+            intent.putExtra("PAGE", JOURNAL);
+            intent.putExtra("LOOKUP", lookup);
             context.startActivity(intent);
             /*if (matter.isExpanded) {
                 adapter.collapse(getAdapterPosition(), matter);

@@ -36,9 +36,9 @@ android {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 22
         targetSdkVersion 32
-        versionName '1.6.9'
+        versionName '1.7.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 101
+        versionCode 102
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -99,6 +99,7 @@ dependencies {
     implementation 'com.github.smhdk:KM-Recyclerview-Sticky-Header:v1.0.0'
     implementation 'com.github.albfernandez:juniversalchardet:2.3.1'
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
     implementation 'org.apache.commons:commons-lang3:3.5'

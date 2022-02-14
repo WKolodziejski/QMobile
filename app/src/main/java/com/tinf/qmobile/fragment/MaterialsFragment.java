@@ -132,7 +132,8 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
-        binding.recycler.addItemDecoration(new MaterialItemDivider(getContext(), 72));
+        binding.recycler.addItemDecoration(new MaterialItemDivider(getContext(), 70));
+        binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(adapter);
 
         if (getActivity() instanceof MainActivity) {

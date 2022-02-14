@@ -190,4 +190,15 @@
     <string name="dialog_evaluate_text">If you enjoy using this app, would you mind taking a moment to rate it? It won\'t take more than a minute. Thank you for your support!</string>
     <string name="dialog_registration_title">Data Change Request</string>
     <string name="dialog_registration_text">Before continuing your access, it is necessary that you confirm your registration data.</string>
+    <string name="infos_about">Information</string>
+    <string name="infos_hours">Hours</string>
+    <string name="infos_classes">Classes</string>
+    <string name="infos_class">Class</string>
+    <string name="infos_teacher">Teacher</string>
+    <string name="infos_attendance">Attendance</string>
+    <string name="infos_presences">Presences</string>
+    <string name="infos_absences">Absences</string>
+    <string name="infos_progress">Progress</string>
+    <string name="infos_grades">Grades</string>
+    <string name="infos_history">History</string>
 </resources>
