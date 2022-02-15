@@ -1,8 +1,10 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,9 @@ import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.JournalEmptyBinding;
 import com.tinf.qmobile.fragment.OnUpdate;
+import com.tinf.qmobile.holder.report.TableBaseViewHolder;
+import com.tinf.qmobile.holder.report.TableCellAbsencesViewHolder;
+import com.tinf.qmobile.holder.report.TableCellGradeViewHolder;
 import com.tinf.qmobile.holder.report.TableCellMatterViewHolder;
 import com.tinf.qmobile.holder.report.TableCellSituationViewHolder;
 import com.tinf.qmobile.holder.report.TableCellViewHolder;
@@ -38,9 +43,6 @@ import java.util.List;
 
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
-
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> implements OnUpdate {
     private final Context context;
@@ -81,8 +83,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                     intent.putExtra("PAGE", JOURNAL);
                     context.startActivity(intent);
                 }
-
-                Log.d(String.valueOf(column), String.valueOf(row));
             }
 
             @Override
@@ -97,13 +97,15 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
             @Override
             public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder columnHeaderView, int column) {
-                if (column == selected_column) {
-                    tableView.getSelectionHandler().clearSelection();
-                    selected_column = -1;
-                } else {
-                    selected_column = column;
-                    selected_row = -1;
-                }
+                tableView.getSelectionHandler().clearSelection();
+
+//                if (column == selected_column) {
+//                    tableView.getSelectionHandler().clearSelection();
+//                    selected_column = -1;
+//                } else {
+//                    selected_column = column;
+//                    selected_row = -1;
+//                }
             }
 
             @Override
@@ -118,20 +120,24 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
 
             @Override
             public void onRowHeaderClicked(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
-                if (row == selected_row) {
-                    tableView.getSelectionHandler().clearSelection();
-                    selected_row = -1;
-                } else {
-                    selected_row = row;
-                    selected_column = -1;
-                }
+                tableView.getSelectionHandler().clearSelection();
+
+//                if (row == selected_row) {
+//                    tableView.getSelectionHandler().clearSelection();
+//                    selected_row = -1;
+//                } else {
+//                    selected_row = row;
+//                    selected_column = -1;
+//                }
             }
 
             @Override
-            public void onRowHeaderDoubleClicked(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) { }
+            public void onRowHeaderDoubleClicked(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
+            }
 
             @Override
-            public void onRowHeaderLongPressed(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) { }
+            public void onRowHeaderLongPressed(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
+            }
         });
     }
 
@@ -225,18 +231,18 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     }
 
     @Override
-    public int getColumnHeaderItemViewType(int position) {
-        return position;
+    public int getColumnHeaderItemViewType(int i) {
+        return i;
     }
 
     @Override
-    public int getRowHeaderItemViewType(int position) {
-        return 0;
+    public int getRowHeaderItemViewType(int i) {
+        return i;
     }
 
     @Override
-    public int getCellItemViewType(int position) {
-        return position;
+    public int getCellItemViewType(int i) {
+        return i;
     }
 
     @NonNull
@@ -246,32 +252,43 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             return new TableCellMatterViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.table_cell_matter, parent, false));
 
-        else if (viewType == columnHeader.size() - 1)
+        if (viewType == columnHeader.size() - 1)
             return new TableCellSituationViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.table_cell_situation, parent, false));
 
-        else
-            return new TableCellViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.table_cell_common, parent, false));
+        if (viewType == 1)
+            return new TableCellAbsencesViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.table_cell_absences, parent, false));
+
+        if (viewType == 2)
+            return new TableCellGradeViewHolder(LayoutInflater.from(context)
+                    .inflate(R.layout.table_cell_grade, parent, false));
+
+        return new TableCellViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.table_cell_common, parent, false));
     }
 
     @Override
     public void onBindCellViewHolder(AbstractViewHolder holder, String cellItemModel, int c, int r) {
         try {
-            if (c == 0) {
-                TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
-                h.binding.matter.setText(cells.get(r).get(c));
+            ((TableBaseViewHolder) holder).bind(context, rowHeader.get(r), cells.get(r).get(c));
 
-            } else if (c == columnHeader.size() - 1) {
-                TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
-                h.binding.situation.setText(cells.get(r).get(c));
-                h.binding.situation.setTextColor(getSituationColor(cells.get(r).get(c)));
-            } else {
-                TableCellViewHolder h = (TableCellViewHolder) holder;
-                h.binding.text.setText(cells.get(r).get(c));
-            }
-        } catch (Exception ignored) {
-        }
+//            if (c == 0) {
+//                TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
+//                h.binding.matter.setText(cells.get(r).get(c));
+//
+//            } else if (c == 2) {
+//
+//
+//            } else if (c == columnHeader.size() - 1) {
+//                TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
+//                h.binding.situation.setText(cells.get(r).get(c));
+//                h.binding.situation.setTextColor(getSituationColor(cells.get(r).get(c)));
+//            } else {
+//                TableCellViewHolder h = (TableCellViewHolder) holder;
+//                h.binding.text.setText(cells.get(r).get(c));
+//            }
+        } catch (Exception ignored) { }
     }
 
     @NonNull
@@ -280,23 +297,24 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
         if (viewType == 0 || viewType == columnHeader.size() - 1)
             return new TableColumnMatterHeaderViewHolder(LayoutInflater.from(context)
                     .inflate(R.layout.table_column_matter, parent, false));
-        else
-            return new TableColumnHeaderViewHolder(LayoutInflater.from(context)
-                    .inflate(R.layout.table_column, parent, false));
+
+        return new TableColumnHeaderViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.table_column, parent, false));
     }
 
     @Override
     public void onBindColumnHeaderViewHolder(AbstractViewHolder holder, String columnHeaderItemModel, int c) {
         try {
-            if (c == 0 || c == columnHeader.size() - 1) {
-                TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
-                h.binding.matter.setText(columnHeader.get(c));
-            } else {
-                TableColumnHeaderViewHolder h = (TableColumnHeaderViewHolder) holder;
-                h.binding.text.setText(columnHeader.get(c));
-            }
-        } catch (Exception ignored) {
-        }
+            ((TableBaseViewHolder) holder).bind(context, null, columnHeader.get(c));
+
+//            if (c == 0 || c == columnHeader.size() - 1) {
+//                TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
+//                h.binding.matter.setText(columnHeader.get(c));
+//            } else {
+//                TableColumnHeaderViewHolder h = (TableColumnHeaderViewHolder) holder;
+//                h.binding.text.setText(columnHeader.get(c));
+//            }
+        } catch (Exception ignored) { }
     }
 
     @NonNull
@@ -309,18 +327,18 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @Override
     public void onBindRowHeaderViewHolder(AbstractViewHolder holder, Matter rowHeaderItemModel, int r) {
         try {
-            TableRowHeaderViewHolder h = (TableRowHeaderViewHolder) holder;
-            h.binding.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(r).getColor()));
+            ((TableBaseViewHolder) holder).bind(context, rowHeader.get(r), null);
 
-            int n = rowHeader.get(r).getJournalNotSeenCount();
-
-            if (n > 0) {
-                h.binding.badge.setText(String.valueOf(n));
-            } else {
-                h.binding.badge.setText("");
-            }
-        } catch (Exception ignored) {
-        }
+//            h.binding.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(r).getColor()));
+//
+//            int n = rowHeader.get(r).getJournalNotSeenCount();
+//
+//            if (n > 0) {
+//                h.binding.badge.setText(String.valueOf(n));
+//            } else {
+//                h.binding.badge.setText("");
+//            }
+        } catch (Exception ignored) { }
     }
 
     @NonNull
@@ -337,19 +355,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @Override
     public void onDateChanged() {
         loadList();
-    }
-
-    private int getSituationColor(String s) {
-        if (s.contains("Aprovado"))
-            return context.getResources().getColor(R.color.good);
-
-        if (s.contains("Reprovado"))
-            return context.getResources().getColor(R.color.bad);
-
-        if (s.contains("Falta"))
-            return context.getResources().getColor(R.color.bad);
-
-        return context.getResources().getColor(R.color.colorPrimary);
     }
 
 }

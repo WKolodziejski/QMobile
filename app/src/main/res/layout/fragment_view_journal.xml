@@ -1,54 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/header_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/color_img"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:id="@+id/color_img"
+            android:layout_marginBottom="8dp"
             app:srcCompat="@drawable/ic_square" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_gravity="center_vertical"
-            >
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="4dp"
-                android:id="@+id/title"
                 android:textSize="24sp"
                 tools:text="Title" />
 
             <TextView
+                android:id="@+id/matter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/matter"
                 tools:text="Matter" />
 
         </LinearLayout>
@@ -56,17 +52,16 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/grade_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:id="@+id/grade_layout"
-        app:layout_constraintTop_toBottomOf="@id/header_layout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_layout">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -77,29 +72,28 @@
             app:tint="@color/colorAccent" />
 
         <TextView
+            android:id="@+id/grade"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/grade"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="7.5/10" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/weight_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:id="@+id/weight_layout"
-        app:layout_constraintTop_toBottomOf="@id/grade_layout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/grade_layout">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -110,69 +104,67 @@
             app:tint="@color/colorAccent" />
 
         <TextView
+            android:id="@+id/weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/weight"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="3" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/type_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
-        android:id="@+id/type_layout"
-        app:layout_constraintTop_toBottomOf="@id/weight_layout"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/weight_layout">
 
         <TextView
+            android:id="@+id/type_short"
             android:layout_width="24dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/colorAccent"
-            android:textSize="24sp"
             android:maxLength="1"
             android:textAlignment="center"
-            android:id="@+id/type_short"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:text="A" />
 
         <TextView
+            android:id="@+id/type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/type"
             android:layout_gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Avaliação" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/presence_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:id="@+id/presence_layout"
-        app:layout_constraintTop_toBottomOf="@id/type_layout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/type_layout">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -183,29 +175,28 @@
             app:tint="@color/colorAccent" />
 
         <TextView
+            android:id="@+id/absences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/absences"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="0" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/time_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:orientation="horizontal"
-        android:id="@+id/time_layout"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/presence_layout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/presence_layout">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -216,14 +207,14 @@
             app:tint="@color/colorAccent" />
 
         <TextView
+            android:id="@+id/time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/time"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Mar 21, 2019" />
 
     </LinearLayout>

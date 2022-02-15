@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground"
-    app:layout_optimizationLevel="standard|dimensions|chains"
-    >
+    app:layout_optimizationLevel="standard|dimensions|chains">
 
     <ImageView
+        android:id="@+id/icon"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="16dp"
-        android:id="@+id/icon"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@drawable/ic_pdf"
         tools:tint="@color/materiais_pdf" />
 
@@ -27,46 +25,44 @@
         android:layout_marginEnd="16dp"
         android:orientation="vertical"
         app:layout_constrainedWidth="true"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintEnd_toStartOf="@id/material_layout1"
         app:layout_constraintHorizontal_bias="0"
-        >
+        app:layout_constraintStart_toEndOf="@id/icon"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:maxLines="1"
             android:ellipsize="end"
-            android:id="@+id/title"
+            android:maxLines="1"
             android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
             tools:text="Paisagens Brasileira sdasd dsasadsad sads" />
 
         <TextView
+            android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/description"
-            android:visibility="gone"
-            android:textSize="14sp"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:visibility="gone"
             tools:text="A resolução de alguns exerci dsad sad saos"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/material_layout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:id="@+id/material_layout1"
-        app:layout_constraintEnd_toStartOf="@id/date"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
+        app:layout_constraintEnd_toStartOf="@id/date"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/offline"
@@ -89,18 +85,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:id="@+id/date"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/date/ddmmyy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

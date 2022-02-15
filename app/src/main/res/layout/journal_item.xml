@@ -89,8 +89,6 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"

@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
 
     <EditText
+        android:id="@+id/title_edt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginEnd="16dp"
         android:background="@color/transparent"
-        android:id="@+id/title_edt"
         android:hint="@string/event_title"
-        android:textStyle="bold"
-        android:textSize="24sp"
         android:inputType="textCapSentences"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/title_edt"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/title_edt" />
 
     <LinearLayout
+        android:id="@+id/matter_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/matter_layout"
-        app:layout_constraintTop_toBottomOf="@id/title_edt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="8dp"
-        android:paddingTop="8dp"
         android:foreground="?android:attr/selectableItemBackground"
-        >
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_edt">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -53,19 +50,19 @@
             app:tint="@color/colorAccent" />
 
         <TextView
+            android:id="@+id/matter_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:hint="@string/event_matter"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/matter_text"
-            android:hint="@string/event_matter"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
@@ -74,72 +71,70 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/matter_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/matter_layout" />
 
     <LinearLayout
+        android:id="@+id/time_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/time_layout"
-        app:layout_constraintTop_toBottomOf="@id/matter_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
-        >
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/matter_layout">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             app:srcCompat="@drawable/ic_time"
             app:tint="@color/colorAccent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/start_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:foreground="?android:attr/selectableItemBackground"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
-                android:id="@+id/start_day"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Terça-feira" />
 
             <TextView
+                android:id="@+id/start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
-                android:padding="8dp"
-                android:id="@+id/start_time"
+                android:layout_marginBottom="8dp"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="8dp"
                 app:layout_constraintBottom_toTopOf="@id/end_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="18:00" />
 
             <TextView
+                android:id="@+id/end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
-                android:padding="8dp"
-                android:id="@+id/end_time"
+                android:layout_marginBottom="8dp"
                 android:foreground="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toBottomOf="@id/start_time"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_time"
                 tools:text="19:00" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -150,42 +145,41 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/time_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/time_layout" />
 
     <LinearLayout
+        android:id="@+id/room_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/room_layout"
-        app:layout_constraintTop_toBottomOf="@id/time_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:foreground="?android:attr/selectableItemBackground"
-        >
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/time_layout">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
             android:layout_margin="16dp"
+            android:paddingTop="8dp"
             app:srcCompat="@drawable/ic_room"
             app:tint="@color/colorAccent" />
 
         <EditText
+            android:id="@+id/room_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:paddingTop="28dp"
-            android:paddingBottom="16dp"
+            android:background="@color/transparent"
             android:hint="@string/event_room"
             android:inputType="textCapSentences"
-            android:background="@color/transparent"
-            android:id="@+id/room_edt"
+            android:paddingTop="28dp"
+            android:paddingBottom="16dp"
             android:textSize="14sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
@@ -193,19 +187,18 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/room_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/room_layout" />
 
     <LinearLayout
+        android:id="@+id/alarm_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:orientation="horizontal"
-        android:id="@+id/alarm_layout"
         android:foreground="?android:attr/selectableItemBackground"
-        app:layout_constraintTop_toBottomOf="@id/room_layout"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/room_layout">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -215,18 +208,18 @@
             app:tint="@color/colorAccent" />
 
         <TextView
+            android:id="@+id/alarm_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:hint="@string/event_alarm"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/alarm_text"
-            android:hint="@string/event_alarm"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"  />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
@@ -235,40 +228,39 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/alarm_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/alarm_layout" />
 
     <LinearLayout
+        android:id="@+id/color_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/color_layout"
-        app:layout_constraintTop_toBottomOf="@id/alarm_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingTop="8dp"
         android:foreground="?android:attr/selectableItemBackground"
-        >
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alarm_layout">
 
         <ImageView
+            android:id="@+id/color_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:id="@+id/color_img"
             app:srcCompat="@drawable/ic_dot" />
 
         <TextView
+            android:id="@+id/color_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:id="@+id/color_text"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Default" />
 
     </LinearLayout>
@@ -278,42 +270,41 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/color_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/color_layout" />
 
     <LinearLayout
+        android:id="@+id/description_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/description_layout"
-        app:layout_constraintTop_toBottomOf="@id/color_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:foreground="?android:attr/selectableItemBackground"
-        >
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/color_layout">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
             android:layout_margin="16dp"
+            android:paddingTop="8dp"
             app:srcCompat="@drawable/ic_note"
             app:tint="@color/colorAccent" />
 
         <EditText
+            android:id="@+id/description_edt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:paddingTop="28dp"
-            android:paddingBottom="16dp"
+            android:background="@color/transparent"
             android:hint="@string/event_note"
             android:inputType="textCapSentences"
-            android:background="@color/transparent"
-            android:id="@+id/description_edt"
+            android:paddingTop="28dp"
+            android:paddingBottom="16dp"
             android:textSize="14sp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </LinearLayout>
 
@@ -321,6 +312,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/description_layout"/>
+        app:layout_constraintTop_toBottomOf="@id/description_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.JournalItemBinding;
 import com.tinf.qmobile.model.journal.Journal;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.utility.Design.getColorForGrade;
 
 public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     private final JournalItemBinding binding;
@@ -60,24 +61,8 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
             binding.color.setCardBackgroundColor(context.getResources().getColor(R.color.transparent));
         } else {
             binding.grade.setTextColor(context.getResources().getColor(R.color.white));
-            binding.color.setCardBackgroundColor(getColor(context, journal.getGrade_() / journal.getMax_() * 10));
+            binding.color.setCardBackgroundColor(getColorForGrade(context, journal.getGrade_() / journal.getMax_() * 10));
         }
-    }
-
-    private static int getColor(Context context, float grade) {
-        if (grade < 6.0)
-            return context.getResources().getColor(R.color.bad);
-
-        //if (grade <= 5.0)
-            //return context.getResources().getColor(R.color.yellow_500);
-
-        if (grade < 8)
-            return context.getResources().getColor(R.color.ok);
-
-        if (grade <= 10.0)
-            return context.getResources().getColor(R.color.good);
-
-        return context.getResources().getColor(R.color.transparent);
     }
 
 }

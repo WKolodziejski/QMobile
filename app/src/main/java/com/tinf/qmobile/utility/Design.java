@@ -72,6 +72,22 @@ public class Design {
         return icon;
     }
 
+    public static int getColorForGrade(Context context, float grade) {
+        if (grade < 6.0)
+            return context.getResources().getColor(R.color.bad);
+
+        //if (grade <= 5.0)
+        //return context.getResources().getColor(R.color.yellow_500);
+
+        if (grade < 8)
+            return context.getResources().getColor(R.color.ok);
+
+        if (grade <= 10.0)
+            return context.getResources().getColor(R.color.good);
+
+        return context.getResources().getColor(R.color.transparent);
+    }
+
     public static void syncToolbar(MaterialToolbar toolbar, boolean canExpand) {
         if (toolbar == null)
             return;

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -77,8 +76,7 @@ public class MaterialItemDivider extends RecyclerView.ItemDecoration {
             int viewType = ViewType.MATERIAL;
             int nextType = ViewType.MATERIAL;
 
-            if (p1 > 0 && p1 < childCount)
-            {
+            if (p1 > 0 && p1 < childCount) {
                 viewType = adapter.getItemViewType(p1);
             }
 

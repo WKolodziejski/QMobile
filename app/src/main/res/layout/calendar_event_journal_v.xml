@@ -1,45 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <include
-        layout="@layout/calendar_header_day_single"
-        android:id="@+id/header" />
+        android:id="@+id/header"
+        layout="@layout/calendar_header_day_single" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        >
+        app:cardElevation="0dp">
 
         <LinearLayout
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:foreground="?android:attr/selectableItemBackground"
             android:orientation="vertical"
             android:padding="8dp"
-            android:id="@+id/card"
-            android:foreground="?android:attr/selectableItemBackground"
-            tools:background="@color/colorPrimary"
-            >
+            tools:background="@color/colorPrimary">
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimaryLight"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:id="@+id/title"
-                android:textColor="@color/colorPrimaryLight"
-                tools:text="Prova de trigonometria"/>
+                tools:text="Prova de trigonometria" />
 
             <!--<TextView
                 android:layout_width="wrap_content"

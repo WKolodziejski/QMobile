@@ -104,7 +104,7 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
                 Intent intent = new Intent(context, EventViewActivity.class);
                 intent.putExtra("ID", journals.get(pointIndex).id);
                 intent.putExtra("TYPE", JOURNAL);
-                intent.putExtra("LOOKUP", false);
+                intent.putExtra("LOOKUP", true);
                 context.startActivity(intent);
             }
 

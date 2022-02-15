@@ -1,42 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
     app:cardBackgroundColor="@color/cardBackground"
-    >
+    app:cardCornerRadius="8dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:padding="16dp"
+            android:textColor="@color/colorPrimaryLight"
             android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:textColor="@color/colorPrimaryLight"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:clickable="true"
             tools:background="@color/green_700"
             tools:text="Matter" />
 
         <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_margin="8dp"
-            android:id="@+id/chart"/>
+            android:layout_margin="8dp" />
 
     </LinearLayout>
 

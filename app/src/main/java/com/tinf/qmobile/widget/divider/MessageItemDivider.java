@@ -65,8 +65,7 @@ public class MessageItemDivider extends RecyclerView.ItemDecoration {
 
             int viewType = ViewType.MESSAGE;
 
-            if (p > 0 && p < childCount)
-            {
+            if (p > 0 && p < childCount) {
                 viewType = adapter.getItemViewType(p);
             }
 

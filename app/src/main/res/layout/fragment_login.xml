@@ -1,26 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="@color/colorPrimaryLight"
     android:gravity="center_horizontal"
     android:imeOptions="actionSend|flagNoEnterAction"
     android:orientation="vertical"
-    android:background="@color/colorPrimaryLight"
-    >
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:src="@drawable/ic_launcher"
+        app:layout_constraintBottom_toTopOf="@id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/progressBar"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -49,18 +47,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            >
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/user_input"
@@ -73,14 +69,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/colorAccent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            >
+            app:passwordToggleTint="@color/colorAccent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_input"
@@ -95,8 +90,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            >
+            android:layout_marginBottom="16dp">
 
             <!--<com.google.android.material.checkbox.MaterialCheckBox
                 android:layout_width="wrap_content"
@@ -113,22 +107,22 @@
                 android:id="@+id/spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                tools:listitem="@android:layout/simple_list_item_1"/>
+                tools:listitem="@android:layout/simple_list_item_1" />
 
             <TextView
+                android:id="@+id/help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
-                android:id="@+id/help"
                 android:text="@string/login_help"
-                android:textSize="15sp"
                 android:textColor="@color/colorAccent"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

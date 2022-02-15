@@ -167,20 +167,8 @@ public class InfoFragment extends Fragment {
             binding.averageProgress.setProgress(averageProgress);
         }
 
-        for (Drawable drawable : binding.presenceIc.getCompoundDrawables()) {
-            if (drawable != null) {
-                drawable.setColorFilter(new PorterDuffColorFilter(color1, PorterDuff.Mode.SRC_IN));
-            }
-        }
-
-        for (Drawable drawable : binding.absenceIc.getCompoundDrawables()) {
-            if (drawable != null) {
-                drawable.setColorFilter(new PorterDuffColorFilter(color1, PorterDuff.Mode.SRC_IN));
-            }
-        }
-
-        //binding.presenceIc.setImageTintList(ColorStateList.valueOf(color1));
-        //binding.absenceIc.setImageTintList(ColorStateList.valueOf(color2));
+        binding.presenceIc.setImageTintList(ColorStateList.valueOf(color1));
+        binding.absenceIc.setImageTintList(ColorStateList.valueOf(color2));
 
         binding.presenceTxt.setText(matter.getPresencesString());
         binding.absenceTxt.setText(matter.getAbsencesString());

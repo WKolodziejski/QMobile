@@ -1,68 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="200dp"
     android:layout_height="match_parent"
-    android:minHeight="120dp"
     android:layout_margin="8dp"
+    android:minHeight="120dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
-    >
+    app:cardElevation="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:foreground="?android:attr/selectableItemBackground"
         android:minHeight="120dp"
         android:padding="8dp"
-        android:id="@+id/card"
-        android:foreground="?android:attr/selectableItemBackground"
-        tools:background="@color/colorPrimary"
-        >
+        tools:background="@color/colorPrimary">
 
         <TextView
+            android:id="@+id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:id="@+id/date"
             android:textColor="@color/colorPrimaryLight"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Wed, 22/03/1999"/>
+            tools:text="Wed, 22/03/1999" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_margin="8dp"
             android:orientation="vertical"
-            android:layout_gravity="bottom"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/date"
-            app:layout_constraintVertical_bias="1"
-            >
+            app:layout_constraintVertical_bias="1">
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/colorPrimaryLight"
                 android:textSize="@dimen/alt_font_size"
                 android:textStyle="bold"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:id="@+id/title"
-                android:textColor="@color/colorPrimaryLight"
-                tools:text="Prova de trigonometria"/>
+                tools:text="Prova de trigonometria" />
 
             <TextView
+                android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:maxLines="1"
                 android:ellipsize="end"
-                android:id="@+id/description"
+                android:maxLines="1"
                 android:textColor="@color/colorPrimaryLight"
                 tools:text="Matemática" />
 

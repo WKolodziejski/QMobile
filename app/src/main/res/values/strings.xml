@@ -106,6 +106,10 @@
     <string name="dialog_evaluate_now">Avaliar agora</string>
     <string name="dialog_evaluate_later">Depois</string>
     <string name="dialog_evaluate_no">Não, obrigado</string>
+    <string name="dialog_clear_data_title">Apagar dados locais</string>
+    <string name="dialog_clear_data_text">Isso irá apagar todos os dados salvos localmente, incluindo eventos e horários criados por você. Isso pode ser útil em caso de algum problema com o carregamento das páginas.</string>
+    <string name="dialog_clear_data_delete">Apagar</string>
+    <string name="dialog_clear_data_cancel">Cancelar</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>

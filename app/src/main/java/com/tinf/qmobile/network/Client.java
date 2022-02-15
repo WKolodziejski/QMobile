@@ -9,9 +9,12 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.CookieManager;
+
 import androidx.preference.PreferenceManager;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Header;
@@ -19,6 +22,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -38,10 +42,12 @@ import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.User;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -51,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -81,6 +88,7 @@ public class Client {
     private final static String TAG = "Network Client";
     private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
+    private FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     private static Client instance;
     private final List<RequestHelper> queue;
     private String URL;
@@ -206,8 +214,7 @@ public class Client {
                         loadYear(0);
                     }
                 }
-            }, error -> onError(pg, error.getMessage() == null ?
-                    getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+            }, error -> onError(pg, error)) {
 
                 @Override
                 public Map<String, String> getHeaders() {
@@ -238,9 +245,11 @@ public class Client {
     public void load(Matter matter) {
         Log.d("Client", "loading " + matter.getTitle());
 
-        createRequest(PG_CLASSES,
-                INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
-                matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter, this::callOnFinish);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            createRequest(PG_CLASSES,
+                    INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
+                    matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter, this::callOnFinish);
+        });
     }
 
     private void load(int pg, int year, int period, BaseParser.OnFinish onFinish) {
@@ -252,34 +261,38 @@ public class Client {
     }
 
     private void load(int pg, int year, int period, BaseParser.OnFinish onFinish, boolean notify) {
-        int method = GET;
-        String url = INDEX + pg;
-        Map<String, String> form = new HashMap<>();
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int method = GET;
+            String url = INDEX + pg;
+            Map<String, String> form = new HashMap<>();
 
-        if (pg == PG_FETCH_YEARS) {
-            url = INDEX + PG_JOURNALS;
-        } else if (pg == PG_MESSAGES) {
-            url = MESSAGES;
-        } else {
-            switch (pg) {
-                case PG_JOURNALS: method = POST;
-                    form.put("ANO_PERIODO2", year + "_" + period);
-                    break;
+            if (pg == PG_FETCH_YEARS) {
+                url = INDEX + PG_JOURNALS;
+            } else if (pg == PG_MESSAGES) {
+                url = MESSAGES;
+            } else {
+                switch (pg) {
+                    case PG_JOURNALS:
+                        method = POST;
+                        form.put("ANO_PERIODO2", year + "_" + period);
+                        break;
 
-                case PG_REPORT:
+                    case PG_REPORT:
 
-                case PG_SCHEDULE:
-                    method = GET;
-                    url = url.concat("&cmbanos=" + year + "&cmbperiodos=" + period);
-                    break;
+                    case PG_SCHEDULE:
+                        method = GET;
+                        url = url.concat("&cmbanos=" + year + "&cmbperiodos=" + period);
+                        break;
 
-                case PG_MATERIALS: method = POST;
-                    form.put("ANO_PERIODO", year + "_" + period);
-                    break;
+                    case PG_MATERIALS:
+                        method = POST;
+                        form.put("ANO_PERIODO", year + "_" + period);
+                        break;
+                }
             }
-        }
 
-        createRequest(pg, url, year, period, method, form, notify, null, onFinish);
+            createRequest(pg, url, year, period, method, form, notify, null, onFinish);
+        });
     }
 
     private <T> void addRequest(Request<T> request, int pg) {
@@ -289,60 +302,60 @@ public class Client {
             requests.add(request);
             Log.v(TAG, "Loading: " + request);
         } else {
-            onError(pg, getContext().getResources().getString(R.string.client_no_connection));
+            onError(pg, new VolleyError(getContext().getResources().getString(R.string.client_no_connection)));
         }
     }
 
     public void login() {
         isLogging = true;
-        fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
-            String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+        Executors.newSingleThreadExecutor().execute(() ->
+                fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
+                    String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
-            Resp r = testResponse(response);
+                    Resp r = testResponse(response);
 
-            if (r == Resp.DENIED) {
-                callOnAccessDenied(PG_LOGIN, getContext().getString(R.string.login_invalid));
+                    if (r == Resp.DENIED) {
+                        callOnAccessDenied(PG_LOGIN, getContext().getString(R.string.login_invalid));
 
-            } else if (r == Resp.OK) {
+                    } else if (r == Resp.OK) {
 
-                isValid = true;
+                        isValid = true;
 
-                Document document = Jsoup.parse(response);
+                        Document document = Jsoup.parse(response);
 
-                User.setLastLogin(new Date().getTime());
+                        User.setLastLogin(new Date().getTime());
 
-                isLogging = false;
+                        isLogging = false;
 
-                String cod = document.getElementsByTag("q_latente").get(4).val();
-                cod = cod.substring(cod.indexOf("=") + 1);
+                        String cod = document.getElementsByTag("q_latente").get(4).val();
+                        cod = cod.substring(cod.indexOf("=") + 1);
 
-                Element img = document.getElementsByAttributeValueEnding("src", cod).first();
+                        Element img = document.getElementsByAttributeValueEnding("src", cod).first();
 
-                if (img != null && !background)
-                    downloadImage(cod);
+                        if (img != null && !background)
+                            downloadImage(cod);
 
-                callOnFinish(PG_LOGIN);
-            }
+                        callOnFinish(PG_LOGIN);
+                    }
 
-        }, error -> onError(PG_LOGIN, error.getMessage() == null ?
-                getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+                }, error -> onError(PG_LOGIN, error)) {
 
-            @Override
-            public Map<String, String> getHeaders() {
-                return params;
-            }
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        return params;
+                    }
 
-            @Override
-            protected Map<String, String> getParams() {
-                return User.getLoginParams(KEY_A, KEY_B);
-            }
+                    @Override
+                    protected Map<String, String> getParams() {
+                        return User.getLoginParams(KEY_A, KEY_B);
+                    }
 
-            @Override
-            public Priority getPriority() {
-                return Priority.IMMEDIATE;
-            }
+                    @Override
+                    public Priority getPriority() {
+                        return Priority.IMMEDIATE;
+                    }
 
-        }, PG_LOGIN));
+                }, PG_LOGIN)));
     }
 
     private Resp testResponse(String response) {
@@ -428,15 +441,17 @@ public class Client {
         return Resp.OK;
     }
 
-    private void checkQueue() {
-        while (!queue.isEmpty()) {
-            RequestHelper helper = queue.get(0);
-            queue.remove(0);
-            createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
-        }
+    private synchronized void checkQueue() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            while (!queue.isEmpty()) {
+                RequestHelper helper = queue.get(0);
+                queue.remove(0);
+                createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
+            }
+        });
     }
 
-    private void addToQueue(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter) {
+    private synchronized void addToQueue(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter) {
         boolean isNew = true;
 
         for (RequestHelper h : queue)
@@ -452,7 +467,7 @@ public class Client {
     }
 
     private void fetchParams(Response.Listener<String> listener) {
-        addRequest(new StringRequest(GET, URL + GERADOR, responseASCII ->  {
+        addRequest(new StringRequest(GET, URL + GERADOR, responseASCII -> {
             String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
             try {
@@ -471,8 +486,7 @@ public class Client {
 
             listener.onResponse(response);
 
-        }, error -> onError(PG_GENERATOR, error.getMessage() == null ?
-                getContext().getResources().getString(R.string.client_error) : error.getMessage())) {
+        }, error -> onError(PG_GENERATOR, error)) {
 
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -487,7 +501,7 @@ public class Client {
                 for (Header h : response.allHeaders) {
                     if (h.getValue().contains("QSESSIONID")) {
                         params.put("Set-Cookie", h.getValue());
-                        cookieManager.setCookie(Client.get().getURL(),  h.getValue());
+                        cookieManager.setCookie(Client.get().getURL(), h.getValue());
                         break;
                     }
                 }
@@ -521,7 +535,15 @@ public class Client {
         instance = null;
     }
 
-    private void onError(int pg, String msg) {
+    private void onError(int pg, VolleyError error) {
+        String msg = error.getMessage() == null
+                ? getContext().getResources().getString(R.string.client_error)
+                : error.getMessage();
+
+        crashlytics.setCustomKey("Page", pg);
+        crashlytics.recordException(error);
+        error.printStackTrace();
+
         if (!isConnected()) {
             msg = getContext().getResources().getString(R.string.client_no_connection);
         } else {
@@ -532,8 +554,6 @@ public class Client {
                 isValid = false;
             }
         }
-
-        Log.e(TAG, msg);
 
         callOnError(pg, msg);
     }
@@ -559,7 +579,6 @@ public class Client {
             if (background) {
                 onResponses.clear();
             }
-
             onResponses.add(onResponse);
         }
     }
@@ -585,74 +604,86 @@ public class Client {
     }
 
     private void callOnError(int pg, String error) {
-        requests.cancelAll(request -> true);
-        isLogging = false;
-        isValid = false;
-        if (onResponses != null) {
-            for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onError(pg, error);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            requests.cancelAll(request -> true);
+            isLogging = false;
+            isValid = false;
+            if (onResponses != null) {
+                for (int i = 0; i < onResponses.size(); i++) {
+                    onResponses.get(i).onError(pg, error);
+                }
             }
-        }
+        });
     }
 
     private void callOnStart(int pg) {
-        Log.v(TAG, "Start: " + pg);
-        if (onResponses != null) {
-            for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onStart(pg);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Log.v(TAG, "Start: " + pg);
+            if (onResponses != null) {
+                for (int i = 0; i < onResponses.size(); i++) {
+                    onResponses.get(i).onStart(pg);
+                }
             }
-        }
+        });
     }
 
     private void callOnFinish(int pg) {
-        Log.v(TAG, "Finish: " + pg);
-        if (onResponses != null) {
-            for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onFinish(pg);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Log.v(TAG, "Finish: " + pg);
+            if (onResponses != null) {
+                for (int i = 0; i < onResponses.size(); i++) {
+                    onResponses.get(i).onFinish(pg);
+                }
             }
-        }
-        checkQueue();
+            checkQueue();
+        });
     }
 
     private void callOnAccessDenied(int pg, String message) {
-        Log.v(TAG, pg + ": " + message);
-        isValid = false;
-        isLogging = false;
-        queue.clear();
-        requests.cancelAll(request -> true);
-        params.clear();
-        KEY_A = "";
-        KEY_B = "";
-        //pos = 0;
-        if (onResponses != null) {
-            for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onAccessDenied(pg, message);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Log.v(TAG, pg + ": " + message);
+            isValid = false;
+            isLogging = false;
+            queue.clear();
+            requests.cancelAll(request -> true);
+            params.clear();
+            KEY_A = "";
+            KEY_B = "";
+            //pos = 0;
+            if (onResponses != null) {
+                for (int i = 0; i < onResponses.size(); i++) {
+                    onResponses.get(i).onAccessDenied(pg, message);
+                }
             }
-        }
+        });
     }
 
     private void callOnScrollRequest() {
-        if (onUpdates != null) {
-            for (int i = 0; i < onUpdates.size(); i++) {
-                onUpdates.get(i).onScrollRequest();
-            }
-        }
-    }
-
-    public void changeDate(int pos) {
-        if (pos != Client.pos) {
-            Client.pos = pos;
-
-            requests.cancelAll(request -> true);
-
+        new Handler(Looper.getMainLooper()).post(() -> {
             if (onUpdates != null) {
                 for (int i = 0; i < onUpdates.size(); i++) {
-                    onUpdates.get(i).onDateChanged();
+                    onUpdates.get(i).onScrollRequest();
                 }
             }
+        });
+    }
 
-            loadYear(pos);
-        }
+    public synchronized void changeDate(int pos) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (pos != Client.pos) {
+                Client.pos = pos;
+
+                requests.cancelAll(request -> true);
+
+                if (onUpdates != null) {
+                    for (int i = 0; i < onUpdates.size(); i++) {
+                        onUpdates.get(i).onDateChanged();
+                    }
+                }
+
+                loadYear(pos);
+            }
+        });
     }
 
     private int posBackup = -1;
@@ -676,7 +707,7 @@ public class Client {
     }
 
     public void requestDelayedUpdate() {
-        new Handler().postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (onUpdates != null) {
                 for (int i = 0; i < onUpdates.size(); i++) {
                     onUpdates.get(i).onDateChanged();
@@ -717,9 +748,10 @@ public class Client {
     }
 
     public void loadYear(int pos) {
-        int year = User.getYear(pos);
-        int period = User.getPeriod(pos);
-        load(PG_JOURNALS, year, period, pg -> {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int year = User.getYear(pos);
+            int period = User.getPeriod(pos);
+            load(PG_JOURNALS, year, period, pg -> {
                 load(PG_REPORT, year, period, pg1 -> {
                     load(PG_SCHEDULE, year, period, pg2 -> {
                         for (Matter m : DataBase.get().getBoxStore()
@@ -736,7 +768,8 @@ public class Client {
                     });
                     callOnFinish(pg1);
                 });
-            callOnFinish(pg);
+                callOnFinish(pg);
+            });
         });
     }
 

@@ -14,7 +14,9 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.settings.AboutActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.network.Client;
@@ -52,18 +54,21 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         Preference reset = findPreference(DB);
         reset.setOnPreferenceClickListener(preference -> {
-            /*DataBase.get().close();
+            new MaterialAlertDialogBuilder(getActivity())
+                    .setTitle(getResources().getString(R.string.dialog_clear_data_title))
+                    .setMessage(getResources().getString(R.string.dialog_clear_data_text))
+                    .setCancelable(true)
+                    .setPositiveButton(getResources().getString(R.string.dialog_clear_data_delete),
+                            (dialogInterface, i) -> {
+                                Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_success), Toast.LENGTH_SHORT).show();
 
-            if (BoxStore.deleteAllFiles(getContext(), User.getCredential(REGISTRATION))) {
-                Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_success), Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_fail), Toast.LENGTH_SHORT).show();
-            }*/
+                                DataBase.get().getBoxStore().removeAllObjects();
+                                Client.get().changeDate(pos);
+                            })
+                    .setNeutralButton(getResources().getString(R.string.dialog_clear_data_cancel), null)
+                    .create()
+                    .show();
 
-            Toast.makeText(getContext(), getResources().getString(R.string.toast_reset_db_success), Toast.LENGTH_SHORT).show();
-
-            DataBase.get().getBoxStore().removeAllObjects();
-            Client.get().changeDate(pos);
             return true;
         });
 

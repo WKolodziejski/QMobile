@@ -1,112 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:foreground="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    app:layout_optimizationLevel="standard|dimensions|chains"
-    >
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    app:layout_optimizationLevel="standard|dimensions|chains">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/header"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_margin="16dp"
-            android:id="@+id/header"
             android:background="@drawable/layout_round"
             android:gravity="center"
+            android:textAllCaps="true"
             android:textColor="@color/colorPrimaryLight"
             android:textStyle="bold"
-            android:textAllCaps="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="F"/>
+            tools:text="F" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="16dp"
-            android:orientation="vertical"
             android:gravity="center_vertical"
-            app:layout_constraintWidth_default="spread"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/att"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/header"
+            android:orientation="vertical"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/att"
             app:layout_constraintHorizontal_bias="0"
-            >
+            app:layout_constraintStart_toEndOf="@id/header"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="spread">
 
             <TextView
+                android:id="@+id/sender"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/sender"
-                android:maxLines="1"
                 android:ellipsize="end"
-                tools:text="Remetente"
                 android:gravity="center_vertical"
+                android:maxLines="1"
+                tools:drawablePadding="4dp"
                 tools:drawableStart="@drawable/ic_assignment"
                 tools:drawableTint="@color/amber_a700"
-                tools:drawablePadding="4dp"/>
+                tools:text="Remetente" />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:ellipsize="end"
                 android:id="@+id/subject"
-                tools:text="Assunto"/>
-
-            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/message_seen"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Assunto" />
+
+            <TextView
                 android:id="@+id/preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/message_seen"
                 tools:text="Preview"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/att"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:id="@+id/att"
-            app:srcCompat="@drawable/ic_attachment"
-            app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_attachment"
             tools:visibility="gone" />
 
         <TextView
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:id="@+id/date"
             android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="22/03"/>
+            tools:text="22/03" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/attachments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
-        android:id="@+id/attachments" />
+        android:layout_marginStart="68dp" />
 
 </LinearLayout>

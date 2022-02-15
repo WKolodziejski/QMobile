@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <include
-        layout="@layout/calendar_header_day_single"
-        android:id="@+id/header" />
+        android:id="@+id/header"
+        layout="@layout/calendar_header_day_single" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"
             android:layout_marginEnd="16dp"
             android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:textSize="@dimen/alt_font_size"
-            android:id="@+id/title"
             android:textColor="@color/colorPrimary"
-            tools:text="Sábado Letivo"/>
+            android:textSize="@dimen/alt_font_size"
+            android:textStyle="bold"
+            tools:text="Sábado Letivo" />
 
     </LinearLayout>
 

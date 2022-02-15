@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <include
-        layout="@layout/calendar_header_day_single"
-        android:id="@+id/header" />
+        android:id="@+id/header"
+        layout="@layout/calendar_header_day_single" />
 
-    <com.google.android.material.card.MaterialCardView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.google.android.material.card.MaterialCardView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        >
+        app:cardElevation="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp"
-            android:id="@+id/card"
             android:foreground="?android:attr/selectableItemBackground"
-            tools:background="@color/colorPrimary"
-            >
+            android:padding="8dp"
+            tools:background="@color/colorPrimary">
 
             <!-- <ImageView
                 android:layout_width="wrap_content"
@@ -47,42 +42,41 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/image"
-                >
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/title"
+                    android:textColor="@color/colorPrimaryLight"
                     android:textSize="@dimen/alt_font_size"
                     android:textStyle="bold"
-                    android:textColor="@color/colorPrimaryLight"
                     tools:text="Prova de trigonometria" />
 
                 <TextView
+                    android:id="@+id/description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/description"
-                    android:textSize="@dimen/main_font_size"
                     android:textColor="@color/colorPrimaryLight"
+                    android:textSize="@dimen/main_font_size"
                     tools:text="Conteúdo no drive" />
 
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/image"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:id="@+id/image"
                 android:src="@drawable/ic_account"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

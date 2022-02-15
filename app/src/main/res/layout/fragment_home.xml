@@ -1,41 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scroll"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        >
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:gravity="center_horizontal"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/schedule_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:orientation="vertical"
                     android:foreground="?android:attr/selectableItemBackground"
-                    android:id="@+id/schedule_layout"
-                    >
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -49,56 +43,55 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/empty_schedule"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
-                        android:textSize="@dimen/main_font_size"
-                        android:id="@+id/empty_schedule"
-                        android:visibility="gone"
                         android:text="@string/schedule_empty"
-                        tools:visibility="visible"/>
+                        android:textSize="@dimen/main_font_size"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
 
                 </LinearLayout>
 
                 <com.tinf.qmobile.widget.schedule.ScheduleView
+                    android:id="@+id/weekView"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_margin="8dp"
                     android:transitionName="Horario"
-                    android:id="@+id/weekView"
-                    app:headerColumnPadding="8dp"
-                    app:noOfVisibleDays="5"
-                    app:eventCornerRadius="8dp"
-                    app:eventTextSize="12sp"
-                    app:hourHeight="60dp"
-                    app:headerRowPadding="12dp"
                     app:columnGap="8dp"
-                    app:firstDayOfWeek="monday"
-                    app:horizontalFlingEnabled="false"
-                    app:xScrollingSpeed="0"
-                    app:showNowLine="false"
-                    app:showFirstDayOfWeekFirst="true"
-                    app:zoomFocusPointEnabled="false"
-                    app:hourSeparatorColor="@color/transparent"
-                    app:headerColumnBackground="@color/transparent"
-                    app:headerColumnTextColor="@color/transparent"
-                    app:eventTextColor="@color/colorPrimaryLight"
-                    app:todayHeaderTextColor="@color/transparent"
-                    app:headerRowBackgroundColor="@color/transparent"
                     app:dayBackgroundColor="@color/transparent"
+                    app:eventCornerRadius="8dp"
+                    app:eventTextColor="@color/colorPrimaryLight"
+                    app:eventTextSize="12sp"
+                    app:firstDayOfWeek="monday"
+                    app:headerColumnBackground="@color/transparent"
+                    app:headerColumnPadding="8dp"
+                    app:headerColumnTextColor="@color/transparent"
+                    app:headerRowBackgroundColor="@color/transparent"
+                    app:headerRowPadding="12dp"
+                    app:horizontalFlingEnabled="false"
+                    app:hourHeight="60dp"
+                    app:hourSeparatorColor="@color/transparent"
+                    app:noOfVisibleDays="5"
                     app:pastBackgroundColor="@color/transparent"
+                    app:showFirstDayOfWeekFirst="true"
+                    app:showNowLine="false"
                     app:todayBackgroundColor="@color/transparent"
-                    tools:layout_height="200dp"
-                    tools:background="@color/colorPrimaryLight"/>
+                    app:todayHeaderTextColor="@color/transparent"
+                    app:xScrollingSpeed="0"
+                    app:zoomFocusPointEnabled="false"
+                    tools:background="@color/colorPrimaryLight"
+                    tools:layout_height="200dp" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/calendar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/calendar_layout"
-                >
+                android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
@@ -106,34 +99,33 @@
                     android:background="@color/blackDividers" />
 
                 <TextView
+                    android:id="@+id/calendar_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
                     android:drawableStart="@drawable/ic_calendar"
                     android:drawablePadding="8dp"
                     android:drawableTint="@color/colorAccent"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="center_vertical"
+                    android:padding="16dp"
                     android:text="@string/calendar_upcoming"
                     android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:id="@+id/calendar_text"/>
+                    android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:transitionName="Calendario"
-                    android:id="@+id/recycler"/>
+                    android:transitionName="Calendario" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/chart_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="8dp"
-                android:id="@+id/chart_layout"
-                >
+                android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"
@@ -141,26 +133,26 @@
                     android:background="@color/blackDividers" />
 
                 <TextView
+                    android:id="@+id/chart_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:clickable="true"
                     android:drawableStart="@drawable/ic_insights"
                     android:drawablePadding="8dp"
                     android:drawableTint="@color/colorAccent"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="center_vertical"
+                    android:padding="16dp"
                     android:text="@string/title_performance"
                     android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:id="@+id/chart_text"/>
+                    android:textStyle="bold" />
 
                 <com.tinf.qmobile.widget.performance.PerformanceChart
+                    android:id="@+id/chart"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:id="@+id/chart" />
+                    android:layout_marginVertical="8dp" />
 
             </LinearLayout>
 

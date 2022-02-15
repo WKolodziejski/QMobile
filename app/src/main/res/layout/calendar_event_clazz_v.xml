@@ -1,55 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <include
-        layout="@layout/calendar_header_day_single"
-        android:id="@+id/header" />
+        android:id="@+id/header"
+        layout="@layout/calendar_header_day_single" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
-        android:id="@+id/card"
+        android:layout_marginBottom="8dp"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="4dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/colorPrimaryLight"
-        app:strokeWidth="1dp"
-        android:foreground="?android:attr/selectableItemBackground"
-        >
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="8dp"
-            >
+            android:padding="8dp">
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:id="@+id/title"
-                android:textColor="@color/colorPrimary"
-                tools:text="Aula de matemática"/>
+                tools:text="Aula de matemática" />
 
             <TextView
+                android:id="@+id/matter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:id="@+id/matter"
                 android:textColor="@color/colorPrimaryLight"
+                android:visibility="gone"
                 tools:text="Matemática" />
 
         </LinearLayout>
