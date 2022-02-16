@@ -1,40 +1,41 @@
 package com.tinf.qmobile.fragment;
 
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentScheduleBinding;
-import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.ColorUtils;
 import com.tinf.qmobile.utility.User;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekViewEvent;
-
-import static com.tinf.qmobile.model.ViewType.SCHEDULE;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class ScheduleFragment extends Fragment implements OnUpdate {
     private FragmentScheduleBinding binding;
@@ -51,8 +52,9 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 .on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
-                    updateFABColor();
                     binding.weekView.notifyDatasetChanged();
+                    updateFABColor();
+                    updateSchedule(false);
                 });
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -60,8 +62,9 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 .on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
-                    updateFABColor();
                     binding.weekView.notifyDatasetChanged();
+                    updateFABColor();
+                    updateSchedule(false);
                 });
     }
 
@@ -88,48 +91,60 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
             startActivity(intent);
         });
 
-        binding.weekView.setWeekViewLoader(() -> {
-            boolean[][] hours = new boolean[24][7];
-            WeekViewEvent[] minutes = new WeekViewEvent[24];
+        binding.weekView.setWeekViewLoader(() -> updateSchedule(true));
 
-            List<WeekViewEvent> events = new ArrayList<>();
+        binding.fab.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getContext(), EventCreateActivity.class);
+            intent.putExtra("TYPE", SCHEDULE);
 
-            List<Schedule> schedules;
+            if (getActivity() instanceof MatterActivity)
+                intent.putExtra("ID2", bundle.getLong("ID"));
 
-            if (bundle == null) {
-                schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                        .equal(Schedule_.year, User.getYear(pos)).and()
-                        .equal(Schedule_.period, User.getPeriod(pos))
-                        .build().find();
-            } else {
+            startActivity(intent);
+        });
+    }
 
-                QueryBuilder<Schedule> builder = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                        .equal(Schedule_.year, User.getYear(pos)).and()
-                        .equal(Schedule_.period, User.getPeriod(pos));
+    private List<WeekViewEvent> updateSchedule(boolean scroll) {
+        boolean[][] hours = new boolean[24][7];
+        WeekViewEvent[] minutes = new WeekViewEvent[24];
 
-                builder.link(Schedule_.matter)
-                        .equal(Matter_.id, bundle.getLong("ID"));
+        List<WeekViewEvent> events = new ArrayList<>();
 
-                schedules = builder.build().find();
+        List<Schedule> schedules;
+
+        if (bundle == null) {
+            schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                    .equal(Schedule_.year, User.getYear(pos)).and()
+                    .equal(Schedule_.period, User.getPeriod(pos))
+                    .build().find();
+        } else {
+            QueryBuilder<Schedule> builder = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
+                    .equal(Schedule_.year, User.getYear(pos)).and()
+                    .equal(Schedule_.period, User.getPeriod(pos));
+
+            builder.link(Schedule_.matter)
+                    .equal(Matter_.id, bundle.getLong("ID"));
+
+            schedules = builder.build().find();
+        }
+
+        if (!schedules.isEmpty()) {
+            for (Schedule schedule : schedules) {
+                WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
+                        schedule.getStartTime(), schedule.getEndTime());
+                event.setColor(schedule.getColor());
+                events.add(event);
+
+                int day = event.getStartTime().getDay().getValue();
+                int hour = event.getStartTime().getHour();
+
+                if (!hours[hour][day]) {
+                    minutes[hour] = event;
+                    hours[hour][day] = true;
+                }
             }
 
-            if (!schedules.isEmpty()) {
-
-                for (Schedule schedule : schedules) {
-                    WeekViewEvent event = new WeekViewEvent(String.valueOf(schedule.id), schedule.getTitle(),
-                            schedule.getStartTime(), schedule.getEndTime());
-                    event.setColor(schedule.getColor());
-                    events.add(event);
-
-                    int day = event.getStartTime().getDay().getValue();
-                    int hour = event.getStartTime().getHour();
-
-                    if (!hours[hour][day]) {
-                        minutes[hour] = event;
-                        hours[hour][day] = true;
-                    }
-                }
-
+            if (scroll) {
                 int firstIndex = 0;
                 int parc1 = 0;
 
@@ -161,31 +176,24 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 }
 
                 binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
-                //binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
-                //binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
-                binding.empty.setVisibility(View.GONE);
-
-            } else {
-                //binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
-                //binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
-                binding.empty.setVisibility(View.VISIBLE);
             }
 
-            return events;
-        });
+            binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
+            binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
+            binding.empty.setVisibility(View.GONE);
 
-        binding.fab.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(), EventCreateActivity.class);
-            intent.putExtra("TYPE", SCHEDULE);
+        } else {
+            binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
+            binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
+            binding.empty.setVisibility(View.VISIBLE);
+        }
 
-            if (getActivity() instanceof MatterActivity)
-                intent.putExtra("ID2", bundle.getLong("ID"));
-
-            startActivity(intent);
-        });
+        return events;
     }
 
     private void updateFABColor() {
+        binding.fab.setVisibility(Client.pos == 0 ? View.VISIBLE : View.GONE);
+
         if (bundle != null) {
             long id = bundle.getLong("ID");
 

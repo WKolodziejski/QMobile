@@ -201,4 +201,12 @@
     <string name="infos_progress">Progress</string>
     <string name="infos_grades">Grades</string>
     <string name="infos_history">History</string>
+    <string name="dialog_clear_data_title">Delete local data</string>
+    <string name="dialog_clear_data_text">This will delete all local data, including events and schedules created by you. This is useful when you are facing problems with pages loading.</string>
+    <string name="dialog_clear_data_delete">Delete</string>
+    <string name="dialog_clear_data_cancel">Cancel</string>
+    <string name="dialog_permission_title">Permission Required</string>
+    <string name="dialog_permission_text">In order to download and open the available materials, the app requires your permission to access your files.</string>
+    <string name="dialog_permission_allow">Allow</string>
+    <string name="dialog_permission_cancel">Not now</string>
 </resources>

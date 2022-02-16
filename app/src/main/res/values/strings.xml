@@ -110,6 +110,10 @@
     <string name="dialog_clear_data_text">Isso irá apagar todos os dados salvos localmente, incluindo eventos e horários criados por você. Isso pode ser útil em caso de algum problema com o carregamento das páginas.</string>
     <string name="dialog_clear_data_delete">Apagar</string>
     <string name="dialog_clear_data_cancel">Cancelar</string>
+    <string name="dialog_permission_title">Permissão necessária</string>
+    <string name="dialog_permission_text">Afim de poder baixar e abrir os materiais disponíveis, o app necessita da sua permissão para acessar seus arquivos.</string>
+    <string name="dialog_permission_allow">Permitir</string>
+    <string name="dialog_permission_cancel">Agora não</string>
 
     <string name="login_welcome">Bem-vindo ao QAcadêmico Mobile</string>
     <string name="login_checking">Obtendo informações</string>

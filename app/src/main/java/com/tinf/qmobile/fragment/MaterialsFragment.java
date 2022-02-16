@@ -3,6 +3,7 @@ package com.tinf.qmobile.fragment;
 import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -23,8 +24,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
+import com.tinf.qmobile.activity.WebViewActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.network.Client;
@@ -156,8 +159,16 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
     }
 
     private void requestPermission() {
-        ActivityCompat.requestPermissions(getActivity(),
-                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        new MaterialAlertDialogBuilder(getContext())
+                .setTitle(getResources().getString(R.string.dialog_permission_title))
+                .setMessage(getResources().getString(R.string.dialog_permission_text))
+                .setCancelable(false)
+                .setPositiveButton(getResources().getString(R.string.dialog_permission_allow), (dialogInterface, i) ->
+                        ActivityCompat.requestPermissions(getActivity(),
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1))
+                .setNeutralButton(getResources().getString(R.string.dialog_permission_cancel), null)
+                .create()
+                .show();
     }
 
     @Nullable

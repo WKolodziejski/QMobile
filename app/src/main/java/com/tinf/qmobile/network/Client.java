@@ -88,7 +88,7 @@ public class Client {
     private final static String TAG = "Network Client";
     private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
-    private FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+    private final FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     private static Client instance;
     private final List<RequestHelper> queue;
     private String URL;
@@ -298,7 +298,7 @@ public class Client {
     private <T> void addRequest(Request<T> request, int pg) {
         if (isConnected()) {
             callOnStart(pg);
-            request.setRetryPolicy(new DefaultRetryPolicy());
+            request.setRetryPolicy(new DefaultRetryPolicy(10000, 2, 1.5f));
             requests.add(request);
             Log.v(TAG, "Loading: " + request);
         } else {

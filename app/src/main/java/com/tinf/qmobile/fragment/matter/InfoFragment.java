@@ -186,7 +186,7 @@ public class InfoFragment extends Fragment {
                 Journal journal = period.journals.get(j);
 
                 if (journal.getGrade_() >= 0) {
-                    axisX.add(new AxisValue(x));
+                    axisX.add(new AxisValue(x).setLabel(journal.getShort()));
                     points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
                             .setLabel(journal.getGrade()));
                     journals.add(journal);

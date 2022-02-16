@@ -66,7 +66,7 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
                 Journal journal = period.journals.get(j);
 
                 if (journal.getGrade_() >= 0) {
-                    axisX.add(new AxisValue(x));
+                    axisX.add(new AxisValue(x).setLabel(journal.getShort()));
                     points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
                             .setLabel(journal.getGrade()));
                     journals.add(journal);
@@ -100,9 +100,9 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
 
         binding.chart.setOnValueTouchListener(new LineChartOnValueSelectListener() {
             @Override
-            public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
+            public void onValueSelected(int l, int p, PointValue value) {
                 Intent intent = new Intent(context, EventViewActivity.class);
-                intent.putExtra("ID", journals.get(pointIndex).id);
+                intent.putExtra("ID", journals.get(p).id);
                 intent.putExtra("TYPE", JOURNAL);
                 intent.putExtra("LOOKUP", true);
                 context.startActivity(intent);
