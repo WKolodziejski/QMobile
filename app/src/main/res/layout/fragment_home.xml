@@ -1,163 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/schedule_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:foreground="?android:attr/selectableItemBackground"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:drawableStart="@drawable/ic_alarm"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/colorAccent"
+                android:gravity="center_vertical"
+                android:text="@string/title_horario"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
-                <LinearLayout
-                    android:id="@+id/schedule_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_alarm"
-                        android:drawablePadding="8dp"
-                        android:drawableTint="@color/colorAccent"
-                        android:gravity="center_vertical"
-                        android:text="@string/title_horario"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/empty_schedule"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:text="@string/schedule_empty"
-                        android:textSize="@dimen/main_font_size"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
-
-                <com.tinf.qmobile.widget.schedule.ScheduleView
-                    android:id="@+id/weekView"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_margin="8dp"
-                    android:transitionName="Horario"
-                    app:columnGap="8dp"
-                    app:dayBackgroundColor="@color/transparent"
-                    app:eventCornerRadius="8dp"
-                    app:eventTextColor="@color/colorPrimaryLight"
-                    app:eventTextSize="12sp"
-                    app:firstDayOfWeek="monday"
-                    app:headerColumnBackground="@color/transparent"
-                    app:headerColumnPadding="8dp"
-                    app:headerColumnTextColor="@color/transparent"
-                    app:headerRowBackgroundColor="@color/transparent"
-                    app:headerRowPadding="12dp"
-                    app:horizontalFlingEnabled="false"
-                    app:hourHeight="60dp"
-                    app:hourSeparatorColor="@color/transparent"
-                    app:noOfVisibleDays="5"
-                    app:pastBackgroundColor="@color/transparent"
-                    app:showFirstDayOfWeekFirst="true"
-                    app:showNowLine="false"
-                    app:todayBackgroundColor="@color/transparent"
-                    app:todayHeaderTextColor="@color/transparent"
-                    app:xScrollingSpeed="0"
-                    app:zoomFocusPointEnabled="false"
-                    tools:background="@color/colorPrimaryLight"
-                    tools:layout_height="200dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/calendar_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/empty_schedule"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/blackDividers" />
-
-                <TextView
-                    android:id="@+id/calendar_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_calendar"
-                    android:drawablePadding="8dp"
-                    android:drawableTint="@color/colorAccent"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:text="@string/calendar_upcoming"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:transitionName="Calendario" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/chart_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/blackDividers" />
-
-                <TextView
-                    android:id="@+id/chart_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:drawableStart="@drawable/ic_insights"
-                    android:drawablePadding="8dp"
-                    android:drawableTint="@color/colorAccent"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:text="@string/title_performance"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <com.tinf.qmobile.widget.performance.PerformanceChart
-                    android:id="@+id/chart"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp" />
-
-            </LinearLayout>
+                android:layout_marginStart="32dp"
+                android:text="@string/schedule_empty"
+                android:textSize="@dimen/main_font_size"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        <com.tinf.qmobile.widget.schedule.ScheduleView
+            android:id="@+id/weekView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="8dp"
+            android:transitionName="Horario"
+            app:columnGap="8dp"
+            app:dayBackgroundColor="@color/transparent"
+            app:eventCornerRadius="8dp"
+            app:eventTextColor="@color/colorPrimaryLight"
+            app:eventTextSize="12sp"
+            app:firstDayOfWeek="monday"
+            app:headerColumnBackground="@color/transparent"
+            app:headerColumnPadding="8dp"
+            app:headerColumnTextColor="@color/transparent"
+            app:headerRowBackgroundColor="@color/transparent"
+            app:headerRowPadding="12dp"
+            app:horizontalFlingEnabled="false"
+            app:hourHeight="60dp"
+            app:hourSeparatorColor="@color/transparent"
+            app:noOfVisibleDays="5"
+            app:pastBackgroundColor="@color/transparent"
+            app:showFirstDayOfWeekFirst="true"
+            app:showNowLine="false"
+            app:todayBackgroundColor="@color/transparent"
+            app:todayHeaderTextColor="@color/transparent"
+            app:xScrollingSpeed="0"
+            app:zoomFocusPointEnabled="false"
+            tools:background="@color/colorPrimaryLight"
+            tools:layout_height="200dp" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/calendar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/blackDividers" />
+
+        <TextView
+            android:id="@+id/calendar_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_calendar"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorAccent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/calendar_upcoming"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:transitionName="Calendario" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/chart_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/blackDividers" />
+
+        <TextView
+            android:id="@+id/chart_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_insights"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/colorAccent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:padding="16dp"
+            android:text="@string/title_performance"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <com.tinf.qmobile.widget.performance.PerformanceChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

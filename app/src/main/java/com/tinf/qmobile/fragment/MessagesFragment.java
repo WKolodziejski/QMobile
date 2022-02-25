@@ -52,7 +52,7 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
         Messenger messenger = new Messenger(getContext(), this);
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
-        RecyclerView.Adapter adapter = new MessagesAdapter(getContext(), messenger, getArguments());
+        RecyclerView.Adapter adapter = new MessagesAdapter(getContext(), messenger);
 
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);

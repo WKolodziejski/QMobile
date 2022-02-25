@@ -326,8 +326,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_task" />
-                            <entry key="sourceFile" value="D:\Downloads\task_alt_black_24dp.svg" />
+                            <entry key="outputName" value="ic_download" />
+                            <entry key="sourceFile" value="D:\Downloads\download_black_24dp.svg" />
                           </map>
                         </option>
                       </PersistentState>

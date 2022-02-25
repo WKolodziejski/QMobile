@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.JournalAdapter;
-import com.tinf.qmobile.widget.divider.ClassItemDivider;
+import com.tinf.qmobile.adapter.GradesAdapter;
 import com.tinf.qmobile.widget.divider.JournalItemDivider;
 
 public class GradesFragment extends Fragment {
@@ -27,14 +26,14 @@ public class GradesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.addItemDecoration(new JournalItemDivider(getContext(), 52));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new JournalAdapter(getContext(), getArguments(), canExpand -> {}));
+        RecyclerView recycler = view.findViewById(R.id.recycler);
+        recycler.setHasFixedSize(true);
+        recycler.setItemViewCacheSize(20);
+        recycler.setDrawingCacheEnabled(true);
+        recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recycler.addItemDecoration(new JournalItemDivider(getContext(), 52));
+        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        recycler.setAdapter(new GradesAdapter(getContext(), getArguments()));
     }
 
 }

@@ -80,9 +80,9 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
             context.startActivity(intent);
         });
 
-        if (message.highlight) {
+        /*if (message.highlight) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
-        }
+        }*/
     }
 
 }

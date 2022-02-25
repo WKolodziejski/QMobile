@@ -2,7 +2,7 @@ package com.tinf.qmobile.holder.journal;
 
 import android.content.Context;
 import android.view.View;
-import com.tinf.qmobile.adapter.JournalAdapter;
+
 import com.tinf.qmobile.databinding.PeriodFooterBinding;
 import com.tinf.qmobile.model.journal.FooterPeriod;
 
@@ -15,7 +15,7 @@ public class PeriodFooterViewHolder extends JournalBaseViewHolder<FooterPeriod> 
     }
 
     @Override
-    public void bind(Context context, FooterPeriod footer, JournalAdapter adapter, boolean lookup) {
+    public void bind(Context context, FooterPeriod footer, boolean lookup) {
         binding.partialGrade.setText(footer.period.getGradeSumString());
         binding.finalGrade.setText(footer.period.getGrade());
         binding.absences.setText(footer.period.getAbsences());

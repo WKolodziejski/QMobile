@@ -1,7 +1,8 @@
 package com.tinf.qmobile.adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,15 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
 import com.tinf.qmobile.model.Empty;
-import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.calendar.CalendarBase;
-import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import io.objectbox.Box;
-import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
@@ -44,18 +44,13 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
-public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
-    //private final List<EventBase> events;
+public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements OnData<CalendarBase> {
     private final Context context;
-    private final AsyncListDiffer<CalendarBase> events;
-    private final DataSubscription sub1;
-    private final DataSubscription sub2;
-    private final DataSubscription sub3;
-    private final DataSubscription sub4;
+    private final AsyncListDiffer<CalendarBase> list;
 
     public HomeAdapter(Context context) {
         this.context = context;
-        this.events = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
+        this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
             @Override
             public boolean areItemsTheSame(@NonNull CalendarBase oldItem, @NonNull CalendarBase newItem) {
                 return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
@@ -67,89 +62,7 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
             }
         });
 
-        events.submitList(getList());
-
-        DataObserver observer = data -> {
-            /*List<EventBase> updated = getList();
-
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                @Override
-                public int getOldListSize() {
-                    return events.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return updated.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int o, int n) {
-                    return events.get(o).id == updated.get(n).id;
-
-                }
-
-                @Override
-                public boolean areContentsTheSame(int o, int n) {
-                    return events.get(o).equals(updated.get(n));
-                }
-
-            }, true);
-
-            events.clear();
-            events.addAll(updated);
-            result.dispatchUpdatesTo(this);*/
-            events.submitList(getList());
-        };
-
-        sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-
-        sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-
-        sub3 = DataBase.get().getBoxStore().subscribe(Matter.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-
-        sub4 = DataBase.get().getBoxStore().subscribe(EventSimple.class)
-                .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-    }
-
-    private List<CalendarBase> getList() {
-        List<CalendarBase> list = new ArrayList<>();
-
-        Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-        Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-        Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-
-        Calendar current = Calendar.getInstance();
-        current.set(Calendar.HOUR_OF_DAY, 0);
-        current.set(Calendar.MINUTE, 0);
-        current.set(Calendar.SECOND, 0);
-        current.set(Calendar.MILLISECOND, 0);
-
-        list.addAll(eventUserBox.query().greater(EventUser_.startTime, current.getTimeInMillis() - 1).build().find());
-        list.addAll(eventJournalBox.query().greater(Journal_.startTime, current.getTimeInMillis() - 1).build().find());
-        list.addAll(eventSimpleBox.query().greater(EventSimple_.startTime, current.getTimeInMillis() - 1).build().find());
-
-        Collections.sort(list, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
-
-        if (list.isEmpty())
-            list.add(new Empty());
-
-        return list;
+        onUpdate(DataBase.get().getEventsDataProvider().getList());
     }
 
     @NonNull
@@ -177,33 +90,34 @@ public class HomeAdapter extends RecyclerView.Adapter<CalendarViewHolder> {
 
     @Override
     public int getItemViewType(int i) {
-        //if (events.isEmpty())
-            //return EMPTY;
-        //else
-            return events.getCurrentList().get(i).getItemType();
+        return list.getCurrentList().get(i).getItemType();
     }
 
     @Override
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int i) {
-        //if (!events.isEmpty())
-            holder.bind(events.getCurrentList().get(i), context);
+        holder.bind(list.getCurrentList().get(i), context);
     }
 
     @Override
     public int getItemCount() {
-        //if (events.isEmpty())
-            //return 1;
-        //else
-            return events.getCurrentList().size();
+        return list.getCurrentList().size();
     }
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
-        sub1.cancel();
-        sub2.cancel();
-        sub3.cancel();
-        sub4.cancel();
+        DataBase.get().getEventsDataProvider().removeOnDataListener(this);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        DataBase.get().getEventsDataProvider().addOnDataListener(this);
+    }
+
+    @Override
+    public void onUpdate(List<CalendarBase> list) {
+        this.list.submitList(list);
     }
 
 }

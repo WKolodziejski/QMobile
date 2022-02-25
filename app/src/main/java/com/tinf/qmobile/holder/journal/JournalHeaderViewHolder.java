@@ -1,6 +1,5 @@
 package com.tinf.qmobile.holder.journal;
 
-import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.view.View;
 
 import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.databinding.JournalHeaderBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
@@ -22,7 +20,7 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
     }
 
     @Override
-    public void bind(Context context, Matter matter, JournalAdapter adapter, boolean lookup) {
+    public void bind(Context context, Matter matter, boolean lookup) {
         binding.title.setText(matter.getTitle());
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
         binding.header.setVisibility(/*matter.isExpanded &&*/ matter.hasJournals() ? View.VISIBLE : View.GONE);
@@ -33,11 +31,6 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
             intent.putExtra("PAGE", JOURNAL);
             intent.putExtra("LOOKUP", lookup);
             context.startActivity(intent);
-            /*if (matter.isExpanded) {
-                adapter.collapse(getAdapterPosition(), matter);
-            } else {
-                adapter.expand(getAdapterPosition(), matter, true);
-            }*/
         });
 
         int n = matter.getJournalNotSeenCount();

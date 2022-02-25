@@ -253,7 +253,7 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
 
     @Override
     public void onScrollRequest() {
-        updateFABColor();
+        //updateFABColor();
     }
 
     @Override

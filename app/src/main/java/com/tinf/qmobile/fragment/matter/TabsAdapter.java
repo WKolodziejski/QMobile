@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 
 public class TabsAdapter extends FragmentStateAdapter {
@@ -41,7 +40,7 @@ public class TabsAdapter extends FragmentStateAdapter {
                 break;
 
             case 3:
-                fragment = new MaterialsFragment();
+                fragment = new SuppliesFragment();
                 break;
 
             case 4:

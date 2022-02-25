@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.View;
 import androidx.annotation.NonNull;
-import com.tinf.qmobile.adapter.JournalAdapter;
+
 import com.tinf.qmobile.databinding.PeriodHeaderBinding;
 import com.tinf.qmobile.model.matter.Period;
 
@@ -17,7 +17,7 @@ public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Period> {
     }
 
     @Override
-    public void bind(Context context, Period header, JournalAdapter adapter, boolean lookup) {
+    public void bind(Context context, Period header, boolean lookup) {
         binding.title.setText(header.getTitle());
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(header.matter.getTarget().getColor()));
     }

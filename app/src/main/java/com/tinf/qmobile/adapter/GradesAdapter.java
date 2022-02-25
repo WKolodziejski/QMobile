@@ -1,48 +1,52 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.FOOTERJ;
+import static com.tinf.qmobile.model.ViewType.FOOTERP;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
+import static com.tinf.qmobile.model.ViewType.PERIOD;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.holder.clazz.ClassBaseViewHolder;
-import com.tinf.qmobile.holder.clazz.ClassEmptyViewHolder;
-import com.tinf.qmobile.holder.clazz.ClassHeaderViewHolder;
-import com.tinf.qmobile.holder.clazz.ClassItemViewHolder;
+import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
+import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
+import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
+import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
+import com.tinf.qmobile.holder.journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
+import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.matter.Clazz;
+import com.tinf.qmobile.model.journal.FooterPeriod;
+import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
-
+import com.tinf.qmobile.utility.Design;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
-
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
-import static com.tinf.qmobile.model.ViewType.CLASS;
-import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.PERIOD;
-
-public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
+public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
     private final Context context;
     private final AsyncListDiffer<Queryable> list;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
     private final Handler handler;
 
-    public ClassAdapter(Context context, Bundle bundle) {
+    public GradesAdapter(Context context, Bundle bundle) {
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
         this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
@@ -66,7 +70,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                 .onError(Throwable::printStackTrace)
                 .observer(observer);
 
-        sub2 = DataBase.get().getBoxStore().subscribe(Clazz.class)
+        sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
                 .onlyChanges()
                 .onError(Throwable::printStackTrace)
                 .observer(observer);
@@ -75,7 +79,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
     private void updateList(Bundle bundle) {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Queryable> list = getList(bundle);
-
             handler.post(() -> this.list.submitList(list));
         });
     }
@@ -87,24 +90,15 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                 .boxFor(Matter.class)
                 .get(bundle.getLong("ID"));
 
-        for (int i = 0; i < matter.periods.size(); i++) {
-            Period p = matter.periods.get(i);
+        for (Period period : matter.periods) {
+            if (!period.journals.isEmpty()) {
+                list.add(period);
+                list.addAll(period.journals);
 
-            if (!p.classes.isEmpty()) {
-                list.add(p);
-                List<Clazz> cls = p.classes;
-                //Collections.reverse(cls);
-                list.addAll(cls);
+                if (!period.isSub_())
+                    list.add(new FooterPeriod(period));
             }
         }
-
-        /*for (Period p : matter.periods)
-            if (!p.classes.isEmpty()) {
-                list.add(p);
-                List<Clazz> cls = p.classes;
-                Collections.reverse(cls);
-                list.addAll(cls);
-            }*/
 
         if (list.isEmpty())
             list.add(new Empty());
@@ -114,19 +108,35 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
 
     @NonNull
     @Override
-    public ClassBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public JournalBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case CLASS:
-                return new ClassItemViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.class_item, parent, false));
+            case HEADER:
+                return new JournalHeaderViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.journal_header, parent, false));
+
+            case JOURNAL:
+                return new JournalViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.journal_item, parent, false));
+
+            case FOOTERJ:
+                return new JournalFooterViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.journal_footer, parent, false));
+
+            case FOOTERP:
+                return new PeriodFooterViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.period_footer, parent, false));
 
             case PERIOD:
-                return new ClassHeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.class_header, parent, false));
+                return new PeriodHeaderViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.period_header, parent, false));
+
+            case JOURNALEMPTY:
+                return new JournalEmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.journal_item_empty, parent, false));
 
             case EMPTY:
-                return new ClassEmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.class_empty, parent, false));
+                return new JournalEmptyViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.journal_empty, parent, false));
         }
 
         return null;
@@ -138,8 +148,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ClassBaseViewHolder holder, int i) {
-        holder.bind(context, list.getCurrentList().get(i));
+    public void onBindViewHolder(@NonNull JournalBaseViewHolder holder, int i) {
+        holder.bind(context, list.getCurrentList().get(i), false);
     }
 
     @Override
@@ -153,23 +163,5 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
         sub1.cancel();
         sub2.cancel();
     }
-
-    /*public int highlight(long id) {
-        for (int i = 0; i < classes.getCurrentList().size(); i++) {
-            Queryable q = classes.getCurrentList().get(i);
-
-            if (q instanceof Clazz) {
-                Clazz c = (Clazz) q;
-
-                if (c.id == id) {
-                    c.highlight = true;
-                    notifyItemChanged(i);
-                    return i;
-                }
-            }
-        }
-
-        return -1;
-    }*/
 
 }

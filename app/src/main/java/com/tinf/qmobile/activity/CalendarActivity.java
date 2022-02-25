@@ -53,10 +53,12 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
+        Date today = new Date();
+
         Client.get().load(PG_CALENDAR);
 
         layout = new LinearLayoutManager(this);
-        adapter = new EventsAdapter(this, binding.calendar);
+        adapter = new EventsAdapter(this, binding.calendar, () -> scrollToDate(today));
 
         binding.refresh.setEnabled(false);
 
@@ -73,13 +75,13 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!isExpanded && newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
-                    binding.calendar.setCurrentDate(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate());
+                    binding.calendar.setCurrentDate(adapter.getList().get(layout.findFirstVisibleItemPosition()).getDate());
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                setDateTitle(adapter.getEvents().get(layout.findFirstVisibleItemPosition()).getDate());
+                setDateTitle(adapter.getList().get(layout.findFirstVisibleItemPosition()).getDate());
 
                 if (dy < 0 && !binding.fab.isShown())
                     binding.fab.show();
@@ -143,9 +145,8 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
 
         });
 
-        Date today = new Date();
         setDateTitle(today);
-        scrollToDate(today);
+        //scrollToDate(today);
         binding.calendar.setFirstDayOfWeek(Calendar.SUNDAY);
         binding.calendar.setUseThreeLetterAbbreviation(true);
         binding.calendar.shouldDrawIndicatorsBelowSelectedDays(true);
@@ -184,7 +185,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     }
 
     private void scrollToDate(Date key) {
-        List<CalendarBase> array = adapter.getEvents();
+        List<CalendarBase> array = adapter.getList();
         int start = 0;
         int end = array.size() - 1;
         int i = -1;

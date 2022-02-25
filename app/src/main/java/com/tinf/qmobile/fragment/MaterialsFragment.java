@@ -1,12 +1,15 @@
 package com.tinf.qmobile.fragment;
 
-import android.Manifest;
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static com.tinf.qmobile.utility.PermissionsUtils.hasPermission;
+import static com.tinf.qmobile.utility.PermissionsUtils.requestPermission;
+
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,65 +19,45 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MainActivity;
-import com.tinf.qmobile.activity.WebViewActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
+import com.tinf.qmobile.adapter.OnInteractListener;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentMaterialBinding;
-import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.widget.divider.JournalItemDivider;
 import com.tinf.qmobile.widget.divider.MaterialItemDivider;
 
-import static android.content.Context.DOWNLOAD_SERVICE;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
+import java.util.List;
 
-public class MaterialsFragment extends Fragment implements OnUpdate {
+public class MaterialsFragment extends BaseFragment implements OnData<Queryable> {
     private FragmentMaterialBinding binding;
-    private ActionMode action;
-    private MaterialsAdapter adapter;
     private BroadcastReceiver receiver;
-    private MaterialToolbar toolbar;
-    private NestedScrollView scroll;
-    private SwipeRefreshLayout refresh;
-
-    public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh) {
-        this.toolbar = toolbar;
-        this.scroll = scroll;
-        this.refresh = refresh;
-    }
+    private MaterialsAdapter adapter;
+    private ActionMode action;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        receiver = new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE), id -> adapter.notifyItemDownloaded(id));
+        receiver = new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE),
+                id -> adapter.notifyItemDownloaded(id));
 
         getActivity().registerReceiver(receiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-        if (hasPermission())
-            Client.get().load(PG_MATERIALS);
-        else
-            requestPermission();
+        if (!hasPermission(getContext()))
+            requestPermission(getActivity());
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        LinearLayoutManager layout = new LinearLayoutManager(getContext());
-
-        adapter = new MaterialsAdapter(getContext(), getArguments(), new MaterialsAdapter.OnInteractListener() {
+        adapter = new MaterialsAdapter(getContext(), new OnInteractListener() {
 
             @Override
             public boolean isSelectionMode() {
@@ -84,31 +67,24 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             @Override
             public void setSelectionMode(ActionMode.Callback callback) {
                 action = getActivity().startActionMode(callback);
-
-                if (getActivity() instanceof MainActivity)
-                    refresh.setEnabled(false);
+                refresh.setEnabled(false);
             }
 
             @Override
             public void onSelectedCount(int size) {
                 if (size > 0) {
                     action.setTitle(String.valueOf(size));
-
-                    if (getActivity() instanceof MainActivity)
-                        Design.syncToolbar(toolbar, false);
                 } else {
                     action.finish();
                     action = null;
-
-                    if (getActivity() instanceof MainActivity)
-                        Design.syncToolbar(toolbar, true);
                 }
+
+                Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
             }
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                if (getActivity() instanceof MainActivity)
-                    refresh.setEnabled(false);
+                refresh.setEnabled(false);
 
                 MenuInflater menuInflater = getActivity().getMenuInflater();
                 menuInflater.inflate(R.menu.materials, menu);
@@ -118,17 +94,12 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             @Override
             public void onDestroyActionMode(ActionMode actionMode) {
                 action = null;
-
-                if (getActivity() instanceof MainActivity) {
-                    Design.syncToolbar(toolbar, true);
-                    refresh.setEnabled(true);
-                }
+                refresh.setEnabled(true);
+                Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
             }
-
-        }, canExpand -> {
-            if (getActivity() instanceof MainActivity)
-                Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand);
         });
+
+        LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
         binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
@@ -139,9 +110,7 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(adapter);
 
-        if (getActivity() instanceof MainActivity) {
-            binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
-        }
+        binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
 
         if (getArguments() != null) {
             int p = adapter.highlight(getArguments().getLong("ID2"));
@@ -151,24 +120,10 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
                 adapter.handleDownload(p);
             }
         }
-    }
 
-    private boolean hasPermission() {
-        return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-        new MaterialAlertDialogBuilder(getContext())
-                .setTitle(getResources().getString(R.string.dialog_permission_title))
-                .setMessage(getResources().getString(R.string.dialog_permission_text))
-                .setCancelable(false)
-                .setPositiveButton(getResources().getString(R.string.dialog_permission_allow), (dialogInterface, i) ->
-                        ActivityCompat.requestPermissions(getActivity(),
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1))
-                .setNeutralButton(getResources().getString(R.string.dialog_permission_cancel), null)
-                .create()
-                .show();
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
+        }, 100);
     }
 
     @Nullable
@@ -186,33 +141,19 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
         }
     }
 
-    @Override
-    public void onDateChanged() {
-        Client.get().load(PG_MATERIALS);
+    private boolean canExpand() {
+        return !DataBase.get().getMaterialsDataProvider().getList().isEmpty();
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnUpdateListener(this);
+    protected void onAddListeners() {
+        DataBase.get().getMaterialsDataProvider().addOnDataListener(this);
+        Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Client.get().removeOnUpdateListener(this);
+    protected void onRemoveListeners() {
+        DataBase.get().getMaterialsDataProvider().removeOnDataListener(this);
     }
 
     @Override
@@ -228,6 +169,11 @@ public class MaterialsFragment extends Fragment implements OnUpdate {
             action.finish();
             action = null;
         }
+    }
+
+    @Override
+    public void onUpdate(List<Queryable> list) {
+        Design.syncToolbar(toolbar, Design.canScroll(scroll) && !list.isEmpty());
     }
 
 }

@@ -170,11 +170,13 @@
             android:layout_marginBottom="64dp"
             android:textColor="@color/colorPrimaryLight"
             android:transitionName="Fab"
+            android:visibility="gone"
             app:backgroundTint="@color/colorAccent"
             app:borderWidth="0dp"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add"
-            app:tint="@color/colorPrimaryLight" />
+            app:tint="@color/colorPrimaryLight"
+            tools:visibility="visible"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navigation"

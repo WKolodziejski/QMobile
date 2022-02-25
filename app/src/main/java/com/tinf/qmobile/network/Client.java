@@ -19,9 +19,11 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Header;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
@@ -55,6 +57,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -96,6 +99,7 @@ public class Client {
     private final List<OnUpdate> onUpdates;
     private final RequestQueue requests;
     private final Map<String, String> params;
+    private final Handler handler;
     private String KEY_A;
     private String KEY_B;
     public static int pos = 0;
@@ -108,25 +112,13 @@ public class Client {
     }
 
     private Client() {
-        /*try {
-            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, new X509TrustManager[]{
-                    new X509TrustManager(){
-                        public void checkClientTrusted(X509Certificate[] chain, String authType) {}
-                        public void checkServerTrusted(X509Certificate[] chain, String authType) {}
-                        public X509Certificate[] getAcceptedIssuers() {return new X509Certificate[0];}}},
-                    new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
-        requests = Volley.newRequestQueue(getContext(), new HurlStack());
-        queue = new ArrayList<>();
-        params = new HashMap<>();
-        onUpdates = new ArrayList<>();
-        onResponses = new ArrayList<>();
-        URL = User.getURL();
+        this.requests = Volley.newRequestQueue(getContext(), new HurlStack());
+        this.queue = new LinkedList<>();
+        this.params = new HashMap<>();
+        this.onUpdates = new LinkedList<>();
+        this.onResponses = new LinkedList<>();
+        this.handler = new Handler(Looper.getMainLooper());
+        this.URL = User.getURL();
     }
 
     public static synchronized Client get() {
@@ -141,7 +133,7 @@ public class Client {
             if (!isLogging) {
                 login();
             }
-            addToQueue(pg, url, year, period, method, form, notify, matter);
+            addToQueue(pg, url, year, period, method, form, notify, matter, onFinish);
         } else {
             Log.i(TAG, "Request for: " + pg);
 
@@ -163,7 +155,7 @@ public class Client {
                 Resp r = testResponse(response);
 
                 if (r == Resp.DENIED) {
-                    addToQueue(pg, url, year, period, method, form, notify, matter);
+                    addToQueue(pg, url, year, period, method, form, notify, matter, onFinish);
                     login();
                     callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
 
@@ -254,6 +246,10 @@ public class Client {
 
     private void load(int pg, int year, int period, BaseParser.OnFinish onFinish) {
         load(pg, year, period, onFinish, false);
+    }
+
+    private void load(int pg, int year, int period) {
+        load(pg, year, period, this::callOnFinish, false);
     }
 
     private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
@@ -432,7 +428,7 @@ public class Client {
             name = name.substring(name.indexOf(",") + 1).trim();
         } else {
             callOnAccessDenied(0, getContext().getString(R.string.client_error));
-            FirebaseCrashlytics.getInstance().recordException(new Exception(document.toString()));
+            crashlytics.recordException(new Exception(document.toString()));
             return Resp.UNKNOWN;
         }
 
@@ -446,22 +442,23 @@ public class Client {
             while (!queue.isEmpty()) {
                 RequestHelper helper = queue.get(0);
                 queue.remove(0);
-                createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, this::callOnFinish);
+                createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, helper.onFinish);
             }
         });
     }
 
-    private synchronized void addToQueue(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter) {
+    private synchronized void addToQueue(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter, BaseParser.OnFinish onFinish) {
         boolean isNew = true;
 
         for (RequestHelper h : queue)
             if (h.pg == pg && h.year == year && h.period == period) {
+                Log.d(TAG, "Duplicate request for " + pg);
                 isNew = false;
                 break;
             }
 
         if (isNew) {
-            queue.add(new RequestHelper(pg, url, year, period, method, form, notify, matter));
+            queue.add(new RequestHelper(pg, url, year, period, method, form, notify, matter, onFinish));
             //Log.i(TAG, "Queued: " + pg + " for " + User.getYears()[pos]);
         }
     }
@@ -481,7 +478,7 @@ public class Client {
 
                 Log.v(TAG, "Keys fetched");
             } catch (Exception e) {
-                FirebaseCrashlytics.getInstance().recordException(e);
+                crashlytics.recordException(e);
             }
 
             listener.onResponse(response);
@@ -536,22 +533,47 @@ public class Client {
     }
 
     private void onError(int pg, VolleyError error) {
-        String msg = error.getMessage() == null
-                ? getContext().getResources().getString(R.string.client_error)
-                : error.getMessage();
+        String msg = null;
 
-        crashlytics.setCustomKey("Page", pg);
-        crashlytics.recordException(error);
         error.printStackTrace();
 
-        if (!isConnected()) {
-            msg = getContext().getResources().getString(R.string.client_no_connection);
-        } else {
+        if (isConnected()) {
+            crashlytics.setCustomKey("Page", pg);
+            crashlytics.recordException(error);
+
             if (pg == PG_GENERATOR) {
                 msg = getContext().getResources().getString(R.string.client_host);
+
             } else if (pg == PG_LOGIN) {
                 isLogging = false;
                 isValid = false;
+            }
+        } else {
+            msg = getContext().getResources().getString(R.string.client_no_connection);
+        }
+
+        /*if (!isConnected) {
+            msg = getContext().getResources().getString(R.string.client_no_connection);
+
+        } else if (pg == PG_GENERATOR) {
+            msg = getContext().getResources().getString(R.string.client_host);
+
+        } else if (pg == PG_LOGIN) {
+            isLogging = false;
+            isValid = false;
+        }*/
+
+        if (msg == null) {
+            if (error instanceof TimeoutError)
+                msg = "Timeout";
+
+            else if (error instanceof NoConnectionError)
+                msg = getContext().getResources().getString(R.string.client_no_connection);
+
+            else {
+                msg = error.getLocalizedMessage() == null
+                        ? getContext().getResources().getString(R.string.client_error)
+                        : error.getLocalizedMessage();
             }
         }
 
@@ -559,7 +581,8 @@ public class Client {
     }
 
     public static boolean isConnected() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Network nw = connectivityManager.getActiveNetwork();
             if (nw == null) return false;
@@ -597,50 +620,45 @@ public class Client {
     }
 
     public void removeOnUpdateListener(OnUpdate onUpdate) {
-        if (onUpdates != null && onUpdate != null) {
+        if (onUpdate != null) {
             onUpdates.remove(onUpdate);
             Log.v(TAG, "removeOnUpdateListener: " + onUpdate);
         }
     }
 
     private void callOnError(int pg, String error) {
-        new Handler(Looper.getMainLooper()).post(() -> {
+        handler.post(() -> {
             requests.cancelAll(request -> true);
             isLogging = false;
             isValid = false;
-            if (onResponses != null) {
-                for (int i = 0; i < onResponses.size(); i++) {
-                    onResponses.get(i).onError(pg, error);
-                }
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onError(pg, error);
             }
         });
     }
 
     private void callOnStart(int pg) {
-        new Handler(Looper.getMainLooper()).post(() -> {
+        handler.post(() -> {
             Log.v(TAG, "Start: " + pg);
-            if (onResponses != null) {
-                for (int i = 0; i < onResponses.size(); i++) {
-                    onResponses.get(i).onStart(pg);
-                }
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onStart(pg);
             }
         });
     }
 
     private void callOnFinish(int pg) {
-        new Handler(Looper.getMainLooper()).post(() -> {
+        handler.post(() -> {
             Log.v(TAG, "Finish: " + pg);
-            if (onResponses != null) {
-                for (int i = 0; i < onResponses.size(); i++) {
-                    onResponses.get(i).onFinish(pg);
-                }
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onFinish(pg);
             }
-            checkQueue();
         });
+
+        checkQueue();
     }
 
     private void callOnAccessDenied(int pg, String message) {
-        new Handler(Looper.getMainLooper()).post(() -> {
+        handler.post(() -> {
             Log.v(TAG, pg + ": " + message);
             isValid = false;
             isLogging = false;
@@ -650,35 +668,29 @@ public class Client {
             KEY_A = "";
             KEY_B = "";
             //pos = 0;
-            if (onResponses != null) {
-                for (int i = 0; i < onResponses.size(); i++) {
-                    onResponses.get(i).onAccessDenied(pg, message);
-                }
+            for (int i = 0; i < onResponses.size(); i++) {
+                onResponses.get(i).onAccessDenied(pg, message);
             }
         });
     }
 
     private void callOnScrollRequest() {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (onUpdates != null) {
-                for (int i = 0; i < onUpdates.size(); i++) {
-                    onUpdates.get(i).onScrollRequest();
-                }
+        handler.post(() -> {
+            for (int i = 0; i < onUpdates.size(); i++) {
+                onUpdates.get(i).onScrollRequest();
             }
         });
     }
 
     public synchronized void changeDate(int pos) {
-        new Handler(Looper.getMainLooper()).post(() -> {
+        handler.post(() -> {
             if (pos != Client.pos) {
                 Client.pos = pos;
 
                 requests.cancelAll(request -> true);
 
-                if (onUpdates != null) {
-                    for (int i = 0; i < onUpdates.size(); i++) {
-                        onUpdates.get(i).onDateChanged();
-                    }
+                for (int i = 0; i < onUpdates.size(); i++) {
+                    onUpdates.get(i).onDateChanged();
                 }
 
                 loadYear(pos);
@@ -707,11 +719,9 @@ public class Client {
     }
 
     public void requestDelayedUpdate() {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (onUpdates != null) {
-                for (int i = 0; i < onUpdates.size(); i++) {
-                    onUpdates.get(i).onDateChanged();
-                }
+        handler.postDelayed(() -> {
+            for (int i = 0; i < onUpdates.size(); i++) {
+                onUpdates.get(i).onDateChanged();
             }
         }, 10);
     }
@@ -751,9 +761,20 @@ public class Client {
         Executors.newSingleThreadExecutor().execute(() -> {
             int year = User.getYear(pos);
             int period = User.getPeriod(pos);
+
+            Log.d(TAG, "Loading journals");
             load(PG_JOURNALS, year, period, pg -> {
+
+                Log.d(TAG, "Loading materials");
+                load(PG_MATERIALS, year, period);
+
+                Log.d(TAG, "Loading report");
                 load(PG_REPORT, year, period, pg1 -> {
+
+                    Log.d(TAG, "Loading schedule");
                     load(PG_SCHEDULE, year, period, pg2 -> {
+
+                        Log.d(TAG, "Loading classes");
                         for (Matter m : DataBase.get().getBoxStore()
                                 .boxFor(Matter.class)
                                 .query()

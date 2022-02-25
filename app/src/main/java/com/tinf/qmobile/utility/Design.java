@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
@@ -106,8 +107,7 @@ public class Design {
         if (child == null)
             return false;
 
-        int childHeight = child.getHeight();
-        return scroll.getHeight() < childHeight;
+        return scroll.getHeight() < child.getHeight();
     }
 
     public static RecyclerView.OnScrollListener getRefreshBehavior(SwipeRefreshLayout refresh) {
@@ -135,9 +135,14 @@ public class Design {
         );
     }
 
-
     public interface OnDesign {
         void onToolbar(boolean canExpand);
+    }
+
+    public interface OnFragment {
+        MaterialToolbar getToolbar();
+        SwipeRefreshLayout getSwipeRefresh();
+        FloatingActionButton getFab();
     }
 
 }

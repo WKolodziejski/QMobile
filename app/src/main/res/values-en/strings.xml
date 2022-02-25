@@ -209,4 +209,5 @@
     <string name="dialog_permission_text">In order to download and open the available materials, the app requires your permission to access your files.</string>
     <string name="dialog_permission_allow">Allow</string>
     <string name="dialog_permission_cancel">Not now</string>
+    <string name="toast_delete_file_fail">It was not possible to delete a file</string>
 </resources>

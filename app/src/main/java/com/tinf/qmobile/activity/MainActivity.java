@@ -1,7 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
+import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,9 +9,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.os.Environment;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +29,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.GravityCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
@@ -43,10 +43,10 @@ import com.google.android.play.core.review.ReviewManagerFactory;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.database.OnDataChange;
+import com.tinf.qmobile.database.OnCount;
 import com.tinf.qmobile.databinding.ActivityMainBinding;
 import com.tinf.qmobile.fragment.HomeFragment;
-import com.tinf.qmobile.fragment.JournalFragment;
+import com.tinf.qmobile.fragment.JournalsFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.fragment.ReportFragment;
@@ -65,13 +65,13 @@ import static com.tinf.qmobile.App.USE_INFO;
 import static com.tinf.qmobile.App.USE_RATED;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
-import static com.tinf.qmobile.model.ViewType.EVENT;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
-public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnDataChange,
+public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnCount,
         OnUpdate, NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
 
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         } else if (itemId == R.id.action_grades) {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
 
-            if (fragment instanceof JournalFragment) {
+            if (fragment instanceof JournalsFragment) {
                 ReportFragment rFragment = new ReportFragment();
                 rFragment.setParams(binding.refresh);
 
@@ -292,29 +292,39 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         if (groupId == R.id.group1) {
             binding.nav.getMenu().getItem(itemId).setChecked(true);
-            Client.get().changeDate(itemId);
             binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() -> Client.get().changeDate(itemId), 250);
             return true;
         }
 
         if (itemId == R.id.drawer_mail) {
-            startActivity(new Intent(getBaseContext(), MessagesActivity.class));
             binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(getBaseContext(), MessagesActivity.class)), 250);
             return true;
 
         } else if (itemId == R.id.drawer_calendar) {
-            startActivity(new Intent(getBaseContext(), CalendarActivity.class));
             binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(getBaseContext(), CalendarActivity.class)), 250);
+            return true;
+
+        } else if (itemId == R.id.drawer_materials) {
+            binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)), 250);
             return true;
 
         } else if (itemId == R.id.drawer_website) {
-            startActivity(new Intent(getBaseContext(), WebViewActivity.class));
             binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(getBaseContext(), WebViewActivity.class)), 250);
             return true;
 
         } else if (itemId == R.id.drawer_settings) {
-            startActivity(new Intent(getBaseContext(), SettingsActivity.class));
             binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(getBaseContext(), SettingsActivity.class)), 250);
             return true;
         }
 
@@ -325,10 +335,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         binding.refresh.setRefreshing(false);
     }
 
-
     private void logOut() {
-        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager()
-                .findFragmentById(R.id.main_fragment)).commit();
         finish();
         Client.get().close();
         Works.cancelAll();
@@ -344,26 +351,38 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         if (id == R.id.navigation_home) {
             HomeFragment homeFragment = new HomeFragment();
-            homeFragment.setParams(binding.refresh, binding.fab, binding.toolbar);
+            homeFragment.setParams(binding.toolbar, binding.scroll, binding.refresh, binding.fab);
 
-            binding.fab.show();
             binding.fab.setOnClickListener(v -> new CreateFragment().show(
                     getSupportFragmentManager(), "sheet_create"));
+            binding.fab.show();
+
+            binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                    (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                        binding.refresh.setEnabled(scrollY == 0);
+
+                        if (scrollY < oldScrollY && !binding.fab.isShown())
+                            binding.fab.show();
+                        else if (scrollY > oldScrollY && binding.fab.isShown())
+                            binding.fab.hide();
+                    });
 
             fragment = homeFragment;
 
         } else if (id == R.id.navigation_grades) {
-            binding.fab.hide();
+            binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
             binding.fab.setOnClickListener(null);
+            binding.fab.postDelayed(() -> binding.fab.hide(), 250);
 
-            JournalFragment journalFragment = new JournalFragment();
-            journalFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
+            JournalsFragment journalsFragment = new JournalsFragment();
+            journalsFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
 
-            fragment = journalFragment;
+            fragment = journalsFragment;
 
         } else if (id == R.id.navigation_materials) {
-            binding.fab.hide();
+            binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
             binding.fab.setOnClickListener(null);
+            binding.fab.postDelayed(() -> binding.fab.hide(), 250);
 
             MaterialsFragment materialsFragment = new MaterialsFragment();
             materialsFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
@@ -375,7 +394,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             return false;
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        //transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         transaction.replace(R.id.main_fragment, fragment).commit();
 
         return true;
@@ -623,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void countNotifications(int count1, int count2) {
+    public void onCountNotifications(int count1, int count2) {
         if (count1 <= 0)
             binding.navigation.removeBadge(R.id.navigation_grades);
         else
@@ -636,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     @Override
-    public void countMessages(int count) {
+    public void onCountMessages(int count) {
         TextView txt = (TextView) binding.nav.getMenu().findItem(R.id.drawer_mail).getActionView();
 
         if (count > 0) {

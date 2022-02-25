@@ -17,6 +17,7 @@
     <string name="title_class">Aulas</string>
     <string name="title_organization">Organização</string>
     <string name="title_performance">Desempenho</string>
+    <string name="title_downloads">Downloads</string>
 
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
@@ -218,6 +219,7 @@
 
     <string name="toast_reset_db_success">Dados apagados</string>
     <string name="toast_reset_db_fail">Não foi possível apagar os dados</string>
+    <string name="toast_delete_file_fail">Não foi possível apagar um arquivo</string>
 
     <string name="sigla_Avaliacao">A</string>
     <string name="sigla_Prova">P</string>

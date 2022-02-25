@@ -20,7 +20,7 @@ import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.User;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import io.objectbox.BoxStore;
@@ -32,13 +32,17 @@ public class DataBase implements OnUpdate {
     private static final String TAG = "DataBase";
     private static DataBase instance;
     private BoxStore boxStore;
-    private List<OnDataChange> listeners;
+    private final List<OnCount> listeners;
     private final DataSubscription sub1;
     private final DataSubscription sub2;
     private final DataSubscription sub3;
     private final DataSubscription sub4;
+    private JournalsDataProvider journalsDataProvider;
+    private MaterialsDataProvider materialsDataProvider;
+    private EventsDataProvider eventsDataProvider;
 
     private DataBase() {
+        this.listeners = new LinkedList<>();
         Client.get().addOnUpdateListener(this);
 
         Log.d("Box for ", User.getCredential(User.REGISTRATION));
@@ -72,6 +76,8 @@ public class DataBase implements OnUpdate {
                         .clearApplicationUserData();
             }
         }
+
+        Log.d(TAG, boxStore == null ? "BoxStore is null" : boxStore.diagnose());
 
         sub1 = boxStore.subscribe(Matter.class)
                 .on(AndroidScheduler.mainThread())
@@ -127,19 +133,31 @@ public class DataBase implements OnUpdate {
             boxStore.close();
             boxStore = null;
             instance = null;
+
+            if (journalsDataProvider != null)
+                journalsDataProvider.close();
+
+            if (materialsDataProvider != null)
+                materialsDataProvider.close();
+
+            if (eventsDataProvider != null)
+                eventsDataProvider.close();
         }
+
+        Log.d(TAG, "closed");
+        Log.d(TAG, boxStore == null ? "BoxStore is null" : boxStore.diagnose());
     }
 
     private void countNotification(int i1, int i2) {
         if (listeners != null)
-            for (OnDataChange listener : listeners)
-                listener.countNotifications(i1, i2);
+            for (OnCount listener : listeners)
+                listener.onCountNotifications(i1, i2);
     }
 
     private void countMessages(int i) {
         if (listeners != null)
-            for (OnDataChange listener : listeners)
-                listener.countMessages(i);
+            for (OnCount listener : listeners)
+                listener.onCountMessages(i);
     }
 
     private void update() {
@@ -164,22 +182,39 @@ public class DataBase implements OnUpdate {
         countNotification(c1, c2);
     }
 
-    public void addOnDataChangeListener(OnDataChange onDataChange) {
-        if (listeners == null) {
-            listeners = new ArrayList<>();
-        }
-
-        if (onDataChange != null && !listeners.contains(onDataChange)) {
-            listeners.add(onDataChange);
-            Log.i(TAG, "Added listener from " + onDataChange);
+    public void addOnDataChangeListener(OnCount onCount) {
+        if (onCount != null && !listeners.contains(onCount)) {
+            listeners.add(onCount);
+            Log.i(TAG, "Added listener from " + onCount);
         }
     }
 
-    public void removeOnDataChangeListener(OnDataChange onDataChange) {
-        if (listeners != null && onDataChange != null) {
-            listeners.remove(onDataChange);
-            Log.i(TAG, "Removed listener from " + onDataChange);
+    public void removeOnDataChangeListener(OnCount onCount) {
+        if (onCount != null) {
+            listeners.remove(onCount);
+            Log.i(TAG, "Removed listener from " + onCount);
         }
+    }
+
+    public JournalsDataProvider getJournalsDataProvider() {
+        if (journalsDataProvider == null)
+            journalsDataProvider = new JournalsDataProvider();
+
+        return journalsDataProvider;
+    }
+
+    public MaterialsDataProvider getMaterialsDataProvider() {
+        if (materialsDataProvider == null)
+            materialsDataProvider = new MaterialsDataProvider();
+
+        return materialsDataProvider;
+    }
+
+    public EventsDataProvider getEventsDataProvider() {
+        if (eventsDataProvider == null)
+            eventsDataProvider = new EventsDataProvider();
+
+        return eventsDataProvider;
     }
 
     @Override

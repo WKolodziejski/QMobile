@@ -31,9 +31,9 @@ public class AttachmentsAdapter extends RecyclerView.Adapter<MessagesViewHolder>
     @NonNull
     @Override
     public MessagesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return isCard ?
-                new AttachmentCardViewHolder(LayoutInflater.from(context)
-                .inflate(R.layout.message_attachment_card, parent, false))
+        return isCard
+                ? new AttachmentCardViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.message_attachment_card, parent, false))
                 : new AttachmentViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.message_attachment, parent, false));
     }

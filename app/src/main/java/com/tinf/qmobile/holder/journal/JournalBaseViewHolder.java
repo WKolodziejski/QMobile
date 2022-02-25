@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.tinf.qmobile.adapter.JournalAdapter;
+
 import com.tinf.qmobile.model.Queryable;
 
 public abstract class JournalBaseViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
@@ -13,6 +13,6 @@ public abstract class JournalBaseViewHolder<T extends Queryable> extends Recycle
         super(view);
     }
 
-    public abstract void bind(Context context, T t, JournalAdapter adapter, boolean lookup);
+    public abstract void bind(Context context, T t, boolean lookup);
 
 }

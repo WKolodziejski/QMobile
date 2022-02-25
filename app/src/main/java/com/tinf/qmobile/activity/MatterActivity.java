@@ -113,8 +113,9 @@ public class MatterActivity extends AppCompatActivity {
                         .lightnessSliderOnly()
                         .setPositiveButton(getString(R.string.dialog_select), (dialog, selectedColor, allColors) -> {
                             matter.setColor(selectedColor);
-                            DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
                             binding.tab.setSelectedTabIndicatorColor(matter.getColor());
+                            binding.tab.selectTab(binding.tab.getTabAt(binding.tab.getSelectedTabPosition()));
+                            DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
                             Client.get().requestScroll();
                         })
                         .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})

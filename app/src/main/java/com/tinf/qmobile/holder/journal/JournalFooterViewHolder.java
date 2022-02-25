@@ -6,10 +6,8 @@ import static com.tinf.qmobile.model.ViewType.HEADER;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.databinding.JournalFooterBinding;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.matter.Matter;
@@ -23,7 +21,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     }
 
     @Override
-    public void bind(Context context, FooterJournal footer, JournalAdapter adapter, boolean lookup) {
+    public void bind(Context context, FooterJournal footer, boolean lookup) {
         Matter matter = footer.getMatter();
         int classes = matter.getClassesGiven();
         int absences = matter.getAbsences();

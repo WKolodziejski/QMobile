@@ -45,6 +45,7 @@ public class SearchParser  {
     private final OnSearch onSearch;
     private final Context context;
     private final ExecutorService executor;
+    private final Handler handler;
 
     public interface OnSearch {
         void onSearch(List<Queryable> list);
@@ -54,6 +55,7 @@ public class SearchParser  {
         this.context = context;
         this.onSearch = onSearch;
         this.executor = Executors.newSingleThreadExecutor();
+        this.handler = new Handler(Looper.getMainLooper());
     }
 
     public void execute(String... strings) {
@@ -119,7 +121,7 @@ public class SearchParser  {
             if (list.isEmpty())
                 list.add(new Empty());
 
-            new Handler(Looper.getMainLooper()).post(() -> onSearch.onSearch(list));
+            handler.post(() -> onSearch.onSearch(list));
         });
     }
 

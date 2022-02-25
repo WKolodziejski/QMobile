@@ -10,6 +10,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
+import com.tinf.qmobile.adapter.MaterialsBaseAdapter;
+import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.databinding.MaterialHeaderBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
@@ -22,7 +24,7 @@ public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
     }
 
     @Override
-    public void bind(Context context, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter, ActionMode.Callback callback, Matter matter) {
+    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Matter matter) {
         binding.title.setText(matter.getTitle());
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
 

@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.model.Empty;
 
 public class JournalEmptyViewHolder extends JournalBaseViewHolder<Empty> {
@@ -15,7 +14,7 @@ public class JournalEmptyViewHolder extends JournalBaseViewHolder<Empty> {
     }
 
     @Override
-    public void bind(Context context, Empty empty, JournalAdapter adapter, boolean lookup) {
+    public void bind(Context context, Empty empty, boolean lookup) {
 
     }
 

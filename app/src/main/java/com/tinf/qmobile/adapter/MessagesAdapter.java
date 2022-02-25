@@ -2,6 +2,8 @@ package com.tinf.qmobile.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -24,8 +26,8 @@ import com.tinf.qmobile.network.message.Messenger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
-import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
@@ -33,16 +35,17 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
-    //private final List<Queryable> messages;
     private final Context context;
-    private final AsyncListDiffer<Queryable> messages;
+    private final AsyncListDiffer<Queryable> list;
     private final Messenger messenger;
     private final DataSubscription sub1;
+    private final Handler handler;
 
-    public MessagesAdapter(Context context, Messenger messenger, Bundle bundle) {
+    public MessagesAdapter(Context context, Messenger messenger) {
         this.context = context;
         this.messenger = messenger;
-        this.messages = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+        this.handler = new Handler(Looper.getMainLooper());
+        this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
             @Override
             public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
                 return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
@@ -54,71 +57,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
             }
         });
 
-        messages.submitList(getList());
+        updateList();
 
-        DataObserver observer = data -> {
-            List<Queryable> updated = getList();
-
-            /*if (bundle != null) {
-                for (int i = 0; i < messages.getCurrentList().size(); i++) {
-                    if (messages.getCurrentList().get(i) instanceof Message) {
-                        Message m1 = ((Message) messages.getCurrentList().get(i));
-
-                        for (Queryable q : updated) {
-                            if (q instanceof Message) {
-                                Message m2 = (Message) q;
-
-                                if (m1.id == m2.id) {
-                                    m2.highlight = m1.highlight;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }*/
-
-            /*DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-
-                @Override
-                public int getOldListSize() {
-                    return messages.size();
-                }
-
-                @Override
-                public int getNewListSize() {
-                    return updated.size();
-                }
-
-                @Override
-                public boolean areItemsTheSame(int o, int n) {
-                    Queryable oldQ = messages.get(o);
-                    Queryable newQ = updated.get(n);
-
-                    if (oldQ instanceof Message && newQ instanceof Message)
-                        return ((Message) oldQ).id == ((Message) newQ).id;
-
-                    else return oldQ instanceof Empty && newQ instanceof Empty;
-                }
-
-                @Override
-                public boolean areContentsTheSame(int o, int n) {
-                    return messages.get(o).equals(updated.get(n));
-                }
-
-            }, true);
-
-            messages.clear();
-            messages.addAll(updated);
-            result.dispatchUpdatesTo(this);*/
-            messages.submitList(updated);
-        };
+        DataObserver observer = data -> updateList();
 
         sub1 = DataBase.get().getBoxStore().subscribe(Message.class)
                 .onlyChanges()
-                .on(AndroidScheduler.mainThread())
-                .onError(th -> Log.e("Adapter", th.toString()))
+                .onError(Throwable::printStackTrace)
                 .observer(observer);
+    }
+
+    private void updateList() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Queryable> list = getList();
+            handler.post(() -> this.list.submitList(list));
+        });
     }
 
     private List<Queryable> getList() {
@@ -138,7 +91,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
     @Override
     public int getItemViewType(int i) {
-        return messages.getCurrentList().get(i).getItemType();
+        return list.getCurrentList().get(i).getItemType();
     }
 
     @NonNull
@@ -159,12 +112,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull MessagesViewHolder holder, int i) {
-        holder.bind(context, messenger, messages.getCurrentList().get(i));
+        holder.bind(context, messenger, list.getCurrentList().get(i));
     }
 
     @Override
     public int getItemCount() {
-        return messages.getCurrentList().size();
+        return list.getCurrentList().size();
     }
 
     @Override
@@ -172,23 +125,5 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
         super.onDetachedFromRecyclerView(recyclerView);
         sub1.cancel();
     }
-
-    /*public int highlight(long id) {
-        for (int i = 0; i < messages.getCurrentList().size(); i++) {
-            Queryable q = messages.getCurrentList().get(i);
-
-            if (q instanceof Message) {
-                Message m = (Message) q;
-
-                if (m.id == id) {
-                    m.highlight = true;
-                    notifyItemChanged(i);
-                    return i;
-                }
-            }
-        }
-
-        return -1;
-    }*/
 
 }

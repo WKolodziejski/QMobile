@@ -3,12 +3,9 @@ package com.tinf.qmobile.holder.journal;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.adapter.JournalAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.JournalItemBinding;
 import com.tinf.qmobile.model.journal.Journal;
@@ -24,7 +21,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     }
 
     @Override
-    public void bind(Context context, Journal journal, JournalAdapter adapter, boolean lookup) {
+    public void bind(Context context, Journal journal, boolean lookup) {
         binding.title.setText(journal.getTitle());
         binding.weight.setText(journal.getWeight());
         binding.date.setText(journal.formatDate());

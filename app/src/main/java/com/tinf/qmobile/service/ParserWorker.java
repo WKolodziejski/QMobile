@@ -29,14 +29,17 @@ public class ParserWorker extends Worker {
     public Result doWork() {
         Log.d(TAG, "Starting work...");
 
+        if (!Client.isConnected())
+            return Result.failure();
+
         Client.background = true;
 
         Client.get().addOnResponseListener(new OnResponse() {
 
             @Override
             public void onStart(int pg) {
-                if (BuildConfig.DEBUG)
-                    Works.displayNotification("Debug", "Background check starting", -1, 0, new Intent(App.getContext(), SplashActivity.class));
+                //if (BuildConfig.DEBUG)
+                    //Works.displayNotification("Debug", "Background check starting", -1, 0, new Intent(App.getContext(), SplashActivity.class));
             }
 
             @Override

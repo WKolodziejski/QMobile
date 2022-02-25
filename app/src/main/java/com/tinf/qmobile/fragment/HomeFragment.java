@@ -7,6 +7,8 @@ import static com.tinf.qmobile.network.Client.pos;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -45,6 +47,7 @@ import com.tinf.qmobile.utility.User;
 import org.threeten.bp.DayOfWeek;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.objectbox.android.AndroidScheduler;
@@ -57,17 +60,15 @@ import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-public class HomeFragment extends Fragment implements OnUpdate {
+public class HomeFragment extends BaseFragment {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
     private FloatingActionButton fab;
-    private SwipeRefreshLayout refresh;
-    private MaterialToolbar toolbar;
+    private Bundle transition;
 
-    public void setParams(SwipeRefreshLayout refresh, FloatingActionButton fab, MaterialToolbar toolbar) {
-        this.refresh = refresh;
+    public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh, FloatingActionButton fab) {
+        super.setParams(toolbar, scroll, refresh);
         this.fab = fab;
-        this.toolbar = toolbar;
     }
 
     @Override
@@ -80,9 +81,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
-                    updateSchedule();
+                    //updateSchedule();
                     updateChart();
-                    Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
+                    Design.syncToolbar(toolbar, Design.canScroll(scroll));
                 });
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -91,9 +92,9 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
-                    updateSchedule();
+                    //updateSchedule();
                     updateChart();
-                    Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
+                    Design.syncToolbar(toolbar, Design.canScroll(scroll));
                 });
     }
 
@@ -109,7 +110,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
         super.onViewCreated(view, savedInstanceState);
 
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        fab.setVisibility(Client.pos == 0 ? View.VISIBLE : View.GONE);
+        updateFab();
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
 
@@ -124,17 +125,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
         binding.weekView.setWeekViewLoader(this::updateSchedule);
 
-        binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                    refresh.setEnabled(scrollY == 0);
-
-                    if (scrollY < oldScrollY && !fab.isShown())
-                        fab.show();
-                    else if (scrollY > oldScrollY && fab.isShown())
-                        fab.hide();
-                });
-
-        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
+        Design.syncToolbar(toolbar, Design.canScroll(scroll));
 
         binding.recycler.setItemViewCacheSize(20);
         binding.recycler.setDrawingCacheEnabled(true);
@@ -143,19 +134,27 @@ public class HomeFragment extends Fragment implements OnUpdate {
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new HomeAdapter(getContext()));
 
-        final Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                Pair.create(fab, fab.getTransitionName())).toBundle();
+        if (fab != null) {
+            try {
+                transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                        Pair.create(fab, fab.getTransitionName())).toBundle();
+            } catch (Exception ignored) {}
+        }
 
         binding.calendarLayout.setOnClickListener(view1 ->
-                startActivity(new Intent(getActivity(), CalendarActivity.class), pos == 0 ? bundle : null));
+                startActivity(new Intent(getActivity(), CalendarActivity.class), pos == 0 ? transition : null));
 
         binding.scheduleLayout.setOnClickListener(view1 ->
-                startActivity(new Intent(getActivity(), ScheduleActivity.class), pos == 0 ? bundle : null));
+                startActivity(new Intent(getActivity(), ScheduleActivity.class), pos == 0 ? transition : null));
 
         binding.chartText.setOnClickListener(view1 ->
-                startActivity(new Intent(getActivity(), PerformanceActivity.class), pos == 0 ? bundle : null));
+                startActivity(new Intent(getActivity(), PerformanceActivity.class), pos == 0 ? transition : null));
 
         updateChart();
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            Design.syncToolbar(toolbar, Design.canScroll(scroll));
+        }, 100);
     }
 
     private List<WeekViewEvent> updateSchedule() {
@@ -194,6 +193,7 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             int firstIndex = 0; //First index
             int parc1 = 0;      //Last biggest sum
+            boolean firstIndexFound = false;
 
             // For each hour of the day
             for (int h = 0; h < 24; h++) {
@@ -209,9 +209,32 @@ public class HomeFragment extends Fragment implements OnUpdate {
                 }
 
                 // If sum is bigger than the last one, the first index is set to the current hour
-                if (sum > (parc1 + 2)) {
+                if (sum > (parc1 + 1)) {
                     firstIndex = h;
                     parc1 = sum;
+                    firstIndexFound = true;
+                }
+            }
+
+            // If no first index found, repeats the search without the parc1 + 1 param
+            if (!firstIndexFound) {
+                for (int h = 0; h < 24; h++) {
+                    int sum = 0;
+
+                    // For each day of the week
+                    for (int d = 1; d < 6; d++) {
+
+                        // Sum of events in the same hour, for the whole week
+                        if (week[h][d]) {
+                            sum++;
+                        }
+                    }
+
+                    // If sum is bigger than the last one, the first index is set to the current hour
+                    if (sum > parc1) {
+                        firstIndex = h;
+                        parc1 = sum;
+                    }
                 }
             }
 
@@ -243,6 +266,8 @@ public class HomeFragment extends Fragment implements OnUpdate {
             int lastIndex = firstIndex;
             int maxInterval = 0;
 
+            Log.d("FIRST", String.valueOf(firstIndex));
+
             for (int h = firstIndex; h < 24; h++) {
                 int sum = 0;
 
@@ -259,17 +284,30 @@ public class HomeFragment extends Fragment implements OnUpdate {
                     lastIndex = h;
             }
 
-            while (minutes[lastIndex] == null)
+            Log.d(String.valueOf(lastIndex), Arrays.toString(minutes));
+
+            while (lastIndex > 0 && minutes[lastIndex] == null)
                 lastIndex--;
 
-            params.height = Design.dpiToPixels(
-                    ((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) -
-                            ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 8);
+            if (minutes[lastIndex] == null) {
+                while (lastIndex < 24 && minutes[lastIndex] == null)
+                    lastIndex++;
+            }
 
-            binding.weekView.goToDay(DayOfWeek.MONDAY);
-            binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+            if (minutes[lastIndex] == null) {
+                params.height = Design.dpiToPixels(0);
 
-            binding.emptySchedule.setVisibility(View.GONE);
+                binding.emptySchedule.setVisibility(View.VISIBLE);
+            } else {
+                params.height = Design.dpiToPixels(
+                        ((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) -
+                                ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 8);
+
+                binding.weekView.goToDay(DayOfWeek.MONDAY);
+                binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+
+                binding.emptySchedule.setVisibility(View.GONE);
+            }
         } else {
             params.height = Design.dpiToPixels(0);
 
@@ -315,20 +353,12 @@ public class HomeFragment extends Fragment implements OnUpdate {
 
             columns.add(new Column(values)
                     .setHasLabels(true));
-            //.setHasLabelsOnlyForSelected(true));
         }
 
-        //List<AxisValue> axisValues = new ArrayList<>();
-        //axisValues.add(new AxisValue(6).setLabel(""));
         ColumnChartData data = new ColumnChartData();
         data.setColumns(columns);
         data.setValueLabelBackgroundEnabled(false);
         data.setValueLabelsTextColor(getResources().getColor(R.color.colorPrimaryLight));
-        /*data.setAxisYLeft(new Axis(axisValues)
-                .setHasLines(true)
-                .setLineColor(ContextCompat.getColor(getContext(), R.color.error))
-                .setHasSeparationLine(false)
-                .setHasTiltedLabels(false));*/
         data.setAxisXBottom(new Axis(axisMatter));
         binding.chart.setColumnChartData(data);
         binding.chart.setZoomEnabled(false);
@@ -353,43 +383,35 @@ public class HomeFragment extends Fragment implements OnUpdate {
         binding.chartLayout.setVisibility(m > 1 ? View.VISIBLE : View.GONE);
     }
 
+    private void updateFab() {
+        if (fab != null) {
+            fab.setVisibility(Client.pos == 0 ? View.VISIBLE : View.GONE);
+        }
+    }
+
     @Override
     public void onScrollRequest() {
-        binding.scroll.smoothScrollTo(0, 0);
+        scroll.smoothScrollTo(0, 0);
     }
 
     @Override
     public void onDateChanged() {
         binding.weekView.notifyDatasetChanged();
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        fab.setVisibility(Client.pos == 0 ? View.VISIBLE : View.GONE);
-        updateSchedule();
+        updateFab();
+        //updateSchedule();
         updateChart();
-        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
+        Design.syncToolbar(toolbar, Design.canScroll(scroll));
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnUpdateListener(this);
+    protected void onAddListeners() {
+        Design.syncToolbar(toolbar, Design.canScroll(scroll));
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnUpdateListener(this);
-    }
+    protected void onRemoveListeners() {
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Client.get().removeOnUpdateListener(this);
     }
 
     @Override

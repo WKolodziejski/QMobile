@@ -22,6 +22,11 @@
             android:icon="@drawable/ic_calendar"
             android:title="@string/title_calendario" />
 
+        <item
+            android:id="@+id/drawer_materials"
+            android:icon="@drawable/ic_download"
+            android:title="@string/title_downloads" />
+
     </group>
 
     <group

@@ -4,8 +4,12 @@ import android.content.Context;
 import android.view.ActionMode;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
+import com.tinf.qmobile.adapter.MaterialsBaseAdapter;
+import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.databinding.MaterialItemBinding;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
@@ -22,15 +26,15 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     }
 
     @Override
-    public void bind(Context context, MaterialsAdapter.OnInteractListener listener, MaterialsAdapter adapter, ActionMode.Callback callback, Material material) {
+    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Material material) {
         material.isDownloaded = new File(DownloadReceiver.getMaterialPath(material.getFileName())).exists();
 
-        binding.icon.setImageDrawable(context.getDrawable(material.getIcon()));
+        binding.icon.setImageDrawable(AppCompatResources.getDrawable(context, material.getIcon()));
 
         binding.title.setText(material.getTitle());
         binding.date.setText(material.getDateString());
-        binding.offline.setVisibility(material.isDownloaded && !material.isDownloading? View.VISIBLE : View.GONE);
-        binding.loading.setVisibility(material.isDownloading ? View.VISIBLE : View.GONE);
+        binding.offline.setVisibility(material.isDownloaded && !material.isDownloading ? View.VISIBLE : View.GONE);
+        binding.loading.setVisibility(material.isDownloading && !material.isDownloaded ? View.VISIBLE : View.GONE);
 
         if (material.isSelected) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));
