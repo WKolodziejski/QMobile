@@ -7,13 +7,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.adapter.MaterialsBaseAdapter;
 import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.databinding.MaterialItemBinding;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 import java.io.File;
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -56,7 +55,7 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
                     adapter.selectItem(material);
             } else {
                 if (material.isDownloaded) {
-                    DownloadReceiver.openFile(User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + material.getFileName());
+                    DownloadReceiver.openFile(UserUtils.getYear(pos) + "/" + UserUtils.getPeriod(pos) + "/" + material.getFileName());
                 } else {
                     material.isDownloading = true;
                     adapter.download(material);

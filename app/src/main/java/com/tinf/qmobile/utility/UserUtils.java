@@ -2,15 +2,8 @@ package com.tinf.qmobile.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
@@ -19,7 +12,6 @@ import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,10 +24,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 
-public class User {
+public class UserUtils {
 
     public static final String REGISTRATION = ".Reg";
     public static final String PASSWORD = ".Pass";
@@ -93,11 +84,11 @@ public class User {
         getEditor().clear().apply();
     }
 
-    private static SharedPreferences getInfo() {
+    static SharedPreferences getInfo() {
         return App.getContext().getSharedPreferences(INFO, Context.MODE_PRIVATE);
     }
 
-    private static SharedPreferences.Editor getEditor() {
+    static SharedPreferences.Editor getEditor() {
         return getInfo().edit();
     }
 
@@ -142,8 +133,8 @@ public class User {
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
         if (getYears().length > 0) {
-            crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
-            crashlytics.setCustomKey("URL", User.getURL());
+            crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
+            crashlytics.setCustomKey("URL", UserUtils.getURL());
             crashlytics.setCustomKey("Years", Arrays.toString(getYears()));
 
             if (getYears()[i].contains("/")) {
@@ -270,8 +261,8 @@ public class User {
 
     public static Map<String, String> getLoginParams(String KEY_A, String KEY_B) {
         Map<String, String>  params = new HashMap<>();
-        params.put("LOGIN", encrypt(User.getCredential(REGISTRATION), KEY_A, KEY_B));
-        params.put("SENHA", encrypt(User.getCredential(PASSWORD), KEY_A, KEY_B));
+        params.put("LOGIN", encrypt(UserUtils.getCredential(REGISTRATION), KEY_A, KEY_B));
+        params.put("SENHA", encrypt(UserUtils.getCredential(PASSWORD), KEY_A, KEY_B));
         params.put("Submit", encrypt("OK", KEY_A, KEY_B));
         params.put("TIPO_USU", encrypt("1", KEY_A, KEY_B));
         return params;

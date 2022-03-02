@@ -2,31 +2,22 @@ package com.tinf.qmobile;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 import android.os.StrictMode;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tinf.qmobile.utility.User;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.tinf.qmobile.utility.UserUtils;
 
 import io.objectbox.BoxStore;
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
-import static com.tinf.qmobile.utility.User.PASSWORD;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
+import static com.tinf.qmobile.utility.UserUtils.PASSWORD;
+import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 public class App extends Application {
     public static final String VERSION = ".v1.6.2";
     public static final String VERSION_INFO = ".Version";
-    //public static final String DATABASE_INFO = ".DB";
-    //public static final String DB_CLASS = ".class";
     public static final String USE_INFO = ".use";
     public static final String USE_COUNT = ".count";
     public static final String USE_RATED = ".rated";
@@ -39,10 +30,10 @@ public class App extends Application {
 
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
         crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
-        crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
-        crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
-        crashlytics.setCustomKey("Name", User.getName());
-        crashlytics.setCustomKey("URL", User.getURL());
+        crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
+        crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
+        crashlytics.setCustomKey("Name", UserUtils.getName());
+        crashlytics.setCustomKey("URL", UserUtils.getURL());
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
@@ -51,7 +42,7 @@ public class App extends Application {
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true)) {
-            if (BoxStore.deleteAllFiles(getBaseContext(), User.getCredential(REGISTRATION))) {
+            if (BoxStore.deleteAllFiles(getBaseContext(), UserUtils.getCredential(REGISTRATION))) {
                 //Client.get().close();
                 //Jobs.cancelAllJobs();
                 //DataBase.get().close();

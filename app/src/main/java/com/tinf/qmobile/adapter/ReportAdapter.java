@@ -5,7 +5,6 @@ import static com.tinf.qmobile.network.Client.pos;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,7 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,9 +133,9 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
                         .boxFor(Matter.class)
                         .query()
                         .order(Matter_.title_)
-                        .equal(Matter_.year_, User.getYear(pos))
+                        .equal(Matter_.year_, UserUtils.getYear(pos))
                         .and()
-                        .equal(Matter_.period_, User.getPeriod(pos))
+                        .equal(Matter_.period_, UserUtils.getPeriod(pos))
                         .build()
                         .find());
 

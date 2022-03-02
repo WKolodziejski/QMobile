@@ -22,24 +22,20 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
-import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.FragmentCreateEventBinding;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.service.AlarmReceiver;
-import com.tinf.qmobile.service.Works;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import io.objectbox.Box;
 import static android.content.Context.ALARM_SERVICE;
-import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.model.ViewType.EVENT;
-import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventCreateFragment extends Fragment {
     private FragmentCreateEventBinding binding;
@@ -57,8 +53,8 @@ public class EventCreateFragment extends Fragment {
         Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
         matters = matterBox.query()
-                .equal(Matter_.year_, User.getYear(0)).and()
-                .equal(Matter_.period_, User.getPeriod(0))
+                .equal(Matter_.year_, UserUtils.getYear(0)).and()
+                .equal(Matter_.period_, UserUtils.getPeriod(0))
                 .build().find();
 
         Calendar calendar = Calendar.getInstance();

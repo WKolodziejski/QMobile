@@ -6,7 +6,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,7 +102,7 @@ public class Material implements Queryable {
 
     public String getPath() {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + PATH + "/" + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + getFileName();
+                + PATH + "/" + UserUtils.getYear(pos) + "/" + UserUtils.getPeriod(pos) + "/" + getFileName();
     }
 
     public boolean isSeen_() {

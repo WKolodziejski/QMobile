@@ -1,12 +1,8 @@
 package com.tinf.qmobile.fragment.dialog;
 
-import static com.tinf.qmobile.App.getContext;
-
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +23,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 public class UserFragment extends DialogFragment {
     private TextView name;
@@ -63,8 +59,8 @@ public class UserFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        name.setText(User.getName());
-        reg.setText(User.getCredential(User.REGISTRATION));
+        name.setText(UserUtils.getName());
+        reg.setText(UserUtils.getCredential(UserUtils.REGISTRATION));
 
         logout.setOnClickListener(v -> new MaterialAlertDialogBuilder(getContext())
                 .setTitle(getResources().getString(R.string.dialog_quit))
@@ -76,13 +72,15 @@ public class UserFragment extends DialogFragment {
 
         alerts.setOnClickListener(v -> onButton.onAlerts());
 
-        try {
-            Glide.with(getContext())
-                    .load(User.getImg())
-                    .centerCrop()
-                    .placeholder(R.drawable.ic_account)
-                    .into(image);
-        } catch (Exception ignore) {}
+        if (UserUtils.hasImg()) {
+            try {
+                Glide.with(getContext())
+                        .load(UserUtils.getImg())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_account)
+                        .into(image);
+            } catch (Exception ignore) { }
+        }
 
         //Drawable picture = User.getProfilePicture(getContext());
 
@@ -97,7 +95,7 @@ public class UserFragment extends DialogFragment {
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             offline.setVisibility(View.VISIBLE);
-            last.setText(String.format(getResources().getString(R.string.home_last_login), User.getLastLogin()));
+            last.setText(String.format(getResources().getString(R.string.home_last_login), UserUtils.getLastLogin()));
         } else {
             offline.setVisibility(View.GONE);
         }

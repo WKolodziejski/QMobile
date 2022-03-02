@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/events_1week"
+        android:title="Next 7 days" />
+
+    <item android:id="@+id/events_2week"
+        android:title="Next 2 weeks" />
+
+    <item android:id="@+id/events_all"
+        android:title="All events" />
+
+</menu>

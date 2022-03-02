@@ -1,7 +1,6 @@
 package com.tinf.qmobile.fragment;
 
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -16,13 +15,9 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.activity.settings.AboutActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
-
-import io.objectbox.BoxStore;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String CHECK = "key_check";

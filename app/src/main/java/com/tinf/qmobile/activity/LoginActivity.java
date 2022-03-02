@@ -17,7 +17,7 @@ import com.tinf.qmobile.databinding.ActivityLoginBinding;
 import com.tinf.qmobile.fragment.LoginFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {
     private ActivityLoginBinding binding;
@@ -48,7 +48,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
             Client.get().load(PG_FETCH_YEARS);
         } else if (pg == PG_JOURNALS) {
             Client.get().load(PG_CALENDAR);
-            User.setValid(true);
+            UserUtils.setValid(true);
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                    .setMessage(getResources().getString(R.string.dialog_questionary_text))
                    .setCancelable(true)
                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                           (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                           (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
                    .create()
                    .show();
 
@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
                    .setMessage(getResources().getString(R.string.dialog_registration_text))
                    .setCancelable(true)
                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                           (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                           (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
                    .create()
                    .show();
 

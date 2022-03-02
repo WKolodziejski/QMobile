@@ -33,7 +33,7 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
         updateList();
     }
 
-    private void updateList() {
+    public void updateList() {
         Executors.newSingleThreadExecutor().execute(() -> {
             list = buildList();
             handler.post(this::callOnData);

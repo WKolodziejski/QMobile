@@ -17,7 +17,7 @@ import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
@@ -164,7 +164,7 @@ public abstract class MaterialsBaseAdapter extends RecyclerView.Adapter<Material
                         .download(context,
                                 material.getLink(),
                                 material.getFileName(),
-                                User.getYear(pos) + "/" + User.getPeriod(pos)),
+                                UserUtils.getYear(pos) + "/" + UserUtils.getPeriod(pos)),
                 box.put(material));
 
         Log.d(material.getTitle(), "Downloading...");
@@ -174,7 +174,7 @@ public abstract class MaterialsBaseAdapter extends RecyclerView.Adapter<Material
         Material material = (Material) getList().get(i);
 
         if (material.isDownloaded) {
-            DownloadReceiver.openFile(User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + material.getFileName());
+            DownloadReceiver.openFile(UserUtils.getYear(pos) + "/" + UserUtils.getPeriod(pos) + "/" + material.getFileName());
         } else {
             material.isDownloading = true;
             download(material);

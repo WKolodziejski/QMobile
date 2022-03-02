@@ -13,7 +13,7 @@ import com.tinf.qmobile.databinding.SearchMaterialBinding;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
     private final SearchMaterialBinding binding;
@@ -40,7 +40,7 @@ public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
             context.startActivity(intent);
 
             Matter m = material.matter.getTarget();
-            int i = User.getPos(m.getYear_(), m.getPeriod_());
+            int i = UserUtils.getPos(m.getYear_(), m.getPeriod_());
 
             if (i >= 0)
                 Client.get().changeDateWithBackup(i);

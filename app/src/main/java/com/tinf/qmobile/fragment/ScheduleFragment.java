@@ -3,7 +3,6 @@ package com.tinf.qmobile.fragment;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -28,7 +27,7 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.ColorUtils;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,13 +114,13 @@ public class ScheduleFragment extends Fragment {
 
         if (bundle == null) {
             schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                    .equal(Schedule_.year, User.getYear(pos)).and()
-                    .equal(Schedule_.period, User.getPeriod(pos))
+                    .equal(Schedule_.year, UserUtils.getYear(pos)).and()
+                    .equal(Schedule_.period, UserUtils.getPeriod(pos))
                     .build().find();
         } else {
             QueryBuilder<Schedule> builder = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                    .equal(Schedule_.year, User.getYear(pos)).and()
-                    .equal(Schedule_.period, User.getPeriod(pos));
+                    .equal(Schedule_.year, UserUtils.getYear(pos)).and()
+                    .equal(Schedule_.period, UserUtils.getPeriod(pos));
 
             builder.link(Schedule_.matter)
                     .equal(Matter_.id, bundle.getLong("ID"));

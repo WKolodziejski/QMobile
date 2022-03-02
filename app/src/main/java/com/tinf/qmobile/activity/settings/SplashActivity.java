@@ -3,7 +3,6 @@ package com.tinf.qmobile.activity.settings;
 import static com.tinf.qmobile.App.USE_COUNT;
 import static com.tinf.qmobile.App.USE_INFO;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,7 +14,7 @@ import com.tinf.qmobile.activity.LoginActivity;
 import com.tinf.qmobile.activity.MainActivity;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Works;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -27,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
 
         Intent intent;
 
-        if (User.isValid()) {
+        if (UserUtils.isValid()) {
             Works.schedule();
 
             if (!Client.get().isValid() && !BuildConfig.DEBUG)

@@ -1,12 +1,21 @@
 package com.tinf.qmobile.activity;
 
+import static com.tinf.qmobile.App.USE_COUNT;
+import static com.tinf.qmobile.App.USE_INFO;
+import static com.tinf.qmobile.App.USE_RATED;
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -58,17 +67,7 @@ import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.service.Works;
-import com.tinf.qmobile.utility.User;
-
-import static com.tinf.qmobile.App.USE_COUNT;
-import static com.tinf.qmobile.App.USE_INFO;
-import static com.tinf.qmobile.App.USE_RATED;
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.MATERIAL;
-import static com.tinf.qmobile.model.ViewType.SCHEDULE;
-import static com.tinf.qmobile.network.Client.pos;
+import com.tinf.qmobile.utility.UserUtils;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnCount,
         OnUpdate, NavigationView.OnNavigationItemSelectedListener {
@@ -108,23 +107,23 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 return changeFragment(itemId);
             else
                 binding.scroll.smoothScrollTo(0, 0);
-                //Client.get().requestScroll();
+            //Client.get().requestScroll();
 
             return false;
         });
 
         Menu menu = binding.nav.getMenu();
 
-        for (int i = 0; i < User.getYears().length; i++) {
-            menu.add(R.id.group1, i, Menu.NONE, User.getYears()[i]);
+        for (int i = 0; i < UserUtils.getYears().length; i++) {
+            menu.add(R.id.group1, i, Menu.NONE, UserUtils.getYears()[i]);
             menu.getItem(i).setIcon(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_label));
             menu.getItem(i).setCheckable(true);
         }
 
         menu.getItem(pos).setChecked(true);
 
-        if (User.getYears().length > 0)
-            binding.date.setText(User.getYears()[pos]);
+        if (UserUtils.getYears().length > 0)
+            binding.date.setText(UserUtils.getYears()[pos]);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -214,14 +213,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_offline));
-        } else {
+        } else if (UserUtils.hasImg()) {
             try {
                 Glide.with(getContext())
-                        .load(User.getImg())
+                        .load(UserUtils.getImg())
                         .centerCrop()
                         .placeholder(R.drawable.ic_account)
                         .into(view);
-            } catch (Exception ignore) {}
+            } catch (Exception ignore) { }
+        } else {
+            view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
+        }
 
             /*Drawable picture = User.getProfilePicture(getContext());
 
@@ -229,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 view.setImageDrawable(picture.getCurrent());
             else
                 view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));*/
-        }
+
 
         view.setOnClickListener(v -> {
             UserFragment fragment = new UserFragment();
@@ -348,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().close();
         Works.cancelAll();
         DataBase.get().close();
-        User.clearInfo();
+        UserUtils.clearInfo();
         PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         startActivity(new Intent(this, LoginActivity.class));
@@ -518,7 +520,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         dismissProgressbar();
         invalidateOptionsMenu();
         supportInvalidateOptionsMenu();
-        //updateMenuIcon();
 
         if (pg == PG_LOGIN) {
             displayAlerts(false);
@@ -527,8 +528,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             Menu menu = binding.nav.getMenu();
             menu.removeGroup(R.id.group1);
 
-            for (int i = 0; i < User.getYears().length; i++) {
-                menu.add(R.id.group1, i, Menu.NONE, User.getYears()[i]);
+            for (int i = 0; i < UserUtils.getYears().length; i++) {
+                menu.add(R.id.group1, i, Menu.NONE, UserUtils.getYears()[i]);
                 menu.getItem(i).setIcon(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_label));
                 menu.getItem(i).setCheckable(true);
             }
@@ -541,7 +542,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     public void onError(int pg, String error) {
         dismissProgressbar();
         invalidateOptionsMenu();
-        //updateMenuIcon();
         Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
     }
 
@@ -549,7 +549,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     public void onAccessDenied(int pg, String message) {
         dismissProgressbar();
         invalidateOptionsMenu();
-        //updateMenuIcon();
 
         if (pg == PG_LOGIN) {
             new MaterialAlertDialogBuilder(MainActivity.this)
@@ -557,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setMessage(getResources().getString(R.string.dialog_access_changed))
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
                     .setNegativeButton(getResources().getString(R.string.action_logout),
                             (dialogInterface, i) -> logOut())
                     .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
@@ -580,7 +579,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setMessage(getResources().getString(R.string.dialog_update_password_msg))
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
                     .setNegativeButton(getResources().getString(R.string.action_logout),
                             (dialogInterface, i) -> logOut())
                     .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
@@ -593,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setMessage(getResources().getString(R.string.dialog_questionary_text))
                     .setCancelable(false)
                     .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
                     .setNegativeButton(getResources().getString(R.string.action_logout),
                             (dialogInterface, i) -> logOut())
                     .setNeutralButton(getResources().getString(R.string.dialog_continue_offline), null)
@@ -606,7 +605,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     .setMessage(getResources().getString(R.string.dialog_registration_text))
                     .setCancelable(true)
                     .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(User.getURL()))))
+                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
                     .create()
                     .show();
 
@@ -677,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onDateChanged() {
-        binding.date.setText(User.getYears()[pos]);
+        binding.date.setText(UserUtils.getYears()[pos]);
     }
 
     @Override

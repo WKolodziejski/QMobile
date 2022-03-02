@@ -43,7 +43,7 @@ import com.tinf.qmobile.parser.MessageParser;
 import com.tinf.qmobile.parser.ReportParser;
 import com.tinf.qmobile.parser.ScheduleParser;
 import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -111,7 +111,7 @@ public class Client {
         this.onUpdates = new LinkedList<>();
         this.onResponses = new LinkedList<>();
         this.handler = new Handler(Looper.getMainLooper());
-        this.URL = User.getURL();
+        this.URL = UserUtils.getURL();
     }
 
     public static synchronized Client get() {
@@ -190,7 +190,7 @@ public class Client {
                                 for (int i = 0; i < dates.size() - 1; i++)
                                     years[i] = dates.get(i + 1).text();
 
-                                User.setYears(years);
+                                UserUtils.setYears(years);
                             }
                         }
 
@@ -216,7 +216,7 @@ public class Client {
     }
 
     public void load(int pg) {
-        load(pg, User.getYear(pos), User.getPeriod(pos), this::callOnFinish);
+        load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), this::callOnFinish);
     }
 
     public void load(long id) {
@@ -246,7 +246,7 @@ public class Client {
     }
 
     private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
-        load(pg, User.getYear(pos), User.getPeriod(pos), onFinish, notify);
+        load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), onFinish, notify);
     }
 
     private void load(int pg, int year, int period, BaseParser.OnFinish onFinish, boolean notify) {
@@ -312,7 +312,7 @@ public class Client {
 
                         Document document = Jsoup.parse(response);
 
-                        User.setLastLogin(new Date().getTime());
+                        UserUtils.setLastLogin(new Date().getTime());
 
                         isLogging = false;
 
@@ -322,7 +322,7 @@ public class Client {
                         Element img = document.getElementsByAttributeValueEnding("src", cod).first();
 
                         if (img != null && !background)
-                            User.setImg(cod);
+                            UserUtils.setImg(cod);
                             //downloadImage(cod);
 
                         callOnFinish(PG_LOGIN);
@@ -337,7 +337,7 @@ public class Client {
 
                     @Override
                     protected Map<String, String> getParams() {
-                        return User.getLoginParams(KEY_A, KEY_B);
+                        return UserUtils.getLoginParams(KEY_A, KEY_B);
                     }
 
                     @Override
@@ -364,7 +364,7 @@ public class Client {
                     String msg = div.text().replaceAll("\\\\n", "\n").trim();
 
                     if (msg.contains("inativo")) {
-                        User.clearInfo();
+                        UserUtils.clearInfo();
                         callOnAccessDenied(PG_ACCESS_DENIED, msg);
                         return Resp.EGRESS;
                     }
@@ -426,7 +426,7 @@ public class Client {
             return Resp.UNKNOWN;
         }
 
-        User.setName(name);
+        UserUtils.setName(name);
 
         return Resp.OK;
     }
@@ -721,7 +721,7 @@ public class Client {
     }
 
     private void downloadImage(String cod) {
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + User.getCredential(User.REGISTRATION));
+        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + UserUtils.getCredential(UserUtils.REGISTRATION));
 
         Log.d("Picture", picture.getAbsolutePath());
 
@@ -740,7 +740,7 @@ public class Client {
 
     public void setURL(String url) {
         URL = url;
-        User.setURL(url);
+        UserUtils.setURL(url);
     }
 
     public String getURL() {
@@ -753,8 +753,8 @@ public class Client {
 
     public void loadYear(int pos) {
         Executors.newSingleThreadExecutor().execute(() -> {
-            int year = User.getYear(pos);
-            int period = User.getPeriod(pos);
+            int year = UserUtils.getYear(pos);
+            int period = UserUtils.getPeriod(pos);
 
             Log.d(TAG, "Loading journals");
             load(PG_JOURNALS, year, period, pg -> {

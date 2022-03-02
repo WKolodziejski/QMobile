@@ -6,11 +6,10 @@ import android.util.LongSparseArray;
 
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.ViewType;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 import java.util.ArrayList;
 import java.util.List;
 import io.objectbox.reactive.DataSubscription;
@@ -33,9 +32,9 @@ public class MaterialsDataProvider extends BaseDataProvider {
                 .boxFor(Matter.class)
                 .query()
                 .order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos))
+                .equal(Matter_.year_, UserUtils.getYear(pos))
                 .and()
-                .equal(Matter_.period_, User.getPeriod(pos))
+                .equal(Matter_.period_, UserUtils.getPeriod(pos))
                 .build()
                 .find());
 

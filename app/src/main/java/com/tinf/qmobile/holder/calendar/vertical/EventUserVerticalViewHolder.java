@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.content.res.AppCompatResources;
@@ -19,7 +18,7 @@ import com.tinf.qmobile.databinding.CalendarEventUserVBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.utility.ColorUtils;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.Locale;
 
@@ -27,9 +26,9 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
     private final CalendarEventUserVBinding binding;
 
     //private final static Drawable picture = User.getProfilePicture(getContext());
-    private final static String url = User.getImg();
+    private final static String url = UserUtils.getImg();
     private final Drawable img = AppCompatResources.getDrawable(getContext(), R.drawable.ic_account);
-    private final boolean hasImg = User.hasImg();
+    private final boolean hasImg = UserUtils.hasImg();
 
     public EventUserVerticalViewHolder(View view) {
         super(view);

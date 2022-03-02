@@ -21,7 +21,7 @@ import com.tinf.qmobile.databinding.ActivityCalendarBinding;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 import com.tinf.qmobile.widget.calendar.CalendarRecyclerView;
 import org.joda.time.LocalDate;
 import java.text.SimpleDateFormat;
@@ -169,7 +169,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
             if (newDate.getYear() != lastYear) {
                 lastYear = newDate.getYear();
 
-                String[] years = User.getYears();
+                String[] years = UserUtils.getYears();
 
                 for (int i = 0; i < years.length; i++) {
                     String y = years[i];

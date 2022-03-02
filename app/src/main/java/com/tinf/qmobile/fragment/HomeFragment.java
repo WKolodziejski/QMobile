@@ -5,6 +5,7 @@ import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
 import android.app.ActivityOptions;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,11 +13,13 @@ import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +45,9 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.EventsUtils;
+import com.tinf.qmobile.utility.ScheduleUtils;
+import com.tinf.qmobile.utility.UserUtils;
 
 import org.threeten.bp.DayOfWeek;
 
@@ -58,6 +63,7 @@ import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
+import me.jlurena.revolvingweekview.DayTime;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
 public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
@@ -108,12 +114,14 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        updateFab();
+        registerForContextMenu(binding.scheduleTune);
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
+        binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        Design.syncToolbar(toolbar, Design.canScroll(scroll));
+        updateFab();
+        updateChart();
 
         binding.weekView.setOnEventClickListener((event, eventRect) -> {
             Log.d("WEEK", event.getName());
@@ -125,8 +133,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
         });
 
         binding.weekView.setWeekViewLoader(this::updateSchedule);
-
-        Design.syncToolbar(toolbar, Design.canScroll(scroll));
 
         binding.recycler.setItemViewCacheSize(20);
         binding.recycler.setDrawingCacheEnabled(true);
@@ -142,16 +148,106 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
             } catch (Exception ignored) {}
         }
 
-        binding.calendarLayout.setOnClickListener(view1 ->
+        binding.calendarLayout.setOnClickListener(v ->
                 startActivity(new Intent(getActivity(), CalendarActivity.class), pos == 0 ? transition : null));
 
-        binding.scheduleLayout.setOnClickListener(view1 ->
+        binding.scheduleLayout.setOnClickListener(v ->
                 startActivity(new Intent(getActivity(), ScheduleActivity.class), pos == 0 ? transition : null));
 
-        binding.chartText.setOnClickListener(view1 ->
+        binding.chartText.setOnClickListener(v ->
                 startActivity(new Intent(getActivity(), PerformanceActivity.class), pos == 0 ? transition : null));
 
-        updateChart();
+        binding.calendarTune.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(getContext(), v);
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.tune_events, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.events_1week) {
+                    EventsUtils.setEventsLength(1);
+                    DataBase.get().getEventsDataProvider().updateList();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.events_2week) {
+                    EventsUtils.setEventsLength(2);
+                    DataBase.get().getEventsDataProvider().updateList();
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.events_all) {
+                    EventsUtils.setEventsLength(0);
+                    DataBase.get().getEventsDataProvider().updateList();
+                    return true;
+                }
+
+               return false;
+            });
+            popup.show();
+        });
+
+        binding.scheduleTune.setOnClickListener(v -> {
+            PopupMenu popup = new PopupMenu(getContext(), v);
+            MenuInflater inflater = popup.getMenuInflater();
+            inflater.inflate(R.menu.tune_schedule, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.schedule_start) {
+                    new TimePickerDialog(getContext(), (timePicker, h, m) -> {
+                        DayTime current = new DayTime(1, ScheduleUtils.getStartHour(), ScheduleUtils.getStartMin());
+                        DayTime end = new DayTime(1, ScheduleUtils.getEndHour(), ScheduleUtils.getEndMin());
+                        DayTime start = new DayTime(1, h, m);
+
+                        if (start.isAfter(end))
+                            end = new DayTime(start);
+
+                        if (current.isSame(start))
+                            return;
+
+                        ScheduleUtils.setStartHour(h);
+                        ScheduleUtils.setStartMin(m);
+                        ScheduleUtils.setEndHour(end.getHour());
+                        ScheduleUtils.setEndMin(end.getMinute());
+                        ScheduleUtils.setAuto(false);
+                        binding.weekView.notifyDatasetChanged();
+                    }, ScheduleUtils.getStartHour(), ScheduleUtils.getStartMin(), true).show();
+
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.schedule_end) {
+                    new TimePickerDialog(getContext(), (timePicker, h, m) -> {
+                        DayTime current = new DayTime(1, ScheduleUtils.getEndHour(), ScheduleUtils.getEndMin());
+                        DayTime start = new DayTime(1, ScheduleUtils.getStartHour(), ScheduleUtils.getStartMin());
+                        DayTime end = new DayTime(1, h, m);
+
+                        if (end.isBefore(start))
+                            start = new DayTime(end);
+
+                        if (current.isSame(start))
+                            return;
+
+                        ScheduleUtils.setEndHour(h);
+                        ScheduleUtils.setEndMin(m);
+                        ScheduleUtils.setStartHour(start.getHour());
+                        ScheduleUtils.setStartMin(start.getMinute());
+                        ScheduleUtils.setAuto(false);
+                        binding.weekView.notifyDatasetChanged();
+                    }, ScheduleUtils.getEndHour(), ScheduleUtils.getEndMin(), true).show();
+
+                    return true;
+                }
+
+                if (item.getItemId() == R.id.schedule_auto) {
+                    ScheduleUtils.setAuto(true);
+                    binding.weekView.notifyDatasetChanged();
+                    return true;
+                }
+
+                return false;
+            });
+            popup.show();
+        });
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Design.syncToolbar(toolbar, Design.canScroll(scroll));
@@ -164,8 +260,8 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
 
         List<WeekViewEvent> events = new ArrayList<>();
         List<Schedule> schedules = DataBase.get().getBoxStore().boxFor(Schedule.class).query()
-                .equal(Schedule_.year, User.getYear(pos)).and()
-                .equal(Schedule_.period, User.getPeriod(pos))
+                .equal(Schedule_.year, UserUtils.getYear(pos)).and()
+                .equal(Schedule_.period, UserUtils.getPeriod(pos))
                 .build().find();
 
         ViewGroup.LayoutParams params = binding.weekView.getLayoutParams();
@@ -192,33 +288,12 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 }
             }
 
-            int firstIndex = 0; //First index
-            int parc1 = 0;      //Last biggest sum
-            boolean firstIndexFound = false;
+            if (ScheduleUtils.isAuto()) {
+                int firstIndex = 0; //First index
+                int parc1 = 0;      //Last biggest sum
+                boolean firstIndexFound = false;
 
-            // For each hour of the day
-            for (int h = 0; h < 24; h++) {
-                int sum = 0;
-
-                // For each day of the week
-                for (int d = 1; d < 6; d++) {
-
-                    // Sum of events in the same hour, for the whole week
-                    if (week[h][d]) {
-                        sum++;
-                    }
-                }
-
-                // If sum is bigger than the last one, the first index is set to the current hour
-                if (sum > (parc1 + 1)) {
-                    firstIndex = h;
-                    parc1 = sum;
-                    firstIndexFound = true;
-                }
-            }
-
-            // If no first index found, repeats the search without the parc1 + 1 param
-            if (!firstIndexFound) {
+                // For each hour of the day
                 for (int h = 0; h < 24; h++) {
                     int sum = 0;
 
@@ -232,15 +307,37 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                     }
 
                     // If sum is bigger than the last one, the first index is set to the current hour
-                    if (sum > parc1) {
+                    if (sum > (parc1 + 1)) {
                         firstIndex = h;
                         parc1 = sum;
+                        firstIndexFound = true;
                     }
                 }
-            }
 
-            // To this point, firstIndex holds the last index with most schedules
-            // Now, we need to reverse the search to the first index
+                // If no first index found, repeats the search without the parc1 + 1 param
+                if (!firstIndexFound) {
+                    for (int h = 0; h < 24; h++) {
+                        int sum = 0;
+
+                        // For each day of the week
+                        for (int d = 1; d < 6; d++) {
+
+                            // Sum of events in the same hour, for the whole week
+                            if (week[h][d]) {
+                                sum++;
+                            }
+                        }
+
+                        // If sum is bigger than the last one, the first index is set to the current hour
+                        if (sum > parc1) {
+                            firstIndex = h;
+                            parc1 = sum;
+                        }
+                    }
+                }
+
+                // To this point, firstIndex holds the last index with most schedules
+                // Now, we need to reverse the search to the first index
 
             /*boolean r = true;   // Should reverse
             int d1 = 0;         // Day of week
@@ -261,51 +358,72 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 }
             }*/
 
-            // To this point, firstIndex the first index with most schedules
-            // Now, we need to find the first index taking into account some minutes gap
+                // To this point, firstIndex the first index with most schedules
+                // Now, we need to find the first index taking into account some minutes gap
 
-            int lastIndex = firstIndex;
-            int maxInterval = 0;
+                int lastIndex = firstIndex;
+                int maxInterval = 0;
 
-            Log.d("FIRST", String.valueOf(firstIndex));
+                Log.d("FIRST", String.valueOf(firstIndex));
 
-            for (int h = firstIndex; h < 24; h++) {
-                int sum = 0;
+                for (int h = firstIndex; h < 24; h++) {
+                    int sum = 0;
 
-                for (int d = 0; d < 7; d++)
-                    if (week[h][d])
-                        sum++;
+                    for (int d = 0; d < 7; d++)
+                        if (week[h][d])
+                            sum++;
 
-                if (sum == 0)
-                    maxInterval++;
+                    if (sum == 0)
+                        maxInterval++;
 
-                if (maxInterval > 1)
-                    break;
-                else
-                    lastIndex = h;
-            }
+                    if (maxInterval > 1)
+                        break;
+                    else
+                        lastIndex = h;
+                }
 
-            Log.d(String.valueOf(lastIndex), Arrays.toString(minutes));
+                Log.d(String.valueOf(lastIndex), Arrays.toString(minutes));
 
-            while (lastIndex > 0 && minutes[lastIndex] == null)
-                lastIndex--;
+                while (lastIndex > 0 && minutes[lastIndex] == null)
+                    lastIndex--;
 
-            if (minutes[lastIndex] == null) {
-                while (lastIndex < 24 && minutes[lastIndex] == null)
-                    lastIndex++;
-            }
+                if (minutes[lastIndex] == null) {
+                    while (lastIndex < 24 && minutes[lastIndex] == null)
+                        lastIndex++;
+                }
 
-            if (minutes[lastIndex] == null) {
-                params.height = Design.dpiToPixels(0);
+                if (minutes[lastIndex] == null) {
+                    params.height = Design.dpiToPixels(0);
 
-                binding.emptySchedule.setVisibility(View.VISIBLE);
+                    binding.emptySchedule.setVisibility(View.VISIBLE);
+                } else {
+                    int startHour = minutes[firstIndex].getStartTime().getHour();
+                    int startMin = minutes[firstIndex].getStartTime().getMinute();
+                    int endHour = minutes[lastIndex].getEndTime().getHour();
+                    int endMin = minutes[lastIndex].getEndTime().getMinute();
+
+                    params.height = Design.dpiToPixels(((endHour * 60) + endMin) - ((startHour * 60) + startMin) + 8);
+
+                    binding.weekView.goToDay(DayOfWeek.MONDAY);
+                    binding.weekView.goToHour(firstIndex + (startMin * 0.0167));
+
+                    binding.emptySchedule.setVisibility(View.GONE);
+
+                    ScheduleUtils.setStartHour(startHour);
+                    ScheduleUtils.setStartMin(startMin);
+                    ScheduleUtils.setEndHour(endHour);
+                    ScheduleUtils.setEndMin(endMin);
+                }
             } else {
-                params.height = Design.dpiToPixels(
-                        ((minutes[lastIndex].getEndTime().getHour() * 60) + minutes[lastIndex].getEndTime().getMinute()) -
-                                ((minutes[firstIndex].getStartTime().getHour() * 60) + minutes[firstIndex].getStartTime().getMinute()) + 8);
+                int startHour = ScheduleUtils.getStartHour();
+                int startMin = ScheduleUtils.getStartMin();
+                int endHour = ScheduleUtils.getEndHour();
+                int endMin = ScheduleUtils.getEndMin();
 
+                params.height = Design.dpiToPixels(((endHour * 60) + endMin) - ((startHour * 60) + startMin) + 8);
+                
                 binding.weekView.goToDay(DayOfWeek.MONDAY);
-                binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                binding.weekView.goToHour(startHour + (startMin * 0.0167));
 
                 binding.emptySchedule.setVisibility(View.GONE);
             }
@@ -325,9 +443,9 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 .boxFor(Matter.class)
                 .query()
                 .order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos))
+                .equal(Matter_.year_, UserUtils.getYear(pos))
                 .and()
-                .equal(Matter_.period_, User.getPeriod(pos))
+                .equal(Matter_.period_, UserUtils.getPeriod(pos))
                 .build()
                 .find();
 

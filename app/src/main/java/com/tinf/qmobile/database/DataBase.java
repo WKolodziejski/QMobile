@@ -3,7 +3,7 @@ package com.tinf.qmobile.database;
 import static android.content.Context.ACTIVITY_SERVICE;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
+import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 import android.app.ActivityManager;
 import android.util.Log;
@@ -18,7 +18,7 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -45,13 +45,13 @@ public class DataBase implements OnUpdate {
         this.listeners = new LinkedList<>();
         Client.get().addOnUpdateListener(this);
 
-        Log.d("Box for ", User.getCredential(User.REGISTRATION));
+        Log.d("Box for ", UserUtils.getCredential(UserUtils.REGISTRATION));
 
         try {
             boxStore = MyObjectBox
                     .builder()
                     .androidContext(getContext())
-                    .name(User.getCredential(User.REGISTRATION))
+                    .name(UserUtils.getCredential(UserUtils.REGISTRATION))
                     .build();
         } catch (DbSchemaException e) {
             e.printStackTrace();
@@ -59,7 +59,7 @@ public class DataBase implements OnUpdate {
             FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
             crashlytics.setCustomKey("DB", "SCHEMA FAILED");
 
-            if (BoxStore.deleteAllFiles(getContext(), User.getCredential(REGISTRATION))) {
+            if (BoxStore.deleteAllFiles(getContext(), UserUtils.getCredential(REGISTRATION))) {
                 Log.d(TAG, "DB deleted");
 
                 crashlytics.setCustomKey("DB", "DB DELETED");
@@ -67,7 +67,7 @@ public class DataBase implements OnUpdate {
                 boxStore = MyObjectBox
                         .builder()
                         .androidContext(getContext())
-                        .name(User.getCredential(User.REGISTRATION))
+                        .name(UserUtils.getCredential(UserUtils.REGISTRATION))
                         .build();
             } else {
                 crashlytics.setCustomKey("DB", "APP DATA DELETED");
@@ -111,7 +111,7 @@ public class DataBase implements OnUpdate {
         if (instance.boxStore.isClosed())
             instance.boxStore = MyObjectBox.builder()
                     .androidContext(getContext())
-                    .name(User.getCredential(User.REGISTRATION))
+                    .name(UserUtils.getCredential(UserUtils.REGISTRATION))
                     .build();
 
         return instance;
@@ -165,9 +165,9 @@ public class DataBase implements OnUpdate {
                 .boxFor(Matter.class)
                 .query()
                 .order(Matter_.title_)
-                .equal(Matter_.year_, User.getYear(pos))
+                .equal(Matter_.year_, UserUtils.getYear(pos))
                 .and()
-                .equal(Matter_.period_, User.getPeriod(pos))
+                .equal(Matter_.period_, UserUtils.getPeriod(pos))
                 .build()
                 .find();
 

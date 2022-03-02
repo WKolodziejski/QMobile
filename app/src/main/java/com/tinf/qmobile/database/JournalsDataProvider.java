@@ -3,26 +3,17 @@ package com.tinf.qmobile.database;
 import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
 import static com.tinf.qmobile.network.Client.pos;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
-
-import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
-import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class JournalsDataProvider extends BaseDataProvider<Queryable> {
@@ -36,9 +27,9 @@ public class JournalsDataProvider extends BaseDataProvider<Queryable> {
                         .boxFor(Matter.class)
                         .query()
                         .order(Matter_.title_)
-                        .equal(Matter_.year_, User.getYear(pos))
+                        .equal(Matter_.year_, UserUtils.getYear(pos))
                         .and()
-                        .equal(Matter_.period_, User.getPeriod(pos))
+                        .equal(Matter_.period_, UserUtils.getPeriod(pos))
                         .build()
                         .find());
 

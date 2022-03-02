@@ -22,7 +22,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.FragmentLoginBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,8 +34,8 @@ import java.util.Map;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.utility.User.PASSWORD;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
+import static com.tinf.qmobile.utility.UserUtils.PASSWORD;
+import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 public class LoginFragment extends Fragment implements OnResponse {
     private static final String TAG = "LoginFragment";
@@ -134,16 +134,16 @@ public class LoginFragment extends Fragment implements OnResponse {
                 hideKeyboard();
                 binding.userInput.setError(null);
 
-                User.setCredential(REGISTRATION, binding.userInput.getText().toString().toUpperCase().trim());
-                User.setCredential(PASSWORD, binding.passwordInput.getText().toString().trim());
+                UserUtils.setCredential(REGISTRATION, binding.userInput.getText().toString().toUpperCase().trim());
+                UserUtils.setCredential(PASSWORD, binding.passwordInput.getText().toString().trim());
 
                 if (urls == null)
                     Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(binding.spinner.getSelectedItemPosition()));
 
                 FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-                crashlytics.setCustomKey("Register", User.getCredential(REGISTRATION));
-                crashlytics.setCustomKey("Password", User.getCredential(PASSWORD));
-                crashlytics.setCustomKey("URL", User.getURL());
+                crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
+                crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
+                crashlytics.setCustomKey("URL", UserUtils.getURL());
 
                 Client.get().login();
             }

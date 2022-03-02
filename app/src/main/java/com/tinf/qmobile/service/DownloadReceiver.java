@@ -15,7 +15,7 @@ import androidx.core.content.FileProvider;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import java.io.File;
 import java.net.URLConnection;
@@ -27,10 +27,10 @@ import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.utility.User.REGISTRATION;
+import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 public class DownloadReceiver extends BroadcastReceiver {
-    public static final String PATH = "/QMobile/" + User.getCredential(REGISTRATION) + "/";
+    public static final String PATH = "/QMobile/" + UserUtils.getCredential(REGISTRATION) + "/";
     private final OnDownload onDownload;
     private final DownloadManager manager;
     public static long id;
@@ -130,7 +130,7 @@ public class DownloadReceiver extends BroadcastReceiver {
 
     public static String getMaterialPath(String name) {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                + PATH + User.getYear(pos) + "/" + User.getPeriod(pos) + "/" + name;
+                + PATH + UserUtils.getYear(pos) + "/" + UserUtils.getPeriod(pos) + "/" + name;
     }
 
     public static String getAttachmentPath(String name) {
@@ -140,7 +140,7 @@ public class DownloadReceiver extends BroadcastReceiver {
     public static long downloadImage(Context context, String cod) {
         try {
             if (Client.isConnected()) {
-                String title = User.getCredential(User.REGISTRATION);
+                String title = UserUtils.getCredential(UserUtils.REGISTRATION);
 
                 String destiny = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + title;
 

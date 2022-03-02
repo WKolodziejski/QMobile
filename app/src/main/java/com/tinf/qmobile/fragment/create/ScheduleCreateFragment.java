@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,7 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.service.AlarmReceiver;
-import com.tinf.qmobile.utility.User;
+import com.tinf.qmobile.utility.UserUtils;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.format.TextStyle;
@@ -60,8 +59,8 @@ public class ScheduleCreateFragment extends Fragment {
         Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
 
         matters = matterBox.query()
-                .equal(Matter_.year_, User.getYear(0)).and()
-                .equal(Matter_.period_, User.getPeriod(0))
+                .equal(Matter_.year_, UserUtils.getYear(0)).and()
+                .equal(Matter_.period_, UserUtils.getPeriod(0))
                 .build().find();
 
         start = new DayTime(DayOfWeek.MONDAY, 12, 0);
@@ -288,7 +287,7 @@ public class ScheduleCreateFragment extends Fragment {
                     break;
             }
 
-            Schedule schedule = new Schedule(binding.titleEdt.getText().toString().trim(), start, end, alarmDif, User.getYear(0), User.getPeriod(0), isFromSite);
+            Schedule schedule = new Schedule(binding.titleEdt.getText().toString().trim(), start, end, alarmDif, UserUtils.getYear(0), UserUtils.getPeriod(0), isFromSite);
 
             if (id != 0) {
                 schedule.id = id;
