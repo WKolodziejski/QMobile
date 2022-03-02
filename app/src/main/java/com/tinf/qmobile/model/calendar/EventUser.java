@@ -8,6 +8,8 @@ import io.objectbox.relation.ToOne;
 
 import static com.tinf.qmobile.model.ViewType.USER;
 
+import java.util.Objects;
+
 @Entity
 public class EventUser extends EventBase {
     //@Id public long id;
@@ -88,23 +90,36 @@ public class EventUser extends EventBase {
     }
 
     @Override
-    public boolean equals(CalendarBase event) {
-        if (event instanceof EventUser) {
-            EventUser e = (EventUser) event;
-            if (e.matter.getTargetId() == matter.getTargetId()) {
-
-                boolean eq = super.equals(event)
-                        && e.alarm == alarm
-                        && e.difference == difference;
-
-                if (matter.getTarget() != null)
-                    eq = eq && matter.getTarget().equals(e.matter.getTarget());
-
-                return eq;
-            }
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventUser)) return false;
+        if (!super.equals(o)) return false;
+        EventUser eventUser = (EventUser) o;
+        return getAlarm() == eventUser.getAlarm() && getDifference() == eventUser.getDifference()
+                && getMatter().equals(eventUser.getMatter());
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getMatter(), getAlarm(), getDifference());
+    }
+
+    /*@Override
+    public boolean equals(CalendarBase event) {
+        if (!(event instanceof EventUser)) return false;
+
+        EventUser e = (EventUser) event;
+
+        boolean eq = super.equals(event)
+                && e.getAlarm() == getAlarm()
+                && e.getDifference() == getDifference();
+
+        if (e.matter.getTargetId() == matter.getTargetId())
+            if (matter.getTarget() != null)
+                eq = eq && matter.getTarget().equals(e.matter.getTarget());
+
+        return eq;
+    }*/
 
     @Override
     public long getId() {

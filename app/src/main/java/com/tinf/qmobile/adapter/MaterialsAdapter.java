@@ -2,6 +2,7 @@ package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.IGNORE;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 
 import android.content.Context;

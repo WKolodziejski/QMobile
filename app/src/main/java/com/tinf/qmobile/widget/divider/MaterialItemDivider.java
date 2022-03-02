@@ -19,10 +19,10 @@ public class MaterialItemDivider extends RecyclerView.ItemDecoration {
     private final Drawable divider;
     private final int padding;
 
-    public MaterialItemDivider(Context context, int margin) {
+    public MaterialItemDivider(Context context) {
         final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
         divider = styledAttributes.getDrawable(0);
-        padding = Design.dpiToPixels(margin);
+        padding = Design.dpiToPixels(52);
         styledAttributes.recycle();
     }
 
@@ -84,7 +84,7 @@ public class MaterialItemDivider extends RecyclerView.ItemDecoration {
                 nextType = adapter.getItemViewType(p2);
             }
 
-            if (viewType == ViewType.HEADER || nextType == ViewType.HEADER) {
+            if (viewType == ViewType.MATERIAL && nextType == ViewType.HEADER) {
                 divider.setBounds(left, top, right, bottom);
             } else {
                 divider.setBounds(left + padding, top, right, bottom);

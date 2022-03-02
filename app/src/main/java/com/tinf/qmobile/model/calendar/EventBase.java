@@ -5,6 +5,7 @@ import androidx.annotation.ColorInt;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.journal.Journal;
 
 import org.joda.time.LocalDate;
 
@@ -155,29 +156,48 @@ public abstract class EventBase extends Event implements CalendarBase {
     }
 
     @Override
-    public boolean equals(CalendarBase event) {
-        if (event instanceof EventBase) {
-            EventBase e = (EventBase) event;
-
-            boolean eq = e.color == color
-                    && e.startTime == startTime
-                    && e.endTime == endTime;
-
-            if (e.title != null)
-                eq = eq && e.title.equals(title);
-
-            if (e.description != null)
-                eq = eq && e.description.equals(description);
-
-            return eq;
-        }
-        return false;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getId(), getTitle(), getStartTime(), getEndTime(), getDescription(), getColor());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), id, title, startTime, endTime, description, color);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventBase)) return false;
+        if (!super.equals(o)) return false;
+        EventBase eventBase = (EventBase) o;
+        boolean eq = getId() == eventBase.getId() && getStartTime() == eventBase.getStartTime()
+                && getEndTime() == eventBase.getEndTime() && getColor() == eventBase.getColor();
+
+        if (getTitle() != null)
+            eq &= getTitle().equals(eventBase.getTitle());
+
+        if (getDescription() != null)
+            eq &= getDescription().equals(eventBase.getDescription());
+
+        return eq;
     }
+
+    /*@Override
+    public boolean equals(CalendarBase event) {
+        //if (this == event) return true;
+        if (!(event instanceof EventBase)) return false;
+        //if (!super.equals(event)) return false;
+
+        EventBase e = (EventBase) event;
+
+        boolean eq = e.getColor() == getColor()
+                && e.getStartTime() == getStartTime()
+                && e.getEndTime() == getEndTime();
+
+        if (e.getTitle() != null)
+            eq = eq && e.getTitle().equals(getTitle());
+
+        if (e.getDescription() != null)
+            eq = eq && e.getDescription().equals(getDescription());
+
+        return eq;
+    }*/
 
     @Override
     public LocalDate getHashKey() {

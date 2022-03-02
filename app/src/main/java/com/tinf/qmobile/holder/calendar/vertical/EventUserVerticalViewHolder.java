@@ -1,26 +1,35 @@
 package com.tinf.qmobile.holder.calendar.vertical;
 
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.model.ViewType.EVENT;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import androidx.appcompat.content.res.AppCompatResources;
+
+import com.bumptech.glide.Glide;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.databinding.CalendarEventUserVBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.EventUser;
+import com.tinf.qmobile.utility.ColorUtils;
 import com.tinf.qmobile.utility.User;
+
 import java.util.Locale;
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.model.ViewType.EVENT;
-import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
     private final CalendarEventUserVBinding binding;
 
-    private final static Drawable picture = User.getProfilePicture(getContext());
+    //private final static Drawable picture = User.getProfilePicture(getContext());
+    private final static String url = User.getImg();
+    private final Drawable img = AppCompatResources.getDrawable(getContext(), R.drawable.ic_account);
+    private final boolean hasImg = User.hasImg();
 
     public EventUserVerticalViewHolder(View view) {
         super(view);
@@ -43,8 +52,20 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
 
         binding.card.setBackgroundColor(event.getColor());
 
-        if (picture != null)
-            binding.image.setImageDrawable(picture);
+        if (hasImg) {
+            try {
+                Glide.with(context)
+                        .load(url)
+                        .centerCrop()
+                        .placeholder(img)
+                        .into(binding.image);
+            } catch (Exception ignore) {}
+        } else {
+            binding.image.setImageTintList(ColorStateList.valueOf(ColorUtils.INSTANCE.contrast(event.getColor(), 0.5f)));
+        }
+
+        //if (picture != null)
+        //binding.image.setImageDrawable(picture);
 
         binding.card.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);

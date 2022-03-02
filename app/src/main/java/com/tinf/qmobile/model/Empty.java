@@ -1,16 +1,14 @@
 package com.tinf.qmobile.model;
 
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventBase;
-
-import java.util.EnumMap;
-
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 
 public class Empty extends EventBase implements Queryable {
-    int type = EMPTY;
+    private final int type;
 
-    public Empty() {}
+    public Empty() {
+        this.type = EMPTY;
+    }
 
     public Empty(int type) {
         this.type = type;
@@ -28,7 +26,7 @@ public class Empty extends EventBase implements Queryable {
 
     @Override
     public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
+        return queryable.getItemType() == type;
     }
 
 }

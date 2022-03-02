@@ -60,11 +60,6 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
     }
 
     @Override
-    public void onScrollRequest() {
-
-    }
-
-    @Override
     public void onDateChanged() {
         updateList();
     }

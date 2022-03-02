@@ -1,5 +1,7 @@
 package com.tinf.qmobile.fragment.dialog;
 
+import static com.tinf.qmobile.App.getContext;
+
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -18,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
@@ -72,10 +76,18 @@ public class UserFragment extends DialogFragment {
 
         alerts.setOnClickListener(v -> onButton.onAlerts());
 
-        Drawable picture = User.getProfilePicture(getContext());
+        try {
+            Glide.with(getContext())
+                    .load(User.getImg())
+                    .centerCrop()
+                    .placeholder(R.drawable.ic_account)
+                    .into(image);
+        } catch (Exception ignore) {}
 
-        if (picture != null)
-            image.setImageDrawable(picture);
+        //Drawable picture = User.getProfilePicture(getContext());
+
+        //if (picture != null)
+            //image.setImageDrawable(picture);
 
         policy.setOnClickListener(view1 -> {
             Intent intent = new Intent(Intent.ACTION_VIEW,

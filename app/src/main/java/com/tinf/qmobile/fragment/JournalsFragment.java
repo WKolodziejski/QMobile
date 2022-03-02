@@ -3,6 +3,7 @@ package com.tinf.qmobile.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,13 +63,6 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
         inflater.inflate(R.menu.grades, menu);
         super.onCreateOptionsMenu(menu, inflater);
         menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_column);
-    }
-
-    @Override
-    public void onScrollRequest() {
-        if (binding.recycler != null) {
-            binding.recycler.smoothScrollToPosition(0);
-        }
     }
 
     private boolean canExpand() {

@@ -98,7 +98,7 @@ public class SuppliesFragment extends Fragment {
         recycler.setDrawingCacheEnabled(true);
         recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler.addItemDecoration(new MaterialItemDivider(getContext(), 70));
+        recycler.addItemDecoration(new MaterialItemDivider(getContext()));
         recycler.setItemAnimator(null);
         recycler.setAdapter(adapter);
     }

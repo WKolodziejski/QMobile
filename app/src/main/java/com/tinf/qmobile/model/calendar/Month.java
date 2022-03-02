@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.tinf.qmobile.model.ViewType.MONTH;
 
@@ -62,6 +63,19 @@ public class Month implements CalendarBase {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Month)) return false;
+        Month month = (Month) o;
+        return getTime() == month.getTime();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTime());
+    }
+
+    /*@Override
     public boolean equals(CalendarBase event) {
         if (event instanceof Month) {
             Month m = (Month) event;
@@ -70,7 +84,7 @@ public class Month implements CalendarBase {
         }
 
         return false;
-    }
+    }*/
 
     @Override
     public LocalDate getHashKey() {

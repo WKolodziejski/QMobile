@@ -11,6 +11,8 @@ import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.calendar.EventSimple.Type.FIM;
 import static com.tinf.qmobile.model.calendar.EventSimple.Type.INICIO;
 
+import java.util.Objects;
+
 @Entity
 public class EventSimple extends EventBase {
     public enum Type {
@@ -69,15 +71,29 @@ public class EventSimple extends EventBase {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventSimple)) return false;
+        if (!super.equals(o)) return false;
+        EventSimple that = (EventSimple) o;
+        return getType() == that.getType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getType());
+    }
+
+    /*@Override
     public boolean equals(CalendarBase event) {
         if (event instanceof EventSimple) {
             EventSimple e = (EventSimple) event;
 
             return super.equals(event)
-                    && e.type == type;
+                    && e.getType() == type;
         }
         return false;
-    }
+    }*/
 
     @Override
     public long getId() {

@@ -101,7 +101,7 @@ public class InfoFragment extends Fragment {
             return;
 
         int color1 = matter.getColor();
-        int color2 = ColorUtils.INSTANCE.lighten(color1, 0.25f);
+        int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
         int classesGiven = matter.getClassesGiven();
         int classesTotal = matter.getClassesTotal();
         int absences = matter.getAbsences();
@@ -195,7 +195,7 @@ public class InfoFragment extends Fragment {
         }
 
         Line line = new Line(points);
-        line.setColor(ColorUtils.INSTANCE.lighten(matter.getColor(), 0.25f));
+        line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
         line.setPointColor(matter.getColor());
         line.setShape(ValueShape.CIRCLE);
         line.setCubic(true);

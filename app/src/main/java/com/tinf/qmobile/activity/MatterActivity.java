@@ -116,7 +116,6 @@ public class MatterActivity extends AppCompatActivity {
                             binding.tab.setSelectedTabIndicatorColor(matter.getColor());
                             binding.tab.selectTab(binding.tab.getTabAt(binding.tab.getSelectedTabPosition()));
                             DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);
-                            Client.get().requestScroll();
                         })
                         .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
                         .build()

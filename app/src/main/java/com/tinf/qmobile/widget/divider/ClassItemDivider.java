@@ -84,7 +84,7 @@ public class ClassItemDivider extends RecyclerView.ItemDecoration {
                 nextType = adapter.getItemViewType(p2);
             }
 
-            if (viewType == ViewType.PERIOD || nextType == ViewType.PERIOD) {
+            if (viewType == ViewType.CLASS && nextType == ViewType.PERIOD) {
                 divider.setBounds(left, top, right, bottom);
             } else {
                 divider.setBounds(left + padding, top, right, bottom);

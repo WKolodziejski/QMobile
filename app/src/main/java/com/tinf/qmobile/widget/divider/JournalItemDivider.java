@@ -22,7 +22,7 @@ public class JournalItemDivider extends RecyclerView.ItemDecoration {
     public JournalItemDivider(Context context, int margin) {
         final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
         divider = styledAttributes.getDrawable(0);
-        padding = Design.dpiToPixels(margin);
+        padding = Design.dpiToPixels(52);
         styledAttributes.recycle();
     }
 
@@ -69,7 +69,7 @@ public class JournalItemDivider extends RecyclerView.ItemDecoration {
                 viewType = adapter.getItemViewType(p);
             }
 
-            if (viewType == ViewType.FOOTERJ || viewType == ViewType.FOOTERP) {
+            if (viewType == ViewType.FOOTERJOURNAL || viewType == ViewType.FOOTERPERIOD) {
                 divider.setBounds(left, top, right, bottom);
             } else {
                 divider.setBounds(left + padding, top, right, bottom);

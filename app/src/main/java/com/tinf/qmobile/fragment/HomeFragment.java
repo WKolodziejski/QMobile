@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -31,8 +30,9 @@ import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.activity.PerformanceActivity;
 import com.tinf.qmobile.activity.ScheduleActivity;
-import com.tinf.qmobile.adapter.HomeAdapter;
+import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentHomeBinding;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
@@ -60,7 +60,7 @@ import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-public class HomeFragment extends BaseFragment {
+public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
     private FloatingActionButton fab;
@@ -110,6 +110,7 @@ public class HomeFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
         updateFab();
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
@@ -132,7 +133,7 @@ public class HomeFragment extends BaseFragment {
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         binding.recycler.setItemAnimator(null);
-        binding.recycler.setAdapter(new HomeAdapter(getContext()));
+        binding.recycler.setAdapter(new EventsAdapter(getContext()));
 
         if (fab != null) {
             try {
@@ -390,14 +391,10 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
-    public void onScrollRequest() {
-        scroll.smoothScrollTo(0, 0);
-    }
-
-    @Override
     public void onDateChanged() {
         binding.weekView.notifyDatasetChanged();
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
         updateFab();
         //updateSchedule();
         updateChart();
@@ -406,12 +403,20 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void onAddListeners() {
+        DataBase.get().getEventsDataProvider().addOnDataListener(this);
+        Client.get().addOnUpdateListener(this);
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
     }
 
     @Override
     protected void onRemoveListeners() {
+        DataBase.get().getEventsDataProvider().removeOnDataListener(this);
+        Client.get().removeOnUpdateListener(this);
+    }
 
+    @Override
+    public void onUpdate(List list) {
+        Design.syncToolbar(toolbar, Design.canScroll(scroll));
     }
 
     @Override

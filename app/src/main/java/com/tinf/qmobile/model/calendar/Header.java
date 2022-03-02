@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.tinf.qmobile.model.ViewType.HEADER;
 
@@ -59,14 +60,26 @@ public class Header implements CalendarBase {
     }
 
     @Override
-    public boolean equals(CalendarBase event) {
-        if (event instanceof Header) {
-            Header h = (Header) event;
-
-            return h.time == time;
-        }
-        return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Header)) return false;
+        Header header = (Header) o;
+        return time == header.time;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(time);
+    }
+
+    /*@Override
+    public boolean equals(CalendarBase event) {
+        if (!(event instanceof Header)) return false;
+
+        Header h = (Header) event;
+
+        return h.time == time;
+    }*/
 
     @Override
     public boolean isHeader() {

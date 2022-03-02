@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.network.OnResponse.INDEX;
 
 public class User {
 
@@ -44,6 +45,7 @@ public class User {
     private static final String LAST = ".Last";
     private static final String YEARS = ".Years";
     private static final String URL = ".Url";
+    private static final String IMG = ".Img";
 
     public static boolean isValid() {
         return getInfo().getBoolean(VALID, false);
@@ -87,17 +89,13 @@ public class User {
         getEditor().putLong(LAST, date).apply();
     }
 
-    public static void clearInfos() {
+    public static void clearInfo() {
         getEditor().clear().apply();
     }
 
     private static SharedPreferences getInfo() {
         return App.getContext().getSharedPreferences(INFO, Context.MODE_PRIVATE);
     }
-
-    /*private static SharedPreferences getInfo() {
-        return PreferenceManager.getDefaultSharedPreferences(getContext());
-    }*/
 
     private static SharedPreferences.Editor getEditor() {
         return getInfo().edit();
@@ -184,7 +182,19 @@ public class User {
         return -1;
     }
 
-    public static Drawable getProfilePicture(Context context) {
+    public static void setImg(String cod) {
+        getEditor().putString(IMG, cod).apply();
+    }
+
+    public static String getImg() {
+        return getURL() + INDEX + "1025&tipo=0&COD=" + getInfo().getString(IMG, "");
+    }
+
+    public static boolean hasImg() {
+        return !getInfo().getString(IMG, "").isEmpty();
+    }
+
+    /*public static Drawable getProfilePicture(Context context) {
         File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
                 + "/" + User.getCredential(User.REGISTRATION));
 
@@ -219,7 +229,7 @@ public class User {
         }
 
         return null;
-    }
+    }*/
 
     private static String encrypt(String value, String KEY_A, String KEY_B) {
         String encrypted = "", javaScriptCode = "";

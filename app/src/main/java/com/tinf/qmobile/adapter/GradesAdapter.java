@@ -1,8 +1,8 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.FOOTERJ;
-import static com.tinf.qmobile.model.ViewType.FOOTERP;
+import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
+import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
@@ -32,7 +32,7 @@ import com.tinf.qmobile.model.journal.FooterPeriod;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
-import com.tinf.qmobile.utility.Design;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -118,11 +118,11 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
                 return new JournalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_item, parent, false));
 
-            case FOOTERJ:
+            case FOOTERJOURNAL:
                 return new JournalFooterViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_footer, parent, false));
 
-            case FOOTERP:
+            case FOOTERPERIOD:
                 return new PeriodFooterViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.period_footer, parent, false));
 

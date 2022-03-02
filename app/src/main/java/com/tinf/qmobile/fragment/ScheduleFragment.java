@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataSubscription;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-public class ScheduleFragment extends Fragment implements OnUpdate {
+public class ScheduleFragment extends Fragment {
     private FragmentScheduleBinding binding;
     private DataSubscription sub1, sub2;
     private Bundle bundle;
@@ -201,7 +202,8 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
                 int color = DataBase
                         .get().getBoxStore().boxFor(Matter.class).get(id).getColor();
 
-                color = ColorUtils.INSTANCE.lighten(color, 0.25f);
+                Log.d("COLOR", String.valueOf(color));
+                color = ColorUtils.INSTANCE.contrast(color, 0.25f);
 
                 binding.fab.setBackgroundTintList(ColorStateList.valueOf(color));
             }
@@ -213,52 +215,6 @@ public class ScheduleFragment extends Fragment implements OnUpdate {
         super.onDestroy();
         sub1.cancel();
         sub2.cancel();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Client.get().removeOnUpdateListener(this);
-    }
-
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        Client.get().addOnUpdateListener(this);
-    }
-
-    @Override
-    public void onScrollRequest() {
-        //updateFABColor();
-    }
-
-    @Override
-    public void onDateChanged() {
-
     }
 
 }

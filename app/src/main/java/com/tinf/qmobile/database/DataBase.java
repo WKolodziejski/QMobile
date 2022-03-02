@@ -218,11 +218,6 @@ public class DataBase implements OnUpdate {
     }
 
     @Override
-    public void onScrollRequest() {
-
-    }
-
-    @Override
     public void onDateChanged() {
         update();
     }

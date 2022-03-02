@@ -49,7 +49,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     private ArrayList<String> columnHeader;
     private ArrayList<Matter> rowHeader;
     private List<List<String>> cells;
-    private int selected_row = -1, selected_column = -1;
     private final JournalEmptyBinding empty;
 
     public ReportAdapter(Context context, TableView tableView, JournalEmptyBinding empty) {
@@ -98,14 +97,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             @Override
             public void onColumnHeaderClicked(@NonNull RecyclerView.ViewHolder columnHeaderView, int column) {
                 tableView.getSelectionHandler().clearSelection();
-
-//                if (column == selected_column) {
-//                    tableView.getSelectionHandler().clearSelection();
-//                    selected_column = -1;
-//                } else {
-//                    selected_column = column;
-//                    selected_row = -1;
-//                }
             }
 
             @Override
@@ -121,14 +112,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
             @Override
             public void onRowHeaderClicked(@NonNull RecyclerView.ViewHolder rowHeaderView, int row) {
                 tableView.getSelectionHandler().clearSelection();
-
-//                if (row == selected_row) {
-//                    tableView.getSelectionHandler().clearSelection();
-//                    selected_row = -1;
-//                } else {
-//                    selected_row = row;
-//                    selected_column = -1;
-//                }
             }
 
             @Override
@@ -272,22 +255,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     public void onBindCellViewHolder(AbstractViewHolder holder, String cellItemModel, int c, int r) {
         try {
             ((TableBaseViewHolder) holder).bind(context, rowHeader.get(r), cells.get(r).get(c));
-
-//            if (c == 0) {
-//                TableCellMatterViewHolder h = (TableCellMatterViewHolder) holder;
-//                h.binding.matter.setText(cells.get(r).get(c));
-//
-//            } else if (c == 2) {
-//
-//
-//            } else if (c == columnHeader.size() - 1) {
-//                TableCellSituationViewHolder h = (TableCellSituationViewHolder) holder;
-//                h.binding.situation.setText(cells.get(r).get(c));
-//                h.binding.situation.setTextColor(getSituationColor(cells.get(r).get(c)));
-//            } else {
-//                TableCellViewHolder h = (TableCellViewHolder) holder;
-//                h.binding.text.setText(cells.get(r).get(c));
-//            }
         } catch (Exception ignored) { }
     }
 
@@ -306,14 +273,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     public void onBindColumnHeaderViewHolder(AbstractViewHolder holder, String columnHeaderItemModel, int c) {
         try {
             ((TableBaseViewHolder) holder).bind(context, null, columnHeader.get(c));
-
-//            if (c == 0 || c == columnHeader.size() - 1) {
-//                TableColumnMatterHeaderViewHolder h = (TableColumnMatterHeaderViewHolder) holder;
-//                h.binding.matter.setText(columnHeader.get(c));
-//            } else {
-//                TableColumnHeaderViewHolder h = (TableColumnHeaderViewHolder) holder;
-//                h.binding.text.setText(columnHeader.get(c));
-//            }
         } catch (Exception ignored) { }
     }
 
@@ -328,16 +287,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     public void onBindRowHeaderViewHolder(AbstractViewHolder holder, Matter rowHeaderItemModel, int r) {
         try {
             ((TableBaseViewHolder) holder).bind(context, rowHeader.get(r), null);
-
-//            h.binding.badge.setBackgroundTintList(ColorStateList.valueOf(rowHeader.get(r).getColor()));
-//
-//            int n = rowHeader.get(r).getJournalNotSeenCount();
-//
-//            if (n > 0) {
-//                h.binding.badge.setText(String.valueOf(n));
-//            } else {
-//                h.binding.badge.setText("");
-//            }
         } catch (Exception ignored) { }
     }
 
@@ -345,11 +294,6 @@ public class ReportAdapter extends AbstractTableAdapter<String, Matter, String> 
     @Override
     public View onCreateCornerView(@NonNull ViewGroup parent) {
         return LayoutInflater.from(context).inflate(R.layout.table_corner, null, false);
-    }
-
-    @Override
-    public void onScrollRequest() {
-
     }
 
     @Override

@@ -9,7 +9,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.tinf.qmobile.network.Client;
 
-public abstract class BaseFragment extends Fragment implements OnUpdate {
+public abstract class BaseFragment extends Fragment {
     protected MaterialToolbar toolbar;
     protected NestedScrollView scroll;
     protected SwipeRefreshLayout refresh;
@@ -24,55 +24,39 @@ public abstract class BaseFragment extends Fragment implements OnUpdate {
     }
 
     @Override
-    public void onScrollRequest() {
-        //Override if the behaviour is desired
-    }
-
-    @Override
-    public void onDateChanged() {
-        //Override if the behaviour is desired
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         onAddListeners();
-        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         onAddListeners();
-        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         onAddListeners();
-        Client.get().addOnUpdateListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         onRemoveListeners();
-        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         onRemoveListeners();
-        Client.get().removeOnUpdateListener(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         onRemoveListeners();
-        Client.get().removeOnUpdateListener(this);
     }
 
 }

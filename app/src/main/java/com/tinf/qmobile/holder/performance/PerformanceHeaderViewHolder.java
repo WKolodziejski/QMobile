@@ -75,7 +75,7 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
         }
 
         Line line = new Line(points);
-        line.setColor(ColorUtils.INSTANCE.lighten(matter.getColor(), 0.25f));
+        line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
         line.setPointColor(matter.getColor());
         line.setShape(ValueShape.CIRCLE);
         line.setCubic(true);

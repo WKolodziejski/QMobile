@@ -106,7 +106,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
-        binding.recycler.addItemDecoration(new MaterialItemDivider(getContext(), 70));
+        binding.recycler.addItemDecoration(new MaterialItemDivider(getContext()));
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(adapter);
 
@@ -132,13 +132,6 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
         View view = inflater.inflate(R.layout.fragment_material, container, false);
         binding = FragmentMaterialBinding.bind(view);
         return view;
-    }
-
-    @Override
-    public void onScrollRequest() {
-        if (binding.recycler != null) {
-            binding.recycler.smoothScrollToPosition(0);
-        }
     }
 
     private boolean canExpand() {

@@ -13,6 +13,6 @@ public interface CalendarBase<T extends CalendarBase> extends Queryable {
     int getYear();
     LocalDate getHashKey();
     boolean isHeader();
-    boolean equals(T event);
+    //boolean equals(T event);
 
 }

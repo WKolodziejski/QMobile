@@ -52,19 +52,12 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
 
 import static com.android.volley.Request.Method.GET;
 import static com.android.volley.Request.Method.POST;
@@ -329,7 +322,8 @@ public class Client {
                         Element img = document.getElementsByAttributeValueEnding("src", cod).first();
 
                         if (img != null && !background)
-                            downloadImage(cod);
+                            User.setImg(cod);
+                            //downloadImage(cod);
 
                         callOnFinish(PG_LOGIN);
                     }
@@ -370,7 +364,7 @@ public class Client {
                     String msg = div.text().replaceAll("\\\\n", "\n").trim();
 
                     if (msg.contains("inativo")) {
-                        User.clearInfos();
+                        User.clearInfo();
                         callOnAccessDenied(PG_ACCESS_DENIED, msg);
                         return Resp.EGRESS;
                     }
@@ -674,13 +668,13 @@ public class Client {
         });
     }
 
-    private void callOnScrollRequest() {
+    /*private void callOnScrollRequest() {
         handler.post(() -> {
             for (int i = 0; i < onUpdates.size(); i++) {
                 onUpdates.get(i).onScrollRequest();
             }
         });
-    }
+    }*/
 
     public synchronized void changeDate(int pos) {
         handler.post(() -> {
@@ -714,9 +708,9 @@ public class Client {
         changeDate(pos);
     }
 
-    public void requestScroll() {
+    /*public void requestScroll() {
         callOnScrollRequest();
-    }
+    }*/
 
     public void requestDelayedUpdate() {
         handler.postDelayed(() -> {

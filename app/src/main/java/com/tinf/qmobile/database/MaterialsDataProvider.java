@@ -6,6 +6,7 @@ import android.util.LongSparseArray;
 
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.ViewType;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;

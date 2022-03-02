@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -34,6 +33,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.shape.CornerFamily;
@@ -69,7 +69,6 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnCount,
         OnUpdate, NavigationView.OnNavigationItemSelectedListener {
@@ -108,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             if (itemId != binding.navigation.getSelectedItemId())
                 return changeFragment(itemId);
             else
-                Client.get().requestScroll();
+                binding.scroll.smoothScrollTo(0, 0);
+                //Client.get().requestScroll();
 
             return false;
         });
@@ -215,12 +215,20 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
             view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_offline));
         } else {
-            Drawable picture = User.getProfilePicture(getContext());
+            try {
+                Glide.with(getContext())
+                        .load(User.getImg())
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_account)
+                        .into(view);
+            } catch (Exception ignore) {}
+
+            /*Drawable picture = User.getProfilePicture(getContext());
 
             if (picture != null)
                 view.setImageDrawable(picture.getCurrent());
             else
-                view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
+                view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));*/
         }
 
         view.setOnClickListener(v -> {
@@ -340,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         Client.get().close();
         Works.cancelAll();
         DataBase.get().close();
-        User.clearInfos();
+        User.clearInfo();
         PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         startActivity(new Intent(this, LoginActivity.class));
@@ -665,11 +673,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         } else {
             txt.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void onScrollRequest() {
-
     }
 
     @Override

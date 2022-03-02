@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.EventsAdapter;
+import com.tinf.qmobile.adapter.CalendarAdapter;
 import com.tinf.qmobile.databinding.ActivityCalendarBinding;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
@@ -39,7 +39,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     private boolean isExpanded = false;
     private boolean isIdle = true;
     private LinearLayoutManager layout;
-    private EventsAdapter adapter;
+    private CalendarAdapter adapter;
 
     private static final SimpleDateFormat month = new SimpleDateFormat("MMMM", Locale.getDefault());
     private static final SimpleDateFormat year = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
@@ -58,7 +58,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
         Client.get().load(PG_CALENDAR);
 
         layout = new LinearLayoutManager(this);
-        adapter = new EventsAdapter(this, binding.calendar, () -> scrollToDate(today));
+        adapter = new CalendarAdapter(this, binding.calendar, () -> scrollToDate(today));
 
         binding.refresh.setEnabled(false);
 
