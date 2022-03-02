@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/schedule_start"
-        android:title="Initial time" />
+        android:title="@string/menu_schedule_start" />
 
     <item android:id="@+id/schedule_end"
-        android:title="Final time" />
+        android:title="@string/menu_schedule_end" />
 
     <item android:id="@+id/schedule_auto"
-        android:title="Default" />
+        android:title="@string/menu_schedule_auto" />
 
 </menu>

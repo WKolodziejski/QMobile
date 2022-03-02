@@ -198,8 +198,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                             getSharedPreferences(USE_INFO, MODE_PRIVATE)
                                     .edit()
                                     .putInt(USE_COUNT, 0).apply())
-                    .create()
-                    .show();
+                    .create().show();
         }
     }
 
@@ -216,22 +215,27 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         } else if (UserUtils.hasImg()) {
             try {
                 Glide.with(getContext())
-                        .load(UserUtils.getImg())
-                        .centerCrop()
+                        .load(UserUtils.getImgUrl())
+                        .circleCrop()
                         .placeholder(R.drawable.ic_account)
                         .into(view);
-            } catch (Exception ignore) { }
+            } catch (Exception ignore) {
+            }
         } else {
             view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
         }
+        /*else {
+            Executors.newSingleThreadExecutor().execute(() -> {
+                Drawable picture = UserUtils.getProfilePicture(getContext());
 
-            /*Drawable picture = User.getProfilePicture(getContext());
-
-            if (picture != null)
-                view.setImageDrawable(picture.getCurrent());
-            else
-                view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));*/
-
+                view.post(() -> {
+                    if (picture != null)
+                        view.setImageDrawable(picture.getCurrent());
+                    else
+                        view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
+                });
+            });
+        }*/
 
         view.setOnClickListener(v -> {
             UserFragment fragment = new UserFragment();

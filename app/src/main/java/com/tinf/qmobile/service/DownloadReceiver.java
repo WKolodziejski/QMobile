@@ -137,7 +137,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + PATH + name;
     }
 
-    public static long downloadImage(Context context, String cod) {
+    public static void downloadImage(Context context, String cod) {
         try {
             if (Client.isConnected()) {
                 String title = UserUtils.getCredential(UserUtils.REGISTRATION);
@@ -156,13 +156,9 @@ public class DownloadReceiver extends BroadcastReceiver {
                         .addRequestHeader("Cookie", Client.get().getCookie())
                         .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_PICTURES, title));
 
-                return id;
-            } else {
-                return 0;
+                UserUtils.setImg(cod);
             }
-        } catch (Exception e) {
-            return 0;
-        }
+        } catch (Exception ignore) { }
     }
 
     public interface OnDownload {

@@ -1,5 +1,7 @@
 package com.tinf.qmobile.fragment.dialog;
 
+import static com.tinf.qmobile.App.getContext;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -75,8 +77,8 @@ public class UserFragment extends DialogFragment {
         if (UserUtils.hasImg()) {
             try {
                 Glide.with(getContext())
-                        .load(UserUtils.getImg())
-                        .centerCrop()
+                        .load(UserUtils.getImgUrl())
+                        .circleCrop()
                         .placeholder(R.drawable.ic_account)
                         .into(image);
             } catch (Exception ignore) { }

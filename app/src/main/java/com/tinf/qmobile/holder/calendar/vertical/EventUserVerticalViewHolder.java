@@ -53,10 +53,10 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
 
         if (hasImg) {
             try {
-                Glide.with(context)
-                        .load(url)
-                        .centerCrop()
-                        .placeholder(img)
+                Glide.with(getContext())
+                        .load(UserUtils.getImgUrl())
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_account)
                         .into(binding.image);
             } catch (Exception ignore) {}
         } else {

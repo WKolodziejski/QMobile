@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/events_1week"
-        android:title="Next 7 days" />
+        android:title="@string/menu_events_next_week" />
 
     <item android:id="@+id/events_2week"
-        android:title="Next 2 weeks" />
+        android:title="@string/menu_events_next_2week" />
 
     <item android:id="@+id/events_all"
-        android:title="All events" />
+        android:title="@string/menu_events_all" />
 
 </menu>

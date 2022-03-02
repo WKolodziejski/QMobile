@@ -70,7 +70,7 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
     private FloatingActionButton fab;
-    private Bundle transition;
+    //private Bundle transition;
 
     public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh, FloatingActionButton fab) {
         super.setParams(toolbar, scroll, refresh);
@@ -87,7 +87,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
-                    //updateSchedule();
                     updateChart();
                     Design.syncToolbar(toolbar, Design.canScroll(scroll));
                 });
@@ -98,7 +97,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
-                    //updateSchedule();
                     updateChart();
                     Design.syncToolbar(toolbar, Design.canScroll(scroll));
                 });
@@ -141,21 +139,44 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new EventsAdapter(getContext()));
 
-        if (fab != null) {
+        /*if (fab != null) {
             try {
                 transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                         Pair.create(fab, fab.getTransitionName())).toBundle();
             } catch (Exception ignored) {}
-        }
+        }*/
 
-        binding.calendarLayout.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), CalendarActivity.class), pos == 0 ? transition : null));
+        binding.calendarLayout.setOnClickListener(v -> {
+            Bundle transition = null;
 
-        binding.scheduleLayout.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), ScheduleActivity.class), pos == 0 ? transition : null));
+            if (fab != null) {
+                try {
+                    transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(fab, fab.getTransitionName())).toBundle();
+                } catch (Exception ignored) {}
+            }
+
+            startActivity(new Intent(getContext(), CalendarActivity.class), pos == 0 ? transition : null);
+        });
+
+        binding.scheduleLayout.setOnClickListener(v -> {
+            Bundle transition = null;
+
+            if (fab != null) {
+                try {
+                    transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+                            Pair.create(fab, fab.getTransitionName())).toBundle();
+                } catch (Exception ignored) {}
+            }
+
+            startActivity(new Intent(getContext(), ScheduleActivity.class), pos == 0 ? transition : null);
+        });
+
+        /*binding.scheduleLayout.setOnClickListener(v ->
+                startActivity(new Intent(getContext(), ScheduleActivity.class), pos == 0 ? transition : null));*/
 
         binding.chartText.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), PerformanceActivity.class), pos == 0 ? transition : null));
+                startActivity(new Intent(getContext(), PerformanceActivity.class)));
 
         binding.calendarTune.setOnClickListener(v -> {
             PopupMenu popup = new PopupMenu(getContext(), v);
@@ -514,7 +535,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
         binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
         binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
         updateFab();
-        //updateSchedule();
         updateChart();
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
     }

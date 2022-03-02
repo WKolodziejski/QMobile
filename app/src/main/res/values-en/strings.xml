@@ -210,4 +210,11 @@
     <string name="dialog_permission_allow">Allow</string>
     <string name="dialog_permission_cancel">Not now</string>
     <string name="toast_delete_file_fail">It was not possible to delete a file</string>
+    <string name="title_downloads">Downloads</string>
+    <string name="menu_events_next_week">Next 7 days</string>
+    <string name="menu_events_next_2week">Next 2 weeks</string>
+    <string name="menu_events_all">All events</string>
+    <string name="menu_schedule_start">Set initial time</string>
+    <string name="menu_schedule_end">Set final time</string>
+    <string name="menu_schedule_auto">Default</string>
 </resources>

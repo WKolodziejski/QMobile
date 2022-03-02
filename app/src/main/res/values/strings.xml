@@ -19,6 +19,13 @@
     <string name="title_performance">Desempenho</string>
     <string name="title_downloads">Downloads</string>
 
+    <string name="menu_events_next_week">Próximos 7 dias</string>
+    <string name="menu_events_next_2week">Próximas 2 semanas</string>
+    <string name="menu_events_all">Todos eventos</string>
+    <string name="menu_schedule_start">Definir hora inicial</string>
+    <string name="menu_schedule_end">Definir hora final</string>
+    <string name="menu_schedule_auto">Redefinir</string>
+
     <string name="action_settings">Configurações</string>
     <string name="action_about">Sobre</string>
     <string name="action_logout">Sair</string>

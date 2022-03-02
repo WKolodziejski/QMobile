@@ -2,16 +2,27 @@ package com.tinf.qmobile.utility;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
+import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
+import com.tinf.qmobile.network.Client;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,7 +35,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
+
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 public class UserUtils {
 
@@ -85,7 +100,7 @@ public class UserUtils {
     }
 
     static SharedPreferences getInfo() {
-        return App.getContext().getSharedPreferences(INFO, Context.MODE_PRIVATE);
+        return getContext().getSharedPreferences(INFO, Context.MODE_PRIVATE);
     }
 
     static SharedPreferences.Editor getEditor() {
@@ -185,18 +200,33 @@ public class UserUtils {
         return !getInfo().getString(IMG, "").isEmpty();
     }
 
-    /*public static Drawable getProfilePicture(Context context) {
-        File picture = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                + "/" + User.getCredential(User.REGISTRATION));
+    public static GlideUrl getImgUrl() {
+        return new GlideUrl(UserUtils.getImg(), new LazyHeaders.Builder()
+                .addHeader("Cookie", Client.get().getCookie())
+                .addHeader("Cookie", Client.get().getCookie())
+                .build());
+    }
 
-        if (picture.exists()) {
-            Log.d("PICTURE", picture.getAbsolutePath());
+    /*private static Drawable picture;
+
+    public static Drawable getProfilePicture(Context context) {
+        if (!hasImg())
+            return null;
+
+        if (picture != null)
+            return picture;
+
+        File file = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                + "/" + getCredential(REGISTRATION));
+
+        if (file.exists()) {
+            Log.d("PICTURE", file.getAbsolutePath());
 
             Bitmap bitmap = null;
 
             if (android.os.Build.VERSION.SDK_INT >= 29) {
                 try {
-                    ImageDecoder.Source src = ImageDecoder.createSource(picture);
+                    ImageDecoder.Source src = ImageDecoder.createSource(file);
 
                     bitmap = ImageDecoder.decodeBitmap(src);
 
@@ -204,7 +234,7 @@ public class UserUtils {
                     e.printStackTrace();
                 }
             } else {
-                bitmap = BitmapFactory.decodeFile(picture.getAbsolutePath());
+                bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             }
 
             if (bitmap != null) {
@@ -215,7 +245,9 @@ public class UserUtils {
                 round.setCircular(true);
                 round.setAntiAlias(true);
 
-                return round.getCurrent();
+                picture = round.getCurrent();
+
+                return picture;
             }
         }
 
@@ -225,7 +257,7 @@ public class UserUtils {
     private static String encrypt(String value, String KEY_A, String KEY_B) {
         String encrypted = "", javaScriptCode = "";
 
-        InputStream inputStream = App.getContext().getResources().openRawResource(R.raw.encrypt);
+        InputStream inputStream = getContext().getResources().openRawResource(R.raw.encrypt);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
         try {
