@@ -295,7 +295,7 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 event.setColor(schedule.getColor());
                 events.add(event);
 
-                int day = event.getStartTime().getDay().getValue();
+                int day = event.getStartTime().getDay().getValue() % 7;
                 int hour = event.getStartTime().getHour();
 
                 if (minutes[hour] != null) {

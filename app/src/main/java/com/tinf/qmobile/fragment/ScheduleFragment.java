@@ -2,7 +2,6 @@ package com.tinf.qmobile.fragment;
 
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
-
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -10,11 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
@@ -27,11 +24,10 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.ColorUtils;
+import com.tinf.qmobile.utility.ScheduleUtils;
 import com.tinf.qmobile.utility.UserUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataSubscription;
@@ -106,7 +102,7 @@ public class ScheduleFragment extends Fragment {
 
     private List<WeekViewEvent> updateSchedule(boolean scroll) {
         boolean[][] hours = new boolean[24][7];
-        WeekViewEvent[] minutes = new WeekViewEvent[24];
+        //WeekViewEvent[] minutes = new WeekViewEvent[24];
 
         List<WeekViewEvent> events = new ArrayList<>();
 
@@ -135,56 +131,63 @@ public class ScheduleFragment extends Fragment {
                 event.setColor(schedule.getColor());
                 events.add(event);
 
-                int day = event.getStartTime().getDay().getValue();
+                int day = event.getStartTime().getDay().getValue() % 7;
                 int hour = event.getStartTime().getHour();
 
                 if (!hours[hour][day]) {
-                    minutes[hour] = event;
+                    //minutes[hour] = event;
                     hours[hour][day] = true;
                 }
             }
 
             if (scroll) {
-                int firstIndex = 0;
-                int parc1 = 0;
+                int scrollTo;
 
-                for (int h = 0; h < 24; h++) {
-                    int sum = 0;
-                    for (int d = 0; d < 7; d++) {
-                        if (hours[h][d]) {
-                            sum++;
+                if (!ScheduleUtils.isAuto()) {
+                    scrollTo = ScheduleUtils.getStartHour();
+
+                } else {
+                    int firstIndex = 0;
+                    int parc1 = 0;
+
+                    for (int h = 0; h < 24; h++) {
+                        int sum = 0;
+                        for (int d = 0; d < 7; d++) {
+                            if (hours[h][d]) {
+                                sum++;
+                            }
+                        }
+                        if (sum > parc1) {
+                            firstIndex = h;
+                            parc1 = sum;
                         }
                     }
-                    if (sum > parc1) {
-                        firstIndex = h;
-                        parc1 = sum;
+
+                    boolean r = true;
+                    int d1 = 0;
+
+                    while (r && firstIndex > 0) {
+                        if (!hours[firstIndex - 1][d1] && d1 < 7) {
+                            d1++;
+                            if (d1 == 7)
+                                r = false;
+                        } else {
+                            firstIndex--;
+                            d1 = 0;
+                        }
                     }
+
+                    scrollTo = firstIndex;
                 }
 
-                boolean r = true;
-                int d1 = 0;
-
-                while (r) {
-                    if (!hours[firstIndex - 1][d1] && d1 < 7) {
-                        d1++;
-                        if (d1 == 7)
-                            r = false;
-                    } else {
-                        firstIndex--;
-                        d1 = 0;
-                    }
-                }
-
-                binding.weekView.goToHour(firstIndex + (minutes[firstIndex].getStartTime().getMinute() * 0.0167));
+                binding.scroll.scrollTo(0, scrollTo * 150);
             }
 
-            binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.colorPrimary));
-            binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.colorPrimary));
+            binding.layout.setVisibility(View.VISIBLE);
             binding.empty.setVisibility(View.GONE);
 
         } else {
-            binding.weekView.setHeaderColumnTextColor(getResources().getColor(R.color.transparent));
-            binding.weekView.setTodayHeaderTextColor(getResources().getColor(R.color.transparent));
+            binding.layout.setVisibility(View.GONE);
             binding.empty.setVisibility(View.VISIBLE);
         }
 

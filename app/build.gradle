@@ -36,9 +36,9 @@ android {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 22
         targetSdkVersion 32
-        versionName '1.7.4'
+        versionName '1.7.5'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 107
+        versionCode 109
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -102,6 +102,7 @@ dependencies {
     implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.github.bumptech.glide:glide:4.13.0'
+    //implementation 'com.github.tobiasschuerg:android-week-view:-SNAPSHOT'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
     implementation 'org.apache.commons:commons-lang3:3.5'

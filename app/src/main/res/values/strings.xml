@@ -192,6 +192,13 @@
     <string name="infos_history">Histórico</string>
 
     <string name="schedule_empty">Sem horários disponíveis</string>
+    <string name="schedule_mon">Seg</string>
+    <string name="schedule_tue">Ter</string>
+    <string name="schedule_wed">Qua</string>
+    <string name="schedule_thu">Qui</string>
+    <string name="schedule_fri">Sex</string>
+    <string name="schedule_sat">Sab</string>
+    <string name="schedule_sun">Dom</string>
 
     <string name="alarm_30min">30 minutos antes</string>
     <string name="alarm_1h">1 hora antes</string>

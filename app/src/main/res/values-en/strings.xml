@@ -217,4 +217,11 @@
     <string name="menu_schedule_start">Set initial time</string>
     <string name="menu_schedule_end">Set final time</string>
     <string name="menu_schedule_auto">Default</string>
+    <string name="schedule_mon">Mon</string>
+    <string name="schedule_tue">Tue</string>
+    <string name="schedule_wed">Wed</string>
+    <string name="schedule_thu">Thu</string>
+    <string name="schedule_fri">Fri</string>
+    <string name="schedule_sat">Sat</string>
+    <string name="schedule_sun">Sun</string>
 </resources>

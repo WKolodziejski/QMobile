@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,35 +12,157 @@
         android:src="@drawable/draw_schedule"
         android:visibility="gone" />
 
-    <me.jlurena.revolvingweekview.WeekView
-        android:id="@+id/weekView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:transitionName="Horario"
-        app:columnGap="8dp"
-        app:dayBackgroundColor="@color/transparent"
-        app:eventCornerRadius="8dp"
-        app:eventTextColor="@color/colorPrimaryLight"
-        app:eventTextSize="12sp"
-        app:firstDayOfWeek="sunday"
-        app:headerColumnBackground="@color/transparent"
-        app:headerColumnPadding="8dp"
-        app:headerColumnTextColor="@color/colorPrimary"
-        app:headerRowBackgroundColor="@color/transparent"
-        app:headerRowPadding="12dp"
-        app:horizontalFlingEnabled="false"
-        app:hourHeight="60dp"
-        app:hourSeparatorColor="@color/transparent"
-        app:maxHourHeight="60dp"
-        app:minHourHeight="60dp"
-        app:noOfVisibleDays="7"
-        app:pastBackgroundColor="@color/transparent"
-        app:showFirstDayOfWeekFirst="true"
-        app:showNowLine="false"
-        app:todayBackgroundColor="@color/transparent"
-        app:todayHeaderTextColor="@color/colorPrimary"
-        app:xScrollingSpeed="0"
-        app:zoomFocusPointEnabled="false" />
+        android:id="@+id/layout"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="36dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline1"
+                android:text="@string/schedule_sun"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guideline2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline2"
+                android:text="@string/schedule_mon"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline1"
+                app:layout_constraintEnd_toStartOf="@id/guideline3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline3"
+                android:text="@string/schedule_tue"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline2"
+                app:layout_constraintEnd_toStartOf="@id/guideline4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline4"
+                android:text="@string/schedule_wed"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline3"
+                app:layout_constraintEnd_toStartOf="@id/guideline5"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline5"
+                android:text="@string/schedule_thu"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline4"
+                app:layout_constraintEnd_toStartOf="@id/guideline6"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline6"
+                android:text="@string/schedule_fri"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline5"
+                app:layout_constraintEnd_toStartOf="@id/guideline7"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/guideline7"
+                android:text="@string/schedule_sat"
+                android:textAllCaps="true"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scroll">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.tinf.qmobile.widget.schedule.ScheduleViewSchedule
+                    android:id="@+id/weekView"
+                    android:layout_width="match_parent"
+                    android:layout_height="1456dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:transitionName="Horario"
+                    app:columnGap="8dp"
+                    app:dayBackgroundColor="@color/transparent"
+                    app:eventCornerRadius="8dp"
+                    app:eventTextColor="@color/colorPrimaryLight"
+                    app:eventTextSize="12sp"
+                    app:firstDayOfWeek="sunday"
+                    app:headerColumnBackground="@color/transparent"
+                    app:headerColumnPadding="8dp"
+                    app:headerColumnTextColor="@color/colorPrimary"
+                    app:headerRowBackgroundColor="@color/transparent"
+                    app:headerRowPadding="12dp"
+                    app:horizontalFlingEnabled="false"
+                    app:hourHeight="60dp"
+                    app:hourSeparatorColor="@color/transparent"
+                    app:maxHourHeight="60dp"
+                    app:minHourHeight="60dp"
+                    app:noOfVisibleDays="7"
+                    app:pastBackgroundColor="@color/transparent"
+                    app:showFirstDayOfWeekFirst="true"
+                    app:showNowLine="false"
+                    app:todayBackgroundColor="@color/transparent"
+                    app:todayHeaderTextColor="@color/colorPrimary"
+                    app:zoomFocusPointEnabled="false" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
@@ -54,6 +177,7 @@
         app:borderWidth="0dp"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_add"
-        app:tint="@color/colorPrimaryLight" />
+        app:tint="@color/colorPrimaryLight"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

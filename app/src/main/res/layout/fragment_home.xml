@@ -82,7 +82,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tinf.qmobile.widget.schedule.ScheduleView
+        <com.tinf.qmobile.widget.schedule.ScheduleViewHome
             android:id="@+id/weekView"
             android:layout_width="match_parent"
             android:layout_height="1dp"
