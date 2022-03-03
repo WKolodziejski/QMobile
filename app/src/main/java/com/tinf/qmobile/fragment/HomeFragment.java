@@ -70,7 +70,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
     private FloatingActionButton fab;
-    //private Bundle transition;
 
     public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh, FloatingActionButton fab) {
         super.setParams(toolbar, scroll, refresh);
@@ -139,13 +138,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new EventsAdapter(getContext()));
 
-        /*if (fab != null) {
-            try {
-                transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
-                        Pair.create(fab, fab.getTransitionName())).toBundle();
-            } catch (Exception ignored) {}
-        }*/
-
         binding.calendarLayout.setOnClickListener(v -> {
             Bundle transition = null;
 
@@ -171,9 +163,6 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
 
             startActivity(new Intent(getContext(), ScheduleActivity.class), pos == 0 ? transition : null);
         });
-
-        /*binding.scheduleLayout.setOnClickListener(v ->
-                startActivity(new Intent(getContext(), ScheduleActivity.class), pos == 0 ? transition : null));*/
 
         binding.chartText.setOnClickListener(v ->
                 startActivity(new Intent(getContext(), PerformanceActivity.class)));

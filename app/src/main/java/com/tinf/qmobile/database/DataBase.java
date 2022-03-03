@@ -40,6 +40,7 @@ public class DataBase implements OnUpdate {
     private JournalsDataProvider journalsDataProvider;
     private MaterialsDataProvider materialsDataProvider;
     private EventsDataProvider eventsDataProvider;
+    private CalendarDataProvider calendarDataProvider;
 
     private DataBase() {
         this.listeners = new LinkedList<>();
@@ -142,6 +143,9 @@ public class DataBase implements OnUpdate {
 
             if (eventsDataProvider != null)
                 eventsDataProvider.close();
+
+            if (calendarDataProvider != null)
+                calendarDataProvider.close();
         }
 
         Log.d(TAG, "closed");
@@ -215,6 +219,13 @@ public class DataBase implements OnUpdate {
             eventsDataProvider = new EventsDataProvider();
 
         return eventsDataProvider;
+    }
+
+    public CalendarDataProvider getCalendarDataProvider() {
+        if (calendarDataProvider == null)
+            calendarDataProvider = new CalendarDataProvider();
+
+        return calendarDataProvider;
     }
 
     @Override

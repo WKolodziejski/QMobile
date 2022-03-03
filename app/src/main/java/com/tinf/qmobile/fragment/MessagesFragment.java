@@ -2,6 +2,8 @@ package com.tinf.qmobile.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,18 +116,14 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
     @Override
     public void onError(int pg, String error) {
-        getActivity().runOnUiThread(() -> {
-            binding.refresh.setRefreshing(false);
-            Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
-        });
+        binding.refresh.setRefreshing(false);
+        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        getActivity().runOnUiThread(() -> {
-            binding.refresh.setRefreshing(false);
-            Toast.makeText(getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
-        });
+        binding.refresh.setRefreshing(false);
+        Toast.makeText(getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
     }
 
 }

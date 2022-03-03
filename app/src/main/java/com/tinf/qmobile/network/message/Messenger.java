@@ -2,6 +2,8 @@ package com.tinf.qmobile.network.message;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.DownloadListener;
 import android.webkit.JsResult;
@@ -14,7 +16,7 @@ import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.MessagesHandler;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Messenger implements OnMessages, DownloadListener, OnResponse {
@@ -26,11 +28,13 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private final List<String> queue;
     private final OnResponse onResponse;
     private final Context context;
+    private final Handler handler;
 
     public Messenger(Context context, OnResponse onResponse) {
         this.context = context;
-        this.queue = new ArrayList<>();
         this.onResponse = onResponse;
+        this.queue = new LinkedList<>();
+        this.handler = new Handler(Looper.getMainLooper());
         //this.webView = webView;
 
         webView = new WebView(context);
@@ -56,39 +60,40 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 isLoading = true;
-                onResponse.onStart(pg);
+                handler.post(() -> onResponse.onStart(pg));
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 if (url.equals(Client.get().getURL() + MESSAGES)) {
-                    view.loadUrl(   "javascript:(function() {" +
-                                        "var targetNode = document.getElementById('ctl00_UpdateProgressAguarde');" +
-                                        "var config = {attributes: true};" +
-                                        "var callback = function(mutationsList, observer) {" +
-                                            "setTimeout(() => {" +
-                                                "for(var mutation of mutationsList) {" +
-                                                    "if (mutation.attributeName == 'aria-hidden') {" +
-                                                        "if (mutation.target.attributes['aria-hidden'].value == 'true') {" +
-                                                            "window.handler.handlePage('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');" +
-                                                        "}" +
-                                                    "}" +
-                                                "}" +
-                                            "}, 1000);" +
-                                        "};" +
-                                        "var observer = new MutationObserver(callback);" +
-                                        "observer.observe(targetNode, config);" +
-                                    "})()");
+                    view.loadUrl("javascript:(function() {" +
+                            "var targetNode = document.getElementById('ctl00_UpdateProgressAguarde');" +
+                            "var config = {attributes: true};" +
+                            "var callback = function(mutationsList, observer) {" +
+                            "setTimeout(() => {" +
+                            "for(var mutation of mutationsList) {" +
+                            "if (mutation.attributeName == 'aria-hidden') {" +
+                            "if (mutation.target.attributes['aria-hidden'].value == 'true') {" +
+                            "window.handler.handlePage('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');" +
+                            "}" +
+                            "}" +
+                            "}" +
+                            "}, 1000);" +
+                            "};" +
+                            "var observer = new MutationObserver(callback);" +
+                            "observer.observe(targetNode, config);" +
+                            "})()");
 
-                    view.loadUrl(   "javascript:(function() {" +
-                                        "window.handler.handlePage('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');" +
-                                    "})()");
+                    view.loadUrl("javascript:(function() {" +
+                            "window.handler.handlePage('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');" +
+                            "})()");
 
                     Log.d("HANDLER", "added");
 
                     isLoading = false;
-                    onResponse.onFinish(pg);
+
+                    handler.post(() -> onResponse.onFinish(pg));
                 }
             }
 
@@ -96,10 +101,11 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
         if (Client.get().isLogging()) {
             isLoading = true;
-            onResponse.onStart(PG_LOGIN);
+
+            handler.post(() -> onResponse.onStart(PG_LOGIN));
+
             Client.get().addOnResponseListener(this);
-        }
-        else
+        } else
             loadFirstPage();
     }
 
@@ -118,8 +124,9 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                     enqueue(request);
                 else {
                     isLoading = true;
-                    onResponse.onStart(pg);
-                    webView.loadUrl(request);
+
+                    webView.post(() -> webView.loadUrl(request));
+                    handler.post(() -> onResponse.onStart(pg));
                 }
     }
 
@@ -133,8 +140,9 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                 enqueue(request);
             else {
                 isLoading = true;
-                onResponse.onStart(pg);
-                webView.loadUrl(request);
+
+                webView.post(() -> webView.loadUrl(request));
+                handler.post(() -> onResponse.onStart(pg));
             }
     }
 
@@ -148,8 +156,9 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
                 enqueue(request);
             else {
                 isLoading = true;
-                onResponse.onStart(pg);
-                webView.loadUrl(request);
+
+                webView.post(() -> webView.loadUrl(request));
+                handler.post(() -> onResponse.onStart(pg));
             }
     }
 
@@ -167,8 +176,9 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             enqueue(request);
         } else {
             isLoading = true;
-            onResponse.onStart(pg);
-            webView.loadUrl(request);
+
+            webView.post(() -> webView.loadUrl(request));
+            handler.post(() -> onResponse.onStart(pg));
         }
     }
 
@@ -186,12 +196,12 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
         this.hasPreviousPage = pg != 1;
         this.isLoading = false;
 
-        if (!queue.isEmpty())
-            webView.post(() -> {
-                isLoading = true;
-                onResponse.onStart(pg);
-                webView.loadUrl(queue.remove(0));
-            });
+        if (!queue.isEmpty()) {
+            isLoading = true;
+
+            webView.post(() -> webView.loadUrl(queue.remove(0)));
+            handler.post(() -> onResponse.onStart(pg));
+        }
 
         Log.d(String.valueOf(pg), String.valueOf(hasMorePages));
     }
@@ -200,12 +210,12 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     public void onFinish() {
         this.isLoading = false;
 
-        if (!queue.isEmpty())
-            webView.post(() -> {
-                isLoading = true;
-                onResponse.onStart(pg);
-                webView.loadUrl(queue.remove(0));
-            });
+        if (!queue.isEmpty()) {
+            isLoading = true;
+
+            webView.post(() -> webView.loadUrl(queue.remove(0)));
+            handler.post(() -> onResponse.onStart(pg));
+        }
     }
 
     @Override
@@ -243,12 +253,13 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
             Client.get().login();
 
         Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-        onResponse.onError(pg, error);
+
+        handler.post(() -> onResponse.onError(pg, error));
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        onResponse.onAccessDenied(pg, message);
+        handler.post(() -> onResponse.onAccessDenied(pg, message));
     }
 
 }
