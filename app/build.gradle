@@ -36,9 +36,9 @@ android {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 22
         targetSdkVersion 32
-        versionName '1.7.6'
+        versionName '1.7.7'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 110
+        versionCode 112
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {

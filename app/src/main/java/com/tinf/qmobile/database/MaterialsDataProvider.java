@@ -66,6 +66,7 @@ public class MaterialsDataProvider extends BaseDataProvider {
 
     @Override
     protected void close() {
+        super.close();
         sub1.cancel();
         sub2.cancel();
     }

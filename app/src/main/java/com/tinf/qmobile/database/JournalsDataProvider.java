@@ -70,6 +70,7 @@ public class JournalsDataProvider extends BaseDataProvider<Queryable> {
 
     @Override
     protected void close() {
+        super.close();
         sub1.cancel();
         sub2.cancel();
     }

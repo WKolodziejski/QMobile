@@ -35,7 +35,7 @@ import com.tinf.qmobile.model.matter.Period;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
+
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
@@ -77,7 +77,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
     }
 
     private void updateList(Bundle bundle) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        DataBase.get().execute(() -> {
             List<Queryable> list = getList(bundle);
             handler.post(() -> this.list.submitList(list));
         });

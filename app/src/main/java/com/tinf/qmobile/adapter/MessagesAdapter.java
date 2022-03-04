@@ -68,7 +68,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     }
 
     private void updateList() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        DataBase.get().execute(() -> {
             List<Queryable> list = getList();
             handler.post(() -> this.list.submitList(list));
         });

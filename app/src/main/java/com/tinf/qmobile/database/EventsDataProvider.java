@@ -118,6 +118,7 @@ public class EventsDataProvider extends BaseDataProvider<EventBase> {
 
     @Override
     protected void close() {
+        super.close();
         sub1.cancel();
         sub2.cancel();
         sub3.cancel();

@@ -203,6 +203,7 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
 
     @Override
     protected void close() {
+        super.close();
         sub1.cancel();
         sub2.cancel();
         sub3.cancel();

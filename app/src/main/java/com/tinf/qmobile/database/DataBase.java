@@ -6,6 +6,8 @@ import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 import android.app.ActivityManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -22,9 +24,10 @@ import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.objectbox.BoxStore;
-import io.objectbox.android.AndroidScheduler;
 import io.objectbox.exception.DbSchemaException;
 import io.objectbox.reactive.DataSubscription;
 
@@ -37,6 +40,8 @@ public class DataBase implements OnUpdate {
     private final DataSubscription sub2;
     private final DataSubscription sub3;
     private final DataSubscription sub4;
+    private final ExecutorService executors;
+    private final Handler handler;
     private JournalsDataProvider journalsDataProvider;
     private MaterialsDataProvider materialsDataProvider;
     private EventsDataProvider eventsDataProvider;
@@ -44,6 +49,8 @@ public class DataBase implements OnUpdate {
 
     private DataBase() {
         this.listeners = new LinkedList<>();
+        this.executors = Executors.newFixedThreadPool(5);
+        this.handler = new Handler(Looper.getMainLooper());
         Client.get().addOnUpdateListener(this);
 
         Log.d("Box for ", UserUtils.getCredential(UserUtils.REGISTRATION));
@@ -81,22 +88,22 @@ public class DataBase implements OnUpdate {
         Log.d(TAG, boxStore == null ? "BoxStore is null" : boxStore.diagnose());
 
         sub1 = boxStore.subscribe(Matter.class)
-                .on(AndroidScheduler.mainThread())
+                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub2 = boxStore.subscribe(Journal.class)
-                .on(AndroidScheduler.mainThread())
+                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub3 = boxStore.subscribe(Material.class)
-                .on(AndroidScheduler.mainThread())
+                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub4 = boxStore.subscribe(Message.class)
-                .on(AndroidScheduler.mainThread())
+                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> countMessages((int) (boxStore.boxFor(Message.class)
                         .query()
@@ -130,6 +137,7 @@ public class DataBase implements OnUpdate {
             sub2.cancel();
             sub3.cancel();
             sub4.cancel();
+            executors.shutdown();
             boxStore.closeThreadResources();
             boxStore.close();
             boxStore = null;
@@ -153,37 +161,41 @@ public class DataBase implements OnUpdate {
     }
 
     private void countNotification(int i1, int i2) {
-        if (listeners != null)
+        handler.post(() -> {
             for (OnCount listener : listeners)
                 listener.onCountNotifications(i1, i2);
+        });
     }
 
     private void countMessages(int i) {
-        if (listeners != null)
+        handler.post(() -> {
             for (OnCount listener : listeners)
                 listener.onCountMessages(i);
+        });
     }
 
     private void update() {
-        List<Matter> matters = boxStore
-                .boxFor(Matter.class)
-                .query()
-                .order(Matter_.title_)
-                .equal(Matter_.year_, UserUtils.getYear(pos))
-                .and()
-                .equal(Matter_.period_, UserUtils.getPeriod(pos))
-                .build()
-                .find();
+        execute(() -> {
+            List<Matter> matters = boxStore
+                    .boxFor(Matter.class)
+                    .query()
+                    .order(Matter_.title_)
+                    .equal(Matter_.year_, UserUtils.getYear(pos))
+                    .and()
+                    .equal(Matter_.period_, UserUtils.getPeriod(pos))
+                    .build()
+                    .find();
 
-        int c1 = 0;
-        int c2 = 0;
+            int c1 = 0;
+            int c2 = 0;
 
-        for (Matter matter : matters) {
-            c1 += matter.getJournalNotSeenCount();
-            c2 += matter.getMaterialNotSeenCount();
-        }
+            for (Matter matter : matters) {
+                c1 += matter.getJournalNotSeenCount();
+                c2 += matter.getMaterialNotSeenCount();
+            }
 
-        countNotification(c1, c2);
+            countNotification(c1, c2);
+        });
     }
 
     public void addOnDataChangeListener(OnCount onCount) {
@@ -226,6 +238,10 @@ public class DataBase implements OnUpdate {
             calendarDataProvider = new CalendarDataProvider();
 
         return calendarDataProvider;
+    }
+
+    public void execute(Runnable runnable) {
+        executors.submit(runnable);
     }
 
     @Override

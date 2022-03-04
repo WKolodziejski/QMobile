@@ -8,22 +8,24 @@ import com.tinf.qmobile.network.Client;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import io.objectbox.reactive.DataObserver;
 
 public abstract class BaseDataProvider<T> implements OnUpdate {
     protected final List<OnData> listeners;
     protected final DataObserver observer;
+    private final ExecutorService executors;
     protected final Handler handler;
     protected List<T> list;
 
     protected abstract List<T> buildList();
     protected abstract void open();
-    protected abstract void close();
 
     public BaseDataProvider() {
         this.list = new ArrayList<>();
         this.listeners = new LinkedList<>();
+        this.executors = Executors.newFixedThreadPool(2);
         this.observer = data -> updateList();
         this.handler = new Handler(Looper.getMainLooper());
 
@@ -34,7 +36,7 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
     }
 
     public void updateList() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executors.execute(() -> {
             list = buildList();
             handler.post(this::callOnData);
         });
@@ -57,6 +59,10 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
 
     public List<T> getList() {
         return list;
+    }
+
+    protected void close() {
+        executors.shutdown();
     }
 
     @Override

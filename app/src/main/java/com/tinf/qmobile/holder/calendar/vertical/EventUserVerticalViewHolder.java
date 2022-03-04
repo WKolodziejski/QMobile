@@ -26,8 +26,8 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
     private final CalendarEventUserVBinding binding;
 
     //private final static Drawable picture = User.getProfilePicture(getContext());
-    private final static String url = UserUtils.getImg();
-    private final Drawable img = AppCompatResources.getDrawable(getContext(), R.drawable.ic_account);
+    //private final static String url = UserUtils.getImg();
+    //private final Drawable img = AppCompatResources.getDrawable(getContext(), R.drawable.ic_account);
     private final boolean hasImg = UserUtils.hasImg();
 
     public EventUserVerticalViewHolder(View view) {

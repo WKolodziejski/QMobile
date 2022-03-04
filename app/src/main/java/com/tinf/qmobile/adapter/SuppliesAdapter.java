@@ -83,7 +83,7 @@ public class SuppliesAdapter extends MaterialsBaseAdapter {
     }
 
     private void updateList(Bundle bundle) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        DataBase.get().execute(() -> {
             List<Queryable> list = getList(bundle);
             handler.post(() -> this.list.submitList(list));
         });

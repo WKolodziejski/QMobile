@@ -32,14 +32,14 @@ import io.objectbox.Box;
 import io.objectbox.query.QueryBuilder;
 
 public class SearchParser  {
-    protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+    //protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
     protected Box<Journal> journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-    protected Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
+    //protected Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
     protected Box<Material> materialsBox = DataBase.get().getBoxStore().boxFor(Material.class);
-    protected Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
+    //protected Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
     protected Box<Message> messageBox = DataBase.get().getBoxStore().boxFor(Message.class);
-    protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
-    protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
+    //protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
+    //protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
     protected Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
 
     private final OnSearch onSearch;

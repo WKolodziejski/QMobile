@@ -68,7 +68,7 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
     }
 
     private void updateList() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        DataBase.get().execute(() -> {
             List<Queryable> list = getList();
             handler.post(() -> this.list.submitList(list));
         });

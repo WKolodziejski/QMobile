@@ -57,6 +57,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.android.volley.Request.Method.GET;
@@ -92,6 +93,7 @@ public class Client {
     private final List<OnUpdate> onUpdates;
     private final RequestQueue requests;
     private final Map<String, String> params;
+    private final ExecutorService executors;
     private final Handler handler;
     private String KEY_A;
     private String KEY_B;
@@ -111,6 +113,7 @@ public class Client {
         this.onUpdates = new LinkedList<>();
         this.onResponses = new LinkedList<>();
         this.handler = new Handler(Looper.getMainLooper());
+        this.executors = Executors.newFixedThreadPool(2);
         this.URL = UserUtils.getURL();
     }
 
@@ -230,7 +233,7 @@ public class Client {
     public void load(Matter matter) {
         Log.d("Client", "loading " + matter.getTitle());
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executors.execute(() -> {
             createRequest(PG_CLASSES,
                     INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
                     matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter, this::callOnFinish);
@@ -250,7 +253,7 @@ public class Client {
     }
 
     private void load(int pg, int year, int period, BaseParser.OnFinish onFinish, boolean notify) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executors.execute(() -> {
             int method = GET;
             String url = INDEX + pg;
             Map<String, String> form = new HashMap<>();
@@ -297,7 +300,7 @@ public class Client {
 
     public void login() {
         isLogging = true;
-        Executors.newSingleThreadExecutor().execute(() ->
+        executors.execute(() ->
                 fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
                     String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
@@ -432,7 +435,7 @@ public class Client {
     }
 
     private synchronized void checkQueue() {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executors.execute(() -> {
             while (!queue.isEmpty()) {
                 RequestHelper helper = queue.get(0);
                 queue.remove(0);
@@ -752,7 +755,7 @@ public class Client {
     }
 
     public void loadYear(int pos) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executors.execute(() -> {
             int year = UserUtils.getYear(pos);
             int period = UserUtils.getPeriod(pos);
 
