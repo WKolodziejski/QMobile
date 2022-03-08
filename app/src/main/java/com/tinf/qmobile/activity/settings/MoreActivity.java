@@ -3,15 +3,12 @@ package com.tinf.qmobile.activity.settings;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.databinding.ActivityMoreBinding;
 import com.tinf.qmobile.network.Client;
-
-import java.util.Objects;
 
 public class MoreActivity extends AppCompatActivity {
     private ActivityMoreBinding binding;

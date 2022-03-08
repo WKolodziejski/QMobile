@@ -1,5 +1,9 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.PERIOD;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,14 +30,9 @@ import com.tinf.qmobile.model.matter.Period;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-
-import static com.tinf.qmobile.model.ViewType.CLASS;
-import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
     private final Context context;

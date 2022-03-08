@@ -1,5 +1,7 @@
 package com.tinf.qmobile.activity;
 
+import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
+
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
@@ -13,8 +15,6 @@ import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.MessagesFragment;
 import com.tinf.qmobile.service.DownloadReceiver;
-
-import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
 
 public class MessagesActivity extends AppCompatActivity {
     private BroadcastReceiver receiver;

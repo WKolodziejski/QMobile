@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.matter;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
@@ -13,8 +15,6 @@ import java.util.Objects;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.CLASS;
 
 @Entity
 public class Clazz extends EventBase implements Queryable {

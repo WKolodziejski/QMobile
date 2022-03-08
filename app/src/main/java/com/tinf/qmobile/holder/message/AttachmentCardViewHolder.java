@@ -2,11 +2,14 @@ package com.tinf.qmobile.holder.message;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.databinding.MessageAttachmentCardBinding;
 import com.tinf.qmobile.model.message.Attachment;
 import com.tinf.qmobile.network.message.Messenger;
 import com.tinf.qmobile.service.DownloadReceiver;
+
 import java.io.File;
 
 public class AttachmentCardViewHolder extends MessagesViewHolder<Attachment> {

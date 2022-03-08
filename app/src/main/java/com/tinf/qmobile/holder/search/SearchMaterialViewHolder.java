@@ -5,8 +5,10 @@ import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.databinding.SearchMaterialBinding;

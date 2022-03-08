@@ -6,10 +6,7 @@ import static com.tinf.qmobile.model.ViewType.EVENT;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.Drawable;
 import android.view.View;
-
-import androidx.appcompat.content.res.AppCompatResources;
 
 import com.bumptech.glide.Glide;
 import com.tinf.qmobile.R;

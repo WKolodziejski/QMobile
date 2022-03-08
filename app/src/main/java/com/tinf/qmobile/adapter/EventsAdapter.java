@@ -1,9 +1,11 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.SIMPLE;
+import static com.tinf.qmobile.model.ViewType.USER;
+
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -20,31 +22,9 @@ import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
-import com.tinf.qmobile.model.Empty;
-import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.EventBase;
-import com.tinf.qmobile.model.calendar.EventSimple;
-import com.tinf.qmobile.model.calendar.EventSimple_;
-import com.tinf.qmobile.model.calendar.EventUser;
-import com.tinf.qmobile.model.calendar.EventUser_;
-import com.tinf.qmobile.model.journal.Journal;
-import com.tinf.qmobile.model.journal.Journal_;
-import com.tinf.qmobile.model.matter.Matter;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
-
-import io.objectbox.Box;
-import io.objectbox.reactive.DataObserver;
-import io.objectbox.reactive.DataSubscription;
-
-import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.SIMPLE;
-import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements OnData<EventBase> {
     private final Context context;

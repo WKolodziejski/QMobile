@@ -2,6 +2,7 @@ package com.tinf.qmobile.holder.search;
 
 import android.content.Context;
 import android.view.View;
+
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.databinding.SearchEventBinding;
 import com.tinf.qmobile.model.message.Message;

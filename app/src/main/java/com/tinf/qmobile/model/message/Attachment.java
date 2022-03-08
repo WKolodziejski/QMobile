@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.message;
 
+import static com.tinf.qmobile.model.ViewType.ATTACHMENT;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.utility.Design;
@@ -7,8 +9,6 @@ import com.tinf.qmobile.utility.Design;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.ATTACHMENT;
 
 @Entity
 public class Attachment implements Queryable {

@@ -31,7 +31,6 @@ import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;

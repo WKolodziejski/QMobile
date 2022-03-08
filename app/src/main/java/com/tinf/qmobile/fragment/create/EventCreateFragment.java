@@ -1,12 +1,8 @@
 package com.tinf.qmobile.fragment.create;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.work.Data;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -27,14 +24,14 @@ import com.tinf.qmobile.databinding.FragmentCreateEventBinding;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.service.AlarmReceiver;
+import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.UserUtils;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import io.objectbox.Box;
-import static android.content.Context.ALARM_SERVICE;
+
 import static com.tinf.qmobile.model.ViewType.EVENT;
 
 public class EventCreateFragment extends Fragment {
@@ -304,26 +301,12 @@ public class EventCreateFragment extends Fragment {
             Box<EventUser> eventBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
             id = eventBox.put(event);
 
-            Intent intent = new Intent(getContext(), AlarmReceiver.class);
-            intent.putExtra("ID", id);
-            intent.putExtra("TYPE", EVENT);
+            Data input = new Data.Builder()
+                    .putLong("ID", id)
+                    .putInt("TYPE", EVENT)
+                    .build();
 
-            PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                    PendingIntent.getBroadcast(getContext(), (int)id, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE) :
-                    PendingIntent.getBroadcast(getContext(), (int) id, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-
-            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-
-            if (alarmManager != null) {
-                if (alarmDif != 0) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, event.getAlarm(), pendingIntent);
-                } else {
-                    alarmManager.cancel(pendingIntent);
-                    pendingIntent.cancel();
-                }
-            }
+            Works.scheduleAlarm(input, event.getAlarm(), alarmDif == 0);
 
             getActivity().finish();
         });

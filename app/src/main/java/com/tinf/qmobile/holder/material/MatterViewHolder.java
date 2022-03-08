@@ -7,9 +7,10 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.ActionMode;
 import android.view.View;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.activity.MatterActivity;
-import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.adapter.MaterialsBaseAdapter;
 import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.databinding.MaterialHeaderBinding;

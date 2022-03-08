@@ -1,14 +1,16 @@
 package com.tinf.qmobile.holder.calendar.horizontal;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.databinding.CalendarEventJournalHBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.journal.Journal;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class EventJournalHorizontalViewHolder extends CalendarViewHolder<Journal> {
     private final CalendarEventJournalHBinding binding;

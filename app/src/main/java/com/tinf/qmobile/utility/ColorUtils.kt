@@ -1,7 +1,6 @@
 package com.tinf.qmobile.utility
 
 import android.graphics.Color
-import android.util.Log
 import dev.jorgecastillo.androidcolorx.library.complimentary
 import dev.jorgecastillo.androidcolorx.library.darken
 import dev.jorgecastillo.androidcolorx.library.lighten

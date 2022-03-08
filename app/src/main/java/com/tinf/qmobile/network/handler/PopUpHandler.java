@@ -1,5 +1,7 @@
 package com.tinf.qmobile.network.handler;
 
+import static com.tinf.qmobile.App.getContext;
+
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -11,8 +13,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import static com.tinf.qmobile.App.getContext;
 
 public class PopUpHandler {
     private final WebView webView;

@@ -1,12 +1,9 @@
 package com.tinf.qmobile.fragment.create;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.work.Data;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -26,7 +24,7 @@ import com.tinf.qmobile.databinding.FragmentCreateScheduleBinding;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
-import com.tinf.qmobile.service.AlarmReceiver;
+import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.UserUtils;
 
 import org.threeten.bp.DayOfWeek;
@@ -39,7 +37,6 @@ import java.util.Locale;
 import io.objectbox.Box;
 import me.jlurena.revolvingweekview.DayTime;
 
-import static android.content.Context.ALARM_SERVICE;
 import static android.view.View.GONE;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 
@@ -265,6 +262,12 @@ public class ScheduleCreateFragment extends Fragment {
             alarmTime.set(Calendar.SECOND, 0);
             alarmTime.set(Calendar.MILLISECOND, 0);
 
+            if (alarmTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
+                Log.d("ScheduleCreate", "Start time is before today");
+
+                alarmTime.add(Calendar.WEEK_OF_MONTH, 1);
+            }
+
             switch (alarmDif) {
 
                 case 0:
@@ -307,26 +310,12 @@ public class ScheduleCreateFragment extends Fragment {
             Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
             id = scheduleBox.put(schedule);
 
-            Intent intent = new Intent(getContext(), AlarmReceiver.class);
-            intent.putExtra("ID", id);
-            intent.putExtra("TYPE", SCHEDULE);
+            Data input = new Data.Builder()
+                    .putLong("ID", id)
+                    .putInt("TYPE", SCHEDULE)
+                    .build();
 
-            PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                    PendingIntent.getBroadcast(getContext(), (int) id, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE) :
-                    PendingIntent.getBroadcast(getContext(), (int) id, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-
-            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
-
-            if (alarmManager != null) {
-                if (alarmDif != 0) {
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, schedule.getAlarm(), 24 * 7 * 60 * 60 * 1000, pendingIntent);
-                } else {
-                    alarmManager.cancel(pendingIntent);
-                    pendingIntent.cancel();
-                }
-            }
+            Works.scheduleAlarm(input, schedule.getAlarm(), alarmDif == 0);
 
             getActivity().finish();
         });

@@ -19,8 +19,7 @@ import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
 
 public class EventCreateActivity extends AppCompatActivity {
     public ActivityEventCreateBinding binding;
-    //public final static int EVENT = 1;
-    //public final static int SCHEDULE = 2;
+    //private AlarmReceiver alarmReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +29,22 @@ public class EventCreateActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+
+        //alarmReceiver = new AlarmReceiver();
+
+        /*AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        if (alarmManager == null)
+            return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            registerReceiver(alarmReceiver,
+                    new IntentFilter(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED));
+
+            if (!alarmManager.canScheduleExactAlarms()) {
+                startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+            }
+        }*/
 
         Bundle bundle = getIntent().getExtras();
 
@@ -83,4 +98,12 @@ public class EventCreateActivity extends AppCompatActivity {
                 .show();
     }
 
+    /*@Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (alarmReceiver != null)
+                unregisterReceiver(alarmReceiver);
+        }
+    }*/
 }

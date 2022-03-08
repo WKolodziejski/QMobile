@@ -1,14 +1,16 @@
 package com.tinf.qmobile.holder.search;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
+
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.databinding.SearchClassBinding;
 import com.tinf.qmobile.model.matter.Clazz;
-import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class SearchClassViewHolder extends SearchViewHolder<Clazz> {
     private final SearchClassBinding binding;

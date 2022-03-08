@@ -1,14 +1,14 @@
 package com.tinf.qmobile.model.calendar;
 
+import static com.tinf.qmobile.model.ViewType.USER;
+
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
 
+import java.util.Objects;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.USER;
-
-import java.util.Objects;
 
 @Entity
 public class EventUser extends EventBase {

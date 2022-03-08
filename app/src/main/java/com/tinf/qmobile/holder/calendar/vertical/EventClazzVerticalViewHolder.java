@@ -1,16 +1,17 @@
 package com.tinf.qmobile.holder.calendar.vertical;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
+
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.databinding.CalendarEventClazzVBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.utility.ColorUtils;
-
-import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class EventClazzVerticalViewHolder extends CalendarViewHolder<Clazz> {
     private final CalendarEventClazzVBinding binding;

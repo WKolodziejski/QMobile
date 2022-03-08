@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.matter;
 
+import static com.tinf.qmobile.model.ViewType.PERIOD;
+
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 
@@ -10,8 +12,6 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 @Entity
 public class Period implements Queryable {

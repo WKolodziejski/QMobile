@@ -1,13 +1,15 @@
 package com.tinf.qmobile.holder.clazz;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.databinding.ClassItemBinding;
 import com.tinf.qmobile.model.matter.Clazz;
-import static com.tinf.qmobile.model.ViewType.CLASS;
 
 public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
     private final ClassItemBinding binding;

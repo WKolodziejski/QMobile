@@ -1,5 +1,7 @@
 package com.tinf.qmobile.parser;
 
+import static com.tinf.qmobile.App.getContext;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -20,9 +22,10 @@ import com.tinf.qmobile.model.message.Sender;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+
 import java.util.concurrent.Executors;
+
 import io.objectbox.Box;
-import static com.tinf.qmobile.App.getContext;
 
 public abstract class BaseParser {
     protected OnFinish onFinish;

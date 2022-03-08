@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.MessagesAdapter;
@@ -117,13 +118,13 @@ public class MessagesFragment extends Fragment implements OnResponse {
     @Override
     public void onError(int pg, String error) {
         binding.refresh.setRefreshing(false);
-        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+        Toast.makeText(App.getContext(), error, Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         binding.refresh.setRefreshing(false);
-        Toast.makeText(getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
+        Toast.makeText(App.getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
     }
 
 }

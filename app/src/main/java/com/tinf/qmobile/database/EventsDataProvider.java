@@ -28,7 +28,7 @@ public class EventsDataProvider extends BaseDataProvider<EventBase> {
     private DataSubscription sub4;
 
     @Override
-    protected List<EventBase> buildList() {
+    protected synchronized List<EventBase> buildList() {
         List<EventBase> list = new ArrayList<>();
 
         Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);

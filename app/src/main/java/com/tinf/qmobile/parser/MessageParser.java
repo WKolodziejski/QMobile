@@ -1,5 +1,11 @@
 package com.tinf.qmobile.parser;
 
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.content.Intent;
 import android.util.Log;
 
@@ -14,7 +20,7 @@ import com.tinf.qmobile.model.message.Sender_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.OnMessages;
-import com.tinf.qmobile.service.Works;
+import com.tinf.qmobile.utility.NotificationUtils;
 import com.tinf.qmobile.utility.RandomColor;
 import com.tinf.qmobile.utility.UserUtils;
 
@@ -26,12 +32,6 @@ import java.util.Calendar;
 
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
-import static com.tinf.qmobile.network.OnResponse.PG_ERROR;
-import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
-import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class MessageParser extends BaseParser {
     private final OnMessages onMessages;
@@ -218,7 +218,7 @@ public class MessageParser extends BaseParser {
     private void sendNotification(Message message) {
         Intent intent = new Intent(App.getContext(), MessagesActivity.class);
 
-        Works.displayNotification(message.getSubject_(), message.sender.getTarget().getName_(),
+        NotificationUtils.displayNotification(message.getSubject_(), message.sender.getTarget().getName_(),
                 MESSAGE, (int) message.id, intent);
     }
 

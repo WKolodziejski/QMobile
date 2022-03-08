@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
@@ -27,9 +28,10 @@ import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
+
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;

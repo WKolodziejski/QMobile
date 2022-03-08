@@ -1,5 +1,9 @@
 package com.tinf.qmobile.parser;
 
+import static com.tinf.qmobile.network.OnResponse.INDEX;
+import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.util.Log;
 
 import com.tinf.qmobile.model.matter.Clazz;
@@ -18,10 +22,6 @@ import java.util.Calendar;
 
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-
-import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
-import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class ClassParser extends BaseParser {
     private final static String TAG = "ClassParser";

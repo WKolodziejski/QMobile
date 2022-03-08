@@ -1,5 +1,8 @@
 package com.tinf.qmobile.model.journal;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.journal.Journal.Type.AVALIACAO;
+
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
@@ -12,11 +15,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.journal.Journal.Type.AVALIACAO;
 
 @Entity
 public class Journal extends EventBase implements Queryable {

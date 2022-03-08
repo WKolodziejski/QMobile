@@ -10,8 +10,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -20,7 +22,6 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.ActivityMatterBinding;
 import com.tinf.qmobile.fragment.matter.TabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.network.Client;
 
 public class MatterActivity extends AppCompatActivity {
     private ActivityMatterBinding binding;

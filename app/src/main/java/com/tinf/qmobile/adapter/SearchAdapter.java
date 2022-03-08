@@ -1,5 +1,16 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+import static com.tinf.qmobile.model.ViewType.QUERY;
+import static com.tinf.qmobile.model.ViewType.SIMPLE;
+import static com.tinf.qmobile.model.ViewType.USER;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -26,17 +37,6 @@ import com.tinf.qmobile.parser.SearchParser;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tinf.qmobile.model.ViewType.CLASS;
-import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.HEADER;
-import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.MATERIAL;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
-import static com.tinf.qmobile.model.ViewType.QUERY;
-import static com.tinf.qmobile.model.ViewType.SIMPLE;
-import static com.tinf.qmobile.model.ViewType.USER;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
     private final Context context;

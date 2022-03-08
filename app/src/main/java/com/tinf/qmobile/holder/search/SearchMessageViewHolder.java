@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.activity.MessagesActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.databinding.SearchMessageBinding;

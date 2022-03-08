@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.UserUtils;
 
 import io.objectbox.BoxStore;
@@ -34,6 +35,7 @@ public class App extends Application {
         crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
         crashlytics.setCustomKey("Name", UserUtils.getName());
         crashlytics.setCustomKey("URL", UserUtils.getURL());
+        crashlytics.setCustomKey("Background", Client.background);
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 

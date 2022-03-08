@@ -4,10 +4,7 @@ import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.DAY;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MONTH;
-import static com.tinf.qmobile.model.ViewType.SIMPLE;
-import static com.tinf.qmobile.model.ViewType.USER;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -23,7 +20,6 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -31,33 +27,29 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.DayViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventClazzVerticalViewHolder;
-import com.tinf.qmobile.holder.calendar.vertical.EventJournalVerticalViewHolder;
-import com.tinf.qmobile.holder.calendar.vertical.EventSimpleVerticalViewHolder;
-import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
-import com.tinf.qmobile.holder.clazz.ClassBaseViewHolder;
 import com.tinf.qmobile.model.Empty;
-import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.EventBase;
-import com.tinf.qmobile.model.calendar.EventSimple;
-import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 

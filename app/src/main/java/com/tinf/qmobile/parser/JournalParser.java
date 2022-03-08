@@ -1,5 +1,8 @@
 package com.tinf.qmobile.parser;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.content.Intent;
 import android.util.Log;
 
@@ -12,18 +15,19 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Period_;
-import com.tinf.qmobile.service.Works;
+import com.tinf.qmobile.utility.NotificationUtils;
 import com.tinf.qmobile.utility.RandomColor;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class JournalParser extends BaseParser {
 
@@ -228,7 +232,7 @@ public class JournalParser extends BaseParser {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", JOURNAL);
 
-        Works.displayNotification(
+        NotificationUtils.displayNotification(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_journal_title),
                         journal.getType(),
@@ -242,7 +246,7 @@ public class JournalParser extends BaseParser {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", JOURNAL);
 
-        Works.displayNotification(
+        NotificationUtils.displayNotification(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_journal_title),
                         journal.getType(),

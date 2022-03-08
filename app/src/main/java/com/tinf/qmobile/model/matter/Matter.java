@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.matter;
 
+import static com.tinf.qmobile.model.ViewType.HEADER;
+
 import androidx.annotation.ColorInt;
 
 import com.tinf.qmobile.model.Queryable;
@@ -7,15 +9,12 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
-
-import static com.tinf.qmobile.model.ViewType.HEADER;
 
 @Entity
 public class Matter implements Queryable {

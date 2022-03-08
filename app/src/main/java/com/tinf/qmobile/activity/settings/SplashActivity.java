@@ -27,7 +27,7 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent;
 
         if (UserUtils.isValid()) {
-            Works.schedule();
+            Works.scheduleParser();
 
             if (!Client.get().isValid() && !BuildConfig.DEBUG)
                 Client.get().login();

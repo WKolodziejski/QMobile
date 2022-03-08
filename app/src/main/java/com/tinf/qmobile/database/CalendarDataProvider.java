@@ -38,7 +38,7 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
     }
 
     @Override
-    protected List<CalendarBase> buildList() {
+    protected synchronized List<CalendarBase> buildList() {
         Map<LocalDate, List<CalendarBase>> map = new TreeMap<>();
 
         LocalDate minDate = new LocalDate().minusYears(5).toDateTimeAtStartOfDay().dayOfMonth().withMinimumValue().toLocalDate();

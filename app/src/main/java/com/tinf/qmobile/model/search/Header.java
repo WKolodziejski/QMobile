@@ -1,8 +1,8 @@
 package com.tinf.qmobile.model.search;
 
-import com.tinf.qmobile.model.Queryable;
-
 import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
+
+import com.tinf.qmobile.model.Queryable;
 
 public class Header implements Queryable {
     private final String title;

@@ -1,17 +1,16 @@
 package com.tinf.qmobile.model.calendar;
 
-import com.tinf.qmobile.App;
-import com.tinf.qmobile.R;
-import com.tinf.qmobile.model.Queryable;
-
-import io.objectbox.annotation.Entity;
-
-import static com.tinf.qmobile.model.ViewType.DAY;
 import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.calendar.EventSimple.Type.FIM;
 import static com.tinf.qmobile.model.calendar.EventSimple.Type.INICIO;
 
+import com.tinf.qmobile.App;
+import com.tinf.qmobile.R;
+import com.tinf.qmobile.model.Queryable;
+
 import java.util.Objects;
+
+import io.objectbox.annotation.Entity;
 
 @Entity
 public class EventSimple extends EventBase {

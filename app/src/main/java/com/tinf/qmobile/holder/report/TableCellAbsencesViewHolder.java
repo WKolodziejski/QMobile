@@ -5,7 +5,9 @@ import static android.view.View.VISIBLE;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.databinding.TableCellAbsencesBinding;
 import com.tinf.qmobile.model.matter.Matter;
 

@@ -13,9 +13,10 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.Query;
 import com.tinf.qmobile.model.Query_;
 import com.tinf.qmobile.model.Queryable;
+
 import java.util.Date;
+
 import io.objectbox.Box;
-import io.objectbox.query.QueryBuilder;
 
 public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
 

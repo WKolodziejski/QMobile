@@ -13,8 +13,6 @@ import org.jsoup.select.Elements;
 
 import java.util.Calendar;
 
-import io.objectbox.query.QueryBuilder;
-
 public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
 

@@ -5,11 +5,9 @@ import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROL
 import static com.google.android.material.appbar.AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +18,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.activity.MainActivity;
 
 import java.util.HashMap;
 import java.util.Map;

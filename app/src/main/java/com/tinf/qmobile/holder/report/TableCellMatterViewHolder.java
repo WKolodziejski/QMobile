@@ -2,8 +2,9 @@ package com.tinf.qmobile.holder.report;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.annotation.NonNull;
-import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+
 import com.tinf.qmobile.databinding.TableCellMatterBinding;
 import com.tinf.qmobile.model.matter.Matter;
 

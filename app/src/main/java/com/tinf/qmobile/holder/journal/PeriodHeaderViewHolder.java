@@ -3,6 +3,7 @@ package com.tinf.qmobile.holder.journal;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.databinding.PeriodHeaderBinding;

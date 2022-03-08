@@ -1,5 +1,9 @@
 package com.tinf.qmobile.model.calendar;
 
+import static com.tinf.qmobile.model.ViewType.DAY;
+
+import com.tinf.qmobile.model.Queryable;
+
 import org.joda.time.LocalDate;
 
 import java.text.SimpleDateFormat;
@@ -7,10 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-
-import static com.tinf.qmobile.model.ViewType.DAY;
-
-import com.tinf.qmobile.model.Queryable;
 
 public class Day implements CalendarBase {
     private final Date startDate;

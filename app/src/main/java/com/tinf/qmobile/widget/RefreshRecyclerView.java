@@ -2,6 +2,7 @@ package com.tinf.qmobile.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RefreshRecyclerView extends RecyclerView {

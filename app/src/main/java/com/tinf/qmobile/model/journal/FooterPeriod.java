@@ -1,8 +1,9 @@
 package com.tinf.qmobile.model.journal;
-import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.matter.Period;
 
 import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
+
+import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.matter.Period;
 
 public class FooterPeriod implements Queryable {
     public Period period;

@@ -65,12 +65,12 @@ public class DataBase implements OnUpdate {
             e.printStackTrace();
 
             FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-            crashlytics.setCustomKey("DB", "SCHEMA FAILED");
+            crashlytics.log("SCHEMA FAILED");
 
             if (BoxStore.deleteAllFiles(getContext(), UserUtils.getCredential(REGISTRATION))) {
                 Log.d(TAG, "DB deleted");
 
-                crashlytics.setCustomKey("DB", "DB DELETED");
+                crashlytics.log("DB DELETED");
 
                 boxStore = MyObjectBox
                         .builder()
@@ -78,7 +78,7 @@ public class DataBase implements OnUpdate {
                         .name(UserUtils.getCredential(UserUtils.REGISTRATION))
                         .build();
             } else {
-                crashlytics.setCustomKey("DB", "APP DATA DELETED");
+                crashlytics.log("APP DATA DELETED");
 
                 ((ActivityManager) getContext().getSystemService(ACTIVITY_SERVICE))
                         .clearApplicationUserData();

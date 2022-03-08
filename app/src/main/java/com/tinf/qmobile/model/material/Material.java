@@ -1,5 +1,9 @@
 package com.tinf.qmobile.model.material;
 
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.service.DownloadReceiver.PATH;
+
 import android.os.Environment;
 
 import com.tinf.qmobile.R;
@@ -17,10 +21,6 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.MATERIAL;
-import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.service.DownloadReceiver.PATH;
 
 @Entity
 public class Material implements Queryable {

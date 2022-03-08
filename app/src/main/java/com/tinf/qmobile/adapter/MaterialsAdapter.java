@@ -2,7 +2,6 @@ package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.HEADER;
-import static com.tinf.qmobile.model.ViewType.IGNORE;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 
 import android.content.Context;
@@ -17,8 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
-import com.tinf.qmobile.holder.material.MaterialEmptyViewHolder;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
+import com.tinf.qmobile.holder.material.MaterialEmptyViewHolder;
 import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Queryable;

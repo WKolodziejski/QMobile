@@ -181,10 +181,11 @@
         </service>!-->
 
         <receiver
-            android:name=".service.AlarmReceiver"
+            android:name=".service.WorksReceiver"
+            android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
@@ -201,6 +202,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider" />
         </provider>
+
+        <uses-library android:name="android.test.runner"
+            android:required="false" />
 
     </application>
 

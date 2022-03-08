@@ -1,10 +1,11 @@
 package com.tinf.qmobile.adapter;
 
+import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -26,13 +27,9 @@ import com.tinf.qmobile.network.message.Messenger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-
-import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
     private final Context context;

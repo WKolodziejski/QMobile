@@ -4,6 +4,7 @@ import static com.tinf.qmobile.utility.Design.getColorForGrade;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.R;

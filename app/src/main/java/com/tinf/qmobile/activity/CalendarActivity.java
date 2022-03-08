@@ -7,17 +7,17 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AbsListView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.CalendarAdapter;
 import com.tinf.qmobile.adapter.CalendarAdapter2;
 import com.tinf.qmobile.databinding.ActivityCalendarBinding;
 import com.tinf.qmobile.model.calendar.CalendarBase;
@@ -25,7 +25,9 @@ import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.UserUtils;
 import com.tinf.qmobile.widget.calendar.CalendarRecyclerView;
+
 import org.joda.time.LocalDate;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;

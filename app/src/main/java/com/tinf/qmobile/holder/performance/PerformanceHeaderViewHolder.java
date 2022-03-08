@@ -2,11 +2,11 @@ package com.tinf.qmobile.holder.performance;
 
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.utility.ChartUtils.getChartData;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.activity.EventViewActivity;

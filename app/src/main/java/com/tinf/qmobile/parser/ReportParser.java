@@ -47,7 +47,7 @@ public class ReportParser extends BaseParser {
                         Log.d("QID", qid);
 
                         try {
-                            crashlytics.setCustomKey("Matter", matterTitle);
+                            crashlytics.log(matterTitle);
                             matter = matterBox.query()
                                     .contains(Matter_.description_, matterTitle, CASE_INSENSITIVE).and()
                                     .equal(Matter_.year_, year).and()

@@ -1,8 +1,11 @@
 package com.tinf.qmobile.holder.material;
 
+import static com.tinf.qmobile.network.Client.pos;
+
 import android.content.Context;
 import android.view.ActionMode;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -13,8 +16,8 @@ import com.tinf.qmobile.databinding.MaterialItemBinding;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.UserUtils;
+
 import java.io.File;
-import static com.tinf.qmobile.network.Client.pos;
 
 public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     private final MaterialItemBinding binding;

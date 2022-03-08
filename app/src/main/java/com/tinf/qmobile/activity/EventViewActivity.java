@@ -1,12 +1,20 @@
 package com.tinf.qmobile.activity;
 
+import static com.tinf.qmobile.model.ViewType.CLASS;
+import static com.tinf.qmobile.model.ViewType.EVENT;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityEventViewBinding;
 import com.tinf.qmobile.fragment.view.ClassViewFragment;
@@ -14,12 +22,6 @@ import com.tinf.qmobile.fragment.view.EventViewFragment;
 import com.tinf.qmobile.fragment.view.JournalViewFragment;
 import com.tinf.qmobile.fragment.view.MessageViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
-import static com.tinf.qmobile.model.ViewType.CLASS;
-import static com.tinf.qmobile.model.ViewType.EVENT;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
-import static com.tinf.qmobile.model.ViewType.SCHEDULE;
-import static com.tinf.qmobile.model.ViewType.USER;
 
 public class EventViewActivity extends AppCompatActivity {
     private ActivityEventViewBinding binding;

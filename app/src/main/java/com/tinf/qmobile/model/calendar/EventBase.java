@@ -5,7 +5,6 @@ import androidx.annotation.ColorInt;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.model.journal.Journal;
 
 import org.joda.time.LocalDate;
 

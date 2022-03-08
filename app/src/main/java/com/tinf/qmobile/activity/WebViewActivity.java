@@ -1,15 +1,18 @@
 package com.tinf.qmobile.activity;
 
+import static com.tinf.qmobile.network.OnResponse.INDEX;
+import static com.tinf.qmobile.network.OnResponse.PG_HOME;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.databinding.ActivityWebviewBinding;
 import com.tinf.qmobile.network.Client;
-import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.network.OnResponse.PG_HOME;
 
 public class WebViewActivity extends AppCompatActivity {
     private ActivityWebviewBinding binding;

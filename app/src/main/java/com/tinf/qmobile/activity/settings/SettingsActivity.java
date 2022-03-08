@@ -1,7 +1,5 @@
 package com.tinf.qmobile.activity.settings;
 
-import static com.tinf.qmobile.network.Client.pos;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -31,7 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        Works.schedule();
+        Works.scheduleParser();
         Client.get().requestDelayedUpdate();
     }
 

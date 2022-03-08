@@ -3,7 +3,7 @@ package com.tinf.qmobile.holder.report;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.view.View;
-import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+
 import com.tinf.qmobile.databinding.TableRowBinding;
 import com.tinf.qmobile.model.matter.Matter;
 

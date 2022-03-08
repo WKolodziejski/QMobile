@@ -1,7 +1,12 @@
 package com.tinf.qmobile.parser;
 
+import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
+import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
+
 import android.content.Intent;
 import android.util.Log;
+
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MainActivity;
@@ -10,17 +15,17 @@ import com.tinf.qmobile.model.material.Material_;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.service.Works;
+import com.tinf.qmobile.utility.NotificationUtils;
+
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
 import java.util.Calendar;
 import java.util.Locale;
+
 import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
-import static com.tinf.qmobile.model.ViewType.MATERIAL;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
-import static io.objectbox.query.QueryBuilder.StringOrder.CASE_INSENSITIVE;
 
 public class MaterialsParser extends BaseParser {
     private final static String TAG = "MateriaisParser";
@@ -129,7 +134,7 @@ public class MaterialsParser extends BaseParser {
         Intent intent = new Intent(App.getContext(), MainActivity.class);
         intent.putExtra("FRAGMENT", PG_MATERIALS);
 
-        Works.displayNotification(
+        NotificationUtils.displayNotification(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_material_title),
                         material.matter.getTarget().getTitle()),

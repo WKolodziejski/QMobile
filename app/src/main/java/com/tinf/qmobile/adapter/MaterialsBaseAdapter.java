@@ -1,6 +1,7 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.network.Client.pos;
+
 import android.content.Context;
 import android.util.Log;
 import android.util.LongSparseArray;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -18,10 +20,12 @@ import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.UserUtils;
+
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+
 import io.objectbox.Box;
 
 public abstract class MaterialsBaseAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> {

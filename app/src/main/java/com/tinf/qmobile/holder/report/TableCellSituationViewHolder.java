@@ -1,10 +1,8 @@
 package com.tinf.qmobile.holder.report;
 
-import static com.tinf.qmobile.utility.Design.getColorForGrade;
-
 import android.content.Context;
 import android.view.View;
-import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.TableCellSituationBinding;
 import com.tinf.qmobile.model.matter.Matter;

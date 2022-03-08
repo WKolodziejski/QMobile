@@ -1,7 +1,26 @@
 package com.tinf.qmobile.network;
 
+import static com.android.volley.Request.Method.GET;
+import static com.android.volley.Request.Method.POST;
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.network.OnResponse.INDEX;
+import static com.tinf.qmobile.network.OnResponse.MESSAGES;
+import static com.tinf.qmobile.network.OnResponse.PG_ACCESS_DENIED;
+import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
+import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
+import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
+import static com.tinf.qmobile.network.OnResponse.PG_GENERATOR;
+import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
+import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
+import static com.tinf.qmobile.network.OnResponse.PG_QUEST;
+import static com.tinf.qmobile.network.OnResponse.PG_REGISTRATION;
+import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
+import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
+import static com.tinf.qmobile.network.OnResponse.PG_UPDATE;
+
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -12,8 +31,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.webkit.CookieManager;
-
-import androidx.preference.PreferenceManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -59,27 +76,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.android.volley.Request.Method.GET;
-import static com.android.volley.Request.Method.POST;
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.fragment.SettingsFragment.NOTIFY;
-import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.network.OnResponse.MESSAGES;
-import static com.tinf.qmobile.network.OnResponse.PG_ACCESS_DENIED;
-import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
-import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
-import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
-import static com.tinf.qmobile.network.OnResponse.PG_GENERATOR;
-import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
-import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
-import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
-import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
-import static com.tinf.qmobile.network.OnResponse.PG_QUEST;
-import static com.tinf.qmobile.network.OnResponse.PG_REGISTRATION;
-import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
-import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
-import static com.tinf.qmobile.network.OnResponse.PG_UPDATE;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -248,8 +244,12 @@ public class Client {
         load(pg, year, period, this::callOnFinish, false);
     }
 
-    private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
+    /*private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
         load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), onFinish, notify);
+    }*/
+
+    public void load(int pg, boolean notify) {
+        load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), this::callOnFinish, notify);
     }
 
     private void load(int pg, int year, int period, BaseParser.OnFinish onFinish, boolean notify) {
@@ -413,6 +413,15 @@ public class Client {
             }
         }
 
+        Element title = document.getElementsByTag("title").first();
+
+        if (title != null) {
+            if (title.text().contains("Erro")) {
+                callOnAccessDenied(0, getContext().getString(R.string.client_error));
+                return Resp.UNKNOWN;
+            }
+        }
+
         Elements sub = document.getElementsByClass("barraRodape");
         Elements sub2 = document.getElementsByClass("titulo");
 
@@ -535,7 +544,7 @@ public class Client {
         error.printStackTrace();
 
         if (isConnected()) {
-            crashlytics.setCustomKey("Page", pg);
+            crashlytics.log(String.valueOf(pg));
             crashlytics.recordException(error);
 
             if (pg == PG_GENERATOR) {
@@ -791,20 +800,6 @@ public class Client {
         });
     }
 
-    public void checkChanges() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        boolean notify = prefs.getBoolean(NOTIFY, true);
 
-        load(PG_JOURNALS, notify, pg -> {
-            load(PG_REPORT, notify, pg1 -> {
-                load(PG_SCHEDULE, notify, pg2 -> callOnFinish(pg));
-                callOnFinish(pg);
-            });
-            callOnFinish(pg);
-
-            load(PG_MESSAGES, notify, (pg1) -> callOnFinish(PG_MESSAGES));
-            load(PG_MATERIALS, notify, (pg1) -> callOnFinish(PG_MATERIALS));
-        });
-    }
 
 }

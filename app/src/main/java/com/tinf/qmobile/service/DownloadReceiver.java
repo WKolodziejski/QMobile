@@ -1,5 +1,14 @@
 package com.tinf.qmobile.service;
 
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.content.Intent.ACTION_VIEW;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.network.Client.pos;
+import static com.tinf.qmobile.network.OnResponse.INDEX;
+import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
+
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -19,15 +28,6 @@ import com.tinf.qmobile.utility.UserUtils;
 
 import java.io.File;
 import java.net.URLConnection;
-
-import static android.content.Context.DOWNLOAD_SERVICE;
-import static android.content.Intent.ACTION_VIEW;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.network.Client.pos;
-import static com.tinf.qmobile.network.OnResponse.INDEX;
-import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 public class DownloadReceiver extends BroadcastReceiver {
     public static final String PATH = "/QMobile/" + UserUtils.getCredential(REGISTRATION) + "/";

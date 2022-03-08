@@ -1,19 +1,15 @@
 package com.tinf.qmobile.utility;
 
+import static com.tinf.qmobile.App.getContext;
+import static com.tinf.qmobile.network.OnResponse.INDEX;
+
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
-import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 
@@ -21,8 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,12 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.network.OnResponse.INDEX;
-
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 public class UserUtils {
 
@@ -148,8 +138,8 @@ public class UserUtils {
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
         if (getYears().length > 0) {
-            crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
-            crashlytics.setCustomKey("URL", UserUtils.getURL());
+            //crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
+            //crashlytics.setCustomKey("URL", UserUtils.getURL());
             crashlytics.setCustomKey("Years", Arrays.toString(getYears()));
 
             if (getYears()[i].contains("/")) {

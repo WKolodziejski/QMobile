@@ -7,6 +7,7 @@ import static com.tinf.qmobile.model.ViewType.HEADER;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.databinding.JournalFooterBinding;
 import com.tinf.qmobile.model.journal.FooterJournal;

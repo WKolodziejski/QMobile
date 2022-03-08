@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.tinf.qmobile.databinding.ActivityAboutBinding;
 
 public class AboutActivity extends AppCompatActivity {

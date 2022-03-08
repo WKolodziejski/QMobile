@@ -1,5 +1,8 @@
 package com.tinf.qmobile.holder.journal;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+import static com.tinf.qmobile.utility.Design.getColorForGrade;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -9,8 +12,6 @@ import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.JournalItemBinding;
 import com.tinf.qmobile.model.journal.Journal;
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.utility.Design.getColorForGrade;
 
 public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     private final JournalItemBinding binding;

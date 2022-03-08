@@ -6,7 +6,6 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.adapter.MaterialsBaseAdapter;
 import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.model.Empty;

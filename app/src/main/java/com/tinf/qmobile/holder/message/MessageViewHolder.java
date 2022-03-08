@@ -1,20 +1,23 @@
 package com.tinf.qmobile.holder.message;
 
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.view.View;
+
 import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.databinding.MessageHeaderBinding;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.network.message.Messenger;
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessageViewHolder extends MessagesViewHolder<Message> {
     private final MessageHeaderBinding binding;

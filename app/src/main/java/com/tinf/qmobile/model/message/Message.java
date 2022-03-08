@@ -1,5 +1,7 @@
 package com.tinf.qmobile.model.message;
 
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+
 import com.tinf.qmobile.model.Queryable;
 
 import java.text.SimpleDateFormat;
@@ -10,8 +12,6 @@ import io.objectbox.annotation.Id;
 import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToMany;
 import io.objectbox.relation.ToOne;
-
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 @Entity
 public class Message implements Queryable {

@@ -1,16 +1,18 @@
 package com.tinf.qmobile.holder.search;
 
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
+
 import androidx.annotation.NonNull;
+
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.databinding.SearchJournalBinding;
 import com.tinf.qmobile.model.journal.Journal;
-
-import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 public class SearchJournalViewHolder extends SearchViewHolder<Journal> {
     private final SearchJournalBinding binding;

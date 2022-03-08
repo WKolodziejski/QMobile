@@ -2,6 +2,7 @@ package com.tinf.qmobile.holder.journal;
 
 import android.content.Context;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
