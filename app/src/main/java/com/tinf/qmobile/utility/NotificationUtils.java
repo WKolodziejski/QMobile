@@ -27,14 +27,14 @@ import com.tinf.qmobile.activity.settings.SplashActivity;
 
 public class NotificationUtils {
 
-    public static void displayDebug(String text) {
+    public static void debug(String text) {
         if (!BuildConfig.DEBUG)
             return;
 
-        NotificationUtils.displayNotification("Debug", text, -1, 0, new Intent(App.getContext(), SplashActivity.class));
+        NotificationUtils.show("Debug", text, -1, 0, new Intent(App.getContext(), SplashActivity.class));
     }
 
-    public static void displayNotification(String title, String txt, int channelID, int id, Intent intent) {
+    public static void show(String title, String txt, int channelID, int id, Intent intent) {
         if (channelID == -1)
             return;
 

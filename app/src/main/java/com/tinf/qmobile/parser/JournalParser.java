@@ -232,7 +232,7 @@ public class JournalParser extends BaseParser {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", JOURNAL);
 
-        NotificationUtils.displayNotification(
+        NotificationUtils.show(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_journal_title),
                         journal.getType(),
@@ -246,7 +246,7 @@ public class JournalParser extends BaseParser {
         intent.putExtra("ID", journal.id);
         intent.putExtra("TYPE", JOURNAL);
 
-        NotificationUtils.displayNotification(
+        NotificationUtils.show(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_journal_title),
                         journal.getType(),

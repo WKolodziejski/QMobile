@@ -218,7 +218,7 @@ public class MessageParser extends BaseParser {
     private void sendNotification(Message message) {
         Intent intent = new Intent(App.getContext(), MessagesActivity.class);
 
-        NotificationUtils.displayNotification(message.getSubject_(), message.sender.getTarget().getName_(),
+        NotificationUtils.show(message.getSubject_(), message.sender.getTarget().getName_(),
                 MESSAGE, (int) message.id, intent);
     }
 

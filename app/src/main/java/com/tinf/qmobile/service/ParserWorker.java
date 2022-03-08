@@ -44,13 +44,13 @@ public class ParserWorker extends Worker {
 
         try {
             if (Tasks.await(checkChanges())) {
-                NotificationUtils.displayDebug("Background check finished");
+                NotificationUtils.debug("Background check finished");
             } else {
-                NotificationUtils.displayDebug("Background failed");
+                NotificationUtils.debug("Background failed");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            NotificationUtils.displayDebug("Background crashed");
+            NotificationUtils.debug("Background crashed");
         }
 
         Log.d(TAG, "Work stopped");
@@ -76,7 +76,7 @@ public class ParserWorker extends Worker {
 
             @Override
             public void onStart(int pg) {
-                NotificationUtils.displayDebug("Background check starting");
+                NotificationUtils.debug("Background check starting");
             }
 
             @Override
@@ -117,7 +117,7 @@ public class ParserWorker extends Worker {
 
             @Override
             public void onAccessDenied(int pg, String message) {
-                NotificationUtils.displayNotification(App.getContext().getResources().getString(R.string.dialog_access_denied),
+                NotificationUtils.show(App.getContext().getResources().getString(R.string.dialog_access_denied),
                         App.getContext().getResources().getString(R.string.dialog_check_login),
                         10, 0, new Intent(App.getContext(), SplashActivity.class));
                 finish(false);

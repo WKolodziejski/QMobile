@@ -13,10 +13,8 @@ import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
-import com.tinf.qmobile.activity.settings.SplashActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Schedule;
@@ -106,7 +104,7 @@ public class AlarmWorker extends Worker {
         intent.putExtra("TYPE", type);
         intent.putExtra("ID", id);
 
-        NotificationUtils.displayNotification(title, desc, type, (int) id, intent);
+        NotificationUtils.show(title, desc, type, (int) id, intent);
 
         return Result.success();
     }

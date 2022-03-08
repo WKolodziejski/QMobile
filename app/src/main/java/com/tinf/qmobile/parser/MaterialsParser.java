@@ -134,7 +134,7 @@ public class MaterialsParser extends BaseParser {
         Intent intent = new Intent(App.getContext(), MainActivity.class);
         intent.putExtra("FRAGMENT", PG_MATERIALS);
 
-        NotificationUtils.displayNotification(
+        NotificationUtils.show(
                 String.format(Locale.getDefault(),
                         App.getContext().getResources().getString(R.string.notification_material_title),
                         material.matter.getTarget().getTitle()),
