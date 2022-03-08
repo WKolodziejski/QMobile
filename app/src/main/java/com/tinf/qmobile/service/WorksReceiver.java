@@ -30,8 +30,6 @@ public class WorksReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Broadcast received");
 
-        NotificationUtils.displayNotification("Debug", "Alarm received", -1, 0, new Intent());
-
         if (intent.getAction() == null || context == null)
             return;
 

@@ -44,13 +44,13 @@ public class ParserWorker extends Worker {
 
         try {
             if (Tasks.await(checkChanges())) {
-                NotificationUtils.displayNotification("Debug", "Background check finished", -1, 0, new Intent(App.getContext(), SplashActivity.class));
+                NotificationUtils.displayDebug("Background check finished");
             } else {
-                NotificationUtils.displayNotification("Debug", "Background failed", -1, 0, new Intent(App.getContext(), SplashActivity.class));
+                NotificationUtils.displayDebug("Background failed");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            NotificationUtils.displayNotification("Debug", "Background crashed", -1, 0, new Intent(App.getContext(), SplashActivity.class));
+            NotificationUtils.displayDebug("Background crashed");
         }
 
         Log.d(TAG, "Work stopped");
@@ -76,7 +76,7 @@ public class ParserWorker extends Worker {
 
             @Override
             public void onStart(int pg) {
-                NotificationUtils.displayNotification("Debug", "Background check starting", -1, 0, new Intent(App.getContext(), SplashActivity.class));
+                NotificationUtils.displayDebug("Background check starting");
             }
 
             @Override
@@ -106,10 +106,8 @@ public class ParserWorker extends Worker {
                 else
                     finish(false);
 
-                if (journals && report && materials && schedule && messages) {
+                if (journals && report && materials && schedule && messages)
                     finish(true);
-
-                }
             }
 
             @Override

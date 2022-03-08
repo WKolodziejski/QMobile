@@ -23,11 +23,19 @@ import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
+import com.tinf.qmobile.activity.settings.SplashActivity;
 
 public class NotificationUtils {
 
+    public static void displayDebug(String text) {
+        if (!BuildConfig.DEBUG)
+            return;
+
+        NotificationUtils.displayNotification("Debug", text, -1, 0, new Intent(App.getContext(), SplashActivity.class));
+    }
+
     public static void displayNotification(String title, String txt, int channelID, int id, Intent intent) {
-        if (channelID == -1 && !BuildConfig.DEBUG)
+        if (channelID == -1)
             return;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), getChannelName(channelID));
