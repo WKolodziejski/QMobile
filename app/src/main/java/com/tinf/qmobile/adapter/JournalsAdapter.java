@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
+import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
@@ -28,15 +29,18 @@ import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.calendar.EventBase;
 
 import java.util.List;
 
 public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnData<Queryable> {
     private final AsyncListDiffer<Queryable> list;
     private final Context context;
+    private final OnList<Queryable> onList;
 
-    public JournalsAdapter(Context context) {
+    public JournalsAdapter(Context context, OnList<Queryable> onList) {
         this.context = context;
+        this.onList = onList;
         this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
             @Override
             public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
@@ -106,6 +110,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
     @Override
     public void onUpdate(List<Queryable> list) {
         this.list.submitList(DataBase.get().getJournalsDataProvider().getList());
+        onList.onUpdate(list);
     }
 
     @Override

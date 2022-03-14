@@ -1,9 +1,9 @@
 package com.tinf.qmobile.fragment;
 
+import static com.tinf.qmobile.model.ViewType.MESSAGE;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,10 +25,7 @@ import com.tinf.qmobile.adapter.MessagesAdapter;
 import com.tinf.qmobile.databinding.FragmentMessagesBinding;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.message.Messenger;
-import com.tinf.qmobile.widget.divider.JournalItemDivider;
 import com.tinf.qmobile.widget.divider.MessageItemDivider;
-
-import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 public class MessagesFragment extends Fragment implements OnResponse {
     private FragmentMessagesBinding binding;
@@ -118,13 +115,15 @@ public class MessagesFragment extends Fragment implements OnResponse {
     @Override
     public void onError(int pg, String error) {
         binding.refresh.setRefreshing(false);
-        Toast.makeText(App.getContext(), error, Toast.LENGTH_LONG).show();
+        ContextCompat.getMainExecutor(App.getContext()).execute(() ->
+                Toast.makeText(App.getContext(), error, Toast.LENGTH_LONG).show());
     }
 
     @Override
     public void onAccessDenied(int pg, String message) {
         binding.refresh.setRefreshing(false);
-        Toast.makeText(App.getContext(), getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
+        ContextCompat.getMainExecutor(App.getContext()).execute(() ->
+                Toast.makeText(App.getContext(), App.getContext().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show());
     }
 
 }

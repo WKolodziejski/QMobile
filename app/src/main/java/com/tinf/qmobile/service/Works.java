@@ -5,6 +5,7 @@ import static com.tinf.qmobile.fragment.SettingsFragment.ALERT;
 import static com.tinf.qmobile.fragment.SettingsFragment.CHECK;
 import static com.tinf.qmobile.fragment.SettingsFragment.MOBILE;
 import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -12,9 +13,11 @@ import android.util.Log;
 import androidx.preference.PreferenceManager;
 import androidx.work.Constraints;
 import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import java.util.Calendar;
@@ -39,13 +42,18 @@ public class Works {
             Log.i(TAG, "Mobile data on");
         }
 
-        OneTimeWorkRequest.Builder work = new OneTimeWorkRequest.Builder(ParserWorker.class)
+        long time = prefs.getBoolean(ALERT, false) ? 1 : 5;
+
+        PeriodicWorkRequest.Builder work = new PeriodicWorkRequest.Builder(ParserWorker.class,
+                time, HOURS,
+                15, MINUTES)
                 .setConstraints(constraints.build());
 
-        work.setInitialDelay(prefs.getBoolean(ALERT, false) ? 1 : 5, HOURS);
+        work.setInitialDelay(time, HOURS);
 
         workManager.cancelUniqueWork("background");
-        workManager.enqueueUniqueWork("background", ExistingWorkPolicy.REPLACE, work.build());
+        workManager.enqueueUniquePeriodicWork("background",
+                ExistingPeriodicWorkPolicy.REPLACE, work.build());
 
         Log.i(TAG, "Parser scheduled");
     }
@@ -64,6 +72,9 @@ public class Works {
         Log.i(TAG, "Alarm scheduled for " + new Date(time));
 
         time -= Calendar.getInstance().getTimeInMillis();
+
+        if (time < 0)
+            return;
 
         Log.i(TAG, "Delay of " + time + "ms");
 

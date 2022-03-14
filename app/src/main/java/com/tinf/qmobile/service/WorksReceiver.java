@@ -6,10 +6,12 @@ import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.work.Data;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.EventUser_;
@@ -28,9 +30,14 @@ public class WorksReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Bundle bundle = new Bundle();
+        bundle.putString("Intent", intent.toString());
+
+        FirebaseAnalytics.getInstance(context).logEvent("Broadcast", bundle);
+
         Log.i(TAG, "Broadcast received");
 
-        if (intent.getAction() == null || context == null)
+        if (intent.getAction() == null)
             return;
 
         if (!intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED))

@@ -2,6 +2,8 @@ package com.tinf.qmobile.database;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.network.Client;
@@ -43,11 +45,15 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
     }
 
     public void addOnDataListener(OnData onData) {
+        Log.d(getClass().getName(), "Added listener from " + onData);
+
         if (onData != null && !listeners.contains(onData))
             listeners.add(onData);
     }
 
     public void removeOnDataListener(OnData onData) {
+        Log.d(getClass().getName(), "Removed listener from " + onData);
+
         if (onData != null)
             listeners.remove(onData);
     }

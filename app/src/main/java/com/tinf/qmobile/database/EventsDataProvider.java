@@ -87,8 +87,8 @@ public class EventsDataProvider extends BaseDataProvider<EventBase> {
 
         Collections.sort(list, (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
 
-        if (list.isEmpty())
-            list.add(new Empty());
+        //if (list.isEmpty())
+            //list.add(new Empty());
 
         return list;
     }

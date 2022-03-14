@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
+import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHolder;
@@ -29,9 +30,11 @@ import java.util.List;
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> implements OnData<EventBase> {
     private final Context context;
     private final AsyncListDiffer<EventBase> list;
+    private final OnList<EventBase> onList;
 
-    public EventsAdapter(Context context) {
+    public EventsAdapter(Context context, OnList<EventBase> onList) {
         this.context = context;
+        this.onList = onList;
         this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<EventBase>() {
             @Override
             public boolean areItemsTheSame(@NonNull EventBase oldItem, @NonNull EventBase newItem) {
@@ -65,7 +68,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
 
             case EMPTY:
                 return new EmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.calendar_empty, parent, false));
+                        .inflate(R.layout.header_empty, parent, false));
         }
         return null;
     }
@@ -100,6 +103,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
     @Override
     public void onUpdate(List<EventBase> list) {
         this.list.submitList(list);
+        onList.onUpdate(list);
     }
 
 }

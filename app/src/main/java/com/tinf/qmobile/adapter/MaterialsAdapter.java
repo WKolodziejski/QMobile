@@ -16,20 +16,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
+import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
 import com.tinf.qmobile.holder.material.MaterialEmptyViewHolder;
 import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.material.Material;
 
 import java.util.List;
 
 public class MaterialsAdapter extends MaterialsBaseAdapter implements OnData<Queryable> {
     private final AsyncListDiffer<Queryable> materials;
+    private final OnList<Queryable> onList;
 
-    public MaterialsAdapter(Context context, OnInteractListener listener) {
+    public MaterialsAdapter(Context context, OnInteractListener listener, OnList<Queryable> onList) {
         super(context, listener);
+        this.onList = onList;
         this.materials = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
             @Override
             public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
@@ -100,6 +104,7 @@ public class MaterialsAdapter extends MaterialsBaseAdapter implements OnData<Que
     @Override
     public void onUpdate(List<Queryable> list) {
         materials.submitList(list);
+        onList.onUpdate(list);
     }
 
     @Override

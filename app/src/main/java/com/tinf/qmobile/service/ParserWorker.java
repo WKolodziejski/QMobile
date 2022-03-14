@@ -7,6 +7,7 @@ import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import androidx.work.WorkerParameters;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SplashActivity;
@@ -35,9 +37,9 @@ public class ParserWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Log.d(TAG, "Starting work...");
+        Bundle bundle = new Bundle();
 
-        setForegroundAsync(new ForegroundInfo(0, new Notification()));
+        Log.d(TAG, "Starting work...");
 
         if (!Client.isConnected())
             return Result.failure();
@@ -45,13 +47,19 @@ public class ParserWorker extends Worker {
         try {
             if (Tasks.await(checkChanges())) {
                 NotificationUtils.debug("Background check finished");
+                bundle.putString("Result", "Success");
             } else {
                 NotificationUtils.debug("Background failed");
+                bundle.putString("Result", "Fail");
             }
         } catch (Exception e) {
             e.printStackTrace();
             NotificationUtils.debug("Background crashed");
+            bundle.putString("Result", "Crash");
+            bundle.putString("Exception", e.toString());
         }
+
+        FirebaseAnalytics.getInstance(getContext()).logEvent("Parser", bundle);
 
         Log.d(TAG, "Work stopped");
         Works.scheduleParser();

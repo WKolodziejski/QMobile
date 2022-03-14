@@ -6,10 +6,12 @@ import static com.tinf.qmobile.network.Client.pos;
 import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 import android.app.ActivityManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.MyObjectBox;
@@ -53,6 +55,8 @@ public class DataBase implements OnUpdate {
         this.handler = new Handler(Looper.getMainLooper());
         Client.get().addOnUpdateListener(this);
 
+        Bundle bundle = new Bundle();
+
         Log.d("Box for ", UserUtils.getCredential(UserUtils.REGISTRATION));
 
         try {
@@ -66,11 +70,13 @@ public class DataBase implements OnUpdate {
 
             FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
             crashlytics.log("SCHEMA FAILED");
+            bundle.putString("Result", "Schema failed");
 
             if (BoxStore.deleteAllFiles(getContext(), UserUtils.getCredential(REGISTRATION))) {
                 Log.d(TAG, "DB deleted");
 
                 crashlytics.log("DB DELETED");
+                bundle.putString("Result", "DB deleted");
 
                 boxStore = MyObjectBox
                         .builder()
@@ -79,31 +85,30 @@ public class DataBase implements OnUpdate {
                         .build();
             } else {
                 crashlytics.log("APP DATA DELETED");
+                bundle.putString("Result", "App data deleted");
 
                 ((ActivityManager) getContext().getSystemService(ACTIVITY_SERVICE))
                         .clearApplicationUserData();
             }
         }
 
+        FirebaseAnalytics.getInstance(getContext()).logEvent("DataBase", bundle);
+
         Log.d(TAG, boxStore == null ? "BoxStore is null" : boxStore.diagnose());
 
         sub1 = boxStore.subscribe(Matter.class)
-                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub2 = boxStore.subscribe(Journal.class)
-                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub3 = boxStore.subscribe(Material.class)
-                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> update());
 
         sub4 = boxStore.subscribe(Message.class)
-                //.on(AndroidScheduler.mainThread())
                 .onError(Throwable::printStackTrace)
                 .observer(data -> countMessages((int) (boxStore.boxFor(Message.class)
                         .query()

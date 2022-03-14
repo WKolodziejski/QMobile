@@ -1,5 +1,6 @@
 package com.tinf.qmobile.network.message;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -27,15 +28,13 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     private final WebView webView;
     private final List<String> queue;
     private final OnResponse onResponse;
-    private final Context context;
     private final Handler handler;
 
+    @SuppressLint("SetJavaScriptEnabled")
     public Messenger(Context context, OnResponse onResponse) {
-        this.context = context;
         this.onResponse = onResponse;
         this.queue = new LinkedList<>();
         this.handler = new Handler(Looper.getMainLooper());
-        //this.webView = webView;
 
         webView = new WebView(context);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -235,9 +234,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     }
 
     @Override
-    public void onStart(int pg) {
-
-    }
+    public void onStart(int pg) { }
 
     @Override
     public void onFinish(int pg) {
@@ -249,12 +246,10 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
     @Override
     public void onError(int pg, String error) {
+        handler.post(() -> onResponse.onError(pg, error));
+
         if (pg == PG_ERROR)
             Client.get().login();
-
-        Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-
-        handler.post(() -> onResponse.onError(pg, error));
     }
 
     @Override

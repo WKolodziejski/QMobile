@@ -37,6 +37,7 @@ import com.tinf.qmobile.adapter.EventsAdapter;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentHomeBinding;
+import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
@@ -66,7 +67,7 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import me.jlurena.revolvingweekview.DayTime;
 import me.jlurena.revolvingweekview.WeekViewEvent;
 
-public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
+public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnUpdate {
     private FragmentHomeBinding binding;
     private DataSubscription sub1, sub2;
     private FloatingActionButton fab;
@@ -86,6 +87,7 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
+                    updateSchedule();
                     updateChart();
                     Design.syncToolbar(toolbar, Design.canScroll(scroll));
                 });
@@ -96,6 +98,7 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 .onError(Throwable::printStackTrace)
                 .observer(data -> {
                     binding.weekView.notifyDatasetChanged();
+                    updateSchedule();
                     updateChart();
                     Design.syncToolbar(toolbar, Design.canScroll(scroll));
                 });
@@ -136,7 +139,7 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         binding.recycler.setItemAnimator(null);
-        binding.recycler.setAdapter(new EventsAdapter(getContext()));
+        binding.recycler.setAdapter(new EventsAdapter(getContext(), this::onUpdate));
 
         binding.calendarLayout.setOnClickListener(v -> {
             Bundle transition = null;
@@ -287,6 +290,9 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 int day = event.getStartTime().getDay().getValue() % 7;
                 int hour = event.getStartTime().getHour();
 
+                if (day == 0 || day == 6)
+                    continue;
+
                 if (minutes[hour] != null) {
                     if (event.getEndTime().isAfter(minutes[hour].getEndTime())) {
                         minutes[hour] = event;
@@ -394,19 +400,30 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
 
                 Log.d(String.valueOf(lastIndex), Arrays.toString(minutes));
 
-                while (lastIndex > 0 && minutes[lastIndex] == null)
+                while (lastIndex > 1 && minutes[lastIndex] == null)
                     lastIndex--;
 
                 if (minutes[lastIndex] == null) {
-                    while (lastIndex < 24 && minutes[lastIndex] == null)
+                    while (lastIndex < 23 && minutes[lastIndex] == null)
                         lastIndex++;
+                }
+
+                while (firstIndex > 1 && minutes[firstIndex] == null)
+                    firstIndex--;
+
+                if (minutes[firstIndex] == null) {
+                    while (firstIndex < 23 && minutes[firstIndex] == null)
+                        firstIndex++;
                 }
 
                 if (minutes[lastIndex] == null) {
                     params.height = Design.dpiToPixels(0);
-
                     binding.emptySchedule.setVisibility(View.VISIBLE);
+                    binding.weekLayout.setVisibility(View.GONE);
                 } else {
+                    Log.d("First index", String.valueOf(firstIndex));
+                    Log.d("Last index", String.valueOf(lastIndex));
+
                     int startHour = minutes[firstIndex].getStartTime().getHour();
                     int startMin = minutes[firstIndex].getStartTime().getMinute();
                     int endHour = minutes[lastIndex].getEndTime().getHour();
@@ -418,6 +435,7 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                     binding.weekView.goToHour(firstIndex + (startMin * 0.0167));
 
                     binding.emptySchedule.setVisibility(View.GONE);
+                    binding.weekLayout.setVisibility(View.VISIBLE);
 
                     ScheduleUtils.setStartHour(startHour);
                     ScheduleUtils.setStartMin(startMin);
@@ -436,11 +454,12 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
                 binding.weekView.goToHour(startHour + (startMin * 0.0167));
 
                 binding.emptySchedule.setVisibility(View.GONE);
+                binding.weekLayout.setVisibility(View.VISIBLE);
             }
         } else {
             params.height = Design.dpiToPixels(0);
-
             binding.emptySchedule.setVisibility(View.VISIBLE);
+            binding.weekLayout.setVisibility(View.GONE);
         }
 
         binding.weekView.setLayoutParams(params);
@@ -542,8 +561,10 @@ public class HomeFragment extends BaseFragment implements OnData, OnUpdate {
     }
 
     @Override
-    public void onUpdate(List list) {
+    public void onUpdate(List<EventBase> list) {
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
+        binding.emptyCalendar.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+        Log.d("ONUPDATE", String.valueOf(list.isEmpty()));
     }
 
     @Override

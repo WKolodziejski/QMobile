@@ -50,7 +50,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recycler.addItemDecoration(new JournalItemDivider(getContext(), 52));
         binding.recycler.setItemAnimator(null);
-        binding.recycler.setAdapter(new JournalsAdapter(getContext()));
+        binding.recycler.setAdapter(new JournalsAdapter(getContext(), this::onUpdate));
         binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {

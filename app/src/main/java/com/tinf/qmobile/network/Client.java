@@ -443,12 +443,14 @@ public class Client {
         return Resp.OK;
     }
 
-    private synchronized void checkQueue() {
+    private void checkQueue() {
         executors.execute(() -> {
-            while (!queue.isEmpty()) {
-                RequestHelper helper = queue.get(0);
-                queue.remove(0);
-                createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, helper.onFinish);
+            synchronized (queue) {
+                while (!queue.isEmpty()) {
+                    RequestHelper helper = queue.get(0);
+                    queue.remove(0);
+                    createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, helper.onFinish);
+                }
             }
         });
     }
@@ -688,18 +690,20 @@ public class Client {
         });
     }*/
 
-    public synchronized void changeDate(int pos) {
+    public void changeDate(int pos) {
         handler.post(() -> {
-            if (pos != Client.pos) {
-                Client.pos = pos;
+            synchronized (requests) {
+                if (pos != Client.pos) {
+                    Client.pos = pos;
 
-                requests.cancelAll(request -> true);
+                    requests.cancelAll(request -> true);
 
-                for (int i = 0; i < onUpdates.size(); i++) {
-                    onUpdates.get(i).onDateChanged();
+                    for (int i = 0; i < onUpdates.size(); i++) {
+                        onUpdates.get(i).onDateChanged();
+                    }
+
+                    loadYear(pos);
                 }
-
-                loadYear(pos);
             }
         });
     }

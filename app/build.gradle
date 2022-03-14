@@ -36,9 +36,9 @@ android {
         applicationId 'com.tinf.qmobile'
         minSdkVersion 22
         targetSdkVersion 32
-        versionName '1.7.9'
+        versionName '1.8.1'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 114
+        versionCode 116
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
@@ -94,6 +94,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-perf'
+    implementation 'com.google.firebase:firebase-analytics'
 
     implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'

@@ -97,7 +97,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
                 refresh.setEnabled(true);
                 Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
             }
-        });
+        }, this::onUpdate);
 
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
