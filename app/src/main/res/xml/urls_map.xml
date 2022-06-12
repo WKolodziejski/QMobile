@@ -5,12 +5,14 @@
         <value>{
             "IFCE": "https://qacademico.ifce.edu.br",
             "IFES": "https://academico.ifes.edu.br",
+            "IFF": "https://academico.iff.edu.br",
             "IFG": "https://academicoweb.ifg.edu.br",
             "IFGOIANO": "https://academico.ifgoiano.edu.br",
             "IFMA": "https://qacad.ifma.edu.br",
             "IFMT": "https://academico.ifmt.edu.br",
             "IFPE": "https://qacademico.ifpe.edu.br",
             "IFPI": "https://academico.ifpi.edu.br",
+            "IFRR": "http://academico.ifrr.edu.br",
             "IFRS": "https://qacademico.bento.ifrs.edu.br"
             }
         </value>

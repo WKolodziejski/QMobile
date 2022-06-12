@@ -265,8 +265,15 @@ public class Matter implements Queryable {
     }
 
     public String getClazz() {
-        return title_ == null ? "" :
-                description_.substring(description_.indexOf('-') + 1, description_.indexOf(title_) - 2).trim();
+        if (title_ == null)
+            return "-";
+
+        String clazz = description_.substring(0, description_.indexOf(title_) - 2).trim();
+
+        if (!clazz.contains("-"))
+            return "-";
+
+        return clazz.substring(clazz.indexOf('-') + 1);
     }
     
     public String getTeacher() {

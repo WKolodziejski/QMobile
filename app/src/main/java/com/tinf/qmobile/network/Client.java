@@ -486,6 +486,7 @@ public class Client {
 
                 Log.v(TAG, "Keys fetched");
             } catch (Exception e) {
+                e.printStackTrace();
                 crashlytics.recordException(e);
             }
 
