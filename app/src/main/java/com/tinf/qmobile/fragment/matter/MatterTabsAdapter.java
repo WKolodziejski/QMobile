@@ -13,10 +13,10 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 
-public class TabsAdapter extends FragmentStateAdapter {
+public class MatterTabsAdapter extends FragmentStateAdapter {
     private final Bundle bundle;
 
-    public TabsAdapter(FragmentManager fm, Lifecycle lifecycle, Bundle bundle) {
+    public MatterTabsAdapter(FragmentManager fm, Lifecycle lifecycle, Bundle bundle) {
         super(fm, lifecycle);
         this.bundle = bundle;
     }

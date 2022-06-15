@@ -229,7 +229,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/chart_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -240,20 +239,48 @@
             android:layout_height="1dp"
             android:background="@color/blackDividers" />
 
-        <TextView
-            android:id="@+id/chart_text"
+        <LinearLayout
+            android:id="@+id/chart_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:drawableStart="@drawable/ic_insights"
-            android:drawablePadding="8dp"
-            android:drawableTint="@color/colorAccent"
             android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:padding="16dp"
-            android:text="@string/title_performance"
-            android:textSize="17sp"
-            android:textStyle="bold" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_insights"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/colorAccent"
+                android:gravity="center_vertical"
+                android:text="@string/title_performance"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                tools:layout_conversion_absoluteHeight="24dp"
+                tools:layout_conversion_absoluteWidth="379dp"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="16dp" />
+
+            <TextView
+                android:id="@+id/empty_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/performance_empty"
+                android:textSize="@dimen/main_font_size"
+                android:visibility="gone"
+                tools:layout_conversion_absoluteHeight="20dp"
+                tools:layout_conversion_absoluteWidth="165dp"
+                tools:layout_editor_absoluteX="48dp"
+                tools:layout_editor_absoluteY="40dp"
+                tools:visibility="visible" />
+
+        </LinearLayout>
 
         <com.tinf.qmobile.widget.performance.PerformanceChart
             android:id="@+id/chart"

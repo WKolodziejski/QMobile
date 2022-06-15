@@ -323,6 +323,18 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                     startActivity(new Intent(getBaseContext(), CalendarActivity.class)), 250);
             return true;
 
+        } else if (itemId == R.id.drawer_schedule) {
+            binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(getBaseContext(), ScheduleActivity.class)), 250);
+            return true;
+
+        } else if (itemId == R.id.drawer_performance) {
+            binding.drawer.closeDrawer(GravityCompat.START);
+            binding.drawer.postDelayed(() ->
+                    startActivity(new Intent(getBaseContext(), PerformanceActivity.class)), 250);
+            return true;
+
         } else if (itemId == R.id.drawer_materials) {
             binding.drawer.closeDrawer(GravityCompat.START);
             binding.drawer.postDelayed(() ->

@@ -10,6 +10,14 @@ import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.databinding.TableCellAbsencesBinding;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.utility.ColorUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lecho.lib.hellocharts.model.PieChartData;
+import lecho.lib.hellocharts.model.SelectedValue;
+import lecho.lib.hellocharts.model.SliceValue;
 
 public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
     private final TableCellAbsencesBinding binding;
@@ -24,12 +32,44 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
         int classes = matter.getClassesGiven();
         int absences = matter.getAbsences();
         int presences = classes - absences;
-        int percentage = classes <= 0 ? 0 : (int) ((float) presences / classes * 100f);
+//        int percentage = classes <= 0 ? 0 : (int) ((float) presences / classes * 100f);
+        int color1 = matter.getColor();
+        int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
 
         binding.absences.setText(matter.getAbsencesString());
-        binding.progress.setIndicatorColor(matter.getColor());
-        binding.progress.setProgress(percentage);
-        binding.progress.setVisibility(classes > 0 ? VISIBLE : INVISIBLE);
+//        binding.progress.setIndicatorColor(matter.getColor());
+//        binding.progress.setProgress(percentage);
+        binding.chartPresence.setVisibility(classes > 0 ? VISIBLE : INVISIBLE);
+
+        List<SliceValue> values = new ArrayList<>();
+
+        if (presences > 0) {
+            values.add(new SliceValue(presences)
+                    .setColor(color1)
+                    .setLabel(""));
+        } else {
+            values.add(new SliceValue(1)
+                    .setColor(color2)
+                    .setLabel(""));
+        }
+
+        if (absences > 0) {
+            values.add(new SliceValue(absences)
+                    .setColor(color2)
+                    .setLabel(""));
+        }
+
+        binding.chartPresence.setPieChartData(new PieChartData(values)
+                .setHasCenterCircle(true)
+                .setCenterCircleScale(0.75f)
+                .setHasLabelsOnlyForSelected(true));
+        binding.chartPresence.setChartRotation(135, false);
+        binding.chartPresence.setInteractive(false);
+
+        if (absences > 0) {
+            binding.chartPresence.selectValue(
+                    new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
+        }
     }
 
 }

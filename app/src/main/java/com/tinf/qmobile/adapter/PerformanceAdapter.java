@@ -84,23 +84,22 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
                 .build()
                 .find();
 
-        List<Queryable> list = new ArrayList<>();
-
-        for (Matter matter : matters) {
-            int i = 0;
-
-            if (!matter.periods.isEmpty())
-                for (Period period : matter.periods)
-                    if (!period.journals.isEmpty())
-                        for (Journal journal : period.journals)
-                            if (journal.getGrade_() >= 0)
-                                i++;
-
-            Log.d(matter.getTitle(), String.valueOf(i));
-
-            if (i > 1)
-                list.add(matter);
-        }
+        List<Queryable> list = new ArrayList<>(matters);
+//        for (Matter matter : matters) {
+//            int i = 0;
+//
+//            if (!matter.periods.isEmpty())
+//                for (Period period : matter.periods)
+//                    if (!period.journals.isEmpty())
+//                        for (Journal journal : period.journals)
+//                            if (journal.getGrade_() >= 0)
+//                                i++;
+//
+//            Log.d(matter.getTitle(), String.valueOf(i));
+//
+//            if (i > 1)
+//                list.add(matter);
+//        }
 
         if (list.isEmpty())
             list.add(new Empty());

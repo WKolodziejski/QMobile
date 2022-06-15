@@ -224,4 +224,5 @@
     <string name="schedule_fri">Fri</string>
     <string name="schedule_sat">Sat</string>
     <string name="schedule_sun">Sun</string>
+    <string name="performance_empty">No grades data</string>
 </resources>

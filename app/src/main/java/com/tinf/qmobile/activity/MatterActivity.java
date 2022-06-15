@@ -20,7 +20,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.ActivityMatterBinding;
-import com.tinf.qmobile.fragment.matter.TabsAdapter;
+import com.tinf.qmobile.fragment.matter.MatterTabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
 
 public class MatterActivity extends AppCompatActivity {
@@ -45,7 +45,7 @@ public class MatterActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(matter.getTitle());
 
-        binding.pager.setAdapter(new TabsAdapter(getSupportFragmentManager(), getLifecycle(),
+        binding.pager.setAdapter(new MatterTabsAdapter(getSupportFragmentManager(), getLifecycle(),
                 getIntent().getExtras()));
 
         new TabLayoutMediator(binding.tab, binding.pager, (tab, position) -> {

@@ -48,6 +48,8 @@
     <string name="materiais_empty">Não há materiais disponíveis</string>
     <string name="materiais_downloading">Iniciando Download</string>
 
+    <string name="performance_empty">Sem dados sobre notas</string>
+
     <string name="calendar_scroll">Ir para hoje</string>
     <string name="calendar_period_start">Início do período letivo</string>
     <string name="calendar_period_end">Fim do período letivo</string>
@@ -247,7 +249,7 @@
     <string name="journal_Qualitativa">Avaliação Qualitativa</string>
     <string name="journal_Exercicio">Exercício</string>
 
-    <string name="more_copyright" translatable="false">© 2021 Qualidata</string>
+    <string name="more_copyright" translatable="false">© 2022 Qualidata</string>
     <string name="more_emerson" translatable="false">Émerson Philippe Lopes</string>
     <string name="more_gustavo" translatable="false">Gustavo Hübner Rehbein</string>
     <string name="more_matheus" translatable="false">Matheus Martins Isquierdo</string>

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.UserUtils;
@@ -31,6 +32,7 @@ import java.net.URLConnection;
 
 public class DownloadReceiver extends BroadcastReceiver {
     public static final String PATH = "/QMobile/" + UserUtils.getCredential(REGISTRATION) + "/";
+    private static final FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     private final OnDownload onDownload;
     private final DownloadManager manager;
     public static long id;
@@ -101,31 +103,38 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     public static long download(Context context, String url, String title, String path) {
-        if (Client.isConnected()) {
-            String destiny = PATH;
+        try {
+            if (Client.isConnected()) {
+                String destiny = PATH;
 
-            if (path != null)
-                destiny += path + "/";
+                if (path != null)
+                    destiny += path + "/";
 
-            destiny += title;
+                destiny += title;
 
-            Log.d("Download", destiny);
+                Log.d("Download", destiny);
 
-            DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-            id = dm.enqueue(new DownloadManager.Request(Uri.parse(url))
-                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                    .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setAllowedOverRoaming(false)
-                    .setMimeType(URLConnection.guessContentTypeFromName(title))
-                    .setTitle(title)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destiny));
+                DownloadManager dm = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+                id = dm.enqueue(new DownloadManager.Request(Uri.parse(url))
+                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        .setAllowedOverRoaming(false)
+                        .setMimeType(URLConnection.guessContentTypeFromName(title))
+                        .setTitle(title)
+                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, destiny));
 
-            Toast.makeText(context, context.getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
-            return id;
-        } else {
-            Toast.makeText(context, context.getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
-            return 0;
+                Toast.makeText(context, context.getResources().getString(R.string.materiais_downloading), Toast.LENGTH_SHORT).show();
+                return id;
+            } else {
+                Toast.makeText(context, context.getResources().getString(R.string.client_no_connection), Toast.LENGTH_SHORT).show();
+                return 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            crashlytics.recordException(e);
+            Toast.makeText(context, context.getResources().getString(R.string.client_error), Toast.LENGTH_SHORT).show();
         }
+        return 0;
     }
 
     public static String getMaterialPath(String name) {
@@ -158,7 +167,9 @@ public class DownloadReceiver extends BroadcastReceiver {
 
                 UserUtils.setImg(cod);
             }
-        } catch (Exception ignore) { }
+        } catch (Exception e) {
+            crashlytics.recordException(e);
+        }
     }
 
     public interface OnDownload {

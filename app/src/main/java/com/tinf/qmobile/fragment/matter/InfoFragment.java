@@ -1,5 +1,7 @@
 package com.tinf.qmobile.fragment.matter;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 import android.content.Intent;
@@ -107,7 +109,7 @@ public class InfoFragment extends Fragment {
         int absences = matter.getAbsences();
         int presences = classesGiven - absences;
         float maxSum = matter.getAllMaxGradesSum();
-        int classesProgress = classesTotal == 0 ? 0 : (int) ((classesGiven / classesTotal) * 100f);
+        int classesProgress = classesTotal == 0 ? 0 : (int) (((float) classesGiven / classesTotal) * 100f);
         int averageProgress = maxSum == 0 ? 0 : (int) ((matter.getAllGradesSum() / maxSum) * 100f);
 
         Log.d(matter.getAbsencesString(), String.valueOf(presences));
@@ -194,49 +196,54 @@ public class InfoFragment extends Fragment {
             }
         }
 
-        Line line = new Line(points);
-        line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
-        line.setPointColor(matter.getColor());
-        line.setShape(ValueShape.CIRCLE);
-        line.setCubic(true);
-        line.setFilled(false);
-        line.setHasLabels(true);
+        if (points.size() > 1) {
+            Line line = new Line(points);
+            line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
+            line.setPointColor(matter.getColor());
+            line.setShape(ValueShape.CIRCLE);
+            line.setCubic(true);
+            line.setFilled(false);
+            line.setHasLabels(true);
 
-        LineChartData data = new LineChartData(Collections.singletonList(line));
-        data.setAxisYLeft(new Axis());
-        data.setAxisXBottom(new Axis(axisX));
+            LineChartData data = new LineChartData(Collections.singletonList(line));
+            data.setAxisYLeft(new Axis());
+            data.setAxisXBottom(new Axis(axisX));
 
-        binding.layoutGrades.setVisibility(points.isEmpty() ? View.GONE : View.VISIBLE);
-        binding.chartGrades.setLineChartData(data);
-        binding.chartGrades.setZoomEnabled(false);
-        binding.chartGrades.setScrollEnabled(false);
-        binding.chartGrades.setViewportCalculationEnabled(false);
+            //binding.layoutGrades.setVisibility(points.isEmpty() ? View.GONE : View.VISIBLE);
+            binding.chartGrades.setLineChartData(data);
+            binding.chartGrades.setZoomEnabled(false);
+            binding.chartGrades.setScrollEnabled(false);
+            binding.chartGrades.setViewportCalculationEnabled(false);
 
-        if (onCreate) {
-            final Viewport v = new Viewport(binding.chartGrades.getMaximumViewport());
+            if (onCreate) {
+                final Viewport v = new Viewport(binding.chartGrades.getMaximumViewport());
 
-            v.top += 1;
-            v.bottom = 0;
+                v.top += 1;
+                v.bottom = 0;
 
-            binding.chartGrades.setMaximumViewport(v);
-            binding.chartGrades.setCurrentViewport(v);
+                binding.chartGrades.setMaximumViewport(v);
+                binding.chartGrades.setCurrentViewport(v);
+            }
+
+            binding.chartGrades.setOnValueTouchListener(new LineChartOnValueSelectListener() {
+                @Override
+                public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
+                    Intent intent = new Intent(getContext(), EventViewActivity.class);
+                    intent.putExtra("ID", journals.get(pointIndex).id);
+                    intent.putExtra("TYPE", JOURNAL);
+                    intent.putExtra("LOOKUP", false);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onValueDeselected() {
+
+                }
+            });
+            binding.layoutGrades.setVisibility(VISIBLE);
+        } else {
+            binding.layoutGrades.setVisibility(GONE);
         }
-
-        binding.chartGrades.setOnValueTouchListener(new LineChartOnValueSelectListener() {
-            @Override
-            public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
-                Intent intent = new Intent(getContext(), EventViewActivity.class);
-                intent.putExtra("ID", journals.get(pointIndex).id);
-                intent.putExtra("TYPE", JOURNAL);
-                intent.putExtra("LOOKUP", false);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onValueDeselected() {
-
-            }
-        });
 
 //        Radar radar = AnyChart.radar();
 //        //radar.title("WoW base stats comparison radar chart: Shaman vs Warrior vs Priest");

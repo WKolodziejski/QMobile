@@ -1,5 +1,7 @@
 package com.tinf.qmobile.fragment;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
@@ -117,8 +119,8 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         registerForContextMenu(binding.scheduleTune);
 
         binding.weekView.setWeekViewLoader(ArrayList::new);
-        binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.calendarLayout.setVisibility(pos == 0 ? VISIBLE : GONE);
+        binding.scheduleTune.setVisibility(pos == 0 ? VISIBLE : GONE);
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
         updateFab();
         updateChart();
@@ -148,7 +150,8 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                 try {
                     transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                             Pair.create(fab, fab.getTransitionName())).toBundle();
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
 
             startActivity(new Intent(getContext(), CalendarActivity.class), pos == 0 ? transition : null);
@@ -161,13 +164,14 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                 try {
                     transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                             Pair.create(fab, fab.getTransitionName())).toBundle();
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
 
             startActivity(new Intent(getContext(), ScheduleActivity.class), pos == 0 ? transition : null);
         });
 
-        binding.chartText.setOnClickListener(v ->
+        binding.chartLayout.setOnClickListener(v ->
                 startActivity(new Intent(getContext(), PerformanceActivity.class)));
 
         binding.calendarTune.setOnClickListener(v -> {
@@ -194,7 +198,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                     return true;
                 }
 
-               return false;
+                return false;
             });
             popup.show();
         });
@@ -418,8 +422,8 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
 
                 if (minutes[lastIndex] == null) {
                     params.height = Design.dpiToPixels(0);
-                    binding.emptySchedule.setVisibility(View.VISIBLE);
-                    binding.weekLayout.setVisibility(View.GONE);
+                    binding.emptySchedule.setVisibility(VISIBLE);
+                    binding.weekLayout.setVisibility(GONE);
                 } else {
                     Log.d("First index", String.valueOf(firstIndex));
                     Log.d("Last index", String.valueOf(lastIndex));
@@ -434,8 +438,8 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                     binding.weekView.goToDay(DayOfWeek.MONDAY);
                     binding.weekView.goToHour(firstIndex + (startMin * 0.0167));
 
-                    binding.emptySchedule.setVisibility(View.GONE);
-                    binding.weekLayout.setVisibility(View.VISIBLE);
+                    binding.emptySchedule.setVisibility(GONE);
+                    binding.weekLayout.setVisibility(VISIBLE);
 
                     ScheduleUtils.setStartHour(startHour);
                     ScheduleUtils.setStartMin(startMin);
@@ -449,17 +453,17 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                 int endMin = ScheduleUtils.getEndMin();
 
                 params.height = Design.dpiToPixels(((endHour * 60) + endMin) - ((startHour * 60) + startMin) + 8);
-                
+
                 binding.weekView.goToDay(DayOfWeek.MONDAY);
                 binding.weekView.goToHour(startHour + (startMin * 0.0167));
 
-                binding.emptySchedule.setVisibility(View.GONE);
-                binding.weekLayout.setVisibility(View.VISIBLE);
+                binding.emptySchedule.setVisibility(GONE);
+                binding.weekLayout.setVisibility(VISIBLE);
             }
         } else {
             params.height = Design.dpiToPixels(0);
-            binding.emptySchedule.setVisibility(View.VISIBLE);
-            binding.weekLayout.setVisibility(View.GONE);
+            binding.emptySchedule.setVisibility(VISIBLE);
+            binding.weekLayout.setVisibility(GONE);
         }
 
         binding.weekView.setLayoutParams(params);
@@ -503,45 +507,51 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                     .setHasLabels(true));
         }
 
-        ColumnChartData data = new ColumnChartData();
-        data.setColumns(columns);
-        data.setValueLabelBackgroundEnabled(false);
-        data.setValueLabelsTextColor(getResources().getColor(R.color.colorPrimaryLight));
-        data.setAxisXBottom(new Axis(axisMatter));
-        binding.chart.setColumnChartData(data);
-        binding.chart.setZoomEnabled(false);
-        binding.chart.setOnValueTouchListener(new ColumnChartOnValueSelectListener() {
+        if (m > 1) {
+            binding.chart.setVisibility(VISIBLE);
+            binding.emptyChart.setVisibility(GONE);
 
-            @Override
-            public void onValueSelected(int l, int p, SubcolumnValue subcolumnValue) {
-                Intent intent = new Intent(getContext(), MatterActivity.class);
-                intent.putExtra("ID", matters.get(l).id);
-                intent.putExtra("PAGE", HEADER);
-                intent.putExtra("LOOKUP", false);
-                startActivity(intent);
-            }
+            ColumnChartData data = new ColumnChartData();
+            data.setColumns(columns);
+            data.setValueLabelBackgroundEnabled(false);
+            data.setValueLabelsTextColor(getResources().getColor(R.color.colorPrimaryLight));
+            data.setAxisXBottom(new Axis(axisMatter));
+            binding.chart.setColumnChartData(data);
+            binding.chart.setZoomEnabled(false);
+            binding.chart.setOnValueTouchListener(new ColumnChartOnValueSelectListener() {
 
-            @Override
-            public void onValueDeselected() {
+                @Override
+                public void onValueSelected(int l, int p, SubcolumnValue subcolumnValue) {
+                    Intent intent = new Intent(getContext(), MatterActivity.class);
+                    intent.putExtra("ID", matters.get(l).id);
+                    intent.putExtra("PAGE", HEADER);
+                    intent.putExtra("LOOKUP", false);
+                    startActivity(intent);
+                }
 
-            }
+                @Override
+                public void onValueDeselected() {
 
-        });
+                }
 
-        binding.chartLayout.setVisibility(m > 1 ? View.VISIBLE : View.GONE);
+            });
+        } else {
+            binding.chart.setVisibility(GONE);
+            binding.emptyChart.setVisibility(VISIBLE);
+        }
     }
 
     private void updateFab() {
         if (fab != null) {
-            fab.setVisibility(Client.pos == 0 ? View.VISIBLE : View.GONE);
+            fab.setVisibility(Client.pos == 0 ? VISIBLE : GONE);
         }
     }
 
     @Override
     public void onDateChanged() {
         binding.weekView.notifyDatasetChanged();
-        binding.calendarLayout.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
-        binding.scheduleTune.setVisibility(pos == 0 ? View.VISIBLE : View.GONE);
+        binding.calendarLayout.setVisibility(pos == 0 ? VISIBLE : GONE);
+        binding.scheduleTune.setVisibility(pos == 0 ? VISIBLE : GONE);
         updateFab();
         updateChart();
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
@@ -563,7 +573,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
     @Override
     public void onUpdate(List<EventBase> list) {
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
-        binding.emptyCalendar.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+        binding.emptyCalendar.setVisibility(list.isEmpty() ? VISIBLE : GONE);
         Log.d("ONUPDATE", String.valueOf(list.isEmpty()));
     }
 
