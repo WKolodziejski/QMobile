@@ -62,7 +62,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
 
         if (!message.attachments.isEmpty()) {
             binding.attachments.setVisibility(View.VISIBLE);
-            binding.attachments.setHasFixedSize(true);
+            //binding.attachments.setHasFixedSize(true);
             binding.attachments.setItemViewCacheSize(3);
             binding.attachments.setDrawingCacheEnabled(true);
             binding.attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);

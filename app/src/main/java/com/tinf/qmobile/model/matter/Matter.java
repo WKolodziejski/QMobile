@@ -273,7 +273,7 @@ public class Matter implements Queryable {
         if (!clazz.contains("-"))
             return "-";
 
-        return clazz.substring(clazz.indexOf('-') + 1);
+        return clazz.substring(clazz.indexOf('-') + 1).trim();
     }
     
     public String getTeacher() {

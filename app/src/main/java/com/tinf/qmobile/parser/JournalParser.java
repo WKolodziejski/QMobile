@@ -75,6 +75,7 @@ public class JournalParser extends BaseParser {
             String hs = trs.get(0).getElementsByTag("td").get(1).text().trim();
             hs = hs.substring(0, hs.indexOf("Hrs")).trim();
             String cGiven = trs.get(2).getElementsByTag("td").get(1).text().trim();
+
             if (cGiven.contains("[")) {
                 cGiven = cGiven.substring(0, cGiven.indexOf(" ")).trim();
             }
@@ -170,47 +171,47 @@ public class JournalParser extends BaseParser {
 
                     date = dateString.isEmpty() ? -1 : getDate(dateString);
 
-                    if (date != -1) {
+                    if (date == -1)
+                        continue;
 
-                        try {
-                            QueryBuilder<Journal> builder = journalBox.query()
-                                    .equal(Journal_.title, title, CASE_INSENSITIVE).and()
-                                    .equal(Journal_.type_, type).and()
-                                    .between(Journal_.startTime, date, date).and()
-                                    .between(Journal_.weight_, weight, weight).and()
-                                    .between(Journal_.max_, max, max);
+                    try {
+                        QueryBuilder<Journal> builder = journalBox.query()
+                                .equal(Journal_.title, title, CASE_INSENSITIVE).and()
+                                .equal(Journal_.type_, type).and()
+                                .between(Journal_.startTime, date, date).and()
+                                .between(Journal_.weight_, weight, weight).and()
+                                .between(Journal_.max_, max, max);
 
-                            builder.link(Journal_.period)
-                                    .equal(Period_.id, period.id);
+                        builder.link(Journal_.period)
+                                .equal(Period_.id, period.id);
 
-                            Journal search = builder.build().findUnique();
+                        Journal search = builder.build().findUnique();
 
-                            if (search == null) {
+                        if (search == null) {
 
-                                Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter, isFirstParse);
+                            Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter, isFirstParse);
 
-                                period.journals.add(newJournal);
-                                journalBox.put(newJournal);
+                            period.journals.add(newJournal);
+                            journalBox.put(newJournal);
+
+                            if (notify) {
+                                if (grade != -1 && date <= new Date().getTime())
+                                    notifyGrade(newJournal);
+                                else
+                                    notifySchedule(newJournal);
+                            }
+                        } else {
+                            if (search.getGrade_() != grade) {
+                                search.setGrade(grade);
+                                journalBox.put(search);
 
                                 if (notify) {
-                                    if (grade != -1 && date <= new Date().getTime())
-                                        notifyGrade(newJournal);
-                                    else
-                                        notifySchedule(newJournal);
-                                }
-                            } else {
-                                if (search.getGrade_() != grade) {
-                                    search.setGrade(grade);
-                                    journalBox.put(search);
-
-                                    if (notify) {
-                                        notifyGrade(search);
-                                    }
+                                    notifyGrade(search);
                                 }
                             }
-                        } catch (NonUniqueResultException e) {
-                            e.printStackTrace();
                         }
+                    } catch (NonUniqueResultException e) {
+                        e.printStackTrace();
                     }
                 }
 

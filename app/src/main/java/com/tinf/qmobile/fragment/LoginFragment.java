@@ -1,5 +1,11 @@
 package com.tinf.qmobile.fragment;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static com.tinf.qmobile.utility.UserUtils.PASSWORD;
+import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,9 +16,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -31,11 +39,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import static android.content.Context.INPUT_METHOD_SERVICE;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.utility.UserUtils.PASSWORD;
-import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 public class LoginFragment extends Fragment implements OnResponse {
     private static final String TAG = "LoginFragment";
@@ -54,7 +57,8 @@ public class LoginFragment extends Fragment implements OnResponse {
                 .build());
         remoteConfig.setDefaultsAsync(R.xml.urls_map);
         urls = new Gson().fromJson(remoteConfig.getString("urls"),
-                new TypeToken<Map<String, String>>(){}.getType());
+                new TypeToken<Map<String, String>>() {
+                }.getType());
     }
 
     @Override
@@ -69,53 +73,58 @@ public class LoginFragment extends Fragment implements OnResponse {
         super.onViewCreated(view, savedInstanceState);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
-        if (urls != null)
+        if (urls != null) {
             adapter.addAll(urls.keySet());
-        else {
-            List<String> urls = new ArrayList<>();
-            urls.add("IFCE");
-            urls.add("IFES");
-            urls.add("IFG");
-            urls.add("IFGOIANO");
-            urls.add("IFMA");
-            urls.add("IFMT");
-            urls.add("IFPE");
-            urls.add("IFPI");
-            urls.add("IFRS");
-            adapter.addAll(urls);
+        } else {
+            List<String> list = new ArrayList<>();
+            list.add("IFCE");
+            list.add("IFES");
+            list.add("IFF");
+            list.add("IFG");
+            list.add("IFGOIANO");
+            list.add("IFMA");
+            list.add("IFMT");
+            list.add("IFPE");
+            list.add("IFPI");
+            list.add("IFRR");
+            list.add("IFRS");
+            list.add("IFSUL");
+            adapter.addAll(list);
         }
 
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
-        remoteConfig.fetchAndActivate()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+        remoteConfig.fetchAndActivate().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                urls = new Gson().fromJson(remoteConfig.getString("urls"),
+                        new TypeToken<Map<String, String>>() {
+                        }.getType());
 
-                        urls = new Gson().fromJson(remoteConfig.getString("urls"),
-                                new TypeToken<Map<String, String>>(){}.getType());
-
-                        if (urls != null) {
-                            adapter.clear();
-                            adapter.addAll(urls.keySet());
-                            binding.spinner.setAdapter(adapter);
-                            binding.spinner.setSelection(0);
-                        }
-                    }
-                });
+                if (urls != null) {
+                    adapter.clear();
+                    adapter.addAll(urls.keySet());
+                    binding.spinner.setAdapter(adapter);
+                    binding.spinner.setSelection(0);
+                }
+            }
+        });
 
         binding.spinner.setAdapter(adapter);
         binding.spinner.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        if (urls != null)
+                        if (urls != null) {
+                            Log.d("Position", adapter.getItem(position));
                             Client.get().setURL(urls.get(adapter.getItem(position)));
+                        }
 
                         Log.d(TAG, Client.get().getURL());
                     }
 
                     @Override
-                    public void onNothingSelected(AdapterView<?> parentView) {}
+                    public void onNothingSelected(AdapterView<?> parentView) {
+                    }
 
                 });
         binding.spinner.setSelection(0);
@@ -210,7 +219,7 @@ public class LoginFragment extends Fragment implements OnResponse {
             String line = "";
 
             while ((line = bufferedReader.readLine()) != null) {
-                log.append(line +"\n");
+                log.append(line + "\n");
             }
 
             FirebaseCrashlytics.getInstance().log(log.toString());

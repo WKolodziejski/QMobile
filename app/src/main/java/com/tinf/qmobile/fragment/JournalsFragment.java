@@ -43,7 +43,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.recycler.setHasFixedSize(true);
+        //binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);

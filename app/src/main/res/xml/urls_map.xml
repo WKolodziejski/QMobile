@@ -2,7 +2,9 @@
 <defaultsMap>
     <entry>
         <key>urls</key>
-        <value>{
+        <value>
+            {
+            "IFAM": "http://qacademico.ifam.edu.br",
             "IFCE": "https://qacademico.ifce.edu.br",
             "IFES": "https://academico.ifes.edu.br",
             "IFF": "https://academico.iff.edu.br",
@@ -13,7 +15,8 @@
             "IFPE": "https://qacademico.ifpe.edu.br",
             "IFPI": "https://academico.ifpi.edu.br",
             "IFRR": "http://academico.ifrr.edu.br",
-            "IFRS": "https://qacademico.bento.ifrs.edu.br"
+            "IFRS": "https://qacademico.bento.ifrs.edu.br",
+            "IFSUL": "http://qacademico.ifsul.edu.br"
             }
         </value>
     </entry>

@@ -101,7 +101,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
 
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
-        binding.recycler.setHasFixedSize(true);
+        //binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);

@@ -27,72 +27,71 @@ public class ScheduleParser extends BaseParser {
         Log.i(TAG, "Parsing " + year);
 
         Elements tables = document.select("table");
-
         Elements scheduleTable = tables.get(11).getElementsByTag("tr");
 
-        if (scheduleTable != null) {
+        if (scheduleTable == null)
+            return;
 
-            List<Matter> matters = matterBox.query()
-                    .equal(Matter_.year_, year).and()
-                    .equal(Matter_.period_, period)
-                    .build().find();
+        List<Matter> matters = matterBox.query()
+                .equal(Matter_.year_, year).and()
+                .equal(Matter_.period_, period)
+                .build().find();
 
-            for (int i = 0; i < matters.size(); i++) {
-                ToMany<Schedule> s = matters.get(i).schedules;
-                for (int j = 0; j < s.size(); j++) {
-                    Schedule h = s.get(j);
-                    if (h.isFromSite()) {
-                        scheduleBox.remove(h.id);
-                    }
+        for (int i = 0; i < matters.size(); i++) {
+            ToMany<Schedule> s = matters.get(i).schedules;
+            for (int j = 0; j < s.size(); j++) {
+                Schedule h = s.get(j);
+                if (h.isFromSite()) {
+                    scheduleBox.remove(h.id);
                 }
             }
+        }
 
-            for (int i = 1; i < scheduleTable.size(); i++) {
-                Elements row = scheduleTable.get(i).select("td");
-                String time = row.get(0).text();
+        for (int i = 1; i < scheduleTable.size(); i++) {
+            Elements row = scheduleTable.get(i).select("td");
+            String time = row.get(0).text();
 
-                for (int j = 1; j < row.size(); j++) {
-                    if (!row.get(j).text().isEmpty()) {
+            for (int j = 1; j < row.size(); j++) {
+                if (row.get(j).text().isEmpty())
+                    continue;
 
-                        Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
+                Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
 
-                        //Log.d("DIVS", divs.toString());
+                //Log.d("DIVS", divs.toString());
 
-                        int k = 0;
+                int k = 0;
 
-                        while (k < divs.size()) {
+                while (k < divs.size()) {
 
-                            Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
-                                    getEndHour(time), getEndMinute(time), year, period);
+                    Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
+                            getEndHour(time), getEndMinute(time), year, period);
 
-                            String matterTitle = formatTitle(divs.get(k).attr("title"));
+                    String matterTitle = formatTitle(divs.get(k).attr("title"));
 
-                            //Log.d(matterTitle, String.valueOf(year));
+                    //Log.d(matterTitle, String.valueOf(year));
 
-                            if (matterTitle != null) {
-                                Matter matter = matterBox.query()
-                                        .equal(Matter_.title_, matterTitle, CASE_INSENSITIVE).and()
-                                        .equal(Matter_.year_, year).and()
-                                        .equal(Matter_.period_, period)//.and()
-                                        //.contains(Matter_.description_, clazz)
-                                        .build().findFirst(); //fix temporário para matérias duplicadas
+                    if (matterTitle != null) {
+                        Matter matter = matterBox.query()
+                                .equal(Matter_.title_, matterTitle, CASE_INSENSITIVE).and()
+                                .equal(Matter_.year_, year).and()
+                                .equal(Matter_.period_, period)//.and()
+                                //.contains(Matter_.description_, clazz)
+                                .build().findFirst(); //fix temporário para matérias duplicadas
 
-                                if (matter != null) {
-                                    String room = divs.get(k + 1).attr("title");
+                        if (matter != null) {
+                            String room = divs.get(k + 1).attr("title");
 
-                                    if (room != null)
-                                        schedule.setRoom(room);
+                            if (room != null)
+                                schedule.setRoom(room);
 
-                                    schedule.matter.setTarget(matter);
-                                    scheduleBox.put(schedule);
-                                    matter.schedules.add(schedule);
-                                    matterBox.put(matter);
-                                }
-                            }
-
-                            k += 3;
+                            schedule.matter.setTarget(matter);
+                            scheduleBox.put(schedule);
+                            matter.schedules.add(schedule);
+                            matterBox.put(matter);
                         }
                     }
+
+                    k += 3;
                 }
             }
         }

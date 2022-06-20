@@ -307,7 +307,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         if (groupId == R.id.group1) {
             binding.nav.getMenu().getItem(itemId).setChecked(true);
             binding.drawer.closeDrawer(GravityCompat.START);
-            binding.drawer.postDelayed(() -> Client.get().changeDate(itemId), 250);
+            binding.drawer.postDelayed(() -> {
+                Client.get().changeDate(itemId);
+                binding.scroll.scrollTo(0, 0);
+            }, 250);
             return true;
         }
 

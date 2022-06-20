@@ -63,7 +63,7 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
                 .setHasCenterCircle(true)
                 .setCenterCircleScale(0.75f)
                 .setHasLabelsOnlyForSelected(true));
-        binding.chartPresence.setChartRotation(135, false);
+        binding.chartPresence.setChartRotation(-90, false);
         binding.chartPresence.setInteractive(false);
 
         if (absences > 0) {

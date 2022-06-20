@@ -69,6 +69,8 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -76,6 +78,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
 
 public class Client {
     private final static String TAG = "Network Client";
@@ -103,6 +109,26 @@ public class Client {
     }
 
     private Client() {
+//        try {
+//            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
+//            SSLContext context = SSLContext.getInstance("TLS");
+//            context.init(null, new X509TrustManager[]{
+//                            new X509TrustManager() {
+//                                public void checkClientTrusted(X509Certificate[] chain, String authType) {
+//                                }
+//
+//                                public void checkServerTrusted(X509Certificate[] chain, String authType) {
+//                                }
+//
+//                                public X509Certificate[] getAcceptedIssuers() {
+//                                    return new X509Certificate[0];
+//                                }
+//                            }},
+//                    new SecureRandom());
+//            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         this.requests = Volley.newRequestQueue(getContext(), new HurlStack());
         this.queue = new LinkedList<>();
         this.params = new HashMap<>();
@@ -326,7 +352,7 @@ public class Client {
 
                         if (img != null && !background)
                             UserUtils.setImg(cod);
-                            //downloadImage(cod);
+                        //downloadImage(cod);
 
                         callOnFinish(PG_LOGIN);
                     }
@@ -804,7 +830,6 @@ public class Client {
             });
         });
     }
-
 
 
 }

@@ -27,7 +27,7 @@ public class GradesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView recycler = view.findViewById(R.id.recycler);
-        recycler.setHasFixedSize(true);
+        //recycler.setHasFixedSize(true);
         recycler.setItemViewCacheSize(20);
         recycler.setDrawingCacheEnabled(true);
         recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
