@@ -69,8 +69,6 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -79,21 +77,18 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
-
 public class Client {
     private final static String TAG = "Network Client";
     private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
     private final static String VALIDA = "/qacademico/lib/validalogin.asp";
     private final FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     private static Client instance;
-    private final List<RequestHelper> queue;
+    private final List<RequestHelper> requestsHelper;
+    private final List<RequestRunning> requestsRunning;
     private String URL;
     private final List<OnResponse> onResponses;
     private final List<OnUpdate> onUpdates;
-    private final RequestQueue requests;
+    private final RequestQueue requestsQueue;
     private final Map<String, String> params;
     private final ExecutorService executors;
     private final Handler handler;
@@ -129,8 +124,9 @@ public class Client {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        this.requests = Volley.newRequestQueue(getContext(), new HurlStack());
-        this.queue = new LinkedList<>();
+        this.requestsQueue = Volley.newRequestQueue(getContext(), new HurlStack());
+        this.requestsHelper = new LinkedList<>();
+        this.requestsRunning = new LinkedList<>();
         this.params = new HashMap<>();
         this.onUpdates = new LinkedList<>();
         this.onResponses = new LinkedList<>();
@@ -147,23 +143,38 @@ public class Client {
     }
 
     private void createRequest(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter, BaseParser.OnFinish onFinish) {
+        Log.d(TAG, "Creating request: " + pg + " in " + year + "/" + period);
+
         if (!isValid) {
             if (!isLogging) {
                 login();
             }
             addToQueue(pg, url, year, period, method, form, notify, matter, onFinish);
         } else {
-            Log.i(TAG, "Request for: " + pg);
+            Log.i(TAG, "Request for: " + pg + " in " + year + "/" + period);
 
             boolean isNew = true;
 
-            for (RequestHelper h : queue)
-                if (h.pg == pg && h.year == year && h.period == period) {
-                    isNew = false;
-                    break;
-                }
+            synchronized (requestsHelper) {
+                for (RequestHelper h : requestsHelper)
+                    if (h.pg == pg && h.year == year && h.period == period) {
+                        Log.d(TAG, "Duplicate request: " + pg + " in " + year + "/" + period);
+                        isNew = false;
+                        break;
+                    }
+            }
+
+            synchronized (requestsRunning) {
+                for (RequestRunning r : requestsRunning)
+                    if (r.pg == pg && r.year == year && r.period == period && r.pg != PG_CLASSES) {
+                        Log.d(TAG, "Duplicate request: " + pg + " in " + year + "/" + period);
+                        isNew = false;
+                        break;
+                    }
+            }
 
             if (!isNew) {
+                checkQueue(pg, year, period);
                 return;
             }
 
@@ -219,7 +230,7 @@ public class Client {
                             }
                         }
 
-                        callOnFinish(PG_FETCH_YEARS);
+                        callOnFinish(PG_FETCH_YEARS, year, period);
 
                         loadYear(0);
                     }
@@ -236,7 +247,7 @@ public class Client {
                     return !form.isEmpty() ? form : super.getParams();
                 }
 
-            }, pg);
+            }, pg, year, period);
         }
     }
 
@@ -313,11 +324,16 @@ public class Client {
         });
     }
 
-    private <T> void addRequest(Request<T> request, int pg) {
+    private <T> void addRequest(Request<T> request, int pg, int year, int period) {
         if (isConnected()) {
             callOnStart(pg);
             request.setRetryPolicy(new DefaultRetryPolicy(10000, 2, 1.5f));
-            requests.add(request);
+            synchronized (requestsRunning) {
+                requestsRunning.add(new RequestRunning(pg, year, period));
+            }
+            synchronized (requestsQueue) {
+                requestsQueue.add(request);
+            }
             Log.v(TAG, "Loading: " + request);
         } else {
             onError(pg, new VolleyError(getContext().getResources().getString(R.string.client_no_connection)));
@@ -325,6 +341,13 @@ public class Client {
     }
 
     public void login() {
+        Log.d(TAG, "Logging in");
+
+        if (isLogging) {
+            Log.d(TAG, "Already logging in");
+            return;
+        }
+
         isLogging = true;
         executors.execute(() ->
                 fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
@@ -354,7 +377,7 @@ public class Client {
                             UserUtils.setImg(cod);
                         //downloadImage(cod);
 
-                        callOnFinish(PG_LOGIN);
+                        callOnFinish(PG_LOGIN, 0, 0);
                     }
 
                 }, error -> onError(PG_LOGIN, error)) {
@@ -374,7 +397,7 @@ public class Client {
                         return Priority.IMMEDIATE;
                     }
 
-                }, PG_LOGIN)));
+                }, PG_LOGIN, 0, 0)));
     }
 
     private Resp testResponse(String response) {
@@ -469,30 +492,31 @@ public class Client {
         return Resp.OK;
     }
 
-    private void checkQueue() {
-        executors.execute(() -> {
-            synchronized (queue) {
-                while (!queue.isEmpty()) {
-                    RequestHelper helper = queue.get(0);
-                    queue.remove(0);
-                    createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, helper.onFinish);
-                }
-            }
-        });
-    }
-
     private synchronized void addToQueue(int pg, String url, int year, int period, int method, Map<String, String> form, boolean notify, Matter matter, BaseParser.OnFinish onFinish) {
         boolean isNew = true;
 
-        for (RequestHelper h : queue)
-            if (h.pg == pg && h.year == year && h.period == period) {
-                Log.d(TAG, "Duplicate request for " + pg);
-                isNew = false;
-                break;
-            }
+        synchronized (requestsHelper) {
+            for (RequestHelper h : requestsHelper)
+                if (h.pg == pg && h.year == year && h.period == period) {
+                    Log.d(TAG, "Duplicate queue request: " + pg + " in " + year + "/" + period);
+                    isNew = false;
+                    break;
+                }
+        }
+
+        synchronized (requestsRunning) {
+            for (RequestRunning r : requestsRunning)
+                if (r.pg == pg && r.year == year && r.period == period && r.pg != PG_CLASSES) {
+                    Log.d(TAG, "Duplicate queue request: " + pg + " in " + year + "/" + period);
+                    isNew = false;
+                    break;
+                }
+        }
 
         if (isNew) {
-            queue.add(new RequestHelper(pg, url, year, period, method, form, notify, matter, onFinish));
+            synchronized (requestsHelper) {
+                requestsHelper.add(new RequestHelper(pg, url, year, period, method, form, notify, matter, onFinish));
+            }
             //Log.i(TAG, "Queued: " + pg + " for " + User.getYears()[pos]);
         }
     }
@@ -551,13 +575,13 @@ public class Client {
                 return Priority.IMMEDIATE;
             }
 
-        }, PG_GENERATOR);
+        }, PG_GENERATOR, 0, 0);
     }
 
     public void close() {
         Log.i(TAG, "Logout");
-        queue.clear();
-        requests.cancelAll(request -> true);
+        requestsHelper.clear();
+        requestsQueue.cancelAll(request -> true);
         params.clear();
         onResponses.clear();
         onUpdates.clear();
@@ -573,9 +597,6 @@ public class Client {
         error.printStackTrace();
 
         if (isConnected()) {
-            crashlytics.log(String.valueOf(pg));
-            crashlytics.recordException(error);
-
             if (pg == PG_GENERATOR) {
                 msg = getContext().getResources().getString(R.string.client_host);
 
@@ -600,7 +621,7 @@ public class Client {
 
         if (msg == null) {
             if (error instanceof TimeoutError)
-                msg = "Timeout";
+                msg = getContext().getResources().getString(R.string.client_timeout);
 
             else if (error instanceof NoConnectionError)
                 msg = getContext().getResources().getString(R.string.client_no_connection);
@@ -609,6 +630,9 @@ public class Client {
                 msg = error.getLocalizedMessage() == null
                         ? getContext().getResources().getString(R.string.client_error)
                         : error.getLocalizedMessage();
+
+                crashlytics.log(String.valueOf(pg));
+                crashlytics.recordException(error);
             }
         }
 
@@ -663,7 +687,7 @@ public class Client {
 
     private void callOnError(int pg, String error) {
         handler.post(() -> {
-            requests.cancelAll(request -> true);
+            requestsQueue.cancelAll(request -> true);
             isLogging = false;
             isValid = false;
             for (int i = 0; i < onResponses.size(); i++) {
@@ -681,15 +705,43 @@ public class Client {
         });
     }
 
-    private void callOnFinish(int pg) {
+    private void callOnFinish(int pg, int year, int period) {
         handler.post(() -> {
             Log.v(TAG, "Finish: " + pg);
             for (int i = 0; i < onResponses.size(); i++) {
-                onResponses.get(i).onFinish(pg);
+                onResponses.get(i).onFinish(pg, year, period);
             }
         });
 
-        checkQueue();
+        checkQueue(pg, year, period);
+    }
+
+    private void checkQueue(int pg, int year, int period) {
+        synchronized (requestsHelper) {
+            for (RequestHelper h : requestsHelper)
+                if (h.pg == pg && h.year == year && h.period == period) {
+                    requestsHelper.remove(h);
+                    break;
+                }
+        }
+
+        synchronized (requestsRunning) {
+            for (RequestRunning r : requestsRunning)
+                if (r.pg == pg && r.year == year && r.period == period && r.pg != PG_CLASSES) {
+                    requestsRunning.remove(r);
+                    break;
+                }
+        }
+
+        executors.execute(() -> {
+            synchronized (requestsHelper) {
+                while (!requestsHelper.isEmpty()) {
+                    RequestHelper helper = requestsHelper.get(0);
+                    requestsHelper.remove(0);
+                    createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method, helper.form, helper.notify, helper.matter, helper.onFinish);
+                }
+            }
+        });
     }
 
     private void callOnAccessDenied(int pg, String message) {
@@ -697,8 +749,8 @@ public class Client {
             Log.v(TAG, pg + ": " + message);
             isValid = false;
             isLogging = false;
-            queue.clear();
-            requests.cancelAll(request -> true);
+            requestsHelper.clear();
+            requestsQueue.cancelAll(request -> true);
             params.clear();
             KEY_A = "";
             KEY_B = "";
@@ -719,11 +771,11 @@ public class Client {
 
     public void changeDate(int pos) {
         handler.post(() -> {
-            synchronized (requests) {
+            synchronized (requestsQueue) {
                 if (pos != Client.pos) {
                     Client.pos = pos;
 
-                    requests.cancelAll(request -> true);
+                    requestsQueue.cancelAll(request -> true);
 
                     for (int i = 0; i < onUpdates.size(); i++) {
                         onUpdates.get(i).onDateChanged();
@@ -800,16 +852,19 @@ public class Client {
             int period = UserUtils.getPeriod(pos);
 
             Log.d(TAG, "Loading journals");
-            load(PG_JOURNALS, year, period, pg -> {
+            load(PG_JOURNALS, year, period, (pg0, year0, period0) -> {
 
                 Log.d(TAG, "Loading materials");
                 load(PG_MATERIALS, year, period);
 
+                Log.d(TAG, "Loading calendar");
+                load(PG_CALENDAR, year, period);
+
                 Log.d(TAG, "Loading report");
-                load(PG_REPORT, year, period, pg1 -> {
+                load(PG_REPORT, year, period, (pg1, year1, period1) -> {
 
                     Log.d(TAG, "Loading schedule");
-                    load(PG_SCHEDULE, year, period, pg2 -> {
+                    load(PG_SCHEDULE, year, period, (pg2, year2, period2) -> {
 
                         Log.d(TAG, "Loading classes");
                         for (Matter m : DataBase.get().getBoxStore()
@@ -822,11 +877,11 @@ public class Client {
                                 .find()) {
                             Client.get().load(m);
                         }
-                        callOnFinish(pg2);
+                        callOnFinish(pg2, year2, period2);
                     });
-                    callOnFinish(pg1);
+                    callOnFinish(pg1, year1, period1);
                 });
-                callOnFinish(pg);
+                callOnFinish(pg0, year0, period0);
             });
         });
     }

@@ -198,7 +198,7 @@ public class LoginFragment extends Fragment implements OnResponse {
     }
 
     @Override
-    public void onFinish(int pg) {
+    public void onFinish(int pg, int year, int period) {
         Log.v(TAG, "Finished loading");
     }
 

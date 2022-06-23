@@ -6,12 +6,16 @@ import android.util.Log;
 
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
+import com.tinf.qmobile.model.matter.Matter_;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
+
+import io.objectbox.exception.NonUniqueResultException;
 
 public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
@@ -100,55 +104,73 @@ public class CalendarParser extends BaseParser {
 
                 String day = days.get(j).text();
 
-                if (!day.equals("")) {
+                if (day.equals(""))
+                    continue;
 
-                    String bgcolor = days.get(j).attr("bgcolor");
+                String bgcolor = days.get(j).attr("bgcolor");
 
-                    if (!bgcolor.isEmpty()) {
+                if (bgcolor.isEmpty())
+                    continue;
 
-                        for (int k = 0; k < events.size(); k++) {
+                for (int k = 0; k < events.size(); k++) {
 
-                            String eventDay = events.get(k).child(0).text();
+                    String eventDay = events.get(k).child(0).text();
 
-                            if (eventDay.equals(day)) {
+                    if (eventDay.equals(day)) {
 
-                                long date = getDate(day + "/" + monthCurrent + "/" + year, false);
+                        long date = getDate(day + "/" + monthCurrent + "/" + year, false);
 
-                                String title = events.get(k).child(1).text().trim();
+                        String title = events.get(k).child(1).text().trim();
 
-                                if (!title.contains("'")) {
+                        if (title.contains("'"))
+                            continue;
 
-                                    EventSimple search = eventSimpleBox.query().equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
-                                            .between(EventSimple_.startTime, date, date).build().findFirst();
+                        EventSimple search = null;
 
-                                    if (search == null)
-                                        eventSimpleBox.put(new EventSimple(title, date));
-                                }
+                        try {
+                            crashlytics.log(title);
 
-                            } else if (eventDay.contains("~")) {
-
-                                String startTime = eventDay.substring(0, eventDay.indexOf(" ~"));
-                                String endTime =  eventDay.substring(eventDay.indexOf("~ ") + 2);
-                                eventDay = startTime.substring(0, startTime.indexOf("/"));
-
-                                if (eventDay.equals(day)) {
-
-                                    String title = events.get(k).child(1).text().trim();
-
-                                    long start = getDate(startTime + "/" + year, false);
-                                    long end = getDate(endTime + "/" + year, false);
-
-                                    EventSimple search = eventSimpleBox.query()
-                                            .equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
-                                            .between(EventSimple_.startTime, start, start).and()
-                                            .between(EventSimple_.endTime, end, end)
-                                            .build().findFirst();
-
-                                    if (search == null)
-                                        eventSimpleBox.put(new EventSimple(title, start, end));
-                                }
-                            }
+                            search = eventSimpleBox.query()
+                                    .equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
+                                    .between(EventSimple_.startTime, date, date)
+                                    .build().findUnique();
+                        } catch (NonUniqueResultException e) {
+                            e.printStackTrace();
                         }
+
+                        if (search == null)
+                            eventSimpleBox.put(new EventSimple(title, date));
+
+                    } else if (eventDay.contains("~")) {
+
+                        String startTime = eventDay.substring(0, eventDay.indexOf(" ~"));
+                        String endTime =  eventDay.substring(eventDay.indexOf("~ ") + 2);
+                        eventDay = startTime.substring(0, startTime.indexOf("/"));
+
+                        if (!eventDay.equals(day))
+                            continue;
+
+                        String title = events.get(k).child(1).text().trim();
+
+                        long start = getDate(startTime + "/" + year, false);
+                        long end = getDate(endTime + "/" + year, false);
+
+                        EventSimple search = null;
+
+                        try {
+                            crashlytics.log(title);
+
+                            search = eventSimpleBox.query()
+                                    .equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
+                                    .between(EventSimple_.startTime, start, start).and()
+                                    .between(EventSimple_.endTime, end, end)
+                                    .build().findUnique();
+                        } catch (NonUniqueResultException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (search == null)
+                            eventSimpleBox.put(new EventSimple(title, start, end));
                     }
                 }
             }
@@ -163,8 +185,16 @@ public class CalendarParser extends BaseParser {
                 int title = EventSimple.Type.INICIO.get();
                 long date = cal.getTimeInMillis();
 
-                EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
-                        .between(EventSimple_.startTime, date, date).build().findFirst();
+                EventSimple search = null;
+
+                try {
+                    search = eventSimpleBox.query()
+                            .equal(EventSimple_.type, title).and()
+                            .between(EventSimple_.startTime, date, date)
+                            .build().findUnique();
+                } catch (NonUniqueResultException e) {
+                    e.printStackTrace();
+                }
 
                 if (search == null) {
                     eventSimpleBox.put(new EventSimple(title, date));
@@ -183,8 +213,16 @@ public class CalendarParser extends BaseParser {
                 int title = EventSimple.Type.FIM.get();
                 long date = cal.getTimeInMillis();
 
-                EventSimple search = eventSimpleBox.query().equal(EventSimple_.type, title).and()
-                        .between(EventSimple_.startTime, date, date).build().findFirst();
+                EventSimple search = null;
+
+                try {
+                    search = eventSimpleBox.query()
+                            .equal(EventSimple_.type, title).and()
+                            .between(EventSimple_.startTime, date, date)
+                            .build().findUnique();
+                } catch (NonUniqueResultException e) {
+                    e.printStackTrace();
+                }
 
                 if (search == null) {
                     eventSimpleBox.put(new EventSimple(title, date));

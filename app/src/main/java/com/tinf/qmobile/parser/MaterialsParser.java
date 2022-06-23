@@ -17,6 +17,7 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.NotificationUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -53,67 +54,79 @@ public class MaterialsParser extends BaseParser {
 
             String description = rotulos.get(i).text();
 
-            Matter matter = matterBox.query()
-                    .contains(Matter_.description_, description, CASE_INSENSITIVE).and()
-                    .equal(Matter_.year_, year).and()
-                    .equal(Matter_.period_, period)
-                    .build().findUnique();
+            Matter matter = null;
 
-            if (matter != null) {
-                String classe = rotulos.get(i).nextElementSibling().className();
-                Element element = rotulos.get(i).nextElementSibling();
+            try {
+                crashlytics.log(description);
 
-                while (classe.equals("conteudoTexto")) {
-
-                    String dataString = element.child(0).text().trim();
-                    String link = Client.get().getURL() + element.child(1).child(1).attr("href");
-                    String title = element.child(1).child(1).text().trim();
-
-                    String descricao = "";
-
-                    if (element.child(1).children().size() > 2) {
-                        descricao = element.child(1).child(3).nextSibling().toString().trim();
-                    }
-
-                    long date = getDate(dataString);
-
-                    try {
-                        QueryBuilder<Material> builder = materialsBox.query()
-                                .equal(Material_.title, title, CASE_INSENSITIVE).and()
-                                .between(Material_.date, date, date).and()
-                                .equal(Material_.link, link, CASE_INSENSITIVE);
-
-                        builder.link(Material_.matter)
-                                .equal(Matter_.id, matter.id);
-
-                        Material search = builder.build().findUnique();
-
-                        if (search == null) {
-
-                            Material material = new Material(title, date, descricao, link, isFirstParse);
-
-                            material.matter.setTarget(matter);
-                            matter.materials.add(material);
-                            materialsBox.put(material);
-
-                            if (notify) {
-                                sendNotification(material);
-                            }
-                        }
-
-                    } catch (NonUniqueResultException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (element.nextElementSibling() != null) {
-                        element = element.nextElementSibling();
-                        classe = element.className();
-                    } else {
-                        classe = "";
-                    }
-                }
-                matterBox.put(matter);
+                matter = matterBox.query()
+                        .contains(Matter_.description_, StringUtils.stripAccents(description), CASE_INSENSITIVE).and()
+                        .equal(Matter_.year_, year).and()
+                        .equal(Matter_.period_, period)
+                        .build().findUnique();
+            } catch (NonUniqueResultException e) {
+                e.printStackTrace();
             }
+
+            if (matter == null) {
+                crashlytics.recordException(new Exception(description + " not found in DB"));
+                Log.d(description, "Not found in DB");
+                continue;
+            }
+
+            String classe = rotulos.get(i).nextElementSibling().className();
+            Element element = rotulos.get(i).nextElementSibling();
+
+            while (classe.equals("conteudoTexto")) {
+
+                String dataString = element.child(0).text().trim();
+                String link = Client.get().getURL() + element.child(1).child(1).attr("href");
+                String title = element.child(1).child(1).text().trim();
+
+                String descricao = "";
+
+                if (element.child(1).children().size() > 2) {
+                    descricao = element.child(1).child(3).nextSibling().toString().trim();
+                }
+
+                long date = getDate(dataString);
+
+                try {
+                    QueryBuilder<Material> builder = materialsBox.query()
+                            .equal(Material_.title, title, CASE_INSENSITIVE).and()
+                            .between(Material_.date, date, date).and()
+                            .equal(Material_.link, link, CASE_INSENSITIVE);
+
+                    builder.link(Material_.matter)
+                            .equal(Matter_.id, matter.id);
+
+                    Material search = builder.build().findUnique();
+
+                    if (search == null) {
+
+                        Material material = new Material(title, date, descricao, link, isFirstParse);
+
+                        material.matter.setTarget(matter);
+                        matter.materials.add(material);
+                        materialsBox.put(material);
+
+                        if (notify) {
+                            sendNotification(material);
+                        }
+                    }
+
+                } catch (NonUniqueResultException e) {
+                    e.printStackTrace();
+                }
+
+                if (element.nextElementSibling() != null) {
+                    element = element.nextElementSibling();
+                    classe = element.className();
+                } else {
+                    classe = "";
+                }
+            }
+            matterBox.put(matter);
         }
     }
 

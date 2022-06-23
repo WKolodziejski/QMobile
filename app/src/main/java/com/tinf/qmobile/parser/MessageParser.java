@@ -129,74 +129,88 @@ public class MessageParser extends BaseParser {
                 }
             }
 
-            if (tbody != null) {
-                if (tbody.childNodeSize() > 0) {
-                    Elements tds = tbody.child(0).children();
+            if (tbody == null)
+                return;
 
-                    for (int j = 0; j < tds.size(); j++) {
-                        if (tds.get(j).child(0).tagName().equals("span")) {
-                            if (onMessages != null)
-                                onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
-                            break;
-                        }
-                    }
+            if (tbody.childNodeSize() <= 0)
+                return;
+
+            Elements tds = tbody.child(0).children();
+
+            for (int j = 0; j < tds.size(); j++) {
+                if (tds.get(j).child(0).tagName().equals("span")) {
+                    if (onMessages != null)
+                        onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
+                    break;
                 }
             }
         } else {
             Log.d("Parsing", "Message");
 
             for (int i = 2; i < trs.size() - 1; i++) {
-                if (trs.get(i).attributes().get("style").contains("#F2CFA5")) {
-                    Elements tds = trs.get(i).children();
+                if (!trs.get(i).attributes().get("style").contains("#F2CFA5"))
+                    continue;
 
-                    int uid = Integer.parseInt(tds.get(1).text());
-                    String subject = tds.get(4).text();
-                    long date = getDate(tds.get(6).text());
+                Elements tds = trs.get(i).children();
 
-                    try {
-                        Message search = messageBox.query()
-                                .equal(Message_.uid_, uid).and()
-                                .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
-                                .between(Message_.date_, date, date)
-                                .build().findUnique();
+                int uid = Integer.parseInt(tds.get(1).text());
+                String subject = tds.get(4).text();
+                long date = getDate(tds.get(6).text());
 
-                        if (search != null && search.attachments.isEmpty()) {
-                            String text = textarea.text();
-                            search.setText(text == null ? "" : text);
+                Message search = null;
 
-                            Element table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
-
-                            if (table2 == null) {
-                                table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_grdMensagens");
-                            }
-
-                            Elements trs2 = table2.getElementsByTag("tbody").first().children();
-
-                            for (int j = 1; j < trs2.size(); j++) {
-                                Elements tds2 = trs2.get(j).children();
-
-                                String title = tds2.get(0).text();
-                                String url = Client.get().getURL() + "/qacademicodotnet/" + tds2.get(0).child(0).attr("href");
-                                String obs = tds2.get(1).text();
-
-                                Log.d(title, url);
-
-                                Attachment attachment = new Attachment(title, obs, url);
-                                attachment.message.setTarget(search);
-
-                                attachmentBox.put(attachment);
-
-                                search.attachments.add(attachment);
-                            }
-
-                            messageBox.put(search);
-                        }
-                    } catch (NonUniqueResultException e) {
-                        e.printStackTrace();
-                    }
-                    break;
+                try {
+                    search = messageBox.query()
+                            .equal(Message_.uid_, uid).and()
+                            .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
+                            .between(Message_.date_, date, date)
+                            .build().findUnique();
+                } catch (NonUniqueResultException e) {
+                    e.printStackTrace();
                 }
+
+                if (search == null) {
+                    crashlytics.recordException(new Exception(subject + " not found in DB"));
+                    Log.d(subject, "Not found in DB");
+                    continue;
+                }
+
+                if (!search.attachments.isEmpty())
+                    break;
+
+                String text = textarea.text();
+                search.setText(text);
+
+                Element table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
+
+                if (table2 == null) {
+                    table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_grdMensagens");
+                }
+
+                Elements trs2 = table2.getElementsByTag("tbody").first().children();
+
+                for (int j = 1; j < trs2.size(); j++) {
+                    Elements tds2 = trs2.get(j).children();
+
+                    String title = tds2.get(0).text();
+                    String url = Client.get().getURL() + "/qacademicodotnet/" + tds2.get(0).child(0).attr("href");
+                    String obs = tds2.get(1).text();
+
+                    Log.d(title, url);
+
+                    Attachment attachment = new Attachment(title, obs, url);
+                    attachment.message.setTarget(search);
+
+                    attachmentBox.put(attachment);
+
+                    search.attachments.add(attachment);
+                }
+
+                messageBox.put(search);
+
+                break;
             }
+
             if (onMessages != null)
                 onMessages.onFinish();
         }

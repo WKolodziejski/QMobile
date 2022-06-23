@@ -18,6 +18,7 @@ import com.tinf.qmobile.model.matter.Period_;
 import com.tinf.qmobile.utility.NotificationUtils;
 import com.tinf.qmobile.utility.RandomColor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -90,16 +91,14 @@ public class JournalParser extends BaseParser {
 
             boolean isFirstParse = false;
 
-            long newID = 0;
-
             Matter matter = matterBox.query()
-                    .equal(Matter_.description_, description, CASE_INSENSITIVE).and()
+                    .equal(Matter_.description_, StringUtils.stripAccents(description), CASE_INSENSITIVE).and()
                     .equal(Matter_.year_, year).and()
                     .equal(Matter_.period_, period)
                     .build().findUnique();
 
             if (matter == null) {
-                matter = new Matter(description, colors.getColor(), hours, classesTotal, year, period);
+                matter = new Matter(StringUtils.stripAccents(description), colors.getColor(), hours, classesTotal, year, period);
                 matter.setTeacher(teacher);
                 //newID = matterBox.put(matter); //Is it really necessary? Can't the matter be put only at the very end?
                 isFirstParse = true;
@@ -220,11 +219,9 @@ public class JournalParser extends BaseParser {
                 periodBox.put(period);
             }
 
-            long oldID = matterBox.put(matter);
+            matterBox.put(matter);
 
-            Log.d("JournalParser", oldID + ", " + newID);
-            //Assert that if a matter is recently created, it has the same ID when updated in the DB
-            assert newID == 0 || (newID == oldID);
+            Log.d(description, matter.toString());
         }
     }
 

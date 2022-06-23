@@ -75,7 +75,7 @@ public abstract class BaseParser {
 
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (success)
-                    onFinish.onFinish(page);
+                    onFinish.onFinish(page, year, period);
                 else
                     onError.onError(page, getContext().getString(R.string.client_error));
             });
@@ -87,7 +87,7 @@ public abstract class BaseParser {
     }
 
     public interface OnFinish {
-        void onFinish(int pg);
+        void onFinish(int pg, int year, int period);
     }
 
     public abstract void parse(final Document document);

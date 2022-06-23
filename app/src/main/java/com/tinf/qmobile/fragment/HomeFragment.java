@@ -486,25 +486,55 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         List<Column> columns = new ArrayList<>();
 
         int m = 0;
+        boolean isCurrentPeriod = false;
 
-        for (int i = 0; i < matters.size(); i++) {
-            Matter matter = matters.get(i);
+        for (Matter matter : matters) {
+            if (matter.getSituation().equals("Cursando")) {
+                isCurrentPeriod = true;
+                break;
+            }
+        }
 
-            axisMatter.add(new AxisValue(i).setLabel(matter.getLabel()));
+        if (isCurrentPeriod) {
+            for (int i = 0; i < matters.size(); i++) {
+                Matter matter = matters.get(i);
 
-            List<SubcolumnValue> values = new ArrayList<>();
-            Period period = matter.getLastPeriod();
+                axisMatter.add(new AxisValue(i).setLabel(matter.getLabel()));
 
-            if (period != null)
-                for (Journal journal : period.journals)
-                    if (journal.getGrade_() >= 0)
-                        m++;
+                List<SubcolumnValue> values = new ArrayList<>();
 
-            values.add(new SubcolumnValue(period == null ? 0 : period.getPlotGrade(), matter.getColor())
-                    .setLabel(period == null ? "" : period.getLabel()));
+                Period period = matter.getLastPeriod();
 
-            columns.add(new Column(values)
-                    .setHasLabels(true));
+                if (period != null)
+                    for (Journal journal : period.journals)
+                        if (journal.getGrade_() >= 0)
+                            m++;
+
+                values.add(new SubcolumnValue(period == null ? 0 : period.getPlotGrade(), matter.getColor())
+                        .setLabel(period == null ? "" : period.getLabel()));
+
+                columns.add(new Column(values)
+                        .setHasLabels(true));
+            }
+        } else {
+            for (int i = 0; i < matters.size(); i++) {
+                Matter matter = matters.get(i);
+
+                axisMatter.add(new AxisValue(i).setLabel(matter.getLabel()));
+
+                List<SubcolumnValue> values = new ArrayList<>();
+
+                for (Period period : matter.periods)
+                    for (Journal journal : period.journals)
+                        if (journal.getGrade_() >= 0)
+                            m++;
+
+                values.add(new SubcolumnValue(matter.getMean_(), matter.getColor())
+                        .setLabel(matter.getMean()));
+
+                columns.add(new Column(values)
+                        .setHasLabels(true));
+            }
         }
 
         if (m > 1) {

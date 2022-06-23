@@ -92,7 +92,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
 
                     isLoading = false;
 
-                    handler.post(() -> onResponse.onFinish(pg));
+                    handler.post(() -> onResponse.onFinish(pg, 0, 0));
                 }
             }
 
@@ -237,7 +237,7 @@ public class Messenger implements OnMessages, DownloadListener, OnResponse {
     public void onStart(int pg) { }
 
     @Override
-    public void onFinish(int pg) {
+    public void onFinish(int pg, int year, int period) {
         if (pg == PG_LOGIN) {
             loadFirstPage();
             Client.get().removeOnResponseListener(this);

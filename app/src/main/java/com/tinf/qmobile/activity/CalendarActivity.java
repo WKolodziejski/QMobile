@@ -263,7 +263,7 @@ public class CalendarActivity extends AppCompatActivity implements CalendarRecyc
     }
 
     @Override
-    public void onFinish(int pg) {
+    public void onFinish(int pg, int year, int period) {
         if (pg == PG_CALENDAR || pg == PG_CLASSES)
             binding.refresh.setRefreshing(false);
     }

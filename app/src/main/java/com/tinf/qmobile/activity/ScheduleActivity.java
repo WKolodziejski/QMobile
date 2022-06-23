@@ -50,7 +50,7 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onFinish(int pg) {
+    public void onFinish(int pg, int year, int period) {
         if (pg == PG_SCHEDULE)
             binding.refresh.setRefreshing(false);
     }

@@ -88,7 +88,7 @@ public class ParserWorker extends Worker {
             }
 
             @Override
-            public void onFinish(int pg) {
+            public void onFinish(int pg, int year, int period) {
                 if (pg == PG_LOGIN)
                     Client.get().load(PG_JOURNALS, notify);
 

@@ -43,11 +43,12 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
     }
 
     @Override
-    public void onFinish(int pg) {
+    public void onFinish(int pg, int year, int period) {
         if (pg == PG_LOGIN) {
             Client.get().load(PG_FETCH_YEARS);
-        } else if (pg == PG_JOURNALS) {
-            Client.get().load(PG_CALENDAR);
+
+        } else if (pg == PG_FETCH_YEARS) {
+            //Client.get().load(PG_CALENDAR);
             UserUtils.setValid(true);
             startActivity(new Intent(this, MainActivity.class));
             finish();

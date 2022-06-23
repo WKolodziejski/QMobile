@@ -8,11 +8,13 @@ import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Schedule;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.util.List;
 
+import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.relation.ToMany;
 
 public class ScheduleParser extends BaseParser {
@@ -29,7 +31,7 @@ public class ScheduleParser extends BaseParser {
         Elements tables = document.select("table");
         Elements scheduleTable = tables.get(11).getElementsByTag("tr");
 
-        if (scheduleTable == null)
+        if (scheduleTable.isEmpty())
             return;
 
         List<Matter> matters = matterBox.query()
@@ -67,31 +69,49 @@ public class ScheduleParser extends BaseParser {
                             getEndHour(time), getEndMinute(time), year, period);
 
                     String matterTitle = formatTitle(divs.get(k).attr("title"));
-
-                    //Log.d(matterTitle, String.valueOf(year));
-
-                    if (matterTitle != null) {
-                        Matter matter = matterBox.query()
-                                .equal(Matter_.title_, matterTitle, CASE_INSENSITIVE).and()
-                                .equal(Matter_.year_, year).and()
-                                .equal(Matter_.period_, period)//.and()
-                                //.contains(Matter_.description_, clazz)
-                                .build().findFirst(); //fix temporário para matérias duplicadas
-
-                        if (matter != null) {
-                            String room = divs.get(k + 1).attr("title");
-
-                            if (room != null)
-                                schedule.setRoom(room);
-
-                            schedule.matter.setTarget(matter);
-                            scheduleBox.put(schedule);
-                            matter.schedules.add(schedule);
-                            matterBox.put(matter);
-                        }
-                    }
+                    String room = divs.get(k + 1).attr("title");
+                    String clazz = formatClass(divs.get(k + 2).text());
 
                     k += 3;
+
+                    if (matterTitle.isEmpty())
+                        continue;
+
+                    Matter matter = null;
+
+                    try {
+                        crashlytics.log(matterTitle);
+
+                        matter = matterBox.query()
+                                .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
+                                .equal(Matter_.year_, year).and()
+                                .equal(Matter_.period_, period).and()
+                                .contains(Matter_.description_, StringUtils.stripAccents(clazz), CASE_INSENSITIVE)
+                                .build().findUnique();
+
+                        if (matter == null) {
+                            matter = matterBox.query()
+                                    .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
+                                    .equal(Matter_.year_, year).and()
+                                    .equal(Matter_.period_, period)
+                                    .build().findUnique();
+                        }
+                    } catch (NonUniqueResultException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (matter == null) {
+                        crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
+                        Log.d(matterTitle, "Not found in DB");
+                        continue;
+                    }
+
+                    schedule.setRoom(room);
+
+                    schedule.matter.setTarget(matter);
+                    scheduleBox.put(schedule);
+                    matter.schedules.add(schedule);
+                    matterBox.put(matter);
                 }
             }
         }
@@ -141,9 +161,9 @@ public class ScheduleParser extends BaseParser {
     }
 
     private String formatClass(String s) {
-        if (s.contains("- G")) {
-            s = s.substring(0, s.indexOf("- G")).trim();
-        }
+        if (s.contains(" "))
+            s = s.substring(0, s.indexOf(" "));
+
         return s;
     }
 

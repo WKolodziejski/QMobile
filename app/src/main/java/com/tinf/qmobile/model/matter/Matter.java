@@ -2,11 +2,17 @@ package com.tinf.qmobile.model.matter;
 
 import static com.tinf.qmobile.model.ViewType.HEADER;
 
+import android.util.Log;
+
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +32,7 @@ public class Matter implements Queryable {
     private String description_;
     private String situation_;
     private String teacher_;
+    private String label_;
     private float hours_ = -1;
     private int classesTotal_ = -1;
     private int classesGiven_ = -1;
@@ -110,6 +117,10 @@ public class Matter implements Queryable {
 
     public void setTitle(String title) {
         this.title_ = title;
+    }
+
+    public void setLabel(String label) {
+        this.label_ = label;
     }
 
     public void setSituation(String situation) {
@@ -230,32 +241,44 @@ public class Matter implements Queryable {
     }
 
     public String getLabel() {
-        String label = getTitle();
-        label = label.replace(" - ", " ");
-        label = label.replace("-", " ");
-        label = label.replace(" e ", " ");
-        label = label.replace(" de ", " ");
-        label = label.replace(" da ", " ");
-        label = label.replace(" em ", " ");
-        String[] tokens = label.split(" ");
-        StringBuilder ret = new StringBuilder();
-        int length = Math.min(3, tokens.length);
-
-        if (tokens.length <= 2)
-            ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
-        else
-            for (int i = 0; i < length; i++) {
-                String token = tokens[i];
-
-                if (token.isEmpty())
-                    continue;
-
-                if (!token.startsWith("I") && !token.endsWith("I"))
-                    ret.append(token.charAt(0));
-            }
-
-        return ret.toString().toUpperCase();
+        return getLabel_();
     }
+
+//    public String getLabel() {
+//        String label = getTitle();
+//        label = label.replace(" - ", " ").trim();
+//        label = label.replace("-", " ").trim();
+//        label = label.replace(" e ", " ").trim();
+//        label = label.replace(" de ", " ").trim();
+//        label = label.replace(" da ", " ").trim();
+//        label = label.replace(" do ", " ").trim();
+//        label = label.replace(" das ", " ").trim();
+//        label = label.replace(" dos ", " ").trim();
+//        label = label.replace(" em ", " ").trim();
+//        label = label.replace(" para ", " ").trim();
+//        label = label.replace(" V", " ").trim();
+//        label = label.replace(" III", " ").trim();
+//        label = label.replace(" II", " ").trim();
+//        label = label.replace(" I", " ").trim();
+//        String[] tokens = label.split(" ");
+//        StringBuilder ret = new StringBuilder();
+//        int length = Math.min(3, tokens.length);
+//
+//        if (tokens.length < 2)
+//            ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
+//        else
+//            for (int i = 0; i < length; i++) {
+//                String token = tokens[i];
+//
+//                if (token.isEmpty())
+//                    continue;
+//
+//                //if (!token.startsWith("I") && !token.endsWith("I"))
+//                ret.append(token.charAt(0));
+//            }
+//
+//        return ret.toString().toUpperCase();
+//    }
 
     public String getChartValue() {
         float sg = getLastPeriod().getGradeSum();
@@ -268,7 +291,7 @@ public class Matter implements Queryable {
         if (title_ == null)
             return "-";
 
-        String clazz = description_.substring(0, description_.indexOf(title_) - 2).trim();
+        String clazz = description_.substring(0, description_.indexOf(StringUtils.stripAccents(title_)) - 2).trim();
 
         if (!clazz.contains("-"))
             return "-";
@@ -328,6 +351,10 @@ public class Matter implements Queryable {
 
     public String getTeacher_() {
         return teacher_;
+    }
+
+    public String getLabel_() {
+        return label_;
     }
 
     public float getMean_() {
@@ -407,4 +434,15 @@ public class Matter implements Queryable {
                 getPeriod_());
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "Matter{" +
+                "id=" + id +
+                ", title_='" + title_ + '\'' +
+                ", description_='" + description_ + '\'' +
+                ", year_=" + year_ +
+                ", period_=" + period_ +
+                '}';
+    }
 }

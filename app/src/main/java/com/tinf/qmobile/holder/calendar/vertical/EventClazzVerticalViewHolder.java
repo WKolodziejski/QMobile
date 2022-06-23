@@ -29,7 +29,7 @@ public class EventClazzVerticalViewHolder extends CalendarViewHolder<Clazz> {
         binding.title.setTextColor(clazz.getColor());
         binding.matter.setTextColor(clazz.getColor());
         binding.absence.setVisibility(clazz.getAbsences_() > 0 ? View.VISIBLE : View.GONE);
-        binding.absence.setImageTintList(ColorStateList.valueOf(ColorUtils.INSTANCE.contrast(clazz.getColor(), 0.5f)));
+        binding.absence.setImageTintList(ColorStateList.valueOf(ColorUtils.INSTANCE.contrast(clazz.getColor(), 0.25f)));
 
         binding.card.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventViewActivity.class);

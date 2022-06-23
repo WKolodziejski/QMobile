@@ -41,6 +41,7 @@
     <string name="client_host">Servidor inalcançável</string>
     <string name="client_error">Algo inesperado ocorreu, tente novamente mais tarde</string>
     <string name="client_unknown">Erro desconhecido</string>
+    <string name="client_timeout">Tempo esgotado</string>
 
     <string name="contextual_remove_txt_plu">Tem certeza que deseja remover %1$d arquivos?</string>
     <string name="contextual_remove_txt_sing">Tem certeza que deseja remover esse arquivo?</string>

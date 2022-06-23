@@ -108,7 +108,7 @@ public class MessagesFragment extends Fragment implements OnResponse {
     }
 
     @Override
-    public void onFinish(int pg) {
+    public void onFinish(int pg, int year, int period) {
         binding.refresh.setRefreshing(false);
     }
 

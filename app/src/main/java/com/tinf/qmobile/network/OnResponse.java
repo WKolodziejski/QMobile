@@ -21,7 +21,7 @@ public interface OnResponse {
     int PG_MESSAGES = 6;
 
     void onStart(int pg);
-    void onFinish(int pg);
+    void onFinish(int pg, int year, int period);
     void onError(int pg, String error);
     void onAccessDenied(int pg, String message);
 }
