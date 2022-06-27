@@ -30,7 +30,6 @@ import org.jsoup.select.Elements;
 
 import java.util.Calendar;
 
-import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
 public class MessageParser extends BaseParser {
@@ -88,8 +87,11 @@ public class MessageParser extends BaseParser {
 
                 Log.d(subject, sender);
 
+                Sender search1 = null;
+                Message search2 = null;
+
                 try {
-                    Sender search1 = senderBox.query()
+                    search1 = senderBox.query()
                             .equal(Sender_.name_, sender, CASE_INSENSITIVE)
                             .build().findUnique();
 
@@ -106,27 +108,28 @@ public class MessageParser extends BaseParser {
                     builder.link(Message_.sender)
                             .equal(Sender_.id, search1.id);
 
-                    Message search2 = builder.build().findUnique();
+                    search2 = builder.build().findUnique();
 
-                    boolean isNew = false;
-
-                    if (search2 == null) {
-                        search2 = new Message(uid, date, subject, search1, hasAtt);
-                        isNew = true;
-                    }
-
-                    search2.setSeen(seen);
-                    search2.setSolved(isSolved);
-
-                    search1.messages.add(search2);
-                    messageBox.put(search2);
-
-                    if (notify && isNew)
-                        sendNotification(search2);
-
-                } catch (NonUniqueResultException e) {
+                } catch (Exception e) {
+                    Log.e("MessageParser", sender);
                     e.printStackTrace();
                 }
+
+                boolean isNew = false;
+
+                if (search2 == null) {
+                    search2 = new Message(uid, date, subject, search1, hasAtt);
+                    isNew = true;
+                }
+
+                search2.setSeen(seen);
+                search2.setSolved(isSolved);
+
+                search1.messages.add(search2);
+                messageBox.put(search2);
+
+                if (notify && isNew)
+                    sendNotification(search2);
             }
 
             if (tbody == null)
@@ -165,7 +168,8 @@ public class MessageParser extends BaseParser {
                             .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
                             .between(Message_.date_, date, date)
                             .build().findUnique();
-                } catch (NonUniqueResultException e) {
+                } catch (Exception e) {
+                    Log.e("MessageParser", String.valueOf(uid));
                     e.printStackTrace();
                 }
 

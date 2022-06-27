@@ -126,6 +126,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/calendar_layout"
         android:orientation="vertical">
 
         <View
@@ -138,7 +139,7 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/calendar_layout"
+                android:id="@+id/calendar_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:foreground="?android:attr/selectableItemBackground"
@@ -222,6 +223,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
+            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:transitionName="Calendario" />
@@ -231,7 +233,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:orientation="vertical">
 
         <View
@@ -288,6 +289,11 @@
             android:layout_height="100dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/blackDividers" />
 
     </LinearLayout>
 

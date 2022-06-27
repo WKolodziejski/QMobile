@@ -19,8 +19,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
-
-import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
 public class ClassParser extends BaseParser {
@@ -55,6 +53,8 @@ public class ClassParser extends BaseParser {
 
             String cs = trs.last().text();
 
+            Period period = null;
+
             try {
                 QueryBuilder<Period> builder1 = periodBox.query()
                         .equal(Period_.title_, p, CASE_INSENSITIVE);
@@ -62,76 +62,78 @@ public class ClassParser extends BaseParser {
                 builder1.link(Period_.matter)
                         .equal(Matter_.id, matter.id);
 
-                Period period = builder1.build().findUnique();
+                period = builder1.build().findUnique();
 
-                if (period == null) {
-                    period = new Period(p);
-                    period.matter.setTarget(matter);
-                    matter.periods.add(period);
-                    periodBox.put(period);
-                }
-
-                String teacher = "";
-
-                for (int i = 1; i < trs.size() - 2; i++) {
-                    Elements els = trs.get(i).children();
-
-                    String date = formatDate(els.get(0).text());
-                    int classesCount = Integer.parseInt(els.get(2).text());
-                    int absences = formatAbsences(els.get(3).text());
-                    long dateLong = getDate(date);
-
-                    if (els.size() == 5)
-                        teacher = els.get(4).text();
-
-                    String content = "";
-
-                    if (cs.contains(date)) {
-                        cs = cs.substring(cs.indexOf(date) + 1);
-                        cs = cs.substring(cs.indexOf(":") + 1);
-
-                        content = cs;
-
-                        if (content.contains("Data"))
-                            content = content.substring(0, content.indexOf("Data")).trim();
-
-                        if (content.startsWith("-"))
-                            content = content.substring(content.indexOf("-") + 1).trim();
-                    }
-
-                    try {
-
-                        QueryBuilder<Clazz> builder2 = classBox.query()
-                                .equal(Clazz_.classesCount_, classesCount).and()
-                                .equal(Clazz_.teacher_, teacher, CASE_INSENSITIVE).and()
-                                .between(Clazz_.date_, dateLong, dateLong);
-
-                        builder2.link(Clazz_.period)
-                                .equal(Period_.id, period.id);
-
-                        Clazz search = builder2.build().findUnique();
-
-                        if (search == null) {
-                            Clazz clazz = new Clazz(dateLong, classesCount, absences, teacher, content, period);
-                            period.classes.add(clazz);
-                            classBox.put(clazz);
-                        } else {
-                            search.setAbsences(absences);
-                            search.setContent(content);
-                            classBox.put(search);
-                        }
-
-                        matter.setTeacher(teacher);
-
-                        periodBox.put(period);
-                        matterBox.put(matter);
-                    } catch (NonUniqueResultException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            } catch (NonUniqueResultException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            if (period == null) {
+                period = new Period(p);
+                period.matter.setTarget(matter);
+                matter.periods.add(period);
+                periodBox.put(period);
+            }
+
+            String teacher = "";
+
+            for (int i = 1; i < trs.size() - 2; i++) {
+                Elements els = trs.get(i).children();
+
+                String date = formatDate(els.get(0).text());
+                int classesCount = Integer.parseInt(els.get(2).text());
+                int absences = formatAbsences(els.get(3).text());
+                long dateLong = getDate(date);
+
+                if (els.size() == 5)
+                    teacher = els.get(4).text();
+
+                String content = "";
+
+                if (cs.contains(date)) {
+                    cs = cs.substring(cs.indexOf(date) + 1);
+                    cs = cs.substring(cs.indexOf(":") + 1);
+
+                    content = cs;
+
+                    if (content.contains("Data"))
+                        content = content.substring(0, content.indexOf("Data")).trim();
+
+                    if (content.startsWith("-"))
+                        content = content.substring(content.indexOf("-") + 1).trim();
+                }
+
+                Clazz search = null;
+
+                try {
+                    QueryBuilder<Clazz> builder2 = classBox.query()
+                            .equal(Clazz_.classesCount_, classesCount).and()
+                            .equal(Clazz_.teacher_, teacher, CASE_INSENSITIVE).and()
+                            .between(Clazz_.date_, dateLong, dateLong);
+
+                    builder2.link(Clazz_.period)
+                            .equal(Period_.id, period.id);
+
+                    search = builder2.build().findUnique();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (search == null) {
+                    Clazz clazz = new Clazz(dateLong, classesCount, absences, teacher, content, period);
+                    period.classes.add(clazz);
+                    classBox.put(clazz);
+                } else {
+                    search.setAbsences(absences);
+                    search.setContent(content);
+                    classBox.put(search);
+                }
+
+                matter.setTeacher(teacher);
+
+                periodBox.put(period);
+                matterBox.put(matter);
             }
         }
     }

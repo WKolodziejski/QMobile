@@ -12,10 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import java.util.Calendar;
-
-import io.objectbox.exception.NonUniqueResultException;
 
 public class CalendarParser extends BaseParser {
     private final static String TAG = "CalendarioParser";
@@ -134,7 +131,7 @@ public class CalendarParser extends BaseParser {
                                     .equal(EventSimple_.title, title, CASE_INSENSITIVE).and()
                                     .between(EventSimple_.startTime, date, date)
                                     .build().findUnique();
-                        } catch (NonUniqueResultException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -165,7 +162,8 @@ public class CalendarParser extends BaseParser {
                                     .between(EventSimple_.startTime, start, start).and()
                                     .between(EventSimple_.endTime, end, end)
                                     .build().findUnique();
-                        } catch (NonUniqueResultException e) {
+                        } catch (Exception e) {
+                            Log.e(TAG, title);
                             e.printStackTrace();
                         }
 
@@ -192,7 +190,8 @@ public class CalendarParser extends BaseParser {
                             .equal(EventSimple_.type, title).and()
                             .between(EventSimple_.startTime, date, date)
                             .build().findUnique();
-                } catch (NonUniqueResultException e) {
+                } catch (Exception e) {
+                    Log.e(TAG, String.valueOf(title));
                     e.printStackTrace();
                 }
 
@@ -220,7 +219,8 @@ public class CalendarParser extends BaseParser {
                             .equal(EventSimple_.type, title).and()
                             .between(EventSimple_.startTime, date, date)
                             .build().findUnique();
-                } catch (NonUniqueResultException e) {
+                } catch (Exception e) {
+                    Log.e(TAG, String.valueOf(title));
                     e.printStackTrace();
                 }
 

@@ -23,9 +23,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
-import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
 public class MaterialsParser extends BaseParser {
@@ -64,8 +64,22 @@ public class MaterialsParser extends BaseParser {
                         .equal(Matter_.year_, year).and()
                         .equal(Matter_.period_, period)
                         .build().findUnique();
-            } catch (NonUniqueResultException e) {
+            } catch (Exception e) {
+                Log.e(TAG, description);
                 e.printStackTrace();
+            }
+
+            if (matter == null) {
+                Log.d(description, "Query failed");
+
+                List<Matter> matters = matterBox.query()
+                        .equal(Matter_.year_, year).and()
+                        .equal(Matter_.period_, period)
+                        .build().find();
+
+                for (Matter m : matters)
+                    if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(description)))
+                        matter = m;
             }
 
             if (matter == null) {
@@ -91,6 +105,8 @@ public class MaterialsParser extends BaseParser {
 
                 long date = getDate(dataString);
 
+                Material search = null;
+
                 try {
                     QueryBuilder<Material> builder = materialsBox.query()
                             .equal(Material_.title, title, CASE_INSENSITIVE).and()
@@ -100,23 +116,22 @@ public class MaterialsParser extends BaseParser {
                     builder.link(Material_.matter)
                             .equal(Matter_.id, matter.id);
 
-                    Material search = builder.build().findUnique();
+                    search = builder.build().findUnique();
 
-                    if (search == null) {
-
-                        Material material = new Material(title, date, descricao, link, isFirstParse);
-
-                        material.matter.setTarget(matter);
-                        matter.materials.add(material);
-                        materialsBox.put(material);
-
-                        if (notify) {
-                            sendNotification(material);
-                        }
-                    }
-
-                } catch (NonUniqueResultException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }
+
+                if (search == null) {
+                    Material material = new Material(title, date, descricao, link, isFirstParse);
+
+                    material.matter.setTarget(matter);
+                    matter.materials.add(material);
+                    materialsBox.put(material);
+
+                    if (notify) {
+                        sendNotification(material);
+                    }
                 }
 
                 if (element.nextElementSibling() != null) {

@@ -9,11 +9,12 @@ import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import io.objectbox.exception.NonUniqueResultException;
+import java.util.List;
 
 public class ReportParser extends BaseParser {
     private final static String TAG = "ReportParser";
@@ -43,6 +44,7 @@ public class ReportParser extends BaseParser {
                 String situation = rows.get(i).child(rows.get(1).children().size() - 1).text().trim();
                 String qid = formatQID(rows.get(i).child(0).getElementsByTag("q_latente").attr("value")).trim();
                 String label = matterTitle;
+
                 label = label.replace(" - ", " ").trim();
                 label = label.replace("-", " ").trim();
                 label = label.replace(" e ", " ").trim();
@@ -53,10 +55,20 @@ public class ReportParser extends BaseParser {
                 label = label.replace(" dos ", " ").trim();
                 label = label.replace(" em ", " ").trim();
                 label = label.replace(" para ", " ").trim();
+                label = label.replace(" E ", " ").trim();
+                label = label.replace(" DE ", " ").trim();
+                label = label.replace(" DA ", " ").trim();
+                label = label.replace(" DO ", " ").trim();
+                label = label.replace(" DAS ", " ").trim();
+                label = label.replace(" DOS ", " ").trim();
+                label = label.replace(" EM ", " ").trim();
+                label = label.replace(" PARA ", " ").trim();
+                label = label.replace(" X", " ").trim();
                 label = label.replace(" V", " ").trim();
                 label = label.replace(" III", " ").trim();
                 label = label.replace(" II", " ").trim();
                 label = label.replace(" I", " ").trim();
+
                 String[] tokens = label.split(" ");
                 StringBuilder ret = new StringBuilder();
 
@@ -91,30 +103,94 @@ public class ReportParser extends BaseParser {
                             .contains(Matter_.description_, StringUtils.stripAccents(clazz), CASE_INSENSITIVE).and()
                             .contains(Matter_.description_, StringUtils.stripAccents(qid), CASE_INSENSITIVE)
                             .build().findUnique();
+                } catch (Exception e) {
+                    Log.e(TAG, matterTitle);
+                    e.printStackTrace();
+                }
 
-                    if (matter == null) {
+                if (matter == null) {
+                    try {
+                        crashlytics.log(matterTitle);
+
                         matter = matterBox.query()
                                 .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
                                 .equal(Matter_.year_, year).and()
                                 .equal(Matter_.period_, period).and()
                                 .contains(Matter_.description_, StringUtils.stripAccents(qid), CASE_INSENSITIVE)
                                 .build().findUnique();
+                    } catch (Exception e) {
+                        Log.e(TAG, matterTitle);
+                        e.printStackTrace();
                     }
+                }
 
-                    if (matter == null) {
+                if (matter == null) {
+                    try {
+                        crashlytics.log(matterTitle);
+
+                        matter = matterBox.query()
+                                .contains(Matter_.description_, StringUtils.stripAccents(qid), CASE_INSENSITIVE).and()
+                                .equal(Matter_.year_, year).and()
+                                .equal(Matter_.period_, period)
+                                .build().findUnique();
+                    } catch (Exception e) {
+                        Log.e(TAG, matterTitle);
+                        e.printStackTrace();
+                    }
+                }
+
+                if (matter == null) {
+                    try {
+                        crashlytics.log(matterTitle);
+
                         matter = matterBox.query()
                                 .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
                                 .equal(Matter_.year_, year).and()
                                 .equal(Matter_.period_, period)
                                 .build().findUnique();
+                    } catch (Exception e) {
+                        Log.e(TAG, matterTitle);
+                        e.printStackTrace();
                     }
-                } catch (NonUniqueResultException e) {
-                    e.printStackTrace();
+                }
+
+                if (matter == null) {
+                    boolean found = false;
+                    boolean moreThanOne = false;
+
+                    List<Matter> matters = matterBox.query()
+                            .equal(Matter_.year_, year).and()
+                            .equal(Matter_.period_, period)
+                            .build().find();
+
+                    Log.d(matterTitle, "Query failed");
+
+                    for (Matter m : matters) {
+                        if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(matterTitle))) {
+                            if (found) {
+                                moreThanOne = true;
+                                break;
+                            }
+
+                            found = true;
+                            matter = m;
+                        }
+                    }
+
+                    if (moreThanOne) {
+                        for (Matter m : matters) {
+                            if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(matterTitle))
+                                    && StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(clazz))
+                                    && StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(qid))) {
+                                matter = m;
+                            }
+                        }
+                    }
                 }
 
                 if (matter == null) {
                     crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
-                    Log.d(matterTitle, "Not found in DB");
+                    Log.e(matterTitle, "Not found in DB");
                     continue;
                 }
 
@@ -186,7 +262,7 @@ public class ReportParser extends BaseParser {
     }
 
     @Override
-    protected String formatNumber(String s){
+    protected String formatNumber(String s) {
         return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
     }
 

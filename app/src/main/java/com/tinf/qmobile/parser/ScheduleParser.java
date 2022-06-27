@@ -10,11 +10,10 @@ import com.tinf.qmobile.model.matter.Schedule;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
-
-import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.relation.ToMany;
 
 public class ScheduleParser extends BaseParser {
@@ -64,13 +63,28 @@ public class ScheduleParser extends BaseParser {
                 int k = 0;
 
                 while (k < divs.size()) {
-
                     Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
                             getEndHour(time), getEndMinute(time), year, period);
 
                     String matterTitle = formatTitle(divs.get(k).attr("title"));
-                    String room = divs.get(k + 1).attr("title");
-                    String clazz = formatClass(divs.get(k + 2).text());
+
+                    String room = "";
+                    Element roomDiv = null;
+
+                    if (k + 1 < divs.size())
+                        roomDiv = divs.get(k + 1);
+
+                    if (roomDiv != null)
+                        room = roomDiv.attr("title");
+
+                    String clazz = "";
+                    Element clazzDiv = null;
+
+                    if (k + 2 < divs.size())
+                        clazzDiv = divs.get(k + 2);
+
+                    if (clazzDiv != null)
+                        clazz = formatClass(divs.get(k + 2).text());
 
                     k += 3;
 
@@ -88,21 +102,57 @@ public class ScheduleParser extends BaseParser {
                                 .equal(Matter_.period_, period).and()
                                 .contains(Matter_.description_, StringUtils.stripAccents(clazz), CASE_INSENSITIVE)
                                 .build().findUnique();
+                    } catch (Exception e) {
+                        Log.e(TAG, matterTitle);
+                        e.printStackTrace();
+                    }
 
-                        if (matter == null) {
+                    if (matter == null) {
+                        try {
+                            crashlytics.log(matterTitle);
+
                             matter = matterBox.query()
                                     .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
                                     .equal(Matter_.year_, year).and()
                                     .equal(Matter_.period_, period)
                                     .build().findUnique();
+                        } catch (Exception e) {
+                            Log.e(TAG, matterTitle);
+                            e.printStackTrace();
                         }
-                    } catch (NonUniqueResultException e) {
-                        e.printStackTrace();
+                    }
+
+                    if (matter == null) {
+                        boolean found = false;
+                        boolean moreThanOne = false;
+
+                        Log.d(matterTitle, "Query failed");
+
+                        for (Matter m : matters) {
+                            if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(matterTitle))) {
+                                if (found) {
+                                    moreThanOne = true;
+                                    break;
+                                }
+
+                                found = true;
+                                matter = m;
+                            }
+                        }
+
+                        if (moreThanOne) {
+                            for (Matter m : matters) {
+                                if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(matterTitle))
+                                        && StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(clazz))) {
+                                    matter = m;
+                                }
+                            }
+                        }
                     }
 
                     if (matter == null) {
                         crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
-                        Log.d(matterTitle, "Not found in DB");
+                        Log.e(matterTitle, "Not found in DB");
                         continue;
                     }
 

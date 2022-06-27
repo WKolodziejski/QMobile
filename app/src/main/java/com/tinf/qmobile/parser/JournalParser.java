@@ -25,9 +25,9 @@ import org.jsoup.select.Elements;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 
 public class JournalParser extends BaseParser {
@@ -90,12 +90,31 @@ public class JournalParser extends BaseParser {
             Log.d(description, hours + ", " + classesTotal + ", " + classesGiven + ", " + classesLeft);
 
             boolean isFirstParse = false;
+            Matter matter = null;
 
-            Matter matter = matterBox.query()
-                    .equal(Matter_.description_, StringUtils.stripAccents(description), CASE_INSENSITIVE).and()
-                    .equal(Matter_.year_, year).and()
-                    .equal(Matter_.period_, period)
-                    .build().findUnique();
+            try {
+                matter = matterBox.query()
+                        .equal(Matter_.description_, StringUtils.stripAccents(description), CASE_INSENSITIVE).and()
+                        .equal(Matter_.year_, year).and()
+                        .equal(Matter_.period_, period)
+                        .build().findUnique();
+            } catch (Exception e) {
+                Log.e("JournalParser", description);
+                e.printStackTrace();
+            }
+
+            if (matter == null) {
+                Log.d(description, "Query failed");
+
+                List<Matter> matters = matterBox.query()
+                        .equal(Matter_.year_, year).and()
+                        .equal(Matter_.period_, period)
+                        .build().find();
+
+                for (Matter m : matters)
+                    if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(description)))
+                        matter = m;
+            }
 
             if (matter == null) {
                 matter = new Matter(StringUtils.stripAccents(description), colors.getColor(), hours, classesTotal, year, period);
@@ -111,14 +130,12 @@ public class JournalParser extends BaseParser {
 
             Element content = null;
 
-            if (header.next().eq(0) != null) {
+            if (!header.next().eq(0).isEmpty())
                 content = header.next().eq(0).first();
-            }
 
             int periodCount = 0;
 
             while (content != null && content.child(0).child(0).is("div")) {
-
                 String periodTitle = content.child(0).child(0).ownText();
                 Element tableGrades = content.child(0).child(1).child(0);
                 Elements grades = tableGrades.getElementsByClass("conteudoTexto");
@@ -173,6 +190,8 @@ public class JournalParser extends BaseParser {
                     if (date == -1)
                         continue;
 
+                    Journal search = null;
+
                     try {
                         QueryBuilder<Journal> builder = journalBox.query()
                                 .equal(Journal_.title, title, CASE_INSENSITIVE).and()
@@ -184,33 +203,34 @@ public class JournalParser extends BaseParser {
                         builder.link(Journal_.period)
                                 .equal(Period_.id, period.id);
 
-                        Journal search = builder.build().findUnique();
+                        search = builder.build().findUnique();
+                    } catch (Exception e) {
+                        Log.e("JournalParser", title);
+                        e.printStackTrace();
+                        crashlytics.recordException(e);
+                    }
 
-                        if (search == null) {
+                    if (search == null) {
+                        Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter, isFirstParse);
 
-                            Journal newJournal = new Journal(title, grade, weight, max, date, type, period, matter, isFirstParse);
+                        period.journals.add(newJournal);
+                        journalBox.put(newJournal);
 
-                            period.journals.add(newJournal);
-                            journalBox.put(newJournal);
+                        if (notify) {
+                            if (grade != -1 && date <= new Date().getTime())
+                                notifyGrade(newJournal);
+                            else
+                                notifySchedule(newJournal);
+                        }
+                    } else {
+                        if (search.getGrade_() != grade) {
+                            search.setGrade(grade);
+                            journalBox.put(search);
 
                             if (notify) {
-                                if (grade != -1 && date <= new Date().getTime())
-                                    notifyGrade(newJournal);
-                                else
-                                    notifySchedule(newJournal);
-                            }
-                        } else {
-                            if (search.getGrade_() != grade) {
-                                search.setGrade(grade);
-                                journalBox.put(search);
-
-                                if (notify) {
-                                    notifyGrade(search);
-                                }
+                                notifyGrade(search);
                             }
                         }
-                    } catch (NonUniqueResultException e) {
-                        e.printStackTrace();
                     }
                 }
 

@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/draw_schedule"
-        android:visibility="visible" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 <!--    <LinearLayout-->
 <!--        android:layout_width="match_parent"-->

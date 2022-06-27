@@ -26,7 +26,6 @@ import com.tinf.qmobile.model.matter.Period_;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import io.objectbox.android.AndroidScheduler;
-import io.objectbox.exception.NonUniqueResultException;
 import io.objectbox.query.QueryBuilder;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
@@ -122,7 +121,7 @@ public class JournalViewFragment extends Fragment {
 
         try {
             clazz = clazzBuilder.build().findUnique();
-        } catch (NonUniqueResultException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

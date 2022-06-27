@@ -143,7 +143,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new EventsAdapter(getContext(), this::onUpdate));
 
-        binding.calendarLayout.setOnClickListener(v -> {
+        binding.calendarBtn.setOnClickListener(v -> {
             Bundle transition = null;
 
             if (fab != null) {

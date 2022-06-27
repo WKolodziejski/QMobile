@@ -241,44 +241,58 @@ public class Matter implements Queryable {
     }
 
     public String getLabel() {
-        return getLabel_();
+        if (label_ != null)
+            return label_;
+
+        return getLabel2();
     }
 
-//    public String getLabel() {
-//        String label = getTitle();
-//        label = label.replace(" - ", " ").trim();
-//        label = label.replace("-", " ").trim();
-//        label = label.replace(" e ", " ").trim();
-//        label = label.replace(" de ", " ").trim();
-//        label = label.replace(" da ", " ").trim();
-//        label = label.replace(" do ", " ").trim();
-//        label = label.replace(" das ", " ").trim();
-//        label = label.replace(" dos ", " ").trim();
-//        label = label.replace(" em ", " ").trim();
-//        label = label.replace(" para ", " ").trim();
-//        label = label.replace(" V", " ").trim();
-//        label = label.replace(" III", " ").trim();
-//        label = label.replace(" II", " ").trim();
-//        label = label.replace(" I", " ").trim();
-//        String[] tokens = label.split(" ");
-//        StringBuilder ret = new StringBuilder();
-//        int length = Math.min(3, tokens.length);
-//
-//        if (tokens.length < 2)
-//            ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
-//        else
-//            for (int i = 0; i < length; i++) {
-//                String token = tokens[i];
-//
-//                if (token.isEmpty())
-//                    continue;
-//
-//                //if (!token.startsWith("I") && !token.endsWith("I"))
-//                ret.append(token.charAt(0));
-//            }
-//
-//        return ret.toString().toUpperCase();
-//    }
+    private String getLabel2() {
+        String label = getTitle();
+
+        label = label.replace(" - ", " ").trim();
+        label = label.replace("-", " ").trim();
+        label = label.replace(" e ", " ").trim();
+        label = label.replace(" de ", " ").trim();
+        label = label.replace(" da ", " ").trim();
+        label = label.replace(" do ", " ").trim();
+        label = label.replace(" das ", " ").trim();
+        label = label.replace(" dos ", " ").trim();
+        label = label.replace(" em ", " ").trim();
+        label = label.replace(" para ", " ").trim();
+        label = label.replace(" E ", " ").trim();
+        label = label.replace(" DE ", " ").trim();
+        label = label.replace(" DA ", " ").trim();
+        label = label.replace(" DO ", " ").trim();
+        label = label.replace(" DAS ", " ").trim();
+        label = label.replace(" DOS ", " ").trim();
+        label = label.replace(" EM ", " ").trim();
+        label = label.replace(" PARA ", " ").trim();
+        label = label.replace(" X", " ").trim();
+        label = label.replace(" V", " ").trim();
+        label = label.replace(" III", " ").trim();
+        label = label.replace(" II", " ").trim();
+        label = label.replace(" I", " ").trim();
+
+        String[] tokens = label.split(" ");
+        StringBuilder ret = new StringBuilder();
+        int length = Math.min(3, tokens.length);
+
+        if (tokens.length < 2)
+            ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
+        else
+            for (int i = 0; i < length; i++) {
+                String token = tokens[i];
+
+                if (token.isEmpty())
+                    continue;
+
+                //if (!token.startsWith("I") && !token.endsWith("I"))
+                ret.append(token.charAt(0));
+            }
+
+        return ret.toString().toUpperCase();
+    }
 
     public String getChartValue() {
         float sg = getLastPeriod().getGradeSum();

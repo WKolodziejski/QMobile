@@ -776,6 +776,7 @@ public class Client {
                     Client.pos = pos;
 
                     requestsQueue.cancelAll(request -> true);
+                    isLogging = false;
 
                     for (int i = 0; i < onUpdates.size(); i++) {
                         onUpdates.get(i).onDateChanged();

@@ -68,7 +68,7 @@ public abstract class BaseParser {
                     return true;
                 });
             } catch (Exception e) {
-                FirebaseCrashlytics.getInstance().recordException(e);
+                crashlytics.recordException(e);
                 e.printStackTrace();
                 success = false;
             }

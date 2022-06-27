@@ -537,8 +537,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     @Override
     public void onFinish(int pg, int year, int period) {
         dismissProgressbar();
-        invalidateOptionsMenu();
-        supportInvalidateOptionsMenu();
+
+        if (pg != PG_CLASSES) {
+            invalidateOptionsMenu();
+            supportInvalidateOptionsMenu();
+        }
 
         if (pg == PG_LOGIN) {
             displayAlerts(false);
