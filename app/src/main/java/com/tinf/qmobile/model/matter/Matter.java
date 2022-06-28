@@ -34,6 +34,7 @@ public class Matter implements Queryable {
     private String teacher_;
     private String label_;
     private String clazz_;
+    private int qid_;
     private float hours_ = -1;
     private int classesTotal_ = -1;
     private int classesGiven_ = -1;
@@ -130,6 +131,10 @@ public class Matter implements Queryable {
 
     public void setSituation(String situation) {
         this.situation_ = situation;
+    }
+
+    public void setQid(int qid) {
+        this.qid_ = qid;
     }
 
     public Period getLastPeriod() {
@@ -242,12 +247,18 @@ public class Matter implements Queryable {
     }
 
     public int getQID() {
+        if (qid_ != -1)
+            return qid_;
+
+        if (!description_.contains("-"))
+            return -1;
+
         return Integer.parseInt(description_.substring(0, description_.indexOf('-') - 1));
     }
 
     public String getLabel() {
-        //if (label_ != null)
-            //return label_;
+        if (label_ != null)
+            return label_;
 
         return getLabel2();
     }
@@ -318,6 +329,9 @@ public class Matter implements Queryable {
         if (!description_.contains(StringUtils.stripAccents(title_)))
             return "-";
 
+        if (description_.equals(StringUtils.stripAccents(title_)))
+            return "-";
+
         String clazz = description_.substring(0, description_.indexOf(StringUtils.stripAccents(title_)) - 2).trim();
 
         if (!clazz.contains("-"))
@@ -327,7 +341,7 @@ public class Matter implements Queryable {
     }
     
     public String getTeacher() {
-        return teacher_ == null ? "" : teacher_;
+        return teacher_ == null ? "-" : teacher_;
     }
 
     public int getClassesGiven() {
@@ -422,6 +436,10 @@ public class Matter implements Queryable {
 
     public String getClazz_() {
         return clazz_;
+    }
+
+    public int getQid_() {
+        return qid_;
     }
 
     @Override

@@ -39,7 +39,7 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
         binding.absences.setText(matter.getAbsencesString());
 //        binding.progress.setIndicatorColor(matter.getColor());
 //        binding.progress.setProgress(percentage);
-        binding.chartPresence.setVisibility(classes >= 0 ? VISIBLE : INVISIBLE);
+        binding.chartPresence.setVisibility(matter.getAbsences_() >= 0 ? VISIBLE : INVISIBLE);
 
         List<SliceValue> values = new ArrayList<>();
 

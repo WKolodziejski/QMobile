@@ -7,9 +7,9 @@ import android.util.Log;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
 import com.tinf.qmobile.model.matter.Period;
+import com.tinf.qmobile.utility.RandomColor;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -25,6 +25,8 @@ public class ReportParser extends BaseParser {
 
     @Override
     public void parse(Document document) {
+        RandomColor colors = new RandomColor();
+
         Elements tables = document.getElementsByTag("tbody");
 
         for (int k = 0; k < tables.size(); k++) {
@@ -201,6 +203,14 @@ public class ReportParser extends BaseParser {
                     }
                 }
 
+                if (matter == null && situation.contains("Aproveit")) {
+                    matter = new Matter(StringUtils.stripAccents(matterTitle), colors.getColor(), -1, -1, year, period);
+                }
+
+                if (situation.contains("Aproveit")) {
+                    situation = "Aproveitamento";
+                }
+
                 if (matter == null) {
                     crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
                     Log.e(matterTitle, "Not found in DB");
@@ -212,7 +222,8 @@ public class ReportParser extends BaseParser {
                 matter.setTitle(matterTitle);
                 matter.setSituation(situation);
                 matter.setLabel(label);
-                matter.setClazz(clazz);
+                matter.setClazz(clazz.isEmpty() ? null : clazz);
+                matter.setQid(Integer.parseInt(qid));
 
                 for (int j = 0; j < matter.periods.size(); j++) {
                     Period period = matter.periods.get(j);

@@ -38,7 +38,10 @@ public class TableCellSituationViewHolder extends TableBaseViewHolder {
         if (s.contains("Falta"))
             return context.getResources().getColor(R.color.bad);
 
-        return context.getResources().getColor(R.color.ok);
+        if (s.contains("Cursando"))
+            return context.getResources().getColor(R.color.ok);
+
+        return context.getResources().getColor(R.color.colorPrimary);
     }
 
 }

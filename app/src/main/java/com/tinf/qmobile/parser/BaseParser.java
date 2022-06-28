@@ -63,7 +63,7 @@ public abstract class BaseParser {
 
             try {
                 DataBase.get().getBoxStore().callInTx(() -> {
-                    parse(Jsoup.parse(string));
+                    parse(Jsoup.parse(string.replaceAll("\\s+", " ")));
                     success = true;
                     return true;
                 });

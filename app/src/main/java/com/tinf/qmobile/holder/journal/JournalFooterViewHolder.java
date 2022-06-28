@@ -44,7 +44,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
         binding.absences.setText(matter.getAbsencesString());
 //        binding.progress.setIndicatorColor(matter.getColor());
 //        binding.progress.setProgress(percentage);
-        binding.chartPresence.setVisibility(classes >= 0 ? VISIBLE : INVISIBLE);
+        binding.chartPresence.setVisibility(matter.getAbsences_() >= 0 ? VISIBLE : INVISIBLE);
 
         binding.layout.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);

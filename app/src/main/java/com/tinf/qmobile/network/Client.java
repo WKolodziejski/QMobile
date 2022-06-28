@@ -267,9 +267,12 @@ public class Client {
         Log.d("Client", "loading " + matter.getTitle());
 
         executors.execute(() -> {
-            createRequest(PG_CLASSES,
-                    INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + matter.getQID() + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
-                    matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter, this::callOnFinish);
+            int qid = matter.getQID();
+
+            if (qid != -1)
+                createRequest(PG_CLASSES,
+                        INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + qid + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
+                        matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter, this::callOnFinish);
         });
     }
 
