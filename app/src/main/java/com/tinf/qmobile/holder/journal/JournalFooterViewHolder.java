@@ -44,7 +44,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
         binding.absences.setText(matter.getAbsencesString());
 //        binding.progress.setIndicatorColor(matter.getColor());
 //        binding.progress.setProgress(percentage);
-        binding.chartPresence.setVisibility(classes > 0 ? VISIBLE : INVISIBLE);
+        binding.chartPresence.setVisibility(classes >= 0 ? VISIBLE : INVISIBLE);
 
         binding.layout.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
@@ -56,15 +56,9 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
 
         List<SliceValue> values = new ArrayList<>();
 
-        if (presences > 0) {
-            values.add(new SliceValue(presences)
-                    .setColor(color1)
-                    .setLabel(""));
-        } else {
-            values.add(new SliceValue(1)
-                    .setColor(color2)
-                    .setLabel(""));
-        }
+        values.add(new SliceValue(presences > 0 ? presences : 1)
+                .setColor(color1)
+                .setLabel(""));
 
         if (absences > 0) {
             values.add(new SliceValue(absences)

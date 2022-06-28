@@ -251,6 +251,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 }
             });
             fragment.show(getSupportFragmentManager(), "sheet_user");
+            //Log.d("Login", UserUtils.getCredential(UserUtils.REGISTRATION));
+            //Log.d("Password", UserUtils.getCredential(UserUtils.PASSWORD));
         });
 
         return true;

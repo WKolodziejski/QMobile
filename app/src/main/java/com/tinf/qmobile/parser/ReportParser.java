@@ -155,6 +155,19 @@ public class ReportParser extends BaseParser {
                 }
 
                 if (matter == null) {
+                    try {
+                        crashlytics.log(matterTitle);
+
+                        matter = matterBox.query()
+                                .contains(Matter_.description_, StringUtils.stripAccents(qid), CASE_INSENSITIVE)
+                                .build().findUnique();
+                    } catch (Exception e) {
+                        Log.e(TAG, matterTitle);
+                        e.printStackTrace();
+                    }
+                }
+
+                if (matter == null) {
                     boolean found = false;
                     boolean moreThanOne = false;
 
@@ -199,6 +212,7 @@ public class ReportParser extends BaseParser {
                 matter.setTitle(matterTitle);
                 matter.setSituation(situation);
                 matter.setLabel(label);
+                matter.setClazz(clazz);
 
                 for (int j = 0; j < matter.periods.size(); j++) {
                     Period period = matter.periods.get(j);

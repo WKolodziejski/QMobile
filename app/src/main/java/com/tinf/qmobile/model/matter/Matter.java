@@ -33,6 +33,7 @@ public class Matter implements Queryable {
     private String situation_;
     private String teacher_;
     private String label_;
+    private String clazz_;
     private float hours_ = -1;
     private int classesTotal_ = -1;
     private int classesGiven_ = -1;
@@ -104,7 +105,7 @@ public class Matter implements Queryable {
     }
 
     public String getSituation() {
-        return situation_ == null ? "" : situation_;
+        return situation_ == null ? "-" : situation_;
     }
 
     public float getGivenHours() {
@@ -121,6 +122,10 @@ public class Matter implements Queryable {
 
     public void setLabel(String label) {
         this.label_ = label;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz_ = clazz;
     }
 
     public void setSituation(String situation) {
@@ -241,8 +246,8 @@ public class Matter implements Queryable {
     }
 
     public String getLabel() {
-        if (label_ != null)
-            return label_;
+        //if (label_ != null)
+            //return label_;
 
         return getLabel2();
     }
@@ -291,6 +296,8 @@ public class Matter implements Queryable {
                 ret.append(token.charAt(0));
             }
 
+            Log.d(title_, ret.toString());
+
         return ret.toString().toUpperCase();
     }
 
@@ -302,7 +309,13 @@ public class Matter implements Queryable {
     }
 
     public String getClazz() {
+        if (clazz_ != null)
+            return clazz_;
+
         if (title_ == null)
+            return "-";
+
+        if (!description_.contains(StringUtils.stripAccents(title_)))
             return "-";
 
         String clazz = description_.substring(0, description_.indexOf(StringUtils.stripAccents(title_)) - 2).trim();
@@ -405,6 +418,10 @@ public class Matter implements Queryable {
 
     public int getClassesLeft_() {
         return classesLeft_;
+    }
+
+    public String getClazz_() {
+        return clazz_;
     }
 
     @Override

@@ -27,9 +27,12 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
 
         Client.get().load(PG_SCHEDULE);
 
+        ScheduleFragment fragment = new ScheduleFragment();
+        fragment.setDaysLayout(binding.daysLayout);
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.schedule_fragment, new ScheduleFragment())
+                .replace(R.id.schedule_fragment, fragment)
                 .commit();
 
         binding.refresh.setEnabled(false);

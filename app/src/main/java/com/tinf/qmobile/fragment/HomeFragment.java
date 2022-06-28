@@ -60,6 +60,8 @@ import java.util.List;
 
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.gesture.ContainerScrollType;
+import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -548,6 +550,9 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
             data.setAxisXBottom(new Axis(axisMatter));
             binding.chart.setColumnChartData(data);
             binding.chart.setZoomEnabled(false);
+            binding.chart.setZoomType(ZoomType.HORIZONTAL);
+            binding.chart.setZoomLevel(0f, 0f, matters.size() / 10f);
+            binding.chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
             binding.chart.setOnValueTouchListener(new ColumnChartOnValueSelectListener() {
 
                 @Override

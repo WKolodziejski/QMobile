@@ -38,11 +38,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/title_horario"
                     android:textSize="17sp"
-                    android:textStyle="bold"
-                    tools:layout_conversion_absoluteHeight="24dp"
-                    tools:layout_conversion_absoluteWidth="379dp"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="16dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/empty_schedule"
@@ -52,10 +48,6 @@
                     android:text="@string/schedule_empty"
                     android:textSize="@dimen/main_font_size"
                     android:visibility="gone"
-                    tools:layout_conversion_absoluteHeight="20dp"
-                    tools:layout_conversion_absoluteWidth="165dp"
-                    tools:layout_editor_absoluteX="48dp"
-                    tools:layout_editor_absoluteY="40dp"
                     tools:visibility="visible" />
 
             </LinearLayout>
@@ -159,11 +151,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/calendar_upcoming"
                     android:textSize="17sp"
-                    android:textStyle="bold"
-                    tools:layout_conversion_absoluteHeight="24dp"
-                    tools:layout_conversion_absoluteWidth="379dp"
-                    tools:layout_editor_absoluteX="16dp"
-                    tools:layout_editor_absoluteY="16dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/empty_calendar"
@@ -173,10 +161,6 @@
                     android:text="@string/calendar_empty"
                     android:textSize="@dimen/main_font_size"
                     android:visibility="gone"
-                    tools:layout_conversion_absoluteHeight="20dp"
-                    tools:layout_conversion_absoluteWidth="165dp"
-                    tools:layout_editor_absoluteX="48dp"
-                    tools:layout_editor_absoluteY="40dp"
                     tools:visibility="visible" />
 
             </LinearLayout>
@@ -261,11 +245,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/title_performance"
                 android:textSize="17sp"
-                android:textStyle="bold"
-                tools:layout_conversion_absoluteHeight="24dp"
-                tools:layout_conversion_absoluteWidth="379dp"
-                tools:layout_editor_absoluteX="16dp"
-                tools:layout_editor_absoluteY="16dp" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/empty_chart"
@@ -287,7 +267,6 @@
             android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp" />
 
         <View

@@ -116,15 +116,9 @@ public class InfoFragment extends Fragment {
 
         List<SliceValue> values = new ArrayList<>();
 
-        if (presences > 0) {
-            values.add(new SliceValue(presences)
-                    .setColor(color1)
-                    .setLabel(""));
-        } else {
-            values.add(new SliceValue(1)
-                    .setColor(color2)
-                    .setLabel(""));
-        }
+        values.add(new SliceValue(presences > 0 ? presences : 1)
+                .setColor(color1)
+                .setLabel(""));
 
         if (absences > 0) {
             values.add(new SliceValue(absences)

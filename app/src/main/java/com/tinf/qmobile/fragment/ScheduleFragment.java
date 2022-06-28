@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
@@ -37,6 +38,11 @@ public class ScheduleFragment extends Fragment {
     private FragmentScheduleBinding binding;
     private DataSubscription sub1, sub2;
     private Bundle bundle;
+    private ConstraintLayout daysLayout;
+
+    public void setDaysLayout(ConstraintLayout daysLayout) {
+        this.daysLayout = daysLayout;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -186,9 +192,19 @@ public class ScheduleFragment extends Fragment {
             binding.layout.setVisibility(View.VISIBLE);
             binding.empty.setVisibility(View.GONE);
 
+            if (daysLayout != null)
+                daysLayout.setVisibility(View.VISIBLE);
+            else
+                binding.daysLayout.setVisibility(View.VISIBLE);
+
         } else {
             binding.layout.setVisibility(View.GONE);
             binding.empty.setVisibility(View.VISIBLE);
+
+            if (daysLayout != null)
+                daysLayout.setVisibility(View.GONE);
+            else
+                binding.daysLayout.setVisibility(View.GONE);
         }
 
         return events;
