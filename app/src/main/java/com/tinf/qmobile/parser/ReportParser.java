@@ -203,8 +203,10 @@ public class ReportParser extends BaseParser {
                     }
                 }
 
-                if (matter == null && situation.contains("Aproveit")) {
-                    matter = new Matter(StringUtils.stripAccents(matterTitle), colors.getColor(), -1, -1, year, period);
+                if (matter == null) {
+                    if (situation.contains("Aproveit") || situation.contains("Trancado")) {
+                        matter = new Matter(StringUtils.stripAccents(matterTitle), colors.getColor(), -1, -1, year, period);
+                    }
                 }
 
                 if (situation.contains("Aproveit")) {

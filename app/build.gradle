@@ -38,7 +38,7 @@ android {
         targetSdkVersion 32
         versionName '1.8.8'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 125
+        versionCode 126
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
