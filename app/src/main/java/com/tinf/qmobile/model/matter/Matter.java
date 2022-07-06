@@ -114,23 +114,23 @@ public class Matter implements Queryable {
     }
 
     public void setTeacher(String teacher) {
-        this.teacher_ = teacher;
+        this.teacher_ = teacher.isEmpty() ? null : teacher;
     }
 
     public void setTitle(String title) {
-        this.title_ = title;
+        this.title_ = title.isEmpty() ? null : title;
     }
 
     public void setLabel(String label) {
-        this.label_ = label;
+        this.label_ = label.isEmpty() ? null : label;
     }
 
     public void setClazz(String clazz) {
-        this.clazz_ = clazz;
+        this.clazz_ = clazz.isEmpty() ? null : clazz;
     }
 
     public void setSituation(String situation) {
-        this.situation_ = situation;
+        this.situation_ = situation.isEmpty() ? null : situation;
     }
 
     public void setQid(int qid) {
@@ -341,7 +341,13 @@ public class Matter implements Queryable {
     }
     
     public String getTeacher() {
-        return teacher_ == null ? "-" : teacher_;
+        if (teacher_ == null)
+            return "-";
+
+        if (title_ != null && teacher_.contains(title_))
+                return "-";
+
+        return teacher_;
     }
 
     public int getClassesGiven() {

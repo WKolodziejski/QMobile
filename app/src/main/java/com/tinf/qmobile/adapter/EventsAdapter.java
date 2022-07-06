@@ -65,10 +65,10 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder> impl
             case USER:
                 return new EventUserHorizontalViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_event_user_h, parent, false));
-
-            case EMPTY:
-                return new EmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.header_empty, parent, false));
+//
+//            case EMPTY:
+//                return new EmptyViewHolder(LayoutInflater.from(context)
+//                        .inflate(R.layout.header_empty, parent, false));
         }
         return null;
     }

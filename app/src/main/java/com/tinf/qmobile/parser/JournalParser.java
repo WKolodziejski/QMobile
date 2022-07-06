@@ -62,7 +62,6 @@ public class JournalParser extends BaseParser {
         Elements contents = body.select("table.conteudoTexto");
 
         for (int i = 0; i < contents.size(); i++) {
-
             Elements header = contents.eq(i).parents().eq(0).parents().eq(0);
 
             Element reports = header.first().child(1);
@@ -70,24 +69,38 @@ public class JournalParser extends BaseParser {
 
             String description = header.first().child(0).text();
             String teacher = description.substring(description.lastIndexOf('-') + 1).trim();
-            String cTotal = trs.get(1).getElementsByTag("td").get(1).text().trim();
-            String cLeft = trs.get(3).getElementsByTag("td").get(1).text().trim();
-            String abs = trs.get(4).getElementsByTag("td").get(1).text().trim();
-            String hs = trs.get(0).getElementsByTag("td").get(1).text().trim();
+
+//            String cTotal = trs.get(1).getElementsByTag("td").get(1).text().trim();
+//            String cLeft = trs.get(3).getElementsByTag("td").get(1).text().trim();
+//            String abs = trs.get(4).getElementsByTag("td").get(1).text().trim();
+//            String hs = trs.get(0).getElementsByTag("td").get(1).text().trim();
+//            hs = hs.substring(0, hs.indexOf("Hrs")).trim();
+//            String cGiven = trs.get(2).getElementsByTag("td").get(1).text().trim();
+
+            Log.d("trs", trs.toString());
+
+            String cTotal = formatHeader(trs, HeaderType.CLASSES_TOTAL);
+            //String cLeft = formatHeader(trs, HeaderType.CLASSES_LEFT);
+            String cGiven = formatHeader(trs, HeaderType.CLASSES_GIVEN);
+            String abs = formatHeader(trs, HeaderType.ABSENCES);
+            String hs = formatHeader(trs, HeaderType.HOURS);
             hs = hs.substring(0, hs.indexOf("Hrs")).trim();
-            String cGiven = trs.get(2).getElementsByTag("td").get(1).text().trim();
 
             if (cGiven.contains("[")) {
                 cGiven = cGiven.substring(0, cGiven.indexOf(" ")).trim();
             }
 
+//            if (cLeft.isEmpty()) {
+//                cLeft = "-1";
+//            }
+
             float hours = Float.parseFloat(hs);
             int classesTotal = Integer.parseInt(cTotal);
             int classesGiven = Integer.parseInt(cGiven);
-            int classesLeft = Integer.parseInt(cLeft);
+            //int classesLeft = Integer.parseInt(cLeft);
             int absences = Integer.parseInt(abs);
 
-            Log.d(description, hours + ", " + classesTotal + ", " + classesGiven + ", " + classesLeft);
+            Log.d(description, hours + ", " + classesTotal + ", " + classesGiven);
 
             boolean isFirstParse = false;
             Matter matter = null;
@@ -118,14 +131,13 @@ public class JournalParser extends BaseParser {
 
             if (matter == null) {
                 matter = new Matter(StringUtils.stripAccents(description), colors.getColor(), hours, classesTotal, year, period);
-                matter.setTeacher(teacher);
-                //newID = matterBox.put(matter); //Is it really necessary? Can't the matter be put only at the very end?
                 isFirstParse = true;
             }
 
+            matter.setTeacher(teacher);
             matter.setClassesTotal(classesTotal);
             matter.setClassesGiven(classesGiven);
-            matter.setClassesLeft(classesLeft);
+            //matter.setClassesLeft(classesLeft);
             matter.setAbsences(absences);
 
             Element content = null;
@@ -135,7 +147,7 @@ public class JournalParser extends BaseParser {
 
             int periodCount = 0;
 
-            while (content != null && content.child(0).child(0).is("div")) {
+            while (content != null && content.child(0).childrenSize() > 0 && content.child(0).child(0).is("div")) {
                 String periodTitle = content.child(0).child(0).ownText();
                 Element tableGrades = content.child(0).child(1).child(0);
                 Elements grades = tableGrades.getElementsByClass("conteudoTexto");
@@ -300,6 +312,34 @@ public class JournalParser extends BaseParser {
         cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
 
         return cal.getTimeInMillis();
+    }
+
+    private String formatHeader(Elements trs, HeaderType field) {
+        for (int i = 0; i < trs.size(); i++) {
+            Elements tds = trs.get(i).getElementsByTag("td");
+            String title = tds.get(0).text();
+            String value = tds.get(1).text();
+
+            if (title.contains(field.txt)) {
+                return value;
+            }
+        }
+
+        return "";
+    }
+
+    private enum HeaderType {
+        CLASSES_TOTAL("previsto"),
+        //CLASSES_LEFT("restantes"),
+        CLASSES_GIVEN("ministradas"),
+        ABSENCES("Faltas"),
+        HOURS("prevista");
+
+        HeaderType(String txt) {
+            this.txt = txt;
+        }
+
+        public String txt;
     }
 
 }

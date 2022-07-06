@@ -140,6 +140,7 @@ public class InfoFragment extends Fragment {
 
         binding.totalHoursTxt.setText(matter.getHoursString());
         binding.totalClassesTxt.setText(matter.getClassesTotalString());
+        binding.situationTxt.setText(matter.getSituation());
         binding.clazzTxt.setText(matter.getClazz());
         binding.teacherTxt.setText(matter.getTeacher());
 

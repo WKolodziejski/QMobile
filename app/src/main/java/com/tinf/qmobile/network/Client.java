@@ -406,6 +406,9 @@ public class Client {
     private Resp testResponse(String response) {
         Document document = Jsoup.parse(response);
 
+        if (document.text().contains("Houve um erro inesperado"))
+            return Resp.UNKNOWN;
+
         Element strong = document.getElementsByTag("strong").first();
 
         if (strong != null) {

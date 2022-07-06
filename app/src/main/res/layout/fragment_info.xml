@@ -77,13 +77,32 @@
                     tools:text="0" />
 
                 <TextView
+                    android:id="@+id/situation_header"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/report_situation"
+                    app:layout_constraintEnd_toStartOf="@id/guideline0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/total_classes_header" />
+
+                <TextView
+                    android:id="@+id/situation_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/guideline0"
+                    app:layout_constraintTop_toBottomOf="@id/total_classes_header"
+                    tools:text="Cursando" />
+
+                <TextView
                     android:id="@+id/clazz_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/infos_class"
                     app:layout_constraintEnd_toStartOf="@id/guideline0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/total_classes_header" />
+                    app:layout_constraintTop_toBottomOf="@id/situation_header" />
 
                 <TextView
                     android:id="@+id/clazz_txt"
@@ -92,7 +111,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toStartOf="@id/guideline0"
-                    app:layout_constraintTop_toBottomOf="@id/total_classes_header"
+                    app:layout_constraintTop_toBottomOf="@id/situation_header"
                     tools:text="3M.2018" />
 
                 <TextView

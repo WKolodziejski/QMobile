@@ -609,6 +609,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
     public void onUpdate(List<EventBase> list) {
         Design.syncToolbar(toolbar, Design.canScroll(scroll));
         binding.emptyCalendar.setVisibility(list.isEmpty() ? VISIBLE : GONE);
+        binding.recycler.setVisibility(list.isEmpty() ? GONE : VISIBLE);
         Log.d("ONUPDATE", String.valueOf(list.isEmpty()));
     }
 
