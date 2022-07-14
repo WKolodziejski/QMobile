@@ -61,7 +61,7 @@ public class Matter implements Queryable {
     }
 
     public String getPresencesString() {
-        return absences_ == -1 || classesGiven_ == -1 ? "-" : String.valueOf(classesGiven_ - absences_);
+        return absences_ == -1 || classesGiven_ == -1 ? "-" : String.valueOf(Math.max(0, classesGiven_ - absences_));
     }
 
     public String getMean() {
@@ -114,23 +114,23 @@ public class Matter implements Queryable {
     }
 
     public void setTeacher(String teacher) {
-        this.teacher_ = teacher.isEmpty() ? null : teacher;
+        this.teacher_ = teacher;
     }
 
     public void setTitle(String title) {
-        this.title_ = title.isEmpty() ? null : title;
+        this.title_ = title;
     }
 
     public void setLabel(String label) {
-        this.label_ = label.isEmpty() ? null : label;
+        this.label_ = label;
     }
 
     public void setClazz(String clazz) {
-        this.clazz_ = clazz.isEmpty() ? null : clazz;
+        this.clazz_ = clazz;
     }
 
     public void setSituation(String situation) {
-        this.situation_ = situation.isEmpty() ? null : situation;
+        this.situation_ = situation;
     }
 
     public void setQid(int qid) {

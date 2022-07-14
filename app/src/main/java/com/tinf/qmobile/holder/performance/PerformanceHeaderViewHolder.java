@@ -13,6 +13,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.databinding.ChartHeaderBinding;
@@ -51,16 +52,26 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
         int color1 = matter.getColor();
         int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
         int classesGiven = matter.getClassesGiven();
+        int classesTotal = matter.getClassesTotal();
+        int classesLeft = classesTotal - classesGiven;
         int absences = matter.getAbsences();
-        int presences = classesGiven - absences;
+        int presences = Math.max(0, classesGiven - absences);
 
-        Log.d(matter.getAbsencesString(), String.valueOf(presences));
+        if (classesGiven == 0 && absences > 0) {
+            classesLeft -= absences;
+        }
 
         List<SliceValue> values = new ArrayList<>();
 
-        values.add(new SliceValue(presences > 0 ? presences : 1)
-                .setColor(color1)
+        values.add(new SliceValue(classesLeft)
+                .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .setLabel(""));
+
+        if (presences > 0) {
+            values.add(new SliceValue(presences)
+                    .setColor(color1)
+                    .setLabel(""));
+        }
 
         if (absences > 0) {
             values.add(new SliceValue(absences)
@@ -79,7 +90,7 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
 
         if (absences > 0) {
             binding.chartPresence.selectValue(
-                    new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
+                    new SelectedValue(presences > 0 ? 2 : 1, 0, SelectedValue.SelectedValueType.LINE));
         }
 
         binding.presenceIc.setImageTintList(ColorStateList.valueOf(color1));

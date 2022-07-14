@@ -90,15 +90,10 @@ public class JournalParser extends BaseParser {
                 cGiven = cGiven.substring(0, cGiven.indexOf(" ")).trim();
             }
 
-//            if (cLeft.isEmpty()) {
-//                cLeft = "-1";
-//            }
-
-            float hours = Float.parseFloat(hs);
-            int classesTotal = Integer.parseInt(cTotal);
-            int classesGiven = Integer.parseInt(cGiven);
-            //int classesLeft = Integer.parseInt(cLeft);
-            int absences = Integer.parseInt(abs);
+            float hours = hs.isEmpty() ? -1 : Float.parseFloat(hs);
+            int classesTotal = cTotal.isEmpty() ? -1 : Integer.parseInt(cTotal);
+            int classesGiven = cGiven.isEmpty() ? -1 : Integer.parseInt(cGiven);
+            int absences = abs.isEmpty() ? -1 : Integer.parseInt(abs);
 
             Log.d(description, hours + ", " + classesTotal + ", " + classesGiven);
 
@@ -134,10 +129,11 @@ public class JournalParser extends BaseParser {
                 isFirstParse = true;
             }
 
-            matter.setTeacher(teacher);
+            if (!teacher.isEmpty())
+                matter.setTeacher(teacher);
+
             matter.setClassesTotal(classesTotal);
             matter.setClassesGiven(classesGiven);
-            //matter.setClassesLeft(classesLeft);
             matter.setAbsences(absences);
 
             Element content = null;
@@ -170,7 +166,32 @@ public class JournalParser extends BaseParser {
                     String dateString = formatDate(grades.eq(j).first().child(1).text());
                     String infos = grades.eq(j).first().child(1).text();
                     String t = formatType(infos);
+                    String title = formatJournalTitle(infos);
+//                    String weightString = formatJournal(grades.eq(j).first(), HeaderType.WEIGHT);
+//                    String maxString = formatJournal(grades.eq(j).first(), HeaderType.MAX);
+//                    String gradeString = formatJournal(grades.eq(j).first(), HeaderType.GRADE);
 
+                    String weightString = formatGrade(formatNumber(grades.eq(j).first().child(2).text()));
+                    String maxString;
+                    String gradeString;
+
+                    if (grades.eq(j).first().child(3).text().contains(HeaderType.MAX.txt)) {
+                        maxString = grades.eq(j).first().child(3).text();
+                        maxString = formatGrade(formatNumber(maxString.substring(maxString.indexOf(" ")).trim()));
+                        gradeString = formatGrade(formatNumber(grades.eq(j).first().child(4).text()));
+                    } else {
+                        maxString = "";
+                        gradeString = formatGrade(formatNumber(grades.eq(j).first().child(3).text()));
+                    }
+
+//                    String weightString = formatGrade(formatNumber(grades.eq(j).first().child(2).text()));
+//                    String maxString = formatGrade(formatNumber(grades.eq(j).first().child(3).text()));
+//                    String gradeString = formatGrade(formatNumber(grades.eq(j).first().child(4).text()));
+
+                    float grade = gradeString.isEmpty() ? -1 : Float.parseFloat(gradeString);
+                    float weight = weightString.isEmpty() ? -1 : Float.parseFloat(weightString);
+                    float max = maxString.isEmpty() ? -1 : Float.parseFloat(maxString);
+                    long date = dateString.isEmpty() ? -1 : getDate(dateString);
                     int type = Journal.Type.AVALIACAO.get();
 
                     if (t.equals("Prova")) {
@@ -182,22 +203,6 @@ public class JournalParser extends BaseParser {
                     } else if (t.equals("Exercício")) {
                         type = Journal.Type.EXERCICIO.get();
                     }
-
-                    String title = formatJournalTitle(infos);
-                    String weightString = formatGrade(formatNumber(grades.eq(j).first().child(2).text()));
-                    String maxString = formatGrade(formatNumber(grades.eq(j).first().child(3).text()));
-                    String gradeString = formatGrade(formatNumber(grades.eq(j).first().child(4).text()));
-
-                    float grade, weight, max;
-                    long date;
-
-                    grade = gradeString.isEmpty() ? -1 : Float.parseFloat(gradeString);
-
-                    weight = weightString.isEmpty() ? -1 : Float.parseFloat(weightString);
-
-                    max = maxString.isEmpty() ? -1 : Float.parseFloat(maxString);
-
-                    date = dateString.isEmpty() ? -1 : getDate(dateString);
 
                     if (date == -1)
                         continue;
@@ -328,12 +333,38 @@ public class JournalParser extends BaseParser {
         return "";
     }
 
+//    private String formatJournal(Element e, HeaderType field) {
+//        for (int i = 0; i < e.childrenSize(); i++) {
+//            String txt = e.child(i).text();
+//
+//            if (txt.contains(field.txt)) {
+//                return formatGrade(formatNumber(txt.substring(txt.indexOf(field.txt) + 1).trim()));
+//            }
+//        }
+//
+//        return "";
+//    }
+
+    private String formatGrade(String s) {
+        return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
+    }
+
+    private String formatNumber(String s) {
+        if (s.contains(" "))
+            return s.substring(s.lastIndexOf(" ")).trim();
+
+        return "";
+        //return s.substring(s.indexOf(":") + 1).trim();
+    }
+
     private enum HeaderType {
         CLASSES_TOTAL("previsto"),
-        //CLASSES_LEFT("restantes"),
         CLASSES_GIVEN("ministradas"),
         ABSENCES("Faltas"),
-        HOURS("prevista");
+        HOURS("prevista"),
+        WEIGHT("Peso"),
+        MAX("xima"),
+        GRADE("Nota");
 
         HeaderType(String txt) {
             this.txt = txt;

@@ -204,7 +204,7 @@ public class ReportParser extends BaseParser {
                 }
 
                 if (matter == null) {
-                    if (situation.contains("Aproveit") || situation.contains("Trancado")) {
+                    if (situation.contains("Aproveit") || situation.contains("Trancado") || situation.contains("Cancelado")) {
                         matter = new Matter(StringUtils.stripAccents(matterTitle), colors.getColor(), -1, -1, year, period);
                     }
                 }
@@ -221,9 +221,9 @@ public class ReportParser extends BaseParser {
 
                 //matter.setAbsences(absencesTotal.isEmpty() ? -1 : Integer.parseInt(absencesTotal));
                 matter.setMean(finalMean.isEmpty() ? -1 : Float.parseFloat(finalMean));
-                matter.setTitle(matterTitle);
-                matter.setSituation(situation);
-                matter.setLabel(label);
+                matter.setTitle(matterTitle.isEmpty() ? null : matterTitle);
+                matter.setSituation(situation.isEmpty() ? null : situation);
+                matter.setLabel(label.isEmpty() ? null : label);
                 matter.setClazz(clazz.isEmpty() ? null : clazz);
                 matter.setQid(Integer.parseInt(qid));
 
@@ -288,7 +288,6 @@ public class ReportParser extends BaseParser {
         return s.substring(s.indexOf("=") + 1).trim();
     }
 
-    @Override
     protected String formatNumber(String s) {
         return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
     }

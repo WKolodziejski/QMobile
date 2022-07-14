@@ -4,6 +4,7 @@ import static com.tinf.qmobile.App.getContext;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Html;
 import android.util.Log;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -91,13 +92,5 @@ public abstract class BaseParser {
     }
 
     public abstract void parse(final Document document);
-
-    protected String formatNumber(String s) {
-        return s.substring(s.indexOf(":") + 1).trim();
-    }
-
-    protected String formatGrade(String s) {
-        return s.startsWith(",") ? "" : s.replaceAll(",", ".");
-    }
 
 }

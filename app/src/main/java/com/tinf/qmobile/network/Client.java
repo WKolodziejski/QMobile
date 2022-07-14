@@ -29,8 +29,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Html;
 import android.util.Log;
 import android.webkit.CookieManager;
+
+import androidx.core.text.HtmlCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -67,7 +70,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -104,26 +110,6 @@ public class Client {
     }
 
     private Client() {
-//        try {
-//            HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
-//            SSLContext context = SSLContext.getInstance("TLS");
-//            context.init(null, new X509TrustManager[]{
-//                            new X509TrustManager() {
-//                                public void checkClientTrusted(X509Certificate[] chain, String authType) {
-//                                }
-//
-//                                public void checkServerTrusted(X509Certificate[] chain, String authType) {
-//                                }
-//
-//                                public X509Certificate[] getAcceptedIssuers() {
-//                                    return new X509Certificate[0];
-//                                }
-//                            }},
-//                    new SecureRandom());
-//            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         this.requestsQueue = Volley.newRequestQueue(getContext(), new HurlStack());
         this.requestsHelper = new LinkedList<>();
         this.requestsRunning = new LinkedList<>();
@@ -155,14 +141,14 @@ public class Client {
 
             boolean isNew = true;
 
-            synchronized (requestsHelper) {
+            //synchronized (requestsHelper) {
                 for (RequestHelper h : requestsHelper)
                     if (h.pg == pg && h.year == year && h.period == period) {
                         Log.d(TAG, "Duplicate request: " + pg + " in " + year + "/" + period);
                         isNew = false;
                         break;
                     }
-            }
+            //}
 
             synchronized (requestsRunning) {
                 for (RequestRunning r : requestsRunning)
@@ -180,6 +166,9 @@ public class Client {
 
             addRequest(new StringRequest(method, URL + url, responseASCII -> {
                 String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+
+                if (response.contains("�"))
+                    response = responseASCII;
 
                 Resp r = testResponse(response);
 
@@ -356,6 +345,9 @@ public class Client {
                 fetchParams(success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
                     String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
+                    if (response.contains("�"))
+                        response = responseASCII;
+
                     Resp r = testResponse(response);
 
                     if (r == Resp.DENIED) {
@@ -531,6 +523,9 @@ public class Client {
         addRequest(new StringRequest(GET, URL + GERADOR, responseASCII -> {
             String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
+            if (response.contains("�"))
+                response = responseASCII;
+
             try {
                 String keys = response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));
                 keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
@@ -568,8 +563,8 @@ public class Client {
                     }
                 }
 
-                //params.put("Accept", "text/html");
-                //params.put("Content-Type", "text/html; charset=utf-8");
+                params.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
+                params.put("Accept-Language", "en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7");
 
                 Log.d("Cookies", params.toString());
 

@@ -6,9 +6,6 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +15,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.tinf.qmobile.R;
@@ -37,6 +33,8 @@ import java.util.List;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.gesture.ContainerScrollType;
+import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -106,19 +104,28 @@ public class InfoFragment extends Fragment {
         int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
         int classesGiven = matter.getClassesGiven();
         int classesTotal = matter.getClassesTotal();
+        int classesLeft = classesTotal - classesGiven;
         int absences = matter.getAbsences();
-        int presences = classesGiven - absences;
+        int presences = Math.max(0, classesGiven - absences);
         float maxSum = matter.getAllMaxGradesSum();
-        int classesProgress = classesTotal == 0 ? 0 : (int) (((float) classesGiven / classesTotal) * 100f);
+        int classesProgress = classesTotal == 0 || classesGiven == 0 ? 0 : (int) (((float) classesGiven / classesTotal) * 100f);
         int averageProgress = maxSum == 0 ? 0 : (int) ((matter.getAllGradesSum() / maxSum) * 100f);
 
-        Log.d(matter.getAbsencesString(), String.valueOf(presences));
+        if (classesGiven == 0 && absences > 0) {
+            classesLeft -= absences;
+        }
 
         List<SliceValue> values = new ArrayList<>();
 
-        values.add(new SliceValue(presences > 0 ? presences : 1)
-                .setColor(color1)
+        values.add(new SliceValue(classesLeft)
+                .setColor(getResources().getColor(R.color.colorPrimaryDark))
                 .setLabel(""));
+
+        if (presences > 0) {
+            values.add(new SliceValue(presences)
+                    .setColor(color1)
+                    .setLabel(""));
+        }
 
         if (absences > 0) {
             values.add(new SliceValue(absences)
@@ -135,7 +142,7 @@ public class InfoFragment extends Fragment {
 
         if (absences > 0) {
             binding.chartPresence.selectValue(
-                    new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
+                    new SelectedValue(presences > 0 ? 2 : 1, 0, SelectedValue.SelectedValueType.LINE));
         }
 
         binding.totalHoursTxt.setText(matter.getHoursString());
@@ -147,7 +154,7 @@ public class InfoFragment extends Fragment {
         binding.classesTxtL.setText(matter.getClassesGivenString());
         binding.classesTxtR.setText(matter.getClassesTotalString());
         binding.classesProgress.setIndicatorColor(color1);
-        binding.classesProgress.setTrackColor(color2);
+        binding.classesProgress.setTrackColor(getResources().getColor(R.color.colorPrimaryDark));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.classesProgress.setProgress(classesProgress, true);
         } else {
@@ -157,7 +164,7 @@ public class InfoFragment extends Fragment {
         binding.averageTxtL.setText(String.valueOf(matter.getAllGradesSum()));
         binding.averageTxtR.setText(String.valueOf(matter.getAllMaxGradesSum()));
         binding.averageProgress.setIndicatorColor(color1);
-        binding.averageProgress.setTrackColor(color2);
+        binding.averageProgress.setTrackColor(getResources().getColor(R.color.colorPrimaryDark));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             binding.averageProgress.setProgress(averageProgress, true);
         } else {
@@ -209,6 +216,9 @@ public class InfoFragment extends Fragment {
             binding.chartGrades.setZoomEnabled(false);
             binding.chartGrades.setScrollEnabled(false);
             binding.chartGrades.setViewportCalculationEnabled(false);
+//            binding.chartGrades.setZoomType(ZoomType.VERTICAL);
+//            binding.chartGrades.setZoomLevel(0, 0, 10);
+//            binding.chartGrades.setContainerScrollEnabled(true, ContainerScrollType.VERTICAL);
 
             if (onCreate) {
                 final Viewport v = new Viewport(binding.chartGrades.getMaximumViewport());
@@ -218,7 +228,11 @@ public class InfoFragment extends Fragment {
 
                 binding.chartGrades.setMaximumViewport(v);
                 binding.chartGrades.setCurrentViewport(v);
-            }
+
+                //binding.chartGrades.setZoomLevelWithAnimation(0f, 0f, 1);
+            } //else {
+               // binding.chartGrades.setZoomLevel(0f, 0f, 1);
+            //}
 
             binding.chartGrades.setOnValueTouchListener(new LineChartOnValueSelectListener() {
                 @Override

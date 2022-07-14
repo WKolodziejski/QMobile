@@ -8,6 +8,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.TableCellAbsencesBinding;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.utility.ColorUtils;
@@ -29,23 +30,32 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
 
     @Override
     public void bind(Context context, Matter matter, String cell) {
-        int classes = matter.getClassesGiven();
-        int absences = matter.getAbsences();
-        int presences = classes - absences;
-//        int percentage = classes <= 0 ? 0 : (int) ((float) presences / classes * 100f);
         int color1 = matter.getColor();
         int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
+        int classesGiven = matter.getClassesGiven();
+        int classesTotal = matter.getClassesTotal();
+        int classesLeft = classesTotal - classesGiven;
+        int absences = matter.getAbsences();
+        int presences = Math.max(0, classesGiven - absences);
+
+        if (classesGiven == 0 && absences > 0) {
+            classesLeft -= absences;
+        }
 
         binding.absences.setText(matter.getAbsencesString());
-//        binding.progress.setIndicatorColor(matter.getColor());
-//        binding.progress.setProgress(percentage);
         binding.chartPresence.setVisibility(matter.getAbsences_() >= 0 ? VISIBLE : INVISIBLE);
 
         List<SliceValue> values = new ArrayList<>();
 
-        values.add(new SliceValue(presences > 0 ? presences : 1)
-                .setColor(color1)
+        values.add(new SliceValue(classesLeft)
+                .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .setLabel(""));
+
+        if (presences > 0) {
+            values.add(new SliceValue(presences)
+                    .setColor(color1)
+                    .setLabel(""));
+        }
 
         if (absences > 0) {
             values.add(new SliceValue(absences)
@@ -60,10 +70,10 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
         binding.chartPresence.setChartRotation(-90, false);
         binding.chartPresence.setInteractive(false);
 
-        if (absences > 0) {
-            binding.chartPresence.selectValue(
-                    new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
-        }
+//        if (absences > 0) {
+//            binding.chartPresence.selectValue(
+//                    new SelectedValue(presences > 0 ? 2 : 1, 0, SelectedValue.SelectedValueType.LINE));
+//        }
     }
 
 }

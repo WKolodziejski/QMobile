@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 
+import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.databinding.JournalFooterBinding;
 import com.tinf.qmobile.model.journal.FooterJournal;
@@ -33,17 +34,20 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     @Override
     public void bind(Context context, FooterJournal footer, boolean lookup) {
         Matter matter = footer.getMatter();
-        int classes = matter.getClassesGiven();
-        int absences = matter.getAbsences();
-        int presences = classes - absences;
-//        int percentage = classes <= 0 ? 0 : (int) ((float) presences / classes * 100f);
         int color1 = matter.getColor();
         int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
+        int classesGiven = matter.getClassesGiven();
+        int classesTotal = matter.getClassesTotal();
+        int classesLeft = classesTotal - classesGiven;
+        int absences = matter.getAbsences();
+        int presences = Math.max(0, classesGiven - absences);
+
+        if (classesGiven == 0 && absences > 0) {
+            classesLeft -= absences;
+        }
 
         binding.partialGrade.setText(matter.getLastGradeSumString());
         binding.absences.setText(matter.getAbsencesString());
-//        binding.progress.setIndicatorColor(matter.getColor());
-//        binding.progress.setProgress(percentage);
         binding.chartPresence.setVisibility(matter.getAbsences_() >= 0 ? VISIBLE : INVISIBLE);
 
         binding.layout.setOnClickListener(view -> {
@@ -56,9 +60,15 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
 
         List<SliceValue> values = new ArrayList<>();
 
-        values.add(new SliceValue(presences > 0 ? presences : 1)
-                .setColor(color1)
+        values.add(new SliceValue(classesLeft)
+                .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
                 .setLabel(""));
+
+        if (presences > 0) {
+            values.add(new SliceValue(presences)
+                    .setColor(color1)
+                    .setLabel(""));
+        }
 
         if (absences > 0) {
             values.add(new SliceValue(absences)
@@ -73,10 +83,10 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
         binding.chartPresence.setChartRotation(-90, false);
         binding.chartPresence.setInteractive(false);
 
-        if (absences > 0) {
-            binding.chartPresence.selectValue(
-                    new SelectedValue(1, 0, SelectedValue.SelectedValueType.LINE));
-        }
+//        if (absences > 0) {
+//            binding.chartPresence.selectValue(
+//                    new SelectedValue(presences > 0 ? 2 : 1, 0, SelectedValue.SelectedValueType.LINE));
+//        }
     }
 
 }

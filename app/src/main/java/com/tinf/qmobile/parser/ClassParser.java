@@ -130,7 +130,7 @@ public class ClassParser extends BaseParser {
                     classBox.put(search);
                 }
 
-                matter.setTeacher(teacher);
+                matter.setTeacher(teacher.isEmpty() ? null : teacher);
 
                 periodBox.put(period);
                 matterBox.put(matter);
