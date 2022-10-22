@@ -35,6 +35,7 @@ public class UserUtils {
 
     public static final String REGISTRATION = ".Reg";
     public static final String PASSWORD = ".Pass";
+    public static final String KEEP = ".Keep";
     private static final String INFO = ".Info";
     private static final String VALID = ".Valid";
     private static final String NAME = ".Name";
@@ -48,11 +49,21 @@ public class UserUtils {
     }
 
     public static void setValid(boolean isValid) {
-        getEditor().putBoolean(VALID, isValid).apply();
+        if (getKeep()) {
+            getEditor().putBoolean(VALID, isValid).apply();
+        }
     }
 
     public static void setURL(String url) {
         getEditor().putString(URL, url).apply();
+    }
+
+    public static void setKeep(boolean keep) {
+        getEditor().putBoolean(KEEP, keep).apply();
+    }
+
+    public static boolean getKeep() {
+        return getInfo().getBoolean(KEEP, true);
     }
 
     public static String getURL() {

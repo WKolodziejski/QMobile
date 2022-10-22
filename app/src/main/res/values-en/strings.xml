@@ -36,7 +36,7 @@
     <string name="title_calendario">Calendar</string>
     <string name="title_class">Classes</string>
     <string name="materiais_empty">No materials available for now</string>
-    <string name="login_welcome">Welcome to QAcadêmico Mobile</string>
+    <string name="login_welcome">Welcome to Qmobile</string>
     <string name="home_last_login">Last updated in %1s</string>
     <string name="home_footer">Check your grades on the website</string>
     <string name="home_refresh">Refresh</string>
@@ -225,4 +225,12 @@
     <string name="schedule_sat">Sat</string>
     <string name="schedule_sun">Sun</string>
     <string name="performance_empty">No grades data</string>
+    <string name="login_keep">Keep me logged in</string>
+    <string name="login_user">Login as</string>
+    <string name="login_campus">Choose your campus</string>
+    <string name="login_student">Student</string>
+    <string name="login_teacher">Teacher</string>
+    <string name="login_other">Other</string>
+    <string name="login_unavailable">The Qmobile is only available to students</string>
+    <string name="client_timeout">Timeout</string>
 </resources>

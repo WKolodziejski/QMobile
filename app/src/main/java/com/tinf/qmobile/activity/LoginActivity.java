@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityLoginBinding;
-import com.tinf.qmobile.fragment.LoginFragment;
+import com.tinf.qmobile.fragment.login.WelcomeLoginFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.UserUtils;
@@ -34,10 +34,11 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         if (savedInstanceState != null) {
             fragment = getSupportFragmentManager().getFragment(savedInstanceState, "loginFragment");
         } else {
-            fragment = new LoginFragment();
+            fragment = new WelcomeLoginFragment();
         }
 
-        getSupportFragmentManager().beginTransaction()
+        getSupportFragmentManager()
+                .beginTransaction()
                 .replace(R.id.login_fragment, fragment)
                 .commit();
     }
