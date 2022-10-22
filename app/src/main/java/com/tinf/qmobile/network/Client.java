@@ -420,7 +420,7 @@ public class Client {
         Element p = document.getElementsByTag("p").first();
 
         if (p != null) {
-            if (p.text().contains("inacessível")) {
+            if (p.text().contains("inacess") || p.text().contains("Banco")) {
                 callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
                 return Resp.HOST;
             }
@@ -439,7 +439,7 @@ public class Client {
         Element quest = document.getElementsByClass("TEXTO_TITULO").first();
 
         if (quest != null) {
-            if (quest.text().contains("Questionários")) {
+            if (quest.text().contains("Question")) {
                 String msg = "";
                 if (form != null) {
                     msg = form.text().replaceAll("\\\\n", "\n").trim();
@@ -448,7 +448,7 @@ public class Client {
                 return Resp.QUEST;
             }
 
-            if (quest.text().contains("Alteração")) {
+            if (quest.text().contains("Altera")) {
                 callOnAccessDenied(PG_REGISTRATION, "");
                 return Resp.REG;
             }

@@ -155,7 +155,7 @@ public class JournalParser extends BaseParser {
                     period = matter.periods.get(periodCount);
                 } else {
                     period = new Period(periodTitle);
-                    if (periodTitle.contains("Exame") || periodTitle.contains("Reavaliação") || periodTitle.contains("Final") || periodTitle.contains("Conceito")) {
+                    if (periodTitle.contains("Exame") || periodTitle.contains("Reavalia") || periodTitle.contains("Final") || periodTitle.contains("Conceito")) {
                         period.setSub();
                     }
                 }
@@ -200,7 +200,7 @@ public class JournalParser extends BaseParser {
                         type = Journal.Type.TRABALHO.get();
                     } else if (t.contains("Qualitativa")) {
                         type = Journal.Type.QUALITATIVA.get();
-                    } else if (t.equals("Exercício")) {
+                    } else if (t.contains("Exerc")) {
                         type = Journal.Type.EXERCICIO.get();
                     }
 

@@ -43,6 +43,7 @@ public class CalendarParser extends BaseParser {
                 case "FEVEREIRO":
                     monthCurrent = 2;
                     break;
+                case "MARCO":
                 case "MARÇO":
                     monthCurrent = 3;
                     break;

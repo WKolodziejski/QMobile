@@ -51,7 +51,7 @@ public class PopUpHandler {
 
             if (renewal != null) {
 
-                if (renewal.text().contains("matrícula")) {
+                if (renewal.text().contains("matr")) {
                     onEvent.onRenewalAvailable();
                 }
             }
