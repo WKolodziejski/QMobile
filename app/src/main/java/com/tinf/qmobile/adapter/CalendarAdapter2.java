@@ -25,7 +25,6 @@ import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
-import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.DayViewHolder;
@@ -33,11 +32,10 @@ import com.tinf.qmobile.holder.calendar.vertical.EventClazzVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventJournalVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventSimpleVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
-import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
+import com.tinf.qmobile.holder.calendar.vertical.CalendarHeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventBase;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
 
@@ -100,7 +98,7 @@ public class CalendarAdapter2 extends RecyclerView.Adapter<CalendarViewHolder> i
                         .inflate(R.layout.calendar_header_day_range, parent, false));
 
             case HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(context)
+                return new CalendarHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.header_empty, parent, false));
 
             case EMPTY:
@@ -149,15 +147,16 @@ public class CalendarAdapter2 extends RecyclerView.Adapter<CalendarViewHolder> i
 
     @Override
     public void bindHeaderData(View header, Integer i) {
-        if (list.getCurrentList().get(i) instanceof Header) {
-            Header h = (Header) list.getCurrentList().get(i);
+        if (!(list.getCurrentList().get(i) instanceof Header))
+            return;
 
-            TextView n = header.findViewById(R.id.number);
-            TextView w = header.findViewById(R.id.day);
+        Header h = (Header) list.getCurrentList().get(i);
 
-            n.setText(h.getDayString());
-            w.setText(h.getWeekString());
-        }
+        TextView n = header.findViewById(R.id.number);
+        TextView w = header.findViewById(R.id.day);
+
+        n.setText(h.getDayString());
+        w.setText(h.getWeekString());
     }
 
     @Override

@@ -152,7 +152,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull JournalBaseViewHolder holder, int i) {
-        holder.bind(context, list.getCurrentList().get(i), false);
+        holder.bind(context, list.getCurrentList().get(i), false, false);
     }
 
     @Override

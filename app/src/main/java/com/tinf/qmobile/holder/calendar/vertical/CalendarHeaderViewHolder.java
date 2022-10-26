@@ -6,9 +6,9 @@ import android.view.View;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Header;
 
-public class HeaderViewHolder extends CalendarViewHolder<Header> {
+public class CalendarHeaderViewHolder extends CalendarViewHolder<Header> {
 
-    public HeaderViewHolder(View view) {
+    public CalendarHeaderViewHolder(View view) {
         super(view);
     }
 

@@ -5,6 +5,7 @@ import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.View;
 
 import com.tinf.qmobile.activity.MatterActivity;
@@ -20,11 +21,13 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
     }
 
     @Override
-    public void bind(Context context, Matter matter, boolean lookup) {
+    public void bind(Context context, Matter matter, boolean lookup, boolean isHeader) {
+        Log.d(matter.getTitle(), String.valueOf(isHeader));
+
         binding.title.setText(matter.getTitle());
+        binding.badge.setVisibility(isHeader ? View.INVISIBLE : View.VISIBLE);
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
-        binding.header.setVisibility(/*matter.isExpanded &&*/ matter.hasJournals() ? View.VISIBLE : View.GONE);
-        //binding.arrow.setRotation(matter.isExpanded ? 180 : 0);
+        binding.header.setVisibility(matter.hasJournals() ? View.VISIBLE : View.GONE);
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);

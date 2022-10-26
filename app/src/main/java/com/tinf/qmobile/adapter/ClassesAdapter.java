@@ -27,7 +27,7 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.DayViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventClazzVerticalViewHolder;
-import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
+import com.tinf.qmobile.holder.calendar.vertical.CalendarHeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
@@ -242,7 +242,7 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder> imp
                         .inflate(R.layout.calendar_header_day_range, parent, false));
 
             case HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(context)
+                return new CalendarHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.header_empty, parent, false));
 
             case EMPTY:

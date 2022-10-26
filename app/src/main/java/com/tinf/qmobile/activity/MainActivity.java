@@ -105,9 +105,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             if (itemId != binding.navigation.getSelectedItemId())
                 return changeFragment(itemId);
-            else
-                binding.scroll.smoothScrollTo(0, 0);
-            //Client.get().requestScroll();
+//            else
+//                binding.scroll.smoothScrollTo(0, 0);
 
             return false;
         });
@@ -311,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             binding.drawer.closeDrawer(GravityCompat.START);
             binding.drawer.postDelayed(() -> {
                 Client.get().changeDate(itemId);
-                binding.scroll.scrollTo(0, 0);
+//                binding.scroll.scrollTo(0, 0);
             }, 250);
             return true;
         }
@@ -382,41 +381,29 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         if (id == R.id.navigation_home) {
             HomeFragment homeFragment = new HomeFragment();
-            homeFragment.setParams(binding.toolbar, binding.scroll, binding.refresh, binding.fab);
+            homeFragment.setParams(binding.toolbar, binding.refresh, binding.fab);
 
             binding.fab.setOnClickListener(v -> new CreateFragment().show(
                     getSupportFragmentManager(), "sheet_create"));
             binding.fab.show();
 
-            binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                    (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-                        binding.refresh.setEnabled(scrollY == 0);
-
-                        if (scrollY < oldScrollY && !binding.fab.isShown())
-                            binding.fab.show();
-                        else if (scrollY > oldScrollY && binding.fab.isShown())
-                            binding.fab.hide();
-                    });
-
             fragment = homeFragment;
 
         } else if (id == R.id.navigation_grades) {
-            binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
             binding.fab.setOnClickListener(null);
             binding.fab.postDelayed(() -> binding.fab.hide(), 250);
 
             JournalsFragment journalsFragment = new JournalsFragment();
-            journalsFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
+            journalsFragment.setParams(binding.toolbar, binding.refresh);
 
             fragment = journalsFragment;
 
         } else if (id == R.id.navigation_materials) {
-            binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) null);
             binding.fab.setOnClickListener(null);
             binding.fab.postDelayed(() -> binding.fab.hide(), 250);
 
             MaterialsFragment materialsFragment = new MaterialsFragment();
-            materialsFragment.setParams(binding.toolbar, binding.scroll, binding.refresh);
+            materialsFragment.setParams(binding.toolbar, binding.refresh);
 
             fragment = materialsFragment;
         }

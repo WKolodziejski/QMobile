@@ -34,7 +34,7 @@ import com.tinf.qmobile.holder.calendar.vertical.EventClazzVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventJournalVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventSimpleVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventUserVerticalViewHolder;
-import com.tinf.qmobile.holder.calendar.vertical.HeaderViewHolder;
+import com.tinf.qmobile.holder.calendar.vertical.CalendarHeaderViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
@@ -303,7 +303,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder> im
                         .inflate(R.layout.calendar_header_day_range, parent, false));
 
             case HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(context)
+                return new CalendarHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.header_empty, parent, false));
 
             case EMPTY:

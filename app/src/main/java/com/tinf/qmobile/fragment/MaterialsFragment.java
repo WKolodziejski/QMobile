@@ -79,7 +79,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
                     action = null;
                 }
 
-                Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
+                Design.syncToolbar(toolbar, canExpand());
             }
 
             @Override
@@ -95,7 +95,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
             public void onDestroyActionMode(ActionMode actionMode) {
                 action = null;
                 refresh.setEnabled(true);
-                Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
+                Design.syncToolbar(toolbar, canExpand());
             }
         }, this::onUpdate);
 
@@ -122,7 +122,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
         }
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
+            Design.syncToolbar(toolbar, canExpand());
         }, 100);
     }
 
@@ -141,7 +141,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
     @Override
     protected void onAddListeners() {
         DataBase.get().getMaterialsDataProvider().addOnDataListener(this);
-        Design.syncToolbar(toolbar, Design.canScroll(scroll) && canExpand());
+        Design.syncToolbar(toolbar, canExpand());
     }
 
     @Override
@@ -166,7 +166,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
 
     @Override
     public void onUpdate(List<Queryable> list) {
-        Design.syncToolbar(toolbar, Design.canScroll(scroll) && !list.isEmpty());
+        Design.syncToolbar(toolbar, !list.isEmpty());
     }
 
 }

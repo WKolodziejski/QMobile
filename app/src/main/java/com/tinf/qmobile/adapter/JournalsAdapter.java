@@ -6,17 +6,23 @@ import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNALCOLOR;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
@@ -24,19 +30,21 @@ import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
+import com.tinf.qmobile.holder.journal.JournalHeaderColorViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.journal.Header;
 
 import java.util.List;
 
-public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements OnData<Queryable> {
+public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements KmStickyListener, OnData<Queryable> {
     private final AsyncListDiffer<Queryable> list;
     private final Context context;
     private final OnList<Queryable> onList;
+    private int currentHeader;
 
     public JournalsAdapter(Context context, OnList<Queryable> onList) {
         this.context = context;
@@ -84,6 +92,10 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
                 return new JournalEmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_item_empty, parent, false));
 
+            case JOURNALCOLOR:
+                return new JournalHeaderColorViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.header_empty, parent, false));
+
             case EMPTY:
                 return new JournalEmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_empty, parent, false));
@@ -99,7 +111,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull JournalBaseViewHolder holder, int i) {
-        holder.bind(context, list.getCurrentList().get(i), true);
+        holder.bind(context, list.getCurrentList().get(i), true, i == currentHeader);
     }
 
     @Override
@@ -125,4 +137,52 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
         DataBase.get().getJournalsDataProvider().addOnDataListener(this);
     }
 
+    @Override
+    public Integer getHeaderPositionForItem(Integer i) {
+        Queryable q = list.getCurrentList().get(i);
+
+        Log.d("item", String.valueOf(i));
+
+        while (!(q instanceof Header) && i > 0)
+            q = list.getCurrentList().get(--i);
+
+        Log.d("header", String.valueOf(i));
+
+        notifyItemChanged(currentHeader);
+        currentHeader = i + 1;
+        notifyItemChanged(currentHeader);
+
+        return i < 0 ? 0 : i;
+    }
+
+    @Override
+    public Integer getHeaderLayout(Integer i) {
+        if (list.getCurrentList().get(i) instanceof Header)
+            return R.layout.journal_header_color;
+        else
+            return R.layout.header_empty;
+    }
+
+    @Override
+    public void bindHeaderData(View header, Integer i) {
+        if (!(list.getCurrentList().get(i) instanceof Header))
+            return;
+
+        Header h = (Header) list.getCurrentList().get(i);
+
+        int n = h.getJournalNotSeenCount();
+
+        TextView b = header.findViewById(R.id.badge);
+        b.setText(n > 0 ? String.valueOf(n) : "");
+        b.setBackgroundTintList(ColorStateList.valueOf(h.getColor()));
+    }
+
+    @Override
+    public Boolean isHeader(Integer i) {
+        if (i < 0)
+            return false;
+
+        Queryable q = list.getCurrentList().get(i);
+        return q instanceof Header;
+    }
 }

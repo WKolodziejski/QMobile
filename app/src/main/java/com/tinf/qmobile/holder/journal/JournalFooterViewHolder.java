@@ -32,7 +32,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     }
 
     @Override
-    public void bind(Context context, FooterJournal footer, boolean lookup) {
+    public void bind(Context context, FooterJournal footer, boolean lookup, boolean isHeader) {
         Matter matter = footer.getMatter();
         int color1 = matter.getColor();
         int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);

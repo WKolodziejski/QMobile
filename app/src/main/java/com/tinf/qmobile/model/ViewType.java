@@ -8,6 +8,7 @@ public class ViewType {
 
     public final static int JOURNAL = 200;
     public final static int PERIOD = 210;
+    public final static int JOURNALCOLOR = 220;
     public final static int FOOTERJOURNAL = 230;
     public final static int FOOTERPERIOD = 240;
     public final static int JOURNALEMPTY = 250;
