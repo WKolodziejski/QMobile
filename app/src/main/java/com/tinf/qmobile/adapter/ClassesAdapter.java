@@ -3,7 +3,7 @@ package com.tinf.qmobile.adapter;
 import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.DAY;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.MONTH;
 
 import android.content.Context;
@@ -241,7 +241,7 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder> imp
                 return new DayViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.calendar_header_day_range, parent, false));
 
-            case HEADER:
+            case MATTER:
                 return new CalendarHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.header_empty, parent, false));
 

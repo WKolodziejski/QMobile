@@ -1,5 +1,8 @@
 package com.tinf.qmobile.fragment.create;
 
+import static android.view.View.GONE;
+import static com.tinf.qmobile.model.ViewType.SCHEDULE;
+
 import android.app.TimePickerDialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -37,9 +40,6 @@ import java.util.Locale;
 import io.objectbox.Box;
 import me.jlurena.revolvingweekview.DayTime;
 
-import static android.view.View.GONE;
-import static com.tinf.qmobile.model.ViewType.SCHEDULE;
-
 public class ScheduleCreateFragment extends Fragment {
     private FragmentCreateScheduleBinding binding;
     private boolean isFromSite;
@@ -65,51 +65,53 @@ public class ScheduleCreateFragment extends Fragment {
 
         Bundle bundle = getArguments();
 
-        if (bundle != null) {
+        if (bundle == null) {
+            return;
+        }
 
-            id = bundle.getLong("ID");
-            id2 = bundle.getLong("ID2");
+        id = bundle.getLong("ID");
+        id2 = bundle.getLong("ID2");
 
-            if (id != 0) {
+        if (id == 0) {
+            color = getResources().getColor(R.color.colorPrimary);
+        } else {
 
-                Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
+            Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
 
-                if (schedule != null) {
-
-                    isFromSite = schedule.isFromSite();
-                    title = schedule.getTitle();
-                    color = schedule.getColor();
-                    description = schedule.getDescription();
-                    room = schedule.getRoom();
-
-                    start = schedule.getStartTime();
-                    end = schedule.getEndTime();
-
-                    alarm = schedule.getAlarm();
-                    alarmDif = schedule.getDifference();
-
-                    for (int i = 0; i < matters.size(); i++) {
-                        if (matters.get(i).id == schedule.matter.getTargetId()) {
-                            matter = i + 1;
-                            break;
-                        }
-                    }
-                } else {
-                    getActivity().finish();
-                }
-            } else {
-                color = getResources().getColor(R.color.colorPrimary);
+            if (schedule == null) {
+                getActivity().finish();
+                return;
             }
 
-            if (id2 != 0) {
-                color = DataBase.get().getBoxStore().boxFor(Matter.class).get(id2).getColor();
+            isFromSite = schedule.isFromSite();
+            title = schedule.getTitle();
+            color = schedule.getColor();
+            description = schedule.getDescription();
+            room = schedule.getRoom();
 
-                for (int i = 0; i < matters.size(); i++) {
-                    if (matters.get(i).id == id2) {
-                        matter = i + 1;
-                        break;
-                    }
+            start = schedule.getStartTime();
+            end = schedule.getEndTime();
+
+            alarm = schedule.getAlarm();
+            alarmDif = schedule.getDifference();
+
+            for (int i = 0; i < matters.size(); i++) {
+                if (matters.get(i).id == schedule.matter.getTargetId()) {
+                    matter = i + 1;
+                    break;
                 }
+            }
+        }
+
+        if (id2 == 0)
+            return;
+
+        color = DataBase.get().getBoxStore().boxFor(Matter.class).get(id2).getColor();
+
+        for (int i = 0; i < matters.size(); i++) {
+            if (matters.get(i).id == id2) {
+                matter = i + 1;
+                break;
             }
         }
     }

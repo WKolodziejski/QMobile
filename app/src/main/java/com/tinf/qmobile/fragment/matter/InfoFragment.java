@@ -29,6 +29,7 @@ import com.tinf.qmobile.utility.ColorUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
@@ -161,8 +162,8 @@ public class InfoFragment extends Fragment {
             binding.classesProgress.setProgress(classesProgress);
         }
 
-        binding.averageTxtL.setText(String.valueOf(matter.getAllGradesSum()));
-        binding.averageTxtR.setText(String.valueOf(matter.getAllMaxGradesSum()));
+        binding.averageTxtL.setText(String.format(Locale.getDefault(), "%.1f", matter.getAllGradesSum()));
+        binding.averageTxtR.setText(String.format(Locale.getDefault(), "%.1f", matter.getAllMaxGradesSum()));
         binding.averageProgress.setIndicatorColor(color1);
         binding.averageProgress.setTrackColor(getResources().getColor(R.color.colorPrimaryDark));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -25,8 +25,9 @@ public class MatterViewHolder extends MaterialBaseViewHolder<Matter> {
     }
 
     @Override
-    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Matter matter) {
+    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Matter matter, boolean isHeader) {
         binding.title.setText(matter.getTitle());
+        binding.badge.setVisibility(isHeader ? View.INVISIBLE : View.VISIBLE);
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
 
         int n = matter.getMaterialNotSeenCount();

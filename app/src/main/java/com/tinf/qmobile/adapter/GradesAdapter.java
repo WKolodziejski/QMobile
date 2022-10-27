@@ -4,6 +4,7 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
 import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
 import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
@@ -25,6 +26,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.journal.JournalBaseViewHolder;
 import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
+import com.tinf.qmobile.holder.journal.JournalHeaderColorViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
 import com.tinf.qmobile.holder.journal.JournalViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
@@ -32,6 +34,7 @@ import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.FooterPeriod;
+import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
@@ -95,6 +98,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
 
         for (Period period : matter.periods) {
             if (!period.journals.isEmpty()) {
+                list.add(new Header(matter));
                 list.add(period);
                 list.addAll(period.journals);
 
@@ -113,7 +117,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
     @Override
     public JournalBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case HEADER:
+            case MATTER:
                 return new JournalHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_header, parent, false));
 
@@ -132,6 +136,10 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
             case PERIOD:
                 return new PeriodHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.period_header, parent, false));
+
+            case HEADER:
+                return new JournalHeaderColorViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.header_empty, parent, false));
 
             case JOURNALEMPTY:
                 return new JournalEmptyViewHolder(LayoutInflater.from(context)

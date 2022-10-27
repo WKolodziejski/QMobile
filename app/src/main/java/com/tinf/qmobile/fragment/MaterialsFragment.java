@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.adapter.OnInteractListener;
@@ -30,7 +31,7 @@ import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.widget.divider.MaterialItemDivider;
+import com.tinf.qmobile.widget.divider.CustomlItemDivider;
 
 import java.util.List;
 
@@ -106,13 +107,13 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
-        binding.recycler.addItemDecoration(new MaterialItemDivider(getContext()));
+        binding.recycler.addItemDecoration(new CustomlItemDivider(getContext()));
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(adapter);
-
+        binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
         binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
 
-        if (getArguments() != null) {
+        if (getArguments() != null && getArguments().containsKey("ID2")) {
             int p = adapter.highlight(getArguments().getLong("ID2"));
 
             if (p >= 0) {
@@ -121,9 +122,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
             }
         }
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Design.syncToolbar(toolbar, canExpand());
-        }, 100);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> Design.syncToolbar(toolbar, canExpand()), 10);
     }
 
     @Nullable
@@ -147,6 +146,11 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
     @Override
     protected void onRemoveListeners() {
         DataBase.get().getMaterialsDataProvider().removeOnDataListener(this);
+    }
+
+    @Override
+    protected void onScrollRequest() {
+        binding.recycler.smoothScrollToPosition(0);
     }
 
     @Override

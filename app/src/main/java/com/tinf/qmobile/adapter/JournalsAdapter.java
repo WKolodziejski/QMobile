@@ -3,15 +3,14 @@ package com.tinf.qmobile.adapter;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
 import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
-import static com.tinf.qmobile.model.ViewType.JOURNALCOLOR;
+import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
     @Override
     public JournalBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case HEADER:
+            case MATTER:
                 return new JournalHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_header, parent, false));
 
@@ -92,7 +91,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
                 return new JournalEmptyViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.journal_item_empty, parent, false));
 
-            case JOURNALCOLOR:
+            case HEADER:
                 return new JournalHeaderColorViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.header_empty, parent, false));
 
@@ -141,12 +140,8 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
     public Integer getHeaderPositionForItem(Integer i) {
         Queryable q = list.getCurrentList().get(i);
 
-        Log.d("item", String.valueOf(i));
-
         while (!(q instanceof Header) && i > 0)
             q = list.getCurrentList().get(--i);
-
-        Log.d("header", String.valueOf(i));
 
         notifyItemChanged(currentHeader);
         currentHeader = i + 1;

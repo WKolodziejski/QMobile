@@ -6,14 +6,16 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.view.*
+import androidx.core.view.children
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
 import androidx.recyclerview.widget.RecyclerView
 import com.tinf.qmobile.R
-import com.tinf.qmobile.model.ViewType
 
-class CustomItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
-    private val fullDivider = ContextCompat.getDrawable(context, R.drawable.decorator_journal_full)!!
-    private val shortDivider = ContextCompat.getDrawable(context, R.drawable.decorator_journal_short)!!
+class MessageItemDivider(context: Context) : RecyclerView.ItemDecoration() {
+    private val divider =
+        ContextCompat.getDrawable(context, R.drawable.decorator_messages)!!
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         parent.adapter?.let { adapter ->
@@ -25,15 +27,7 @@ class CustomItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
                     if (childAdapterPosition == adapter.itemCount - 1)
                         return
 
-                    when (adapter.getItemViewType(childAdapterPosition)) {
-                        ViewType.HEADER -> shortDivider.drawSeparator(view, parent, canvas)
-                        ViewType.JOURNAL -> shortDivider.drawSeparator(view, parent, canvas)
-                        ViewType.FOOTERJOURNAL -> fullDivider.drawSeparator(view, parent, canvas)
-                        ViewType.FOOTERPERIOD -> fullDivider.drawSeparator(view, parent, canvas)
-                        ViewType.PERIOD -> shortDivider.drawSeparator(view, parent, canvas)
-                        ViewType.JOURNALEMPTY -> shortDivider.drawSeparator(view, parent, canvas)
-                        else -> Unit
-                    }
+                    divider.drawSeparator(view, parent, canvas)
                 }
         }
     }

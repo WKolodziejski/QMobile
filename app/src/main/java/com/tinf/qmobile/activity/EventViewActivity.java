@@ -39,46 +39,47 @@ public class EventViewActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        if (bundle != null) {
-
-            Fragment fragment = null;
-
-            switch (bundle.getInt("TYPE")) {
-
-                case EVENT:
-                    fragment = new EventViewFragment();
-                    break;
-
-                case JOURNAL:
-                    fragment = new JournalViewFragment();
-                    break;
-
-                case SCHEDULE:
-                    fragment = new ScheduleViewFragment();
-                    break;
-
-                case MESSAGE:
-                    fragment = new MessageViewFragment();
-                    break;
-
-                case CLASS:
-                    fragment = new ClassViewFragment();
-                    break;
-
-                default: finish();
-            }
-
-            fragment.setArguments(bundle);
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.event_view_fragment, fragment)
-                    .commit();
-
-            setResult(RESULT_OK);
-        } else {
+        if (bundle == null) {
             finish();
+            return;
         }
+
+        Fragment fragment = null;
+
+        switch (bundle.getInt("TYPE")) {
+
+            case EVENT:
+                fragment = new EventViewFragment();
+                break;
+
+            case JOURNAL:
+                fragment = new JournalViewFragment();
+                break;
+
+            case SCHEDULE:
+                fragment = new ScheduleViewFragment();
+                break;
+
+            case MESSAGE:
+                fragment = new MessageViewFragment();
+                break;
+
+            case CLASS:
+                fragment = new ClassViewFragment();
+                break;
+
+            default:
+                finish();
+        }
+
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.event_view_fragment, fragment)
+                .commit();
+
+        setResult(RESULT_OK);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 
@@ -20,6 +21,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
 import com.tinf.qmobile.holder.material.MaterialEmptyViewHolder;
+import com.tinf.qmobile.holder.material.MaterialHeaderViewHolder;
 import com.tinf.qmobile.holder.material.MaterialViewHolder;
 import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Empty;
@@ -115,13 +117,17 @@ public class SuppliesAdapter extends MaterialsBaseAdapter {
     @Override
     public MaterialBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case HEADER:
+            case MATTER:
                 return new MatterViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.material_header, parent, false));
 
             case MATERIAL:
                 return new MaterialViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.material_item, parent, false));
+                        .inflate(R.layout.supply_item, parent, false));
+
+            case HEADER:
+                return new MaterialHeaderViewHolder(LayoutInflater.from(context)
+                        .inflate(R.layout.header_empty, parent, false));
 
             case EMPTY:
                 return new MaterialEmptyViewHolder(LayoutInflater.from(context)
@@ -132,8 +138,8 @@ public class SuppliesAdapter extends MaterialsBaseAdapter {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int position) {
-        holder.bind(context, listener, this, callback, list.getCurrentList().get(position));
+    public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int i) {
+        holder.bind(context, listener, this, callback, list.getCurrentList().get(i), false);
     }
 
     @Override

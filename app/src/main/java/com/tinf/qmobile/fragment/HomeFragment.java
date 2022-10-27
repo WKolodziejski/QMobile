@@ -2,7 +2,7 @@ package com.tinf.qmobile.fragment;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -280,7 +280,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
-        }, 100);
+        }, 50);
     }
 
     private List<WeekViewEvent> updateSchedule() {
@@ -569,7 +569,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                 public void onValueSelected(int l, int p, SubcolumnValue subcolumnValue) {
                     Intent intent = new Intent(getContext(), MatterActivity.class);
                     intent.putExtra("ID", matters.get(l).id);
-                    intent.putExtra("PAGE", HEADER);
+                    intent.putExtra("PAGE", MATTER);
                     intent.putExtra("LOOKUP", false);
                     startActivity(intent);
                 }
@@ -613,6 +613,11 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
     protected void onRemoveListeners() {
         DataBase.get().getEventsDataProvider().removeOnDataListener(this);
         Client.get().removeOnUpdateListener(this);
+    }
+
+    @Override
+    protected void onScrollRequest() {
+        binding.scroll.smoothScrollTo(0, 0);
     }
 
     @Override

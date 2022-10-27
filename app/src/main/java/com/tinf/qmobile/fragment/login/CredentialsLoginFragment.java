@@ -52,7 +52,7 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
     public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
+        if (getArguments() != null && getArguments().containsKey("I")) {
             i = getArguments().getInt("I");
         }
     }

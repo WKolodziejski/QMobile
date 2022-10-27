@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.JournalsAdapter;
@@ -20,8 +19,7 @@ import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentJournalsBinding;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.widget.divider.CustomItemDecoration;
-import com.tinf.qmobile.widget.divider.JournalItemDivider2;
+import com.tinf.qmobile.widget.divider.CustomlItemDivider;
 
 import java.util.List;
 
@@ -51,7 +49,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recycler.addItemDecoration(new CustomItemDecoration(getContext()));
+        binding.recycler.addItemDecoration(new CustomlItemDivider(getContext()));
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(adapter);
         binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
@@ -59,7 +57,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Design.syncToolbar(toolbar, canExpand());
-        }, 100);
+        }, 10);
     }
 
     @Override
@@ -82,6 +80,11 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
     @Override
     protected void onRemoveListeners() {
         DataBase.get().getJournalsDataProvider().removeOnDataListener(this);
+    }
+
+    @Override
+    protected void onScrollRequest() {
+        binding.recycler.smoothScrollToPosition(0);
     }
 
     @Override

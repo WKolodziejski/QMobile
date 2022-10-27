@@ -15,10 +15,15 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void onAddListeners();
     protected abstract void onRemoveListeners();
+    protected abstract void onScrollRequest();
 
     public void setParams(MaterialToolbar toolbar, SwipeRefreshLayout refresh) {
         this.toolbar = toolbar;
         this.refresh = refresh;
+    }
+
+    public void requestScroll() {
+        onScrollRequest();
     }
 
     @Override

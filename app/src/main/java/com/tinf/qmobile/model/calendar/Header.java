@@ -1,6 +1,6 @@
 package com.tinf.qmobile.model.calendar;
 
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 
 import com.tinf.qmobile.model.Queryable;
 
@@ -32,7 +32,7 @@ public class Header implements CalendarBase {
 
     @Override
     public int getItemType() {
-        return HEADER;
+        return MATTER;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class Header implements CalendarBase {
 
     @Override
     public long getId() {
-        return HEADER;
+        return MATTER;
     }
 
     @Override

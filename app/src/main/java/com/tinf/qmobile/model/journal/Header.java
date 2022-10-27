@@ -1,6 +1,6 @@
 package com.tinf.qmobile.model.journal;
 
-import static com.tinf.qmobile.model.ViewType.JOURNALCOLOR;
+import static com.tinf.qmobile.model.ViewType.HEADER;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
@@ -22,7 +22,7 @@ public class Header implements Queryable {
 
     @Override
     public int getItemType() {
-        return JOURNALCOLOR;
+        return HEADER;
     }
 
     @Override

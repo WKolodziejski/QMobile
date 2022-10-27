@@ -17,7 +17,7 @@ public class MaterialEmptyViewHolder extends MaterialBaseViewHolder<Empty> {
     }
 
     @Override
-    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Empty empty) {
+    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Empty empty, boolean isHeader) {
 
     }
 

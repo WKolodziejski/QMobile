@@ -17,6 +17,6 @@ public abstract class MaterialBaseViewHolder<T extends Queryable> extends Recycl
         super(view);
     }
 
-    public abstract void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, T t);
+    public abstract void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, T t, boolean isHeader);
 
 }

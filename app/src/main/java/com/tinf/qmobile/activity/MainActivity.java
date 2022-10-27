@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -41,6 +42,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -54,6 +56,7 @@ import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnCount;
 import com.tinf.qmobile.databinding.ActivityMainBinding;
+import com.tinf.qmobile.fragment.BaseFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
 import com.tinf.qmobile.fragment.JournalsFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
@@ -105,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
             if (itemId != binding.navigation.getSelectedItemId())
                 return changeFragment(itemId);
-//            else
-//                binding.scroll.smoothScrollTo(0, 0);
+            else
+                requestScroll();
 
             return false;
         });
@@ -147,12 +150,15 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             changeFragment(id);
             binding.navigation.setSelectedItemId(id);
 
-        } else if (bundle != null) {
+        } else if (bundle != null && bundle.containsKey("FRAGMENT")) {
             int pg = bundle.getInt("FRAGMENT");
 
             if (pg != 0) {
                 changeFragment(R.id.navigation_materials);
                 binding.navigation.setSelectedItemId(R.id.navigation_materials);
+            } else {
+                changeFragment(R.id.navigation_grades);
+                binding.navigation.setSelectedItemId(R.id.navigation_grades);
             }
         } else {
             changeFragment(R.id.navigation_grades);
@@ -310,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             binding.drawer.closeDrawer(GravityCompat.START);
             binding.drawer.postDelayed(() -> {
                 Client.get().changeDate(itemId);
-//                binding.scroll.scrollTo(0, 0);
+                requestScroll();
             }, 250);
             return true;
         }
@@ -359,6 +365,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
 
         return false;
+    }
+
+    private void requestScroll() {
+        try {
+            BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            fragment.requestScroll();
+        } catch (Exception ignore) {}
     }
 
     private void dismissProgressbar() {

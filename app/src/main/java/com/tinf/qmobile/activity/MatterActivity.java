@@ -1,7 +1,7 @@
 package com.tinf.qmobile.activity;
 
 import static com.tinf.qmobile.model.ViewType.CLASS;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
@@ -79,7 +79,7 @@ public class MatterActivity extends AppCompatActivity {
 
     private int getPage(int page) {
         switch (page) {
-            case HEADER:
+            case MATTER:
                 return 0;
 
             case JOURNAL:

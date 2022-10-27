@@ -22,8 +22,6 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
 
     @Override
     public void bind(Context context, Matter matter, boolean lookup, boolean isHeader) {
-        Log.d(matter.getTitle(), String.valueOf(isHeader));
-
         binding.title.setText(matter.getTitle());
         binding.badge.setVisibility(isHeader ? View.INVISIBLE : View.VISIBLE);
         binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
