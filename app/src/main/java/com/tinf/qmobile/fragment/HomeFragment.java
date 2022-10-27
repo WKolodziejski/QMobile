@@ -2,7 +2,7 @@ package com.tinf.qmobile.fragment;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
@@ -76,8 +76,8 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
     private DataSubscription sub1, sub2;
     private FloatingActionButton fab;
 
-    public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh, FloatingActionButton fab) {
-        super.setParams(toolbar, scroll, refresh);
+    public void setParams(MaterialToolbar toolbar, SwipeRefreshLayout refresh, FloatingActionButton fab) {
+        super.setParams(toolbar, refresh);
         this.fab = fab;
     }
 
@@ -93,7 +93,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                     binding.weekView.notifyDatasetChanged();
                     updateSchedule();
                     updateChart();
-                    Design.syncToolbar(toolbar, Design.canScroll(scroll));
+                    Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
                 });
 
         sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
@@ -104,7 +104,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                     binding.weekView.notifyDatasetChanged();
                     updateSchedule();
                     updateChart();
-                    Design.syncToolbar(toolbar, Design.canScroll(scroll));
+                    Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
                 });
     }
 
@@ -120,10 +120,20 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         super.onViewCreated(view, savedInstanceState);
         registerForContextMenu(binding.scheduleTune);
 
+        binding.scroll.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+                    refresh.setEnabled(scrollY == 0);
+
+                    if (scrollY < oldScrollY && !fab.isShown())
+                        fab.show();
+                    else if (scrollY > oldScrollY && fab.isShown())
+                        fab.hide();
+                });
+
         binding.weekView.setWeekViewLoader(ArrayList::new);
         binding.calendarLayout.setVisibility(pos == 0 ? VISIBLE : GONE);
         binding.scheduleTune.setVisibility(pos == 0 ? VISIBLE : GONE);
-        Design.syncToolbar(toolbar, Design.canScroll(scroll));
+        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
         updateFab();
         updateChart();
 
@@ -269,8 +279,8 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         });
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Design.syncToolbar(toolbar, Design.canScroll(scroll));
-        }, 100);
+            Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
+        }, 50);
     }
 
     private List<WeekViewEvent> updateSchedule() {
@@ -559,7 +569,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                 public void onValueSelected(int l, int p, SubcolumnValue subcolumnValue) {
                     Intent intent = new Intent(getContext(), MatterActivity.class);
                     intent.putExtra("ID", matters.get(l).id);
-                    intent.putExtra("PAGE", HEADER);
+                    intent.putExtra("PAGE", MATTER);
                     intent.putExtra("LOOKUP", false);
                     startActivity(intent);
                 }
@@ -589,14 +599,14 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         binding.scheduleTune.setVisibility(pos == 0 ? VISIBLE : GONE);
         updateFab();
         updateChart();
-        Design.syncToolbar(toolbar, Design.canScroll(scroll));
+        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
     }
 
     @Override
     protected void onAddListeners() {
         DataBase.get().getEventsDataProvider().addOnDataListener(this);
         Client.get().addOnUpdateListener(this);
-        Design.syncToolbar(toolbar, Design.canScroll(scroll));
+//        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
     }
 
     @Override
@@ -606,8 +616,13 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
     }
 
     @Override
+    protected void onScrollRequest() {
+        binding.scroll.smoothScrollTo(0, 0);
+    }
+
+    @Override
     public void onUpdate(List<EventBase> list) {
-        Design.syncToolbar(toolbar, Design.canScroll(scroll));
+        Design.syncToolbar(toolbar, Design.canScroll(binding.scroll));
         binding.emptyCalendar.setVisibility(list.isEmpty() ? VISIBLE : GONE);
         binding.recycler.setVisibility(list.isEmpty() ? GONE : VISIBLE);
         Log.d("ONUPDATE", String.valueOf(list.isEmpty()));

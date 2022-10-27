@@ -22,13 +22,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.adapter.SuppliesAdapter;
-import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.widget.divider.MaterialItemDivider;
+import com.tinf.qmobile.widget.divider.CustomlItemDivider;
 
 public class SuppliesFragment extends Fragment {
     private BroadcastReceiver receiver;
@@ -98,7 +95,7 @@ public class SuppliesFragment extends Fragment {
         recycler.setDrawingCacheEnabled(true);
         recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler.addItemDecoration(new MaterialItemDivider(getContext()));
+        recycler.addItemDecoration(new CustomlItemDivider(getContext()));
         recycler.setItemAnimator(null);
         recycler.setAdapter(adapter);
     }

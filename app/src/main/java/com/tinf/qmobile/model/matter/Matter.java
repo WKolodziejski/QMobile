@@ -1,6 +1,6 @@
 package com.tinf.qmobile.model.matter;
 
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 
 import android.util.Log;
 
@@ -12,10 +12,10 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.internal.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import io.objectbox.annotation.Entity;
@@ -65,7 +65,7 @@ public class Matter implements Queryable {
     }
 
     public String getMean() {
-        return mean_ == -1 ? "-" : String.valueOf(mean_);
+        return mean_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", mean_);
     }
 
     public void setClassesGiven(int classesGiven) {
@@ -367,7 +367,7 @@ public class Matter implements Queryable {
     }
 
     public String getHoursString() {
-        return hours_ <= 0 ? "-" : String.valueOf(hours_);
+        return hours_ <= 0 ? "-" : String.format(Locale.getDefault(), "%.1f", hours_);
     }
 
     public String getClassesTotalString() {
@@ -450,7 +450,7 @@ public class Matter implements Queryable {
 
     @Override
     public int getItemType() {
-        return HEADER;
+        return MATTER;
     }
 
     @Override

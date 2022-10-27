@@ -4,6 +4,7 @@ import static com.tinf.qmobile.model.ViewType.CLASS;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 
 import com.tinf.qmobile.R;
@@ -22,8 +23,10 @@ public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
     @Override
     public void bind(Context context, Clazz clazz) {
         binding.date.setText(clazz.formatDate());
-        binding.content.setText(clazz.getContent_());
+        binding.content.setText(clazz.getContent());
         binding.absence.setVisibility(clazz.getAbsences_() > 0 ? View.VISIBLE : View.INVISIBLE);
+
+        Log.d("CLAZZ", clazz.getContent());
 
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(context, EventViewActivity.class);

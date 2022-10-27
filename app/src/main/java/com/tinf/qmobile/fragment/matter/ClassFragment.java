@@ -9,16 +9,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.ClassAdapter;
 import com.tinf.qmobile.adapter.ClassesAdapter;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.widget.divider.ClassItemDivider;
 
 public class ClassFragment extends Fragment {
 
@@ -39,11 +36,9 @@ public class ClassFragment extends Fragment {
         ClassesAdapter adapter = new ClassesAdapter(getContext(), getArguments());
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
-        //recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        //recyclerView.addItemDecoration(new ClassItemDivider(getContext(), 52));
         recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);

@@ -28,15 +28,15 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     }
 
     @Override
-    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Material material) {
+    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Material material, boolean isHeader) {
         material.isDownloaded = new File(DownloadReceiver.getMaterialPath(material.getFileName())).exists();
 
         binding.icon.setImageDrawable(AppCompatResources.getDrawable(context, material.getIcon()));
 
         binding.title.setText(material.getTitle());
         binding.date.setText(material.getDateString());
-        binding.offline.setVisibility(material.isDownloaded && !material.isDownloading ? View.VISIBLE : View.GONE);
-        binding.loading.setVisibility(material.isDownloading && !material.isDownloaded ? View.VISIBLE : View.GONE);
+        binding.offline.setVisibility(material.isDownloaded && !material.isDownloading ? View.VISIBLE : View.INVISIBLE);
+        binding.loading.setVisibility(material.isDownloading && !material.isDownloaded ? View.VISIBLE : View.INVISIBLE);
 
         if (material.isSelected) {
             itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));

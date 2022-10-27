@@ -22,7 +22,7 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
     }
 
     @Override
-    public void bind(Context context, Journal journal, boolean lookup) {
+    public void bind(Context context, Journal journal, boolean lookup, boolean isHeader) {
         binding.title.setText(journal.getTitle());
         binding.weight.setText(journal.getWeight());
         binding.date.setText(journal.formatDate());

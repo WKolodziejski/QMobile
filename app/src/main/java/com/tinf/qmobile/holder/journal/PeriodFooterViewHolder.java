@@ -15,7 +15,7 @@ public class PeriodFooterViewHolder extends JournalBaseViewHolder<FooterPeriod> 
     }
 
     @Override
-    public void bind(Context context, FooterPeriod footer, boolean lookup) {
+    public void bind(Context context, FooterPeriod footer, boolean lookup, boolean isHeader) {
         binding.partialGrade.setText(footer.period.getGradeSumString());
         binding.finalGrade.setText(footer.period.getGrade());
         binding.absences.setText(footer.period.getAbsences());

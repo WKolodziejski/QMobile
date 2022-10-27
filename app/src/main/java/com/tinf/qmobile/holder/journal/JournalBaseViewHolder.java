@@ -14,6 +14,6 @@ public abstract class JournalBaseViewHolder<T extends Queryable> extends Recycle
         super(view);
     }
 
-    public abstract void bind(Context context, T t, boolean lookup);
+    public abstract void bind(Context context, T t, boolean lookup, boolean isHeader);
 
 }

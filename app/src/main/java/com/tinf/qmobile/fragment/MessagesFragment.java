@@ -4,6 +4,7 @@ import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,13 +55,12 @@ public class MessagesFragment extends Fragment implements OnResponse {
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
         RecyclerView.Adapter adapter = new MessagesAdapter(getContext(), messenger);
 
-        //binding.recycler.setHasFixedSize(true);
         binding.recycler.setItemViewCacheSize(20);
         binding.recycler.setDrawingCacheEnabled(true);
         binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(layout);
         binding.recycler.setAdapter(adapter);
-        binding.recycler.addItemDecoration(new MessageItemDivider(getContext(), 70));
+        binding.recycler.addItemDecoration(new MessageItemDivider(getContext()));
         binding.recycler.setItemAnimator(null);
         binding.recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -81,8 +81,10 @@ public class MessagesFragment extends Fragment implements OnResponse {
 
         binding.refresh.setOnRefreshListener(messenger::loadFirstPage);
 
-        if (getArguments() != null) {
+        if (getArguments() != null && getArguments().containsKey("ID2")) {
             long id = getArguments().getLong("ID2");
+
+            Log.d("MESSAGE", getArguments().toString());
             /*int p = adapter.highlight(id);
 
             if (p >= 0) {

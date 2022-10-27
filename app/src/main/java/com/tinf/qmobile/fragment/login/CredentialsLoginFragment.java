@@ -1,4 +1,4 @@
-package com.tinf.qmobile.fragment;
+package com.tinf.qmobile.fragment.login;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
@@ -7,6 +7,7 @@ import static com.tinf.qmobile.utility.UserUtils.PASSWORD;
 import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +17,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -27,7 +30,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.databinding.FragmentLoginBinding;
+import com.tinf.qmobile.databinding.FragmentLoginCredentialsBinding;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.utility.UserUtils;
@@ -40,94 +43,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class LoginFragment extends Fragment implements OnResponse {
-    private static final String TAG = "LoginFragment";
-    private FragmentLoginBinding binding;
-    private FirebaseRemoteConfig remoteConfig;
-    private Map<String, String> urls;
+public class CredentialsLoginFragment extends Fragment implements OnResponse {
+    private static final String TAG = "CredentialLoginFragment";
+    private FragmentLoginCredentialsBinding binding;
+    private int i;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        remoteConfig = FirebaseRemoteConfig.getInstance();
 
-        remoteConfig.setConfigSettingsAsync(new FirebaseRemoteConfigSettings
-                .Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build());
-        remoteConfig.setDefaultsAsync(R.xml.urls_map);
-        urls = new Gson().fromJson(remoteConfig.getString("urls"),
-                new TypeToken<Map<String, String>>() {
-                }.getType());
+        if (getArguments() != null && getArguments().containsKey("I")) {
+            i = getArguments().getInt("I");
+        }
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        binding = FragmentLoginBinding.bind(view);
+        View view = inflater.inflate(R.layout.fragment_login_credentials, container, false);
+        binding = FragmentLoginCredentialsBinding.bind(view);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1);
-        if (urls != null) {
-            adapter.addAll(urls.keySet());
-        } else {
-            List<String> list = new ArrayList<>();
-            list.add("IFCE");
-            list.add("IFES");
-            list.add("IFF");
-            list.add("IFG");
-            list.add("IFGOIANO");
-            list.add("IFMA");
-            list.add("IFMT");
-            list.add("IFPE");
-            list.add("IFPI");
-            list.add("IFRR");
-            list.add("IFRS");
-            list.add("IFSUL");
-            adapter.addAll(list);
-        }
-
-        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-
-        remoteConfig.fetchAndActivate().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                urls = new Gson().fromJson(remoteConfig.getString("urls"),
-                        new TypeToken<Map<String, String>>() {
-                        }.getType());
-
-                if (urls != null) {
-                    adapter.clear();
-                    adapter.addAll(urls.keySet());
-                    binding.spinner.setAdapter(adapter);
-                    binding.spinner.setSelection(0);
-                }
-            }
-        });
-
-        binding.spinner.setAdapter(adapter);
-        binding.spinner.setOnItemSelectedListener(
-                new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                        if (urls != null) {
-                            Log.d("Position", adapter.getItem(position));
-                            Client.get().setURL(urls.get(adapter.getItem(position)));
-                        }
-
-                        Log.d(TAG, Client.get().getURL());
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parentView) {
-                    }
-
-                });
-        binding.spinner.setSelection(0);
 
         binding.btn.setOnClickListener(v -> {
 
@@ -146,8 +85,8 @@ public class LoginFragment extends Fragment implements OnResponse {
                 UserUtils.setCredential(REGISTRATION, binding.userInput.getText().toString().toUpperCase().trim());
                 UserUtils.setCredential(PASSWORD, binding.passwordInput.getText().toString().trim());
 
-                if (urls == null)
-                    Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(binding.spinner.getSelectedItemPosition()));
+                if (UserUtils.getURL().isEmpty())
+                    Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(i));
 
                 FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
                 crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
@@ -157,6 +96,8 @@ public class LoginFragment extends Fragment implements OnResponse {
                 Client.get().login();
             }
         });
+
+        binding.keepLogin.setOnClickListener(view1 -> UserUtils.setKeep(binding.keepLogin.isChecked()));
 
         binding.help.setOnClickListener(view1 -> {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW,
@@ -204,8 +145,8 @@ public class LoginFragment extends Fragment implements OnResponse {
 
     @Override
     public void onError(int pg, String error) {
-        binding.progressBar.setVisibility(GONE);
-        binding.textLoading.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.INVISIBLE);
+        binding.textLoading.setVisibility(View.INVISIBLE);
         binding.btn.setEnabled(true);
         Log.e(TAG, error);
 
@@ -230,8 +171,8 @@ public class LoginFragment extends Fragment implements OnResponse {
 
     @Override
     public void onAccessDenied(int pg, String message) {
-        binding.progressBar.setVisibility(GONE);
-        binding.textLoading.setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.INVISIBLE);
+        binding.textLoading.setVisibility(View.INVISIBLE);
         binding.btn.setEnabled(true);
         binding.userInput.setError(message);
         Log.v(TAG, "Access denied");

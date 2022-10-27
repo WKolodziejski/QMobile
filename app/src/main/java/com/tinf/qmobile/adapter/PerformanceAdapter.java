@@ -1,13 +1,12 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.network.Client.pos;
 
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -23,10 +22,8 @@ import com.tinf.qmobile.holder.performance.PerformanceHeaderViewHolder;
 import com.tinf.qmobile.holder.performance.PerformanceViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
-import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.ArrayList;
@@ -116,7 +113,7 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
     @Override
     public PerformanceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
-            case HEADER:
+            case MATTER:
                 return new PerformanceHeaderViewHolder(LayoutInflater.from(context)
                         .inflate(R.layout.chart_header, parent, false));
 

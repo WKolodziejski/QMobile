@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="12dp"
+    android:paddingStart="8dp"
+    >
+
+    <TextView
+        android:id="@+id/badge"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_square"
+        android:backgroundTint="@color/colorPrimary"
+        android:gravity="center"
+        android:maxLength="2"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimaryLight"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        tools:text="9" />
+
+</LinearLayout>

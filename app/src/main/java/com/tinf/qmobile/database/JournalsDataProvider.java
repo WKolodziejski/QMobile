@@ -6,6 +6,7 @@ import static com.tinf.qmobile.network.Client.pos;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.FooterJournal;
+import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
@@ -22,31 +23,32 @@ public class JournalsDataProvider extends BaseDataProvider<Queryable> {
 
     @Override
     protected synchronized List<Queryable> buildList() {
-        ArrayList<Queryable> list = new ArrayList<>(
-                DataBase.get().getBoxStore()
-                        .boxFor(Matter.class)
-                        .query()
-                        .order(Matter_.title_)
-                        .equal(Matter_.year_, UserUtils.getYear(pos))
-                        .and()
-                        .equal(Matter_.period_, UserUtils.getPeriod(pos))
-                        .build()
-                        .find());
+        List<Queryable> list = new ArrayList<>();
+        List<Matter> matters = DataBase.get().getBoxStore()
+                .boxFor(Matter.class)
+                .query()
+                .order(Matter_.title_)
+                .equal(Matter_.year_, UserUtils.getYear(pos))
+                .and()
+                .equal(Matter_.period_, UserUtils.getPeriod(pos))
+                .build()
+                .find();
 
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Matter) {
-                Matter matter = (Matter) list.get(i);
+        for (int i = 0; i < matters.size(); i++) {
+            Matter matter = matters.get(i);
 
-                List<Journal> items = matter.getLastJournals();
+            list.add(new Header(matter));
+            list.add(matter);
 
-                if (items.isEmpty()) {
-                    list.add(i + 1, new Empty(JOURNALEMPTY));
-                    list.add(i + 2, new FooterJournal(i, matter));
-                } else {
-                    list.addAll(i + 1, items);
-                    list.add(i + items.size() + 1, new FooterJournal(i, matter));
-                }
+            List<Journal> items = matter.getLastJournals();
+
+            if (items.isEmpty()) {
+                list.add(new Empty(JOURNALEMPTY));
+            } else {
+                list.addAll(items);
             }
+
+            list.add(new FooterJournal(i, matter));
         }
 
         if (list.isEmpty())

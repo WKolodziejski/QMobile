@@ -30,11 +30,11 @@ public class Period implements Queryable {
     }
 
     public String getGrade() {
-        return grade_ == -1 ? "-" : String.valueOf(grade_);
+        return grade_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", grade_);
     }
 
     public String getGradeFinal() {
-        return gradeFinal_ == -1 ? "-" : String.valueOf(gradeFinal_);
+        return gradeFinal_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", gradeFinal_);
     }
 
     public String getAbsences() {

@@ -6,6 +6,7 @@ import android.util.LongSparseArray;
 
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.material.Material;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
@@ -28,7 +29,7 @@ public class MaterialsDataProvider extends BaseDataProvider {
     protected synchronized List<Queryable> buildList() {
         List<Queryable> list = new ArrayList<>();
 
-        List<Matter> matters = new ArrayList<>(DataBase.get().getBoxStore()
+        List<Matter> matters = DataBase.get().getBoxStore()
                 .boxFor(Matter.class)
                 .query()
                 .order(Matter_.title_)
@@ -36,12 +37,15 @@ public class MaterialsDataProvider extends BaseDataProvider {
                 .and()
                 .equal(Matter_.period_, UserUtils.getPeriod(pos))
                 .build()
-                .find());
+                .find();
 
         for (int i = 0; i < matters.size(); i++) {
             if (!matters.get(i).materials.isEmpty()) {
-                list.add(matters.get(i));
-                list.addAll(matters.get(i).materials);
+                Matter matter = matters.get(i);
+
+                list.add(new Header(matter));
+                list.add(matter);
+                list.addAll(matter.materials);
             }
         }
 

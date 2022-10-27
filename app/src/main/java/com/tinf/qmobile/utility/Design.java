@@ -108,6 +108,19 @@ public class Design {
     }
 
     public static RecyclerView.OnScrollListener getRefreshBehavior(SwipeRefreshLayout refresh) {
+        if (refresh == null)
+            return new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                }
+            };
+
         return new RecyclerView.OnScrollListener() {
 
             @Override

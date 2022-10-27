@@ -2,11 +2,10 @@ package com.tinf.qmobile.holder.journal;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.view.View;
 
 import com.tinf.qmobile.R;
@@ -20,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lecho.lib.hellocharts.model.PieChartData;
-import lecho.lib.hellocharts.model.SelectedValue;
 import lecho.lib.hellocharts.model.SliceValue;
 
 public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal> {
@@ -32,7 +30,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     }
 
     @Override
-    public void bind(Context context, FooterJournal footer, boolean lookup) {
+    public void bind(Context context, FooterJournal footer, boolean lookup, boolean isHeader) {
         Matter matter = footer.getMatter();
         int color1 = matter.getColor();
         int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
@@ -53,7 +51,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
         binding.layout.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", HEADER);
+            intent.putExtra("PAGE", MATTER);
             intent.putExtra("LOOKUP", lookup);
             context.startActivity(intent);
         });

@@ -11,16 +11,19 @@ import com.tinf.qmobile.network.Client;
 
 public abstract class BaseFragment extends Fragment {
     protected MaterialToolbar toolbar;
-    protected NestedScrollView scroll;
     protected SwipeRefreshLayout refresh;
 
     protected abstract void onAddListeners();
     protected abstract void onRemoveListeners();
+    protected abstract void onScrollRequest();
 
-    public void setParams(MaterialToolbar toolbar, NestedScrollView scroll, SwipeRefreshLayout refresh) {
+    public void setParams(MaterialToolbar toolbar, SwipeRefreshLayout refresh) {
         this.toolbar = toolbar;
-        this.scroll = scroll;
         this.refresh = refresh;
+    }
+
+    public void requestScroll() {
+        onScrollRequest();
     }
 
     @Override

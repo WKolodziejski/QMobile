@@ -2,13 +2,12 @@ package com.tinf.qmobile.holder.performance;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -25,7 +24,6 @@ import com.tinf.qmobile.utility.ColorUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
@@ -178,7 +176,7 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
         binding.title.setOnClickListener(view -> {
             Intent intent = new Intent(context, MatterActivity.class);
             intent.putExtra("ID", matter.id);
-            intent.putExtra("PAGE", HEADER);
+            intent.putExtra("PAGE", MATTER);
             intent.putExtra("LOOKUP", false);
             context.startActivity(intent);
         });

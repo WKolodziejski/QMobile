@@ -29,11 +29,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
 import android.util.Log;
 import android.webkit.CookieManager;
-
-import androidx.core.text.HtmlCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -70,10 +67,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -142,12 +136,12 @@ public class Client {
             boolean isNew = true;
 
             //synchronized (requestsHelper) {
-                for (RequestHelper h : requestsHelper)
-                    if (h.pg == pg && h.year == year && h.period == period) {
-                        Log.d(TAG, "Duplicate request: " + pg + " in " + year + "/" + period);
-                        isNew = false;
-                        break;
-                    }
+            for (RequestHelper h : requestsHelper)
+                if (h.pg == pg && h.year == year && h.period == period) {
+                    Log.d(TAG, "Duplicate request: " + pg + " in " + year + "/" + period);
+                    isNew = false;
+                    break;
+                }
             //}
 
             synchronized (requestsRunning) {
@@ -426,7 +420,7 @@ public class Client {
         Element p = document.getElementsByTag("p").first();
 
         if (p != null) {
-            if (p.text().contains("inacessível")) {
+            if (p.text().contains("inacess") || p.text().contains("Banco")) {
                 callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
                 return Resp.HOST;
             }
@@ -445,7 +439,7 @@ public class Client {
         Element quest = document.getElementsByClass("TEXTO_TITULO").first();
 
         if (quest != null) {
-            if (quest.text().contains("Questionários")) {
+            if (quest.text().contains("Question")) {
                 String msg = "";
                 if (form != null) {
                     msg = form.text().replaceAll("\\\\n", "\n").trim();
@@ -454,7 +448,7 @@ public class Client {
                 return Resp.QUEST;
             }
 
-            if (quest.text().contains("Alteração")) {
+            if (quest.text().contains("Altera")) {
                 callOnAccessDenied(PG_REGISTRATION, "");
                 return Resp.REG;
             }

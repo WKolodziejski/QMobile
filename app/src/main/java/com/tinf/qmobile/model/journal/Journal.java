@@ -59,15 +59,15 @@ public class Journal extends EventBase implements Queryable {
     }
 
     public String getGrade() {
-        return grade_ == -1 ? "-" : String.valueOf(grade_);
+        return grade_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", grade_);
     }
 
     public String getWeight() {
-        return weight_ == -1 ? "-" : String.valueOf(weight_);
+        return weight_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", weight_);
     }
 
     public String getMax() {
-        return max_ == -1 ? "-" : String.valueOf(max_);
+        return max_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", max_);
     }
 
     public String getType() {

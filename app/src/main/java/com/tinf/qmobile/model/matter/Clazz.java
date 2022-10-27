@@ -54,7 +54,7 @@ public class Clazz extends EventBase implements Queryable {
     }
 
     public String getContent() {
-        return content_ == null ? App.getContext().getResources().getString(R.string.class_no_content) : content_;
+        return content_ == null ? App.getContext().getResources().getString(R.string.class_no_content) : content_.isEmpty() ? App.getContext().getResources().getString(R.string.class_no_content) : content_;
     }
 
     public Date getDate() {
@@ -77,6 +77,11 @@ public class Clazz extends EventBase implements Queryable {
     @Override
     public int getItemType() {
         return CLASS;
+    }
+
+    @Override
+    public String getTitle() {
+        return super.getTitle() == null ? App.getContext().getResources().getString(R.string.class_no_content) : super.getTitle().isEmpty() ? App.getContext().getResources().getString(R.string.class_no_content) : getContent();
     }
 
     /*

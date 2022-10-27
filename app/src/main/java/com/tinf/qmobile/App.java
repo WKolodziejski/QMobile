@@ -33,9 +33,7 @@ public class App extends Application {
         crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
         crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
         crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
-        crashlytics.setCustomKey("Name", UserUtils.getName());
         crashlytics.setCustomKey("URL", UserUtils.getURL());
-        crashlytics.setCustomKey("Background", Client.background);
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
