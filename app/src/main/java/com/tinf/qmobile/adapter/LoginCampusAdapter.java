@@ -19,7 +19,7 @@ public class LoginCampusAdapter extends RecyclerView.Adapter<LoginCampusViewHold
     private final OnClick onClick;
     private final AsyncListDiffer<String> list;
 
-    public LoginCampusAdapter(Context context, List<String> list, OnClick onClick) {
+    public LoginCampusAdapter(Context context, OnClick onClick) {
         this.context = context;
         this.onClick = onClick;
         this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<String>() {

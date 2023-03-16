@@ -19,6 +19,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 
+import org.jsoup.internal.StringUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,6 +86,22 @@ public class Design {
             return context.getResources().getColor(R.color.good);
 
         return context.getResources().getColor(R.color.transparent);
+    }
+
+    public static int getColorForWarning(Context context, String color) {
+        if (color == null)
+            return context.getResources().getColor(R.color.colorPrimaryDark);
+
+        if (color.equalsIgnoreCase("red"))
+            return context.getResources().getColor(R.color.warningRed);
+
+        if (color.equalsIgnoreCase("yellow"))
+            return context.getResources().getColor(R.color.warningYellow);
+
+        if (color.equalsIgnoreCase("green"))
+            return context.getResources().getColor(R.color.warningGreen);
+
+        return context.getResources().getColor(R.color.colorPrimaryDark);
     }
 
     public static void syncToolbar(MaterialToolbar toolbar, boolean canExpand) {

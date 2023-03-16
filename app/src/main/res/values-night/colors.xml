@@ -23,4 +23,8 @@
     <color name="ok">@color/blue_600</color>
     <color name="bad">@color/red_600</color>
 
+    <color name="warningRed">@color/red_900</color>
+    <color name="warningYellow">@color/yellow_900</color>
+    <color name="warningGreen">@color/green_900</color>
+
 </resources>

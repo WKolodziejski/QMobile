@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.tinf.qmobile.network.Client;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.tinf.qmobile.utility.UserUtils;
 
 import io.objectbox.BoxStore;
+
 import static com.tinf.qmobile.fragment.SettingsFragment.NIGHT;
 import static com.tinf.qmobile.utility.UserUtils.PASSWORD;
 import static com.tinf.qmobile.utility.UserUtils.REGISTRATION;
@@ -35,22 +37,28 @@ public class App extends Application {
         crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
         crashlytics.setCustomKey("URL", UserUtils.getURL());
 
+        FirebaseRemoteConfig
+                .getInstance()
+                .setConfigSettingsAsync(new FirebaseRemoteConfigSettings
+                        .Builder()
+                        .setMinimumFetchIntervalInSeconds(43200) // 12h
+                        .build())
+                .addOnFailureListener(e -> FirebaseCrashlytics.getInstance().recordException(e));
+
+        FirebaseRemoteConfig
+                .getInstance()
+                .fetchAndActivate()
+                .addOnFailureListener(e -> FirebaseCrashlytics.getInstance().recordException(e));
+
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
 
         AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(
                 getBaseContext()).getBoolean(NIGHT, false) ?
                 AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
-        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true)) {
-            if (BoxStore.deleteAllFiles(getBaseContext(), UserUtils.getCredential(REGISTRATION))) {
-                //Client.get().close();
-                //Jobs.cancelAllJobs();
-                //DataBase.get().close();
-                //User.clearInfos();
-                //PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
-                getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(VERSION, false).apply();
-                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
+        if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true) &&
+            BoxStore.deleteAllFiles(getBaseContext(), UserUtils.getCredential(REGISTRATION))) {
+            getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(VERSION, false).apply();
         }
     }
 

@@ -8,15 +8,6 @@
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!--<androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryLight"
-        android:fitsSystemWindows="true"
-        app:layout_optimizationLevel="standard|dimensions|chains"
-        >!-->
-
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
@@ -60,6 +51,56 @@
                 android:orientation="vertical"
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/warning_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginVertical="8dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    tools:cardBackgroundColor="@color/warningYellow"
+                    tools:visibility="visible">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/warning_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="8dp"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginEnd="8dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorPrimary"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/warning_close"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Os servidores do Q-Acadêmico estão enfrantando problemas de login. Por favor, aguarde." />
+
+                        <ImageView
+                            android:id="@+id/warning_close"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:padding="8dp"
+                            android:src="@drawable/ic_cancel"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/warning_text"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/colorPrimary" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
@@ -77,68 +118,6 @@
             </LinearLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
-
-        <!--<com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/app_bar_layout"
-            android:background="@color/transparent"
-            app:elevation="0dp"
-            tools:showIn="@layout/activity_main"
-            >
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/toolbar_layout"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
-                >
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
-                    android:layout_marginHorizontal="16dp"
-                    app:cardCornerRadius="8dp"
-                    app:cardElevation="4dp"
-                    app:layout_scrollFlags="scroll|enterAlways|snap"
-                    >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="72dp"
-                        android:textSize="19sp"
-                        android:textColor="@color/message_seen"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/action_search" />
-
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?android:attr/actionBarSize"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/selectableItemBackground" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:textStyle="bold"
-                    android:id="@+id/date"
-                    tools:text="2020 / 1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/black_dividers" />
-
-        </com.google.android.material.appbar.AppBarLayout>!-->
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/refresh"

@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,19 +35,7 @@ public class CampusLoginFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         remoteConfig = FirebaseRemoteConfig.getInstance();
-
-        remoteConfig.setConfigSettingsAsync(new FirebaseRemoteConfigSettings
-                .Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build());
-
-        remoteConfig.setDefaultsAsync(R.xml.urls_map);
-
-        urls = new Gson().fromJson(remoteConfig.getString("urls"),
-                new TypeToken<Map<String, String>>() {
-                }.getType());
     }
 
     @Override
@@ -60,41 +49,40 @@ public class CampusLoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        List<String> campus = new ArrayList<>(urls.keySet());
+        remoteConfig.setDefaultsAsync(R.xml.urls_map).addOnSuccessListener(t -> {
+            List<String> campus = new ArrayList<>();
 
-        LoginCampusAdapter adapter = new LoginCampusAdapter(getContext(), campus, i -> {
-            Client.get().setURL(urls.get(campus.get(i)));
-            Log.d(TAG, Client.get().getURL());
+            LoginCampusAdapter adapter = new LoginCampusAdapter(getContext(), i -> {
+                Client.get().setURL(urls.get(campus.get(i)));
+                Log.d(TAG, Client.get().getURL());
 
-            Bundle bundle = new Bundle();
-            bundle.putInt("I", i);
-            Fragment fragment = new CredentialsLoginFragment();
-            fragment.setArguments(bundle);
+                Bundle bundle = new Bundle();
+                bundle.putInt("I", i);
+                Fragment fragment = new CredentialsLoginFragment();
+                fragment.setArguments(bundle);
 
-            getParentFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.login_fragment, fragment)
-                    .addToBackStack(null)
-                    .commit();
+                getParentFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.login_fragment, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            });
+
+            urls = new Gson().fromJson(remoteConfig.getString("urls"),
+                    new TypeToken<Map<String, String>>() {
+                    }.getType());
+
+            campus.addAll(urls.keySet());
+            adapter.onUpdate(campus);
+
+            binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            binding.recycler.setHasFixedSize(false);
+            binding.recycler.setNestedScrollingEnabled(false);
+            binding.recycler.setAdapter(adapter);
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), getResources()
+                    .getString(R.string.toast_firebase_fail), Toast.LENGTH_LONG).show();
+            FirebaseCrashlytics.getInstance().recordException(e);
         });
-
-        remoteConfig.fetchAndActivate().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                urls = new Gson().fromJson(remoteConfig.getString("urls"),
-                        new TypeToken<Map<String, String>>() {
-                        }.getType());
-
-                if (urls != null) {
-                    campus.clear();
-                    campus.addAll(urls.keySet());
-                    adapter.onUpdate(campus);
-                }
-            }
-        }).addOnFailureListener(task -> FirebaseCrashlytics.getInstance().recordException(task));
-
-        binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.recycler.setHasFixedSize(false);
-        binding.recycler.setNestedScrollingEnabled(false);
-        binding.recycler.setAdapter(adapter);
     }
 }

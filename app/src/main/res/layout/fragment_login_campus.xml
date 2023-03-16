@@ -17,7 +17,7 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        android:paddingVertical="16dp"
         android:paddingHorizontal="16dp"
         tools:listitem="@layout/login_campus_item" />
 

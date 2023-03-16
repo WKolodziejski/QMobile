@@ -149,8 +149,6 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
         binding.weekView.setWeekViewLoader(this::updateSchedule);
 
         binding.recycler.setItemViewCacheSize(20);
-        binding.recycler.setDrawingCacheEnabled(true);
-        binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         binding.recycler.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
         binding.recycler.setItemAnimator(null);
         binding.recycler.setAdapter(new EventsAdapter(getContext(), this::onUpdate));
@@ -176,8 +174,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
                 try {
                     transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
                             Pair.create(fab, fab.getTransitionName())).toBundle();
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
             }
 
             startActivity(new Intent(getContext(), ScheduleActivity.class), pos == 0 ? transition : null);

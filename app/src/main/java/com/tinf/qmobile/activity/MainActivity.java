@@ -51,6 +51,12 @@ import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.MaterialShapeDrawable;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.settings.SettingsActivity;
 import com.tinf.qmobile.database.DataBase;
@@ -69,12 +75,19 @@ import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.network.handler.PopUpHandler;
+import com.tinf.qmobile.service.FirebaseMessageParams;
 import com.tinf.qmobile.service.Works;
+import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.UserUtils;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnCount,
         OnUpdate, NavigationView.OnNavigationItemSelectedListener {
     private ActivityMainBinding binding;
+
 
     ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), result ->
@@ -86,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
+
+        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawer,
                 binding.toolbar, R.string.open_drawer, R.string.close_drawer);
@@ -101,15 +116,15 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                         .toBuilder()
                         .setAllCorners(CornerFamily.ROUNDED, getResources().getDimension(R.dimen.nav_item_background_inset_right))
                         .build()
-        );
+                                                 );
 
         binding.navigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId != binding.navigation.getSelectedItemId())
                 return changeFragment(itemId);
-            else
-                requestScroll();
+
+            requestScroll();
 
             return false;
         });
@@ -205,6 +220,35 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                                     .putInt(USE_COUNT, 0).apply())
                     .create().show();
         }
+
+        try {
+            FirebaseMessageParams params = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd HH:mm").
+                    create()
+                    .fromJson(
+                            remoteConfig.getString("message_home"),
+                            new TypeToken<FirebaseMessageParams>() {
+                            }.getType());
+
+            if (params != null && (params.showAfter != null && params.hideAfter != null && params.message != null && params.show != null)) {
+                Date now = new Date();
+
+                if (!params.show || params.showAfter.after(now) || params.hideAfter.before(now)) {
+                    binding.warningCard.setVisibility(View.GONE);
+                } else {
+                    if (params.link != null) {
+                        binding.warningCard.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(params.link))));
+                    }
+
+                    binding.warningClose.setOnClickListener(v -> binding.warningCard.setVisibility(View.GONE));
+                    binding.warningCard.setCardBackgroundColor(Design.getColorForWarning(getBaseContext(), params.color));
+                    binding.warningText.setText(params.message);
+                    binding.warningCard.setVisibility(View.VISIBLE);
+                }
+            }
+        } catch (Exception e) {
+            FirebaseCrashlytics.getInstance().recordException(e);
+        }
     }
 
     @Override
@@ -224,23 +268,12 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                         .circleCrop()
                         .placeholder(R.drawable.ic_account)
                         .into(view);
-            } catch (Exception ignore) {
+            } catch (Exception e) {
+                FirebaseCrashlytics.getInstance().recordException(e);
             }
         } else {
             view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
         }
-        /*else {
-            Executors.newSingleThreadExecutor().execute(() -> {
-                Drawable picture = UserUtils.getProfilePicture(getContext());
-
-                view.post(() -> {
-                    if (picture != null)
-                        view.setImageDrawable(picture.getCurrent());
-                    else
-                        view.setImageDrawable(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
-                });
-            });
-        }*/
 
         view.setOnClickListener(v -> {
             UserFragment fragment = new UserFragment();
@@ -256,8 +289,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                 }
             });
             fragment.show(getSupportFragmentManager(), "sheet_user");
-            //Log.d("Login", UserUtils.getCredential(UserUtils.REGISTRATION));
-            //Log.d("Password", UserUtils.getCredential(UserUtils.PASSWORD));
         });
 
         return true;
@@ -368,10 +399,11 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void requestScroll() {
-        try {
-            BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+        BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+
+        if (fragment != null) {
             fragment.requestScroll();
-        } catch (Exception ignore) {}
+        }
     }
 
     private void dismissProgressbar() {
@@ -404,7 +436,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         } else if (id == R.id.navigation_grades) {
             binding.fab.setOnClickListener(null);
-            binding.fab.postDelayed(() -> binding.fab.hide(), 250);
+            binding.fab.postDelayed(binding.fab::hide, 250);
 
             JournalsFragment journalsFragment = new JournalsFragment();
             journalsFragment.setParams(binding.toolbar, binding.refresh);
@@ -413,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
         } else if (id == R.id.navigation_materials) {
             binding.fab.setOnClickListener(null);
-            binding.fab.postDelayed(() -> binding.fab.hide(), 250);
+            binding.fab.postDelayed(binding.fab::hide, 250);
 
             MaterialsFragment materialsFragment = new MaterialsFragment();
             materialsFragment.setParams(binding.toolbar, binding.refresh);
@@ -492,7 +524,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
             binding.drawer.closeDrawer(GravityCompat.START);
 
         } else if (binding.navigation.getSelectedItemId() != R.id.navigation_home
-                && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                   && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             binding.navigation.setSelectedItemId(R.id.navigation_home);
 
         } else {
@@ -527,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
                     if (!url.contains("javascript")) {
                         webView.loadUrl("javascript:window.handler.handleLogin"
-                                + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
+                                        + "('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');");
                     }
                 }
 
