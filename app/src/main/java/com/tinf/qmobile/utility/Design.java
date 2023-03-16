@@ -101,6 +101,9 @@ public class Design {
         if (color.equalsIgnoreCase("green"))
             return context.getResources().getColor(R.color.warningGreen);
 
+        if (color.equalsIgnoreCase("blue"))
+            return context.getResources().getColor(R.color.warningBlue);
+
         return context.getResources().getColor(R.color.colorPrimaryDark);
     }
 

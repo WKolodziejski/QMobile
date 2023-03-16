@@ -26,5 +26,6 @@
     <color name="warningRed">@color/red_900</color>
     <color name="warningYellow">@color/yellow_900</color>
     <color name="warningGreen">@color/green_900</color>
+    <color name="warningBlue">@color/blue_900</color>
 
 </resources>

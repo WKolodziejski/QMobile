@@ -60,7 +60,7 @@
                     android:visibility="gone"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="0dp"
-                    tools:cardBackgroundColor="@color/warningYellow"
+                    tools:cardBackgroundColor="@color/warningBlue"
                     tools:visibility="visible">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
