@@ -53,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
         FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
-//        remoteConfig.fetchAndActivate().addOnCompleteListener(task -> {
         FirebaseMessageParams params = null;
 
         try {
@@ -84,7 +83,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
         binding.warningCard.setCardBackgroundColor(Design.getColorForWarning(getBaseContext(), params.color));
         binding.warningText.setText(params.message);
         binding.warningCard.setVisibility(View.VISIBLE);
-//        }).addOnFailureListener(e -> FirebaseCrashlytics.getInstance().recordException(e));
     }
 
     @Override

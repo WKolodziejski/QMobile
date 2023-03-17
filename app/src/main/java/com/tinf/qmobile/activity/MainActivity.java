@@ -399,11 +399,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
 
     private void requestScroll() {
-        BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
-
-        if (fragment != null) {
+        try {
+            BaseFragment fragment = (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
             fragment.requestScroll();
-        }
+        } catch (Exception ignore) {}
     }
 
     private void dismissProgressbar() {
@@ -732,7 +731,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     @Override
     public void onDateChanged() {
-        binding.date.setText(UserUtils.getYears()[pos]);
+        if (UserUtils.getYears().length > pos) {
+            binding.date.setText(UserUtils.getYears()[pos]);
+        }
     }
 
     @Override

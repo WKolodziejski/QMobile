@@ -149,8 +149,6 @@ public class UserUtils {
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
         if (getYears().length > 0) {
-            //crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
-            //crashlytics.setCustomKey("URL", UserUtils.getURL());
             crashlytics.setCustomKey("Years", Arrays.toString(getYears()));
 
             if (getYears()[i].contains("/")) {
