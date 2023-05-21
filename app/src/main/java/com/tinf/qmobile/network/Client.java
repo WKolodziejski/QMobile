@@ -24,8 +24,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -78,9 +76,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Client {
-  private final static String TAG = "Network Client";
-  private final static String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
-  private final static String VALIDA = "/qacademico/lib/validalogin.asp";
+  private static final String TAG = "Network Client";
+  private static final String GERADOR = "/qacademico/lib/rsa/gerador_chaves_rsa.asp";
+  private static final String VALIDA = "/qacademico/lib/validalogin.asp";
   private final FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
   private static Client instance;
   private final List<RequestHelper> requestsHelper;
@@ -132,7 +130,7 @@ public class Client {
   private void createRequest(int pg, String url, int year, int period, int method,
                              Map<String, String> form, boolean notify, Matter matter,
                              BaseParser.OnFinish onFinish) {
-    if (!isConnected()){
+    if (!isConnected()) {
       return;
     }
 
@@ -148,14 +146,12 @@ public class Client {
 
       boolean isNew = true;
 
-      //synchronized (requestsHelper) {
       for (RequestHelper h : requestsHelper)
         if (h.pg == pg && h.year == year && h.period == period) {
           Log.d(TAG, "Duplicate request: " + pg + " in " + year + "/" + period);
           isNew = false;
           break;
         }
-      //}
 
       synchronized (requestsRunning) {
         for (RequestRunning r : requestsRunning)
@@ -289,10 +285,6 @@ public class Client {
   private void load(int pg, int year, int period) {
     load(pg, year, period, this::callOnFinish, false);
   }
-
-    /*private void load(int pg, boolean notify, BaseParser.OnFinish onFinish) {
-        load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), onFinish, notify);
-    }*/
 
   public void load(int pg, boolean notify) {
     load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), this::callOnFinish, notify);
