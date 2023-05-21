@@ -132,6 +132,10 @@ public class Client {
   private void createRequest(int pg, String url, int year, int period, int method,
                              Map<String, String> form, boolean notify, Matter matter,
                              BaseParser.OnFinish onFinish) {
+    if (!isConnected()){
+      return;
+    }
+
     Log.d(TAG, "Creating request: " + pg + " in " + year + "/" + period);
 
     if (!isValid) {
@@ -390,7 +394,6 @@ public class Client {
 
                                   if (img != null && !background)
                                     UserUtils.setImg(cod);
-                                  //downloadImage(cod);
 
                                   callOnFinish(PG_LOGIN, 0, 0);
                                 }
@@ -636,17 +639,6 @@ public class Client {
       msg = getContext().getResources().getString(R.string.client_no_connection);
     }
 
-        /*if (!isConnected) {
-            msg = getContext().getResources().getString(R.string.client_no_connection);
-
-        } else if (pg == PG_GENERATOR) {
-            msg = getContext().getResources().getString(R.string.client_host);
-
-        } else if (pg == PG_LOGIN) {
-            isLogging = false;
-            isValid = false;
-        }*/
-
     if (msg == null) {
       if (error instanceof TimeoutError)
         msg = getContext().getResources().getString(R.string.client_timeout);
@@ -670,18 +662,13 @@ public class Client {
   public static boolean isConnected() {
     ConnectivityManager connectivityManager =
         (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      Network nw = connectivityManager.getActiveNetwork();
-      if (nw == null) return false;
-      NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
-      return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                               || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                               || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                               || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
-    } else {
-      NetworkInfo nwInfo = connectivityManager.getActiveNetworkInfo();
-      return nwInfo != null && nwInfo.isConnected();
-    }
+    Network nw = connectivityManager.getActiveNetwork();
+    if (nw == null) return false;
+    NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
+    return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                             || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                             || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                             || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
   }
 
   public void addOnResponseListener(OnResponse onResponse) {
