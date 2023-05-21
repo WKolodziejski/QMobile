@@ -9,10 +9,10 @@ import com.tinf.qmobile.model.calendar.CalendarBase;
 
 public abstract class CalendarViewHolder<T extends CalendarBase> extends RecyclerView.ViewHolder {
 
-    public CalendarViewHolder(View view) {
-        super(view);
-    }
+  public CalendarViewHolder(View view) {
+    super(view);
+  }
 
-    public abstract void bind(T calendar, Context context);
+  public abstract void bind(T calendar, Context context);
 
 }

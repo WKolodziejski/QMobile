@@ -4,8 +4,8 @@
 
     <item
         android:id="@+id/action_today"
-        android:title="@string/calendar_scroll"
         android:icon="@drawable/ic_calendar"
+        android:title="@string/calendar_scroll"
         app:showAsAction="ifRoom" />
 
 </menu>

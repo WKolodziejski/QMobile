@@ -5,9 +5,9 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="52dp"
+    android:foreground="?android:attr/selectableItemBackground"
     android:paddingVertical="4dp"
-    android:foreground="?android:attr/selectableItemBackground">
+    android:paddingStart="52dp">
 
     <TextView
         android:id="@+id/exp_txt1"

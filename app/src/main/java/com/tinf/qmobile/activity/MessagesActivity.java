@@ -17,33 +17,36 @@ import com.tinf.qmobile.fragment.MessagesFragment;
 import com.tinf.qmobile.service.DownloadReceiver;
 
 public class MessagesActivity extends AppCompatActivity {
-    private BroadcastReceiver receiver;
+  private BroadcastReceiver receiver;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_messages);
-        setSupportActionBar(findViewById(R.id.toolbar_default));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+  @Override
+  protected void onCreate(
+      @Nullable
+      Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_messages);
+    setSupportActionBar(findViewById(R.id.toolbar_default));
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setHomeAsUpIndicator(
+        ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
-        Fragment fragment = new MessagesFragment();
-        fragment.setArguments(getIntent().getExtras());
+    Fragment fragment = new MessagesFragment();
+    fragment.setArguments(getIntent().getExtras());
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.messages_fragment, fragment)
-                .commit();
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.messages_fragment, fragment)
+        .commit();
 
-        receiver = new DownloadReceiver((DownloadManager) getSystemService(DOWNLOAD_SERVICE), id -> {});
+    receiver = new DownloadReceiver((DownloadManager) getSystemService(DOWNLOAD_SERVICE), id -> {});
 
-        registerReceiver(receiver, new IntentFilter(ACTION_DOWNLOAD_COMPLETE));
-    }
+    registerReceiver(receiver, new IntentFilter(ACTION_DOWNLOAD_COMPLETE));
+  }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiver);
-    }
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    unregisterReceiver(receiver);
+  }
 
 }

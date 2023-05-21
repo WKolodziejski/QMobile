@@ -4,10 +4,10 @@
     <PreferenceCategory android:title="@string/pref_general">
 
         <SwitchPreference
-            android:title="@string/pref_dark_mode"
-            android:key="key_night_mode"
             android:defaultValue="false"
-            android:summary="@string/pref_dark_mode_sum" />
+            android:key="key_night_mode"
+            android:summary="@string/pref_dark_mode_sum"
+            android:title="@string/pref_dark_mode" />
 
         <Preference
             android:key="key_reset_db"
@@ -18,11 +18,11 @@
     <PreferenceCategory android:title="@string/pref_services">
 
         <SwitchPreference
-            android:title="@string/pref_check"
-            android:key="key_check"
             android:defaultValue="true"
+            android:disableDependentsState="false"
+            android:key="key_check"
             android:summary="@string/pref_check_sum"
-            android:disableDependentsState="false" />
+            android:title="@string/pref_check" />
 
         <!--<CheckBoxPreference
             android:title="Diarios"
@@ -67,36 +67,36 @@
             android:dependency="key_check_materiais"/>!-->
 
         <SwitchPreference
-            android:title="@string/pref_mobile"
+            android:defaultValue="false"
+            android:dependency="key_check"
             android:key="key_mobile_data"
-            android:defaultValue="false"
             android:summary="@string/pref_mobile_sum"
-            android:dependency="key_check" />
+            android:title="@string/pref_mobile" />
 
         <SwitchPreference
-            android:title="@string/pref_alert"
-            android:key="key_alert_mode"
             android:defaultValue="false"
+            android:dependency="key_check"
+            android:key="key_alert_mode"
             android:summary="@string/pref_alert_sum"
-            android:dependency="key_check" />
+            android:title="@string/pref_alert" />
 
         <SwitchPreference
-            android:title="@string/pref_popup"
-            android:key="key_popup"
             android:defaultValue="true"
+            android:dependency="key_check"
+            android:key="key_popup"
             android:summary="@string/pref_popup_sum"
-            android:dependency="key_check" />
+            android:title="@string/pref_popup" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_notifications">
 
         <SwitchPreference
-            android:title="@string/pref_notifications"
-            android:key="key_notifications"
             android:defaultValue="true"
+            android:dependency="key_check"
+            android:key="key_notifications"
             android:summary="@string/pref_notifications_sum"
-            android:dependency="key_check" />
+            android:title="@string/pref_notifications" />
 
         <!--<CheckBoxPreference
             android:title="Diarios"

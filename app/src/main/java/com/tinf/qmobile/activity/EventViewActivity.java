@@ -24,71 +24,74 @@ import com.tinf.qmobile.fragment.view.MessageViewFragment;
 import com.tinf.qmobile.fragment.view.ScheduleViewFragment;
 
 public class EventViewActivity extends AppCompatActivity {
-    private ActivityEventViewBinding binding;
+  private ActivityEventViewBinding binding;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityEventViewBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        setSupportActionBar(findViewById(R.id.toolbar_default));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+  @Override
+  protected void onCreate(
+      @Nullable
+      Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    binding = ActivityEventViewBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
+    setSupportActionBar(findViewById(R.id.toolbar_default));
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setHomeAsUpIndicator(
+        AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
 
-        Log.d("EventView", String.valueOf(getParent()));
+    Log.d("EventView", String.valueOf(getParent()));
 
-        Bundle bundle = getIntent().getExtras();
+    Bundle bundle = getIntent().getExtras();
 
-        if (bundle == null) {
-            finish();
-            return;
-        }
-
-        Fragment fragment = null;
-
-        switch (bundle.getInt("TYPE")) {
-
-            case EVENT:
-                fragment = new EventViewFragment();
-                break;
-
-            case JOURNAL:
-                fragment = new JournalViewFragment();
-                break;
-
-            case SCHEDULE:
-                fragment = new ScheduleViewFragment();
-                break;
-
-            case MESSAGE:
-                fragment = new MessageViewFragment();
-                break;
-
-            case CLASS:
-                fragment = new ClassViewFragment();
-                break;
-
-            default:
-                finish();
-        }
-
-        fragment.setArguments(bundle);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.event_view_fragment, fragment)
-                .commit();
-
-        setResult(RESULT_OK);
+    if (bundle == null) {
+      finish();
+      return;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    Fragment fragment = null;
+
+    switch (bundle.getInt("TYPE")) {
+
+      case EVENT:
+        fragment = new EventViewFragment();
+        break;
+
+      case JOURNAL:
+        fragment = new JournalViewFragment();
+        break;
+
+      case SCHEDULE:
+        fragment = new ScheduleViewFragment();
+        break;
+
+      case MESSAGE:
+        fragment = new MessageViewFragment();
+        break;
+
+      case CLASS:
+        fragment = new ClassViewFragment();
+        break;
+
+      default:
+        finish();
     }
+
+    fragment.setArguments(bundle);
+
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.event_view_fragment, fragment)
+        .commit();
+
+    setResult(RESULT_OK);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == android.R.id.home) {
+      onBackPressed();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
+  }
 
 }

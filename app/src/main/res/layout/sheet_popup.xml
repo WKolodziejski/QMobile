@@ -8,14 +8,14 @@
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:background="@color/transparent"
+    android:tag="sheet_popup"
     app:behavior_peekHeight="86dp"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    app:cardBackgroundColor="@color/colorPrimaryDark"
     app:cardCornerRadius="8dp"
     app:cardElevation="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     app:strokeColor="@color/cardStroke"
-    app:strokeWidth="1dp"
-    app:cardBackgroundColor="@color/colorPrimaryDark"
-    android:tag="sheet_popup">
+    app:strokeWidth="1dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -34,30 +34,30 @@
                 android:src="@drawable/ic_maximize" />
 
             <TextView
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:textStyle="bold"
-                android:id="@+id/title"
                 tools:text="title" />
 
             <TextView
+                android:id="@+id/message"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:autoLink="web|all"
                 android:linksClickable="true"
-                android:id="@+id/message"
                 tools:text="@string/message_example" />
 
             <CheckBox
+                android:id="@+id/checkBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
                 android:buttonTint="@color/colorPrimary"
-                android:id="@+id/checkBox"
-                android:text="@string/dialog_dont_show" />
+                android:text="@string/dialog_dont_show"
+                android:textColor="@color/colorPrimary" />
 
         </LinearLayout>
 

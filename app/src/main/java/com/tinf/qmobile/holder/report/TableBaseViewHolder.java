@@ -10,10 +10,12 @@ import com.tinf.qmobile.model.matter.Matter;
 
 public abstract class TableBaseViewHolder extends AbstractViewHolder {
 
-    public TableBaseViewHolder(@NonNull View itemView) {
-        super(itemView);
-    }
+  public TableBaseViewHolder(
+      @NonNull
+      View itemView) {
+    super(itemView);
+  }
 
-    public abstract void bind(Context context, Matter matter, String cell);
+  public abstract void bind(Context context, Matter matter, String cell);
 
 }

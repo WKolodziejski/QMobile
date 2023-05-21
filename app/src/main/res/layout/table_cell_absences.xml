@@ -23,18 +23,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="1" />
 
-<!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
-<!--            android:id="@+id/progress"-->
-<!--            android:layout_width="4dp"-->
-<!--            android:layout_height="4dp"-->
-<!--            app:indicatorColor="@color/green_800"-->
-<!--            app:indicatorSize="28dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:trackColor="@color/transparent"-->
-<!--            tools:progress="100" />-->
+        <!--        <com.google.android.material.progressindicator.CircularProgressIndicator-->
+        <!--            android:id="@+id/progress"-->
+        <!--            android:layout_width="4dp"-->
+        <!--            android:layout_height="4dp"-->
+        <!--            app:indicatorColor="@color/green_800"-->
+        <!--            app:indicatorSize="28dp"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:trackColor="@color/transparent"-->
+        <!--            tools:progress="100" />-->
 
         <lecho.lib.hellocharts.view.PieChartView
             android:id="@+id/chart_presence"

@@ -18,63 +18,63 @@ import java.util.List;
 import io.objectbox.reactive.DataSubscription;
 
 public class JournalsDataProvider extends BaseDataProvider<Queryable> {
-    private DataSubscription sub1;
-    private DataSubscription sub2;
+  private DataSubscription sub1;
+  private DataSubscription sub2;
 
-    @Override
-    protected synchronized List<Queryable> buildList() {
-        List<Queryable> list = new ArrayList<>();
-        List<Matter> matters = DataBase.get().getBoxStore()
-                .boxFor(Matter.class)
-                .query()
-                .order(Matter_.title_)
-                .equal(Matter_.year_, UserUtils.getYear(pos))
-                .and()
-                .equal(Matter_.period_, UserUtils.getPeriod(pos))
-                .build()
-                .find();
+  @Override
+  protected synchronized List<Queryable> buildList() {
+    List<Queryable> list = new ArrayList<>();
+    List<Matter> matters = DataBase.get().getBoxStore()
+                                   .boxFor(Matter.class)
+                                   .query()
+                                   .order(Matter_.title_)
+                                   .equal(Matter_.year_, UserUtils.getYear(pos))
+                                   .and()
+                                   .equal(Matter_.period_, UserUtils.getPeriod(pos))
+                                   .build()
+                                   .find();
 
-        for (int i = 0; i < matters.size(); i++) {
-            Matter matter = matters.get(i);
+    for (int i = 0; i < matters.size(); i++) {
+      Matter matter = matters.get(i);
 
-            list.add(new Header(matter));
-            list.add(matter);
+      list.add(new Header(matter));
+      list.add(matter);
 
-            List<Journal> items = matter.getLastJournals();
+      List<Journal> items = matter.getLastJournals();
 
-            if (items.isEmpty()) {
-                list.add(new Empty(JOURNALEMPTY));
-            } else {
-                list.addAll(items);
-            }
+      if (items.isEmpty()) {
+        list.add(new Empty(JOURNALEMPTY));
+      } else {
+        list.addAll(items);
+      }
 
-            list.add(new FooterJournal(i, matter));
-        }
-
-        if (list.isEmpty())
-            list.add(new Empty());
-
-        return list;
+      list.add(new FooterJournal(i, matter));
     }
 
-    @Override
-    protected void open() {
-        sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
-                .onlyChanges()
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
+    if (list.isEmpty())
+      list.add(new Empty());
 
-        sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
-                .onlyChanges()
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-    }
+    return list;
+  }
 
-    @Override
-    protected void close() {
-        super.close();
-        sub1.cancel();
-        sub2.cancel();
-    }
+  @Override
+  protected void open() {
+    sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
+                   .onlyChanges()
+                   .onError(Throwable::printStackTrace)
+                   .observer(observer);
+
+    sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
+                   .onlyChanges()
+                   .onError(Throwable::printStackTrace)
+                   .observer(observer);
+  }
+
+  @Override
+  protected void close() {
+    super.close();
+    sub1.cancel();
+    sub2.cancel();
+  }
 
 }

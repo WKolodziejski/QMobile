@@ -8,16 +8,16 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Day;
 
 public class DayViewHolder extends CalendarViewHolder<Day> {
-    private final CalendarHeaderDayRangeBinding binding;
+  private final CalendarHeaderDayRangeBinding binding;
 
-    public DayViewHolder(View view) {
-        super(view);
-        binding = CalendarHeaderDayRangeBinding.bind(view);
-    }
+  public DayViewHolder(View view) {
+    super(view);
+    binding = CalendarHeaderDayRangeBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Day day, Context context) {
-        binding.title.setText(day.getDayPeriod());
-    }
+  @Override
+  public void bind(Day day, Context context) {
+    binding.title.setText(day.getDayPeriod());
+  }
 
 }

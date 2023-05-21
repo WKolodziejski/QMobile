@@ -8,16 +8,16 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Month;
 
 public class MonthViewHolder extends CalendarViewHolder<Month> {
-    private final CalendarHeaderMonthBinding binding;
+  private final CalendarHeaderMonthBinding binding;
 
-    public MonthViewHolder(View view) {
-        super(view);
-        binding = CalendarHeaderMonthBinding.bind(view);
-    }
+  public MonthViewHolder(View view) {
+    super(view);
+    binding = CalendarHeaderMonthBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Month month, Context context) {
-        binding.month.setText(month.getMonth());
-    }
+  @Override
+  public void bind(Month month, Context context) {
+    binding.month.setText(month.getMonth());
+  }
 
 }

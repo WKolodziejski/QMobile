@@ -12,13 +12,16 @@ import com.tinf.qmobile.model.Empty;
 
 public class MaterialEmptyViewHolder extends MaterialBaseViewHolder<Empty> {
 
-    public MaterialEmptyViewHolder(@NonNull View itemView) {
-        super(itemView);
-    }
+  public MaterialEmptyViewHolder(
+      @NonNull
+      View itemView) {
+    super(itemView);
+  }
 
-    @Override
-    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Empty empty, boolean isHeader) {
+  @Override
+  public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter,
+                   ActionMode.Callback callback, Empty empty, boolean isHeader) {
 
-    }
+  }
 
 }

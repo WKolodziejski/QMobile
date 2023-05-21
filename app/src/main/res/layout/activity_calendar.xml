@@ -10,10 +10,10 @@
         style="@style/AppTheme.AppBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stateListAnimator="@drawable/appbar_always_elevated"
+        app:elevation="0dp"
         app:expanded="false"
         app:layout_behavior=".widget.calendar.CalendarBehavior"
-        tools:targetApi="lollipop">
+        app:liftOnScroll="false">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbarLayout"
@@ -22,6 +22,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:fitsSystemWindows="true"
+            app:contentScrim="@color/colorPrimaryLight"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlways">
 
             <com.github.sundeepk.compactcalendarview.CompactCalendarView
@@ -31,7 +32,7 @@
                 android:layout_marginTop="?attr/actionBarSize"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                app:compactCalendarBackgroundColor="@color/colorPrimaryLight"
+                app:compactCalendarBackgroundColor="@color/transparent"
                 app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
                 app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorSecondary"
                 app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary"

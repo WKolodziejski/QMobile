@@ -10,16 +10,18 @@ import com.tinf.qmobile.databinding.SearchHeaderBinding;
 import com.tinf.qmobile.model.search.Header;
 
 public class SearchHeaderViewHolder extends SearchViewHolder<Header> {
-    private final SearchHeaderBinding binding;
+  private final SearchHeaderBinding binding;
 
-    public SearchHeaderViewHolder(@NonNull View view) {
-        super(view);
-        binding = SearchHeaderBinding.bind(view);
-    }
+  public SearchHeaderViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+    binding = SearchHeaderBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Header header, Context context, String query, SearchAdapter adapter) {
-        binding.title.setText(header.getTitle());
-    }
+  @Override
+  public void bind(Header header, Context context, String query, SearchAdapter adapter) {
+    binding.title.setText(header.getTitle());
+  }
 
 }

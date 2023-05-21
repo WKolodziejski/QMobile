@@ -10,12 +10,13 @@ import com.tinf.qmobile.model.journal.Header;
 
 public class MaterialHeaderViewHolder extends MaterialBaseViewHolder<Header> {
 
-    public MaterialHeaderViewHolder(View view) {
-        super(view);
-    }
+  public MaterialHeaderViewHolder(View view) {
+    super(view);
+  }
 
-    @Override
-    public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, Header header, boolean isHeader) {
+  @Override
+  public void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter,
+                   ActionMode.Callback callback, Header header, boolean isHeader) {
 
-    }
+  }
 }

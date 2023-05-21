@@ -7,25 +7,26 @@ import io.objectbox.annotation.Id;
 
 @Entity
 public class Query implements Queryable {
-    @Id public long id;
-    public String query;
-    public long date;
+  @Id
+  public long id;
+  public String query;
+  public long date;
 
-    public Query() {}
+  public Query() {}
 
-    @Override
-    public int getItemType() {
-        return QUERY;
-    }
+  @Override
+  public int getItemType() {
+    return QUERY;
+  }
 
-    @Override
-    public long getId() {
-        return id;
-    }
+  @Override
+  public long getId() {
+    return id;
+  }
 
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
 
 }

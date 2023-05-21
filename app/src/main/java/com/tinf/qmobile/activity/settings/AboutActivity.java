@@ -10,32 +10,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.tinf.qmobile.databinding.ActivityAboutBinding;
 
 public class AboutActivity extends AppCompatActivity {
-    private ActivityAboutBinding binding;
+  private ActivityAboutBinding binding;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityAboutBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    binding = ActivityAboutBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
 
-        String v = "";
+    String v = "";
 
-        try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            v = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        binding.version.setText(v);
-
-        binding.more.setOnClickListener(view -> startActivity(new Intent(getBaseContext(), MoreActivity.class)));
+    try {
+      PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+      v = pInfo.versionName;
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
+    binding.version.setText(v);
+
+    binding.more.setOnClickListener(
+        view -> startActivity(new Intent(getBaseContext(), MoreActivity.class)));
+  }
+
+  @Override
+  public boolean onSupportNavigateUp() {
+    onBackPressed();
+    return true;
+  }
 
 }

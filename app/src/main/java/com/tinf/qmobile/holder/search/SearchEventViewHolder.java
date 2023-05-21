@@ -8,15 +8,15 @@ import com.tinf.qmobile.databinding.SearchEventBinding;
 import com.tinf.qmobile.model.message.Message;
 
 public class SearchEventViewHolder extends SearchViewHolder<Message> {
-    private final SearchEventBinding binding;
+  private final SearchEventBinding binding;
 
-    public SearchEventViewHolder(View view) {
-        super(view);
-        binding = SearchEventBinding.bind(view);
-    }
+  public SearchEventViewHolder(View view) {
+    super(view);
+    binding = SearchEventBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Message message, Context context, String query, SearchAdapter adapter) {
+  @Override
+  public void bind(Message message, Context context, String query, SearchAdapter adapter) {
         /*title.setText(material.getTitle());
         subtitle.setText(material.getMatter());
         date.setText(material.getDateString());
@@ -28,6 +28,6 @@ public class SearchEventViewHolder extends SearchViewHolder<Message> {
             intent.putExtra("TYPE", MATERIAL);
             context.startActivity(intent);
         });*/
-    }
+  }
 
 }

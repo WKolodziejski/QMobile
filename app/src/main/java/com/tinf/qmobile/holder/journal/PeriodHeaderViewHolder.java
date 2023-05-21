@@ -10,17 +10,20 @@ import com.tinf.qmobile.databinding.PeriodHeaderBinding;
 import com.tinf.qmobile.model.matter.Period;
 
 public class PeriodHeaderViewHolder extends JournalBaseViewHolder<Period> {
-    private final PeriodHeaderBinding binding;
+  private final PeriodHeaderBinding binding;
 
-    public PeriodHeaderViewHolder(@NonNull View view) {
-        super(view);
-        binding = PeriodHeaderBinding.bind(view);
-    }
+  public PeriodHeaderViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+    binding = PeriodHeaderBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Context context, Period header, boolean lookup, boolean isHeader) {
-        binding.title.setText(header.getTitle());
-        binding.badge.setBackgroundTintList(ColorStateList.valueOf(header.matter.getTarget().getColor()));
-    }
+  @Override
+  public void bind(Context context, Period header, boolean lookup, boolean isHeader) {
+    binding.title.setText(header.getTitle());
+    binding.badge.setBackgroundTintList(
+        ColorStateList.valueOf(header.matter.getTarget().getColor()));
+  }
 
 }

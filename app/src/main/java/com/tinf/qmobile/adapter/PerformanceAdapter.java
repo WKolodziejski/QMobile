@@ -33,55 +33,63 @@ import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHolder> {
-    private final Context context;
-    private final AsyncListDiffer<Queryable> list;
-    private final DataSubscription sub1;
-    private final Handler handler;
+  private final Context context;
+  private final AsyncListDiffer<Queryable> list;
+  private final DataSubscription sub1;
+  private final Handler handler;
 
-    public PerformanceAdapter(Context context) {
-        this.context = context;
-        this.handler = new Handler(Looper.getMainLooper());
-        this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
-            }
+  public PerformanceAdapter(Context context) {
+    this.context = context;
+    this.handler = new Handler(Looper.getMainLooper());
+    this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+      @Override
+      public boolean areItemsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+      }
 
-            @Override
-            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.isSame(newItem);
-            }
-        });
+      @Override
+      public boolean areContentsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.isSame(newItem);
+      }
+    });
 
-        updateList();
+    updateList();
 
-        DataObserver observer = data -> updateList();
+    DataObserver observer = data -> updateList();
 
-        sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
-                .onlyChanges()
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-    }
+    sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
+                   .onlyChanges()
+                   .onError(Throwable::printStackTrace)
+                   .observer(observer);
+  }
 
-    private void updateList() {
-        DataBase.get().execute(() -> {
-            List<Queryable> list = getList();
-            handler.post(() -> this.list.submitList(list));
-        });
-    }
+  private void updateList() {
+    DataBase.get().execute(() -> {
+      List<Queryable> list = getList();
+      handler.post(() -> this.list.submitList(list));
+    });
+  }
 
-    private List<Queryable> getList() {
-        List<Matter> matters = DataBase.get().getBoxStore()
-                .boxFor(Matter.class)
-                .query()
-                .order(Matter_.title_)
-                .equal(Matter_.year_, UserUtils.getYear(pos))
-                .and()
-                .equal(Matter_.period_, UserUtils.getPeriod(pos))
-                .build()
-                .find();
+  private List<Queryable> getList() {
+    List<Matter> matters = DataBase.get().getBoxStore()
+                                   .boxFor(Matter.class)
+                                   .query()
+                                   .order(Matter_.title_)
+                                   .equal(Matter_.year_, UserUtils.getYear(pos))
+                                   .and()
+                                   .equal(Matter_.period_, UserUtils.getPeriod(pos))
+                                   .build()
+                                   .find();
 
-        List<Queryable> list = new ArrayList<>(matters);
+    List<Queryable> list = new ArrayList<>(matters);
 //        for (Matter matter : matters) {
 //            int i = 0;
 //
@@ -98,47 +106,55 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
 //                list.add(matter);
 //        }
 
-        if (list.isEmpty())
-            list.add(new Empty());
+    if (list.isEmpty())
+      list.add(new Empty());
 
-        return list;
+    return list;
+  }
+
+  @Override
+  public int getItemViewType(int i) {
+    return list.getCurrentList().get(i).getItemType();
+  }
+
+  @NonNull
+  @Override
+  public PerformanceViewHolder onCreateViewHolder(
+      @NonNull
+      ViewGroup parent, int viewType) {
+    switch (viewType) {
+      case MATTER:
+        return new PerformanceHeaderViewHolder(LayoutInflater.from(context)
+                                                             .inflate(R.layout.chart_header, parent,
+                                                                      false));
+
+      case EMPTY:
+        return new PerformanceEmptyViewHolder(LayoutInflater.from(context)
+                                                            .inflate(R.layout.chart_empty, parent,
+                                                                     false));
     }
 
-    @Override
-    public int getItemViewType(int i) {
-        return list.getCurrentList().get(i).getItemType();
-    }
+    return null;
+  }
 
-    @NonNull
-    @Override
-    public PerformanceViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case MATTER:
-                return new PerformanceHeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.chart_header, parent, false));
+  @Override
+  public void onBindViewHolder(
+      @NonNull
+      PerformanceViewHolder holder, int i) {
+    holder.bind(context, list.getCurrentList().get(i));
+  }
 
-            case EMPTY:
-                return new PerformanceEmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.chart_empty, parent, false));
-        }
+  @Override
+  public int getItemCount() {
+    return list.getCurrentList().size();
+  }
 
-        return null;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull PerformanceViewHolder holder, int i) {
-        holder.bind(context, list.getCurrentList().get(i));
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.getCurrentList().size();
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        sub1.cancel();
-    }
+  @Override
+  public void onDetachedFromRecyclerView(
+      @NonNull
+      RecyclerView recyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView);
+    sub1.cancel();
+  }
 
 }

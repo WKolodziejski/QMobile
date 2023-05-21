@@ -14,207 +14,218 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
+
 import io.objectbox.relation.ToMany;
 
 public class ScheduleParser extends BaseParser {
-    private final static String TAG = "ScheduleParser";
+  private final static String TAG = "ScheduleParser";
 
-    public ScheduleParser(int page, int year, int period, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
-        super(page, year, period, notify, onFinish, onError);
-    }
+  public ScheduleParser(int page, int year, int period, boolean notify,
+                        BaseParser.OnFinish onFinish, OnError onError) {
+    super(page, year, period, notify, onFinish, onError);
+  }
 
-    @Override
-    public void parse(Document document) {
-        Log.i(TAG, "Parsing " + year);
+  @Override
+  public void parse(Document document) {
+    Log.i(TAG, "Parsing " + year);
 
-        Elements tables = document.select("table");
-        Elements scheduleTable = tables.get(11).getElementsByTag("tr");
+    Elements tables = document.select("table");
+    Elements scheduleTable = tables.get(11).getElementsByTag("tr");
 
-        if (scheduleTable.isEmpty())
-            return;
+    if (scheduleTable.isEmpty())
+      return;
 
-        List<Matter> matters = matterBox.query()
-                .equal(Matter_.year_, year).and()
-                .equal(Matter_.period_, period)
-                .build().find();
-
-        for (int i = 0; i < matters.size(); i++) {
-            ToMany<Schedule> s = matters.get(i).schedules;
-            for (int j = 0; j < s.size(); j++) {
-                Schedule h = s.get(j);
-                if (h.isFromSite()) {
-                    scheduleBox.remove(h.id);
-                }
-            }
-        }
-
-        for (int i = 1; i < scheduleTable.size(); i++) {
-            Elements row = scheduleTable.get(i).select("td");
-            String time = row.get(0).text();
-
-            for (int j = 1; j < row.size(); j++) {
-                if (row.get(j).text().isEmpty())
-                    continue;
-
-                Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
-
-                //Log.d("DIVS", divs.toString());
-
-                int k = 0;
-
-                while (k < divs.size()) {
-                    Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
-                            getEndHour(time), getEndMinute(time), year, period);
-
-                    String matterTitle = formatTitle(divs.get(k).attr("title"));
-
-                    String room = "";
-                    Element roomDiv = null;
-
-                    if (k + 1 < divs.size())
-                        roomDiv = divs.get(k + 1);
-
-                    if (roomDiv != null)
-                        room = roomDiv.attr("title");
-
-                    String clazz = "";
-                    Element clazzDiv = null;
-
-                    if (k + 2 < divs.size())
-                        clazzDiv = divs.get(k + 2);
-
-                    if (clazzDiv != null)
-                        clazz = formatClass(divs.get(k + 2).text());
-
-                    k += 3;
-
-                    if (matterTitle.isEmpty())
-                        continue;
-
-                    Matter matter = null;
-
-                    try {
-                        crashlytics.log(matterTitle);
-
-                        matter = matterBox.query()
-                                .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
-                                .equal(Matter_.year_, year).and()
-                                .equal(Matter_.period_, period).and()
-                                .contains(Matter_.description_, StringUtils.stripAccents(clazz), CASE_INSENSITIVE)
-                                .build().findUnique();
-                    } catch (Exception e) {
-                        Log.e(TAG, matterTitle);
-                        e.printStackTrace();
-                    }
-
-                    if (matter == null) {
-                        try {
-                            crashlytics.log(matterTitle);
-
-                            matter = matterBox.query()
-                                    .contains(Matter_.description_, StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE).and()
+    List<Matter> matters = matterBox.query()
                                     .equal(Matter_.year_, year).and()
                                     .equal(Matter_.period_, period)
-                                    .build().findUnique();
-                        } catch (Exception e) {
-                            Log.e(TAG, matterTitle);
-                            e.printStackTrace();
-                        }
-                    }
+                                    .build().find();
 
-                    if (matter == null) {
-                        boolean found = false;
-                        boolean moreThanOne = false;
+    for (int i = 0; i < matters.size(); i++) {
+      ToMany<Schedule> s = matters.get(i).schedules;
+      for (int j = 0; j < s.size(); j++) {
+        Schedule h = s.get(j);
+        if (h.isFromSite()) {
+          scheduleBox.remove(h.id);
+        }
+      }
+    }
 
-                        Log.d(matterTitle, "Query failed");
+    for (int i = 1; i < scheduleTable.size(); i++) {
+      Elements row = scheduleTable.get(i).select("td");
+      String time = row.get(0).text();
 
-                        for (Matter m : matters) {
-                            if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(matterTitle))) {
-                                if (found) {
-                                    moreThanOne = true;
-                                    break;
-                                }
+      for (int j = 1; j < row.size(); j++) {
+        if (row.get(j).text().isEmpty())
+          continue;
 
-                                found = true;
-                                matter = m;
-                            }
-                        }
+        Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
 
-                        if (moreThanOne) {
-                            for (Matter m : matters) {
-                                if (StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(matterTitle))
-                                        && StringUtils.containsIgnoreCase(m.getDescription_(), StringUtils.stripAccents(clazz))) {
-                                    matter = m;
-                                }
-                            }
-                        }
-                    }
+        //Log.d("DIVS", divs.toString());
 
-                    if (matter == null) {
-                        crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
-                        Log.e(matterTitle, "Not found in DB");
-                        continue;
-                    }
+        int k = 0;
 
-                    schedule.setRoom(room);
+        while (k < divs.size()) {
+          Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
+                                           getEndHour(time), getEndMinute(time), year, period);
 
-                    schedule.matter.setTarget(matter);
-                    scheduleBox.put(schedule);
-                    matter.schedules.add(schedule);
-                    matterBox.put(matter);
-                }
+          String matterTitle = formatTitle(divs.get(k).attr("title"));
+
+          String room = "";
+          Element roomDiv = null;
+
+          if (k + 1 < divs.size())
+            roomDiv = divs.get(k + 1);
+
+          if (roomDiv != null)
+            room = roomDiv.attr("title");
+
+          String clazz = "";
+          Element clazzDiv = null;
+
+          if (k + 2 < divs.size())
+            clazzDiv = divs.get(k + 2);
+
+          if (clazzDiv != null)
+            clazz = formatClass(divs.get(k + 2).text());
+
+          k += 3;
+
+          if (matterTitle.isEmpty())
+            continue;
+
+          Matter matter = null;
+
+          try {
+            crashlytics.log(matterTitle);
+
+            matter = matterBox.query()
+                              .contains(Matter_.description_, StringUtils.stripAccents(matterTitle),
+                                        CASE_INSENSITIVE).and()
+                              .equal(Matter_.year_, year).and()
+                              .equal(Matter_.period_, period).and()
+                              .contains(Matter_.description_, StringUtils.stripAccents(clazz),
+                                        CASE_INSENSITIVE)
+                              .build().findUnique();
+          } catch (Exception e) {
+            Log.e(TAG, matterTitle);
+            e.printStackTrace();
+          }
+
+          if (matter == null) {
+            try {
+              crashlytics.log(matterTitle);
+
+              matter = matterBox.query()
+                                .contains(Matter_.description_,
+                                          StringUtils.stripAccents(matterTitle), CASE_INSENSITIVE)
+                                .and()
+                                .equal(Matter_.year_, year)
+                                .and()
+                                .equal(Matter_.period_, period)
+                                .build()
+                                .findUnique();
+            } catch (Exception e) {
+              Log.e(TAG, matterTitle);
+              e.printStackTrace();
             }
+          }
+
+          if (matter == null) {
+            boolean found = false;
+            boolean moreThanOne = false;
+
+            Log.d(matterTitle, "Query failed");
+
+            for (Matter m : matters) {
+              if (StringUtils.containsIgnoreCase(m.getDescription_(),
+                                                 StringUtils.stripAccents(matterTitle))) {
+                if (found) {
+                  moreThanOne = true;
+                  break;
+                }
+
+                found = true;
+                matter = m;
+              }
+            }
+
+            if (moreThanOne) {
+              for (Matter m : matters) {
+                if (StringUtils.containsIgnoreCase(m.getDescription_(),
+                                                   StringUtils.stripAccents(matterTitle))
+                    && StringUtils.containsIgnoreCase(m.getDescription_(),
+                                                      StringUtils.stripAccents(clazz))) {
+                  matter = m;
+                }
+              }
+            }
+          }
+
+          if (matter == null) {
+            crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
+            Log.e(matterTitle, "Not found in DB");
+            continue;
+          }
+
+          schedule.setRoom(room);
+
+          schedule.matter.setTarget(matter);
+          scheduleBox.put(schedule);
+          matter.schedules.add(schedule);
+          matterBox.put(matter);
         }
+      }
     }
+  }
 
-    private int getStartHour(String time) {
-        return formatHour(formatStart(time));
+  private int getStartHour(String time) {
+    return formatHour(formatStart(time));
+  }
+
+  private int getEndHour(String time) {
+    return formatHour(formatEnd(time));
+  }
+
+  private int getStartMinute(String time) {
+    return formatMinute(formatStart(time));
+  }
+
+  private int getEndMinute(String time) {
+    return formatMinute(formatEnd(time));
+  }
+
+  private int formatHour(String string) {
+    string = string.substring(0, string.indexOf(":"));
+    return Integer.parseInt(string);
+  }
+
+  private int formatMinute(String string) {
+    string = string.substring(string.indexOf(":") + 1);
+    return Integer.parseInt(string);
+  }
+
+  private String formatStart(String string) {
+    string = string.substring(0, string.indexOf("~"));
+    return string;
+  }
+
+  private String formatEnd(String string) {
+    string = string.substring(string.indexOf("~") + 1);
+    return string;
+  }
+
+  private String formatTitle(String s) {
+    if (s.contains("(")) {
+      s = s.substring(0, s.indexOf("(")).trim();
     }
+    return s;
+  }
 
-    private int getEndHour(String time) {
-        return formatHour(formatEnd(time));
-    }
+  private String formatClass(String s) {
+    if (s.contains(" "))
+      s = s.substring(0, s.indexOf(" "));
 
-    private int getStartMinute(String time) {
-        return formatMinute(formatStart(time));
-    }
-
-    private int getEndMinute(String time) {
-        return formatMinute(formatEnd(time));
-    }
-
-    private int formatHour(String string) {
-        string = string.substring(0, string.indexOf(":"));
-        return Integer.parseInt(string);
-    }
-
-    private int formatMinute(String string) {
-        string = string.substring(string.indexOf(":") + 1);
-        return Integer.parseInt(string);
-    }
-
-    private String formatStart(String string) {
-        string = string.substring(0, string.indexOf("~"));
-        return string;
-    }
-
-    private String formatEnd(String string) {
-        string = string.substring(string.indexOf("~") + 1);
-        return string;
-    }
-
-    private String formatTitle(String s) {
-        if (s.contains("(")) {
-            s = s.substring(0, s.indexOf("(")).trim();
-        }
-        return s;
-    }
-
-    private String formatClass(String s) {
-        if (s.contains(" "))
-            s = s.substring(0, s.indexOf(" "));
-
-        return s;
-    }
+    return s;
+  }
 
 }

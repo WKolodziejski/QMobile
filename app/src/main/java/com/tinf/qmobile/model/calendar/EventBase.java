@@ -20,162 +20,167 @@ import io.objectbox.annotation.Transient;
 
 @BaseEntity
 public abstract class EventBase extends Event implements CalendarBase {
-    @Id public long id;
-    private String title;
-    private long startTime;
-    private long endTime;
-    private String description;
-    private int color;
-    @Transient public boolean isHeader;
+  @Id
+  public long id;
+  private String title;
+  private long startTime;
+  private long endTime;
+  private String description;
+  private int color;
+  @Transient
+  public boolean isHeader;
 
-    private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
-    private static final SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
+  private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+  private static final SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
 
-    public EventBase(String title, long startTime) {
-        super(0, startTime);
-        this.title = title;
-        this.startTime = startTime;
-        endTime = 0;
+  public EventBase(String title, long startTime) {
+    super(0, startTime);
+    this.title = title;
+    this.startTime = startTime;
+    endTime = 0;
+  }
+
+  public EventBase(String title, long startTime, long endTime) {
+    super(0, startTime);
+    this.title = title;
+    this.startTime = startTime;
+    this.endTime = endTime;
+  }
+
+  public EventBase(long startTime,
+                   @ColorInt
+                   int color) {
+    super(color, startTime);
+    this.startTime = startTime;
+    this.color = color;
+    endTime = 0;
+  }
+
+  public String getEndDateString() {
+    return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(endTime);
+  }
+
+  public String getStartDateString() {
+    return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(startTime);
+  }
+
+  public String getMonthHashKey() {
+    return new SimpleDateFormat("MM/yyyy", Locale.getDefault()).format(startTime);
+  }
+
+  public boolean isRanged() {
+    if (endTime == 0 || endTime == startTime)
+      return false;
+    else {
+      Calendar s = Calendar.getInstance();
+      s.setTimeInMillis(startTime);
+
+      Calendar e = Calendar.getInstance();
+      e.setTimeInMillis(endTime);
+
+      return !(s.get(Calendar.DAY_OF_MONTH) == e.get(Calendar.DAY_OF_MONTH)
+               && s.get(Calendar.MONTH) == e.get(Calendar.MONTH)
+               && s.get(Calendar.YEAR) == e.get(Calendar.YEAR));
     }
+  }
 
-    public EventBase(String title, long startTime, long endTime) {
-        super(0, startTime);
-        this.title = title;
-        this.startTime = startTime;
-        this.endTime = endTime;
-    }
+  @Override
+  public Date getDate() {
+    return new Date(startTime);
+  }
 
-    public EventBase(long startTime, @ColorInt int color) {
-        super(color, startTime);
-        this.startTime = startTime;
-        this.color = color;
-        endTime = 0;
-    }
+  @Override
+  public int getDay() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(startTime);
+    return calendar.get(Calendar.DAY_OF_YEAR);
+  }
 
-    public String getEndDateString() {
-        return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(endTime);
-    }
+  @Override
+  public int getYear() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(startTime);
+    return calendar.get(Calendar.YEAR);
+  }
 
-    public String getStartDateString() {
-        return new SimpleDateFormat("EE, dd/MM/yyyy", Locale.getDefault()).format(startTime);
-    }
+  @Override
+  public long getTimeInMillis() {
+    return startTime;
+  }
 
-    public String getMonthHashKey() {
-        return new SimpleDateFormat("MM/yyyy", Locale.getDefault()).format(startTime);
-    }
+  @Override
+  public boolean isHeader() {
+    return isHeader;
+  }
 
-    public boolean isRanged() {
-        if (endTime == 0 || endTime == startTime)
-            return false;
-        else {
-            Calendar s = Calendar.getInstance();
-            s.setTimeInMillis(startTime);
+  public String getDayString() {
+    return day.format(startTime);
+  }
 
-            Calendar e = Calendar.getInstance();
-            e.setTimeInMillis(endTime);
+  public String getWeekString() {
+    return week.format(startTime);
+  }
 
-            return !(s.get(Calendar.DAY_OF_MONTH) == e.get(Calendar.DAY_OF_MONTH)
-                    && s.get(Calendar.MONTH) == e.get(Calendar.MONTH)
-                    && s.get(Calendar.YEAR) == e.get(Calendar.YEAR));
-        }
-    }
+  /*
+   * Required methods
+   */
 
-    @Override
-    public Date getDate() {
-        return new Date(startTime);
-    }
+  public EventBase() {
+    super(0, 0);
+  }
 
-    @Override
-    public int getDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(startTime);
-        return calendar.get(Calendar.DAY_OF_YEAR);
-    }
+  public void setColor(int color) {
+    this.color = color;
+  }
 
-    @Override
-    public int getYear() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(startTime);
-        return calendar.get(Calendar.YEAR);
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    @Override
-    public long getTimeInMillis() {
-        return startTime;
-    }
+  public long getStartTime() {
+    return startTime;
+  }
 
-    @Override
-    public boolean isHeader() {
-        return isHeader;
-    }
+  public long getEndTime() {
+    return endTime;
+  }
 
-    public String getDayString() {
-        return day.format(startTime);
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public String getWeekString() {
-        return week.format(startTime);
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    /*
-     * Required methods
-     */
+  @Override
+  public int getColor() {
+    return color == 0 ? App.getContext().getResources().getColor(R.color.colorAccent) : color;
+  }
 
-    public EventBase() {
-        super(0, 0);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getId(), getTitle(), getStartTime(), getEndTime(),
+                        getDescription(), getColor());
+  }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof EventBase)) return false;
+    if (!super.equals(o)) return false;
+    EventBase eventBase = (EventBase) o;
+    boolean eq = getId() == eventBase.getId() && getStartTime() == eventBase.getStartTime()
+                 && getEndTime() == eventBase.getEndTime() && getColor() == eventBase.getColor();
 
-    public String getTitle() {
-        return title;
-    }
+    if (getTitle() != null)
+      eq &= getTitle().equals(eventBase.getTitle());
 
-    public long getStartTime() {
-        return startTime;
-    }
+    if (getDescription() != null)
+      eq &= getDescription().equals(eventBase.getDescription());
 
-    public long getEndTime() {
-        return endTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public int getColor() {
-        return color == 0 ? App.getContext().getResources().getColor(R.color.colorAccent) : color;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getId(), getTitle(), getStartTime(), getEndTime(), getDescription(), getColor());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof EventBase)) return false;
-        if (!super.equals(o)) return false;
-        EventBase eventBase = (EventBase) o;
-        boolean eq = getId() == eventBase.getId() && getStartTime() == eventBase.getStartTime()
-                && getEndTime() == eventBase.getEndTime() && getColor() == eventBase.getColor();
-
-        if (getTitle() != null)
-            eq &= getTitle().equals(eventBase.getTitle());
-
-        if (getDescription() != null)
-            eq &= getDescription().equals(eventBase.getDescription());
-
-        return eq;
-    }
+    return eq;
+  }
 
     /*@Override
     public boolean equals(CalendarBase event) {
@@ -198,9 +203,9 @@ public abstract class EventBase extends Event implements CalendarBase {
         return eq;
     }*/
 
-    @Override
-    public LocalDate getHashKey() {
-        return new LocalDate(getDate());
-    }
+  @Override
+  public LocalDate getHashKey() {
+    return new LocalDate(getDate());
+  }
 
 }

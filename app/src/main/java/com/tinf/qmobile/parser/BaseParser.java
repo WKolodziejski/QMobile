@@ -4,7 +4,6 @@ import static com.tinf.qmobile.App.getContext;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Html;
 import android.util.Log;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -29,68 +28,80 @@ import java.util.concurrent.Executors;
 import io.objectbox.Box;
 
 public abstract class BaseParser {
-    protected OnFinish onFinish;
-    protected OnError onError;
-    protected final int page;
-    protected final int year;
-    protected final int period;
-    protected final boolean notify;
-    private boolean success;
+  protected OnFinish onFinish;
+  protected OnError onError;
+  protected final int page;
+  protected final int year;
+  protected final int period;
+  protected final boolean notify;
+  private boolean success;
 
-    protected Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
-    protected Box<Period> periodBox = DataBase.get().getBoxStore().boxFor(Period.class);
-    protected Box<Journal> journalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-    protected Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
-    protected Box<Material> materialsBox = DataBase.get().getBoxStore().boxFor(Material.class);
-    protected Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-    protected Box<Message> messageBox = DataBase.get().getBoxStore().boxFor(Message.class);
-    protected Box<Attachment> attachmentBox = DataBase.get().getBoxStore().boxFor(Attachment.class);
-    protected Box<Sender> senderBox = DataBase.get().getBoxStore().boxFor(Sender.class);
-    protected Box<Clazz> classBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
-    protected FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+  protected Box<Matter> matterBox =
+      DataBase.get().getBoxStore().boxFor(Matter.class);
+  protected Box<Period> periodBox =
+      DataBase.get().getBoxStore().boxFor(Period.class);
+  protected Box<Journal> journalBox =
+      DataBase.get().getBoxStore().boxFor(Journal.class);
+  protected Box<Schedule> scheduleBox =
+      DataBase.get().getBoxStore().boxFor(Schedule.class);
+  protected Box<Material> materialsBox =
+      DataBase.get().getBoxStore().boxFor(Material.class);
+  protected Box<EventSimple> eventSimpleBox =
+      DataBase.get().getBoxStore().boxFor(EventSimple.class);
+  protected Box<Message> messageBox =
+      DataBase.get().getBoxStore().boxFor(Message.class);
+  protected Box<Attachment> attachmentBox =
+      DataBase.get().getBoxStore().boxFor(Attachment.class);
+  protected Box<Sender> senderBox =
+      DataBase.get().getBoxStore().boxFor(Sender.class);
+  protected Box<Clazz> classBox =
+      DataBase.get().getBoxStore().boxFor(Clazz.class);
 
-    public BaseParser(int page, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
-        this.page = page;
-        this.year = year;
-        this.period = period;
-        this.notify = notify;
-        this.onFinish = onFinish;
-        this.onError = onError;
-    }
+  protected FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
-    public void execute(String string) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            Log.i(String.valueOf(page), year + "/" + period);
+  public BaseParser(int page, int year, int period, boolean notify, OnFinish onFinish,
+                    OnError onError) {
+    this.page = page;
+    this.year = year;
+    this.period = period;
+    this.notify = notify;
+    this.onFinish = onFinish;
+    this.onError = onError;
+  }
 
-            try {
-                DataBase.get().getBoxStore().callInTx(() -> {
-                    parse(Jsoup.parse(string.replaceAll("\\s+", " ")));
-                    success = true;
-                    return true;
-                });
-            } catch (Exception e) {
-                crashlytics.recordException(e);
-                e.printStackTrace();
-                success = false;
-            }
+  public void execute(String string) {
+    Executors.newSingleThreadExecutor().execute(() -> {
+      Log.i(String.valueOf(page), year + "/" + period);
 
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (success)
-                    onFinish.onFinish(page, year, period);
-                else
-                    onError.onError(page, getContext().getString(R.string.client_error));
-            });
+      try {
+        DataBase.get().getBoxStore().callInTx(() -> {
+          parse(Jsoup.parse(string.replaceAll("\\s+", " ")));
+          success = true;
+          return true;
         });
-    }
+      } catch (Exception e) {
+        crashlytics.recordException(e);
+        e.printStackTrace();
+        success = false;
+      }
 
-    public interface OnError {
-        void onError(int pg, String error);
-    }
+      new Handler(Looper.getMainLooper()).post(() -> {
+        if (success)
+          onFinish.onFinish(page, year, period);
+        else
+          onError.onError(page, getContext().getString(R.string.client_error));
+      });
+    });
+  }
 
-    public interface OnFinish {
-        void onFinish(int pg, int year, int period);
-    }
+  public interface OnError {
+    void onError(int pg, String error);
+  }
 
-    public abstract void parse(final Document document);
+  public interface OnFinish {
+    void onFinish(int pg, int year, int period);
+  }
+
+  public abstract void parse(final Document document);
 
 }

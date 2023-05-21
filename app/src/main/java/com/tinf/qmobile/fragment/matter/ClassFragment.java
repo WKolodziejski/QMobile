@@ -19,29 +19,39 @@ import com.tinf.qmobile.network.Client;
 
 public class ClassFragment extends Fragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_classes, container, false);
-    }
+  @Nullable
+  @Override
+  public View onCreateView(
+      @NonNull
+      LayoutInflater inflater,
+      @Nullable
+      ViewGroup container,
+      @Nullable
+      Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_classes, container, false);
+  }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+  @Override
+  public void onViewCreated(
+      @NonNull
+      View view,
+      @Nullable
+      Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-        Client.get().load(getArguments().getLong("ID"));
+    Client.get().load(getArguments().getLong("ID"));
 
-        Log.d("CLASS", String.valueOf(getArguments().getLong("ID")));
+    Log.d("CLASS", String.valueOf(getArguments().getLong("ID")));
 
-        ClassesAdapter adapter = new ClassesAdapter(getContext(), getArguments());
+    ClassesAdapter adapter = new ClassesAdapter(getContext(), getArguments());
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(adapter);
+    RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
+    recyclerView.setItemViewCacheSize(20);
+    recyclerView.setDrawingCacheEnabled(true);
+    recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+    recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
+    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    recyclerView.setAdapter(adapter);
 
         /*if (getArguments() != null) {
             long id = getArguments().getLong("ID2");
@@ -55,6 +65,6 @@ public class ClassFragment extends Fragment {
                 startActivity(intent);
             }
         }*/
-    }
+  }
 
 }

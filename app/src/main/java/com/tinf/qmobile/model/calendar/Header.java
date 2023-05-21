@@ -13,64 +13,64 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class Header implements CalendarBase {
-    private final long time;
+  private final long time;
 
-    private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
-    private static final SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
+  private static final SimpleDateFormat day = new SimpleDateFormat("d", Locale.getDefault());
+  private static final SimpleDateFormat week = new SimpleDateFormat("EE", Locale.getDefault());
 
-    public Header(long time) {
-        this.time = time;
-    }
+  public Header(long time) {
+    this.time = time;
+  }
 
-    public String getDayString() {
-        return day.format(time);
-    }
+  public String getDayString() {
+    return day.format(time);
+  }
 
-    public String getWeekString() {
-        return week.format(time);
-    }
+  public String getWeekString() {
+    return week.format(time);
+  }
 
-    @Override
-    public int getItemType() {
-        return MATTER;
-    }
+  @Override
+  public int getItemType() {
+    return MATTER;
+  }
 
-    @Override
-    public Date getDate() {
-        return new Date(time);
-    }
+  @Override
+  public Date getDate() {
+    return new Date(time);
+  }
 
-    @Override
-    public int getDay() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(time);
-        return calendar.get(Calendar.DAY_OF_YEAR);
-    }
+  @Override
+  public int getDay() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(time);
+    return calendar.get(Calendar.DAY_OF_YEAR);
+  }
 
-    @Override
-    public int getYear() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(time);
-        return calendar.get(Calendar.YEAR);
-    }
+  @Override
+  public int getYear() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(time);
+    return calendar.get(Calendar.YEAR);
+  }
 
-    @Override
-    public LocalDate getHashKey() {
-        return new LocalDate(getDate());
-    }
+  @Override
+  public LocalDate getHashKey() {
+    return new LocalDate(getDate());
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Header)) return false;
-        Header header = (Header) o;
-        return time == header.time;
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Header)) return false;
+    Header header = (Header) o;
+    return time == header.time;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(time);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(time);
+  }
 
     /*@Override
     public boolean equals(CalendarBase event) {
@@ -81,19 +81,19 @@ public class Header implements CalendarBase {
         return h.time == time;
     }*/
 
-    @Override
-    public boolean isHeader() {
-        return true;
-    }
+  @Override
+  public boolean isHeader() {
+    return true;
+  }
 
-    @Override
-    public long getId() {
-        return MATTER;
-    }
+  @Override
+  public long getId() {
+    return MATTER;
+  }
 
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
 
 }

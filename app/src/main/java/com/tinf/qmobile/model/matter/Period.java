@@ -15,152 +15,153 @@ import io.objectbox.relation.ToOne;
 
 @Entity
 public class Period implements Queryable {
-    @Id public long id;
-    private String title_;
-    private float grade_ = -1;
-    private float gradeFinal_ = -1;
-    private int absences_ = -1;
-    private boolean isSub_;
-    public ToOne<Matter> matter;
-    public ToMany<Journal> journals;
-    public ToMany<Clazz> classes;
+  @Id
+  public long id;
+  private String title_;
+  private float grade_ = -1;
+  private float gradeFinal_ = -1;
+  private int absences_ = -1;
+  private boolean isSub_;
+  public ToOne<Matter> matter;
+  public ToMany<Journal> journals;
+  public ToMany<Clazz> classes;
 
-    public Period(String title){
-        this.title_ = title;
-    }
+  public Period(String title) {
+    this.title_ = title;
+  }
 
-    public String getGrade() {
-        return grade_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", grade_);
-    }
+  public String getGrade() {
+    return grade_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", grade_);
+  }
 
-    public String getGradeFinal() {
-        return gradeFinal_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", gradeFinal_);
-    }
+  public String getGradeFinal() {
+    return gradeFinal_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", gradeFinal_);
+  }
 
-    public String getAbsences() {
-        return absences_ == -1 ? "-" : String.valueOf(absences_);
-    }
+  public String getAbsences() {
+    return absences_ == -1 ? "-" : String.valueOf(absences_);
+  }
 
-    public String getTitle() {
-        return title_ == null ? "-" : title_;
-    }
+  public String getTitle() {
+    return title_ == null ? "-" : title_;
+  }
 
-    public void setTitle(String title) {
-        this.title_ = title;
-    }
+  public void setTitle(String title) {
+    this.title_ = title;
+  }
 
-    public void setGrade(float grade) {
-        this.grade_ = grade;
-    }
+  public void setGrade(float grade) {
+    this.grade_ = grade;
+  }
 
-    public void setGradeFinal(float gradeFinal) {
-        this.gradeFinal_ = gradeFinal;
-    }
+  public void setGradeFinal(float gradeFinal) {
+    this.gradeFinal_ = gradeFinal;
+  }
 
-    public void setAbsences(int absences) {
-        this.absences_ = absences;
-    }
+  public void setAbsences(int absences) {
+    this.absences_ = absences;
+  }
 
-    public float getGradeSum() {
-        if (journals.isEmpty())
-            return -1;
+  public float getGradeSum() {
+    if (journals.isEmpty())
+      return -1;
 
-        float sum = 0;
+    float sum = 0;
 
-        for (Journal j : journals)
-            if (j.getGrade_() != -1)
-                sum += j.getGrade_();
+    for (Journal j : journals)
+      if (j.getGrade_() != -1)
+        sum += j.getGrade_();
 
-        return sum;
-    }
+    return sum;
+  }
 
-    public String getGradeSumString() {
-        float p = getGradeSum();
+  public String getGradeSumString() {
+    float p = getGradeSum();
 
-        return p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p);
-    }
+    return p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p);
+  }
 
-    public float getPlotGrade() {
-        if (journals.isEmpty())
-            return 0;
+  public float getPlotGrade() {
+    if (journals.isEmpty())
+      return 0;
 
-        float sum = getGradeSum();
+    float sum = getGradeSum();
 
-        float weight = 0;
+    float weight = 0;
 
-        for (Journal j : journals)
-            if (j.getWeight_() != -1)
-                weight += j.getMax_();
+    for (Journal j : journals)
+      if (j.getWeight_() != -1)
+        weight += j.getMax_();
 
-        return (sum / weight) * 10;
-    }
+    return (sum / weight) * 10;
+  }
 
-    public String getLabel() {
-        return String.format(Locale.getDefault(), "%.1f", getPlotGrade());
-    }
+  public String getLabel() {
+    return String.format(Locale.getDefault(), "%.1f", getPlotGrade());
+  }
 
-    public void setSub() {
-        isSub_ = true;
-    }
+  public void setSub() {
+    isSub_ = true;
+  }
 
-    @Override
-    public int getItemType() {
-        return PERIOD;
-    }
+  @Override
+  public int getItemType() {
+    return PERIOD;
+  }
 
-    /*
-     * Required methods
-     */
+  /*
+   * Required methods
+   */
 
-    public Period() {}
+  public Period() {}
 
-    public String getTitle_() {
-        return title_;
-    }
+  public String getTitle_() {
+    return title_;
+  }
 
-    public float getGrade_() {
-        return grade_;
-    }
+  public float getGrade_() {
+    return grade_;
+  }
 
-    public float getGradeFinal_() {
-        return gradeFinal_;
-    }
+  public float getGradeFinal_() {
+    return gradeFinal_;
+  }
 
-    public int getAbsences_() {
-        return absences_;
-    }
+  public int getAbsences_() {
+    return absences_;
+  }
 
-    public boolean isSub_() {
-        return isSub_;
-    }
+  public boolean isSub_() {
+    return isSub_;
+  }
 
-    @Override
-    public long getId() {
-        return id;
-    }
+  @Override
+  public long getId() {
+    return id;
+  }
 
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Period)) return false;
-        Period period = (Period) o;
-        return  id == period.id &&
-                Float.compare(period.getGrade_(), getGrade_()) == 0 &&
-                Float.compare(period.getGradeFinal_(), getGradeFinal_()) == 0 &&
-                getAbsences_() == period.getAbsences_() &&
-                isSub_() == period.isSub_() &&
-                matter.getTarget().equals(period.matter.getTarget()) &&
-                Objects.equals(getTitle_(), period.getTitle_());
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Period)) return false;
+    Period period = (Period) o;
+    return id == period.id &&
+           Float.compare(period.getGrade_(), getGrade_()) == 0 &&
+           Float.compare(period.getGradeFinal_(), getGradeFinal_()) == 0 &&
+           getAbsences_() == period.getAbsences_() &&
+           isSub_() == period.isSub_() &&
+           matter.getTarget().equals(period.matter.getTarget()) &&
+           Objects.equals(getTitle_(), period.getTitle_());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, title_, grade_, gradeFinal_, absences_, isSub_);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, title_, grade_, gradeFinal_, absences_, isSub_);
+  }
 
 }

@@ -25,66 +25,66 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Works {
-    private final static String TAG = "Scheduler";
-    private final static WorkManager workManager = WorkManager.getInstance(getContext());
+  private final static String TAG = "Scheduler";
+  private final static WorkManager workManager = WorkManager.getInstance(getContext());
 
-    public static void scheduleParser() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+  public static void scheduleParser() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-        if (!prefs.getBoolean(CHECK, true))
-            return;
+    if (!prefs.getBoolean(CHECK, true))
+      return;
 
-        Constraints.Builder constraints = new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.UNMETERED);
+    Constraints.Builder constraints = new Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.UNMETERED);
 
-        if (prefs.getBoolean(MOBILE, false)) {
-            constraints.setRequiredNetworkType(NetworkType.CONNECTED);
-            Log.i(TAG, "Mobile data on");
-        }
-
-        long time = prefs.getBoolean(ALERT, false) ? 1 : 5;
-
-        PeriodicWorkRequest.Builder work = new PeriodicWorkRequest.Builder(ParserWorker.class,
-                time, HOURS,
-                15, MINUTES)
-                .setConstraints(constraints.build());
-
-        work.setInitialDelay(time, HOURS);
-
-        workManager.cancelUniqueWork("background");
-        workManager.enqueueUniquePeriodicWork("background",
-                ExistingPeriodicWorkPolicy.REPLACE, work.build());
-
-        Log.i(TAG, "Parser scheduled");
+    if (prefs.getBoolean(MOBILE, false)) {
+      constraints.setRequiredNetworkType(NetworkType.CONNECTED);
+      Log.i(TAG, "Mobile data on");
     }
 
-    public static void scheduleAlarm(Data input, long time, boolean cancel) {
-        String name = String.valueOf(input.getInt("ID", 0));
+    long time = prefs.getBoolean(ALERT, false) ? 1 : 5;
 
-        if (cancel) {
-            workManager.cancelUniqueWork(name);
-            return;
-        }
+    PeriodicWorkRequest.Builder work = new PeriodicWorkRequest.Builder(ParserWorker.class,
+                                                                       time, HOURS,
+                                                                       15, MINUTES)
+        .setConstraints(constraints.build());
 
-        OneTimeWorkRequest.Builder work = new OneTimeWorkRequest.Builder(AlarmWorker.class)
-                .setInputData(input);
+    work.setInitialDelay(time, HOURS);
 
-        Log.i(TAG, "Alarm scheduled for " + new Date(time));
+    workManager.cancelUniqueWork("background");
+    workManager.enqueueUniquePeriodicWork("background",
+                                          ExistingPeriodicWorkPolicy.REPLACE, work.build());
 
-        time -= Calendar.getInstance().getTimeInMillis();
+    Log.i(TAG, "Parser scheduled");
+  }
 
-        if (time < 0)
-            return;
+  public static void scheduleAlarm(Data input, long time, boolean cancel) {
+    String name = String.valueOf(input.getInt("ID", 0));
 
-        Log.i(TAG, "Delay of " + time + "ms");
-
-        work.setInitialDelay(time, TimeUnit.MILLISECONDS);
-
-        workManager.enqueueUniqueWork(name, ExistingWorkPolicy.REPLACE, work.build());
+    if (cancel) {
+      workManager.cancelUniqueWork(name);
+      return;
     }
 
-    public static void cancelAll() {
-        workManager.cancelAllWork();
-    }
+    OneTimeWorkRequest.Builder work = new OneTimeWorkRequest.Builder(AlarmWorker.class)
+        .setInputData(input);
+
+    Log.i(TAG, "Alarm scheduled for " + new Date(time));
+
+    time -= Calendar.getInstance().getTimeInMillis();
+
+    if (time < 0)
+      return;
+
+    Log.i(TAG, "Delay of " + time + "ms");
+
+    work.setInitialDelay(time, TimeUnit.MILLISECONDS);
+
+    workManager.enqueueUniqueWork(name, ExistingWorkPolicy.REPLACE, work.build());
+  }
+
+  public static void cancelAll() {
+    workManager.cancelAllWork();
+  }
 
 }

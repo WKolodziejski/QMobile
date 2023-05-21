@@ -8,11 +8,11 @@ import com.tinf.qmobile.model.calendar.Header;
 
 public class CalendarHeaderViewHolder extends CalendarViewHolder<Header> {
 
-    public CalendarHeaderViewHolder(View view) {
-        super(view);
-    }
+  public CalendarHeaderViewHolder(View view) {
+    super(view);
+  }
 
-    @Override
-    public void bind(Header calendar, Context context) {}
+  @Override
+  public void bind(Header calendar, Context context) {}
 
 }

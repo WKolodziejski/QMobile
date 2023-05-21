@@ -32,95 +32,110 @@ import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
-    private final Context context;
-    private final AsyncListDiffer<Queryable> list;
-    private final Messenger messenger;
-    private final DataSubscription sub1;
-    private final Handler handler;
+  private final Context context;
+  private final AsyncListDiffer<Queryable> list;
+  private final Messenger messenger;
+  private final DataSubscription sub1;
+  private final Handler handler;
 
-    public MessagesAdapter(Context context, Messenger messenger) {
-        this.context = context;
-        this.messenger = messenger;
-        this.handler = new Handler(Looper.getMainLooper());
-        this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
-            }
+  public MessagesAdapter(Context context, Messenger messenger) {
+    this.context = context;
+    this.messenger = messenger;
+    this.handler = new Handler(Looper.getMainLooper());
+    this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+      @Override
+      public boolean areItemsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+      }
 
-            @Override
-            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.isSame(newItem);
-            }
-        });
+      @Override
+      public boolean areContentsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.isSame(newItem);
+      }
+    });
 
-        updateList();
+    updateList();
 
-        DataObserver observer = data -> updateList();
+    DataObserver observer = data -> updateList();
 
-        sub1 = DataBase.get().getBoxStore().subscribe(Message.class)
-                .onlyChanges()
-                .onError(Throwable::printStackTrace)
-                .observer(observer);
-    }
+    sub1 = DataBase.get().getBoxStore().subscribe(Message.class)
+                   .onlyChanges()
+                   .onError(Throwable::printStackTrace)
+                   .observer(observer);
+  }
 
-    private void updateList() {
-        DataBase.get().execute(() -> {
-            List<Queryable> list = getList();
-            handler.post(() -> this.list.submitList(list));
-        });
-    }
+  private void updateList() {
+    DataBase.get().execute(() -> {
+      List<Queryable> list = getList();
+      handler.post(() -> this.list.submitList(list));
+    });
+  }
 
-    private List<Queryable> getList() {
-        List<Queryable> list = new ArrayList<>(
-                DataBase.get().getBoxStore()
+  private List<Queryable> getList() {
+    List<Queryable> list = new ArrayList<>(
+        DataBase.get().getBoxStore()
                 .boxFor(Message.class)
                 .query()
                 .orderDesc(Message_.date_)
                 .build()
                 .find());
 
-        if (list.isEmpty())
-            list.add(new Empty());
+    if (list.isEmpty())
+      list.add(new Empty());
 
-        return list;
+    return list;
+  }
+
+  @Override
+  public int getItemViewType(int i) {
+    return list.getCurrentList().get(i).getItemType();
+  }
+
+  @NonNull
+  @Override
+  public MessagesViewHolder onCreateViewHolder(
+      @NonNull
+      ViewGroup parent, int viewType) {
+    switch (viewType) {
+      case MESSAGE:
+        return new MessageViewHolder(LayoutInflater.from(context)
+                                                   .inflate(R.layout.message_header, parent,
+                                                            false));
+
+      case EMPTY:
+        return new EmptyViewHolder(LayoutInflater.from(context)
+                                                 .inflate(R.layout.message_empty, parent, false));
     }
 
-    @Override
-    public int getItemViewType(int i) {
-        return list.getCurrentList().get(i).getItemType();
-    }
+    return null;
+  }
 
-    @NonNull
-    @Override
-    public MessagesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case MESSAGE:
-                return new MessageViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.message_header, parent, false));
+  @Override
+  public void onBindViewHolder(
+      @NonNull
+      MessagesViewHolder holder, int i) {
+    holder.bind(context, messenger, list.getCurrentList().get(i));
+  }
 
-            case EMPTY:
-                return new EmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.message_empty, parent, false));
-        }
+  @Override
+  public int getItemCount() {
+    return list.getCurrentList().size();
+  }
 
-        return null;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull MessagesViewHolder holder, int i) {
-        holder.bind(context, messenger, list.getCurrentList().get(i));
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.getCurrentList().size();
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        sub1.cancel();
-    }
+  @Override
+  public void onDetachedFromRecyclerView(
+      @NonNull
+      RecyclerView recyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView);
+    sub1.cancel();
+  }
 
 }

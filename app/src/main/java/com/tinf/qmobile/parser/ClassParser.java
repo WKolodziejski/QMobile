@@ -19,147 +19,156 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.Calendar;
+
 import io.objectbox.query.QueryBuilder;
 
 public class ClassParser extends BaseParser {
-    private final static String TAG = "ClassParser";
-    private final Matter matter;
+  private final static String TAG = "ClassParser";
+  private final Matter matter;
 
-    public ClassParser(Matter matter, int page, int year, int period, boolean notify, BaseParser.OnFinish onFinish, OnError onError) {
-        super(page, year, period, notify, onFinish, onError);
-        this.matter = matter;
+  public ClassParser(Matter matter, int page, int year, int period, boolean notify,
+                     BaseParser.OnFinish onFinish, OnError onError) {
+    super(page, year, period, notify, onFinish, onError);
+    this.matter = matter;
+  }
+
+  @Override
+  public void parse(Document document) {
+    Log.d(TAG, "Parsing");
+
+    Elements as = document.getElementsByAttributeValue("href",
+                                                       Client.get().getURL() + INDEX + PG_JOURNALS +
+                                                       "&ANO_PERIODO=" + matter.getYear_() + "_" +
+                                                       matter.getPeriod_());
+
+    if (as.isEmpty()) {
+      Log.d(TAG, "as is empty");
+      return;
     }
 
-    @Override
-    public void parse(Document document) {
-        Log.d(TAG, "Parsing");
+    Elements tables = as.last().parent().getElementsByTag("table");
 
-        Elements as = document.getElementsByAttributeValue("href", Client.get().getURL() + INDEX + PG_JOURNALS + "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_());
+    for (Element table : tables) {
+      if (!table.hasClass("conteudoTexto"))
+        continue;
 
-        if (as.isEmpty()) {
-            Log.d(TAG, "as is empty");
-            return;
+      Elements trs = table.getElementsByTag("tr");
+      String p = table.previousElementSibling().text();
+      p = p.substring(p.indexOf("-") + 1).trim();
+
+      String cs = trs.last().text();
+
+      Period period = null;
+
+      try {
+        QueryBuilder<Period> builder1 = periodBox.query()
+                                                 .equal(Period_.title_, p, CASE_INSENSITIVE);
+
+        builder1.link(Period_.matter)
+                .equal(Matter_.id, matter.id);
+
+        period = builder1.build().findUnique();
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      if (period == null) {
+        period = new Period(p);
+        period.matter.setTarget(matter);
+        matter.periods.add(period);
+        periodBox.put(period);
+      }
+
+      String teacher = "";
+
+      for (int i = 1; i < trs.size() - 2; i++) {
+        Elements els = trs.get(i).children();
+
+        String date = formatDate(els.get(0).text());
+        int classesCount = Integer.parseInt(els.get(2).text());
+        int absences = formatAbsences(els.get(3).text());
+        long dateLong = getDate(date);
+
+        if (els.size() == 5)
+          teacher = els.get(4).text();
+
+        String content = "";
+
+        if (cs.contains(date)) {
+          cs = cs.substring(cs.indexOf(date) + 1);
+          cs = cs.substring(cs.indexOf(":") + 1);
+
+          content = cs;
+
+          if (content.contains("Data"))
+            content = content.substring(0, content.indexOf("Data")).trim();
+
+          if (content.startsWith("-"))
+            content = content.substring(content.indexOf("-") + 1).trim();
         }
 
-        Elements tables = as.last().parent().getElementsByTag("table");
+        Clazz search = null;
 
-        for (Element table : tables) {
-            if (!table.hasClass("conteudoTexto"))
-                continue;
+        try {
+          QueryBuilder<Clazz> builder2 = classBox.query()
+                                                 .equal(Clazz_.classesCount_, classesCount)
+                                                 .and()
+                                                 .equal(Clazz_.teacher_, teacher, CASE_INSENSITIVE)
+                                                 .and()
+                                                 .between(Clazz_.date_, dateLong, dateLong);
 
-            Elements trs = table.getElementsByTag("tr");
-            String p = table.previousElementSibling().text();
-            p = p.substring(p.indexOf("-") + 1).trim();
+          builder2.link(Clazz_.period)
+                  .equal(Period_.id, period.id);
 
-            String cs = trs.last().text();
+          search = builder2.build().findUnique();
 
-            Period period = null;
-
-            try {
-                QueryBuilder<Period> builder1 = periodBox.query()
-                        .equal(Period_.title_, p, CASE_INSENSITIVE);
-
-                builder1.link(Period_.matter)
-                        .equal(Matter_.id, matter.id);
-
-                period = builder1.build().findUnique();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            if (period == null) {
-                period = new Period(p);
-                period.matter.setTarget(matter);
-                matter.periods.add(period);
-                periodBox.put(period);
-            }
-
-            String teacher = "";
-
-            for (int i = 1; i < trs.size() - 2; i++) {
-                Elements els = trs.get(i).children();
-
-                String date = formatDate(els.get(0).text());
-                int classesCount = Integer.parseInt(els.get(2).text());
-                int absences = formatAbsences(els.get(3).text());
-                long dateLong = getDate(date);
-
-                if (els.size() == 5)
-                    teacher = els.get(4).text();
-
-                String content = "";
-
-                if (cs.contains(date)) {
-                    cs = cs.substring(cs.indexOf(date) + 1);
-                    cs = cs.substring(cs.indexOf(":") + 1);
-
-                    content = cs;
-
-                    if (content.contains("Data"))
-                        content = content.substring(0, content.indexOf("Data")).trim();
-
-                    if (content.startsWith("-"))
-                        content = content.substring(content.indexOf("-") + 1).trim();
-                }
-
-                Clazz search = null;
-
-                try {
-                    QueryBuilder<Clazz> builder2 = classBox.query()
-                            .equal(Clazz_.classesCount_, classesCount).and()
-                            .equal(Clazz_.teacher_, teacher, CASE_INSENSITIVE).and()
-                            .between(Clazz_.date_, dateLong, dateLong);
-
-                    builder2.link(Clazz_.period)
-                            .equal(Period_.id, period.id);
-
-                    search = builder2.build().findUnique();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (search == null) {
-                    Clazz clazz = new Clazz(dateLong, classesCount, absences, teacher, content, period);
-                    period.classes.add(clazz);
-                    classBox.put(clazz);
-                } else {
-                    search.setAbsences(absences);
-                    search.setContent(content);
-                    classBox.put(search);
-                }
-
-                matter.setTeacher(teacher.isEmpty() ? null : teacher);
-
-                periodBox.put(period);
-                matterBox.put(matter);
-            }
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-    }
 
-    private String formatDate(String s) {
-        return s.substring(0, s.indexOf(',')).trim();
-    }
+        if (search == null) {
+          Clazz clazz = new Clazz(dateLong, classesCount, absences, teacher, content, period);
+          period.classes.add(clazz);
+          classBox.put(clazz);
+        } else {
+          search.setAbsences(absences);
+          search.setContent(content);
+          classBox.put(search);
+        }
 
-    private long getDate(String s) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 12);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.YEAR, Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.lastIndexOf("/") + 5)));
-        cal.set(Calendar.MONTH, Integer.parseInt(s.substring(s.indexOf("/") + 1, s.lastIndexOf("/"))) - 1);
-        cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
+        matter.setTeacher(teacher.isEmpty() ? null : teacher);
 
-        return cal.getTimeInMillis();
+        periodBox.put(period);
+        matterBox.put(matter);
+      }
     }
+  }
 
-    private int formatAbsences(String s) {
-        if (s.equalsIgnoreCase("P"))
-            return 0;
-        else
-            return Integer.parseInt(s);
-    }
+  private String formatDate(String s) {
+    return s.substring(0, s.indexOf(',')).trim();
+  }
+
+  private long getDate(String s) {
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.HOUR_OF_DAY, 12);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.YEAR,
+            Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.lastIndexOf("/") + 5)));
+    cal.set(Calendar.MONTH,
+            Integer.parseInt(s.substring(s.indexOf("/") + 1, s.lastIndexOf("/"))) - 1);
+    cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
+
+    return cal.getTimeInMillis();
+  }
+
+  private int formatAbsences(String s) {
+    if (s.equalsIgnoreCase("P"))
+      return 0;
+    else
+      return Integer.parseInt(s);
+  }
 
 }

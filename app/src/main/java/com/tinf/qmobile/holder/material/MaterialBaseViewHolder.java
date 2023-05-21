@@ -13,10 +13,14 @@ import com.tinf.qmobile.model.Queryable;
 
 public abstract class MaterialBaseViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
 
-    public MaterialBaseViewHolder(@NonNull View view) {
-        super(view);
-    }
+  public MaterialBaseViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+  }
 
-    public abstract void bind(Context context, OnInteractListener listener, MaterialsBaseAdapter adapter, ActionMode.Callback callback, T t, boolean isHeader);
+  public abstract void bind(Context context, OnInteractListener listener,
+                            MaterialsBaseAdapter adapter, ActionMode.Callback callback, T t,
+                            boolean isHeader);
 
 }

@@ -20,176 +20,181 @@ import io.objectbox.relation.ToOne;
 @Entity
 public class Journal extends EventBase implements Queryable {
 
-    public enum Type {
-        AVALIACAO(0), PROVA(1), TRABALHO(2), EXERCICIO(3), QUALITATIVA(4);
+  public enum Type {
+    AVALIACAO(0),
+    PROVA(1),
+    TRABALHO(2),
+    EXERCICIO(3),
+    QUALITATIVA(4);
 
-        private final int i;
+    private final int i;
 
-        Type(final int i) {
-            this.i = i;
-        }
-
-        public int get() {
-            return i;
-        }
+    Type(final int i) {
+      this.i = i;
     }
 
-    //@Transient public boolean highlight;
-    private float weight_;
-    private float max_;
-    private float grade_;
-    private int type_;
-    public ToOne<Period> period;
-    public ToOne<Matter> matter;
-    private boolean seen_;
-
-    public Journal(String title, float grade, float weight, float max, long date, int type, Period period, Matter matter, boolean seen) {
-        super(title, date);
-        this.grade_ = grade;
-        this.weight_ = weight;
-        this.max_ = max;
-        this.type_ = type;
-        this.seen_ = seen;
-        this.period.setTarget(period);
-        this.matter.setTarget(matter);
+    public int get() {
+      return i;
     }
+  }
 
-    public String getMatter() {
-        return period.getTarget().matter.getTarget().getTitle();
-    }
+  //@Transient public boolean highlight;
+  private float weight_;
+  private float max_;
+  private float grade_;
+  private int type_;
+  public ToOne<Period> period;
+  public ToOne<Matter> matter;
+  private boolean seen_;
 
-    public String getGrade() {
-        return grade_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", grade_);
-    }
+  public Journal(String title, float grade, float weight, float max, long date, int type,
+                 Period period, Matter matter, boolean seen) {
+    super(title, date);
+    this.grade_ = grade;
+    this.weight_ = weight;
+    this.max_ = max;
+    this.type_ = type;
+    this.seen_ = seen;
+    this.period.setTarget(period);
+    this.matter.setTarget(matter);
+  }
 
-    public String getWeight() {
-        return weight_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", weight_);
-    }
+  public String getMatter() {
+    return period.getTarget().matter.getTarget().getTitle();
+  }
 
-    public String getMax() {
-        return max_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", max_);
-    }
+  public String getGrade() {
+    return grade_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", grade_);
+  }
 
-    public String getType() {
-        if (type_ == AVALIACAO.get()) {
-            return App.getContext().getResources().getString(R.string.journal_Avaliacao);
+  public String getWeight() {
+    return weight_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", weight_);
+  }
 
-        } else if (type_ == Type.PROVA.get()) {
-            return App.getContext().getResources().getString(R.string.journal_Prova);
+  public String getMax() {
+    return max_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", max_);
+  }
 
-        } else if (type_ == Type.EXERCICIO.get()) {
-            return App.getContext().getResources().getString(R.string.journal_Exercicio);
+  public String getType() {
+    if (type_ == AVALIACAO.get()) {
+      return App.getContext().getResources().getString(R.string.journal_Avaliacao);
 
-        } else if (type_ == Type.TRABALHO.get()) {
-            return App.getContext().getResources().getString(R.string.journal_Trabalho);
+    } else if (type_ == Type.PROVA.get()) {
+      return App.getContext().getResources().getString(R.string.journal_Prova);
 
-        } else if (type_ == Type.QUALITATIVA.get()) {
-            return App.getContext().getResources().getString(R.string.journal_Qualitativa);
+    } else if (type_ == Type.EXERCICIO.get()) {
+      return App.getContext().getResources().getString(R.string.journal_Exercicio);
 
-        } else return App.getContext().getResources().getString(R.string.journal_Avaliacao);
-    }
+    } else if (type_ == Type.TRABALHO.get()) {
+      return App.getContext().getResources().getString(R.string.journal_Trabalho);
 
-    public String getShort() {
-        if (type_ == AVALIACAO.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
+    } else if (type_ == Type.QUALITATIVA.get()) {
+      return App.getContext().getResources().getString(R.string.journal_Qualitativa);
 
-        } else if (type_ == Type.PROVA.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Prova);
+    } else return App.getContext().getResources().getString(R.string.journal_Avaliacao);
+  }
 
-        } else if (type_ == Type.EXERCICIO.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Exercicio);
+  public String getShort() {
+    if (type_ == AVALIACAO.get()) {
+      return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
 
-        } else if (type_ == Type.TRABALHO.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Trabalho);
+    } else if (type_ == Type.PROVA.get()) {
+      return App.getContext().getResources().getString(R.string.sigla_Prova);
 
-        } else if (type_ == Type.QUALITATIVA.get()) {
-            return App.getContext().getResources().getString(R.string.sigla_Qualitativa);
+    } else if (type_ == Type.EXERCICIO.get()) {
+      return App.getContext().getResources().getString(R.string.sigla_Exercicio);
 
-        } else return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
-    }
+    } else if (type_ == Type.TRABALHO.get()) {
+      return App.getContext().getResources().getString(R.string.sigla_Trabalho);
 
-    @Override
-    public int getItemType() {
-        return JOURNAL;
-    }
+    } else if (type_ == Type.QUALITATIVA.get()) {
+      return App.getContext().getResources().getString(R.string.sigla_Qualitativa);
 
-    public String formatDate() {
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return format.format(getDate());
-    }
+    } else return App.getContext().getResources().getString(R.string.sigla_Avaliacao);
+  }
 
-    @Override
-    public int getColor() {
-        return matter.getTarget().getColor();
-    }
+  @Override
+  public int getItemType() {
+    return JOURNAL;
+  }
 
-    public String getPeriod() {
-        return period.getTarget().getTitle();
-    }
+  public String formatDate() {
+    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    return format.format(getDate());
+  }
 
-    public void setGrade(float grade) {
-        this.grade_ = grade;
-    }
+  @Override
+  public int getColor() {
+    return matter.getTarget().getColor();
+  }
 
-    public void see() {
-        seen_ = true;
-    }
+  public String getPeriod() {
+    return period.getTarget().getTitle();
+  }
 
-    public float getPlotGrade() {
-        return (grade_ / max_) * 10;
-    }
+  public void setGrade(float grade) {
+    this.grade_ = grade;
+  }
 
-    /*
-     * Required methods
-     */
+  public void see() {
+    seen_ = true;
+  }
 
-    public Journal() {}
+  public float getPlotGrade() {
+    return (grade_ / max_) * 10;
+  }
 
-    public boolean isSeen_() {
-        return seen_;
-    }
+  /*
+   * Required methods
+   */
 
-    public float getWeight_() {
-        return weight_;
-    }
+  public Journal() {}
 
-    public float getMax_() {
-        return max_;
-    }
+  public boolean isSeen_() {
+    return seen_;
+  }
 
-    public float getGrade_() {
-        return grade_;
-    }
+  public float getWeight_() {
+    return weight_;
+  }
 
-    public int getType_() {
-        return type_;
-    }
+  public float getMax_() {
+    return max_;
+  }
 
-    @Override
-    public long getId() {
-        return id;
-    }
+  public float getGrade_() {
+    return grade_;
+  }
 
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
+  public int getType_() {
+    return type_;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Journal)) return false;
-        if (!super.equals(o)) return false;
-        Journal journal = (Journal) o;
-        return  Float.compare(journal.getWeight_(), getWeight_()) == 0 &&
-                Float.compare(journal.getMax_(), getMax_()) == 0 &&
-                Float.compare(journal.getGrade_(), getGrade_()) == 0 &&
-                getType_() == journal.getType_();
-    }
+  @Override
+  public long getId() {
+    return id;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), weight_, max_, grade_, type_);
-    }
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Journal)) return false;
+    if (!super.equals(o)) return false;
+    Journal journal = (Journal) o;
+    return Float.compare(journal.getWeight_(), getWeight_()) == 0 &&
+           Float.compare(journal.getMax_(), getMax_()) == 0 &&
+           Float.compare(journal.getGrade_(), getGrade_()) == 0 &&
+           getType_() == journal.getType_();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), weight_, max_, grade_, type_);
+  }
 
 }

@@ -10,15 +10,17 @@ import com.tinf.qmobile.databinding.SearchMatterBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
 public class SearchMatterViewHolder extends SearchViewHolder<Matter> {
-    private final SearchMatterBinding binding;
+  private final SearchMatterBinding binding;
 
-    public SearchMatterViewHolder(@NonNull View view) {
-        super(view);
-        binding = SearchMatterBinding.bind(view);
-    }
+  public SearchMatterViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+    binding = SearchMatterBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Matter matter, Context context, String query, SearchAdapter adapter) {
+  @Override
+  public void bind(Matter matter, Context context, String query, SearchAdapter adapter) {
        /* title.setText(material.getTitle());
         subtitle.setText(material.getMatter());
         date.setText(material.getDateString());
@@ -30,6 +32,6 @@ public class SearchMatterViewHolder extends SearchViewHolder<Matter> {
             intent.putExtra("TYPE", MATERIAL);
             context.startActivity(intent);
         });*/
-    }
+  }
 
 }

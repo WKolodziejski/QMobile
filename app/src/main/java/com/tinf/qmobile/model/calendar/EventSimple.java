@@ -14,74 +14,77 @@ import io.objectbox.annotation.Entity;
 
 @Entity
 public class EventSimple extends EventBase {
-    public enum Type {
-        INICIO(1), FIM(2);
+  public enum Type {
+    INICIO(1),
+    FIM(2);
 
-        private final int i;
+    private final int i;
 
-        Type(final int i) {
-            this.i = i;
-        }
-
-        public int get() {
-            return i;
-        }
+    Type(final int i) {
+      this.i = i;
     }
 
-    private int type;
-
-    public EventSimple(String title, long startTime) {
-        super(title, startTime);
+    public int get() {
+      return i;
     }
+  }
 
-    public EventSimple(String title, long startTime, long endTime) {
-        super(title, startTime, endTime);
-    }
+  private int type;
 
-    public EventSimple(int type, long startTime) {
-        super(type == INICIO.get() ? App.getContext().getString(R.string.calendar_period_start) : App.getContext().getString(R.string.calendar_period_end), startTime);
-        this.type = type;
-    }
+  public EventSimple(String title, long startTime) {
+    super(title, startTime);
+  }
 
-    @Override
-    public String getTitle() {
-        if (type == INICIO.get()) {
-            return App.getContext().getString(R.string.calendar_period_start);
-        } else if (type == FIM.get()) {
-            return App.getContext().getString(R.string.calendar_period_end);
-        } else return super.getTitle();
-    }
+  public EventSimple(String title, long startTime, long endTime) {
+    super(title, startTime, endTime);
+  }
 
-    /*
-     * Required methods
-     */
+  public EventSimple(int type, long startTime) {
+    super(type == INICIO.get() ? App.getContext().getString(R.string.calendar_period_start)
+                               : App.getContext().getString(R.string.calendar_period_end),
+          startTime);
+    this.type = type;
+  }
 
-    public EventSimple() {
-        super();
-    }
+  @Override
+  public String getTitle() {
+    if (type == INICIO.get()) {
+      return App.getContext().getString(R.string.calendar_period_start);
+    } else if (type == FIM.get()) {
+      return App.getContext().getString(R.string.calendar_period_end);
+    } else return super.getTitle();
+  }
 
-    public int getType() {
-        return type;
-    }
+  /*
+   * Required methods
+   */
 
-    @Override
-    public int getItemType() {
-        return SIMPLE;
-    }
+  public EventSimple() {
+    super();
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof EventSimple)) return false;
-        if (!super.equals(o)) return false;
-        EventSimple that = (EventSimple) o;
-        return getType() == that.getType();
-    }
+  public int getType() {
+    return type;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getType());
-    }
+  @Override
+  public int getItemType() {
+    return SIMPLE;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof EventSimple)) return false;
+    if (!super.equals(o)) return false;
+    EventSimple that = (EventSimple) o;
+    return getType() == that.getType();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getType());
+  }
 
     /*@Override
     public boolean equals(CalendarBase event) {
@@ -94,14 +97,14 @@ public class EventSimple extends EventBase {
         return false;
     }*/
 
-    @Override
-    public long getId() {
-        return id;
-    }
+  @Override
+  public long getId() {
+    return id;
+  }
 
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
 
 }

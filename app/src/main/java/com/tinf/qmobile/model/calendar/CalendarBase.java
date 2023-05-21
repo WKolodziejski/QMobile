@@ -8,11 +8,15 @@ import java.util.Date;
 
 public interface CalendarBase<T extends CalendarBase> extends Queryable {
 
-    Date getDate();
-    int getDay();
-    int getYear();
-    LocalDate getHashKey();
-    boolean isHeader();
-    //boolean equals(T event);
+  Date getDate();
+
+  int getDay();
+
+  int getYear();
+
+  LocalDate getHashKey();
+
+  boolean isHeader();
+  //boolean equals(T event);
 
 }

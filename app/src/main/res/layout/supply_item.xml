@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp"
     android:foreground="?android:attr/selectableItemBackground"
+    android:paddingStart="16dp"
     app:layout_optimizationLevel="standard|dimensions|chains">
 
     <LinearLayout
+        android:id="@+id/layout1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/layout1"
         android:orientation="vertical"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,8 +57,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/layout1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout1"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
@@ -67,8 +67,8 @@
             android:layout_height="36dp"
             android:layout_margin="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_pdf"
             tools:tint="@color/materiais_pdf" />
@@ -77,13 +77,13 @@
             android:id="@+id/loading"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:visibility="invisible"
             android:progressTint="@color/colorPrimary"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias=".9"
             app:layout_constraintVertical_bias="1"
             tools:visibility="visible" />
 
@@ -91,16 +91,16 @@
             android:id="@+id/offline"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            android:background="@drawable/ic_dot"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias=".9"
             app:layout_constraintVertical_bias="1"
             app:srcCompat="@drawable/ic_download"
-            android:background="@drawable/ic_dot"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

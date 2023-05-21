@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <group
-        android:orderInCategory="1"
         android:id="@+id/group1"
-        android:checkableBehavior="single" />
+        android:checkableBehavior="single"
+        android:orderInCategory="1" />
 
     <group
-        android:orderInCategory="2"
-        android:id="@+id/group2">
+        android:id="@+id/group2"
+        android:orderInCategory="2">
 
         <item
             android:id="@+id/drawer_mail"
             android:icon="@drawable/ic_inbox"
-            app:actionViewClass="android.widget.TextView"
-            android:title="@string/title_messages" />
+            android:title="@string/title_messages"
+            app:actionViewClass="android.widget.TextView" />
 
         <item
             android:id="@+id/drawer_calendar"
@@ -40,8 +40,8 @@
     </group>
 
     <group
-        android:orderInCategory="3"
-        android:id="@+id/group3">
+        android:id="@+id/group3"
+        android:orderInCategory="3">
 
         <item
             android:id="@+id/drawer_website"

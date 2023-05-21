@@ -15,24 +15,26 @@ import com.google.android.material.appbar.AppBarLayout;
  */
 public class CalendarBehavior extends AppBarLayout.Behavior {
 
-    @SuppressWarnings("unused")
-    public CalendarBehavior() {
-        init();
-    }
+  @SuppressWarnings("unused")
+  public CalendarBehavior() {
+    init();
+  }
 
-    @SuppressWarnings("unused")
-    public CalendarBehavior(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
+  @SuppressWarnings("unused")
+  public CalendarBehavior(Context context, AttributeSet attrs) {
+    super(context, attrs);
+    init();
+  }
 
-    private void init() {
-        setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-            @Override
-            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                return true;
-            }
-        });
-    }
+  private void init() {
+    setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+      @Override
+      public boolean canDrag(
+          @NonNull
+          AppBarLayout appBarLayout) {
+        return true;
+      }
+    });
+  }
 
 }

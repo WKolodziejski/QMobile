@@ -7,17 +7,17 @@ import com.tinf.qmobile.network.message.OnMessages;
 import com.tinf.qmobile.parser.MessageParser;
 
 public class MessagesHandler {
-    private final OnMessages onMessages;
-    private final OnResponse onResponse;
+  private final OnMessages onMessages;
+  private final OnResponse onResponse;
 
-    public MessagesHandler(OnMessages onMessages, OnResponse onResponse) {
-        this.onMessages = onMessages;
-        this.onResponse = onResponse;
-    }
+  public MessagesHandler(OnMessages onMessages, OnResponse onResponse) {
+    this.onMessages = onMessages;
+    this.onResponse = onResponse;
+  }
 
-    @JavascriptInterface
-    public void handlePage(String html) {
-        new MessageParser(onMessages, onResponse).execute(html);
-    }
+  @JavascriptInterface
+  public void handlePage(String html) {
+    new MessageParser(onMessages, onResponse).execute(html);
+  }
 
 }

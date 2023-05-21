@@ -13,24 +13,24 @@ import com.tinf.qmobile.service.DownloadReceiver;
 import java.io.File;
 
 public class AttachmentViewHolder extends MessagesViewHolder<Attachment> {
-    private final MessageAttachmentBinding binding;
+  private final MessageAttachmentBinding binding;
 
-    public AttachmentViewHolder(View view) {
-        super(view);
-        binding = MessageAttachmentBinding.bind(view);
-    }
+  public AttachmentViewHolder(View view) {
+    super(view);
+    binding = MessageAttachmentBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Context context, Messenger messenger, Attachment attachment) {
-        binding.title.setText(attachment.getTitle());
-        binding.icon.setImageDrawable(ContextCompat.getDrawable(context, attachment.getIcon()));
+  @Override
+  public void bind(Context context, Messenger messenger, Attachment attachment) {
+    binding.title.setText(attachment.getTitle());
+    binding.icon.setImageDrawable(ContextCompat.getDrawable(context, attachment.getIcon()));
 
-        itemView.setOnClickListener(v -> {
-            if (new File(DownloadReceiver.getAttachmentPath(attachment.getTitle())).exists())
-                DownloadReceiver.openFile(attachment.getTitle());
-            else
-                DownloadReceiver.download(context, attachment.getUrl_(), attachment.getTitle(), null);
-        });
-    }
+    itemView.setOnClickListener(v -> {
+      if (new File(DownloadReceiver.getAttachmentPath(attachment.getTitle())).exists())
+        DownloadReceiver.openFile(attachment.getTitle());
+      else
+        DownloadReceiver.download(context, attachment.getUrl_(), attachment.getTitle(), null);
+    });
+  }
 
 }

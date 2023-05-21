@@ -33,211 +33,221 @@ import java.util.Calendar;
 import io.objectbox.query.QueryBuilder;
 
 public class MessageParser extends BaseParser {
-    private final OnMessages onMessages;
+  private final OnMessages onMessages;
 
-    public MessageParser(OnMessages onMessages, OnResponse onResponse) {
-        super(PG_MESSAGES, UserUtils.getYear(0), UserUtils.getPeriod(0), false, onResponse::onFinish, onResponse::onError);
-        this.onMessages = onMessages;
+  public MessageParser(OnMessages onMessages, OnResponse onResponse) {
+    super(PG_MESSAGES, UserUtils.getYear(0), UserUtils.getPeriod(0), false, onResponse::onFinish,
+          onResponse::onError);
+    this.onMessages = onMessages;
+  }
+
+  public MessageParser(int pg, int year, int period, boolean notify, OnFinish onFinish,
+                       OnError onError) {
+    super(pg, year, period, notify, onFinish, onError);
+    onMessages = null;
+  }
+
+  @Override
+  public void parse(Document document) {
+    Element t = document.getElementById("ctl00_ContentPlaceHolderPrincipal_UpdatePanel1");
+
+    if (t != null)
+      if (!t.text().contains("Mensagem")) {
+        onError.onError(PG_ERROR, getContext().getString(R.string.login_expired));
+        return;
+      }
+
+    Element textarea = document.getElementsByTag("textarea").first();
+    Element txt = document.getElementsByClass("txt").first();
+
+    if (txt == null) {
+      if (onMessages != null)
+        onMessages.onFinish();
+      return;
     }
 
-    public MessageParser(int pg, int year, int period, boolean notify, OnFinish onFinish, OnError onError) {
-        super(pg, year, period, notify, onFinish, onError);
-        onMessages = null;
-    }
+    Element table = txt.child(0);
+    Elements trs = table.children();
+    Element footer = trs.last();
+    Element tbody = footer.getElementsByTag("tbody").first();
 
-    @Override
-    public void parse(Document document) {
-        Element t = document.getElementById("ctl00_ContentPlaceHolderPrincipal_UpdatePanel1");
+    if (textarea == null) {
+      Log.d("Parsing", "Page");
 
-        if (t != null)
-            if (!t.text().contains("Mensagem")) {
-                onError.onError(PG_ERROR, getContext().getString(R.string.login_expired));
-                return;
-            }
+      RandomColor colors = new RandomColor();
 
-        Element textarea = document.getElementsByTag("textarea").first();
-        Element txt = document.getElementsByClass("txt").first();
+      for (int i = tbody == null ? 1 : 2;
+           tbody == null ? i < trs.size() : i < trs.size() - 1; i++) {
+        Elements tds = trs.get(i).children();
 
-        if (txt == null) {
-            if (onMessages != null)
-                onMessages.onFinish();
-            return;
+        boolean seen = !trs.get(i).attributes().get("style").contains("bold");
+        int uid = Integer.parseInt(tds.get(1).text());
+        boolean hasAtt = !tds.get(2).children().isEmpty();
+        boolean isSolved = tds.get(3).child(0).tagName().equals("img");
+        String subject = tds.get(4).text();
+        String sender = tds.get(5).text();
+        long date = getDate(tds.get(6).text());
+
+        Log.d(subject, sender);
+
+        Sender search1 = null;
+        Message search2 = null;
+
+        try {
+          search1 = senderBox.query()
+                             .equal(Sender_.name_, sender, CASE_INSENSITIVE)
+                             .build().findUnique();
+
+          if (search1 == null) {
+            search1 = new Sender(colors.getColor(), sender);
+            senderBox.put(search1);
+          }
+
+          QueryBuilder<Message> builder = messageBox.query()
+                                                    .equal(Message_.uid_, uid).and()
+                                                    .equal(Message_.subject_, subject,
+                                                           CASE_INSENSITIVE).and()
+                                                    .between(Message_.date_, date, date);
+
+          builder.link(Message_.sender)
+                 .equal(Sender_.id, search1.id);
+
+          search2 = builder.build().findUnique();
+
+        } catch (Exception e) {
+          Log.e("MessageParser", sender);
+          e.printStackTrace();
         }
 
-        Element table = txt.child(0);
-        Elements trs = table.children();
-        Element footer = trs.last();
-        Element tbody = footer.getElementsByTag("tbody").first();
+        boolean isNew = false;
 
-        if (textarea == null) {
-            Log.d("Parsing", "Page");
-
-            RandomColor colors = new RandomColor();
-
-            for (int i = tbody == null ? 1 : 2; tbody == null ? i < trs.size() : i < trs.size() - 1; i++) {
-                Elements tds = trs.get(i).children();
-
-                boolean seen = !trs.get(i).attributes().get("style").contains("bold");
-                int uid = Integer.parseInt(tds.get(1).text());
-                boolean hasAtt = !tds.get(2).children().isEmpty();
-                boolean isSolved = tds.get(3).child(0).tagName().equals("img");
-                String subject = tds.get(4).text();
-                String sender = tds.get(5).text();
-                long date = getDate(tds.get(6).text());
-
-                Log.d(subject, sender);
-
-                Sender search1 = null;
-                Message search2 = null;
-
-                try {
-                    search1 = senderBox.query()
-                            .equal(Sender_.name_, sender, CASE_INSENSITIVE)
-                            .build().findUnique();
-
-                    if (search1 == null) {
-                        search1 = new Sender(colors.getColor(), sender);
-                        senderBox.put(search1);
-                    }
-
-                    QueryBuilder<Message> builder = messageBox.query()
-                            .equal(Message_.uid_, uid).and()
-                            .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
-                            .between(Message_.date_, date, date);
-
-                    builder.link(Message_.sender)
-                            .equal(Sender_.id, search1.id);
-
-                    search2 = builder.build().findUnique();
-
-                } catch (Exception e) {
-                    Log.e("MessageParser", sender);
-                    e.printStackTrace();
-                }
-
-                boolean isNew = false;
-
-                if (search2 == null) {
-                    search2 = new Message(uid, date, subject, search1, hasAtt);
-                    isNew = true;
-                }
-
-                search2.setSeen(seen);
-                search2.setSolved(isSolved);
-
-                search1.messages.add(search2);
-                messageBox.put(search2);
-
-                if (notify && isNew)
-                    sendNotification(search2);
-            }
-
-            if (tbody == null)
-                return;
-
-            if (tbody.childNodeSize() <= 0)
-                return;
-
-            Elements tds = tbody.child(0).children();
-
-            for (int j = 0; j < tds.size(); j++) {
-                if (tds.get(j).child(0).tagName().equals("span")) {
-                    if (onMessages != null)
-                        onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
-                    break;
-                }
-            }
-        } else {
-            Log.d("Parsing", "Message");
-
-            for (int i = 2; i < trs.size() - 1; i++) {
-                if (!trs.get(i).attributes().get("style").contains("#F2CFA5"))
-                    continue;
-
-                Elements tds = trs.get(i).children();
-
-                int uid = Integer.parseInt(tds.get(1).text());
-                String subject = tds.get(4).text();
-                long date = getDate(tds.get(6).text());
-
-                Message search = null;
-
-                try {
-                    search = messageBox.query()
-                            .equal(Message_.uid_, uid).and()
-                            .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
-                            .between(Message_.date_, date, date)
-                            .build().findUnique();
-                } catch (Exception e) {
-                    Log.e("MessageParser", String.valueOf(uid));
-                    e.printStackTrace();
-                }
-
-                if (search == null) {
-                    crashlytics.recordException(new Exception(subject + " not found in DB"));
-                    Log.d(subject, "Not found in DB");
-                    continue;
-                }
-
-                if (!search.attachments.isEmpty())
-                    break;
-
-                String text = textarea.text();
-                search.setText(text);
-
-                Element table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
-
-                if (table2 == null) {
-                    table2 = document.getElementById("ctl00_ContentPlaceHolderPrincipal_wucMensagens1_grdMensagens");
-                }
-
-                Elements trs2 = table2.getElementsByTag("tbody").first().children();
-
-                for (int j = 1; j < trs2.size(); j++) {
-                    Elements tds2 = trs2.get(j).children();
-
-                    String title = tds2.get(0).text();
-                    String url = Client.get().getURL() + "/qacademicodotnet/" + tds2.get(0).child(0).attr("href");
-                    String obs = tds2.get(1).text();
-
-                    Log.d(title, url);
-
-                    Attachment attachment = new Attachment(title, obs, url);
-                    attachment.message.setTarget(search);
-
-                    attachmentBox.put(attachment);
-
-                    search.attachments.add(attachment);
-                }
-
-                messageBox.put(search);
-
-                break;
-            }
-
-            if (onMessages != null)
-                onMessages.onFinish();
+        if (search2 == null) {
+          search2 = new Message(uid, date, subject, search1, hasAtt);
+          isNew = true;
         }
+
+        search2.setSeen(seen);
+        search2.setSolved(isSolved);
+
+        search1.messages.add(search2);
+        messageBox.put(search2);
+
+        if (notify && isNew)
+          sendNotification(search2);
+      }
+
+      if (tbody == null)
+        return;
+
+      if (tbody.childNodeSize() <= 0)
+        return;
+
+      Elements tds = tbody.child(0).children();
+
+      for (int j = 0; j < tds.size(); j++) {
+        if (tds.get(j).child(0).tagName().equals("span")) {
+          if (onMessages != null)
+            onMessages.onFinish(Integer.parseInt(tds.get(j).child(0).text()), j < tds.size() - 1);
+          break;
+        }
+      }
+    } else {
+      Log.d("Parsing", "Message");
+
+      for (int i = 2; i < trs.size() - 1; i++) {
+        if (!trs.get(i).attributes().get("style").contains("#F2CFA5"))
+          continue;
+
+        Elements tds = trs.get(i).children();
+
+        int uid = Integer.parseInt(tds.get(1).text());
+        String subject = tds.get(4).text();
+        long date = getDate(tds.get(6).text());
+
+        Message search = null;
+
+        try {
+          search = messageBox.query()
+                             .equal(Message_.uid_, uid).and()
+                             .equal(Message_.subject_, subject, CASE_INSENSITIVE).and()
+                             .between(Message_.date_, date, date)
+                             .build().findUnique();
+        } catch (Exception e) {
+          Log.e("MessageParser", String.valueOf(uid));
+          e.printStackTrace();
+        }
+
+        if (search == null) {
+          crashlytics.recordException(new Exception(subject + " not found in DB"));
+          Log.d(subject, "Not found in DB");
+          continue;
+        }
+
+        if (!search.attachments.isEmpty())
+          break;
+
+        String text = textarea.text();
+        search.setText(text);
+
+        Element table2 = document.getElementById(
+            "ctl00_ContentPlaceHolderPrincipal_wucMensagens1_wucExibirMensagem1_grdAnexos");
+
+        if (table2 == null) {
+          table2 = document.getElementById(
+              "ctl00_ContentPlaceHolderPrincipal_wucMensagens1_grdMensagens");
+        }
+
+        Elements trs2 = table2.getElementsByTag("tbody").first().children();
+
+        for (int j = 1; j < trs2.size(); j++) {
+          Elements tds2 = trs2.get(j).children();
+
+          String title = tds2.get(0).text();
+          String url =
+              Client.get().getURL() + "/qacademicodotnet/" + tds2.get(0).child(0).attr("href");
+          String obs = tds2.get(1).text();
+
+          Log.d(title, url);
+
+          Attachment attachment = new Attachment(title, obs, url);
+          attachment.message.setTarget(search);
+
+          attachmentBox.put(attachment);
+
+          search.attachments.add(attachment);
+        }
+
+        messageBox.put(search);
+
+        break;
+      }
+
+      if (onMessages != null)
+        onMessages.onFinish();
     }
+  }
 
-    private long getDate(String s) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(s.substring(s.lastIndexOf("/") + 6, s.indexOf(":"))));
-        cal.set(Calendar.MINUTE, Integer.parseInt(s.substring(s.indexOf(":") + 1, s.lastIndexOf(":"))));
-        cal.set(Calendar.SECOND, Integer.parseInt(s.substring(s.lastIndexOf(":") + 1)));
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.set(Calendar.YEAR, Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.lastIndexOf("/") + 5)));
-        cal.set(Calendar.MONTH, Integer.parseInt(s.substring(s.indexOf("/") + 1, s.lastIndexOf("/"))) - 1);
-        cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
+  private long getDate(String s) {
+    Calendar cal = Calendar.getInstance();
+    cal.set(Calendar.HOUR_OF_DAY,
+            Integer.parseInt(s.substring(s.lastIndexOf("/") + 6, s.indexOf(":"))));
+    cal.set(Calendar.MINUTE, Integer.parseInt(s.substring(s.indexOf(":") + 1, s.lastIndexOf(":"))));
+    cal.set(Calendar.SECOND, Integer.parseInt(s.substring(s.lastIndexOf(":") + 1)));
+    cal.set(Calendar.MILLISECOND, 0);
+    cal.set(Calendar.YEAR,
+            Integer.parseInt(s.substring(s.lastIndexOf("/") + 1, s.lastIndexOf("/") + 5)));
+    cal.set(Calendar.MONTH,
+            Integer.parseInt(s.substring(s.indexOf("/") + 1, s.lastIndexOf("/"))) - 1);
+    cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(s.substring(0, s.indexOf("/"))));
 
-        return cal.getTimeInMillis();
-    }
+    return cal.getTimeInMillis();
+  }
 
-    private void sendNotification(Message message) {
-        Intent intent = new Intent(App.getContext(), MessagesActivity.class);
+  private void sendNotification(Message message) {
+    Intent intent = new Intent(App.getContext(), MessagesActivity.class);
 
-        NotificationUtils.show(message.getSubject_(), message.sender.getTarget().getName_(),
-                MESSAGE, (int) message.id, intent);
-    }
+    NotificationUtils.show(message.getSubject_(), message.sender.getTarget().getName_(),
+                           MESSAGE, (int) message.id, intent);
+  }
 
 }

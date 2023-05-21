@@ -6,32 +6,33 @@ import io.objectbox.relation.ToMany;
 
 @Entity
 public class Sender {
-    @Id public long id;
-    private int color_;
-    private String name_;
-    public ToMany<Message> messages;
+  @Id
+  public long id;
+  private int color_;
+  private String name_;
+  public ToMany<Message> messages;
 
-    public Sender(int color_, String name_) {
-        this.color_ = color_;
-        this.name_ = name_;
-    }
+  public Sender(int color_, String name_) {
+    this.color_ = color_;
+    this.name_ = name_;
+  }
 
-    public String getSign() {
-        return String.valueOf(name_.charAt(0));
-    }
+  public String getSign() {
+    return String.valueOf(name_.charAt(0));
+  }
 
-    /*
-     * Required methods
-     */
+  /*
+   * Required methods
+   */
 
-    public Sender() {}
+  public Sender() {}
 
-    public int getColor_() {
-        return color_;
-    }
+  public int getColor_() {
+    return color_;
+  }
 
-    public String getName_() {
-        return name_;
-    }
+  public String getName_() {
+    return name_;
+  }
 
 }

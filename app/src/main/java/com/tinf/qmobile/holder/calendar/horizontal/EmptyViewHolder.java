@@ -8,13 +8,13 @@ import com.tinf.qmobile.model.Empty;
 
 public class EmptyViewHolder extends CalendarViewHolder<Empty> {
 
-    public EmptyViewHolder(View view) {
-        super(view);
-    }
+  public EmptyViewHolder(View view) {
+    super(view);
+  }
 
-    @Override
-    public void bind(Empty empty, Context context) {
+  @Override
+  public void bind(Empty empty, Context context) {
 
-    }
+  }
 
 }

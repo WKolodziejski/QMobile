@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+//        jcenter()
         mavenCentral()
         maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
@@ -18,7 +18,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+//        jcenter()
         mavenCentral()
         maven {
             url 'https://maven.google.com/'
