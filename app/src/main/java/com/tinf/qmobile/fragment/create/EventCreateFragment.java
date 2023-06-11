@@ -19,6 +19,7 @@ import androidx.work.Data;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.database.DataBase;
@@ -106,7 +107,7 @@ public class EventCreateFragment extends Fragment {
           getActivity().finish();
         }
       } else {
-        color = getResources().getColor(R.color.colorPrimary);
+        color = App.getContext().getColor(R.color.colorPrimary);
       }
     }
   }
@@ -362,7 +363,7 @@ public class EventCreateFragment extends Fragment {
     } else {
       binding.matterText.setText("");
 
-      binding.colorText.setText(color == getResources().getColor(R.color.colorPrimary) ?
+      binding.colorText.setText(color == App.getContext().getColor(R.color.colorPrimary) ?
                                 getString(R.string.event_default_color) : getString(
           R.string.event_custom_color));
     }

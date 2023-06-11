@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.database.DataBase;
@@ -126,7 +127,7 @@ public class InfoFragment extends Fragment {
     List<SliceValue> values = new ArrayList<>();
 
     values.add(new SliceValue(classesLeft)
-                   .setColor(getResources().getColor(R.color.colorPrimaryDark))
+                   .setColor(App.getContext().getColor(R.color.colorPrimaryDark))
                    .setLabel(""));
 
     if (presences > 0) {
@@ -162,7 +163,7 @@ public class InfoFragment extends Fragment {
     binding.classesTxtL.setText(matter.getClassesGivenString());
     binding.classesTxtR.setText(matter.getClassesTotalString());
     binding.classesProgress.setIndicatorColor(color1);
-    binding.classesProgress.setTrackColor(getResources().getColor(R.color.colorPrimaryDark));
+    binding.classesProgress.setTrackColor(App.getContext().getColor(R.color.colorPrimaryDark));
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       binding.classesProgress.setProgress(classesProgress, true);
     } else {
@@ -174,7 +175,7 @@ public class InfoFragment extends Fragment {
     binding.averageTxtR.setText(
         String.format(Locale.getDefault(), "%.1f", matter.getAllMaxGradesSum()));
     binding.averageProgress.setIndicatorColor(color1);
-    binding.averageProgress.setTrackColor(getResources().getColor(R.color.colorPrimaryDark));
+    binding.averageProgress.setTrackColor(App.getContext().getColor(R.color.colorPrimaryDark));
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       binding.averageProgress.setProgress(averageProgress, true);
     } else {

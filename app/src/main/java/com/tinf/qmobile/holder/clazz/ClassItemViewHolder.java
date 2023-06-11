@@ -37,7 +37,7 @@ public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
     });
 
     if (clazz.highlight) {
-      itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
+      itemView.setBackgroundColor(context.getColor(R.color.notificationBackground));
     }
   }
 

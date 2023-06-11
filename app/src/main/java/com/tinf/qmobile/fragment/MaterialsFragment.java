@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
 import com.tinf.qmobile.adapter.OnInteractListener;
@@ -110,12 +111,9 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
 
     LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
-    //binding.recycler.setHasFixedSize(true);
     binding.recycler.setItemViewCacheSize(20);
-    binding.recycler.setDrawingCacheEnabled(true);
-    binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     binding.recycler.setLayoutManager(layout);
-    binding.recycler.addItemDecoration(new CustomlItemDivider(getContext()));
+    binding.recycler.addItemDecoration(new CustomlItemDivider(App.getContext()));
     binding.recycler.setItemAnimator(null);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));

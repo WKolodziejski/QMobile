@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
       if (fragment instanceof JournalsFragment) {
         ReportFragment rFragment = new ReportFragment();
-        rFragment.setParams(binding.refresh);
+        rFragment.setParams(binding.toolbar, binding.refresh);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(android.R.animator.fade_in,
@@ -429,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
       BaseFragment fragment =
           (BaseFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
       fragment.requestScroll();
+      binding.appBarLayout.setExpanded(true);
     } catch (Exception ignore) {
     }
   }

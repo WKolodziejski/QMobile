@@ -29,6 +29,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.CalendarActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
@@ -572,7 +573,7 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
       ColumnChartData data = new ColumnChartData();
       data.setColumns(columns);
       data.setValueLabelBackgroundEnabled(false);
-      data.setValueLabelsTextColor(getResources().getColor(R.color.colorPrimaryLight));
+      data.setValueLabelsTextColor(App.getContext().getColor(R.color.colorPrimaryLight));
       data.setAxisXBottom(new Axis(axisMatter));
       binding.chart.setColumnChartData(data);
       binding.chart.setZoomEnabled(false);

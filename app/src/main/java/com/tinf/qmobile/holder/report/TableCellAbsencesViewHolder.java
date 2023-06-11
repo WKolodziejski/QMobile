@@ -49,7 +49,7 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
     List<SliceValue> values = new ArrayList<>();
 
     values.add(new SliceValue(classesLeft)
-                   .setColor(context.getResources().getColor(R.color.colorPrimaryDark))
+                   .setColor(context.getColor(R.color.colorPrimaryDark))
                    .setLabel(""));
 
     if (presences > 0) {

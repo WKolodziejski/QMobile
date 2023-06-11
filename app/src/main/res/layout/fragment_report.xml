@@ -1,39 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_report"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:transitionName="Fab"
-        android:textColor="@color/colorPrimaryLight"
-        app:backgroundTint="@color/colorAccent"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/colorPrimaryLight"
-        app:fabSize="normal"
-        app:borderWidth="0dp" />!-->
-
-    <com.evrencoskun.tableview.TableView
-        android:id="@+id/table"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:allow_click_inside_cell="true"
-        app:allow_click_inside_column_header="true"
-        app:allow_click_inside_row_header="true"
-        app:selected_color="@color/notificationBackground"
-        app:unselected_color="@color/colorPrimaryLight" />
+        android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/empty"
-        layout="@layout/journal_empty"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        <com.evrencoskun.tableview.TableView
+            android:id="@+id/table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:allow_click_inside_cell="true"
+            app:allow_click_inside_column_header="true"
+            app:allow_click_inside_row_header="true"
+            app:selected_color="@color/notificationBackground"
+            app:unselected_color="@color/colorPrimaryLight" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <include
+            android:id="@+id/empty"
+            layout="@layout/journal_empty"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.core.widget.NestedScrollView>

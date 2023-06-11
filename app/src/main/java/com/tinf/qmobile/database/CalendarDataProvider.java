@@ -20,6 +20,7 @@ import org.joda.time.Months;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -152,7 +153,7 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       cal.set(Calendar.MILLISECOND, 0);
 
       List<CalendarBase> list = map.get(key);
-      Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
+      Collections.sort(list, Comparator.comparing(CalendarBase::getHashKey));
 
       boolean hasHeader = false;
 

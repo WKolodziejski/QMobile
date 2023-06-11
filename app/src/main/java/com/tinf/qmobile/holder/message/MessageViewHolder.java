@@ -59,7 +59,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
     if (message.isSolved_()) {
       binding.subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
       TextViewCompat.setCompoundDrawableTintList(binding.subject, ColorStateList.valueOf(
-          context.getResources().getColor(R.color.amber_a700)));
+          context.getColor(R.color.amber_a700)));
     } else {
       binding.subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
@@ -89,7 +89,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
     });
 
         /*if (message.highlight) {
-            itemView.setBackgroundColor(context.getResources().getColor(R.color
+            itemView.setBackgroundColor(context.getColor(R.color
             .notificationBackground));
         }*/
   }

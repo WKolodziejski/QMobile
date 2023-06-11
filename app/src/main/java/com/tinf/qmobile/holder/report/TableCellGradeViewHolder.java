@@ -26,10 +26,10 @@ public class TableCellGradeViewHolder extends TableBaseViewHolder {
     binding.grade.setText(cell);
 
     if (cell.equals("-")) {
-      binding.grade.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-      binding.color.setCardBackgroundColor(context.getResources().getColor(R.color.transparent));
+      binding.grade.setTextColor(context.getColor(R.color.colorPrimary));
+      binding.color.setCardBackgroundColor(context.getColor(R.color.transparent));
     } else {
-      binding.grade.setTextColor(context.getResources().getColor(R.color.white));
+      binding.grade.setTextColor(context.getColor(R.color.white));
       binding.color.setCardBackgroundColor(getColorForGrade(context, Float.parseFloat(cell)));
     }
   }

@@ -20,28 +20,28 @@ public class TableCellSituationViewHolder extends TableBaseViewHolder {
     binding.situation.setText(cell);
 
     if (cell.equals("-")) {
-      binding.situation.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-      binding.color.setCardBackgroundColor(context.getResources().getColor(R.color.transparent));
+      binding.situation.setTextColor(context.getColor(R.color.colorPrimary));
+      binding.color.setCardBackgroundColor(context.getColor(R.color.transparent));
     } else {
-      binding.situation.setTextColor(context.getResources().getColor(R.color.white));
+      binding.situation.setTextColor(context.getColor(R.color.white));
       binding.color.setCardBackgroundColor(getSituationColor(context, cell));
     }
   }
 
   private static int getSituationColor(Context context, String s) {
     if (s.contains("Aprovado"))
-      return context.getResources().getColor(R.color.good);
+      return context.getColor(R.color.good);
 
     if (s.contains("Reprovado"))
-      return context.getResources().getColor(R.color.bad);
+      return context.getColor(R.color.bad);
 
     if (s.contains("Falta"))
-      return context.getResources().getColor(R.color.bad);
+      return context.getColor(R.color.bad);
 
     if (s.contains("Cursando"))
-      return context.getResources().getColor(R.color.ok);
+      return context.getColor(R.color.ok);
 
-    return context.getResources().getColor(R.color.colorPrimary);
+    return context.getColor(R.color.colorPrimary);
   }
 
 }

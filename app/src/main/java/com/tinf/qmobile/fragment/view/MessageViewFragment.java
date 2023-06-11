@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.database.DataBase;
@@ -100,14 +101,11 @@ public class MessageViewFragment extends Fragment {
     if (message.isSolved_()) {
       binding.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_check, 0);
       TextViewCompat.setCompoundDrawableTintList(binding.title, ColorStateList.valueOf(
-          getResources().getColor(R.color.amber_a700)));
+          App.getContext().getColor(R.color.amber_a700)));
     }
 
     if (!message.attachments.isEmpty()) {
-      //binding.recycler.setHasFixedSize(true);
       binding.recycler.setItemViewCacheSize(3);
-      binding.recycler.setDrawingCacheEnabled(true);
-      binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
       binding.recycler.setLayoutManager(
           new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
       binding.recycler.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));

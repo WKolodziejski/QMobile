@@ -41,23 +41,6 @@ public class JournalParser extends BaseParser {
   public void parse(Document document) {
     RandomColor colors = new RandomColor();
 
-    //Date today = new Date();
-
-        /*Element frm = document.getElementById("ANO_PERIODO2");
-
-        if (frm != null) {
-            Elements dates = frm.getElementsByTag("option");
-
-            if (dates != null) {
-                String[] years = new String[dates.size() - 1];
-
-                for (int i = 0; i < dates.size() - 1; i++)
-                    years[i] = dates.get(i + 1).text();
-
-                User.setYears(years);
-            }
-        }*/
-
     Element body = document.getElementsByTag("tbody").get(12);
     Elements contents = body.select("table.conteudoTexto");
 
@@ -70,17 +53,9 @@ public class JournalParser extends BaseParser {
       String description = header.first().child(0).text();
       String teacher = description.substring(description.lastIndexOf('-') + 1).trim();
 
-//            String cTotal = trs.get(1).getElementsByTag("td").get(1).text().trim();
-//            String cLeft = trs.get(3).getElementsByTag("td").get(1).text().trim();
-//            String abs = trs.get(4).getElementsByTag("td").get(1).text().trim();
-//            String hs = trs.get(0).getElementsByTag("td").get(1).text().trim();
-//            hs = hs.substring(0, hs.indexOf("Hrs")).trim();
-//            String cGiven = trs.get(2).getElementsByTag("td").get(1).text().trim();
-
       Log.d("trs", trs.toString());
 
       String cTotal = formatHeader(trs, HeaderType.CLASSES_TOTAL);
-      //String cLeft = formatHeader(trs, HeaderType.CLASSES_LEFT);
       String cGiven = formatHeader(trs, HeaderType.CLASSES_GIVEN);
       String abs = formatHeader(trs, HeaderType.ABSENCES);
       String hs = formatHeader(trs, HeaderType.HOURS);
@@ -175,9 +150,6 @@ public class JournalParser extends BaseParser {
           String infos = grades.eq(j).first().child(1).text();
           String t = formatType(infos);
           String title = formatJournalTitle(infos);
-//                    String weightString = formatJournal(grades.eq(j).first(), HeaderType.WEIGHT);
-//                    String maxString = formatJournal(grades.eq(j).first(), HeaderType.MAX);
-//                    String gradeString = formatJournal(grades.eq(j).first(), HeaderType.GRADE);
 
           String weightString =
               formatGrade(formatNumber(grades.eq(j).first().child(2).text()));
@@ -195,13 +167,6 @@ public class JournalParser extends BaseParser {
             gradeString =
                 formatGrade(formatNumber(grades.eq(j).first().child(3).text()));
           }
-
-//                    String weightString = formatGrade(formatNumber(grades.eq(j).first().child
-//                    (2).text()));
-//                    String maxString = formatGrade(formatNumber(grades.eq(j).first().child(3)
-//                    .text()));
-//                    String gradeString = formatGrade(formatNumber(grades.eq(j).first().child(4)
-//                    .text()));
 
           float grade = gradeString.isEmpty() ? -1 : Float.parseFloat(gradeString);
           float weight = weightString.isEmpty() ? -1 : Float.parseFloat(weightString);
@@ -373,19 +338,6 @@ public class JournalParser extends BaseParser {
     return "";
   }
 
-//    private String formatJournal(Element e, HeaderType field) {
-//        for (int i = 0; i < e.childrenSize(); i++) {
-//            String txt = e.child(i).text();
-//
-//            if (txt.contains(field.txt)) {
-//                return formatGrade(formatNumber(txt.substring(txt.indexOf(field.txt) + 1).trim
-//                ()));
-//            }
-//        }
-//
-//        return "";
-//    }
-
   private String formatGrade(String s) {
     return s.startsWith(",") ? "" : s.replaceAll(",", ".").trim();
   }
@@ -395,7 +347,6 @@ public class JournalParser extends BaseParser {
       return s.substring(s.lastIndexOf(" ")).trim();
 
     return "";
-    //return s.substring(s.indexOf(":") + 1).trim();
   }
 
   private enum HeaderType {

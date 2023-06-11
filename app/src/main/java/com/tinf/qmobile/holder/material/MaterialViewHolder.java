@@ -45,11 +45,11 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
         material.isDownloading && !material.isDownloaded ? View.VISIBLE : View.INVISIBLE);
 
     if (material.isSelected) {
-      itemView.setBackgroundColor(context.getResources().getColor(R.color.selectionBackground));
+      itemView.setBackgroundColor(context.getColor(R.color.selectionBackground));
     } else {
       itemView.setBackgroundColor(
-          material.isSeen_() ? context.getResources().getColor(R.color.transparent)
-                             : context.getResources().getColor(R.color.notificationBackground));
+          material.isSeen_() ? context.getColor(R.color.transparent)
+                             : context.getColor(R.color.notificationBackground));
     }
 
     if (!material.getDescription().isEmpty()) {
@@ -89,7 +89,7 @@ public class MaterialViewHolder extends MaterialBaseViewHolder<Material> {
     });
 
     if (material.highlight) {
-      itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
+      itemView.setBackgroundColor(context.getColor(R.color.notificationBackground));
     }
   }
 

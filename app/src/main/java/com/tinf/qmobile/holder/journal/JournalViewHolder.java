@@ -34,13 +34,13 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
       intent.putExtra("TYPE", JOURNAL);
       intent.putExtra("LOOKUP", lookup);
       context.startActivity(intent);
-      itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+      itemView.setBackgroundColor(context.getColor(R.color.transparent));
     });
 
     if (journal.isSeen_()) {
-      itemView.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+      itemView.setBackgroundColor(context.getColor(R.color.transparent));
     } else {
-      itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
+      itemView.setBackgroundColor(context.getColor(R.color.notificationBackground));
       journal.see();
       DataBase.get().getBoxStore().boxFor(Journal.class).put(journal);
     }
@@ -51,15 +51,15 @@ public class JournalViewHolder extends JournalBaseViewHolder<Journal> {
         animation.start();*/
 
         /*if (journal.highlight) {
-            itemView.setBackgroundColor(context.getResources().getColor(R.color
+            itemView.setBackgroundColor(context.getColor(R.color
             .notificationBackground));
         }*/
 
     if (journal.getGrade().equals("-")) {
-      binding.grade.setTextColor(context.getResources().getColor(R.color.colorPrimary));
-      binding.color.setCardBackgroundColor(context.getResources().getColor(R.color.transparent));
+      binding.grade.setTextColor(context.getColor(R.color.colorPrimary));
+      binding.color.setCardBackgroundColor(context.getColor(R.color.transparent));
     } else {
-      binding.grade.setTextColor(context.getResources().getColor(R.color.white));
+      binding.grade.setTextColor(context.getColor(R.color.white));
       binding.color.setCardBackgroundColor(
           getColorForGrade(context, journal.getGrade_() / journal.getMax_() * 10));
     }

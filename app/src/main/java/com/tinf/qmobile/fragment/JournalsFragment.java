@@ -56,8 +56,6 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
     JournalsAdapter adapter = new JournalsAdapter(getContext(), this::onUpdate);
 
     binding.recycler.setItemViewCacheSize(20);
-    binding.recycler.setDrawingCacheEnabled(true);
-    binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
     binding.recycler.addItemDecoration(new CustomlItemDivider(getContext()));
     binding.recycler.setItemAnimator(null);
@@ -65,9 +63,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
     binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
 
-    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-      Design.syncToolbar(toolbar, canExpand());
-    }, 10);
+    new Handler(Looper.getMainLooper()).postDelayed(() -> Design.syncToolbar(toolbar, canExpand()), 10);
   }
 
   @Override

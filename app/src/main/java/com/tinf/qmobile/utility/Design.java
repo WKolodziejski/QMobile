@@ -72,37 +72,37 @@ public class Design {
 
   public static int getColorForGrade(Context context, float grade) {
     if (grade < 6.0)
-      return context.getResources().getColor(R.color.bad);
+      return context.getColor(R.color.bad);
 
     //if (grade <= 5.0)
-    //return context.getResources().getColor(R.color.yellow_500);
+    //return context.getColor(R.color.yellow_500);
 
     if (grade < 8)
-      return context.getResources().getColor(R.color.ok);
+      return context.getColor(R.color.ok);
 
     if (grade <= 10.0)
-      return context.getResources().getColor(R.color.good);
+      return context.getColor(R.color.good);
 
-    return context.getResources().getColor(R.color.transparent);
+    return context.getColor(R.color.transparent);
   }
 
   public static int getColorForWarning(Context context, String color) {
     if (color == null)
-      return context.getResources().getColor(R.color.colorPrimaryDark);
+      return context.getColor(R.color.colorPrimaryDark);
 
     if (color.equalsIgnoreCase("red"))
-      return context.getResources().getColor(R.color.warningRed);
+      return context.getColor(R.color.warningRed);
 
     if (color.equalsIgnoreCase("yellow"))
-      return context.getResources().getColor(R.color.warningYellow);
+      return context.getColor(R.color.warningYellow);
 
     if (color.equalsIgnoreCase("green"))
-      return context.getResources().getColor(R.color.warningGreen);
+      return context.getColor(R.color.warningGreen);
 
     if (color.equalsIgnoreCase("blue"))
-      return context.getResources().getColor(R.color.warningBlue);
+      return context.getColor(R.color.warningBlue);
 
-    return context.getResources().getColor(R.color.colorPrimaryDark);
+    return context.getColor(R.color.colorPrimaryDark);
   }
 
   public static void syncToolbar(MaterialToolbar toolbar, boolean canExpand) {

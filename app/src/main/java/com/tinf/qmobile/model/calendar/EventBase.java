@@ -155,7 +155,7 @@ public abstract class EventBase extends Event implements CalendarBase {
 
   @Override
   public int getColor() {
-    return color == 0 ? App.getContext().getResources().getColor(R.color.colorAccent) : color;
+    return color == 0 ? App.getContext().getColor(R.color.colorAccent) : color;
   }
 
   @Override

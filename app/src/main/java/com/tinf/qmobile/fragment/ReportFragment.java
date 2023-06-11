@@ -1,6 +1,8 @@
 package com.tinf.qmobile.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,18 +14,19 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.anychart.core.Base;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.ReportAdapter;
+import com.tinf.qmobile.database.DataBase;
+import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentReportBinding;
+import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.utility.Design;
 
-public class ReportFragment extends Fragment {
-  private FragmentReportBinding binding;
-  private SwipeRefreshLayout refresh;
+import java.util.List;
 
-  public void setParams(SwipeRefreshLayout refresh) {
-    this.refresh = refresh;
-  }
+public class ReportFragment extends BaseFragment implements OnData<Queryable> {
+  private FragmentReportBinding binding;
 
   @Override
   public void onCreate(
@@ -57,6 +60,8 @@ public class ReportFragment extends Fragment {
     binding.table.getCellRecyclerView().removeItemDecorationAt(0);
     binding.table.setAdapter(new ReportAdapter(getContext(), binding.table, binding.empty));
     binding.table.getCellRecyclerView().addOnScrollListener(Design.getRefreshBehavior(refresh));
+
+    new Handler(Looper.getMainLooper()).postDelayed(() -> Design.syncToolbar(toolbar, canExpand()), 10);
   }
 
   @Override
@@ -66,4 +71,28 @@ public class ReportFragment extends Fragment {
     menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_list);
   }
 
+  private boolean canExpand() {
+    return !DataBase.get().getJournalsDataProvider().getList().isEmpty();
+  }
+
+  @Override
+  protected void onAddListeners() {
+    DataBase.get().getJournalsDataProvider().addOnDataListener(this);
+    Design.syncToolbar(toolbar, canExpand());
+  }
+
+  @Override
+  protected void onRemoveListeners() {
+    DataBase.get().getJournalsDataProvider().removeOnDataListener(this);
+  }
+
+  @Override
+  protected void onScrollRequest() {
+    binding.scroll.smoothScrollTo(0, 0);
+  }
+
+  @Override
+  public void onUpdate(List<Queryable> list) {
+    Design.syncToolbar(toolbar, !list.isEmpty());
+  }
 }

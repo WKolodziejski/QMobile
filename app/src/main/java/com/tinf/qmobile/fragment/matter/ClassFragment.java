@@ -47,8 +47,6 @@ public class ClassFragment extends Fragment {
 
     RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
     recyclerView.setItemViewCacheSize(20);
-    recyclerView.setDrawingCacheEnabled(true);
-    recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     recyclerView.setAdapter(adapter);
