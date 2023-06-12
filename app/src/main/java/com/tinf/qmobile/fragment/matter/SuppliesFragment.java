@@ -1,6 +1,7 @@
 package com.tinf.qmobile.fragment.matter;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.utility.PermissionsUtils.hasPermission;
 import static com.tinf.qmobile.utility.PermissionsUtils.requestPermission;
 
@@ -14,16 +15,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.OnInteractListener;
 import com.tinf.qmobile.adapter.SuppliesAdapter;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.widget.divider.CustomlItemDivider;
 
@@ -31,6 +37,17 @@ public class SuppliesFragment extends Fragment {
   private BroadcastReceiver receiver;
   private SuppliesAdapter adapter;
   private ActionMode action;
+
+  private final ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(
+      new ActivityResultContracts.RequestMultiplePermissions(),
+      results -> {
+        if (!results.isEmpty()) {
+          Client.get().load(PG_MATERIALS);
+        } else {
+          Toast.makeText(App.getContext(), getResources()
+              .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+        }
+      });
 
   @Override
   public void onCreate(
@@ -46,7 +63,7 @@ public class SuppliesFragment extends Fragment {
                                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
     if (!hasPermission(getContext()))
-      requestPermission(getActivity());
+      requestPermission(getActivity(), requestPermissionLauncher);
   }
 
   @Override

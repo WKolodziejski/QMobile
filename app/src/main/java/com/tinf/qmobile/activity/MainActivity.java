@@ -14,7 +14,6 @@ import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     OnUpdate, NavigationView.OnNavigationItemSelectedListener {
   private ActivityMainBinding binding;
 
-  ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+  ActivityResultLauncher<Intent> searchLauncher = registerForActivityResult(
       new ActivityResultContracts.StartActivityForResult(), result ->
           Client.get().restorePreviousDate());
 
@@ -98,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     toggle.syncState();
 
     binding.toolbar.setOnClickListener(view ->
-                                           launcher.launch(new Intent(getContext(),
-                                                                      SearchActivity.class)));
+                                           searchLauncher.launch(new Intent(getContext(),
+                                                                            SearchActivity.class)));
 
     binding.navigation.setOnItemSelectedListener(item -> {
       int itemId = item.getItemId();
@@ -308,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     int itemId = item.getItemId();
 
     if (itemId == android.R.id.home) {
-      onBackPressed();
+      getOnBackPressedDispatcher().onBackPressed();
       return true;
 
     } else if (itemId == R.id.action_account) {
@@ -492,17 +491,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
   private void reload() {
     if (Client.isConnected()) {
-      int selectedItemId = binding.navigation.getSelectedItemId();
-
-      if (selectedItemId == R.id.navigation_home) {
-        Client.get().login();
-
-      } else if (selectedItemId == R.id.navigation_grades) {
         Client.get().loadYear(pos);
-
-      } else if (selectedItemId == R.id.navigation_materials) {
-        Client.get().load(PG_MATERIALS);
-      }
     } else {
       dismissProgressbar();
     }
@@ -544,20 +533,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     Client.get().removeOnUpdateListener(this);
     DataBase.get().removeOnDataChangeListener(this);
     dismissProgressbar();
-  }
-
-  @Override
-  public void onBackPressed() {
-    if (binding.drawer.isDrawerOpen(GravityCompat.START)) {
-      binding.drawer.closeDrawer(GravityCompat.START);
-
-    } else if (binding.navigation.getSelectedItemId() != R.id.navigation_home
-               && getSupportFragmentManager().getBackStackEntryCount() == 0) {
-      binding.navigation.setSelectedItemId(R.id.navigation_home);
-
-    } else {
-      super.onBackPressed();
-    }
   }
 
   @Override
@@ -714,19 +689,19 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     }
   }
 
-  @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                         int[] grantResults) {
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == 1) {
-      if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-        Toast.makeText(getBaseContext(), getResources()
-            .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
-      } else {
-        Client.get().load(PG_MATERIALS);
-      }
-    }
-  }
+//  @Override
+//  public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                                         int[] grantResults) {
+//    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    if (requestCode == 1) {
+//      if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+//        Toast.makeText(getBaseContext(), getResources()
+//            .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+//      } else {
+//        Client.get().load(PG_MATERIALS);
+//      }
+//    }
+//  }
 
   @Override
   public void onDialog(WebView webView, String title, String msg) {

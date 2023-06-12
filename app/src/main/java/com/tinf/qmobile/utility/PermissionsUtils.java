@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import androidx.core.app.ActivityCompat;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -21,18 +21,17 @@ public class PermissionsUtils {
            PackageManager.PERMISSION_GRANTED;
   }
 
-  public static void requestPermission(Activity activity) {
+  public static void requestPermission(Activity activity,
+                                       ActivityResultLauncher<String[]> requestPermissionLauncher) {
     new MaterialAlertDialogBuilder(activity)
         .setTitle(activity.getResources().getString(R.string.dialog_permission_title))
         .setMessage(activity.getResources().getString(R.string.dialog_permission_text))
         .setCancelable(false)
         .setPositiveButton(activity.getResources().getString(R.string.dialog_permission_allow),
                            (dialogInterface, i) ->
-                               ActivityCompat.requestPermissions(activity,
-                                                                 new String[] {
-                                                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                                                     Manifest.permission.READ_EXTERNAL_STORAGE },
-                                                                 1))
+                               requestPermissionLauncher.launch(new String[] {
+                                   Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                   Manifest.permission.READ_EXTERNAL_STORAGE }))
         .setNeutralButton(activity.getResources().getString(R.string.dialog_permission_cancel),
                           null)
         .create()

@@ -1,22 +1,28 @@
 package com.tinf.qmobile.fragment;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
+import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.utility.PermissionsUtils.hasPermission;
 import static com.tinf.qmobile.utility.PermissionsUtils.requestPermission;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +36,7 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.model.Queryable;
+import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.widget.divider.CustomlItemDivider;
@@ -41,6 +48,20 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
   private BroadcastReceiver receiver;
   private MaterialsAdapter adapter;
   private ActionMode action;
+
+  private final ActivityResultLauncher<String[]> requestPermissionLauncher =
+      registerForActivityResult(
+          new ActivityResultContracts.RequestMultiplePermissions(),
+          results -> {
+            Log.d(results.keySet().toString(), results.values().toString());
+            if (results.get(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && results.get(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+              Client.get().load(PG_MATERIALS);
+            } else {
+              Toast.makeText(App.getContext(), getResources()
+                  .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+            }
+          });
 
   @Override
   public void onCreate(
@@ -56,7 +77,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
                                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
     if (!hasPermission(getContext()))
-      requestPermission(getActivity());
+      requestPermission(getActivity(), requestPermissionLauncher);
   }
 
   @Override
