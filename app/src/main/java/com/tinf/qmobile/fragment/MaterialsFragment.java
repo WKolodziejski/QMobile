@@ -5,14 +5,12 @@ import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.utility.PermissionsUtils.hasPermission;
 import static com.tinf.qmobile.utility.PermissionsUtils.requestPermission;
 
-import android.Manifest;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,20 +46,6 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
   private MaterialsAdapter adapter;
   private ActionMode action;
 
-  private final ActivityResultLauncher<String[]> requestPermissionLauncher =
-      registerForActivityResult(
-          new ActivityResultContracts.RequestMultiplePermissions(),
-          results -> {
-            Log.d(results.keySet().toString(), results.values().toString());
-            if (results.get(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                && results.get(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-              Client.get().load(PG_MATERIALS);
-            } else {
-              Toast.makeText(App.getContext(), getResources()
-                  .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
-            }
-          });
-
   @Override
   public void onCreate(
       @Nullable
@@ -76,8 +59,18 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
     getActivity().registerReceiver(receiver,
                                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-    if (!hasPermission(getContext()))
-      requestPermission(getActivity(), requestPermissionLauncher);
+    if (!hasPermission(getContext())) {
+      requestPermission(getActivity(), registerForActivityResult(
+          new ActivityResultContracts.RequestMultiplePermissions(),
+          results -> {
+            if (!results.isEmpty()) {
+              Client.get().load(PG_MATERIALS);
+            } else {
+              Toast.makeText(App.getContext(), getResources()
+                  .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+            }
+          }));
+    }
   }
 
   @Override

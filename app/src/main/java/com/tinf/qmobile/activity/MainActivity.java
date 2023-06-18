@@ -47,6 +47,7 @@ import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigClientException;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.R;
@@ -72,6 +73,7 @@ import com.tinf.qmobile.service.Works;
 import com.tinf.qmobile.utility.Design;
 import com.tinf.qmobile.utility.UserUtils;
 
+import java.net.UnknownHostException;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnCount,
@@ -253,7 +255,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         }
       }
     } catch (Exception e) {
-      FirebaseCrashlytics.getInstance().recordException(e);
+      if (e.getMessage() != null && !e.getMessage().contains("hostname") && !e.getMessage().contains("backend")) {
+        FirebaseCrashlytics.getInstance().recordException(e);
+      }
     }
   }
 
@@ -276,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
              .placeholder(R.drawable.ic_account)
              .into(view);
       } catch (Exception e) {
-        FirebaseCrashlytics.getInstance().recordException(e);
+//        FirebaseCrashlytics.getInstance().recordException(e);
       }
     } else {
       view.setImageDrawable(
@@ -491,7 +495,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
   private void reload() {
     if (Client.isConnected()) {
-        Client.get().loadYear(pos);
+      Client.get().loadYear(pos);
     } else {
       dismissProgressbar();
     }

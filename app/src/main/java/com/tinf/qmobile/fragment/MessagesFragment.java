@@ -66,8 +66,6 @@ public class MessagesFragment extends Fragment implements OnResponse {
     RecyclerView.Adapter adapter = new MessagesAdapter(getContext(), messenger);
 
     binding.recycler.setItemViewCacheSize(20);
-    binding.recycler.setDrawingCacheEnabled(true);
-    binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     binding.recycler.setLayoutManager(layout);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new MessageItemDivider(getContext()));

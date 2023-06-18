@@ -22,14 +22,14 @@ public class PermissionsUtils {
   }
 
   public static void requestPermission(Activity activity,
-                                       ActivityResultLauncher<String[]> requestPermissionLauncher) {
+                                       ActivityResultLauncher<String[]> launcher) {
     new MaterialAlertDialogBuilder(activity)
         .setTitle(activity.getResources().getString(R.string.dialog_permission_title))
         .setMessage(activity.getResources().getString(R.string.dialog_permission_text))
         .setCancelable(false)
         .setPositiveButton(activity.getResources().getString(R.string.dialog_permission_allow),
                            (dialogInterface, i) ->
-                               requestPermissionLauncher.launch(new String[] {
+                               launcher.launch(new String[] {
                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                    Manifest.permission.READ_EXTERNAL_STORAGE }))
         .setNeutralButton(activity.getResources().getString(R.string.dialog_permission_cancel),

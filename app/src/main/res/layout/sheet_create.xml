@@ -10,7 +10,7 @@
     android:tag="sheet_create"
     app:behavior_peekHeight="86dp"
     app:cardBackgroundColor="@color/colorPrimaryDark"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     app:strokeColor="@color/cardStroke"

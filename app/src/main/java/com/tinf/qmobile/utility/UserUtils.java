@@ -202,7 +202,6 @@ public class UserUtils {
   public static GlideUrl getImgUrl() {
     return new GlideUrl(UserUtils.getImg(), new LazyHeaders.Builder()
         .addHeader("Cookie", Client.get().getCookie())
-        .addHeader("Cookie", Client.get().getCookie())
         .build());
   }
 

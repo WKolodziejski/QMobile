@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,17 +37,6 @@ public class SuppliesFragment extends Fragment {
   private SuppliesAdapter adapter;
   private ActionMode action;
 
-  private final ActivityResultLauncher<String[]> requestPermissionLauncher = registerForActivityResult(
-      new ActivityResultContracts.RequestMultiplePermissions(),
-      results -> {
-        if (!results.isEmpty()) {
-          Client.get().load(PG_MATERIALS);
-        } else {
-          Toast.makeText(App.getContext(), getResources()
-              .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
-        }
-      });
-
   @Override
   public void onCreate(
       @Nullable
@@ -62,8 +50,19 @@ public class SuppliesFragment extends Fragment {
     getActivity().registerReceiver(receiver,
                                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-    if (!hasPermission(getContext()))
-      requestPermission(getActivity(), requestPermissionLauncher);
+
+    if (!hasPermission(getContext())) {
+      requestPermission(getActivity(), registerForActivityResult(
+          new ActivityResultContracts.RequestMultiplePermissions(),
+          results -> {
+            if (!results.isEmpty()) {
+              Client.get().load(PG_MATERIALS);
+            } else {
+              Toast.makeText(App.getContext(), getResources()
+                  .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+            }
+          }));
+    }
   }
 
   @Override
