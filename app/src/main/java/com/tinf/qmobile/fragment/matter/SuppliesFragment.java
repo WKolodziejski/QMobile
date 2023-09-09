@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,12 +37,24 @@ public class SuppliesFragment extends Fragment {
   private BroadcastReceiver receiver;
   private SuppliesAdapter adapter;
   private ActionMode action;
+  private ActivityResultLauncher<String[]> launcher;
 
   @Override
   public void onCreate(
       @Nullable
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
+    launcher = registerForActivityResult(
+        new ActivityResultContracts.RequestMultiplePermissions(),
+        results -> {
+          if (!results.isEmpty()) {
+            Client.get().load(PG_MATERIALS);
+          } else {
+            Toast.makeText(App.getContext(), getResources()
+                .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
+          }
+        });
 
     receiver =
         new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE),
@@ -51,17 +64,8 @@ public class SuppliesFragment extends Fragment {
                                    new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
-    if (!hasPermission(getContext())) {
-      requestPermission(getActivity(), registerForActivityResult(
-          new ActivityResultContracts.RequestMultiplePermissions(),
-          results -> {
-            if (!results.isEmpty()) {
-              Client.get().load(PG_MATERIALS);
-            } else {
-              Toast.makeText(App.getContext(), getResources()
-                  .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
-            }
-          }));
+    if (!hasPermission(getContext()) && launcher != null) {
+      requestPermission(getActivity(), launcher);
     }
   }
 
@@ -136,6 +140,7 @@ public class SuppliesFragment extends Fragment {
   @Override
   public void onDestroy() {
     super.onDestroy();
+    launcher = null;
     getActivity().unregisterReceiver(receiver);
   }
 

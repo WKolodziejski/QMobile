@@ -71,8 +71,6 @@ public class CalendarActivity extends AppCompatActivity
 
     binding.recycler.setAppBarTracking(this);
     binding.recycler.setItemViewCacheSize(20);
-    binding.recycler.setDrawingCacheEnabled(true);
-    binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     binding.recycler.setLayoutManager(layout);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
@@ -255,9 +253,7 @@ public class CalendarActivity extends AppCompatActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == android.R.id.home) {
-      onBackPressed();
-    } else if (item.getItemId() == R.id.action_today) {
+    if (item.getItemId() == R.id.action_today) {
       scrollToDate(new Date());
       return true;
     }

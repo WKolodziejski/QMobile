@@ -1,5 +1,7 @@
 package com.tinf.qmobile.database;
 
+import android.os.Build;
+
 import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
@@ -153,7 +155,11 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       cal.set(Calendar.MILLISECOND, 0);
 
       List<CalendarBase> list = map.get(key);
-      Collections.sort(list, Comparator.comparing(CalendarBase::getHashKey));
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        Collections.sort(list, Comparator.comparing(CalendarBase::getHashKey));
+      } else {
+        Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
+      }
 
       boolean hasHeader = false;
 

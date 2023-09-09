@@ -31,7 +31,6 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
-import com.tinf.qmobile.R;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDateTime;
@@ -88,7 +87,7 @@ public class ScheduleViewHome extends View {
   private int mNewHourHeight = -1;
   private int mMinHourHeight = 0; //no minimum specified (will be dynamic, based on screen)
   private int mEffectiveMinHourHeight = mMinHourHeight;
-      //compensates for the fact that you can't keep zooming out.
+  //compensates for the fact that you can't keep zooming out.
   private int mMaxHourHeight = 250;
   private int mColumnGap = 10;
   private DayOfWeek mFirstDayOfWeek = DayOfWeek.SUNDAY;
@@ -316,81 +315,130 @@ public class ScheduleViewHome extends View {
     mContext = context;
 
     // Get the attribute values (if any).
-    TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.WeekView, 0, 0);
+    TypedArray a = context.getTheme()
+                          .obtainStyledAttributes(attrs,
+                                                  me.jlurena.revolvingweekview.R.styleable.WeekView,
+                                                  0, 0);
     try {
       mFirstDayOfWeek =
-          DayOfWeek.of(a.getInteger(R.styleable.WeekView_firstDayOfWeek, mFirstDayOfWeek.getValue
-                                                                                            ()));
-      mHourHeight = a.getDimensionPixelSize(R.styleable.WeekView_hourHeight, mHourHeight);
-      mMinHourHeight = a.getDimensionPixelSize(R.styleable.WeekView_minHourHeight, mMinHourHeight);
+          DayOfWeek.of(
+              a.getInteger(me.jlurena.revolvingweekview.R.styleable.WeekView_firstDayOfWeek,
+                           mFirstDayOfWeek.getValue
+                                              ()));
+      mHourHeight =
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_hourHeight,
+                                  mHourHeight);
+      mMinHourHeight =
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_minHourHeight,
+                                  mMinHourHeight);
       mEffectiveMinHourHeight = mMinHourHeight;
-      mMaxHourHeight = a.getDimensionPixelSize(R.styleable.WeekView_maxHourHeight, mMaxHourHeight);
+      mMaxHourHeight =
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_maxHourHeight,
+                                  mMaxHourHeight);
       mTextSize =
-          a.getDimensionPixelSize(R.styleable.WeekView_textSize, (int) TypedValue.applyDimension
-                                                                                     (TypedValue.COMPLEX_UNIT_SP,
-                                                                                      mTextSize,
-                                                                                      context.getResources()
-                                                                                             .getDisplayMetrics()));
-      mColumnGap = a.getDimensionPixelSize(R.styleable.WeekView_columnGap, mColumnGap);
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_textSize,
+                                  (int) TypedValue.applyDimension
+                                                      (TypedValue.COMPLEX_UNIT_SP,
+                                                       mTextSize,
+                                                       context.getResources()
+                                                              .getDisplayMetrics()));
+      mColumnGap =
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_columnGap,
+                                  mColumnGap);
       mNumberOfVisibleDays =
-          a.getInteger(R.styleable.WeekView_noOfVisibleDays, mNumberOfVisibleDays);
-      mShowFirstDayOfWeekFirst = a.getBoolean(R.styleable.WeekView_showFirstDayOfWeekFirst,
-                                              mShowFirstDayOfWeekFirst);
+          a.getInteger(me.jlurena.revolvingweekview.R.styleable.WeekView_noOfVisibleDays,
+                       mNumberOfVisibleDays);
+      mShowFirstDayOfWeekFirst =
+          a.getBoolean(me.jlurena.revolvingweekview.R.styleable.WeekView_showFirstDayOfWeekFirst,
+                       mShowFirstDayOfWeekFirst);
       mDayBackgroundColor =
-          a.getColor(R.styleable.WeekView_dayBackgroundColor, mDayBackgroundColor);
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_dayBackgroundColor,
+                     mDayBackgroundColor);
       mFutureBackgroundColor =
-          a.getColor(R.styleable.WeekView_futureBackgroundColor, mFutureBackgroundColor);
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_futureBackgroundColor,
+                     mFutureBackgroundColor);
       mPastBackgroundColor =
-          a.getColor(R.styleable.WeekView_pastBackgroundColor, mPastBackgroundColor);
-      mFutureWeekendBackgroundColor = a.getColor(R.styleable.WeekView_futureWeekendBackgroundColor,
-                                                 mFutureBackgroundColor); // If not set, use the
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_pastBackgroundColor,
+                     mPastBackgroundColor);
+      mFutureWeekendBackgroundColor =
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_futureWeekendBackgroundColor,
+                     mFutureBackgroundColor); // If not set, use the
       // same color as in the week
-      mPastWeekendBackgroundColor = a.getColor(R.styleable.WeekView_pastWeekendBackgroundColor,
-                                               mPastBackgroundColor);
-      mNowLineColor = a.getColor(R.styleable.WeekView_nowLineColor, mNowLineColor);
+      mPastWeekendBackgroundColor =
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_pastWeekendBackgroundColor,
+                     mPastBackgroundColor);
+      mNowLineColor =
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_nowLineColor, mNowLineColor);
       mNowLineThickness =
-          a.getDimensionPixelSize(R.styleable.WeekView_nowLineThickness, mNowLineThickness);
+          a.getDimensionPixelSize(
+              me.jlurena.revolvingweekview.R.styleable.WeekView_nowLineThickness,
+              mNowLineThickness);
       mHourSeparatorColor =
-          a.getColor(R.styleable.WeekView_hourSeparatorColor, mHourSeparatorColor);
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_hourSeparatorColor,
+                     mHourSeparatorColor);
       mTodayBackgroundColor =
-          a.getColor(R.styleable.WeekView_todayBackgroundColor, mTodayBackgroundColor);
-      mHourSeparatorHeight = a.getDimensionPixelSize(R.styleable.WeekView_hourSeparatorHeight,
-                                                     mHourSeparatorHeight);
-      mEventTextSize = a.getDimensionPixelSize(R.styleable.WeekView_eventTextSize, (int) TypedValue
-          .applyDimension(TypedValue.COMPLEX_UNIT_SP, mEventTextSize, context.getResources()
-                                                                             .getDisplayMetrics()));
-      mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor, mEventTextColor);
-      mNewEventColor = a.getColor(R.styleable.WeekView_newEventColor, mNewEventColor);
-      mNewEventIconDrawable = a.getDrawable(R.styleable.WeekView_newEventIconResource);
+          a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_todayBackgroundColor,
+                     mTodayBackgroundColor);
+      mHourSeparatorHeight = a.getDimensionPixelSize(
+          me.jlurena.revolvingweekview.R.styleable.WeekView_hourSeparatorHeight,
+          mHourSeparatorHeight);
+      mEventTextSize =
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_eventTextSize,
+                                  (int) TypedValue
+                                      .applyDimension(TypedValue.COMPLEX_UNIT_SP, mEventTextSize,
+                                                      context.getResources()
+                                                             .getDisplayMetrics()));
+      mEventTextColor = a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_eventTextColor,
+                                   mEventTextColor);
+      mNewEventColor = a.getColor(me.jlurena.revolvingweekview.R.styleable.WeekView_newEventColor,
+                                  mNewEventColor);
+      mNewEventIconDrawable =
+          a.getDrawable(me.jlurena.revolvingweekview.R.styleable.WeekView_newEventIconResource);
       mNewEventIdentifier =
-          (a.getString(R.styleable.WeekView_newEventIdentifier) != null) ? a.getString(R
-                                                                                           .styleable.WeekView_newEventIdentifier)
-                                                                         : mNewEventIdentifier;
+          (a.getString(me.jlurena.revolvingweekview.R.styleable.WeekView_newEventIdentifier) !=
+           null) ? a.getString(me.jlurena.revolvingweekview.R.styleable.WeekView_newEventIdentifier)
+                 : mNewEventIdentifier;
       mNewEventLengthInMinutes =
-          a.getInt(R.styleable.WeekView_newEventLengthInMinutes, mNewEventLengthInMinutes);
+          a.getInt(me.jlurena.revolvingweekview.R.styleable.WeekView_newEventLengthInMinutes,
+                   mNewEventLengthInMinutes);
       mNewEventTimeResolutionInMinutes =
-          a.getInt(R.styleable.WeekView_newEventTimeResolutionInMinutes,
-                   mNewEventTimeResolutionInMinutes);
-      mEventPadding = a.getDimensionPixelSize(R.styleable.WeekView_eventPadding, mEventPadding);
-      mOverlappingEventGap = a.getDimensionPixelSize(R.styleable.WeekView_overlappingEventGap,
-                                                     mOverlappingEventGap);
-      mEventMarginVertical = a.getDimensionPixelSize(R.styleable.WeekView_eventMarginVertical,
-                                                     mEventMarginVertical);
+          a.getInt(
+              me.jlurena.revolvingweekview.R.styleable.WeekView_newEventTimeResolutionInMinutes,
+              mNewEventTimeResolutionInMinutes);
+      mEventPadding =
+          a.getDimensionPixelSize(me.jlurena.revolvingweekview.R.styleable.WeekView_eventPadding,
+                                  mEventPadding);
+      mOverlappingEventGap = a.getDimensionPixelSize(
+          me.jlurena.revolvingweekview.R.styleable.WeekView_overlappingEventGap,
+          mOverlappingEventGap);
+      mEventMarginVertical = a.getDimensionPixelSize(
+          me.jlurena.revolvingweekview.R.styleable.WeekView_eventMarginVertical,
+          mEventMarginVertical);
       mEventCornerRadius =
-          a.getDimensionPixelSize(R.styleable.WeekView_eventCornerRadius, mEventCornerRadius);
-      mShowDistinctPastFutureColor = a.getBoolean(R.styleable.WeekView_showDistinctPastFutureColor,
-                                                  mShowDistinctPastFutureColor);
-      mShowDistinctWeekendColor = a.getBoolean(R.styleable.WeekView_showDistinctWeekendColor,
-                                               mShowDistinctWeekendColor);
-      mShowNowLine = a.getBoolean(R.styleable.WeekView_showNowLine, mShowNowLine);
+          a.getDimensionPixelSize(
+              me.jlurena.revolvingweekview.R.styleable.WeekView_eventCornerRadius,
+              mEventCornerRadius);
+      mShowDistinctPastFutureColor = a.getBoolean(
+          me.jlurena.revolvingweekview.R.styleable.WeekView_showDistinctPastFutureColor,
+          mShowDistinctPastFutureColor);
+      mShowDistinctWeekendColor =
+          a.getBoolean(me.jlurena.revolvingweekview.R.styleable.WeekView_showDistinctWeekendColor,
+                       mShowDistinctWeekendColor);
+      mShowNowLine =
+          a.getBoolean(me.jlurena.revolvingweekview.R.styleable.WeekView_showNowLine, mShowNowLine);
       mAllDayEventHeight =
-          a.getDimensionPixelSize(R.styleable.WeekView_allDayEventHeight, mAllDayEventHeight);
+          a.getDimensionPixelSize(
+              me.jlurena.revolvingweekview.R.styleable.WeekView_allDayEventHeight,
+              mAllDayEventHeight);
       mTimeColumnResolution =
-          a.getInt(R.styleable.WeekView_timeColumnResolution, mTimeColumnResolution);
-      mAutoLimitTime = a.getBoolean(R.styleable.WeekView_autoLimitTime, mAutoLimitTime);
-      mMinTime = a.getInt(R.styleable.WeekView_minTime, mMinTime);
-      mMaxTime = a.getInt(R.styleable.WeekView_maxTime, mMaxTime);
-      mMinOverlappingMinutes = a.getInt(R.styleable.WeekView_minOverlappingMinutes, 0);
+          a.getInt(me.jlurena.revolvingweekview.R.styleable.WeekView_timeColumnResolution,
+                   mTimeColumnResolution);
+      mAutoLimitTime = a.getBoolean(me.jlurena.revolvingweekview.R.styleable.WeekView_autoLimitTime,
+                                    mAutoLimitTime);
+      mMinTime = a.getInt(me.jlurena.revolvingweekview.R.styleable.WeekView_minTime, mMinTime);
+      mMaxTime = a.getInt(me.jlurena.revolvingweekview.R.styleable.WeekView_maxTime, mMaxTime);
+      mMinOverlappingMinutes =
+          a.getInt(me.jlurena.revolvingweekview.R.styleable.WeekView_minOverlappingMinutes, 0);
     } finally {
       a.recycle();
     }
@@ -481,7 +529,7 @@ public class ScheduleViewHome extends View {
    *
    * @param day            The day.
    * @param startFromPixel The left position of the day area. The events will never go any left
-   *                      from this value.
+   *                       from this value.
    * @param canvas         The canvas to draw upon.
    */
   private void drawAllDayEvents(DayOfWeek day, float startFromPixel, Canvas canvas) {
@@ -1596,7 +1644,7 @@ public class ScheduleViewHome extends View {
      * Triggered when the users clicks on a empty space of the calendar.
      *
      * @param day: {@link DayTime} object set with the day and time of the clicked position
-     *           on the view.
+     *             on the view.
      */
     void onEmptyViewClicked(DayTime day);
 
@@ -1608,7 +1656,7 @@ public class ScheduleViewHome extends View {
      * with long press.
      *
      * @param time: {@link DayTime} object set with the day and time of the long pressed position
-     *           on the view.
+     *              on the view.
      */
     void onEmptyViewLongPress(DayTime time);
   }
