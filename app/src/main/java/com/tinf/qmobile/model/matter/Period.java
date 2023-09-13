@@ -90,10 +90,17 @@ public class Period implements Queryable {
     float weight = 0;
 
     for (Journal j : journals)
-      if (j.getWeight_() != -1)
+      if (j.getMax_() != -1)
         weight += j.getMax_();
 
+    if (weight == 0)
+      return sum;
+
     return (sum / weight) * 10;
+  }
+
+  public String getPlotGradeString() {
+    return String.format(Locale.getDefault(), "%.1f", getPlotGrade());
   }
 
   public String getLabel() {

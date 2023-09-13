@@ -34,6 +34,7 @@ import java.util.Locale;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
+import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -202,14 +203,17 @@ public class InfoFragment extends Fragment {
 
         if (journal.getGrade_() >= 0) {
           axisX.add(new AxisValue(x).setLabel(journal.getShort()));
-          points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
+          points.add(new PointValue(x++, journal.getPlotGrade())
                          .setLabel(journal.getGrade()));
           journals.add(journal);
         }
       }
     }
 
-    if (points.size() > 1) {
+    if (points.size() <= 1) {
+      binding.layoutGrades.setVisibility(GONE);
+
+    } else {
       Line line = new Line(points);
       line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
       line.setPointColor(matter.getColor());
@@ -222,7 +226,6 @@ public class InfoFragment extends Fragment {
       data.setAxisYLeft(new Axis());
       data.setAxisXBottom(new Axis(axisX));
 
-      //binding.layoutGrades.setVisibility(points.isEmpty() ? View.GONE : View.VISIBLE);
       binding.chartGrades.setLineChartData(data);
       binding.chartGrades.setZoomEnabled(false);
       binding.chartGrades.setScrollEnabled(false);
@@ -261,44 +264,7 @@ public class InfoFragment extends Fragment {
         }
       });
       binding.layoutGrades.setVisibility(VISIBLE);
-    } else {
-      binding.layoutGrades.setVisibility(GONE);
     }
-
-//        Radar radar = AnyChart.radar();
-//        //radar.title("WoW base stats comparison radar chart: Shaman vs Warrior vs Priest");
-//
-//        //radar.yScale().minimum(0d);
-//        //radar.yScale().minimumGap(0d);
-//        //radar.yScale().ticks().interval(50d);
-//
-//        //radar.xAxis().labels().padding(5d, 5d, 5d, 5d);
-//
-//        radar.legend(false);
-//        radar.title(false);
-//        radar.fullScreen(true);
-//
-//        List<DataEntry> data = new ArrayList<>();
-//        for (Journal journal : matter.getLastJournals()) {
-//            data.add(new ValueDataEntry(journal.getTitle().substring(0, 3), journal.getGrade_()));
-//        }
-//
-//        Set set = Set.instantiate();
-//        set.data(data);
-//        Mapping map = set.mapAs("{ x: 'x', value: 'value' }");
-//
-//        Area area = radar.area(data);
-//        area.color(ColorUtils.INSTANCE.string(color));
-//        //shamanLine.name("Shaman");
-//        //shamanLine.markers()
-//                //.enabled(true)
-//                //.type(MarkerType.CIRCLE)
-//                //.size(3d);
-//
-//        //radar.tooltip().format("Value: {%Value}");
-//
-//        binding.radar.setChart(radar);
-//        binding.radar.setBackgroundColor("RED");
   }
 
   @Override

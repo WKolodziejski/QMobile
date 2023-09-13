@@ -12,8 +12,7 @@
     <TextView
         android:id="@+id/exp_txt1"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:text="@string/journal_sum"
         app:layout_constraintBottom_toTopOf="@id/exp_txt2"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,10 +22,19 @@
         android:id="@+id/exp_txt2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/journal_avg"
+        app:layout_constraintBottom_toTopOf="@id/exp_txt3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/exp_txt1" />
+
+    <TextView
+        android:id="@+id/exp_txt3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/journal_absences"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exp_txt1" />
+        app:layout_constraintTop_toBottomOf="@id/exp_txt2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -39,36 +47,31 @@
         android:id="@+id/partial_grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/partial_average"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline5"
+        tools:text="40" />
+
+    <TextView
+        android:id="@+id/partial_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/partial_grade"
         app:layout_constraintBottom_toTopOf="@id/absences"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="40" />
+        tools:text="23" />
 
     <TextView
         android:id="@+id/absences"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/partial_average"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toBottomOf="@id/partial_grade"
         tools:text="1" />
-
-    <!--            <com.google.android.material.progressindicator.CircularProgressIndicator-->
-    <!--                android:id="@+id/progress"-->
-    <!--                android:layout_width="4dp"-->
-    <!--                android:layout_height="4dp"-->
-    <!--                android:rotation="-135"-->
-    <!--                app:indicatorColor="@color/green_800"-->
-    <!--                app:indicatorSize="28dp"-->
-    <!--                app:trackCornerRadius="8dp"-->
-    <!--                app:layout_constraintBottom_toBottomOf="@id/absences"-->
-    <!--                app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                app:layout_constraintStart_toEndOf="@id/guideline5"-->
-    <!--                app:layout_constraintTop_toTopOf="@id/absences"-->
-    <!--                app:trackColor="@color/transparent"-->
-    <!--                tools:progress="75" />-->
 
     <lecho.lib.hellocharts.view.PieChartView
         android:id="@+id/chart_presence"

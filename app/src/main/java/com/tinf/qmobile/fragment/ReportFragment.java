@@ -11,10 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.anychart.core.Base;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.ReportAdapter;
 import com.tinf.qmobile.database.DataBase;

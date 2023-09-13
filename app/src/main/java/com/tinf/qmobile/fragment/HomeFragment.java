@@ -383,28 +383,6 @@ public class HomeFragment extends BaseFragment implements OnData<EventBase>, OnU
           }
         }
 
-        // To this point, firstIndex holds the last index with most schedules
-        // Now, we need to reverse the search to the first index
-
-            /*boolean r = true;   // Should reverse
-            int d1 = 0;         // Day of week
-
-            // While there are events before the current index
-            while (r) {
-                // If there's an event before the first hour index, decreases the first hour
-                if (week[firstIndex][d1]) {
-                    firstIndex--;
-                    d1 = 0;
-                } else {
-                    d1++; // Next day
-                }
-
-                if (d1 >= 7) {
-                    r = false;      // No events in this index, stops search
-                    firstIndex++;   // Returns to last valid index
-                }
-            }*/
-
         // To this point, firstIndex the first index with most schedules
         // Now, we need to find the first index taking into account some minutes gap
 

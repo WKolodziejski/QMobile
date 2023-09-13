@@ -123,7 +123,7 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
 
           if (journal.getGrade_() >= 0) {
             axisX.add(new AxisValue(x).setLabel(journal.getShort()));
-            points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
+            points.add(new PointValue(x++, journal.getPlotGrade())
                            .setLabel(journal.getGrade()));
             journals.add(journal);
           }

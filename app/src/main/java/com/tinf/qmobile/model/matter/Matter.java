@@ -24,8 +24,6 @@ import io.objectbox.relation.ToMany;
 
 @Entity
 public class Matter implements Queryable {
-  //@Transient public boolean isExpanded;
-  //@Transient public boolean shouldAnimate;
   @Id
   public long id;
   @ColorInt
@@ -241,13 +239,16 @@ public class Matter implements Queryable {
     return period.getGradeSumString();
   }
 
-  public float getLastGradeSum() {
+  public String getLastAverageString() {
+    if (getLastGradeSumString().equals("-"))
+      return "-";
+
     Period period = getLastPeriod();
 
     if (period == null)
-      return -1;
+      return "-";
 
-    return period.getGradeSum();
+    return String.format(Locale.getDefault(), "%.1f", period.getPlotGrade());
   }
 
   public int getQID() {

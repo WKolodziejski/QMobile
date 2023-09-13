@@ -167,6 +167,7 @@
     <string name="journal_details">Detalhes</string>
     <string name="journal_absences">Faltas</string>
     <string name="journal_sum">Soma parcial</string>
+    <string name="journal_avg">Média parcial</string>
     <string name="journal_final_grade">Nota final</string>
     <string name="journal_date">Data</string>
     <string name="journal_max">Max</string>

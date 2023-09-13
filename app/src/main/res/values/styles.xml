@@ -16,7 +16,6 @@
         <item name="colorOnSurfaceVariant">@color/colorAccent</item>
         <item name="colorOnPrimaryContainer">@color/colorPrimaryDark</item>
         <item name="colorSecondaryContainer">@color/colorPrimaryLight</item>
-
         <item name="colorPrimaryContainer">@color/colorPrimaryLight</item>
         <item name="colorOnSecondaryContainer">@color/colorPrimaryLight</item>
         <item name="colorTertiary">@color/colorPrimaryLight</item>
@@ -49,14 +48,10 @@
         <item name="android:windowContentTransitions">true</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.Dialog.Alert</item>
-        <!-- New MaterialComponents attributes. -->
         <item name="snackbarButtonStyle">?attr/borderlessButtonStyle</item>
-
         <item name="searchViewStyle">@style/ThemeOverlay.MaterialComponents.Light</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog
-        </item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
         <item name="actionModeStyle">@style/ActionMode</item>
-
         <item name="dialogCornerRadius">16dp</item>
     </style>
 

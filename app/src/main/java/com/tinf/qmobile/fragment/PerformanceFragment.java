@@ -17,13 +17,6 @@ import com.tinf.qmobile.databinding.FragmentPerformanceBinding;
 public class PerformanceFragment extends Fragment {
   private FragmentPerformanceBinding binding;
 
-  @Override
-  public void onCreate(
-      @Nullable
-      Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-  }
-
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,10 +34,7 @@ public class PerformanceFragment extends Fragment {
       Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    //binding.recycler.setHasFixedSize(true);
     binding.recycler.setItemViewCacheSize(20);
-    binding.recycler.setDrawingCacheEnabled(true);
-    binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
     binding.recycler.setItemAnimator(null);
     binding.recycler.setAdapter(new PerformanceAdapter(getContext()));

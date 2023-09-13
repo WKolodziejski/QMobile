@@ -253,7 +253,9 @@ public class CalendarActivity extends AppCompatActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if (item.getItemId() == R.id.action_today) {
+    if (item.getItemId() == android.R.id.home) {
+      onBackPressed();
+    } else if (item.getItemId() == R.id.action_today) {
       scrollToDate(new Date());
       return true;
     }

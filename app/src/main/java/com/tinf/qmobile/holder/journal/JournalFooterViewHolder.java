@@ -2,6 +2,7 @@ package com.tinf.qmobile.holder.journal;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATTER;
 
 import android.content.Context;
@@ -45,13 +46,14 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     }
 
     binding.partialGrade.setText(matter.getLastGradeSumString());
+    binding.partialAverage.setText(matter.getLastAverageString());
     binding.absences.setText(matter.getAbsencesString());
     binding.chartPresence.setVisibility(matter.getAbsences_() >= 0 ? VISIBLE : INVISIBLE);
 
     binding.layout.setOnClickListener(view -> {
       Intent intent = new Intent(context, MatterActivity.class);
       intent.putExtra("ID", matter.id);
-      intent.putExtra("PAGE", MATTER);
+      intent.putExtra("PAGE", JOURNAL);
       intent.putExtra("LOOKUP", lookup);
       context.startActivity(intent);
     });
