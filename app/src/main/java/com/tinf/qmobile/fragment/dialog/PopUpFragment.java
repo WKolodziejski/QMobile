@@ -28,14 +28,6 @@ public class PopUpFragment extends BottomSheetDialogFragment {
     this.m = m;
   }
 
-  @Override
-  public void onCreate(
-      @Nullable
-      Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme);
-  }
-
   @Nullable
   @Override
   public View onCreateView(
