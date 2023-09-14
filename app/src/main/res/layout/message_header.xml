@@ -22,7 +22,7 @@
             android:background="@drawable/layout_round"
             android:gravity="center"
             android:textAllCaps="true"
-            android:textColor="@color/colorPrimaryLight"
+
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,6 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/message_seen"
                 tools:text="Preview"
                 tools:visibility="visible" />
 

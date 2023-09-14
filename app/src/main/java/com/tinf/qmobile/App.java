@@ -11,6 +11,7 @@ import android.os.StrictMode;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -30,6 +31,8 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     context = getBaseContext();
+
+    DynamicColors.applyToActivitiesIfAvailable(this);
 
     FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);

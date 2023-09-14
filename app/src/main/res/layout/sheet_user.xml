@@ -46,7 +46,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/message_seen"
             tools:text="Matrícula" />
 
     </LinearLayout>
@@ -175,7 +174,6 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="@color/message_seen"
                 tools:text="Last update on 22/03/2017" />
 
         </LinearLayout>

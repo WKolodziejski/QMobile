@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardBackgroundColor="@color/cardBackground"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
@@ -23,7 +22,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:padding="16dp"
-            android:textColor="@color/colorPrimary"
+
             android:textSize="@dimen/main_font_size"
             android:textStyle="bold"
             tools:background="@color/transparent"
@@ -33,94 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginTop="8dp"-->
-            <!--                android:layout_marginBottom="16dp">-->
-            <!--                -->
-            <!--                <LinearLayout-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                    app:layout_constraintStart_toStartOf="parent"-->
-            <!--                    app:layout_constraintTop_toTopOf="parent"-->
-            <!--                    >-->
-
-            <!--                    <com.google.android.material.progressindicator.CircularProgressIndicator-->
-            <!--                        android:id="@+id/progress_hours_bg"-->
-            <!--                        android:layout_width="0dp"-->
-            <!--                        android:layout_height="0dp"-->
-            <!--                        android:rotation="-135"-->
-            <!--                        app:indicatorSize="100dp"-->
-            <!--                        app:indicatorColor="@color/grey_50"-->
-            <!--                        app:trackThickness="8dp"-->
-            <!--                        app:trackCornerRadius="8dp"-->
-            <!--                        app:trackColor="@color/transparent"-->
-            <!--                        android:progress="75" />-->
-
-            <!--                </LinearLayout>-->
-
-            <!--                <LinearLayout-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                    app:layout_constraintStart_toStartOf="parent"-->
-            <!--                    app:layout_constraintTop_toTopOf="parent"-->
-            <!--                    >-->
-
-            <!--                    <com.google.android.material.progressindicator.CircularProgressIndicator-->
-            <!--                        android:id="@+id/progress_hours_fg"-->
-            <!--                        android:layout_width="0dp"-->
-            <!--                        android:layout_height="0dp"-->
-            <!--                        android:rotation="-135"-->
-            <!--                        app:indicatorSize="100dp"-->
-            <!--                        app:indicatorColor="@color/green_800"-->
-            <!--                        app:trackThickness="8dp"-->
-            <!--                        app:trackCornerRadius="8dp"-->
-            <!--                        app:trackColor="@color/transparent"-->
-            <!--                        tools:progress="10"/>-->
-
-            <!--                </LinearLayout>-->
-
-            <!--                <LinearLayout-->
-            <!--                    android:id="@+id/linearLayout"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:orientation="vertical"-->
-            <!--                    android:gravity="center"-->
-            <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                    app:layout_constraintStart_toStartOf="parent"-->
-            <!--                    app:layout_constraintTop_toTopOf="parent">-->
-
-            <!--                    <TextView-->
-            <!--                        android:id="@+id/absences"-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        tools:text="4/15" />-->
-
-            <!--                    <TextView-->
-            <!--                        android:layout_width="wrap_content"-->
-            <!--                        android:layout_height="wrap_content"-->
-            <!--                        android:text="@string/infos_absences" />-->
-
-            <!--                </LinearLayout>-->
-
-            <!--                <TextView-->
-            <!--                    android:id="@+id/classes"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_marginBottom="8dp"-->
-            <!--                    tools:text="60h"-->
-            <!--                    app:layout_constraintStart_toStartOf="parent"-->
-            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-            <!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
-
-            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

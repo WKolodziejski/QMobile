@@ -8,6 +8,5 @@
     android:gravity="center_vertical"
     android:paddingStart="60dp"
     android:textAllCaps="true"
-    android:textColor="@color/colorAccent"
     android:textSize="13sp"
     tools:text="Mar 19 - 20" />

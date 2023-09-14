@@ -11,8 +11,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/main_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimaryLight">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar_layout"
@@ -40,7 +39,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/action_search"
-                    android:textColor="@color/message_seen"
                     android:textSize="19sp" />
 
             </com.google.android.material.appbar.MaterialToolbar>
@@ -75,7 +73,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="8dp"
                             android:textAlignment="center"
-                            android:textColor="@color/colorPrimary"
+
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/warning_close"
                             app:layout_constraintStart_toStartOf="parent"
@@ -95,7 +93,6 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/warning_text"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:tint="@color/colorPrimary"
                             tools:ignore="ContentDescription" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -130,8 +127,7 @@
             <FrameLayout
                 android:id="@+id/main_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryLight" />
+                android:layout_height="match_parent" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -142,14 +138,13 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="100dp"
-            android:textColor="@color/colorPrimaryLight"
+
             android:transitionName="Fab"
             android:visibility="gone"
-            app:backgroundTint="@color/colorAccent"
             app:borderWidth="0dp"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add"
-            app:tint="@color/colorPrimaryLight"
+
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
@@ -158,8 +153,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/colorPrimaryDark"
-            app:itemIconTint="@color/colorAccent"
             app:menu="@menu/navigation" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

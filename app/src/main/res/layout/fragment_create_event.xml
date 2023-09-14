@@ -48,8 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_school"
-            app:tint="@color/colorAccent" />
+            app:srcCompat="@drawable/ic_school"/>
 
         <TextView
             android:id="@+id/matter_text"
@@ -92,8 +91,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            app:srcCompat="@drawable/ic_time"
-            app:tint="@color/colorAccent" />
+            app:srcCompat="@drawable/ic_time" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -180,8 +178,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_notification"
-            app:tint="@color/colorAccent" />
+            app:srcCompat="@drawable/ic_notification" />
 
         <TextView
             android:id="@+id/alarm_text"
@@ -261,8 +258,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:paddingTop="8dp"
-            app:srcCompat="@drawable/ic_note"
-            app:tint="@color/colorAccent" />
+            app:srcCompat="@drawable/ic_note" />
 
         <EditText
             android:id="@+id/description_edt"

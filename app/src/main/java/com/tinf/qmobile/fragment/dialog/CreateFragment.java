@@ -26,7 +26,7 @@ public class CreateFragment extends BottomSheetDialogFragment {
       @Nullable
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme);
+//    setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme);
   }
 
   @Nullable

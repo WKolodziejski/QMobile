@@ -10,7 +10,6 @@
     android:background="@color/transparent"
     android:tag="sheet_popup"
     app:behavior_peekHeight="86dp"
-    app:cardBackgroundColor="@color/colorPrimaryDark"
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
@@ -55,9 +54,9 @@
                 android:id="@+id/checkBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/colorPrimary"
+
                 android:text="@string/dialog_dont_show"
-                android:textColor="@color/colorPrimary" />
+                 />
 
         </LinearLayout>
 

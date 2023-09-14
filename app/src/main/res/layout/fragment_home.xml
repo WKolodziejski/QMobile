@@ -40,7 +40,6 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_alarm"
                         android:drawablePadding="8dp"
-                        android:drawableTint="@color/colorAccent"
                         android:gravity="center_vertical"
                         android:text="@string/title_horario"
                         android:textSize="17sp"
@@ -113,7 +112,6 @@
                     app:todayHeaderTextColor="@color/transparent"
                     app:xScrollingSpeed="0"
                     app:zoomFocusPointEnabled="false"
-                    tools:background="@color/colorPrimaryLight"
                     tools:layout_height="200dp" />
 
             </LinearLayout>
@@ -152,7 +150,7 @@
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_calendar"
                         android:drawablePadding="8dp"
-                        android:drawableTint="@color/colorAccent"
+
                         android:gravity="center_vertical"
                         android:text="@string/calendar_upcoming"
                         android:textSize="17sp"
@@ -228,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_insights"
                     android:drawablePadding="8dp"
-                    android:drawableTint="@color/colorAccent"
+
                     android:gravity="center_vertical"
                     android:text="@string/title_performance"
                     android:textSize="17sp"
