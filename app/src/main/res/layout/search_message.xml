@@ -17,7 +17,7 @@
         android:background="@drawable/layout_round"
         android:gravity="center"
         android:textAllCaps="true"
-        android:textColor="@color/colorPrimaryLight"
+
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

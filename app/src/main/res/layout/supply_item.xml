@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/colorPrimary"
+
             android:textStyle="bold"
             tools:text="Paisagens Brasileira sdasd dsasadsad sads" />
 
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/colorPrimary"
+
             android:textSize="14sp"
             android:visibility="gone"
             tools:text="A resolução de alguns exerci dsad sad saos"
@@ -77,7 +77,6 @@
             android:id="@+id/loading"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:progressTint="@color/colorPrimary"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

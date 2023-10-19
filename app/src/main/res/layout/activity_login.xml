@@ -32,7 +32,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginVertical="8dp"
                 android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
+
                 tools:text="Os servidores do Q-Acadêmico estão enfrantando problemas de login. Por favor, aguarde." />
 
         </androidx.cardview.widget.CardView>

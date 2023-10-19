@@ -69,7 +69,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:srcCompat="@drawable/ic_school"
-            app:tint="@color/colorAccent" />
+             />
 
         <TextView
             android:id="@+id/given"
@@ -101,7 +101,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:srcCompat="@drawable/ic_absence"
-            app:tint="@color/colorAccent" />
+             />
 
         <TextView
             android:id="@+id/absences"
@@ -132,7 +132,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:srcCompat="@drawable/ic_teacher"
-            app:tint="@color/colorAccent" />
+             />
 
         <TextView
             android:id="@+id/teacher"
@@ -164,7 +164,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:srcCompat="@drawable/ic_time"
-            app:tint="@color/colorAccent" />
+             />
 
         <TextView
             android:id="@+id/time_text"
@@ -195,7 +195,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             app:srcCompat="@drawable/ic_tag"
-            app:tint="@color/colorAccent" />
+             />
 
         <TextView
             android:id="@+id/content_text"

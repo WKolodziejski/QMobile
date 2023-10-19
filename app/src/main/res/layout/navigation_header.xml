@@ -14,13 +14,12 @@
         android:layout_height="24dp"
         android:layout_marginBottom="4dp"
         android:src="@drawable/ic_launcher"
-        app:tint="@color/colorAccent" />
+         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="mobile"
-        android:textColor="@color/colorAccent"
         android:textSize="21sp"
         android:textStyle="bold" />
 

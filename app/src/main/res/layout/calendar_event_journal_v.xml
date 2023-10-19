@@ -28,13 +28,13 @@
             android:foreground="?android:attr/selectableItemBackground"
             android:orientation="vertical"
             android:padding="8dp"
-            tools:background="@color/colorPrimary">
+            >
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimaryLight"
+
                 android:textSize="15sp"
                 android:textStyle="bold"
                 tools:text="Prova de trigonometria" />
@@ -45,7 +45,7 @@
                 android:layout_marginTop="8dp"
                 android:visibility="gone"
                 android:id="@+id/description"
-                android:textColor="@color/colorPrimaryLight"
+
                 tools:text="Matemática" />!-->
 
         </LinearLayout>

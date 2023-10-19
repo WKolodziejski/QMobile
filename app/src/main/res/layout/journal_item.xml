@@ -82,8 +82,7 @@
             android:layout_marginHorizontal="8dp"
             android:layout_marginVertical="4dp"
             android:textStyle="bold"
-            tools:text="10"
-            tools:textColor="@color/white" />
+            tools:text="10" />
 
     </com.google.android.material.card.MaterialCardView>
 

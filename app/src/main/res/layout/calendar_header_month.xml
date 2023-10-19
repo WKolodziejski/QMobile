@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     android:gravity="center"
-    android:textColor="@color/colorAccent"
     android:textSize="@dimen/alt_font_size"
     android:textStyle="bold"
     tools:text="Março" />

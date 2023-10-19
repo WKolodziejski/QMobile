@@ -32,6 +32,8 @@ public class App extends Application {
     super.onCreate();
     context = getBaseContext();
 
+    DynamicColors.applyToActivitiesIfAvailable(this);
+
     FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
     crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));

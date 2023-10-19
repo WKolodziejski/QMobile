@@ -1,40 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryLight</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorSecondary">@color/colorPrimary</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="android:colorForeground">@color/colorPrimary</item>
-        <item name="android:colorBackground">@color/colorPrimaryLight</item>
 
-        <item name="colorOnSurface">@color/colorPrimary</item>
-        <item name="colorPrimaryInverse">@color/colorPrimaryLight</item>
-        <item name="colorOutline">@color/colorPrimaryDark</item>
-        <item name="colorOnSurfaceVariant">@color/colorAccent</item>
-        <item name="colorOnPrimaryContainer">@color/colorPrimaryDark</item>
-        <item name="colorSecondaryContainer">@color/colorPrimaryLight</item>
-        <item name="colorPrimaryContainer">@color/colorPrimaryLight</item>
-        <item name="colorOnSecondaryContainer">@color/colorPrimaryLight</item>
-        <item name="colorTertiary">@color/colorPrimaryLight</item>
-        <item name="colorOnTertiary">@color/colorPrimaryLight</item>
-        <item name="colorTertiaryContainer">@color/colorPrimaryLight</item>
-        <item name="colorOnTertiaryContainer">@color/colorPrimaryLight</item>
-        <item name="colorSurfaceVariant">@color/colorPrimaryLight</item>
-        <item name="colorSurfaceInverse">@color/colorPrimaryLight</item>
-        <item name="colorOnSurfaceInverse">@color/colorPrimaryLight</item>
-        <item name="colorErrorContainer">@color/colorPrimaryLight</item>
-        <item name="colorOnErrorContainer">@color/colorPrimaryLight</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryLight</item>
-        <item name="colorSecondaryVariant">@color/colorPrimaryLight</item>
-        <item name="colorSurface">@color/colorPrimaryLight</item>
-        <item name="colorOnPrimary">@color/colorPrimaryLight</item>
-        <item name="colorOnSecondary">@color/colorPrimaryLight</item>
-        <item name="colorOnBackground">@color/colorPrimaryLight</item>
-        <item name="colorOnError">@color/colorPrimaryLight</item>
-        <item name="scrimBackground">@color/colorPrimaryLight</item>
+<!--        <item name="colorAccent">@color/pink_700</item>-->
+<!--        &lt;!&ndash; Primary brand color. &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/green_700</item>-->
+<!--        <item name="colorPrimaryVariant">@color/red_700</item>-->
+<!--        <item name="colorOnPrimary">@color/white</item>-->
+<!--        &lt;!&ndash; Secondary brand color. &ndash;&gt;-->
+<!--        <item name="colorSecondary">@color/blue_700</item>-->
+<!--        <item name="colorSecondaryVariant">@color/yellow_700</item>-->
+<!--        <item name="colorOnSecondary">@color/black</item>-->
+<!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
+        <item name="android:statusBarColor">?attr/colorOnPrimary</item>
+<!--        &lt;!&ndash; For text input fields &ndash;&gt;-->
+<!--        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>-->
+<!--        &lt;!&ndash; For radio buttons &ndash;&gt;-->
+<!--        <item name="radioButtonStyle">@style/Widget.TipTime.CompoundButton.RadioButton</item>-->
+<!--        &lt;!&ndash; For switches &ndash;&gt;-->
+<!--        <item name="switchStyle">@style/Widget.TipTime.CompoundButton.Switch</item>-->
+
+
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+<!--        <item name="colorSecondary">@color/colorPrimary</item>-->
+<!--        <item name="android:textColor">@color/colorPrimary</item>-->
+<!--        <item name="android:colorForeground">@color/colorPrimary</item>-->
+<!--        <item name="android:colorBackground">@color/colorPrimaryLight</item>-->
+<!--        -->
+<!--        <item name="colorOnSurface">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryInverse">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOutline">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorOnSurfaceVariant">@color/colorAccent</item>-->
+<!--        <item name="colorOnPrimaryContainer">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorSecondaryContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorPrimaryContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnSecondaryContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorTertiary">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnTertiary">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorTertiaryContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnTertiaryContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorSurfaceVariant">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorSurfaceInverse">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnSurfaceInverse">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorErrorContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnErrorContainer">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorPrimaryVariant">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorSecondaryVariant">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorSurface">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnPrimary">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnSecondary">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnBackground">@color/colorPrimaryLight</item>-->
+<!--        <item name="colorOnError">@color/colorPrimaryLight</item>-->
+<!--        <item name="scrimBackground">@color/colorPrimaryLight</item>-->
 
 <!--        <item name="colorOnPrimaryFixedVariant">@color/green_500</item>-->
 <!--        <item name="colorPrimaryFixed">@color/green_500</item>-->
@@ -69,7 +89,7 @@
         <item name="snackbarButtonStyle">?attr/borderlessButtonStyle</item>
         <item name="searchViewStyle">@style/ThemeOverlay.MaterialComponents.Light</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>
-        <item name="actionModeStyle">@style/ActionMode</item>
+<!--        <item name="actionModeStyle">@style/ActionMode</item>-->
         <item name="dialogCornerRadius">16dp</item>
     </style>
 
@@ -78,21 +98,34 @@
         <item name="itemTextColor">@color/drawer</item>
     </style>
 
-    <style name="ActionMode" parent="@style/Widget.Material3.ActionMode">
-        <item name="height">70dp</item>
-        <item name="background">@color/colorPrimaryLight</item>
-        <item name="actionMenuTextColor">@color/colorPrimary</item>
-    </style>
+<!--    <style name="ActionMode" parent="@style/Widget.Material3.ActionMode">-->
+<!--        <item name="height">70dp</item>-->
+<!--        <item name="background">@color/colorPrimaryLight</item>-->
+<!--        <item name="actionMenuTextColor">@color/colorPrimary</item>-->
+<!--    </style>-->
+
+    <!--<style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@drawable/layout_splash</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>!-->
 
     <style name="SplashTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
         <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.Light">
-        <item name="android:background">@color/colorPrimaryLight</item>
-        <item name="android:textColor">@color/colorPrimary</item>
-        <item name="elevation">0dp</item>
-    </style>
+<!--    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.Light">-->
+<!--        <item name="android:background">@color/colorPrimaryLight</item>-->
+<!--        <item name="android:textColor">@color/colorPrimary</item>-->
+<!--        <item name="elevation">0dp</item>-->
+<!--    </style>-->
+
+<!--    <style name="CustomBottomSheetDialogTheme" parent="Theme.Material3.Light.BottomSheetDialog">-->
+<!--        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>-->
+<!--    </style>-->
+
+<!--    <style name="CustomBottomSheetStyle" parent="Widget.Material3.BottomSheet.Modal">-->
+<!--        <item name="android:background">@android:color/transparent</item>-->
+<!--    </style>-->
 
 </resources>

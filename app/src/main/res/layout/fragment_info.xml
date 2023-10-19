@@ -23,7 +23,6 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_info"
                 android:drawablePadding="8dp"
-                android:drawableTint="@color/colorAccent"
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_about"
@@ -148,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_history"
                 android:drawablePadding="8dp"
-                android:drawableTint="@color/colorAccent"
+
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_attendance"
@@ -281,7 +280,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_task"
                 android:drawablePadding="8dp"
-                android:drawableTint="@color/colorAccent"
+
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_progress"
@@ -403,7 +402,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_chart"
                 android:drawablePadding="8dp"
-                android:drawableTint="@color/colorAccent"
+
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_history"

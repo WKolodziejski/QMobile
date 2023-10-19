@@ -36,7 +36,6 @@
             android:ellipsize="end"
             android:maxLength="20"
             android:maxLines="1"
-            android:textColor="@color/message_seen"
             tools:text="Attachment" />
 
     </LinearLayout>

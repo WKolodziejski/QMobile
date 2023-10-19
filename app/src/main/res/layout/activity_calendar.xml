@@ -7,7 +7,6 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
-        style="@style/AppTheme.AppBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
@@ -22,7 +21,6 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/colorPrimaryLight"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlways">
 
             <com.github.sundeepk.compactcalendarview.CompactCalendarView
@@ -33,8 +31,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 app:compactCalendarBackgroundColor="@color/transparent"
-                app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimaryDark"
-                app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorSecondary"
+
                 app:compactCalendarMultiEventIndicatorColor="@color/colorPrimary"
                 app:compactCalendarTargetHeight="250dp"
                 app:compactCalendarTextColor="@color/colorPrimary"
@@ -107,13 +104,10 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        android:background="@color/colorAccent"
-        android:textColor="@color/colorPrimaryLight"
         android:transitionName="Fab"
-        app:backgroundTint="@color/colorAccent"
         app:borderWidth="0dp"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_add"
-        app:tint="@color/colorPrimaryLight" />
+         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
