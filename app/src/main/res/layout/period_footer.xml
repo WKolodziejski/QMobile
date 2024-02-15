@@ -4,39 +4,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="12dp"
+    android:paddingVertical="8dp"
     android:paddingStart="52dp">
 
     <TextView
         android:id="@+id/exp_txt1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:layout_marginVertical="4dp"
         android:text="@string/journal_sum"
-        app:layout_constraintBottom_toTopOf="@id/exp_txt3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/exp_txt3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:text="@string/journal_final_grade"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/exp_txt2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exp_txt1" />
+        app:layout_constraintStart_toStartOf="parent"         />
 
     <TextView
         android:id="@+id/exp_txt2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginVertical="4dp"
+        android:text="@string/journal_avg"
+        app:layout_constraintTop_toBottomOf="@id/exp_txt1"
+        app:layout_constraintBottom_toTopOf="@id/exp_txt3"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/exp_txt3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:text="@string/journal_final_grade"
+        app:layout_constraintTop_toBottomOf="@id/exp_txt2"
+        app:layout_constraintBottom_toTopOf="@id/exp_txt4"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/exp_txt4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
         android:text="@string/journal_absences"
+        app:layout_constraintTop_toBottomOf="@id/exp_txt3"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/exp_txt3" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"
@@ -49,32 +58,44 @@
         android:id="@+id/partial_grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/partial_average"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline5"
+        tools:text="39,7" />
+
+    <TextView
+        android:id="@+id/partial_average"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintTop_toBottomOf="@id/partial_grade"
         app:layout_constraintBottom_toTopOf="@id/final_grade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="39,7" />
+        tools:text="23" />
 
     <TextView
         android:id="@+id/final_grade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintTop_toBottomOf="@id/partial_average"
         app:layout_constraintBottom_toTopOf="@+id/absences"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toBottomOf="@id/partial_grade"
         tools:text="40" />
 
     <TextView
         android:id="@+id/absences"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginVertical="4dp"
+        app:layout_constraintTop_toBottomOf="@id/final_grade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline5"
-        app:layout_constraintTop_toBottomOf="@id/final_grade"
         tools:text="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

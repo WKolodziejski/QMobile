@@ -10,13 +10,15 @@ import com.tinf.qmobile.network.message.Messenger;
 
 public class EmptyViewHolder extends MessagesViewHolder<Empty> {
 
-    public EmptyViewHolder(@NonNull View itemView) {
-        super(itemView);
-    }
+  public EmptyViewHolder(
+      @NonNull
+      View itemView) {
+    super(itemView);
+  }
 
-    @Override
-    public void bind(Context context, Messenger messenger, Empty empty) {
+  @Override
+  public void bind(Context context, Messenger messenger, Empty empty) {
 
-    }
+  }
 
 }

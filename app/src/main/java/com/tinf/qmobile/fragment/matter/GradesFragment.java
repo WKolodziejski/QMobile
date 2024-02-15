@@ -17,23 +17,28 @@ import com.tinf.qmobile.widget.divider.CustomlItemDivider;
 
 public class GradesFragment extends Fragment {
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_grades, container, false);
-    }
+  @Override
+  public View onCreateView(
+      @NonNull
+      LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_grades, container, false);
+  }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+  @Override
+  public void onViewCreated(
+      @NonNull
+      View view,
+      @Nullable
+      Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recycler = view.findViewById(R.id.recycler);
-        //recycler.setHasFixedSize(true);
-        recycler.setItemViewCacheSize(20);
-        recycler.setDrawingCacheEnabled(true);
-        recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recycler.addItemDecoration(new CustomlItemDivider(getContext()));
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        recycler.setAdapter(new GradesAdapter(getContext(), getArguments()));
-    }
+    RecyclerView recycler = view.findViewById(R.id.recycler);
+    recycler.setItemViewCacheSize(20);
+    recycler.setDrawingCacheEnabled(true);
+    recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+    recycler.addItemDecoration(new CustomlItemDivider(getContext()));
+    recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+    recycler.setAdapter(new GradesAdapter(getContext(), getArguments()));
+  }
 
 }

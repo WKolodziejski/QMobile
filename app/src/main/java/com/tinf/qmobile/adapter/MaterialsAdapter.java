@@ -1,9 +1,9 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -33,145 +33,168 @@ import com.tinf.qmobile.model.material.Material;
 
 import java.util.List;
 
-public class MaterialsAdapter extends MaterialsBaseAdapter implements KmStickyListener, OnData<Queryable> {
-    private final AsyncListDiffer<Queryable> list;
-    private final OnList<Queryable> onList;
-    private int currentHeader;
+public class MaterialsAdapter extends MaterialsBaseAdapter
+    implements KmStickyListener, OnData<Queryable> {
+  private final AsyncListDiffer<Queryable> list;
+  private final OnList<Queryable> onList;
+  private int currentHeader;
 
-    public MaterialsAdapter(Context context, OnInteractListener listener, OnList<Queryable> onList) {
-        super(context, listener);
-        this.onList = onList;
-        this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                boolean equals = oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+  public MaterialsAdapter(Context context, OnInteractListener listener, OnList<Queryable> onList) {
+    super(context, listener);
+    this.onList = onList;
+    this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+      @Override
+      public boolean areItemsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        boolean equals =
+            oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
 
-                if (equals && oldItem.getItemType() == MATERIAL) {
-                    Material oldMaterial = ((Material) oldItem);
-                    Material newMaterial = ((Material) newItem);
+        if (equals && oldItem.getItemType() == MATERIAL) {
+          Material oldMaterial = ((Material) oldItem);
+          Material newMaterial = ((Material) newItem);
 
-                    newMaterial.isDownloading = oldMaterial.isDownloading;
-                    //newMaterial.isDownloaded = oldMaterial.isDownloaded;
-                    newMaterial.isSelected = oldMaterial.isSelected;
-                    newMaterial.highlight = oldMaterial.highlight;
-                }
-
-                return equals;
-            }
-
-            @Override
-            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.isSame(newItem);
-            }
-        });
-
-        onUpdate(DataBase.get().getMaterialsDataProvider().getList());
-    }
-
-    @Override
-    public int getItemViewType(int i) {
-        return list.getCurrentList().get(i).getItemType();
-    }
-
-    @NonNull
-    @Override
-    public MaterialBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case MATTER:
-                return new MatterViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.material_header, parent, false));
-
-            case MATERIAL:
-                return new MaterialViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.material_item, parent, false));
-
-            case HEADER:
-                return new MaterialHeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.header_empty, parent, false));
-
-            case EMPTY:
-                return new MaterialEmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.material_empty, parent, false));
+          newMaterial.isDownloading = oldMaterial.isDownloading;
+          //newMaterial.isDownloaded = oldMaterial.isDownloaded;
+          newMaterial.isSelected = oldMaterial.isSelected;
+          newMaterial.highlight = oldMaterial.highlight;
         }
 
-        return null;
+        return equals;
+      }
+
+      @Override
+      public boolean areContentsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.isSame(newItem);
+      }
+    });
+
+    onUpdate(DataBase.get().getMaterialsDataProvider().getList());
+  }
+
+  @Override
+  public int getItemViewType(int i) {
+    return list.getCurrentList().get(i).getItemType();
+  }
+
+  @NonNull
+  @Override
+  public MaterialBaseViewHolder onCreateViewHolder(
+      @NonNull
+      ViewGroup parent, int viewType) {
+    switch (viewType) {
+      case MATTER:
+        return new MatterViewHolder(LayoutInflater.from(context)
+                                                  .inflate(R.layout.material_header, parent,
+                                                           false));
+
+      case MATERIAL:
+        return new MaterialViewHolder(LayoutInflater.from(context)
+                                                    .inflate(R.layout.material_item, parent,
+                                                             false));
+
+      case HEADER:
+        return new MaterialHeaderViewHolder(LayoutInflater.from(context)
+                                                          .inflate(R.layout.header_empty, parent,
+                                                                   false));
+
+      case EMPTY:
+        return new MaterialEmptyViewHolder(LayoutInflater.from(context)
+                                                         .inflate(R.layout.material_empty, parent,
+                                                                  false));
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull MaterialBaseViewHolder holder, int i) {
-        holder.bind(context, listener, this, callback, list.getCurrentList().get(i), i == currentHeader);
-    }
+    return null;
+  }
 
-    @Override
-    public int getItemCount() {
-        return list.getCurrentList().size();
-    }
+  @Override
+  public void onBindViewHolder(
+      @NonNull
+      MaterialBaseViewHolder holder, int i) {
+    holder.bind(context, listener, this, callback, list.getCurrentList().get(i),
+                i == currentHeader);
+  }
 
-    @Override
-    protected List<Queryable> getList() {
-        return list.getCurrentList();
-    }
+  @Override
+  public int getItemCount() {
+    return list.getCurrentList().size();
+  }
 
-    @Override
-    public void onUpdate(List<Queryable> list) {
-        this.list.submitList(list);
-        onList.onUpdate(list);
-    }
+  @Override
+  protected List<Queryable> getList() {
+    return list.getCurrentList();
+  }
 
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        DataBase.get().getMaterialsDataProvider().removeOnDataListener(this);
-    }
+  @Override
+  public void onUpdate(List<Queryable> list) {
+    this.list.submitList(list);
+    onList.onUpdate(list);
+  }
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        DataBase.get().getMaterialsDataProvider().addOnDataListener(this);
-    }
+  @Override
+  public void onDetachedFromRecyclerView(
+      @NonNull
+      RecyclerView recyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView);
+    DataBase.get().getMaterialsDataProvider().removeOnDataListener(this);
+  }
 
-    @Override
-    public Integer getHeaderPositionForItem(Integer i) {
-        Queryable q = list.getCurrentList().get(i);
+  @Override
+  public void onAttachedToRecyclerView(
+      @NonNull
+      RecyclerView recyclerView) {
+    super.onAttachedToRecyclerView(recyclerView);
+    DataBase.get().getMaterialsDataProvider().addOnDataListener(this);
+  }
 
-        while (!(q instanceof Header) && i > 0)
-            q = list.getCurrentList().get(--i);
+  @Override
+  public Integer getHeaderPositionForItem(Integer i) {
+    Queryable q = list.getCurrentList().get(i);
 
-        notifyItemChanged(currentHeader);
-        currentHeader = i + 1;
-        notifyItemChanged(currentHeader);
+    while (!(q instanceof Header) && i > 0)
+      q = list.getCurrentList().get(--i);
 
-        return i < 0 ? 0 : i;
-    }
+    notifyItemChanged(currentHeader);
+    currentHeader = i + 1;
+    notifyItemChanged(currentHeader);
 
-    @Override
-    public Integer getHeaderLayout(Integer i) {
-        if (list.getCurrentList().get(i) instanceof Header)
-            return R.layout.journal_header_color;
-        else
-            return R.layout.header_empty;
-    }
+    return i < 0 ? 0 : i;
+  }
 
-    @Override
-    public void bindHeaderData(View header, Integer i) {
-        if (!(list.getCurrentList().get(i) instanceof Header))
-            return;
+  @Override
+  public Integer getHeaderLayout(Integer i) {
+    if (list.getCurrentList().get(i) instanceof Header)
+      return R.layout.journal_header_color;
+    else
+      return R.layout.header_empty;
+  }
 
-        Header h = (Header) list.getCurrentList().get(i);
+  @Override
+  public void bindHeaderData(View header, Integer i) {
+    if (!(list.getCurrentList().get(i) instanceof Header))
+      return;
 
-        int n = h.getJournalNotSeenCount();
+    Header h = (Header) list.getCurrentList().get(i);
 
-        TextView b = header.findViewById(R.id.badge);
-        b.setText(n > 0 ? String.valueOf(n) : "");
-        b.setBackgroundTintList(ColorStateList.valueOf(h.getColor()));
-    }
+    int n = h.getJournalNotSeenCount();
 
-    @Override
-    public Boolean isHeader(Integer i) {
-        if (i < 0)
-            return false;
+    TextView b = header.findViewById(R.id.badge);
+    b.setText(n > 0 ? String.valueOf(n) : "");
+    b.setBackgroundTintList(ColorStateList.valueOf(h.getColor()));
+  }
 
-        Queryable q = list.getCurrentList().get(i);
-        return q instanceof Header;
-    }
+  @Override
+  public Boolean isHeader(Integer i) {
+    if (i < 0)
+      return false;
+
+    Queryable q = list.getCurrentList().get(i);
+    return q instanceof Header;
+  }
 }

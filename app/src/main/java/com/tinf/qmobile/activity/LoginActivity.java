@@ -29,165 +29,172 @@ import com.tinf.qmobile.utility.UserUtils;
 import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity implements OnResponse {
-    private ActivityLoginBinding binding;
-    private static final String TAG = "LoginActivity";
-    Fragment fragment;
+  private ActivityLoginBinding binding;
+  private static final String TAG = "LoginActivity";
+  Fragment fragment;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    binding = ActivityLoginBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        if (savedInstanceState != null) {
-            fragment = getSupportFragmentManager().getFragment(savedInstanceState, "loginFragment");
-        } else {
-            fragment = new WelcomeLoginFragment();
-        }
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.login_fragment, fragment)
-                .commit();
-
-        FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
-
-        FirebaseMessageParams params = null;
-
-        try {
-            params = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd HH:mm").
-                    create()
-                    .fromJson(
-                            remoteConfig.getString("message_login"),
-                            new TypeToken<FirebaseMessageParams>() {
-                            }.getType());
-        } catch (Exception e) {
-            FirebaseCrashlytics.getInstance().recordException(e);
-        }
-
-        if (params == null)
-            return;
-
-        if (params.showAfter == null || params.hideAfter == null || params.message == null || params.show == null)
-            return;
-
-        Date now = new Date();
-
-        if (!params.show || params.showAfter.after(now) || params.hideAfter.before(now)) {
-            binding.warningCard.setVisibility(View.GONE);
-            return;
-        }
-
-        binding.warningCard.setCardBackgroundColor(Design.getColorForWarning(getBaseContext(), params.color));
-        binding.warningText.setText(params.message);
-        binding.warningCard.setVisibility(View.VISIBLE);
+    if (savedInstanceState != null) {
+      fragment = getSupportFragmentManager().getFragment(savedInstanceState, "loginFragment");
+    } else {
+      fragment = new WelcomeLoginFragment();
     }
 
-    @Override
-    public void onFinish(int pg, int year, int period) {
-        if (pg == PG_LOGIN) {
-            Client.get().load(PG_FETCH_YEARS);
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.login_fragment, fragment)
+        .commit();
 
-        } else if (pg == PG_FETCH_YEARS) {
-            UserUtils.setValid(true);
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }
+    FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+    FirebaseMessageParams params = null;
+
+    try {
+      params = new GsonBuilder()
+          .setDateFormat("yyyy-MM-dd HH:mm").
+          create()
+          .fromJson(
+              remoteConfig.getString("message_login"),
+              new TypeToken<FirebaseMessageParams>() {
+              }.getType());
+    } catch (Exception e) {
+      FirebaseCrashlytics.getInstance().recordException(e);
     }
 
-    @Override
-    public void onError(int pg, String error) {
-        Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
+    if (params == null)
+      return;
 
-        Log.e(TAG, error);
+    if (params.showAfter == null || params.hideAfter == null || params.message == null ||
+        params.show == null)
+      return;
+
+    Date now = new Date();
+
+    if (!params.show || params.showAfter.after(now) || params.hideAfter.before(now)) {
+      binding.warningCard.setVisibility(View.GONE);
+      return;
     }
 
-    @Override
-    public void onAccessDenied(int pg, String message) {
-        if (pg == PG_ACCESS_DENIED) {
-            new MaterialAlertDialogBuilder(LoginActivity.this)
-                    .setTitle(getResources().getString(R.string.dialog_access_denied))
-                    .setMessage(message)
-                    .setCancelable(true)
-                    .create()
-                    .show();
+    binding.warningCard.setCardBackgroundColor(
+        Design.getColorForWarning(getBaseContext(), params.color));
+    binding.warningText.setText(params.message);
+    binding.warningCard.setVisibility(View.VISIBLE);
+  }
 
-        } else if (pg == PG_UPDATE) {
-            new MaterialAlertDialogBuilder(LoginActivity.this)
-                    .setTitle(getResources().getString(R.string.dialog_update_password))
-                    .setMessage(getResources().getString(R.string.dialog_update_password_msg))
-                    .setCancelable(true)
-                    .create()
-                    .show();
+  @Override
+  public void onFinish(int pg, int year, int period) {
+    if (pg == PG_LOGIN) {
+      Client.get().load(PG_FETCH_YEARS);
 
-        } else if (pg == PG_QUEST) {
-            new MaterialAlertDialogBuilder(LoginActivity.this)
-                    .setTitle(getResources().getString(R.string.dialog_questionary_title))
-                    .setMessage(getResources().getString(R.string.dialog_questionary_text))
-                    .setCancelable(true)
-                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
-                    .create()
-                    .show();
+    } else if (pg == PG_FETCH_YEARS) {
+      UserUtils.setValid(true);
+      startActivity(new Intent(this, MainActivity.class));
+      finish();
+    }
+  }
 
-        } else if (pg == PG_REGISTRATION) {
-            new MaterialAlertDialogBuilder(LoginActivity.this)
-                    .setTitle(getResources().getString(R.string.dialog_registration_title))
-                    .setMessage(getResources().getString(R.string.dialog_registration_text))
-                    .setCancelable(true)
-                    .setPositiveButton(getResources().getString(R.string.dialog_open_site),
-                            (dialogInterface, i) -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
-                    .create()
-                    .show();
+  @Override
+  public void onError(int pg, String error) {
+    Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
 
-        } else {
-            Toast.makeText(getBaseContext(), getResources().getString(R.string.dialog_access_denied), Toast.LENGTH_LONG).show();
-        }
+    Log.e(TAG, error);
+  }
 
-        Log.v(TAG, message);
+  @Override
+  public void onAccessDenied(int pg, String message) {
+    if (pg == PG_ACCESS_DENIED) {
+      new MaterialAlertDialogBuilder(LoginActivity.this)
+          .setTitle(getResources().getString(R.string.dialog_access_denied))
+          .setMessage(message)
+          .setCancelable(true)
+          .create()
+          .show();
+
+    } else if (pg == PG_UPDATE) {
+      new MaterialAlertDialogBuilder(LoginActivity.this)
+          .setTitle(getResources().getString(R.string.dialog_update_password))
+          .setMessage(getResources().getString(R.string.dialog_update_password_msg))
+          .setCancelable(true)
+          .create()
+          .show();
+
+    } else if (pg == PG_QUEST) {
+      new MaterialAlertDialogBuilder(LoginActivity.this)
+          .setTitle(getResources().getString(R.string.dialog_questionary_title))
+          .setMessage(getResources().getString(R.string.dialog_questionary_text))
+          .setCancelable(true)
+          .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                             (dialogInterface, i) -> startActivity(
+                                 new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
+          .create()
+          .show();
+
+    } else if (pg == PG_REGISTRATION) {
+      new MaterialAlertDialogBuilder(LoginActivity.this)
+          .setTitle(getResources().getString(R.string.dialog_registration_title))
+          .setMessage(getResources().getString(R.string.dialog_registration_text))
+          .setCancelable(true)
+          .setPositiveButton(getResources().getString(R.string.dialog_open_site),
+                             (dialogInterface, i) -> startActivity(
+                                 new Intent(Intent.ACTION_VIEW, Uri.parse(UserUtils.getURL()))))
+          .create()
+          .show();
+
+    } else {
+      Toast.makeText(getBaseContext(), getResources().getString(R.string.dialog_access_denied),
+                     Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onStart(int pg) {
-        Log.v(TAG, "Started loading " + pg);
-    }
+    Log.v(TAG, message);
+  }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Client.get().addOnResponseListener(this);
-    }
+  @Override
+  public void onStart(int pg) {
+    Log.v(TAG, "Started loading " + pg);
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Client.get().addOnResponseListener(this);
-    }
+  @Override
+  public void onStart() {
+    super.onStart();
+    Client.get().addOnResponseListener(this);
+  }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Client.get().removeOnResponseListener(this);
-    }
+  @Override
+  public void onResume() {
+    super.onResume();
+    Client.get().addOnResponseListener(this);
+  }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Client.get().removeOnResponseListener(this);
-    }
+  @Override
+  protected void onStop() {
+    super.onStop();
+    Client.get().removeOnResponseListener(this);
+  }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Client.get().removeOnResponseListener(this);
-    }
+  @Override
+  protected void onPause() {
+    super.onPause();
+    Client.get().removeOnResponseListener(this);
+  }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "loginFragment", fragment);
-    }
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Client.get().removeOnResponseListener(this);
+  }
+
+  @Override
+  protected void onSaveInstanceState(
+      @NonNull
+      Bundle outState) {
+    super.onSaveInstanceState(outState);
+    getSupportFragmentManager().putFragment(outState, "loginFragment", fragment);
+  }
 
 }

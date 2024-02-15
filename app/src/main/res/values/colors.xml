@@ -18,19 +18,13 @@
     <color name="cardText">@color/black</color>
     <color name="cardBackground">@color/white</color>
 
-    <color name="actionBar">@color/colorPrimaryLight</color>
+    <color name="actionBar">@color/colorPrimaryDark</color>
 
     <color name="cardStroke">@color/black_d</color>
     <color name="transparent">@android:color/transparent</color>
 
-    <!--<color name="colorPrimary">#1e1e24</color>
-    <color name="colorSecondary">#ffa987</color>
-    <color name="colorPrimaryDark">#444140</color>
-    <color name="colorPrimaryLight">#f7ebe8</color>
-    <color name="colorAccent">#e54b4b</color>!-->
-
     <color name="error">#B00020</color>
-    
+
     <color name="good">@color/green_500</color>
     <color name="ok">@color/blue_500</color>
     <color name="bad">@color/red_500</color>

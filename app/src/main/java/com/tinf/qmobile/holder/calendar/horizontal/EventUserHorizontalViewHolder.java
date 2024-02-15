@@ -15,43 +15,46 @@ import com.tinf.qmobile.model.calendar.EventUser;
 import java.util.Locale;
 
 public class EventUserHorizontalViewHolder extends CalendarViewHolder<EventUser> {
-    private final CalendarEventUserHBinding binding;
+  private final CalendarEventUserHBinding binding;
 
-    public EventUserHorizontalViewHolder(View view) {
-        super(view);
-        binding = CalendarEventUserHBinding.bind(view);
+  public EventUserHorizontalViewHolder(View view) {
+    super(view);
+    binding = CalendarEventUserHBinding.bind(view);
+  }
+
+  @Override
+  public void bind(EventUser event, Context context) {
+    binding.title.setText(
+        event.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : event.getTitle());
+    binding.date.setText(event.getStartDateString());
+
+    if (event.isRanged())
+      binding.title.append(" " + String.format(Locale.getDefault(),
+                                               context.getString(R.string.event_until),
+                                               event.getEndDateString()));
+
+    if (event.getDescription().isEmpty()) {
+      binding.description.setVisibility(View.GONE);
+    } else {
+      binding.description.setText(event.getDescription());
+      binding.description.setVisibility(View.VISIBLE);
+    }
+    if (event.getMatter().isEmpty()) {
+      binding.matter.setVisibility(View.GONE);
+    } else {
+      binding.matter.setVisibility(View.VISIBLE);
+      binding.matter.setText(event.getMatter());
     }
 
-    @Override
-    public void bind(EventUser event, Context context) {
-        binding.title.setText(event.getTitle().isEmpty() ? context.getString(R.string.event_no_title) : event.getTitle());
-        binding.date.setText(event.getStartDateString());
+    binding.card.setBackgroundColor(event.getColor());
 
-        if (event.isRanged())
-            binding.title.append(" " + String.format(Locale.getDefault(), context.getString(R.string.event_until), event.getEndDateString()));
-
-        if (event.getDescription().isEmpty()) {
-            binding.description.setVisibility(View.GONE);
-        } else {
-            binding.description.setText(event.getDescription());
-            binding.description.setVisibility(View.VISIBLE);
-        }
-        if (event.getMatter().isEmpty()) {
-            binding.matter.setVisibility(View.GONE);
-        } else {
-            binding.matter.setVisibility(View.VISIBLE);
-            binding.matter.setText(event.getMatter());
-        }
-
-        binding.card.setBackgroundColor(event.getColor());
-
-        binding.card.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventViewActivity.class);
-            intent.putExtra("TYPE", EVENT);
-            intent.putExtra("ID", event.id);
-            intent.putExtra("LOOKUP", true);
-            context.startActivity(intent);
-        });
-    }
+    binding.card.setOnClickListener(v -> {
+      Intent intent = new Intent(context, EventViewActivity.class);
+      intent.putExtra("TYPE", EVENT);
+      intent.putExtra("ID", event.id);
+      intent.putExtra("LOOKUP", true);
+      context.startActivity(intent);
+    });
+  }
 
 }

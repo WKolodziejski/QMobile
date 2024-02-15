@@ -18,34 +18,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttachmentsAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
-    private final List<Queryable> attachments;
-    private final Context context;
-    private final boolean isCard;
+  private final List<Queryable> attachments;
+  private final Context context;
+  private final boolean isCard;
 
-    public AttachmentsAdapter(Context context, List<Attachment> attachments, boolean isCard) {
-        this.attachments = new ArrayList<>(attachments);
-        this.context = context;
-        this.isCard = isCard;
-    }
+  public AttachmentsAdapter(Context context, List<Attachment> attachments, boolean isCard) {
+    this.attachments = new ArrayList<>(attachments);
+    this.context = context;
+    this.isCard = isCard;
+  }
 
-    @NonNull
-    @Override
-    public MessagesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return isCard
-                ? new AttachmentCardViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.message_attachment_card, parent, false))
-                : new AttachmentViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.message_attachment, parent, false));
-    }
+  @NonNull
+  @Override
+  public MessagesViewHolder onCreateViewHolder(
+      @NonNull
+      ViewGroup parent, int viewType) {
+    return isCard
+           ? new AttachmentCardViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.message_attachment_card,
+                                                                 parent, false))
+           : new AttachmentViewHolder(LayoutInflater.from(context)
+                                                    .inflate(R.layout.message_attachment, parent,
+                                                             false));
+  }
 
-    @Override
-    public void onBindViewHolder(@NonNull MessagesViewHolder holder, int i) {
-        holder.bind(context, null, attachments.get(i));
-    }
+  @Override
+  public void onBindViewHolder(
+      @NonNull
+      MessagesViewHolder holder, int i) {
+    holder.bind(context, null, attachments.get(i));
+  }
 
-    @Override
-    public int getItemCount() {
-        return attachments.size();
-    }
+  @Override
+  public int getItemCount() {
+    return attachments.size();
+  }
 
 }

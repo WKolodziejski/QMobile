@@ -9,16 +9,18 @@ import com.tinf.qmobile.databinding.TableCellMatterBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
 public class TableCellMatterViewHolder extends TableBaseViewHolder {
-    private final TableCellMatterBinding binding;
+  private final TableCellMatterBinding binding;
 
-    public TableCellMatterViewHolder(@NonNull View view) {
-        super(view);
-        binding = TableCellMatterBinding.bind(view);
-    }
+  public TableCellMatterViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+    binding = TableCellMatterBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Context context, Matter matter, String cell) {
-        binding.matter.setText(cell);
-    }
+  @Override
+  public void bind(Context context, Matter matter, String cell) {
+    binding.matter.setText(cell);
+  }
 
 }

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/schedule_start"
+    <item
+        android:id="@+id/schedule_start"
         android:title="@string/menu_schedule_start" />
 
-    <item android:id="@+id/schedule_end"
+    <item
+        android:id="@+id/schedule_end"
         android:title="@string/menu_schedule_end" />
 
-    <item android:id="@+id/schedule_auto"
+    <item
+        android:id="@+id/schedule_auto"
         android:title="@string/menu_schedule_auto" />
 
 </menu>

@@ -11,23 +11,23 @@ import com.tinf.qmobile.databinding.ActivityMoreBinding;
 import com.tinf.qmobile.network.Client;
 
 public class MoreActivity extends AppCompatActivity {
-    private ActivityMoreBinding binding;
+  private ActivityMoreBinding binding;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMoreBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    binding = ActivityMoreBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
 
-        binding.url.setText(Client.get().getURL());
+    binding.url.setText(Client.get().getURL());
 
-        binding.logo.setOnLongClickListener(v -> {
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(1000);
-            Toast.makeText(getBaseContext(), "\ud83d\udc03", Toast.LENGTH_SHORT).show();
+    binding.logo.setOnLongClickListener(v -> {
+      Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+      vibrator.vibrate(1000);
+      Toast.makeText(getBaseContext(), "\ud83d\udc03", Toast.LENGTH_SHORT).show();
 
-            return true;
-        });
-    }
+      return true;
+    });
+  }
 
 }

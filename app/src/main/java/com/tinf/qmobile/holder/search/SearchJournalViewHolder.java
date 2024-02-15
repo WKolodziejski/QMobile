@@ -15,30 +15,33 @@ import com.tinf.qmobile.databinding.SearchJournalBinding;
 import com.tinf.qmobile.model.journal.Journal;
 
 public class SearchJournalViewHolder extends SearchViewHolder<Journal> {
-    private final SearchJournalBinding binding;
+  private final SearchJournalBinding binding;
 
-    public SearchJournalViewHolder(@NonNull View view) {
-        super(view);
-        binding = SearchJournalBinding.bind(view);
-    }
+  public SearchJournalViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+    binding = SearchJournalBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Journal journal, Context context, String query, SearchAdapter adapter) {
-        binding.title.setText(journal.getTitle());
-        binding.subtitle.setText(journal.getMatter());
-        binding.date.setText(journal.formatDate());
-        binding.icon.setImageTintList(ColorStateList.valueOf(journal.getColor()));
+  @Override
+  public void bind(Journal journal, Context context, String query, SearchAdapter adapter) {
+    binding.title.setText(journal.getTitle());
+    binding.subtitle.setText(journal.getMatter());
+    binding.date.setText(journal.formatDate());
+    binding.icon.setImageTintList(ColorStateList.valueOf(journal.getColor()));
 
-        //itemView.setOnClickListener(view -> onQuery.onQuery(journal.matter.getTargetId(), journal.id, GRADES));
-        itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, EventViewActivity.class);
-            intent.putExtra("ID", journal.id);
-            intent.putExtra("TYPE", JOURNAL);
-            intent.putExtra("LOOKUP", true);
-            context.startActivity(intent);
+    //itemView.setOnClickListener(view -> onQuery.onQuery(journal.matter.getTargetId(), journal
+    // .id, GRADES));
+    itemView.setOnClickListener(view -> {
+      Intent intent = new Intent(context, EventViewActivity.class);
+      intent.putExtra("ID", journal.id);
+      intent.putExtra("TYPE", JOURNAL);
+      intent.putExtra("LOOKUP", true);
+      context.startActivity(intent);
 
-            saveQuery(query);
-        });
-    }
+      saveQuery(query);
+    });
+  }
 
 }

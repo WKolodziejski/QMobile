@@ -7,16 +7,16 @@ import com.tinf.qmobile.databinding.TableColumnMatterBinding;
 import com.tinf.qmobile.model.matter.Matter;
 
 public class TableColumnMatterHeaderViewHolder extends TableBaseViewHolder {
-    private final TableColumnMatterBinding binding;
+  private final TableColumnMatterBinding binding;
 
-    public TableColumnMatterHeaderViewHolder(View view) {
-        super(view);
-        binding = TableColumnMatterBinding.bind(view);
-    }
+  public TableColumnMatterHeaderViewHolder(View view) {
+    super(view);
+    binding = TableColumnMatterBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Context context, Matter matter, String cell) {
-        binding.matter.setText(cell);
-    }
+  @Override
+  public void bind(Context context, Matter matter, String cell) {
+    binding.matter.setText(cell);
+  }
 
 }

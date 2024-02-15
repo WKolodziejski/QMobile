@@ -4,9 +4,9 @@
 
     <item
         android:id="@+id/action_account"
-        android:title="Account"
         android:icon="@drawable/ic_account"
         android:orderInCategory="1"
+        android:title="Account"
         app:showAsAction="always" />
 
 </menu>

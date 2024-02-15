@@ -11,10 +11,12 @@ import com.tinf.qmobile.network.message.Messenger;
 
 public abstract class MessagesViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
 
-    public MessagesViewHolder(@NonNull View itemView) {
-        super(itemView);
-    }
+  public MessagesViewHolder(
+      @NonNull
+      View itemView) {
+    super(itemView);
+  }
 
-    public abstract void bind(Context context, Messenger messenger, T t);
+  public abstract void bind(Context context, Messenger messenger, T t);
 
 }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-    android:opacity="opaque"
-    >
+    android:opacity="opaque">
 
     <item>
         <shape>
@@ -10,9 +9,9 @@
     </item>
 
     <item
-        android:height="240dp"
         android:width="240dp"
-        android:gravity="center"
-        android:drawable="@drawable/ic_launcher_foreground" />
+        android:height="240dp"
+        android:drawable="@drawable/ic_launcher_foreground"
+        android:gravity="center" />
 
 </layer-list>

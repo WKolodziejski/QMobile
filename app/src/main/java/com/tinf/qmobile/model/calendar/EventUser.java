@@ -12,10 +12,10 @@ import io.objectbox.relation.ToOne;
 
 @Entity
 public class EventUser extends EventBase {
-    //@Id public long id;
-    public ToOne<Matter> matter;
-    private long alarm;
-    private int difference;
+  //@Id public long id;
+  public ToOne<Matter> matter;
+  private long alarm;
+  private int difference;
 
     /*public EventUser(String title, long startTime, long alarm, int difference) {
         super(title, startTime);
@@ -23,20 +23,20 @@ public class EventUser extends EventBase {
         this.difference = difference;
     }*/
 
-    public EventUser(String title, long startTime, long endTime, long alarm, int difference) {
-        super(title, startTime, endTime);
-        this.alarm = alarm;
-        this.difference = difference;
-    }
+  public EventUser(String title, long startTime, long endTime, long alarm, int difference) {
+    super(title, startTime, endTime);
+    this.alarm = alarm;
+    this.difference = difference;
+  }
 
-    @Override
-    public int getColor() {
-        return !matter.isNull() ? matter.getTarget().getColor() : super.getColor();
-    }
+  @Override
+  public int getColor() {
+    return !matter.isNull() ? matter.getTarget().getColor() : super.getColor();
+  }
 
-    public String getMatter() {
-        return matter.isNull() ? "" : matter.getTarget().getTitle();
-    }
+  public String getMatter() {
+    return matter.isNull() ? "" : matter.getTarget().getTitle();
+  }
 
     /*public String getAlarmDifference() {
         SimpleDateFormat h = new SimpleDateFormat("HH", Locale.getDefault());
@@ -68,41 +68,41 @@ public class EventUser extends EventBase {
         return alarm;
     }*/
 
-    /*
-     * Required methods
-     */
+  /*
+   * Required methods
+   */
 
-    public EventUser() {
-        super();
-    }
+  public EventUser() {
+    super();
+  }
 
-    public int getDifference() {
-        return difference;
-    }
+  public int getDifference() {
+    return difference;
+  }
 
-    public long getAlarm() {
-        return alarm;
-    }
+  public long getAlarm() {
+    return alarm;
+  }
 
-    @Override
-    public int getItemType() {
-        return USER;
-    }
+  @Override
+  public int getItemType() {
+    return USER;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof EventUser)) return false;
-        if (!super.equals(o)) return false;
-        EventUser eventUser = (EventUser) o;
-        return getAlarm() == eventUser.getAlarm() && getDifference() == eventUser.getDifference()
-                && getMatter().equals(eventUser.getMatter());
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof EventUser)) return false;
+    if (!super.equals(o)) return false;
+    EventUser eventUser = (EventUser) o;
+    return getAlarm() == eventUser.getAlarm() && getDifference() == eventUser.getDifference()
+           && getMatter().equals(eventUser.getMatter());
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getMatter(), getAlarm(), getDifference());
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getMatter(), getAlarm(), getDifference());
+  }
 
     /*@Override
     public boolean equals(CalendarBase event) {
@@ -121,14 +121,14 @@ public class EventUser extends EventBase {
         return eq;
     }*/
 
-    @Override
-    public long getId() {
-        return id;
-    }
+  @Override
+  public long getId() {
+    return id;
+  }
 
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
 
 }

@@ -27,86 +27,90 @@ import com.tinf.qmobile.activity.settings.SplashActivity;
 
 public class NotificationUtils {
 
-    public static void debug(String text) {
-        if (!BuildConfig.DEBUG)
-            return;
+  public static void debug(String text) {
+    if (!BuildConfig.DEBUG)
+      return;
 
-        NotificationUtils.show("Debug", text, -1, 0, new Intent(App.getContext(), SplashActivity.class));
+    NotificationUtils.show("Debug", text, -1, 0,
+                           new Intent(App.getContext(), SplashActivity.class));
+  }
+
+  public static void show(String title, String txt, int channelID, int id, Intent intent) {
+    if (channelID == -1)
+      return;
+
+    NotificationCompat.Builder builder =
+        new NotificationCompat.Builder(getContext(), getChannelName(channelID));
+
+    NotificationCompat.BigTextStyle text = new NotificationCompat.BigTextStyle();
+    text.bigText(txt);
+    text.setBigContentTitle(title);
+    text.setSummaryText(getChannelName(channelID));
+
+    builder.setSmallIcon(R.drawable.ic_launcher);
+    builder.setLargeIcon(
+        BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher));
+    builder.setPriority(Notification.PRIORITY_DEFAULT);
+    builder.setContentTitle(title);
+    builder.setContentText(txt);
+    builder.setStyle(text);
+
+    NotificationManager manager = (NotificationManager) getContext()
+        .getSystemService(NOTIFICATION_SERVICE);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && manager != null) {
+      if (manager.getNotificationChannel(String.valueOf(channelID)) == null) {
+        manager.createNotificationChannel(
+            new NotificationChannel(String.valueOf(channelID), getChannelName(channelID),
+                                    NotificationManager.IMPORTANCE_DEFAULT));
+      }
     }
 
-    public static void show(String title, String txt, int channelID, int id, Intent intent) {
-        if (channelID == -1)
-            return;
+    builder.setChannelId(String.valueOf(channelID));
+    builder.setAutoCancel(true);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), getChannelName(channelID));
+    TaskStackBuilder stack = TaskStackBuilder.create(getContext());
+    stack.addParentStack(MatterActivity.class);
+    stack.addNextIntent(intent);
 
-        NotificationCompat.BigTextStyle text = new NotificationCompat.BigTextStyle();
-        text.bigText(txt);
-        text.setBigContentTitle(title);
-        text.setSummaryText(getChannelName(channelID));
+    PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
+                                  stack.getPendingIntent(id,
+                                                         PendingIntent.FLAG_UPDATE_CURRENT |
+                                                         PendingIntent.FLAG_IMMUTABLE) :
+                                  stack.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(), R.drawable.ic_launcher));
-        builder.setPriority(Notification.PRIORITY_DEFAULT);
-        builder.setContentTitle(title);
-        builder.setContentText(txt);
-        builder.setStyle(text);
+    builder.setContentIntent(pendingIntent);
 
-        NotificationManager manager = (NotificationManager) getContext()
-                .getSystemService(NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && manager != null) {
-            if (manager.getNotificationChannel(String.valueOf(channelID)) == null) {
-                manager.createNotificationChannel(
-                        new NotificationChannel(String.valueOf(channelID), getChannelName(channelID),
-                                NotificationManager.IMPORTANCE_DEFAULT));
-            }
-        }
-
-        builder.setChannelId(String.valueOf(channelID));
-        builder.setAutoCancel(true);
-
-        TaskStackBuilder stack = TaskStackBuilder.create(getContext());
-        stack.addParentStack(MatterActivity.class);
-        stack.addNextIntent(intent);
-
-        PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                stack.getPendingIntent(id,
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE) :
-                stack.getPendingIntent(id, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        builder.setContentIntent(pendingIntent);
-
-        if (manager != null) {
-            manager.notify(id, builder.build());
-        }
+    if (manager != null) {
+      manager.notify(id, builder.build());
     }
+  }
 
-    private static String getChannelName(int id) {
-        switch (id) {
-            case -1:
-                return "DEBUG";
+  private static String getChannelName(int id) {
+    switch (id) {
+      case -1:
+        return "DEBUG";
 
-            case 0:
-                return App.getContext().getResources().getString(R.string.app_name);
-
-            case JOURNAL:
-                return App.getContext().getResources().getString(R.string.title_diarios);
-
-            case SCHEDULE:
-                return App.getContext().getResources().getString(R.string.title_horario);
-
-            case MATERIAL:
-                return App.getContext().getResources().getString(R.string.title_materiais);
-
-            case MESSAGE:
-                return App.getContext().getResources().getString(R.string.title_messages);
-
-            case EVENT:
-                return App.getContext().getResources().getString(R.string.title_calendario);
-        }
-
+      case 0:
         return App.getContext().getResources().getString(R.string.app_name);
+
+      case JOURNAL:
+        return App.getContext().getResources().getString(R.string.title_diarios);
+
+      case SCHEDULE:
+        return App.getContext().getResources().getString(R.string.title_horario);
+
+      case MATERIAL:
+        return App.getContext().getResources().getString(R.string.title_materiais);
+
+      case MESSAGE:
+        return App.getContext().getResources().getString(R.string.title_messages);
+
+      case EVENT:
+        return App.getContext().getResources().getString(R.string.title_calendario);
     }
+
+    return App.getContext().getResources().getString(R.string.app_name);
+  }
 
 }

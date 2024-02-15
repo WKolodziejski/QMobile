@@ -6,203 +6,203 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/image"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="16dp"
-        android:id="@+id/image"
         android:src="@drawable/ic_account"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0" />
 
     <LinearLayout
+        android:id="@+id/layout1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:id="@+id/layout1"
         android:layout_margin="16dp"
-        android:orientation="vertical"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/q"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image"
+        android:orientation="vertical"
         app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/q"
         app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/image"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0">
 
         <TextView
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/name"
+            android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:ellipsize="end"
             tools:text="Nome do Aluno" />
 
         <TextView
+            android:id="@+id/reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
             android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/message_seen"
-            android:id="@+id/reg"
             tools:text="Matrícula" />
 
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/q"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="16dp"
-        android:id="@+id/q"
         android:src="@drawable/ic_launcher"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="68dp"
-        android:id="@+id/logout"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_marginTop="8dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="16dp"
-        app:strokeColor="@color/blackDividers"
-        app:strokeWidth="1dp"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@id/div1"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout1"
-        app:layout_constraintBottom_toTopOf="@id/div1"
-        app:layout_constraintHorizontal_bias="0">
+        app:strokeColor="@color/blackDividers"
+        app:strokeWidth="1dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
             android:text="@string/action_logout" />
 
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/alerts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:id="@+id/alerts"
-        android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="16dp"
-        app:strokeColor="@color/blackDividers"
-        app:strokeWidth="1dp"
+        android:foreground="?android:attr/selectableItemBackground"
         app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@id/div1"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/logout"
         app:layout_constraintTop_toBottomOf="@id/layout1"
-        app:layout_constraintBottom_toTopOf="@id/div1"
-        app:layout_constraintHorizontal_bias="0">
+        app:strokeColor="@color/blackDividers"
+        app:strokeWidth="1dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
             android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
             android:text="@string/dialog_alerts" />
 
     </com.google.android.material.card.MaterialCardView>
 
     <View
+        android:id="@+id/div1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:id="@+id/div1"
         android:background="@color/blackDividers"
-        app:layout_goneMarginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/logout" />
+        app:layout_constraintTop_toBottomOf="@id/logout"
+        app:layout_goneMarginTop="8dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/offline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/offline"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/div1"
         tools:visibility="visible">
 
         <ImageView
+            android:id="@+id/icon"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_margin="16dp"
-            android:id="@+id/icon"
             android:src="@drawable/ic_offline"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="0" />
 
         <LinearLayout
+            android:id="@+id/layout2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/layout2"
             android:layout_margin="16dp"
-            android:orientation="vertical"
             android:gravity="center_vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/icon"
+            android:orientation="vertical"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/icon"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
-                android:ellipsize="end"
-                android:textStyle="bold"
-                android:text="Offline" />
+                android:text="Offline"
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/last"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:textColor="@color/message_seen"
-                android:id="@+id/last"
                 tools:text="Last update on 22/03/2017" />
 
         </LinearLayout>
 
         <View
+            android:id="@+id/div2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:id="@+id/div2"
             android:background="@color/blackDividers"
-            app:layout_goneMarginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/layout2" />
+            app:layout_constraintTop_toBottomOf="@id/layout2"
+            app:layout_goneMarginTop="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
+        android:id="@+id/policy"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:id="@+id/policy"
         android:text="@string/pref_privacy"
         android:textAllCaps="false"
         android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/offline"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/offline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

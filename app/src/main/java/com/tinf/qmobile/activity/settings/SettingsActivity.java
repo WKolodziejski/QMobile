@@ -12,33 +12,33 @@ import com.tinf.qmobile.service.Works;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_settings);
 
-        setSupportActionBar(findViewById(R.id.toolbar_default));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    setSupportActionBar(findViewById(R.id.toolbar_default));
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.settings_fragment, new SettingsFragment())
-                .commit();
+    getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.settings_fragment, new SettingsFragment())
+        .commit();
+  }
+
+  @Override
+  public void finish() {
+    super.finish();
+    Works.scheduleParser();
+    Client.get().requestDelayedUpdate();
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if (item.getItemId() == android.R.id.home) {
+      onBackPressed();
     }
-
-    @Override
-    public void finish() {
-        super.finish();
-        Works.scheduleParser();
-        Client.get().requestDelayedUpdate();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    return super.onOptionsItemSelected(item);
+  }
 
 }

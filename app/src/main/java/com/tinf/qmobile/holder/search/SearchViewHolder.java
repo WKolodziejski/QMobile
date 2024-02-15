@@ -20,28 +20,30 @@ import io.objectbox.Box;
 
 public abstract class SearchViewHolder<T extends Queryable> extends RecyclerView.ViewHolder {
 
-    private static final Box<Query> queryBox = DataBase.get().getBoxStore().boxFor(Query.class);
+  private static final Box<Query> queryBox = DataBase.get().getBoxStore().boxFor(Query.class);
 
-    public SearchViewHolder(@NonNull View view) {
-        super(view);
-    }
+  public SearchViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+  }
 
-    public abstract void bind(T item, Context context, String query, SearchAdapter adapter);
+  public abstract void bind(T item, Context context, String query, SearchAdapter adapter);
 
-    protected void saveQuery(String query) {
-        Query q = queryBox
-                .query()
-                .equal(Query_.query, query, CASE_INSENSITIVE)
-                .build()
-                .findUnique();
+  protected void saveQuery(String query) {
+    Query q = queryBox
+        .query()
+        .equal(Query_.query, query, CASE_INSENSITIVE)
+        .build()
+        .findUnique();
 
-        if (q == null)
-            q = new Query();
+    if (q == null)
+      q = new Query();
 
-        q.query = query;
-        q.date = new Date().getTime();
+    q.query = query;
+    q.date = new Date().getTime();
 
-        queryBox.put(q);
-    }
+    queryBox.put(q);
+  }
 
 }

@@ -15,38 +15,42 @@ import com.tinf.qmobile.databinding.ActivityWebviewBinding;
 import com.tinf.qmobile.network.Client;
 
 public class WebViewActivity extends AppCompatActivity {
-    private ActivityWebviewBinding binding;
+  private ActivityWebviewBinding binding;
 
-    @SuppressLint("SetJavaScriptEnabled")
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityWebviewBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+  @SuppressLint("SetJavaScriptEnabled")
+  @Override
+  protected void onCreate(
+      @Nullable
+      Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    binding = ActivityWebviewBinding.inflate(getLayoutInflater());
+    setContentView(binding.getRoot());
 
-        binding.webview.getSettings().setJavaScriptEnabled(true);
-        binding.webview.getSettings().setUseWideViewPort(true);
-        binding.webview.setWebViewClient(new WebViewClient() {
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
+    binding.webview.getSettings().setJavaScriptEnabled(true);
+    binding.webview.getSettings().setUseWideViewPort(true);
+    binding.webview.setWebViewClient(new WebViewClient() {
+      public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        view.loadUrl(url);
+        return true;
+      }
 
-            @Override
-            public void onPageFinished(WebView view, String url) {
+      @Override
+      public void onPageFinished(WebView view, String url) {
 
-                if (!url.contains("javascript")) {
-                    view.loadUrl("javascript:(function() {" +
-                            "document.getElementsByTagName('tbody')[0].childNodes[0].style.display='none';" +
-                            "document.getElementsByTagName('tbody')[0].childNodes[4].style.display='none';" +
-                            "})()");
-                }
+        if (!url.contains("javascript")) {
+          view.loadUrl("javascript:(function() {" +
+                       "document.getElementsByTagName('tbody')[0].childNodes[0].style" +
+                       ".display='none';" +
+                       "document.getElementsByTagName('tbody')[0].childNodes[4].style" +
+                       ".display='none';" +
+                       "})()");
+        }
 
-                super.onPageFinished(view, url);
-            }
-        });
+        super.onPageFinished(view, url);
+      }
+    });
 
-        binding.webview.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
-    }
+    binding.webview.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
+  }
 
 }

@@ -13,32 +13,32 @@ import com.tinf.qmobile.databinding.ClassItemBinding;
 import com.tinf.qmobile.model.matter.Clazz;
 
 public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
-    private final ClassItemBinding binding;
+  private final ClassItemBinding binding;
 
-    public ClassItemViewHolder(View view) {
-        super(view);
-        binding = ClassItemBinding.bind(view);
+  public ClassItemViewHolder(View view) {
+    super(view);
+    binding = ClassItemBinding.bind(view);
+  }
+
+  @Override
+  public void bind(Context context, Clazz clazz) {
+    binding.date.setText(clazz.formatDate());
+    binding.content.setText(clazz.getContent());
+    binding.absence.setVisibility(clazz.getAbsences_() > 0 ? View.VISIBLE : View.INVISIBLE);
+
+    Log.d("CLAZZ", clazz.getContent());
+
+    itemView.setOnClickListener(view -> {
+      Intent intent = new Intent(context, EventViewActivity.class);
+      intent.putExtra("ID", clazz.id);
+      intent.putExtra("TYPE", CLASS);
+      intent.putExtra("LOOKUP", false);
+      context.startActivity(intent);
+    });
+
+    if (clazz.highlight) {
+      itemView.setBackgroundColor(context.getColor(R.color.notificationBackground));
     }
-
-    @Override
-    public void bind(Context context, Clazz clazz) {
-        binding.date.setText(clazz.formatDate());
-        binding.content.setText(clazz.getContent());
-        binding.absence.setVisibility(clazz.getAbsences_() > 0 ? View.VISIBLE : View.INVISIBLE);
-
-        Log.d("CLAZZ", clazz.getContent());
-
-        itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, EventViewActivity.class);
-            intent.putExtra("ID", clazz.id);
-            intent.putExtra("TYPE", CLASS);
-            intent.putExtra("LOOKUP", false);
-            context.startActivity(intent);
-        });
-
-        if (clazz.highlight) {
-            itemView.setBackgroundColor(context.getResources().getColor(R.color.notificationBackground));
-        }
-    }
+  }
 
 }

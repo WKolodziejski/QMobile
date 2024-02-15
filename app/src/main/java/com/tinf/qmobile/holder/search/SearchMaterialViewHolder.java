@@ -18,37 +18,40 @@ import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.UserUtils;
 
 public class SearchMaterialViewHolder extends SearchViewHolder<Material> {
-    private final SearchMaterialBinding binding;
+  private final SearchMaterialBinding binding;
 
-    public SearchMaterialViewHolder(@NonNull View view) {
-        super(view);
-        binding = SearchMaterialBinding.bind(view);
-    }
+  public SearchMaterialViewHolder(
+      @NonNull
+      View view) {
+    super(view);
+    binding = SearchMaterialBinding.bind(view);
+  }
 
-    @Override
-    public void bind(Material material, Context context, String query, SearchAdapter adapter) {
-        binding.title.setText(material.getTitle());
-        binding.subtitle.setText(material.getMatter());
-        binding.date.setText(material.getDateString());
-        binding.icon.setImageDrawable(ContextCompat.getDrawable(context, material.getIcon()));
+  @Override
+  public void bind(Material material, Context context, String query, SearchAdapter adapter) {
+    binding.title.setText(material.getTitle());
+    binding.subtitle.setText(material.getMatter());
+    binding.date.setText(material.getDateString());
+    binding.icon.setImageDrawable(ContextCompat.getDrawable(context, material.getIcon()));
 
-        //itemView.setOnClickListener(view -> onQuery.onQuery(material.matter.getTargetId(), material.id, MATERIALS));
-        itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(context, MatterActivity.class);
-            intent.putExtra("ID", material.matter.getTargetId());
-            intent.putExtra("ID2", material.id);
-            intent.putExtra("PAGE", MATERIAL);
-            intent.putExtra("LOOKUP", false);
-            context.startActivity(intent);
+    //itemView.setOnClickListener(view -> onQuery.onQuery(material.matter.getTargetId(), material
+    // .id, MATERIALS));
+    itemView.setOnClickListener(view -> {
+      Intent intent = new Intent(context, MatterActivity.class);
+      intent.putExtra("ID", material.matter.getTargetId());
+      intent.putExtra("ID2", material.id);
+      intent.putExtra("PAGE", MATERIAL);
+      intent.putExtra("LOOKUP", false);
+      context.startActivity(intent);
 
-            Matter m = material.matter.getTarget();
-            int i = UserUtils.getPos(m.getYear_(), m.getPeriod_());
+      Matter m = material.matter.getTarget();
+      int i = UserUtils.getPos(m.getYear_(), m.getPeriod_());
 
-            if (i >= 0)
-                Client.get().changeDateWithBackup(i);
+      if (i >= 0)
+        Client.get().changeDateWithBackup(i);
 
-            saveQuery(query);
-        });
-    }
+      saveQuery(query);
+    });
+  }
 
 }

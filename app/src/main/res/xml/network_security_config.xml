@@ -5,34 +5,34 @@
             <certificates src="system" />
         </trust-anchors>
     </base-config>
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://qacademico.ifce.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://academico.ifes.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://academicoweb.ifg.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://academico.ifgoiano.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://qacad.ifma.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://academico.ifmt.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://qacademico.ifpe.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://academico.ifpi.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="false">-->
-<!--        <domain includeSubdomains="true">https://qacademico.bento.ifrs.edu.br</domain>-->
-<!--    </domain-config>-->
-<!--    <domain-config cleartextTrafficPermitted="true">-->
-<!--        <domain includeSubdomains="true">http://qacademico.ifsul.edu.br/</domain>-->
-<!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://qacademico.ifce.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://academico.ifes.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://academicoweb.ifg.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://academico.ifgoiano.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://qacad.ifma.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://academico.ifmt.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://qacademico.ifpe.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://academico.ifpi.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="false">-->
+    <!--        <domain includeSubdomains="true">https://qacademico.bento.ifrs.edu.br</domain>-->
+    <!--    </domain-config>-->
+    <!--    <domain-config cleartextTrafficPermitted="true">-->
+    <!--        <domain includeSubdomains="true">http://qacademico.ifsul.edu.br/</domain>-->
+    <!--    </domain-config>-->
 </network-security-config>

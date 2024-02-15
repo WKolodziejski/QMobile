@@ -18,30 +18,32 @@ import com.tinf.qmobile.utility.UserUtils;
 
 public class SplashActivity extends AppCompatActivity {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        SplashScreen.installSplashScreen(this).setKeepOnScreenCondition(() -> true);
+    SplashScreen.installSplashScreen(this).setKeepOnScreenCondition(() -> true);
 
-        Intent intent;
+    Intent intent;
 
-        if (UserUtils.isValid()) {
-            Works.scheduleParser();
+    if (UserUtils.isValid()) {
+      Works.scheduleParser();
 
-            if (!Client.get().isValid() && !BuildConfig.DEBUG)
-                Client.get().login();
+      if (!Client.get().isValid() && !BuildConfig.DEBUG)
+        Client.get().login();
 
-            getSharedPreferences(USE_INFO, MODE_PRIVATE).edit().putInt(USE_COUNT,
-                    getSharedPreferences(USE_INFO, MODE_PRIVATE).getInt(USE_COUNT, 0) + 1).apply();
+      getSharedPreferences(USE_INFO, MODE_PRIVATE).edit().putInt(USE_COUNT,
+                                                                 getSharedPreferences(USE_INFO,
+                                                                                      MODE_PRIVATE).getInt(
+                                                                     USE_COUNT, 0) + 1).apply();
 
-            intent = new Intent(this, MainActivity.class);
-        } else {
-            intent = new Intent(this, LoginActivity.class);
-        }
-
-        startActivity(intent);
-        finish();
+      intent = new Intent(this, MainActivity.class);
+    } else {
+      intent = new Intent(this, LoginActivity.class);
     }
+
+    startActivity(intent);
+    finish();
+  }
 
 }

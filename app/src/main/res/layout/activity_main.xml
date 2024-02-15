@@ -28,7 +28,7 @@
                 android:layout_height="?android:attr/actionBarSize"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginVertical="8dp"
-                android:background="@color/actionBar"
+                android:background="@drawable/appbar_rounded"
                 android:clickable="true"
                 android:elevation="4dp"
                 android:focusable="true"
@@ -95,7 +95,8 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toEndOf="@+id/warning_text"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:tint="@color/colorPrimary" />
+                            app:tint="@color/colorPrimary"
+                            tools:ignore="ContentDescription" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -123,7 +124,7 @@
             android:id="@+id/refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="56dp"
+            android:layout_marginBottom="80dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <FrameLayout
@@ -140,7 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="64dp"
+            android:layout_marginBottom="100dp"
             android:textColor="@color/colorPrimaryLight"
             android:transitionName="Fab"
             android:visibility="gone"
@@ -149,6 +150,7 @@
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add"
             app:tint="@color/colorPrimaryLight"
+            tools:ignore="ContentDescription"
             tools:visibility="visible" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -162,15 +164,13 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.shreyaspatil.material.navigationview.MaterialNavigationView
+    <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav"
         style="@style/Widget.Custom.NavigationView"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:theme="@style/Widget.NavigationView.RippleEffect"
         app:headerLayout="@layout/navigation_header"
-        app:itemStyle="rounded_right"
         app:menu="@menu/drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

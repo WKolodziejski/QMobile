@@ -24,480 +24,488 @@ import io.objectbox.relation.ToMany;
 
 @Entity
 public class Matter implements Queryable {
-    //@Transient public boolean isExpanded;
-    //@Transient public boolean shouldAnimate;
-    @Id public long id;
-    @ColorInt private int color_;
-    private String title_;
-    private String description_;
-    private String situation_;
-    private String teacher_;
-    private String label_;
-    private String clazz_;
-    private int qid_;
-    private float hours_ = -1;
-    private int classesTotal_ = -1;
-    private int classesGiven_ = -1;
-    private int classesLeft_ = -1;
-    private int absences_ = -1;
-    private float mean_ = -1;
-    private int year_;
-    private int period_;
-    public ToMany<Period> periods;
-    public ToMany<Schedule> schedules;
-    public ToMany<Material> materials;
+  @Id
+  public long id;
+  @ColorInt
+  private int color_;
+  private String title_;
+  private String description_;
+  private String situation_;
+  private String teacher_;
+  private String label_;
+  private String clazz_;
+  private int qid_;
+  private float hours_ = -1;
+  private int classesTotal_ = -1;
+  private int classesGiven_ = -1;
+  private int classesLeft_ = -1;
+  private int absences_ = -1;
+  private float mean_ = -1;
+  private int year_;
+  private int period_;
+  public ToMany<Period> periods;
+  public ToMany<Schedule> schedules;
+  public ToMany<Material> materials;
 
-    public Matter(String description, int color, float hours, int classesTotal, int year, int period) {
-        this.description_ = description;
-        this.color_ = color;
-        this.hours_ = hours;
-        this.classesTotal_ = classesTotal;
-        this.year_ = year;
-        this.period_ = period;
+  public Matter(String description, int color, float hours, int classesTotal, int year,
+                int period) {
+    this.description_ = description;
+    this.color_ = color;
+    this.hours_ = hours;
+    this.classesTotal_ = classesTotal;
+    this.year_ = year;
+    this.period_ = period;
+  }
+
+  public String getAbsencesString() {
+    return absences_ == -1 ? "-" : String.valueOf(absences_);
+  }
+
+  public String getPresencesString() {
+    return absences_ == -1 || classesGiven_ == -1 ? "-" : String.valueOf(
+        Math.max(0, classesGiven_ - absences_));
+  }
+
+  public String getMean() {
+    return mean_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", mean_);
+  }
+
+  public void setClassesGiven(int classesGiven) {
+    this.classesGiven_ = classesGiven;
+  }
+
+  public void setClassesTotal(int classesTotal) {
+    this.classesTotal_ = classesTotal;
+  }
+
+  public void setClassesLeft(int classesLeft) {
+    this.classesLeft_ = classesLeft;
+  }
+
+  public void setAbsences(int absences) {
+    this.absences_ = absences;
+  }
+
+  public void setMean(float mean) {
+    this.mean_ = mean;
+  }
+
+  @ColorInt
+  public int getColor() {
+    return color_;
+  }
+
+  public void setColor(int color) {
+    this.color_ = color;
+  }
+
+  public String getTitle() {
+    return title_ == null ? description_ : title_;
+  }
+
+  public String getPeriod() {
+    return year_ + "/" + period_;
+  }
+
+  public String getSituation() {
+    return situation_ == null ? "-" : situation_;
+  }
+
+  public float getGivenHours() {
+    return classesGiven_ * (hours_ / classesTotal_);
+  }
+
+  public void setTeacher(String teacher) {
+    this.teacher_ = teacher;
+  }
+
+  public void setTitle(String title) {
+    this.title_ = title;
+  }
+
+  public void setLabel(String label) {
+    this.label_ = label;
+  }
+
+  public void setClazz(String clazz) {
+    this.clazz_ = clazz;
+  }
+
+  public void setSituation(String situation) {
+    this.situation_ = situation;
+  }
+
+  public void setQid(int qid) {
+    this.qid_ = qid;
+  }
+
+  public Period getLastPeriod() {
+    int k = 0;
+
+    for (int j = 0; j < periods.size(); j++) {
+      if (!periods.get(j).journals.isEmpty() && !periods.get(j).isSub_()) {
+        k = j;
+      }
     }
 
-    public String getAbsencesString() {
-        return absences_ == -1 ? "-" : String.valueOf(absences_);
-    }
+    if (periods.isEmpty())
+      return null;
 
-    public String getPresencesString() {
-        return absences_ == -1 || classesGiven_ == -1 ? "-" : String.valueOf(Math.max(0, classesGiven_ - absences_));
-    }
+    return periods.get(k);
+  }
 
-    public String getMean() {
-        return mean_ == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", mean_);
-    }
-
-    public void setClassesGiven(int classesGiven) {
-        this.classesGiven_ = classesGiven;
-    }
-
-    public void setClassesTotal(int classesTotal) {
-        this.classesTotal_ = classesTotal;
-    }
-
-    public void setClassesLeft(int classesLeft) {
-        this.classesLeft_ = classesLeft;
-    }
-
-    public void setAbsences(int absences) {
-        this.absences_ = absences;
-    }
-
-    public void setMean(float mean) {
-        this.mean_ = mean;
-    }
-
-    @ColorInt
-    public int getColor() {
-        return color_;
-    }
-
-    public void setColor(int color) {
-        this.color_ = color;
-    }
-
-    public String getTitle() {
-        return title_ == null ? description_ : title_;
-    }
-
-    public String getPeriod() {
-        return year_ + "/" + period_;
-    }
-
-    public String getSituation() {
-        return situation_ == null ? "-" : situation_;
-    }
-
-    public float getGivenHours() {
-        return classesGiven_ * (hours_ / classesTotal_);
-    }
-
-    public void setTeacher(String teacher) {
-        this.teacher_ = teacher;
-    }
-
-    public void setTitle(String title) {
-        this.title_ = title;
-    }
-
-    public void setLabel(String label) {
-        this.label_ = label;
-    }
-
-    public void setClazz(String clazz) {
-        this.clazz_ = clazz;
-    }
-
-    public void setSituation(String situation) {
-        this.situation_ = situation;
-    }
-
-    public void setQid(int qid) {
-        this.qid_ = qid;
-    }
-
-    public Period getLastPeriod() {
-        int k = 0;
-
-        for (int j = 0; j < periods.size(); j++) {
-            if (!periods.get(j).journals.isEmpty() && !periods.get(j).isSub_()) {
-                k = j;
-            }
+  public float getAllMaxGradesSum() {
+    float sum = 0;
+    for (Period period : periods) {
+      if (period != null) {
+        for (Journal journal : period.journals) {
+          if (journal.getMax_() > -1) {
+            sum += journal.getMax_();
+          }
         }
-
-        if (periods.isEmpty())
-            return null;
-
-        return periods.get(k);
+      }
     }
 
-    public float getAllMaxGradesSum() {
-        float sum = 0;
-        for (Period period : periods) {
-            if (period != null) {
-                for (Journal journal : period.journals) {
-                    if (journal.getMax_() > -1) {
-                        sum += journal.getMax_();
-                    }
-                }
-            }
+    return sum;
+  }
+
+  public float getAllGradesSum() {
+    float sum = 0;
+    for (Period period : periods) {
+      if (period != null) {
+        for (Journal journal : period.journals) {
+          if (journal.getGrade_() > -1) {
+            sum += journal.getGrade_();
+          }
         }
-
-        return sum;
+      }
     }
 
-    public float getAllGradesSum() {
-        float sum = 0;
-        for (Period period : periods) {
-            if (period != null) {
-                for (Journal journal : period.journals) {
-                    if (journal.getGrade_() > -1) {
-                        sum += journal.getGrade_();
-                    }
-                }
-            }
-        }
+    return sum;
+  }
 
-        return sum;
-    }
+  public List<Journal> getLastJournals() {
+    List<Journal> journals = new ArrayList<>();
 
-    public List<Journal> getLastJournals() {
-        List<Journal> journals = new ArrayList<>();
-
-        Period period = getLastPeriod();
-
-        if (period != null)
-            journals.addAll(period.journals);
-
-        //Collections.reverse(journals);
-        return journals;
-    }
-
-    public boolean hasJournals() {
-        Period period = getLastPeriod();
-
-        if (period == null)
-            return false;
-
-        return !period.journals.isEmpty();
-    }
-
-    public int getJournalNotSeenCount() {
-        Period period = getLastPeriod();
-
-        if (period == null)
-            return 0;
-
-        int sum = 0;
-
-        for (Journal j : period.journals)
-            if (!j.isSeen_())
-                sum++;
-
-        return sum;
-    }
-
-    public int getMaterialNotSeenCount() {
-        int sum = 0;
-
-        for (Material m : materials)
-            if (!m.isSeen_())
-                sum++;
-
-        return sum;
-    }
+    Period period = getLastPeriod();
 
-    public String getLastGradeSumString() {
-        Period period = getLastPeriod();
+    if (period != null)
+      journals.addAll(period.journals);
 
-        if (period == null)
-            return "-";
+    //Collections.reverse(journals);
+    return journals;
+  }
 
-        return period.getGradeSumString();
-    }
+  public boolean hasJournals() {
+    Period period = getLastPeriod();
 
-    public float getLastGradeSum() {
-        Period period = getLastPeriod();
+    if (period == null)
+      return false;
 
-        if (period == null)
-            return -1;
+    return !period.journals.isEmpty();
+  }
 
-        return period.getGradeSum();
-    }
+  public int getJournalNotSeenCount() {
+    Period period = getLastPeriod();
 
-    public int getQID() {
-        if (qid_ != -1)
-            return qid_;
+    if (period == null)
+      return 0;
 
-        if (!description_.contains("-"))
-            return -1;
+    int sum = 0;
 
-        return Integer.parseInt(description_.substring(0, description_.indexOf('-') - 1));
-    }
+    for (Journal j : period.journals)
+      if (!j.isSeen_())
+        sum++;
 
-    public String getLabel() {
-        if (label_ != null)
-            return label_;
+    return sum;
+  }
 
-        return getLabel2();
-    }
+  public int getMaterialNotSeenCount() {
+    int sum = 0;
 
-    private String getLabel2() {
-        String label = getTitle();
+    for (Material m : materials)
+      if (!m.isSeen_())
+        sum++;
 
-        label = label.replace(" - ", " ").trim();
-        label = label.replace("-", " ").trim();
-        label = label.replace(" e ", " ").trim();
-        label = label.replace(" de ", " ").trim();
-        label = label.replace(" da ", " ").trim();
-        label = label.replace(" do ", " ").trim();
-        label = label.replace(" das ", " ").trim();
-        label = label.replace(" dos ", " ").trim();
-        label = label.replace(" em ", " ").trim();
-        label = label.replace(" para ", " ").trim();
-        label = label.replace(" E ", " ").trim();
-        label = label.replace(" DE ", " ").trim();
-        label = label.replace(" DA ", " ").trim();
-        label = label.replace(" DO ", " ").trim();
-        label = label.replace(" DAS ", " ").trim();
-        label = label.replace(" DOS ", " ").trim();
-        label = label.replace(" EM ", " ").trim();
-        label = label.replace(" PARA ", " ").trim();
-        label = label.replace(" X", " ").trim();
-        label = label.replace(" V", " ").trim();
-        label = label.replace(" III", " ").trim();
-        label = label.replace(" II", " ").trim();
-        label = label.replace(" I", " ").trim();
-
-        String[] tokens = label.split(" ");
-        StringBuilder ret = new StringBuilder();
-        int length = Math.min(3, tokens.length);
-
-        if (tokens.length < 2)
-            ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
-        else
-            for (int i = 0; i < length; i++) {
-                String token = tokens[i];
-
-                if (token.isEmpty())
-                    continue;
-
-                //if (!token.startsWith("I") && !token.endsWith("I"))
-                ret.append(token.charAt(0));
-            }
-
-            Log.d(title_, ret.toString());
-
-        return ret.toString().toUpperCase();
-    }
-
-    public String getChartValue() {
-        float sg = getLastPeriod().getGradeSum();
-        float fg = getLastPeriod().getGradeFinal_();
-
-        return String.valueOf(Math.max(sg, fg));
-    }
-
-    public String getClazz() {
-        if (clazz_ != null)
-            return clazz_;
-
-        if (title_ == null)
-            return "-";
-
-        if (!description_.contains(StringUtils.stripAccents(title_)))
-            return "-";
-
-        if (description_.equals(StringUtils.stripAccents(title_)))
-            return "-";
-
-        String clazz = description_.substring(0, description_.indexOf(StringUtils.stripAccents(title_)) - 2).trim();
-
-        if (!clazz.contains("-"))
-            return "-";
-
-        return clazz.substring(clazz.indexOf('-') + 1).trim();
-    }
-    
-    public String getTeacher() {
-        if (teacher_ == null)
-            return "-";
-
-        if (title_ != null && teacher_.contains(title_))
-                return "-";
-
-        return teacher_;
-    }
-
-    public int getClassesGiven() {
-        return classesGiven_ == -1 ? 0 : classesGiven_;
-    }
-
-    public int getClassesTotal() {
-        return classesTotal_ == -1 ? getClassesGiven() : classesTotal_;
-    }
-
-    public float getHours() {
-        return hours_ == -1 ? 0 : hours_;
-    }
-
-    public int getAbsences() {
-        return absences_ == -1 ? 0 : absences_;
-    }
-
-    public String getHoursString() {
-        return hours_ <= 0 ? "-" : String.format(Locale.getDefault(), "%.1f", hours_);
-    }
-
-    public String getClassesTotalString() {
-        return classesTotal_ <= 0 ? "-" : String.valueOf(getClassesTotal());
-    }
-
-    public String getClassesGivenString() {
-        return classesGiven_ == -1 ? "-" : String.valueOf(classesGiven_);
-    }
-
-    /*
-     * Auto-generated methods
-     */
-
-    public Matter() {}
-
-    public String getTitle_() {
-        return title_;
-    }
-
-    public String getDescription_() {
-        return description_;
-    }
-
-    public String getSituation_() {
-        return situation_;
-    }
-
-    public String getTeacher_() {
-        return teacher_;
-    }
-
-    public String getLabel_() {
-        return label_;
-    }
-
-    public float getMean_() {
-        return mean_;
-    }
-
-    public int getColor_() {
-        return color_;
-    }
-
-    public int getAbsences_() {
-        return absences_;
-    }
-
-    public int getYear_() {
-        return year_;
-    }
-
-    public int getPeriod_() {
-        return period_;
-    }
-
-    public float getHours_() {
-        return hours_;
-    }
-
-    public int getClassesTotal_() {
-        return classesTotal_;
-    }
-
-    public int getClassesGiven_() {
-        return classesGiven_;
-    }
-
-    public int getClassesLeft_() {
-        return classesLeft_;
-    }
-
-    public String getClazz_() {
-        return clazz_;
-    }
-
-    public int getQid_() {
-        return qid_;
-    }
-
-    @Override
-    public int getItemType() {
-        return MATTER;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public boolean isSame(Queryable queryable) {
-        return queryable.equals(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Matter)) return false;
-        Matter matter = (Matter) o;
-        return id == matter.id &&
-                getColor_() == matter.getColor_() &&
-                Float.compare(matter.getHours_(), getHours_()) == 0 &&
-                getClassesTotal_() == matter.getClassesTotal_() &&
-                getAbsences_() == matter.getAbsences_() &&
-                Float.compare(matter.getMean_(), getMean_()) == 0 &&
-                getYear_() == matter.getYear_() &&
-                getPeriod_() == matter.getPeriod_() &&
-                Objects.equals(getTitle_(), matter.getTitle_()) &&
-                Objects.equals(getDescription_(), matter.getDescription_()) &&
-                Objects.equals(getSituation_(), matter.getSituation_()) &&
-                Objects.equals(getTeacher_(), matter.getTeacher_());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, getColor_(), getTitle_(), getDescription_(), getSituation_(),
-                getTeacher_(), getHours_(), getClassesTotal_(), getAbsences_(), getMean_(), getYear_(),
-                getPeriod_());
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Matter{" +
-                "id=" + id +
-                ", title_='" + title_ + '\'' +
-                ", description_='" + description_ + '\'' +
-                ", year_=" + year_ +
-                ", period_=" + period_ +
-                '}';
-    }
+    return sum;
+  }
+
+  public String getLastGradeSumString() {
+    Period period = getLastPeriod();
+
+    if (period == null)
+      return "-";
+
+    return period.getGradeSumString();
+  }
+
+  public String getLastAverageString() {
+    if (getLastGradeSumString().equals("-"))
+      return "-";
+
+    Period period = getLastPeriod();
+
+    if (period == null)
+      return "-";
+
+    return String.format(Locale.getDefault(), "%.1f", period.getPlotGrade());
+  }
+
+  public int getQID() {
+    if (qid_ != -1)
+      return qid_;
+
+    if (!description_.contains("-"))
+      return -1;
+
+    return Integer.parseInt(description_.substring(0, description_.indexOf('-') - 1));
+  }
+
+  public String getLabel() {
+    if (label_ != null)
+      return label_;
+
+    return getLabel2();
+  }
+
+  private String getLabel2() {
+    String label = getTitle();
+
+    label = label.replace(" - ", " ").trim();
+    label = label.replace("-", " ").trim();
+    label = label.replace(" e ", " ").trim();
+    label = label.replace(" de ", " ").trim();
+    label = label.replace(" da ", " ").trim();
+    label = label.replace(" do ", " ").trim();
+    label = label.replace(" das ", " ").trim();
+    label = label.replace(" dos ", " ").trim();
+    label = label.replace(" em ", " ").trim();
+    label = label.replace(" para ", " ").trim();
+    label = label.replace(" E ", " ").trim();
+    label = label.replace(" DE ", " ").trim();
+    label = label.replace(" DA ", " ").trim();
+    label = label.replace(" DO ", " ").trim();
+    label = label.replace(" DAS ", " ").trim();
+    label = label.replace(" DOS ", " ").trim();
+    label = label.replace(" EM ", " ").trim();
+    label = label.replace(" PARA ", " ").trim();
+    label = label.replace(" X", " ").trim();
+    label = label.replace(" V", " ").trim();
+    label = label.replace(" III", " ").trim();
+    label = label.replace(" II", " ").trim();
+    label = label.replace(" I", " ").trim();
+
+    String[] tokens = label.split(" ");
+    StringBuilder ret = new StringBuilder();
+    int length = Math.min(3, tokens.length);
+
+    if (tokens.length < 2)
+      ret = new StringBuilder(label.substring(0, Math.min(label.length() - 1, 3)));
+    else
+      for (int i = 0; i < length; i++) {
+        String token = tokens[i];
+
+        if (token.isEmpty())
+          continue;
+
+        //if (!token.startsWith("I") && !token.endsWith("I"))
+        ret.append(token.charAt(0));
+      }
+
+    Log.d(title_, ret.toString());
+
+    return ret.toString().toUpperCase();
+  }
+
+  public String getChartValue() {
+    float sg = getLastPeriod().getGradeSum();
+    float fg = getLastPeriod().getGradeFinal_();
+
+    return String.valueOf(Math.max(sg, fg));
+  }
+
+  public String getClazz() {
+    if (clazz_ != null)
+      return clazz_;
+
+    if (title_ == null)
+      return "-";
+
+    if (!description_.contains(StringUtils.stripAccents(title_)))
+      return "-";
+
+    if (description_.equals(StringUtils.stripAccents(title_)))
+      return "-";
+
+    String clazz =
+        description_.substring(0, description_.indexOf(StringUtils.stripAccents(title_)) - 2)
+                    .trim();
+
+    if (!clazz.contains("-"))
+      return "-";
+
+    return clazz.substring(clazz.indexOf('-') + 1).trim();
+  }
+
+  public String getTeacher() {
+    if (teacher_ == null)
+      return "-";
+
+    if (title_ != null && teacher_.contains(title_))
+      return "-";
+
+    return teacher_;
+  }
+
+  public int getClassesGiven() {
+    return classesGiven_ == -1 ? 0 : classesGiven_;
+  }
+
+  public int getClassesTotal() {
+    return classesTotal_ == -1 ? getClassesGiven() : classesTotal_;
+  }
+
+  public float getHours() {
+    return hours_ == -1 ? 0 : hours_;
+  }
+
+  public int getAbsences() {
+    return absences_ == -1 ? 0 : absences_;
+  }
+
+  public String getHoursString() {
+    return hours_ <= 0 ? "-" : String.format(Locale.getDefault(), "%.1f", hours_);
+  }
+
+  public String getClassesTotalString() {
+    return classesTotal_ <= 0 ? "-" : String.valueOf(getClassesTotal());
+  }
+
+  public String getClassesGivenString() {
+    return classesGiven_ == -1 ? "-" : String.valueOf(classesGiven_);
+  }
+
+  /*
+   * Auto-generated methods
+   */
+
+  public Matter() {}
+
+  public String getTitle_() {
+    return title_;
+  }
+
+  public String getDescription_() {
+    return description_;
+  }
+
+  public String getSituation_() {
+    return situation_;
+  }
+
+  public String getTeacher_() {
+    return teacher_;
+  }
+
+  public String getLabel_() {
+    return label_;
+  }
+
+  public float getMean_() {
+    return mean_;
+  }
+
+  public int getColor_() {
+    return color_;
+  }
+
+  public int getAbsences_() {
+    return absences_;
+  }
+
+  public int getYear_() {
+    return year_;
+  }
+
+  public int getPeriod_() {
+    return period_;
+  }
+
+  public float getHours_() {
+    return hours_;
+  }
+
+  public int getClassesTotal_() {
+    return classesTotal_;
+  }
+
+  public int getClassesGiven_() {
+    return classesGiven_;
+  }
+
+  public int getClassesLeft_() {
+    return classesLeft_;
+  }
+
+  public String getClazz_() {
+    return clazz_;
+  }
+
+  public int getQid_() {
+    return qid_;
+  }
+
+  @Override
+  public int getItemType() {
+    return MATTER;
+  }
+
+  @Override
+  public long getId() {
+    return id;
+  }
+
+  @Override
+  public boolean isSame(Queryable queryable) {
+    return queryable.equals(this);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Matter)) return false;
+    Matter matter = (Matter) o;
+    return id == matter.id &&
+           getColor_() == matter.getColor_() &&
+           Float.compare(matter.getHours_(), getHours_()) == 0 &&
+           getClassesTotal_() == matter.getClassesTotal_() &&
+           getAbsences_() == matter.getAbsences_() &&
+           Float.compare(matter.getMean_(), getMean_()) == 0 &&
+           getYear_() == matter.getYear_() &&
+           getPeriod_() == matter.getPeriod_() &&
+           Objects.equals(getTitle_(), matter.getTitle_()) &&
+           Objects.equals(getDescription_(), matter.getDescription_()) &&
+           Objects.equals(getSituation_(), matter.getSituation_()) &&
+           Objects.equals(getTeacher_(), matter.getTeacher_());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, getColor_(), getTitle_(), getDescription_(), getSituation_(),
+                        getTeacher_(), getHours_(), getClassesTotal_(), getAbsences_(), getMean_(),
+                        getYear_(),
+                        getPeriod_());
+  }
+
+  @NonNull
+  @Override
+  public String toString() {
+    return "Matter{" +
+           "id=" + id +
+           ", title_='" + title_ + '\'' +
+           ", description_='" + description_ + '\'' +
+           ", year_=" + year_ +
+           ", period_=" + period_ +
+           '}';
+  }
 }

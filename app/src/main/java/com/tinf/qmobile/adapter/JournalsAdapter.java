@@ -3,10 +3,10 @@ package com.tinf.qmobile.adapter;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
 import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
-import static com.tinf.qmobile.model.ViewType.MATTER;
+import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
-import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 import android.content.Context;
@@ -39,145 +39,169 @@ import com.tinf.qmobile.model.journal.Header;
 
 import java.util.List;
 
-public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> implements KmStickyListener, OnData<Queryable> {
-    private final AsyncListDiffer<Queryable> list;
-    private final Context context;
-    private final OnList<Queryable> onList;
-    private int currentHeader;
+public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
+    implements KmStickyListener, OnData<Queryable> {
+  private final AsyncListDiffer<Queryable> list;
+  private final Context context;
+  private final OnList<Queryable> onList;
+  private int currentHeader;
 
-    public JournalsAdapter(Context context, OnList<Queryable> onList) {
-        this.context = context;
-        this.onList = onList;
-        this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
-            @Override
-            public boolean areItemsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
-            }
+  public JournalsAdapter(Context context, OnList<Queryable> onList) {
+    this.context = context;
+    this.onList = onList;
+    this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
+      @Override
+      public boolean areItemsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
+      }
 
-            @Override
-            public boolean areContentsTheSame(@NonNull Queryable oldItem, @NonNull Queryable newItem) {
-                return oldItem.isSame(newItem);
-            }
-        });
+      @Override
+      public boolean areContentsTheSame(
+          @NonNull
+          Queryable oldItem,
+          @NonNull
+          Queryable newItem) {
+        return oldItem.isSame(newItem);
+      }
+    });
 
-        onUpdate(DataBase.get().getJournalsDataProvider().getList());
+    onUpdate(DataBase.get().getJournalsDataProvider().getList());
+  }
+
+  @NonNull
+  @Override
+  public JournalBaseViewHolder onCreateViewHolder(
+      @NonNull
+      ViewGroup parent, int viewType) {
+    switch (viewType) {
+      case MATTER:
+        return new JournalHeaderViewHolder(LayoutInflater.from(context)
+                                                         .inflate(R.layout.journal_header, parent,
+                                                                  false));
+
+      case JOURNAL:
+        return new JournalViewHolder(LayoutInflater.from(context)
+                                                   .inflate(R.layout.journal_item, parent, false));
+
+      case FOOTERJOURNAL:
+        return new JournalFooterViewHolder(LayoutInflater.from(context)
+                                                         .inflate(R.layout.journal_footer, parent,
+                                                                  false));
+
+      case FOOTERPERIOD:
+        return new PeriodFooterViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.period_footer, parent,
+                                                                 false));
+
+      case PERIOD:
+        return new PeriodHeaderViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.period_header, parent,
+                                                                 false));
+
+      case JOURNALEMPTY:
+        return new JournalEmptyViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.journal_item_empty,
+                                                                 parent, false));
+
+      case HEADER:
+        return new JournalHeaderColorViewHolder(LayoutInflater.from(context)
+                                                              .inflate(R.layout.header_empty,
+                                                                       parent, false));
+
+      case EMPTY:
+        return new JournalEmptyViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.journal_empty, parent,
+                                                                 false));
     }
 
-    @NonNull
-    @Override
-    public JournalBaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case MATTER:
-                return new JournalHeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.journal_header, parent, false));
+    return null;
+  }
 
-            case JOURNAL:
-                return new JournalViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.journal_item, parent, false));
+  @Override
+  public int getItemViewType(int i) {
+    return list.getCurrentList().get(i).getItemType();
+  }
 
-            case FOOTERJOURNAL:
-                return new JournalFooterViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.journal_footer, parent, false));
+  @Override
+  public void onBindViewHolder(
+      @NonNull
+      JournalBaseViewHolder holder, int i) {
+    holder.bind(context, list.getCurrentList().get(i), true, i == currentHeader);
+  }
 
-            case FOOTERPERIOD:
-                return new PeriodFooterViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.period_footer, parent, false));
+  @Override
+  public int getItemCount() {
+    return list.getCurrentList().size();
+  }
 
-            case PERIOD:
-                return new PeriodHeaderViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.period_header, parent, false));
+  @Override
+  public void onUpdate(List<Queryable> list) {
+    this.list.submitList(DataBase.get().getJournalsDataProvider().getList());
+    onList.onUpdate(list);
+  }
 
-            case JOURNALEMPTY:
-                return new JournalEmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.journal_item_empty, parent, false));
+  @Override
+  public void onDetachedFromRecyclerView(
+      @NonNull
+      RecyclerView recyclerView) {
+    super.onDetachedFromRecyclerView(recyclerView);
+    DataBase.get().getJournalsDataProvider().removeOnDataListener(this);
+  }
 
-            case HEADER:
-                return new JournalHeaderColorViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.header_empty, parent, false));
+  @Override
+  public void onAttachedToRecyclerView(
+      @NonNull
+      RecyclerView recyclerView) {
+    super.onAttachedToRecyclerView(recyclerView);
+    DataBase.get().getJournalsDataProvider().addOnDataListener(this);
+  }
 
-            case EMPTY:
-                return new JournalEmptyViewHolder(LayoutInflater.from(context)
-                        .inflate(R.layout.journal_empty, parent, false));
-        }
+  @Override
+  public Integer getHeaderPositionForItem(Integer i) {
+    Queryable q = list.getCurrentList().get(i);
 
-        return null;
-    }
+    while (!(q instanceof Header) && i > 0)
+      q = list.getCurrentList().get(--i);
 
-    @Override
-    public int getItemViewType(int i) {
-        return list.getCurrentList().get(i).getItemType();
-    }
+    notifyItemChanged(currentHeader);
+    currentHeader = i + 1;
+    notifyItemChanged(currentHeader);
 
-    @Override
-    public void onBindViewHolder(@NonNull JournalBaseViewHolder holder, int i) {
-        holder.bind(context, list.getCurrentList().get(i), true, i == currentHeader);
-    }
+    return i < 0 ? 0 : i;
+  }
 
-    @Override
-    public int getItemCount() {
-        return list.getCurrentList().size();
-    }
+  @Override
+  public Integer getHeaderLayout(Integer i) {
+    if (list.getCurrentList().get(i) instanceof Header)
+      return R.layout.journal_header_color;
+    else
+      return R.layout.header_empty;
+  }
 
-    @Override
-    public void onUpdate(List<Queryable> list) {
-        this.list.submitList(DataBase.get().getJournalsDataProvider().getList());
-        onList.onUpdate(list);
-    }
+  @Override
+  public void bindHeaderData(View header, Integer i) {
+    if (!(list.getCurrentList().get(i) instanceof Header))
+      return;
 
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        DataBase.get().getJournalsDataProvider().removeOnDataListener(this);
-    }
+    Header h = (Header) list.getCurrentList().get(i);
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        DataBase.get().getJournalsDataProvider().addOnDataListener(this);
-    }
+    int n = h.getJournalNotSeenCount();
 
-    @Override
-    public Integer getHeaderPositionForItem(Integer i) {
-        Queryable q = list.getCurrentList().get(i);
+    TextView b = header.findViewById(R.id.badge);
+    b.setText(n > 0 ? String.valueOf(n) : "");
+    b.setBackgroundTintList(ColorStateList.valueOf(h.getColor()));
+  }
 
-        while (!(q instanceof Header) && i > 0)
-            q = list.getCurrentList().get(--i);
+  @Override
+  public Boolean isHeader(Integer i) {
+    if (i < 0)
+      return false;
 
-        notifyItemChanged(currentHeader);
-        currentHeader = i + 1;
-        notifyItemChanged(currentHeader);
-
-        return i < 0 ? 0 : i;
-    }
-
-    @Override
-    public Integer getHeaderLayout(Integer i) {
-        if (list.getCurrentList().get(i) instanceof Header)
-            return R.layout.journal_header_color;
-        else
-            return R.layout.header_empty;
-    }
-
-    @Override
-    public void bindHeaderData(View header, Integer i) {
-        if (!(list.getCurrentList().get(i) instanceof Header))
-            return;
-
-        Header h = (Header) list.getCurrentList().get(i);
-
-        int n = h.getJournalNotSeenCount();
-
-        TextView b = header.findViewById(R.id.badge);
-        b.setText(n > 0 ? String.valueOf(n) : "");
-        b.setBackgroundTintList(ColorStateList.valueOf(h.getColor()));
-    }
-
-    @Override
-    public Boolean isHeader(Integer i) {
-        if (i < 0)
-            return false;
-
-        Queryable q = list.getCurrentList().get(i);
-        return q instanceof Header;
-    }
+    Queryable q = list.getCurrentList().get(i);
+    return q instanceof Header;
+  }
 }

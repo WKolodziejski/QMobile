@@ -9,13 +9,15 @@ import com.tinf.qmobile.model.Empty;
 
 public class PerformanceEmptyViewHolder extends PerformanceViewHolder<Empty> {
 
-    public PerformanceEmptyViewHolder(@NonNull View itemView) {
-        super(itemView);
-    }
+  public PerformanceEmptyViewHolder(
+      @NonNull
+      View itemView) {
+    super(itemView);
+  }
 
-    @Override
-    public void bind(Context context, Empty empty) {
+  @Override
+  public void bind(Context context, Empty empty) {
 
-    }
+  }
 
 }

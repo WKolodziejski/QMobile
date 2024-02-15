@@ -13,10 +13,16 @@ import com.tinf.qmobile.R;
 
 public class UnavailableLoginFragment extends Fragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login_unavailable, container, false);
-    }
+  @Nullable
+  @Override
+  public View onCreateView(
+      @NonNull
+      LayoutInflater inflater,
+      @Nullable
+      ViewGroup container,
+      @Nullable
+      Bundle savedInstanceState) {
+    return inflater.inflate(R.layout.fragment_login_unavailable, container, false);
+  }
 
 }

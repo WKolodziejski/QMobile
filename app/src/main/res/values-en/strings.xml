@@ -163,8 +163,10 @@
     <string name="calendar_empty">No upcoming events</string>
     <string name="calendar_upcoming">Upcoming</string>
     <string name="schedule_empty">No available schedules</string>
+    <string name="journal_avg">Partial average</string>
     <string name="journal_final_grade">Final grade</string>
     <string name="notification_journal_title">%2$s\'s %1$s</string>
+    <string name="notification_grade_title">Grade change</string>
     <string name="notification_material_title">%1$s\'s material</string>
     <string name="open_drawer">Expand</string>
     <string name="close_drawer">Collapse</string>
