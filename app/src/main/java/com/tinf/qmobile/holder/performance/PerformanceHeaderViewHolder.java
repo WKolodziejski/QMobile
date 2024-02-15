@@ -12,6 +12,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.activity.MatterActivity;
@@ -20,6 +21,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.utility.ColorUtils;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,8 +51,11 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
 
   @Override
   public void bind(Context context, Matter matter) {
-    int color1 = matter.getColor();
-    int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(context, matter.getColor());
+
+    int color1 = colorRoles.getAccentContainer();
+    int color2 = colorRoles.getAccent();
+
     int classesGiven = matter.getClassesGiven();
     int classesTotal = matter.getClassesTotal();
     int classesLeft = classesTotal - classesGiven;
@@ -131,8 +136,8 @@ public class PerformanceHeaderViewHolder extends PerformanceViewHolder<Matter> {
       }
 
       Line line = new Line(points);
-      line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
-      line.setPointColor(matter.getColor());
+      line.setColor(color1);
+      line.setPointColor(color2);
       line.setShape(ValueShape.CIRCLE);
       line.setCubic(true);
       line.setFilled(false);

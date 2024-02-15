@@ -17,29 +17,29 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
             app:elevation="0dp"
+            app:liftOnScrollColor="@color/transparent"
             tools:showIn="@layout/activity_main">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
+                android:layout_height="48dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginVertical="8dp"
-                android:background="@drawable/appbar_rounded"
+                android:background="@drawable/appbar_rounded_ripple"
                 android:clickable="true"
-                android:elevation="4dp"
+                android:elevation="0dp"
                 android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
                 app:layout_scrollFlags="scroll|enterAlways|snap">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:textColor="?attr/colorOnSurface"
                     android:text="@string/action_search"
-                    android:textSize="19sp" />
+                    android:textSize="@dimen/main_font_size" />
 
             </com.google.android.material.appbar.MaterialToolbar>
 
@@ -56,7 +56,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginVertical="8dp"
                     android:visibility="gone"
-                    app:cardCornerRadius="8dp"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
                     tools:cardBackgroundColor="@color/warningBlue"
                     tools:visibility="visible">
@@ -73,7 +73,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="8dp"
                             android:textAlignment="center"
-
+                            android:textColor="?attr/colorOnSurface"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/warning_close"
                             app:layout_constraintStart_toStartOf="parent"
@@ -86,7 +86,7 @@
                             android:layout_height="wrap_content"
                             android:clickable="true"
                             android:focusable="true"
-                            android:foreground="?android:attr/selectableItemBackground"
+                            android:foreground="?attr/selectableItemBackground"
                             android:padding="8dp"
                             android:src="@drawable/ic_cancel"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -98,20 +98,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:textStyle="bold"
-                    tools:text="2020 / 1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/blackDividers" />
 
             </LinearLayout>
 
@@ -138,13 +124,11 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="100dp"
-
             android:transitionName="Fab"
             android:visibility="gone"
             app:borderWidth="0dp"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add"
-
             tools:ignore="ContentDescription"
             tools:visibility="visible" />
 

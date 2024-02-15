@@ -55,6 +55,21 @@ public class Day implements CalendarBase {
   }
 
   @Override
+  public boolean isToday() {
+    return false;
+  }
+
+  @Override
+  public String getDayString() {
+    return null;
+  }
+
+  @Override
+  public String getWeekString() {
+    return null;
+  }
+
+  @Override
   public int getItemType() {
     return DAY;
   }

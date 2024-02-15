@@ -2,9 +2,9 @@ package com.tinf.qmobile.model;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 
-public class Empty extends EventBase implements Queryable {
+public class Empty extends Event implements Queryable {
   private final int type;
 
   public Empty() {

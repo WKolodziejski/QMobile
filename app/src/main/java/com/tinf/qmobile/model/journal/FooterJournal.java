@@ -1,6 +1,6 @@
 package com.tinf.qmobile.model.journal;
 
-import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
+import static com.tinf.qmobile.model.ViewType.FOOTER_JOURNAL;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
@@ -16,7 +16,7 @@ public class FooterJournal implements Queryable {
 
   @Override
   public int getItemType() {
-    return FOOTERJOURNAL;
+    return FOOTER_JOURNAL;
   }
 
   public Matter getMatter() {

@@ -1,6 +1,6 @@
 package com.tinf.qmobile.database;
 
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventSimple_;
 import com.tinf.qmobile.model.calendar.EventUser;
@@ -18,15 +18,15 @@ import java.util.List;
 import io.objectbox.Box;
 import io.objectbox.reactive.DataSubscription;
 
-public class EventsDataProvider extends BaseDataProvider<EventBase> {
+public class EventsDataProvider extends BaseDataProvider<Event> {
   private DataSubscription sub1;
   private DataSubscription sub2;
   private DataSubscription sub3;
   private DataSubscription sub4;
 
   @Override
-  protected synchronized List<EventBase> buildList() {
-    List<EventBase> list = new ArrayList<>();
+  protected synchronized List<Event> buildList() {
+    List<Event> list = new ArrayList<>();
 
     Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
     Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);

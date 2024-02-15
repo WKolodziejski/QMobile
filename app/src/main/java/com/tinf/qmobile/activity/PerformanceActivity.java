@@ -10,6 +10,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityPerformanceBinding;
 import com.tinf.qmobile.fragment.PerformanceFragment;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 
 public class PerformanceActivity extends AppCompatActivity {
   private ActivityPerformanceBinding binding;
@@ -19,12 +21,13 @@ public class PerformanceActivity extends AppCompatActivity {
       @Nullable
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityPerformanceBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(findViewById(R.id.toolbar_default));
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeAsUpIndicator(
-        AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+        DesignUtils.getDrawable(this, R.drawable.ic_cancel));
 
     getSupportFragmentManager()
         .beginTransaction()

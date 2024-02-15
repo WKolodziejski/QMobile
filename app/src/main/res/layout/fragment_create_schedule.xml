@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_edt" />
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
         android:paddingTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
         android:id="@+id/matter_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintTop_toBottomOf="@id/matter_layout" />
 
     <LinearLayout
@@ -103,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="?attr/selectableItemBackground"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="?attr/selectableItemBackground"
                 android:padding="8dp"
                 app:layout_constraintBottom_toTopOf="@id/end_time"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -130,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:foreground="?attr/selectableItemBackground"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -144,14 +144,14 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintTop_toBottomOf="@id/time_layout" />
 
     <LinearLayout
         android:id="@+id/room_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -186,14 +186,14 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintTop_toBottomOf="@id/room_layout" />
 
     <LinearLayout
         android:id="@+id/alarm_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
         android:paddingTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -227,14 +227,14 @@
         android:id="@+id/alarm_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintTop_toBottomOf="@id/alarm_layout" />
 
     <LinearLayout
         android:id="@+id/color_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
         android:paddingTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -269,14 +269,14 @@
         android:id="@+id/color_decoration"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintTop_toBottomOf="@id/color_layout" />
 
     <LinearLayout
         android:id="@+id/description_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -311,7 +311,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/blackDividers"
+        android:background="?attr/colorSurfaceContainerHighest"
         app:layout_constraintTop_toBottomOf="@id/description_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

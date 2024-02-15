@@ -105,7 +105,6 @@ public class MessageViewFragment extends Fragment {
     }
 
     if (!message.attachments.isEmpty()) {
-      binding.recycler.setItemViewCacheSize(3);
       binding.recycler.setLayoutManager(
           new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
       binding.recycler.setAdapter(new AttachmentsAdapter(getContext(), message.attachments, false));

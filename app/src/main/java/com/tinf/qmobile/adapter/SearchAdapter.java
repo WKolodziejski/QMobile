@@ -2,7 +2,7 @@ package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.CLASS;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
+import static com.tinf.qmobile.model.ViewType.HEADER_SEARCH;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.MATTER;
@@ -136,7 +136,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchViewHolder> {
                                                        .inflate(R.layout.search_class, parent,
                                                                 false));
 
-      case HEADERSEARCH:
+      case HEADER_SEARCH:
         return new SearchHeaderViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.search_header, parent,
                                                                  false));

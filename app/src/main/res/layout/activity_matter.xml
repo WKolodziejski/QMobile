@@ -15,7 +15,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             tools:title="@string/app_name" />
 
         <com.google.android.material.tabs.TabLayout
@@ -28,6 +28,11 @@
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?attr/colorSurfaceContainerHighest"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"

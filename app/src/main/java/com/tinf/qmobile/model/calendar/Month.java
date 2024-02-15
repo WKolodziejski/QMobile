@@ -31,6 +31,21 @@ public class Month implements CalendarBase {
     return true;
   }
 
+  @Override
+  public boolean isToday() {
+    return false;
+  }
+
+  @Override
+  public String getDayString() {
+    return null;
+  }
+
+  @Override
+  public String getWeekString() {
+    return null;
+  }
+
   /*
    * Required methods
    */

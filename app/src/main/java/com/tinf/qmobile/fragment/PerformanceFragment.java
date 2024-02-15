@@ -34,7 +34,6 @@ public class PerformanceFragment extends Fragment {
       Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    binding.recycler.setItemViewCacheSize(20);
     binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
     binding.recycler.setItemAnimator(null);
     binding.recycler.setAdapter(new PerformanceAdapter(getContext()));

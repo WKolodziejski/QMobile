@@ -16,12 +16,15 @@ import androidx.core.content.ContextCompat;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.google.android.material.color.ColorRoles;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.databinding.ActivityMatterBinding;
-import com.tinf.qmobile.fragment.matter.MatterTabsAdapter;
+import com.tinf.qmobile.adapter.tab.MatterTabsAdapter;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 
 public class MatterActivity extends AppCompatActivity {
   private ActivityMatterBinding binding;
@@ -30,12 +33,13 @@ public class MatterActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityMatterBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(binding.toolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeAsUpIndicator(
-        ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+        DesignUtils.getDrawable(this, R.drawable.ic_cancel));
 
     Bundle bundle = getIntent().getExtras();
 
@@ -74,7 +78,10 @@ public class MatterActivity extends AppCompatActivity {
       }
     }).attach();
 
-    binding.tab.setSelectedTabIndicatorColor(matter.getColor());
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(this, matter.getColor());
+
+//    binding.tab.setSelectedTabIndicatorColor(colorRoles.getAccent());
+//    binding.tab.setTabTextColors(colorRoles.getAccent());
     binding.pager.setCurrentItem(getPage(bundle.getInt("PAGE")));
   }
 
@@ -116,7 +123,6 @@ public class MatterActivity extends AppCompatActivity {
             .setPositiveButton(getString(R.string.dialog_select),
                                (dialog, selectedColor, allColors) -> {
                                  matter.setColor(selectedColor);
-                                 binding.tab.setSelectedTabIndicatorColor(matter.getColor());
                                  binding.tab.selectTab(
                                      binding.tab.getTabAt(binding.tab.getSelectedTabPosition()));
                                  DataBase.get().getBoxStore().boxFor(Matter.class).put(matter);

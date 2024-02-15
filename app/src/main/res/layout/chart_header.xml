@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:ellipsize="end"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?attr/selectableItemBackground"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:padding="16dp"

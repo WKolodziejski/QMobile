@@ -9,12 +9,14 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.fragment.SettingsFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.Works;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class SettingsActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     setContentView(R.layout.activity_settings);
 
     setSupportActionBar(findViewById(R.id.toolbar_default));

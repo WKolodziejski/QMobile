@@ -1,51 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_margin="8dp"
+        android:layout_width="match_parent"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="16dp"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="24sp"
             android:textStyle="bold"
             tools:drawableEnd="@drawable/ic_check"
             tools:drawablePadding="8dp"
             tools:drawableTint="@color/amber_a700"
-            tools:text="Title of message" />
+            tools:text="Title of message dasd asd asd asd as das weraraerer sadf" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
 
             <TextView
                 android:id="@+id/header"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginHorizontal="8dp"
                 android:background="@drawable/layout_round"
                 android:gravity="center"
+                android:layout_height="36dp"
+                android:layout_margin="8dp"
+                android:layout_width="36dp"
                 android:textAllCaps="true"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/layout1"
+                app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="F" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:id="@+id/layout1"
                 android:layout_height="match_parent"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_width="0dp"
                 android:orientation="vertical"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -56,20 +61,21 @@
 
                 <TextView
                     android:id="@+id/sender"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
                     android:ellipsize="end"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
                     android:maxLines="1"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold"
-                    tools:text="Remetente" />
+                    tools:text="Remetente dasdasd dsadasda,smdnasd asd as d asd asdasd " />
 
                 <TextView
                     android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:ellipsize="end"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
                     android:maxLines="1"
+                    android:textColor="?attr/colorOnSurface"
                     tools:text="22/03/1999" />
 
             </LinearLayout>
@@ -77,22 +83,22 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                android:layout_width="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -101,18 +107,19 @@
 
                 <TextView
                     android:id="@+id/content"
-                    android:layout_width="wrap_content"
+                    android:autoLink="web|all"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:layout_marginVertical="16dp"
-                    android:autoLink="web|all"
+                    android:layout_width="wrap_content"
                     android:linksClickable="true"
+                    android:textColor="?attr/colorOnSurface"
                     tools:text="@string/message_example" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent" />
 
             </LinearLayout>
 
@@ -120,4 +127,4 @@
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

@@ -1,11 +1,14 @@
 package com.tinf.qmobile.holder.report;
 
+import static com.tinf.qmobile.utility.DesignUtils.getColorForSituation;
+
 import android.content.Context;
 import android.view.View;
 
-import com.tinf.qmobile.R;
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.databinding.TableCellSituationBinding;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class TableCellSituationViewHolder extends TableBaseViewHolder {
   private final TableCellSituationBinding binding;
@@ -16,32 +19,23 @@ public class TableCellSituationViewHolder extends TableBaseViewHolder {
   }
 
   @Override
-  public void bind(Context context, Matter matter, String cell) {
+  public void bind(Context context,
+                   Matter matter,
+                   String cell) {
     binding.situation.setText(cell);
 
     if (cell.equals("-")) {
-      binding.situation.setTextColor(context.getColor(R.color.colorPrimary));
-      binding.color.setCardBackgroundColor(context.getColor(R.color.transparent));
+      ColorRoles colorRoles =
+          ColorsUtils.getColorRoles(context, com.google.android.material.R.attr.colorSurface);
+
+      binding.situation.setTextColor(colorRoles.getOnAccent());
+      binding.color.setCardBackgroundColor(colorRoles.getAccent());
     } else {
-      binding.situation.setTextColor(context.getColor(R.color.white));
-      binding.color.setCardBackgroundColor(getSituationColor(context, cell));
+      ColorRoles colorRoles = getColorForSituation(context, cell);
+
+      binding.situation.setTextColor(colorRoles.getOnAccentContainer());
+      binding.color.setCardBackgroundColor(colorRoles.getAccentContainer());
     }
-  }
-
-  private static int getSituationColor(Context context, String s) {
-    if (s.contains("Aprovado"))
-      return context.getColor(R.color.good);
-
-    if (s.contains("Reprovado"))
-      return context.getColor(R.color.bad);
-
-    if (s.contains("Falta"))
-      return context.getColor(R.color.bad);
-
-    if (s.contains("Cursando"))
-      return context.getColor(R.color.ok);
-
-    return context.getColor(R.color.colorPrimary);
   }
 
 }

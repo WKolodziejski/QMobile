@@ -9,12 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.databinding.JournalFooterBinding;
 import com.tinf.qmobile.model.journal.FooterJournal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.utility.ColorUtils;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,8 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
   @Override
   public void bind(Context context, FooterJournal footer, boolean lookup, boolean isHeader) {
     Matter matter = footer.getMatter();
-    int color1 = matter.getColor();
-    int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(context, matter.getColor());
+
     int classesGiven = matter.getClassesGiven();
     int classesTotal = matter.getClassesTotal();
     int classesLeft = classesTotal - classesGiven;
@@ -49,6 +51,7 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
     binding.partialAverage.setText(matter.getLastAverageString());
     binding.absences.setText(matter.getAbsencesString());
     binding.chartPresence.setVisibility(matter.getAbsences_() >= 0 ? VISIBLE : INVISIBLE);
+    binding.absences.setTextColor(colorRoles.getOnAccentContainer());
 
     binding.layout.setOnClickListener(view -> {
       Intent intent = new Intent(context, MatterActivity.class);
@@ -66,13 +69,13 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
 
     if (presences > 0) {
       values.add(new SliceValue(presences)
-                     .setColor(color1)
+                     .setColor(colorRoles.getAccentContainer())
                      .setLabel(""));
     }
 
     if (absences > 0) {
       values.add(new SliceValue(absences)
-                     .setColor(color2)
+                     .setColor(colorRoles.getAccent())
                      .setLabel(""));
     }
 
@@ -82,12 +85,6 @@ public class JournalFooterViewHolder extends JournalBaseViewHolder<FooterJournal
                                               .setHasLabelsOnlyForSelected(true));
     binding.chartPresence.setChartRotation(-90, false);
     binding.chartPresence.setInteractive(false);
-
-//        if (absences > 0) {
-//            binding.chartPresence.selectValue(
-//                    new SelectedValue(presences > 0 ? 2 : 1, 0, SelectedValue.SelectedValueType
-//                    .LINE));
-//        }
   }
 
 }

@@ -1,33 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroll"
-    android:layout_width="match_parent"
+    android:fillViewport="true"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:layout_width="match_parent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:clipToPadding="false"
         android:gravity="center_horizontal"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_height="56dp"
             android:layout_width="match_parent"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="@dimen/main_font_size"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2023/1" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:background="?attr/colorSurfaceContainerHighest"
+            android:layout_height="1dp"
+            android:layout_width="match_parent" />
+
+        <LinearLayout
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
 
                 <LinearLayout
                     android:id="@+id/schedule_layout"
-                    android:layout_width="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
                     android:layout_height="wrap_content"
-                    android:foreground="?android:attr/selectableItemBackground"
+                    android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:padding="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -36,21 +62,23 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_alarm"
                         android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/ic_alarm"
                         android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
                         android:text="@string/title_horario"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/empty_schedule"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
+                        android:layout_width="wrap_content"
                         android:text="@string/schedule_empty"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/main_font_size"
                         android:visibility="gone"
                         tools:visibility="visible" />
@@ -59,20 +87,20 @@
 
                 <LinearLayout
                     android:id="@+id/schedule_tune"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
+                    android:layout_height="0dp"
+                    android:layout_width="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:layout_width="wrap_content"
                         android:src="@drawable/ic_tune" />
 
                 </LinearLayout>
@@ -81,14 +109,14 @@
 
             <LinearLayout
                 android:id="@+id/week_layout"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:padding="8dp">
 
                 <com.tinf.qmobile.widget.schedule.ScheduleViewHome
                     android:id="@+id/weekView"
-                    android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_width="match_parent"
                     android:transitionName="Horario"
                     app:columnGap="8dp"
                     app:dayBackgroundColor="@color/transparent"
@@ -120,24 +148,24 @@
 
         <LinearLayout
             android:id="@+id/calendar_layout"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical">
 
             <View
-                android:layout_width="match_parent"
+                android:background="?attr/colorSurfaceContainerHighest"
                 android:layout_height="1dp"
-                android:background="@color/blackDividers" />
+                android:layout_width="match_parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
 
                 <LinearLayout
                     android:id="@+id/calendar_btn"
-                    android:layout_width="match_parent"
+                    android:foreground="?attr/selectableItemBackground"
                     android:layout_height="wrap_content"
-                    android:foreground="?android:attr/selectableItemBackground"
+                    android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:padding="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -146,22 +174,23 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_calendar"
                         android:drawablePadding="8dp"
-
+                        android:drawableStart="@drawable/ic_calendar"
                         android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
                         android:text="@string/calendar_upcoming"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/empty_calendar"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
+                        android:layout_width="wrap_content"
                         android:text="@string/calendar_empty"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="@dimen/main_font_size"
                         android:visibility="gone"
                         tools:visibility="visible" />
@@ -170,20 +199,20 @@
 
                 <LinearLayout
                     android:id="@+id/calendar_tune"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
+                    android:layout_height="0dp"
+                    android:layout_width="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:background="?attr/selectableItemBackgroundBorderless"
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:layout_width="wrap_content"
                         android:src="@drawable/ic_tune" />
 
                 </LinearLayout>
@@ -192,72 +221,99 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
                 android:transitionName="Calendario" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:orientation="vertical">
 
             <View
-                android:layout_width="match_parent"
+                android:background="?attr/colorSurfaceContainerHighest"
                 android:layout_height="1dp"
-                android:background="@color/blackDividers" />
+                android:layout_width="match_parent" />
 
-            <LinearLayout
-                android:id="@+id/chart_layout"
-                android:layout_width="match_parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:orientation="vertical"
-                android:padding="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="match_parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/chart_layout"
+                    android:foreground="?attr/selectableItemBackground"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_insights"
-                    android:drawablePadding="8dp"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    android:gravity="center_vertical"
-                    android:text="@string/title_performance"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:drawablePadding="8dp"
+                        android:drawableStart="@drawable/ic_insights"
+                        android:gravity="center_vertical"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/title_performance"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/empty_chart"
+                    <TextView
+                        android:id="@+id/empty_chart"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_width="wrap_content"
+                        android:text="@string/performance_empty"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="@dimen/main_font_size"
+                        android:visibility="gone"
+                        tools:layout_conversion_absoluteHeight="20dp"
+                        tools:layout_conversion_absoluteWidth="165dp"
+                        tools:layout_editor_absoluteX="48dp"
+                        tools:layout_editor_absoluteY="40dp"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/chart_tune"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:layout_height="0dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:text="@string/performance_empty"
-                    android:textSize="@dimen/main_font_size"
-                    android:visibility="gone"
-                    tools:layout_conversion_absoluteHeight="20dp"
-                    tools:layout_conversion_absoluteWidth="165dp"
-                    tools:layout_editor_absoluteX="48dp"
-                    tools:layout_editor_absoluteY="40dp"
-                    tools:visibility="visible" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </LinearLayout>
+                    <ImageView
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/ic_tune" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.tinf.qmobile.widget.performance.PerformanceChart
                 android:id="@+id/chart"
-                android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginVertical="8dp" />
+                android:layout_marginVertical="8dp"
+                android:layout_width="match_parent" />
 
             <View
-                android:layout_width="match_parent"
+                android:background="?attr/colorSurfaceContainerHighest"
                 android:layout_height="1dp"
-                android:background="@color/blackDividers" />
+                android:layout_width="match_parent" />
 
         </LinearLayout>
 

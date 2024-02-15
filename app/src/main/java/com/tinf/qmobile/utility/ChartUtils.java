@@ -1,5 +1,8 @@
 package com.tinf.qmobile.utility;
 
+import static com.tinf.qmobile.utility.UserUtils.getEditor;
+import static com.tinf.qmobile.utility.UserUtils.getInfo;
+
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
@@ -14,33 +17,42 @@ import lecho.lib.hellocharts.model.PointValue;
 import lecho.lib.hellocharts.model.ValueShape;
 
 public class ChartUtils {
+  private static final String AVERAGE = ".Average";
 
-  public static LineChartData getChartData(Matter matter) {
-    int x = 0;
-
-    List<PointValue> points = new ArrayList<>();
-
-    for (int i = 0; i < matter.periods.size(); i++) {
-      Period period = matter.periods.get(i);
-
-      for (int j = 0; j < period.journals.size(); j++) {
-        Journal journal = period.journals.get(j);
-
-        if (journal.getGrade_() >= 0) {
-          points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
-                         .setLabel(journal.getGrade()));
-        }
-      }
-    }
-
-    Line line = new Line(points);
-    line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
-    line.setPointColor(matter.getColor());
-    line.setShape(ValueShape.CIRCLE);
-    line.setCubic(true);
-    line.setFilled(false);
-    line.setHasLabels(true);
-
-    return new LineChartData(Collections.singletonList(line));
+  public static int getAverageGrade() {
+    return getInfo().getInt(AVERAGE, 10);
   }
+
+  public static void setAverageGrade(int length) {
+    getEditor().putInt(AVERAGE, length).apply();
+  }
+
+//  public static LineChartData getChartData(Matter matter) {
+//    int x = 0;
+//
+//    List<PointValue> points = new ArrayList<>();
+//
+//    for (int i = 0; i < matter.periods.size(); i++) {
+//      Period period = matter.periods.get(i);
+//
+//      for (int j = 0; j < period.journals.size(); j++) {
+//        Journal journal = period.journals.get(j);
+//
+//        if (journal.getGrade_() >= 0) {
+//          points.add(new PointValue(x++, journal.getGrade_() / journal.getMax_() * 10)
+//                         .setLabel(journal.getGrade()));
+//        }
+//      }
+//    }
+//
+//    Line line = new Line(points);
+//    line.setColor(ColorUtils.INSTANCE.contrast(matter.getColor(), 0.25f));
+//    line.setPointColor(matter.getColor());
+//    line.setShape(ValueShape.CIRCLE);
+//    line.setCubic(true);
+//    line.setFilled(false);
+//    line.setHasLabels(true);
+//
+//    return new LineChartData(Collections.singletonList(line));
+//  }
 }

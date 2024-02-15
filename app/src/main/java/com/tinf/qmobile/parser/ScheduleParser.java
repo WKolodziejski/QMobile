@@ -20,25 +20,30 @@ import io.objectbox.relation.ToMany;
 public class ScheduleParser extends BaseParser {
   private final static String TAG = "ScheduleParser";
 
-  public ScheduleParser(int page, int year, int period, boolean notify,
-                        BaseParser.OnFinish onFinish, OnError onError) {
+  public ScheduleParser(int page,
+                        int year,
+                        int period,
+                        boolean notify,
+                        BaseParser.OnFinish onFinish,
+                        OnError onError) {
     super(page, year, period, notify, onFinish, onError);
   }
 
   @Override
   public void parse(Document document) {
-    Log.i(TAG, "Parsing " + year);
-
     Elements tables = document.select("table");
-    Elements scheduleTable = tables.get(11).getElementsByTag("tr");
+    Elements scheduleTable = tables.get(11)
+                                   .getElementsByTag("tr");
 
     if (scheduleTable.isEmpty())
       return;
 
     List<Matter> matters = matterBox.query()
-                                    .equal(Matter_.year_, year).and()
+                                    .equal(Matter_.year_, year)
+                                    .and()
                                     .equal(Matter_.period_, period)
-                                    .build().find();
+                                    .build()
+                                    .find();
 
     for (int i = 0; i < matters.size(); i++) {
       ToMany<Schedule> s = matters.get(i).schedules;
@@ -51,16 +56,21 @@ public class ScheduleParser extends BaseParser {
     }
 
     for (int i = 1; i < scheduleTable.size(); i++) {
-      Elements row = scheduleTable.get(i).select("td");
-      String time = row.get(0).text();
+      Elements row = scheduleTable.get(i)
+                                  .select("td");
+      String time = row.get(0)
+                       .text();
 
       for (int j = 1; j < row.size(); j++) {
-        if (row.get(j).text().isEmpty())
+        if (row.get(j)
+               .text()
+               .isEmpty())
           continue;
 
-        Elements divs = row.get(j).child(0).child(0).getElementsByTag("div");
-
-        //Log.d("DIVS", divs.toString());
+        Elements divs = row.get(j)
+                           .child(0)
+                           .child(0)
+                           .getElementsByTag("div");
 
         int k = 0;
 
@@ -68,7 +78,8 @@ public class ScheduleParser extends BaseParser {
           Schedule schedule = new Schedule(j, getStartHour(time), getStartMinute(time),
                                            getEndHour(time), getEndMinute(time), year, period);
 
-          String matterTitle = formatTitle(divs.get(k).attr("title"));
+          String matterTitle = formatTitle(divs.get(k)
+                                               .attr("title"));
 
           String room = "";
           Element roomDiv = null;
@@ -79,6 +90,8 @@ public class ScheduleParser extends BaseParser {
           if (roomDiv != null)
             room = roomDiv.attr("title");
 
+          schedule.setRoom(room);
+
           String clazz = "";
           Element clazzDiv = null;
 
@@ -86,7 +99,8 @@ public class ScheduleParser extends BaseParser {
             clazzDiv = divs.get(k + 2);
 
           if (clazzDiv != null)
-            clazz = formatClass(divs.get(k + 2).text());
+            clazz = formatClass(divs.get(k + 2)
+                                    .text());
 
           k += 3;
 
@@ -100,12 +114,16 @@ public class ScheduleParser extends BaseParser {
 
             matter = matterBox.query()
                               .contains(Matter_.description_, StringUtils.stripAccents(matterTitle),
-                                        CASE_INSENSITIVE).and()
-                              .equal(Matter_.year_, year).and()
-                              .equal(Matter_.period_, period).and()
+                                        CASE_INSENSITIVE)
+                              .and()
+                              .equal(Matter_.year_, year)
+                              .and()
+                              .equal(Matter_.period_, period)
+                              .and()
                               .contains(Matter_.description_, StringUtils.stripAccents(clazz),
                                         CASE_INSENSITIVE)
-                              .build().findUnique();
+                              .build()
+                              .findUnique();
           } catch (Exception e) {
             Log.e(TAG, matterTitle);
             e.printStackTrace();
@@ -162,12 +180,13 @@ public class ScheduleParser extends BaseParser {
           }
 
           if (matter == null) {
-            crashlytics.recordException(new Exception(matterTitle + " not found in DB"));
             Log.e(matterTitle, "Not found in DB");
+
+            schedule.setFromSite(false);
+            scheduleBox.put(schedule);
+
             continue;
           }
-
-          schedule.setRoom(room);
 
           schedule.matter.setTarget(matter);
           scheduleBox.put(schedule);
@@ -216,7 +235,8 @@ public class ScheduleParser extends BaseParser {
 
   private String formatTitle(String s) {
     if (s.contains("(")) {
-      s = s.substring(0, s.indexOf("(")).trim();
+      s = s.substring(0, s.indexOf("("))
+           .trim();
     }
     return s;
   }

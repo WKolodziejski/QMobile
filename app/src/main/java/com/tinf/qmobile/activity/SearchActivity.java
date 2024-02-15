@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tinf.qmobile.adapter.SearchAdapter;
 import com.tinf.qmobile.databinding.ActivitySearchBinding;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class SearchActivity extends AppCompatActivity {
   private ActivitySearchBinding binding;
@@ -21,6 +22,7 @@ public class SearchActivity extends AppCompatActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivitySearchBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(binding.toolbar);
@@ -52,10 +54,6 @@ public class SearchActivity extends AppCompatActivity {
 
     });
 
-    //binding.recycler.setHasFixedSize(true);
-    binding.recycler.setItemViewCacheSize(20);
-    binding.recycler.setDrawingCacheEnabled(true);
-    binding.recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     binding.recycler.setLayoutManager(new LinearLayoutManager(getBaseContext()));
     binding.recycler.addItemDecoration(
         new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));

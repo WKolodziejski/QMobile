@@ -1,5 +1,8 @@
 package com.tinf.qmobile.fragment.dialog;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,14 +34,13 @@ public class UserFragment extends DialogFragment {
   private TextView name;
   private TextView reg;
   private TextView last;
-  private MaterialCardView logout;
-  private MaterialCardView alerts;
+  private LinearLayout logout;
   private ImageView image;
   private Button policy;
-  private OnButton onButton;
+  private OnLogout onButton;
   private ConstraintLayout offline;
 
-  public void setListener(OnButton onButton) {
+  public void setListener(OnLogout onButton) {
     this.onButton = onButton;
   }
 
@@ -57,7 +60,6 @@ public class UserFragment extends DialogFragment {
     logout = view.findViewById(R.id.logout);
     image = view.findViewById(R.id.image);
     policy = view.findViewById(R.id.policy);
-    alerts = view.findViewById(R.id.alerts);
     last = view.findViewById(R.id.last);
     offline = view.findViewById(R.id.offline);
 
@@ -71,8 +73,6 @@ public class UserFragment extends DialogFragment {
         .setNegativeButton(R.string.dialog_cancel, null)
         .create()
         .show());
-
-    alerts.setOnClickListener(v -> onButton.onAlerts());
 
     if (UserUtils.hasImg()) {
       try {
@@ -104,10 +104,8 @@ public class UserFragment extends DialogFragment {
     return view;
   }
 
-  public interface OnButton {
+  public interface OnLogout {
     void onLogout();
-
-    void onAlerts();
   }
 
   @Override
@@ -117,16 +115,16 @@ public class UserFragment extends DialogFragment {
     Window window = getDialog().getWindow();
     WindowManager.LayoutParams params = window.getAttributes();
 
-    params.width = WindowManager.LayoutParams.MATCH_PARENT;
-    params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+    params.width = MATCH_PARENT;
+    params.height = WRAP_CONTENT;
     params.gravity = Gravity.TOP;
-//        params.y = Design.dpiToPixels(60);
 
     window.setAttributes(params);
   }
 
   View theDialogView;
 
+  @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());

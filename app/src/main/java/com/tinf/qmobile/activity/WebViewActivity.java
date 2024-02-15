@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.tinf.qmobile.databinding.ActivityWebviewBinding;
 import com.tinf.qmobile.network.Client;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class WebViewActivity extends AppCompatActivity {
   private ActivityWebviewBinding binding;
@@ -22,6 +23,7 @@ public class WebViewActivity extends AppCompatActivity {
   protected void onCreate(
       @Nullable
       Bundle savedInstanceState) {
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorPrimary);
     super.onCreate(savedInstanceState);
     binding = ActivityWebviewBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());

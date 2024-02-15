@@ -19,6 +19,9 @@ public interface OnResponse {
   int PG_FETCH_YEARS = 4;
   int PG_CLASSES = 5;
   int PG_MESSAGES = 6;
+  int PG_MESSAGES_FORM = 7;
+  int PG_MESSAGE_FIND = 8;
+  int PG_MESSAGE = 9;
 
   void onStart(int pg);
 

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,20 +16,12 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentReportBinding;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.utility.DesignUtils;
 
 import java.util.List;
 
 public class ReportFragment extends BaseFragment implements OnData<Queryable> {
   private FragmentReportBinding binding;
-
-  @Override
-  public void onCreate(
-      @Nullable
-      Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
-  }
 
   @Override
   public View onCreateView(
@@ -56,16 +46,9 @@ public class ReportFragment extends BaseFragment implements OnData<Queryable> {
     binding.table.getRowHeaderRecyclerView().removeItemDecorationAt(0);
     binding.table.getCellRecyclerView().removeItemDecorationAt(0);
     binding.table.setAdapter(new ReportAdapter(getContext(), binding.table, binding.empty));
-    binding.table.getCellRecyclerView().addOnScrollListener(Design.getRefreshBehavior(refresh));
+    binding.table.getCellRecyclerView().addOnScrollListener(DesignUtils.getRefreshBehavior(refresh));
 
-    new Handler(Looper.getMainLooper()).postDelayed(() -> Design.syncToolbar(toolbar, canExpand()), 10);
-  }
-
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.grades, menu);
-    super.onCreateOptionsMenu(menu, inflater);
-    menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_list);
+    new Handler(Looper.getMainLooper()).postDelayed(() -> DesignUtils.syncToolbar(toolbar, canExpand()), 10);
   }
 
   private boolean canExpand() {
@@ -75,7 +58,7 @@ public class ReportFragment extends BaseFragment implements OnData<Queryable> {
   @Override
   protected void onAddListeners() {
     DataBase.get().getJournalsDataProvider().addOnDataListener(this);
-    Design.syncToolbar(toolbar, canExpand());
+    DesignUtils.syncToolbar(toolbar, canExpand());
   }
 
   @Override
@@ -90,6 +73,6 @@ public class ReportFragment extends BaseFragment implements OnData<Queryable> {
 
   @Override
   public void onUpdate(List<Queryable> list) {
-    Design.syncToolbar(toolbar, !list.isEmpty());
+    DesignUtils.syncToolbar(toolbar, !list.isEmpty());
   }
 }

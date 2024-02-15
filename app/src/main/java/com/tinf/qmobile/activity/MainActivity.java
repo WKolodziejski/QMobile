@@ -4,26 +4,23 @@ import static com.tinf.qmobile.App.USE_COUNT;
 import static com.tinf.qmobile.App.USE_INFO;
 import static com.tinf.qmobile.App.USE_RATED;
 import static com.tinf.qmobile.App.getContext;
-import static com.tinf.qmobile.fragment.SettingsFragment.POPUP;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATERIAL;
 import static com.tinf.qmobile.model.ViewType.SCHEDULE;
 import static com.tinf.qmobile.network.Client.pos;
 
-import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,13 +38,13 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.color.ColorRoles;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigClientException;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.R;
@@ -56,24 +53,22 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnCount;
 import com.tinf.qmobile.databinding.ActivityMainBinding;
 import com.tinf.qmobile.fragment.BaseFragment;
+import com.tinf.qmobile.fragment.GradesFragment;
 import com.tinf.qmobile.fragment.HomeFragment;
-import com.tinf.qmobile.fragment.JournalsFragment;
 import com.tinf.qmobile.fragment.MaterialsFragment;
 import com.tinf.qmobile.fragment.OnUpdate;
-import com.tinf.qmobile.fragment.ReportFragment;
 import com.tinf.qmobile.fragment.dialog.CreateFragment;
 import com.tinf.qmobile.fragment.dialog.PopUpFragment;
 import com.tinf.qmobile.fragment.dialog.UserFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnEvent;
 import com.tinf.qmobile.network.OnResponse;
-import com.tinf.qmobile.network.handler.PopUpHandler;
 import com.tinf.qmobile.service.FirebaseMessageParams;
 import com.tinf.qmobile.service.Works;
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 import com.tinf.qmobile.utility.UserUtils;
 
-import java.net.UnknownHostException;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements OnResponse, OnEvent, OnCount,
@@ -82,15 +77,35 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
   ActivityResultLauncher<Intent> searchLauncher = registerForActivityResult(
       new ActivityResultContracts.StartActivityForResult(), result ->
-          Client.get().restorePreviousDate());
+          Client.get()
+                .restorePreviousDate());
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityMainBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(binding.toolbar);
 
+    buildDrawer();
+    buildToolbar();
+    buildNavigation();
+    buildFragments(savedInstanceState);
+
+    new Handler(Looper.getMainLooper()).post(() -> {
+      if (Client.get()
+                .isLogging()) {
+        Client.get()
+              .load(PG_FETCH_YEARS);
+      }
+
+      checkAlerts();
+      checkWarningCard();
+    });
+  }
+
+  private void buildDrawer() {
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, binding.drawer,
                                                              binding.toolbar,
                                                              R.string.open_drawer,
@@ -98,10 +113,27 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     binding.drawer.addDrawerListener(toggle);
     toggle.syncState();
 
+    Menu menu = binding.nav.getMenu();
+
+    for (int i = 0; i < UserUtils.getYears().length; i++) {
+      menu.add(R.id.group1, i, Menu.NONE, UserUtils.getYears()[i]);
+      menu.getItem(i)
+          .setIcon(DesignUtils.getDrawable(this, R.drawable.ic_label));
+      menu.getItem(i)
+          .setCheckable(true);
+    }
+
+    menu.getItem(pos)
+        .setChecked(true);
+  }
+
+  private void buildToolbar() {
     binding.toolbar.setOnClickListener(view ->
                                            searchLauncher.launch(new Intent(getContext(),
                                                                             SearchActivity.class)));
+  }
 
+  private void buildNavigation() {
     binding.navigation.setOnItemSelectedListener(item -> {
       int itemId = item.getItemId();
 
@@ -112,21 +144,9 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
       return false;
     });
+  }
 
-    Menu menu = binding.nav.getMenu();
-
-    for (int i = 0; i < UserUtils.getYears().length; i++) {
-      menu.add(R.id.group1, i, Menu.NONE, UserUtils.getYears()[i]);
-      menu.getItem(i)
-          .setIcon(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_label));
-      menu.getItem(i).setCheckable(true);
-    }
-
-    menu.getItem(pos).setChecked(true);
-
-    if (UserUtils.getYears().length > 0)
-      binding.date.setText(UserUtils.getYears()[pos]);
-
+  private void buildFragments(Bundle savedInstanceState) {
     Bundle bundle = getIntent().getExtras();
 
     if (savedInstanceState != null) {
@@ -164,13 +184,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
       changeFragment(R.id.navigation_grades);
       binding.navigation.setSelectedItemId(R.id.navigation_grades);
     }
-
-    if (Client.get().isLogging()) {
-      Client.get().load(PG_FETCH_YEARS);
-    }
-
-    checkAlerts();
-    checkWarningCard();
   }
 
   private void checkAlerts() {
@@ -188,20 +201,21 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
         .setPositiveButton(getResources().getString(R.string.dialog_evaluate_now),
                            (dialogInterface, i) -> {
                              ReviewManager manager = ReviewManagerFactory.create(this);
-                             manager.requestReviewFlow().addOnCompleteListener(info -> {
-                               if (info.isSuccessful()) {
-                                 manager.launchReviewFlow(this, info.getResult());
-                                 getSharedPreferences(USE_INFO, MODE_PRIVATE)
-                                     .edit()
-                                     .putBoolean(USE_RATED, true)
-                                     .apply();
-                               } else {
-                                 getSharedPreferences(USE_INFO, MODE_PRIVATE)
-                                     .edit()
-                                     .putInt(USE_COUNT, 0)
-                                     .apply();
-                               }
-                             });
+                             manager.requestReviewFlow()
+                                    .addOnCompleteListener(info -> {
+                                      if (info.isSuccessful()) {
+                                        manager.launchReviewFlow(this, info.getResult());
+                                        getSharedPreferences(USE_INFO, MODE_PRIVATE)
+                                            .edit()
+                                            .putBoolean(USE_RATED, true)
+                                            .apply();
+                                      } else {
+                                        getSharedPreferences(USE_INFO, MODE_PRIVATE)
+                                            .edit()
+                                            .putInt(USE_COUNT, 0)
+                                            .apply();
+                                      }
+                                    });
                            })
         .setNegativeButton(getResources().getString(R.string.dialog_evaluate_no),
                            (dialogInterface, i) ->
@@ -213,8 +227,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                           (dialogInterface, i) ->
                               getSharedPreferences(USE_INFO, MODE_PRIVATE)
                                   .edit()
-                                  .putInt(USE_COUNT, 0).apply())
-        .create().show();
+                                  .putInt(USE_COUNT, 0)
+                                  .apply())
+        .create()
+        .show();
   }
 
   private void checkWarningCard() {
@@ -233,30 +249,45 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
               new TypeToken<FirebaseMessageParams>() {
               }.getType());
 
-      if (params != null && (params.showAfter != null && params.hideAfter != null &&
-                             params.message != null && params.show != null)) {
-        Date now = new Date();
+      if (params == null)
+        return;
 
-        if (!params.show || params.showAfter.after(now) ||
-            params.hideAfter.before(now)) {
-          binding.warningCard.setVisibility(View.GONE);
-        } else {
-          if (params.link != null) {
-            binding.warningCard.setOnClickListener(v -> startActivity(
-                new Intent(Intent.ACTION_VIEW, Uri.parse(params.link))));
-          }
+      if (params.showAfter == null || params.hideAfter == null || params.message == null ||
+          params.show == null)
+        return;
 
-          binding.warningClose.setOnClickListener(
-              v -> binding.warningCard.setVisibility(View.GONE));
-          binding.warningCard.setCardBackgroundColor(
-              Design.getColorForWarning(getBaseContext(), params.color));
-          binding.warningText.setText(params.message);
-          binding.warningCard.setVisibility(View.VISIBLE);
-        }
+      Date now = new Date();
+
+      boolean show = params.show && params.showAfter.before(now) && params.hideAfter.after(now);
+
+      if (!show) {
+        binding.warningCard.setVisibility(View.GONE);
+        return;
       }
+
+      if (params.link != null) {
+        binding.warningCard.setOnClickListener(v -> startActivity(
+            new Intent(Intent.ACTION_VIEW, Uri.parse(params.link))));
+      }
+
+      ColorRoles colorRoles = DesignUtils.getColorForWarning(getBaseContext(), params.color);
+
+      binding.warningClose.setOnClickListener(
+          v -> binding.warningCard.setVisibility(View.GONE));
+      binding.warningClose.setImageTintList(
+          ColorStateList.valueOf(colorRoles.getOnAccentContainer()));
+      binding.warningCard.setCardBackgroundColor(colorRoles.getAccentContainer());
+      binding.warningText.setTextColor(colorRoles.getOnAccentContainer());
+      binding.warningText.setText(params.message);
+      binding.warningCard.setVisibility(View.VISIBLE);
+
     } catch (Exception e) {
-      if (e.getMessage() != null && !e.getMessage().contains("hostname") && !e.getMessage().contains("backend")) {
-        FirebaseCrashlytics.getInstance().recordException(e);
+      if (e.getMessage() != null && !e.getMessage()
+                                      .contains("hostname") &&
+          !e.getMessage()
+            .contains("backend")) {
+        FirebaseCrashlytics.getInstance()
+                           .recordException(e);
       }
     }
   }
@@ -265,14 +296,12 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.main, menu);
 
-    MenuItem item = binding.toolbar.getMenu().findItem(R.id.action_account);
+    MenuItem item = binding.toolbar.getMenu()
+                                   .findItem(R.id.action_account);
     item.setActionView(R.layout.action_account);
     ImageView view = (ImageView) item.getActionView();
 
-    if (!Client.isConnected() || (!Client.get().isValid() && !Client.get().isLogging())) {
-      view.setImageDrawable(
-          AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_offline));
-    } else if (UserUtils.hasImg()) {
+    if (UserUtils.hasImg() && Client.isConnected()) {
       try {
         Glide.with(getContext())
              .load(UserUtils.getImgUrl())
@@ -280,26 +309,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
              .placeholder(R.drawable.ic_account)
              .into(view);
       } catch (Exception e) {
-//        FirebaseCrashlytics.getInstance().recordException(e);
+        view.setImageDrawable(
+            DesignUtils.getDrawable(this, R.drawable.ic_account));
       }
     } else {
       view.setImageDrawable(
-          AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_account));
+          DesignUtils.getDrawable(this, R.drawable.ic_account));
     }
 
     view.setOnClickListener(v -> {
       UserFragment fragment = new UserFragment();
-      fragment.setListener(new UserFragment.OnButton() {
-        @Override
-        public void onLogout() {
-          logOut();
-        }
-
-        @Override
-        public void onAlerts() {
-          displayAlerts(true);
-        }
-      });
+      fragment.setListener(this::logOut);
       fragment.show(getSupportFragmentManager(), "sheet_user");
     });
 
@@ -314,39 +334,21 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
       getOnBackPressedDispatcher().onBackPressed();
       return true;
 
-    } else if (itemId == R.id.action_account) {
-      UserFragment fragment = new UserFragment();
-      fragment.setListener(new UserFragment.OnButton() {
-        @Override
-        public void onLogout() {
-          logOut();
-        }
-
-        @Override
-        public void onAlerts() {
-          displayAlerts(true);
-        }
-      });
-      fragment.show(getSupportFragmentManager(), "sheet_user");
-      return true;
-
-    } else if (itemId == R.id.action_grades) {
-      Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
-
-      if (fragment instanceof JournalsFragment) {
-        ReportFragment rFragment = new ReportFragment();
-        rFragment.setParams(binding.toolbar, binding.refresh);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.animator.fade_in,
-                                        android.R.animator.fade_out);
-        transaction.replace(R.id.main_fragment, rFragment).commit();
-
-      } else if (fragment instanceof ReportFragment) {
-        return changeFragment(R.id.navigation_grades);
-
-      } else return false;
     }
+//    else if (itemId == R.id.action_account) {
+//      UserFragment fragment = new UserFragment();
+//      fragment.setListener(new UserFragment.OnButton() {
+//        @Override
+//        public void onLogout() {
+//          logOut();
+//        }
+//      });
+//
+//      fragment.show(getSupportFragmentManager(), "sheet_user");
+//
+//      return true;
+//    }
+
     return super.onOptionsItemSelected(item);
   }
 
@@ -358,10 +360,13 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     int itemId = item.getItemId();
 
     if (groupId == R.id.group1) {
-      binding.nav.getMenu().getItem(itemId).setChecked(true);
+      binding.nav.getMenu()
+                 .getItem(itemId)
+                 .setChecked(true);
       binding.drawer.closeDrawer(GravityCompat.START);
       binding.drawer.postDelayed(() -> {
-        Client.get().changeDate(itemId);
+        Client.get()
+              .changeDate(itemId);
         requestScroll();
       }, 250);
       return true;
@@ -391,6 +396,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
                                  250);
       return true;
 
+//    } else if (itemId == R.id.drawer_report) {
+//      binding.drawer.closeDrawer(GravityCompat.START);
+//      binding.drawer.postDelayed(() ->
+//                                     startActivity(new Intent(getBaseContext(),
+//                                                              ReportActivity.class)),
+//                                 250);
+//      return true;
+
     } else if (itemId == R.id.drawer_performance) {
       binding.drawer.closeDrawer(GravityCompat.START);
       binding.drawer.postDelayed(() ->
@@ -401,9 +414,17 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
     } else if (itemId == R.id.drawer_materials) {
       binding.drawer.closeDrawer(GravityCompat.START);
-      binding.drawer.postDelayed(() ->
+      binding.drawer.postDelayed(() -> {
+                                   try {
                                      startActivity(new Intent(
-                                         DownloadManager.ACTION_VIEW_DOWNLOADS)),
+                                         DownloadManager.ACTION_VIEW_DOWNLOADS));
+                                   } catch (Exception e) {
+                                     Toast.makeText(getBaseContext(),
+                                                    getResources().getString(R.string.text_no_intent),
+                                                    Toast.LENGTH_LONG)
+                                          .show();
+                                   }
+                                 },
                                  250);
       return true;
 
@@ -443,11 +464,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
   private void logOut() {
     finish();
-    Client.get().close();
+    Client.get()
+          .close();
     Works.cancelAll();
-    DataBase.get().close();
+    DataBase.get()
+            .close();
     UserUtils.clearInfo();
-    PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
+    PreferenceManager.getDefaultSharedPreferences(getBaseContext())
+                     .edit()
+                     .clear()
+                     .apply();
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     startActivity(new Intent(this, LoginActivity.class));
   }
@@ -463,20 +489,23 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
           getSupportFragmentManager(), "sheet_create"));
       binding.fab.show();
 
+      binding.appBarLayout.setLiftOnScrollTargetViewId(R.id.scroll);
+
       fragment = homeFragment;
 
     } else if (id == R.id.navigation_grades) {
       binding.fab.setOnClickListener(null);
       binding.fab.postDelayed(binding.fab::hide, 250);
 
-      JournalsFragment journalsFragment = new JournalsFragment();
-      journalsFragment.setParams(binding.toolbar, binding.refresh);
+      binding.appBarLayout.setLiftOnScrollTargetViewId(R.id.recycler);
 
-      fragment = journalsFragment;
+      fragment = new GradesFragment();
 
     } else if (id == R.id.navigation_materials) {
       binding.fab.setOnClickListener(null);
       binding.fab.postDelayed(binding.fab::hide, 250);
+
+      binding.appBarLayout.setLiftOnScrollTargetViewId(R.id.recycler);
 
       MaterialsFragment materialsFragment = new MaterialsFragment();
       materialsFragment.setParams(binding.toolbar, binding.refresh);
@@ -488,14 +517,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
       return false;
 
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-    transaction.replace(R.id.main_fragment, fragment).commit();
+    transaction.replace(R.id.main_fragment, fragment)
+               .commitNow();
 
     return true;
   }
 
   private void reload() {
     if (Client.isConnected()) {
-      Client.get().loadYear(pos);
+      Client.get()
+            .loadYear(pos);
     } else {
       dismissProgressbar();
     }
@@ -504,9 +535,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
   @Override
   public void onStart() {
     super.onStart();
-    Client.get().addOnResponseListener(this);
-    Client.get().addOnUpdateListener(this);
-    DataBase.get().addOnDataChangeListener(this);
+    Client.get()
+          .addOnResponseListener(this);
+    Client.get()
+          .addOnUpdateListener(this);
+    Client.get()
+          .addOnEventListener(this);
+    DataBase.get()
+            .addOnDataChangeListener(this);
     binding.refresh.setOnRefreshListener(this::reload);
     binding.nav.setNavigationItemSelectedListener(this);
   }
@@ -514,18 +550,28 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
   @Override
   protected void onStop() {
     super.onStop();
-    Client.get().removeOnResponseListener(this);
-    Client.get().removeOnUpdateListener(this);
-    DataBase.get().removeOnDataChangeListener(this);
+    Client.get()
+          .removeOnResponseListener(this);
+    Client.get()
+          .removeOnUpdateListener(this);
+    Client.get()
+          .removeOnEventListener(this);
+    DataBase.get()
+            .removeOnDataChangeListener(this);
     dismissProgressbar();
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    Client.get().addOnResponseListener(this);
-    Client.get().addOnUpdateListener(this);
-    DataBase.get().addOnDataChangeListener(this);
+    Client.get()
+          .addOnResponseListener(this);
+    Client.get()
+          .addOnUpdateListener(this);
+    Client.get()
+          .addOnEventListener(this);
+    DataBase.get()
+            .addOnDataChangeListener(this);
     binding.refresh.setOnRefreshListener(this::reload);
     binding.nav.setNavigationItemSelectedListener(this);
   }
@@ -533,9 +579,14 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
   @Override
   protected void onPause() {
     super.onPause();
-    Client.get().removeOnResponseListener(this);
-    Client.get().removeOnUpdateListener(this);
-    DataBase.get().removeOnDataChangeListener(this);
+    Client.get()
+          .removeOnResponseListener(this);
+    Client.get()
+          .removeOnUpdateListener(this);
+    Client.get()
+          .removeOnEventListener(this);
+    DataBase.get()
+            .removeOnDataChangeListener(this);
     dismissProgressbar();
   }
 
@@ -545,40 +596,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
       binding.refresh.setRefreshing(true);
   }
 
-  @SuppressLint("SetJavaScriptEnabled")
-  private void displayAlerts(boolean requested) {
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-    if (prefs.getBoolean(POPUP, true)) {
-
-      WebView webView = new WebView(getBaseContext());
-      webView.getSettings().setJavaScriptEnabled(true);
-      webView.getSettings().setLoadsImagesAutomatically(false);
-      webView.getSettings().setBlockNetworkImage(true);
-      webView.addJavascriptInterface(new PopUpHandler(webView, this, requested), "handler");
-      webView.setWebViewClient(new WebViewClient() {
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-          super.onPageFinished(view, url);
-
-          Log.d("Webview", url);
-
-          if (!url.contains("javascript")) {
-            webView.loadUrl("javascript:window.handler.handleLogin"
-                            +
-                            "('<html>'+document.getElementsByTagName('html')[0]" +
-                            ".innerHTML+'</html>');");
-          }
-        }
-
-      });
-      webView.loadUrl(Client.get().getURL() + INDEX + PG_HOME);
-    }
-  }
-
   @Override
-  public void onFinish(int pg, int year, int period) {
+  public void onFinish(int pg,
+                       int year,
+                       int period) {
     dismissProgressbar();
 
     if (pg != PG_CLASSES) {
@@ -586,33 +607,35 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
       supportInvalidateOptionsMenu();
     }
 
-    if (pg == PG_LOGIN) {
-      displayAlerts(false);
-
-    } else if (pg == PG_FETCH_YEARS || pg == PG_JOURNALS) {
+    if (pg == PG_FETCH_YEARS || pg == PG_JOURNALS) {
       Menu menu = binding.nav.getMenu();
       menu.removeGroup(R.id.group1);
 
       for (int i = 0; i < UserUtils.getYears().length; i++) {
         menu.add(R.id.group1, i, Menu.NONE, UserUtils.getYears()[i]);
         menu.getItem(i)
-            .setIcon(AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_label));
-        menu.getItem(i).setCheckable(true);
+            .setIcon(DesignUtils.getDrawable(this, R.drawable.ic_label));
+        menu.getItem(i)
+            .setCheckable(true);
       }
 
-      menu.getItem(pos).setChecked(true);
+      menu.getItem(pos)
+          .setChecked(true);
     }
   }
 
   @Override
-  public void onError(int pg, String error) {
+  public void onError(int pg,
+                      String error) {
     dismissProgressbar();
     invalidateOptionsMenu();
-    Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG).show();
+    Toast.makeText(getBaseContext(), error, Toast.LENGTH_LONG)
+         .show();
   }
 
   @Override
-  public void onAccessDenied(int pg, String message) {
+  public void onAccessDenied(int pg,
+                             String message) {
     dismissProgressbar();
     invalidateOptionsMenu();
 
@@ -689,28 +712,16 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
           .show();
 
     } else {
-      Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+      Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG)
+           .show();
     }
   }
 
-//  @Override
-//  public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                                         int[] grantResults) {
-//    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//    if (requestCode == 1) {
-//      if (grantResults.length <= 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//        Toast.makeText(getBaseContext(), getResources()
-//            .getString(R.string.text_permission_denied), Toast.LENGTH_LONG).show();
-//      } else {
-//        Client.get().load(PG_MATERIALS);
-//      }
-//    }
-//  }
-
   @Override
-  public void onDialog(WebView webView, String title, String msg) {
+  public void onDialog(String title,
+                       String msg) {
     PopUpFragment popup = new PopUpFragment();
-    popup.setComponents(webView, title, msg);
+    popup.setComponents(title, msg);
     popup.show(getSupportFragmentManager(), "sheet_popup");
   }
 
@@ -730,23 +741,26 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
   }
 
   @Override
-  public void onCountNotifications(int count1, int count2) {
-    if (count1 <= 0)
+  public void onCountNotifications(int countGrades,
+                                   int countMaterials) {
+    if (countGrades <= 0)
       binding.navigation.removeBadge(R.id.navigation_grades);
     else
       binding.navigation.getOrCreateBadge(R.id.navigation_grades)
-                        .setNumber(Math.min(count1, 99));
+                        .setNumber(Math.min(countGrades, 99));
 
-    if (count2 <= 0)
+    if (countMaterials <= 0)
       binding.navigation.removeBadge(R.id.navigation_materials);
     else
       binding.navigation.getOrCreateBadge(R.id.navigation_materials)
-                        .setNumber(Math.min(count2, 99));
+                        .setNumber(Math.min(countMaterials, 99));
   }
 
   @Override
   public void onCountMessages(int count) {
-    TextView txt = (TextView) binding.nav.getMenu().findItem(R.id.drawer_mail).getActionView();
+    TextView txt = (TextView) binding.nav.getMenu()
+                                         .findItem(R.id.drawer_mail)
+                                         .getActionView();
 
     if (count > 0) {
       txt.setGravity(Gravity.CENTER_VERTICAL);
@@ -760,9 +774,10 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
 
   @Override
   public void onDateChanged() {
-    if (UserUtils.getYears().length > pos) {
-      binding.date.setText(UserUtils.getYears()[pos]);
-    }
+//    if (UserUtils.getYears().length > pos) {
+//      binding.date.setText(UserUtils.getYears()[pos]);
+    // TODO: criar callback?
+//    }
   }
 
   @Override

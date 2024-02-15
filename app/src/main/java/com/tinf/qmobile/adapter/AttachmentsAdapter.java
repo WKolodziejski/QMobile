@@ -46,7 +46,7 @@ public class AttachmentsAdapter extends RecyclerView.Adapter<MessagesViewHolder>
   public void onBindViewHolder(
       @NonNull
       MessagesViewHolder holder, int i) {
-    holder.bind(context, null, attachments.get(i));
+    holder.bind(context, attachments.get(i));
   }
 
   @Override

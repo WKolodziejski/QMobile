@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
     android:orientation="vertical"
+    android:paddingVertical="16dp"
     app:layout_optimizationLevel="standard|dimensions|chains">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
         <TextView
             android:id="@+id/header"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="16dp"
             android:background="@drawable/layout_round"
             android:gravity="center"
+            android:layout_height="36dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="36dp"
             android:textAllCaps="true"
-
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -30,10 +31,10 @@
             tools:text="F" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="16dp"
             android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="0dp"
             android:orientation="vertical"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -45,29 +46,26 @@
 
             <TextView
                 android:id="@+id/sender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:maxLines="1"
-                tools:drawablePadding="4dp"
-                tools:drawableStart="@drawable/ic_assignment"
-                tools:drawableTint="@color/amber_a700"
                 tools:text="Remetente" />
 
             <TextView
                 android:id="@+id/subject"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:maxLines="1"
                 tools:text="Assunto" />
 
             <TextView
                 android:id="@+id/preview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:maxLines="1"
                 tools:text="Preview"
                 tools:visibility="visible" />
@@ -76,32 +74,33 @@
 
         <ImageView
             android:id="@+id/att"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:layout_width="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_attachment"
-            tools:visibility="gone" />
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="22/03" />
+            tools:text="22 Mar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/attachments"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="68dp" />
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent" />
 
 </LinearLayout>

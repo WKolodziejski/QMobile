@@ -1,11 +1,11 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
-import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
+import static com.tinf.qmobile.model.ViewType.FOOTER_JOURNAL;
+import static com.tinf.qmobile.model.ViewType.FOOTER_PERIOD;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNAL_EMPTY;
 import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
@@ -28,13 +28,13 @@ import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderColorViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
-import com.tinf.qmobile.holder.journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.JournalItemViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.FooterPeriod;
-import com.tinf.qmobile.model.journal.Header;
+import com.tinf.qmobile.model.journal.HeaderMatter;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
@@ -90,7 +90,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
                    .observer(observer);
   }
 
-  private void updateList(Bundle bundle) {
+  private synchronized void updateList(Bundle bundle) {
     DataBase.get().execute(() -> {
       List<Queryable> list = getList(bundle);
       handler.post(() -> this.list.submitList(list));
@@ -106,7 +106,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
 
     for (Period period : matter.periods) {
       if (!period.journals.isEmpty()) {
-        list.add(new Header(matter));
+        list.add(new HeaderMatter(matter));
         list.add(period);
         list.addAll(period.journals);
 
@@ -133,15 +133,15 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
                                                                   false));
 
       case JOURNAL:
-        return new JournalViewHolder(LayoutInflater.from(context)
-                                                   .inflate(R.layout.journal_item, parent, false));
+        return new JournalItemViewHolder(LayoutInflater.from(context)
+                                                       .inflate(R.layout.journal_item, parent, false));
 
-      case FOOTERJOURNAL:
+      case FOOTER_JOURNAL:
         return new JournalFooterViewHolder(LayoutInflater.from(context)
                                                          .inflate(R.layout.journal_footer, parent,
                                                                   false));
 
-      case FOOTERPERIOD:
+      case FOOTER_PERIOD:
         return new PeriodFooterViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.period_footer, parent,
                                                                  false));
@@ -156,7 +156,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
                                                               .inflate(R.layout.header_empty,
                                                                        parent, false));
 
-      case JOURNALEMPTY:
+      case JOURNAL_EMPTY:
         return new JournalEmptyViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.journal_item_empty,
                                                                  parent, false));

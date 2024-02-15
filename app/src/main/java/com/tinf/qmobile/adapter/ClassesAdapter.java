@@ -5,8 +5,10 @@ import static com.tinf.qmobile.model.ViewType.DAY;
 import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.MONTH;
+import static com.tinf.qmobile.model.ViewType.PADDING;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,24 +22,28 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.color.ColorRoles;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EmptyViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.CalendarHeaderViewHolder;
+import com.tinf.qmobile.holder.calendar.vertical.CalendarPaddingViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.DayViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.EventClazzVerticalViewHolder;
 import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.model.calendar.Padding;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Period;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -46,6 +52,7 @@ import org.joda.time.Months;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -61,7 +68,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
   private final DataSubscription sub2;
   private final Handler handler;
 
-  public ClassesAdapter(Context context, Bundle bundle) {
+  public ClassesAdapter(Context context,
+                        Bundle bundle) {
     this.context = context;
     this.handler = new Handler(Looper.getMainLooper());
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
@@ -88,23 +96,28 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
     DataObserver observer = data -> updateList(bundle);
 
-    sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
+    sub1 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Matter.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub2 = DataBase.get().getBoxStore().subscribe(Clazz.class)
+    sub2 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Clazz.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
   }
 
-  private void updateList(Bundle bundle) {
-    DataBase.get().execute(() -> {
-      List<CalendarBase> list = getList(bundle);
+  private synchronized void updateList(Bundle bundle) {
+    DataBase.get()
+            .execute(() -> {
+              List<CalendarBase> list = getList(bundle);
 
-      handler.post(() -> this.list.submitList(list));
-    });
+              handler.post(() -> this.list.submitList(list));
+            });
   }
 
   private List<CalendarBase> getList(Bundle bundle) {
@@ -112,7 +125,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
     List<CalendarBase> ret = new ArrayList<>();
     List<Clazz> classes = new ArrayList<>();
 
-    Matter matter = DataBase.get().getBoxStore()
+    Matter matter = DataBase.get()
+                            .getBoxStore()
                             .boxFor(Matter.class)
                             .get(bundle.getLong("ID"));
 
@@ -125,10 +139,10 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       }
     }
 
-    EventBase firstClazz = null;
-    EventBase lastClazz = null;
+    Event firstClazz = null;
+    Event lastClazz = null;
 
-    for (EventBase e : classes) {
+    for (Event e : classes) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -165,14 +179,17 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
                                                                .withMaximumValue()
                                                                .toLocalDate();
 
-    if (Months.monthsBetween(minDate, maxDate).getMonths() == 0) {
+    if (Months.monthsBetween(minDate, maxDate)
+              .getMonths() == 0) {
       maxDate = maxDate.plusMonths(1);
     }
 
     LocalDate monthCounter = minDate;
 
-    for (int i = 0; i < Months.monthsBetween(minDate, maxDate).getMonths(); i++) {
-      Month month = new Month(monthCounter.toDate().getTime());
+    for (int i = 0; i < Months.monthsBetween(minDate, maxDate)
+                              .getMonths(); i++) {
+      Month month = new Month(monthCounter.toDate()
+                                          .getTime());
       //Log.d(month.getMonth(), String.valueOf(monthCounter.toDate().getTime()));
 
       List<CalendarBase> list = map.get(month.getHashKey());
@@ -182,13 +199,21 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
         map.put(month.getHashKey(), list);
       }
 
-      list.add(0, month);
+      list.add(0, new Padding(month.getHashKey().toDate().getTime()));
+      list.add(1, month);
 
-      DateTime startDay = monthCounter.dayOfMonth().withMinimumValue().toDateTimeAtStartOfDay();
-      LocalDate week = startDay.dayOfWeek().withMaximumValue().toLocalDate();//.minusDays(1);
+      DateTime startDay = monthCounter.dayOfMonth()
+                                      .withMinimumValue()
+                                      .toDateTimeAtStartOfDay();
+      LocalDate week = startDay.dayOfWeek()
+                               .withMaximumValue()
+                               .toLocalDate();//.minusDays(1);
 
-      while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
-        Day day = new Day(week.toDate(), week.plusDays(6).toDate());
+      while (week.compareTo(startDay.dayOfMonth()
+                                    .withMaximumValue()
+                                    .toLocalDate()) < 0) {
+        Day day = new Day(week.toDate(), week.plusDays(6)
+                                             .toDate());
 
         List<CalendarBase> list2 = map.get(day.getHashKey());
 
@@ -197,6 +222,7 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
           map.put(day.getHashKey(), list2);
         }
 
+        list2.add(new Padding(day.getHashKey().toDate().getTime()));
         list2.add(day);
 
         week = week.plusWeeks(1);
@@ -214,19 +240,20 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       cal.set(Calendar.MILLISECOND, 0);
 
       List<CalendarBase> list = map.get(key);
-      Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
+      Collections.sort(list, (t1, t2) -> t1.getHashKey()
+                                           .compareTo(t2.getHashKey()));
 
       boolean hasHeader = false;
 
       for (int i = 0; i < list.size(); i++) {
         CalendarBase cb = list.get(i);
 
-        if (cb instanceof EventBase) {
-          if (!hasHeader) {
-            hasHeader = true;
-            list.add(i, new Header(cal.getTimeInMillis()));
-            i++;
-            ((EventBase) cb).isHeader = true;
+        if (cb instanceof Event) {
+        if (!hasHeader) {
+          hasHeader = true;
+          list.add(i++, new Padding(cal.getTimeInMillis()));
+          list.add(i++, new Header(cal.getTimeInMillis()));
+          ((Event) cb).setHeader(true);
           }
         }
       }
@@ -236,6 +263,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
     if (ret.isEmpty())
       ret.add(new Empty());
+    else
+      ret.add(new Padding(0));
 
     return ret;
   }
@@ -244,7 +273,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
   @Override
   public CalendarViewHolder onCreateViewHolder(
       @NonNull
-      ViewGroup parent, int viewType) {
+      ViewGroup parent,
+      int viewType) {
     switch (viewType) {
       case CLASS:
         return new EventClazzVerticalViewHolder(LayoutInflater.from(context)
@@ -267,6 +297,11 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
                                                           .inflate(R.layout.header_empty, parent,
                                                                    false));
 
+      case PADDING:
+        return new CalendarPaddingViewHolder(LayoutInflater.from(context)
+                                                           .inflate(R.layout.calendar_header_padding, parent,
+                                                                   false));
+
       case EMPTY:
         return new EmptyViewHolder(LayoutInflater.from(context)
                                                  .inflate(R.layout.class_empty, parent, false));
@@ -277,19 +312,24 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
   @Override
   public int getItemViewType(int i) {
-    return list.getCurrentList().get(i).getItemType();
+    return list.getCurrentList()
+               .get(i)
+               .getItemType();
   }
 
   @Override
   public void onBindViewHolder(
       @NonNull
-      CalendarViewHolder holder, int i) {
-    holder.bind(list.getCurrentList().get(i), context);
+      CalendarViewHolder holder,
+      int i) {
+    holder.bind(list.getCurrentList()
+                    .get(i), context, i);
   }
 
   @Override
   public int getItemCount() {
-    return list.getCurrentList().size();
+    return list.getCurrentList()
+               .size();
   }
 
   @Override
@@ -303,44 +343,66 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
   @Override
   public Integer getHeaderPositionForItem(Integer i) {
-    CalendarBase e = list.getCurrentList().get(i);
+    CalendarBase e = list.getCurrentList()
+                         .get(i);
 
-    if (e instanceof Month || e instanceof Day)
-      return i;
+    if (e instanceof Month || e instanceof Day) return i;
 
-    while (!(e instanceof Header) && i > 0)
-      e = list.getCurrentList().get(--i);
+    while (!(e instanceof Header) && !(e instanceof Padding) && i > 0)
+      e = list.getCurrentList()
+              .get(--i);
 
     return i < 0 ? 0 : i;
   }
 
   @Override
   public Integer getHeaderLayout(Integer i) {
-    if (list.getCurrentList().get(i) instanceof Header)
-      return R.layout.calendar_header_day_single;
-    else
-      return R.layout.header_empty;
+    CalendarBase e = list.getCurrentList()
+                         .get(i);
+
+    if (e instanceof Header) return R.layout.calendar_header_day_single;
+    if (e instanceof Padding) return R.layout.calendar_header_padding;
+    else return R.layout.header_empty;
   }
 
   @Override
-  public void bindHeaderData(View header, Integer i) {
-    if (list.getCurrentList().get(i) instanceof Header) {
-      Header h = (Header) list.getCurrentList().get(i);
+  public void bindHeaderData(View header,
+                             Integer i) {
+    if (!(list.getCurrentList()
+              .get(i) instanceof Header)) {
+      return;
+    }
 
-      TextView n = header.findViewById(R.id.number);
-      TextView w = header.findViewById(R.id.day);
+    Header h = (Header) list.getCurrentList()
+                            .get(i);
 
-      n.setText(h.getDayString());
-      w.setText(h.getWeekString());
+    TextView number = header.findViewById(R.id.number);
+    TextView day = header.findViewById(R.id.day);
+
+    number.setText(h.getDayString());
+    day.setText(h.getWeekString());
+
+    if (h.isToday()) {
+      ColorRoles colorRoles = ColorsUtils.getColorRoles(context,
+                                                        com.google.android.material.R.attr.colorPrimaryContainer);
+
+      number.setBackgroundTintList(ColorStateList.valueOf(colorRoles.getAccentContainer()));
+      number.setTextColor(colorRoles.getOnAccentContainer());
+    } else {
+      number.setBackgroundTintList(ColorStateList.valueOf(
+          ColorsUtils.getColor(context, com.google.android.material.R.attr.colorSurface)));
+      number.setTextColor(
+          ColorsUtils.getColor(context, com.google.android.material.R.attr.colorOnSurface));
     }
   }
 
   @Override
   public Boolean isHeader(Integer i) {
-    if (i < 0)
-      return false;
+    if (i < 0) return false;
 
-    CalendarBase e = list.getCurrentList().get(i);
-    return e instanceof Header || e instanceof Day || e instanceof Month;
+    CalendarBase e = list.getCurrentList()
+                         .get(i);
+
+    return e instanceof Header || e instanceof Day || e instanceof Month || e instanceof Padding;
   }
 }

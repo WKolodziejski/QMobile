@@ -19,9 +19,9 @@
 
 <!--    <color name="actionBar">@color/grey_900</color>-->
 
-    <color name="good">@color/green_600</color>
-    <color name="ok">@color/blue_600</color>
-    <color name="bad">@color/red_600</color>
+<!--    <color name="good">@color/green_600</color>-->
+<!--    <color name="ok">@color/blue_600</color>-->
+<!--    <color name="bad">@color/red_600</color>-->
 
     <color name="warningRed">@color/red_900</color>
     <color name="warningYellow">@color/yellow_900</color>

@@ -7,8 +7,8 @@ import androidx.core.content.ContextCompat;
 
 import com.tinf.qmobile.databinding.MessageAttachmentBinding;
 import com.tinf.qmobile.model.message.Attachment;
-import com.tinf.qmobile.network.message.Messenger;
 import com.tinf.qmobile.service.DownloadReceiver;
+import com.tinf.qmobile.utility.DesignUtils;
 
 import java.io.File;
 
@@ -21,9 +21,9 @@ public class AttachmentViewHolder extends MessagesViewHolder<Attachment> {
   }
 
   @Override
-  public void bind(Context context, Messenger messenger, Attachment attachment) {
+  public void bind(Context context, Attachment attachment) {
     binding.title.setText(attachment.getTitle());
-    binding.icon.setImageDrawable(ContextCompat.getDrawable(context, attachment.getIcon()));
+    binding.icon.setImageDrawable(DesignUtils.getDrawable(context, attachment.getIcon()));
 
     itemView.setOnClickListener(v -> {
       if (new File(DownloadReceiver.getAttachmentPath(attachment.getTitle())).exists())

@@ -5,7 +5,7 @@ import static com.tinf.qmobile.model.ViewType.CLASS;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +17,7 @@ import io.objectbox.annotation.Transient;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class Clazz extends EventBase implements Queryable {
+public class Clazz extends Event implements Queryable {
   @Transient
   public boolean highlight;
   private long date_;

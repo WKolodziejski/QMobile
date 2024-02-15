@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,15 +29,15 @@ import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.MaterialsAdapter;
-import com.tinf.qmobile.adapter.OnInteractListener;
+import com.tinf.qmobile.adapter.OnMaterialInteractListener;
 import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentMaterialBinding;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.widget.divider.CustomlItemDivider;
+import com.tinf.qmobile.utility.DesignUtils;
+import com.tinf.qmobile.widget.divider.CustomItemDivider;
 
 import java.util.List;
 
@@ -86,7 +85,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
       Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    adapter = new MaterialsAdapter(getContext(), new OnInteractListener() {
+    adapter = new MaterialsAdapter(getContext(), new OnMaterialInteractListener() {
 
       @Override
       public boolean isSelectionMode() {
@@ -108,7 +107,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
           action = null;
         }
 
-        Design.syncToolbar(toolbar, canExpand());
+        DesignUtils.syncToolbar(toolbar, canExpand());
       }
 
       @Override
@@ -124,19 +123,18 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
       public void onDestroyActionMode(ActionMode actionMode) {
         action = null;
         refresh.setEnabled(true);
-        Design.syncToolbar(toolbar, canExpand());
+        DesignUtils.syncToolbar(toolbar, canExpand());
       }
     }, this::onUpdate);
 
     LinearLayoutManager layout = new LinearLayoutManager(getContext());
 
-    binding.recycler.setItemViewCacheSize(20);
     binding.recycler.setLayoutManager(layout);
-    binding.recycler.addItemDecoration(new CustomlItemDivider(App.getContext()));
+    binding.recycler.addItemDecoration(new CustomItemDivider(App.getContext()));
     binding.recycler.setItemAnimator(null);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
-    binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
+    binding.recycler.addOnScrollListener(DesignUtils.getRefreshBehavior(refresh));
 
     if (getArguments() != null && getArguments().containsKey("ID2")) {
       int p = adapter.highlight(getArguments().getLong("ID2"));
@@ -147,7 +145,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
       }
     }
 
-    new Handler(Looper.getMainLooper()).postDelayed(() -> Design.syncToolbar(toolbar, canExpand()),
+    new Handler(Looper.getMainLooper()).postDelayed(() -> DesignUtils.syncToolbar(toolbar, canExpand()),
                                                     10);
   }
 
@@ -168,7 +166,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
   @Override
   protected void onAddListeners() {
     DataBase.get().getMaterialsDataProvider().addOnDataListener(this);
-    Design.syncToolbar(toolbar, canExpand());
+    DesignUtils.syncToolbar(toolbar, canExpand());
   }
 
   @Override
@@ -184,6 +182,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
   @Override
   public void onDestroy() {
     super.onDestroy();
+    launcher = null;
     getActivity().unregisterReceiver(receiver);
   }
 
@@ -198,7 +197,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
 
   @Override
   public void onUpdate(List<Queryable> list) {
-    Design.syncToolbar(toolbar, !list.isEmpty());
+    DesignUtils.syncToolbar(toolbar, !list.isEmpty());
   }
 
 }

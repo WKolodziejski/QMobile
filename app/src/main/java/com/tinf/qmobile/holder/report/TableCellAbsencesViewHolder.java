@@ -8,10 +8,12 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.TableCellAbsencesBinding;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.utility.ColorUtils;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +33,8 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
 
   @Override
   public void bind(Context context, Matter matter, String cell) {
-    int color1 = matter.getColor();
-    int color2 = ColorUtils.INSTANCE.contrast(color1, 0.25f);
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(context, matter.getColor());
+
     int classesGiven = matter.getClassesGiven();
     int classesTotal = matter.getClassesTotal();
     int classesLeft = classesTotal - classesGiven;
@@ -54,13 +56,13 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
 
     if (presences > 0) {
       values.add(new SliceValue(presences)
-                     .setColor(color1)
+                     .setColor(colorRoles.getAccentContainer())
                      .setLabel(""));
     }
 
     if (absences > 0) {
       values.add(new SliceValue(absences)
-                     .setColor(color2)
+                     .setColor(colorRoles.getAccent())
                      .setLabel(""));
     }
 
@@ -70,12 +72,6 @@ public class TableCellAbsencesViewHolder extends TableBaseViewHolder {
                                               .setHasLabelsOnlyForSelected(true));
     binding.chartPresence.setChartRotation(-90, false);
     binding.chartPresence.setInteractive(false);
-
-//        if (absences > 0) {
-//            binding.chartPresence.selectValue(
-//                    new SelectedValue(presences > 0 ? 2 : 1, 0, SelectedValue.SelectedValueType
-//                    .LINE));
-//        }
   }
 
 }

@@ -56,12 +56,16 @@ public class ScheduleCreateFragment extends Fragment {
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    Box<Matter> matterBox = DataBase.get().getBoxStore().boxFor(Matter.class);
+    Box<Matter> matterBox = DataBase.get()
+                                    .getBoxStore()
+                                    .boxFor(Matter.class);
 
     matters = matterBox.query()
-                       .equal(Matter_.year_, UserUtils.getYear(0)).and()
+                       .equal(Matter_.year_, UserUtils.getYear(0))
+                       .and()
                        .equal(Matter_.period_, UserUtils.getPeriod(0))
-                       .build().find();
+                       .build()
+                       .find();
 
     start = new DayTime(DayOfWeek.MONDAY, 12, 0);
     end = new DayTime(DayOfWeek.MONDAY, 13, 0);
@@ -76,10 +80,14 @@ public class ScheduleCreateFragment extends Fragment {
     id2 = bundle.getLong("ID2");
 
     if (id == 0) {
-      color = App.getContext().getColor(R.color.colorPrimary);
+      color = App.getContext()
+                 .getColor(R.color.colorPrimary);
     } else {
 
-      Schedule schedule = DataBase.get().getBoxStore().boxFor(Schedule.class).get(id);
+      Schedule schedule = DataBase.get()
+                                  .getBoxStore()
+                                  .boxFor(Schedule.class)
+                                  .get(id);
 
       if (schedule == null) {
         getActivity().finish();
@@ -109,7 +117,11 @@ public class ScheduleCreateFragment extends Fragment {
     if (id2 == 0)
       return;
 
-    color = DataBase.get().getBoxStore().boxFor(Matter.class).get(id2).getColor();
+    color = DataBase.get()
+                    .getBoxStore()
+                    .boxFor(Matter.class)
+                    .get(id2)
+                    .getColor();
 
     for (int i = 0; i < matters.size(); i++) {
       if (matters.get(i).id == id2) {
@@ -167,7 +179,8 @@ public class ScheduleCreateFragment extends Fragment {
             start = new DayTime(which + 1, start.getHour(), start.getMinute());
             updateText();
           })
-          .create().show();
+          .create()
+          .show();
     });
 
     binding.startTime.setOnClickListener(view1 -> {
@@ -226,7 +239,8 @@ public class ScheduleCreateFragment extends Fragment {
         strings[0] = getString(R.string.event_none);
 
         for (int i = 0; i < matters.size(); i++) {
-          strings[i + 1] = matters.get(i).getTitle();
+          strings[i + 1] = matters.get(i)
+                                  .getTitle();
         }
 
         new MaterialAlertDialogBuilder(getContext())
@@ -234,14 +248,16 @@ public class ScheduleCreateFragment extends Fragment {
             .setItems(strings, (dialog, which) -> {
               matter = which;
               if (which > 0) {
-                color = matters.get(which - 1).getColor();
+                color = matters.get(which - 1)
+                               .getColor();
                 binding.colorLayout.setClickable(false);
               } else {
                 binding.colorLayout.setClickable(true);
               }
               updateText();
             })
-            .create().show();
+            .create()
+            .show();
       });
 
       binding.alarmLayout.setOnClickListener(v -> {
@@ -257,7 +273,8 @@ public class ScheduleCreateFragment extends Fragment {
               alarmDif = which;
               updateText();
             })
-            .create().show();
+            .create()
+            .show();
       });
     } else {
       binding.matterLayout.setVisibility(GONE);
@@ -278,7 +295,8 @@ public class ScheduleCreateFragment extends Fragment {
       alarmTime.set(Calendar.SECOND, 0);
       alarmTime.set(Calendar.MILLISECOND, 0);
 
-      if (alarmTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
+      if (alarmTime.getTimeInMillis() < Calendar.getInstance()
+                                                .getTimeInMillis()) {
         Log.d("ScheduleCreate", "Start time is before today");
 
         alarmTime.add(Calendar.WEEK_OF_MONTH, 1);
@@ -307,17 +325,23 @@ public class ScheduleCreateFragment extends Fragment {
       }
 
       Schedule schedule =
-          new Schedule(binding.titleEdt.getText().toString().trim(), start, end, alarmDif,
+          new Schedule(binding.titleEdt.getText()
+                                       .toString()
+                                       .trim(), start, end, alarmDif,
                        UserUtils.getYear(0), UserUtils.getPeriod(0), isFromSite);
 
       if (id != 0) {
         schedule.id = id;
       }
 
-      schedule.setDescription(binding.descriptionEdt.getText().toString().trim());
+      schedule.setDescription(binding.descriptionEdt.getText()
+                                                    .toString()
+                                                    .trim());
       schedule.setColor(color);
       schedule.setAlarm(alarm);
-      schedule.setRoom(binding.roomEdt.getText().toString().trim());
+      schedule.setRoom(binding.roomEdt.getText()
+                                      .toString()
+                                      .trim());
 
       if (matter > 0) {
         schedule.matter.setTarget(matters.get(matter - 1));
@@ -325,9 +349,12 @@ public class ScheduleCreateFragment extends Fragment {
 
       Toast.makeText(getContext(),
                      getString(id == 0 ? R.string.event_added : R.string.event_edited),
-                     Toast.LENGTH_SHORT).show();
+                     Toast.LENGTH_SHORT)
+           .show();
 
-      Box<Schedule> scheduleBox = DataBase.get().getBoxStore().boxFor(Schedule.class);
+      Box<Schedule> scheduleBox = DataBase.get()
+                                          .getBoxStore()
+                                          .boxFor(Schedule.class);
       id = scheduleBox.put(schedule);
 
       Data input = new Data.Builder()
@@ -342,7 +369,8 @@ public class ScheduleCreateFragment extends Fragment {
   }
 
   private void updateText() {
-    binding.startDay.setText(start.getDay().getDisplayName(TextStyle.FULL, Locale.getDefault()));
+    binding.startDay.setText(start.getDay()
+                                  .getDisplayName(TextStyle.FULL, Locale.getDefault()));
     binding.startTime.setText(
         String.format(Locale.getDefault(), "%02d:%02d", start.getHour(), start.getMinute()));
     binding.endTime.setText(
@@ -359,15 +387,19 @@ public class ScheduleCreateFragment extends Fragment {
     binding.alarmText.setText(alarmDif > 0 ? alarms[alarmDif] : "");
 
     if (matter > 0) {
-      binding.matterText.setText(matters.get(matter - 1).getTitle());
+      binding.matterText.setText(matters.get(matter - 1)
+                                        .getTitle());
 
-      binding.colorText.setText(color == matters.get(matter - 1).getColor() ?
-                                matters.get(matter - 1).getTitle() : getString(
+      binding.colorText.setText(color == matters.get(matter - 1)
+                                                .getColor() ?
+                                matters.get(matter - 1)
+                                       .getTitle() : getString(
           R.string.event_custom_color));
     } else {
       binding.matterText.setText("");
 
-      binding.colorText.setText(color == App.getContext().getColor(R.color.colorPrimary) ?
+      binding.colorText.setText(color == App.getContext()
+                                            .getColor(R.color.colorPrimary) ?
                                 getString(R.string.event_default_color) : getString(
           R.string.event_custom_color));
     }

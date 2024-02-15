@@ -3,6 +3,7 @@ package com.tinf.qmobile.holder.calendar.vertical;
 import android.content.Context;
 import android.view.View;
 
+import com.tinf.qmobile.databinding.CalendarHeaderDaySingleBinding;
 import com.tinf.qmobile.databinding.CalendarHeaderMonthBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.calendar.Month;
@@ -16,8 +17,10 @@ public class MonthViewHolder extends CalendarViewHolder<Month> {
   }
 
   @Override
-  public void bind(Month month, Context context) {
+  public CalendarHeaderDaySingleBinding bind(Month month, Context context) {
     binding.month.setText(month.getMonth());
+
+    return null;
   }
 
 }

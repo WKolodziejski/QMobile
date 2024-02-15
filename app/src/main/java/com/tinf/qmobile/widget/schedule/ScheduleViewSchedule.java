@@ -34,6 +34,8 @@ import android.widget.OverScroller;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDateTime;
@@ -77,7 +79,7 @@ public class ScheduleViewSchedule extends View {
   private Paint mEventBackgroundPaint;
   private float mHeaderColumnWidth;
   private List<EventRect> mEventRects;
-  private TextPaint mEventTextPaint;
+//  private TextPaint mEventTextPaint;
   private Paint mHeaderColumnBackgroundPaint;
   private int mFetchedPeriod = -1; // the middle period the calendar has fetched.
   private boolean mRefreshEvents = false;
@@ -468,10 +470,13 @@ public class ScheduleViewSchedule extends View {
               right > mHeaderColumnWidth &&
               bottom > 0
           ) {
+            int color = mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
+                                                                 : mEventRects.get(
+                                                                     i).event.getColor();
+
             mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
-            mEventBackgroundPaint.setColor(
-                mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
-                                                         : mEventRects.get(i).event.getColor());
+            mEventBackgroundPaint.setColor(ColorsUtils.harmonizeWithPrimary(mContext, color)
+                                                      .getAccentContainer());
             mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
             canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius,
                                  mEventBackgroundPaint);
@@ -491,7 +496,7 @@ public class ScheduleViewSchedule extends View {
     int size = Math.max(1, (int) Math.floor(Math.min(0.8 * rect.height(), 0.8 * rect.width())));
     if (mNewEventIconDrawable == null) {
       mNewEventIconDrawable =
-          AppCompatResources.getDrawable(getContext(), android.R.drawable.ic_input_add);
+          DesignUtils.getDrawable(getContext(), android.R.drawable.ic_input_add);
     }
     Bitmap icon = ((BitmapDrawable) mNewEventIconDrawable).getBitmap();
     icon = Bitmap.createScaledBitmap(icon, size, size, false);
@@ -542,6 +547,8 @@ public class ScheduleViewSchedule extends View {
     canvas.save();
     canvas.clipRect(0, 0, mHeaderColumnWidth, getHeight());
     canvas.restore();
+
+    TextPaint mEventTextPaint = getTextPaint(event.getColor());
 
     // Get text dimensions.
     StaticLayout textLayout =
@@ -614,10 +621,13 @@ public class ScheduleViewSchedule extends View {
               right > mHeaderColumnWidth &&
               bottom > mTimeTextHeight / 2 + mHeaderMarginBottom
           ) {
+            int color = mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
+                                                                 : mEventRects.get(
+                                                                     i).event.getColor();
+
             mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
-            mEventBackgroundPaint.setColor(
-                mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
-                                                         : mEventRects.get(i).event.getColor());
+            mEventBackgroundPaint.setColor(ColorsUtils.harmonizeWithPrimary(mContext, color)
+                                                      .getAccentContainer());
             mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
             canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius,
                                  mEventBackgroundPaint);
@@ -1149,10 +1159,10 @@ public class ScheduleViewSchedule extends View {
     mHeaderColumnBackgroundPaint.setColor(mHeaderColumnBackgroundColor);
 
     // Prepare event text size and color.
-    mEventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
-    mEventTextPaint.setStyle(Paint.Style.FILL);
-    mEventTextPaint.setColor(mEventTextColor);
-    mEventTextPaint.setTextSize(mEventTextSize);
+//    mEventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
+//    mEventTextPaint.setStyle(Paint.Style.FILL);
+//    mEventTextPaint.setColor(mEventTextColor);
+//    mEventTextPaint.setTextSize(mEventTextSize);
 
     // Set default event color.
     mDefaultEventColor = Color.parseColor("#9fc6e7");
@@ -1173,6 +1183,16 @@ public class ScheduleViewSchedule extends View {
       }
       mTimeTextWidth = Math.max(mTimeTextWidth, mTimeTextPaint.measureText(time));
     }
+  }
+
+  private TextPaint getTextPaint(int color) {
+    TextPaint mEventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
+    mEventTextPaint.setStyle(Paint.Style.FILL);
+    mEventTextPaint.setColor(ColorsUtils.harmonizeWithPrimary(mContext, color)
+                                        .getOnAccentContainer());
+    mEventTextPaint.setTextSize(mEventTextSize);
+
+    return mEventTextPaint;
   }
 
   /**

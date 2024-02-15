@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="200dp"
+    android:id="@+id/card"
     android:layout_height="match_parent"
     android:layout_margin="8dp"
+    android:layout_width="200dp"
     android:minHeight="120dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="0dp"
@@ -12,17 +14,19 @@
     app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:background="?attr/colorSurfaceContainerHighest"
+        android:foreground="?attr/selectableItemBackground"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:minHeight="120dp"
         android:padding="8dp">
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-
+            android:layout_width="match_parent"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,13 +34,13 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
             android:maxLines="2"
-
+            android:textColor="?attr/colorOnSurface"
             android:textSize="@dimen/alt_font_size"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

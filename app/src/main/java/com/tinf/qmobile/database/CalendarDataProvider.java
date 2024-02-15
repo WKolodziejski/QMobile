@@ -2,15 +2,15 @@ package com.tinf.qmobile.database;
 
 import android.os.Build;
 
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.model.calendar.Padding;
 import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.matter.Clazz;
 import com.tinf.qmobile.model.matter.Matter;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -59,9 +60,10 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
                                        .toLocalDate();
     LocalDate monthCounter = minDate;
 
-    for (int i = 0; i < Months.monthsBetween(minDate, maxDate).getMonths(); i++) {
-      Month month = new Month(monthCounter.toDate().getTime());
-      //Log.d(month.getMonth(), String.valueOf(monthCounter.toDate().getTime()));
+    for (int i = 0; i < Months.monthsBetween(minDate, maxDate)
+                              .getMonths(); i++) {
+      Month month = new Month(monthCounter.toDate()
+                                          .getTime());
 
       List<CalendarBase> list = map.get(month.getHashKey());
 
@@ -70,14 +72,21 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
         map.put(month.getHashKey(), list);
       }
 
-      list.add(0, month);
+      list.add(0, new Padding(month.getHashKey().toDate().getTime()));
+      list.add(1, month);
 
-      DateTime startDay = monthCounter.dayOfMonth().withMinimumValue().toDateTimeAtStartOfDay();
-      LocalDate week = startDay.dayOfWeek().withMaximumValue().toLocalDate();//.minusDays(1);
+      DateTime startDay = monthCounter.dayOfMonth()
+                                      .withMinimumValue()
+                                      .toDateTimeAtStartOfDay();
+      LocalDate week = startDay.dayOfWeek()
+                               .withMaximumValue()
+                               .toLocalDate();
 
-      while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
-        Day day = new Day(week.toDate(), week.plusDays(6).toDate());
-        //Log.d(day.getDayPeriod(), String.valueOf(week.toDate().getTime()));
+      while (week.compareTo(startDay.dayOfMonth()
+                                    .withMaximumValue()
+                                    .toLocalDate()) < 0) {
+        Day day = new Day(week.toDate(), week.plusDays(6)
+                                             .toDate());
 
         List<CalendarBase> list2 = map.get(day.getHashKey());
 
@@ -86,6 +95,7 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
           map.put(day.getHashKey(), list2);
         }
 
+        list2.add(new Padding(day.getHashKey().toDate().getTime()));
         list2.add(day);
 
         week = week.plusWeeks(1);
@@ -94,12 +104,22 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       monthCounter = monthCounter.plusMonths(1);
     }
 
-    Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-    Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-    Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-    Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
+    Box<EventUser> eventUserBox = DataBase.get()
+                                          .getBoxStore()
+                                          .boxFor(EventUser.class);
+    Box<Journal> eventJournalBox = DataBase.get()
+                                           .getBoxStore()
+                                           .boxFor(Journal.class);
+    Box<EventSimple> eventSimpleBox = DataBase.get()
+                                              .getBoxStore()
+                                              .boxFor(EventSimple.class);
+    Box<Clazz> clazzBox = DataBase.get()
+                                  .getBoxStore()
+                                  .boxFor(Clazz.class);
 
-    for (EventBase e : eventUserBox.query().build().find()) {
+    for (Event e : eventUserBox.query()
+                               .build()
+                               .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -110,7 +130,9 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       list.add(e);
     }
 
-    for (EventBase e : eventJournalBox.query().build().find()) {
+    for (Event e : eventJournalBox.query()
+                                  .build()
+                                  .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -121,7 +143,9 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       list.add(e);
     }
 
-    for (EventBase e : eventSimpleBox.query().build().find()) {
+    for (Event e : eventSimpleBox.query()
+                                 .build()
+                                 .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -132,7 +156,9 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       list.add(e);
     }
 
-    for (EventBase e : clazzBox.query().build().find()) {
+    for (Event e : clazzBox.query()
+                           .build()
+                           .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -147,18 +173,12 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
     eventsList = new ArrayList<>();
 
     for (LocalDate key : map.keySet()) {
-      Calendar cal = Calendar.getInstance();
-      cal.setTime(key.toDate());
-      cal.set(Calendar.HOUR_OF_DAY, 0);
-      cal.set(Calendar.MINUTE, 0);
-      cal.set(Calendar.SECOND, 0);
-      cal.set(Calendar.MILLISECOND, 0);
-
       List<CalendarBase> list = map.get(key);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Collections.sort(list, Comparator.comparing(CalendarBase::getHashKey));
+        Collections.sort(list, Comparator.comparing(CalendarBase::getDate));
       } else {
-        Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
+        Collections.sort(list, (t1, t2) -> t1.getDate()
+                                             .compareTo(t2.getDate()));
       }
 
       boolean hasHeader = false;
@@ -166,12 +186,20 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       for (int i = 0; i < list.size(); i++) {
         CalendarBase cb = list.get(i);
 
-        if (cb instanceof EventBase) {
+        if (cb instanceof Event) {
           if (!hasHeader) {
             hasHeader = true;
-            list.add(i, new Header(cal.getTimeInMillis()));
-            i++;
-            ((EventBase) cb).isHeader = true;
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(key.toDate());
+//      cal.set(Calendar.HOUR_OF_DAY, 0);
+//      cal.set(Calendar.MINUTE, 0);
+//      cal.set(Calendar.SECOND, 0);
+//      cal.set(Calendar.MILLISECOND, 0);
+
+            list.add(i++, new Padding(cal.getTimeInMillis()));
+            list.add(i++, new Header(cal.getTimeInMillis()));
+            ((Event) cb).setHeader(true);
           }
 
           eventsList.add((Event) cb);
@@ -193,27 +221,37 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
 
   @Override
   protected void open() {
-    sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
+    sub1 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(EventUser.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
+    sub2 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Journal.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub3 = DataBase.get().getBoxStore().subscribe(Matter.class)
+    sub3 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Matter.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub4 = DataBase.get().getBoxStore().subscribe(EventSimple.class)
+    sub4 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(EventSimple.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub5 = DataBase.get().getBoxStore().subscribe(Clazz.class)
+    sub5 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Clazz.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);

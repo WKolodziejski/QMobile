@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.EventViewActivity;
@@ -28,6 +29,7 @@ import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.utility.ColorUtils;
+import com.tinf.qmobile.utility.ColorsUtils;
 import com.tinf.qmobile.utility.ScheduleUtils;
 import com.tinf.qmobile.utility.UserUtils;
 
@@ -95,6 +97,8 @@ public class ScheduleFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
 
     updateFABColor();
+
+    binding.header.setVisibility(bundle == null ? View.VISIBLE : View.GONE);
 
     binding.weekView.setWeekViewLoader(ArrayList::new);
 
@@ -233,10 +237,10 @@ public class ScheduleFragment extends Fragment {
         int color = DataBase
             .get().getBoxStore().boxFor(Matter.class).get(id).getColor();
 
-        Log.d("COLOR", String.valueOf(color));
-        color = ColorUtils.INSTANCE.contrast(color, 0.25f);
+        ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(getContext(), color);
 
-        binding.fab.setBackgroundTintList(ColorStateList.valueOf(color));
+        binding.fab.setBackgroundTintList(ColorStateList.valueOf(colorRoles.getAccentContainer()));
+        binding.fab.setImageTintList(ColorStateList.valueOf(colorRoles.getOnAccentContainer()));
       }
     }
   }

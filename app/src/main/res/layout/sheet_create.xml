@@ -12,7 +12,7 @@
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-    app:strokeColor="@color/cardStroke"
+    app:strokeColor="@color/transparent"
     app:strokeWidth="0dp">
 
     <LinearLayout
@@ -50,7 +50,7 @@
             android:clickable="true"
             android:drawableTop="@drawable/ic_calendar"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
             android:text="@string/dialog_create_event"
             app:layout_constraintEnd_toStartOf="@id/schedule"
@@ -66,7 +66,7 @@
             android:clickable="true"
             android:drawableTop="@drawable/ic_alarm"
             android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:padding="16dp"
             android:text="@string/dialog_create_schedule"
             app:layout_constraintEnd_toEndOf="parent"

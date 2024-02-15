@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.AbsListView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmHeaderItemDecoration;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.CalendarAdapter;
@@ -23,8 +21,11 @@ import com.tinf.qmobile.databinding.ActivityCalendarBinding;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 import com.tinf.qmobile.utility.UserUtils;
 import com.tinf.qmobile.widget.calendar.CalendarRecyclerView;
+import com.tinf.qmobile.widget.calendar.view.CompactCalendarView;
 
 import org.joda.time.LocalDate;
 
@@ -53,16 +54,18 @@ public class CalendarActivity extends AppCompatActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurfaceContainer);
     binding = ActivityCalendarBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(binding.toolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeAsUpIndicator(
-        ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+        DesignUtils.getDrawable(this, R.drawable.ic_cancel));
 
     Date today = new Date();
 
-    Client.get().load(PG_CALENDAR);
+    Client.get()
+          .load(PG_CALENDAR);
 
     layout = new LinearLayoutManager(this);
     adapter = new CalendarAdapter(this, binding.calendar, () -> scrollToDate(today));
@@ -70,7 +73,6 @@ public class CalendarActivity extends AppCompatActivity
     binding.refresh.setEnabled(false);
 
     binding.recycler.setAppBarTracking(this);
-    binding.recycler.setItemViewCacheSize(20);
     binding.recycler.setLayoutManager(layout);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
@@ -79,19 +81,34 @@ public class CalendarActivity extends AppCompatActivity
       @Override
       public void onScrollStateChanged(
           @NonNull
-          RecyclerView recyclerView, int newState) {
+          RecyclerView recyclerView,
+          int newState) {
         super.onScrollStateChanged(recyclerView, newState);
-        if (!isExpanded && newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE)
+
+        int i = layout.findFirstVisibleItemPosition();
+
+        if (!isExpanded && newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && i >= 0)
           binding.calendar.setCurrentDate(
-              adapter.getList().get(layout.findFirstVisibleItemPosition()).getDate());
+              adapter.getList()
+                     .get(i)
+                     .getDate());
       }
 
       @Override
       public void onScrolled(
           @NonNull
-          RecyclerView recyclerView, int dx, int dy) {
+          RecyclerView recyclerView,
+          int dx,
+          int dy) {
         super.onScrolled(recyclerView, dx, dy);
-        setDateTitle(adapter.getList().get(layout.findFirstVisibleItemPosition()).getDate());
+
+        int i = layout.findFirstVisibleItemPosition();
+
+        if (i >= 0) {
+          setDateTitle(adapter.getList()
+                              .get(i)
+                              .getDate());
+        }
 
         if (dy < 0 && !binding.fab.isShown())
           binding.fab.show();
@@ -128,7 +145,8 @@ public class CalendarActivity extends AppCompatActivity
             binding.recycler.stopScroll();
             isExpanded = true;
             offset = layout.findFirstVisibleItemPosition();
-            topSpace = layout.findViewByPosition(layout.findFirstVisibleItemPosition()).getTop();
+            topSpace = layout.findViewByPosition(offset)
+                             .getTop();
           }
         }
       }
@@ -185,7 +203,8 @@ public class CalendarActivity extends AppCompatActivity
           String y = years[i];
 
           if (y.contains(String.valueOf(lastYear))) {
-            Client.get().loadYear(i);
+            Client.get()
+                  .loadYear(i);
           }
         }
       }
@@ -194,7 +213,7 @@ public class CalendarActivity extends AppCompatActivity
     }
   }
 
-  private void scrollToDate(Date key) {
+  private boolean scrollToDate(Date key) {
     List<CalendarBase> array = adapter.getList();
     int start = 0;
     int end = array.size() - 1;
@@ -202,7 +221,9 @@ public class CalendarActivity extends AppCompatActivity
 
     while (start <= end) {
       i = (start + end) / 2;
-      int comp = array.get(i).getDate().compareTo(key);
+      int comp = array.get(i)
+                      .getDate()
+                      .compareTo(key);
 
       if (0 < comp)
         end = i - 1;
@@ -222,7 +243,10 @@ public class CalendarActivity extends AppCompatActivity
 
       layout.scrollToPositionWithOffset(i, 0);
       binding.fab.show();
+      return true;
     }
+
+    return false;
   }
 
   @Override
@@ -269,46 +293,53 @@ public class CalendarActivity extends AppCompatActivity
   }
 
   @Override
-  public void onFinish(int pg, int year, int period) {
+  public void onFinish(int pg,
+                       int year,
+                       int period) {
     if (pg == PG_CALENDAR || pg == PG_CLASSES)
       binding.refresh.setRefreshing(false);
   }
 
   @Override
-  public void onError(int pg, String error) {
+  public void onError(int pg,
+                      String error) {
     if (pg == PG_CALENDAR || pg == PG_CLASSES)
       binding.refresh.setRefreshing(false);
   }
 
   @Override
-  public void onAccessDenied(int pg, String message) {
-    if (pg == PG_CALENDAR || pg == PG_CLASSES)
-      binding.refresh.setRefreshing(false);
+  public void onAccessDenied(int pg,
+                             String message) {
+    binding.refresh.setRefreshing(false);
   }
 
   @Override
   protected void onStart() {
     super.onStart();
-    Client.get().addOnResponseListener(this);
+    Client.get()
+          .addOnResponseListener(this);
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-    Client.get().addOnResponseListener(this);
+    Client.get()
+          .addOnResponseListener(this);
   }
 
   @Override
   protected void onStop() {
     super.onStop();
-    Client.get().removeOnResponseListener(this);
+    Client.get()
+          .removeOnResponseListener(this);
     binding.refresh.setRefreshing(false);
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-    Client.get().removeOnResponseListener(this);
+    Client.get()
+          .removeOnResponseListener(this);
     binding.refresh.setRefreshing(false);
   }
 

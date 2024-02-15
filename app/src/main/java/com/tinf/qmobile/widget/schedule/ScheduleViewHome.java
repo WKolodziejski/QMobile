@@ -31,6 +31,7 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDateTime;
@@ -73,7 +74,7 @@ public class ScheduleViewHome extends View {
   //private float mHeaderColumnWidth;
   private List<EventRect> mEventRects;
   private List<WeekViewEvent> mEvents;
-  private TextPaint mEventTextPaint;
+  //  private TextPaint mEventTextPaint;
   private int mFetchedPeriod = -1; // the middle period the calendar has fetched.
   private boolean mRefreshEvents = false;
   private Direction mCurrentFlingDirection = Direction.NONE;
@@ -81,7 +82,7 @@ public class ScheduleViewHome extends View {
   private DayOfWeek mFirstVisibleDay;
   private DayOfWeek mLastVisibleDay;
   private EventRect mNewEventRect;
-  private TextColorPicker textColorPicker;
+//  private TextColorPicker textColorPicker;
   // Attributes and their default values.
   private int mHourHeight = 50;
   private int mNewHourHeight = -1;
@@ -148,7 +149,10 @@ public class ScheduleViewHome extends View {
         }
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        public boolean onFling(MotionEvent e1,
+                               MotionEvent e2,
+                               float velocityX,
+                               float velocityY) {
           return false;
         }
 
@@ -181,7 +185,10 @@ public class ScheduleViewHome extends View {
         }
 
         @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        public boolean onScroll(MotionEvent e1,
+                                MotionEvent e2,
+                                float distanceX,
+                                float distanceY) {
           return false;
         }
 
@@ -302,11 +309,14 @@ public class ScheduleViewHome extends View {
     this(context, null);
   }
 
-  public ScheduleViewHome(Context context, AttributeSet attrs) {
+  public ScheduleViewHome(Context context,
+                          AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public ScheduleViewHome(Context context, AttributeSet attrs, int defStyleAttr) {
+  public ScheduleViewHome(Context context,
+                          AttributeSet attrs,
+                          int defStyleAttr) {
     super(context, attrs, defStyleAttr);
     AndroidThreeTen.init(context);
     now = LocalDateTime.now();
@@ -454,7 +464,8 @@ public class ScheduleViewHome extends View {
   }
 
   private void cacheEvent(WeekViewEvent event) {
-    if (event.getStartTime().compareTo(event.getEndTime()) >= 0) {
+    if (event.getStartTime()
+             .compareTo(event.getEndTime()) >= 0) {
       return;
     }
     List<WeekViewEvent> splitedEvents = event.splitWeekViewEvents();
@@ -475,7 +486,8 @@ public class ScheduleViewHome extends View {
         DayOfWeek day = getFirstVisibleDay().plus(dayNumber);
         for (int i = 0; i < mEventRects.size(); i++) {
 
-          if (mEventRects.get(i).event.getStartTime().getDay() == day &&
+          if (mEventRects.get(i).event.getStartTime()
+                                      .getDay() == day &&
               mEventRects.get(i).event.isAllDay
                                           ()) {
             containsAllDayEvent = true;
@@ -532,10 +544,13 @@ public class ScheduleViewHome extends View {
    *                       from this value.
    * @param canvas         The canvas to draw upon.
    */
-  private void drawAllDayEvents(DayOfWeek day, float startFromPixel, Canvas canvas) {
+  private void drawAllDayEvents(DayOfWeek day,
+                                float startFromPixel,
+                                Canvas canvas) {
     if (mEventRects != null && mEventRects.size() > 0) {
       for (int i = 0; i < mEventRects.size(); i++) {
-        if (mEventRects.get(i).event.getStartTime().getDay() == day &&
+        if (mEventRects.get(i).event.getStartTime()
+                                    .getDay() == day &&
             mEventRects.get(i).event.isAllDay()) {
 
           // Calculate top.
@@ -560,10 +575,13 @@ public class ScheduleViewHome extends View {
               top < getHeight() &&
               bottom > 0
           ) {
+            int color = mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
+                                                                 : mEventRects.get(
+                                                                     i).event.getColor();
+
             mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
-            mEventBackgroundPaint.setColor(
-                mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
-                                                         : mEventRects.get(i).event.getColor());
+            mEventBackgroundPaint.setColor(ColorsUtils.harmonizeWithPrimary(mContext, color)
+                                                      .getAccentContainer());
             mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
             canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius,
                                  mEventBackgroundPaint);
@@ -579,7 +597,10 @@ public class ScheduleViewHome extends View {
   /**
    * Draw the text on top of the rectangle in the empty event.
    */
-  private void drawEmptyImage(RectF rect, Canvas canvas, float originalTop, float originalLeft) {
+  private void drawEmptyImage(RectF rect,
+                              Canvas canvas,
+                              float originalTop,
+                              float originalLeft) {
     int size = Math.max(1, (int) Math.floor(Math.min(0.8 * rect.height(), 0.8 * rect.width())));
     if (mNewEventIconDrawable == null) {
       mNewEventIconDrawable = getResources().getDrawable(android.R.drawable.ic_input_add, null);
@@ -605,7 +626,10 @@ public class ScheduleViewHome extends View {
    *                     some of its portion
    *                     outside of the visible area.
    */
-  private void drawEventTitle(WeekViewEvent event, RectF rect, Canvas canvas, float originalTop,
+  private void drawEventTitle(WeekViewEvent event,
+                              RectF rect,
+                              Canvas canvas,
+                              float originalTop,
                               float originalLeft) {
     if (rect.right - rect.left - mEventPadding * 2 < 0) {
       return;
@@ -635,18 +659,21 @@ public class ScheduleViewHome extends View {
     canvas.clipRect(0, 0, 0, getHeight());
     canvas.restore();
 
-    for (int i = 0; i < getNumberOfPeriods(); i++) {
-      // If we are showing half hours (eg. 5:30am), space the times out by half the hour height
-      // and need to provide 30 minutes on each odd period, otherwise, minutes is always 0.
-      float timeSpacing;
-      int minutes;
-      int hour;
-    }
+//    for (int i = 0; i < getNumberOfPeriods(); i++) {
+//      // If we are showing half hours (eg. 5:30am), space the times out by half the hour height
+//      // and need to provide 30 minutes on each odd period, otherwise, minutes is always 0.
+//      float timeSpacing;
+//      int minutes;
+//      int hour;
+//    }
 
     // Get text color if necessary
-    if (textColorPicker != null) {
-      mEventTextPaint.setColor(textColorPicker.getTextColor(event));
-    }
+//    if (textColorPicker != null) {
+//      mEventTextPaint.setColor(textColorPicker.getTextColor(event));
+//    }
+
+    TextPaint mEventTextPaint = getTextPaint(event.getColor());
+
     // Get text dimensions.
     StaticLayout textLayout =
         new StaticLayout(bob, mEventTextPaint, availableWidth, Layout.Alignment
@@ -693,10 +720,13 @@ public class ScheduleViewHome extends View {
    *                       from this value.
    * @param canvas         The canvas to draw upon.
    */
-  private void drawEvents(DayOfWeek day, float startFromPixel, Canvas canvas) {
+  private void drawEvents(DayOfWeek day,
+                          float startFromPixel,
+                          Canvas canvas) {
     if (mEventRects != null && mEventRects.size() > 0) {
       for (int i = 0; i < mEventRects.size(); i++) {
-        if (mEventRects.get(i).event.getStartTime().getDay() == day &&
+        if (mEventRects.get(i).event.getStartTime()
+                                    .getDay() == day &&
             !mEventRects.get(i).event.isAllDay()) {
           float top = mHourHeight * mEventRects.get(i).top / 60 + getEventsTop();
           float bottom = mHourHeight * mEventRects.get(i).bottom / 60 + getEventsTop();
@@ -716,18 +746,21 @@ public class ScheduleViewHome extends View {
               left < getWidth() &&
               top < getHeight()
           ) {
+            int color = mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
+                                                                 : mEventRects.get(
+                                                                     i).event.getColor();
+
             mEventRects.get(i).rectF = new RectF(left, top, right, bottom);
-            mEventBackgroundPaint.setColor(
-                mEventRects.get(i).event.getColor() == 0 ? mDefaultEventColor
-                                                         : mEventRects.get(i).event.getColor());
-
+            mEventBackgroundPaint.setColor(ColorsUtils.harmonizeWithPrimary(mContext, color)
+                                                      .getAccentContainer());
             mEventBackgroundPaint.setShader(mEventRects.get(i).event.getShader());
-
             canvas.drawRoundRect(mEventRects.get(i).rectF, mEventCornerRadius, mEventCornerRadius,
                                  mEventBackgroundPaint);
 
             float topToUse = top;
-            if (mEventRects.get(i).event.getStartTime().getTime().getHour() < mMinTime) {
+            if (mEventRects.get(i).event.getStartTime()
+                                        .getTime()
+                                        .getHour() < mMinTime) {
               topToUse = mHourHeight * getPassedMinutesInDay(mMinTime, 0) / 60 + getEventsTop();
             }
 
@@ -1077,7 +1110,9 @@ public class ScheduleViewHome extends View {
       while (i < tempEvents.size()) {
         // Collect all other events for same day.
         EventRect eventRect2 = tempEvents.get(i);
-        if (eventRect1.event.getStartTime().getDay() == eventRect2.event.getStartTime().getDay()) {
+        if (eventRect1.event.getStartTime()
+                            .getDay() == eventRect2.event.getStartTime()
+                                                         .getDay()) {
           tempEvents.remove(i);
           eventRects.add(eventRect2);
         } else {
@@ -1095,7 +1130,8 @@ public class ScheduleViewHome extends View {
    * @param y The y position of the touch event.
    * @return The time and day at the clicked position.
    */
-  private DayTime getTimeFromPoint(float x, float y) {
+  private DayTime getTimeFromPoint(float x,
+                                   float y) {
     int leftDaysWithGaps = getLeftDaysWithGaps();
     float startPixel = getXStartPixel();
     for (int dayNumber = leftDaysWithGaps + 1;
@@ -1200,10 +1236,10 @@ public class ScheduleViewHome extends View {
     mNewEventBackgroundPaint.setColor(Color.rgb(60, 147, 217));
 
     // Prepare event text size and color.
-    mEventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
-    mEventTextPaint.setStyle(Paint.Style.FILL);
-    mEventTextPaint.setColor(mEventTextColor);
-    mEventTextPaint.setTextSize(mEventTextSize);
+//    mEventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
+//    mEventTextPaint.setStyle(Paint.Style.FILL);
+//    mEventTextPaint.setColor(mEventTextColor);
+//    mEventTextPaint.setTextSize(mEventTextSize);
 
     // Set default event color.
     mDefaultEventColor = Color.parseColor("#9fc6e7");
@@ -1213,11 +1249,26 @@ public class ScheduleViewHome extends View {
     mScaleDetector = new ScaleGestureDetector(mContext, new WeekViewGestureListener());
   }
 
-  private boolean isEventsCollide(WeekViewEvent event1, WeekViewEvent event2) {
-    long start1 = event1.getStartTime().toNumericalUnit();
-    long end1 = event1.getEndTime().toNumericalUnit();
-    long start2 = event2.getStartTime().toNumericalUnit();
-    long end2 = event2.getEndTime().toNumericalUnit();
+  private TextPaint getTextPaint(int color) {
+    TextPaint mEventTextPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG | Paint.LINEAR_TEXT_FLAG);
+    mEventTextPaint.setStyle(Paint.Style.FILL);
+    mEventTextPaint.setColor(ColorsUtils.harmonizeWithPrimary(mContext, color)
+                                        .getOnAccentContainer());
+    mEventTextPaint.setTextSize(mEventTextSize);
+
+    return mEventTextPaint;
+  }
+
+  private boolean isEventsCollide(WeekViewEvent event1,
+                                  WeekViewEvent event2) {
+    long start1 = event1.getStartTime()
+                        .toNumericalUnit();
+    long end1 = event1.getEndTime()
+                      .toNumericalUnit();
+    long start2 = event2.getStartTime()
+                        .toNumericalUnit();
+    long end2 = event2.getEndTime()
+                      .toNumericalUnit();
 
     long minOverlappingMillis = mMinOverlappingMinutes * 60 * 1000;
 
@@ -1235,7 +1286,8 @@ public class ScheduleViewHome extends View {
 
       for (EventRect eventRect : mEventRects) {
         for (DayOfWeek day : days) {
-          if (eventRect.event.getStartTime().getDay() == day && !eventRect.event.isAllDay()) {
+          if (eventRect.event.getStartTime()
+                             .getDay() == day && !eventRect.event.isAllDay()) {
 
             if (startTime == null ||
                 getPassedMinutesInDay(startTime) > getPassedMinutesInDay(eventRect
@@ -1300,13 +1352,18 @@ public class ScheduleViewHome extends View {
   private void sortEventRects(List<EventRect> eventRects) {
     Collections.sort(eventRects, new Comparator<EventRect>() {
       @Override
-      public int compare(EventRect left, EventRect right) {
-        long start1 = left.event.getStartTime().toNumericalUnit();
-        long start2 = right.event.getStartTime().toNumericalUnit();
+      public int compare(EventRect left,
+                         EventRect right) {
+        long start1 = left.event.getStartTime()
+                                .toNumericalUnit();
+        long start2 = right.event.getStartTime()
+                                 .toNumericalUnit();
         int comparator = Long.compare(start1, start2);
         if (comparator == 0) {
-          long end1 = left.event.getEndTime().toNumericalUnit();
-          long end2 = right.event.getEndTime().toNumericalUnit();
+          long end1 = left.event.getEndTime()
+                                .toNumericalUnit();
+          long end2 = right.event.getEndTime()
+                                 .toNumericalUnit();
           comparator = Long.compare(end1, end2);
         }
         return comparator;
@@ -1322,7 +1379,10 @@ public class ScheduleViewHome extends View {
 
   // fix rotation changes
   @Override
-  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+  protected void onSizeChanged(int w,
+                               int h,
+                               int oldw,
+                               int oldh) {
     super.onSizeChanged(w, h, oldw, oldh);
     mAreDimensionsInvalid = true;
   }
@@ -1363,7 +1423,9 @@ public class ScheduleViewHome extends View {
      * @param originalEvent The original event that was passed by the user.
      * @param rectF         The rectangle.
      */
-    EventRect(WeekViewEvent event, WeekViewEvent originalEvent, RectF rectF) {
+    EventRect(WeekViewEvent event,
+              WeekViewEvent originalEvent,
+              RectF rectF) {
       this.event = event;
       this.rectF = rectF;
       this.originalEvent = originalEvent;
@@ -1406,7 +1468,8 @@ public class ScheduleViewHome extends View {
         }
 
         @Override
-        public String interpretTime(int hour, int minutes) {
+        public String interpretTime(int hour,
+                                    int minutes) {
           LocalTime time = LocalTime.of(hour, minutes);
           return time.format(
               DateFormat.is24HourFormat(getContext()) ? DateTimeFormatter.ofPattern("H")
@@ -1596,7 +1659,8 @@ public class ScheduleViewHome extends View {
     return val;
   }
 
-  public void setLimitTime(int startHour, int endHour) {
+  public void setLimitTime(int startHour,
+                           int endHour) {
     if (endHour <= startHour) {
       throw new IllegalArgumentException("endHour must larger startHour.");
     } else if (startHour < 0) {
@@ -1617,7 +1681,8 @@ public class ScheduleViewHome extends View {
      * @param startTime The startTime of a new event
      * @param endTime   The endTime of a new event
      */
-    void onAddEventClicked(DayTime startTime, DayTime endTime);
+    void onAddEventClicked(DayTime startTime,
+                           DayTime endTime);
   }
 
   /**
@@ -1626,7 +1691,8 @@ public class ScheduleViewHome extends View {
   public interface DayTimeInterpreter {
     String interpretDay(int day);
 
-    String interpretTime(int hour, int minutes);
+    String interpretTime(int hour,
+                         int minutes);
   }
 
   public interface DropListener {
@@ -1636,7 +1702,8 @@ public class ScheduleViewHome extends View {
      * @param view: dropped view.
      * @param day:  object set with the day and time of the dropped coordinates on the view.
      */
-    void onDrop(View view, DayTime day);
+    void onDrop(View view,
+                DayTime day);
   }
 
   public interface EmptyViewClickListener {
@@ -1668,7 +1735,8 @@ public class ScheduleViewHome extends View {
      * @param event:     event clicked.
      * @param eventRect: view containing the clicked event.
      */
-    void onEventClick(WeekViewEvent event, RectF eventRect);
+    void onEventClick(WeekViewEvent event,
+                      RectF eventRect);
   }
 
   public interface EventLongPressListener {
@@ -1679,7 +1747,8 @@ public class ScheduleViewHome extends View {
      * @param event:     event clicked.
      * @param eventRect: view containing the clicked event.
      */
-    void onEventLongPress(WeekViewEvent event, RectF eventRect);
+    void onEventLongPress(WeekViewEvent event,
+                          RectF eventRect);
   }
 
   public interface ScrollListener {
@@ -1691,7 +1760,8 @@ public class ScheduleViewHome extends View {
      * @param newFirstVisibleDay The new first visible day
      * @param oldFirstVisibleDay The old first visible day (is null on the first call).
      */
-    void onFirstVisibleDayChanged(DayOfWeek newFirstVisibleDay, DayOfWeek oldFirstVisibleDay);
+    void onFirstVisibleDayChanged(DayOfWeek newFirstVisibleDay,
+                                  DayOfWeek oldFirstVisibleDay);
   }
 
   public interface TextColorPicker {

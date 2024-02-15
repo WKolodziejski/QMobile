@@ -23,7 +23,6 @@ import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.model.message.Message_;
-import com.tinf.qmobile.network.message.Messenger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +33,11 @@ import io.objectbox.reactive.DataSubscription;
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
   private final Context context;
   private final AsyncListDiffer<Queryable> list;
-  private final Messenger messenger;
   private final DataSubscription sub1;
   private final Handler handler;
 
-  public MessagesAdapter(Context context, Messenger messenger) {
+  public MessagesAdapter(Context context) {
     this.context = context;
-    this.messenger = messenger;
     this.handler = new Handler(Looper.getMainLooper());
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
       @Override
@@ -72,11 +69,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
                    .observer(observer);
   }
 
-  private void updateList() {
-    DataBase.get().execute(() -> {
-      List<Queryable> list = getList();
-      handler.post(() -> this.list.submitList(list));
-    });
+  private synchronized void updateList() {
+    DataBase.get().execute(() -> handler.post(() -> this.list.submitList(getList())));
   }
 
   private List<Queryable> getList() {
@@ -122,7 +116,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesViewHolder> {
   public void onBindViewHolder(
       @NonNull
       MessagesViewHolder holder, int i) {
-    holder.bind(context, messenger, list.getCurrentList().get(i));
+    holder.bind(context, list.getCurrentList().get(i));
   }
 
   @Override

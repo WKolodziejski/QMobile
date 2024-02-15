@@ -11,7 +11,7 @@ import io.objectbox.annotation.Entity;
 import io.objectbox.relation.ToOne;
 
 @Entity
-public class EventUser extends EventBase {
+public class EventUser extends Event {
   //@Id public long id;
   public ToOne<Matter> matter;
   private long alarm;

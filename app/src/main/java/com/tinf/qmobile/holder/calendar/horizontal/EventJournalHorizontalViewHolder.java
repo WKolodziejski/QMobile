@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.databinding.CalendarEventJournalHBinding;
+import com.tinf.qmobile.databinding.CalendarHeaderDaySingleBinding;
 import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class EventJournalHorizontalViewHolder extends CalendarViewHolder<Journal> {
   private final CalendarEventJournalHBinding binding;
@@ -21,12 +24,17 @@ public class EventJournalHorizontalViewHolder extends CalendarViewHolder<Journal
   }
 
   @Override
-  public void bind(Journal journal, Context context) {
+  public CalendarHeaderDaySingleBinding bind(Journal journal, Context context) {
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(context, journal.getColor());
+
+
     binding.title.setText(journal.getTitle().isEmpty() ? context.getString(R.string.event_no_title)
                                                        : journal.getTitle());
     binding.date.setText(journal.getStartDateString());
-    binding.description.setText(journal.matter.getTarget().getTitle());
-    binding.card.setBackgroundColor(journal.getColor());
+//    binding.description.setText(journal.matter.getTarget().getTitle());
+    binding.card.setBackgroundColor(colorRoles.getAccentContainer());
+    binding.title.setTextColor(colorRoles.getOnAccentContainer());
+    binding.date.setTextColor(colorRoles.getOnAccentContainer());
 
     binding.card.setOnClickListener(v -> {
       Intent intent = new Intent(context, EventViewActivity.class);
@@ -35,6 +43,8 @@ public class EventJournalHorizontalViewHolder extends CalendarViewHolder<Journal
       intent.putExtra("LOOKUP", true);
       context.startActivity(intent);
     });
+
+    return null;
   }
 
 }

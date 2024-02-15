@@ -12,6 +12,7 @@ import com.tinf.qmobile.model.journal.Journal;
 import com.tinf.qmobile.model.material.Material;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -248,7 +249,7 @@ public class Matter implements Queryable {
     if (period == null)
       return "-";
 
-    return String.format(Locale.getDefault(), "%.1f", period.getPlotGrade());
+    return period.getPartialGradeString();
   }
 
   public int getQID() {

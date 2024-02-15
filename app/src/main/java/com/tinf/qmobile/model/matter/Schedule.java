@@ -28,8 +28,13 @@ public class Schedule {
   private int year;
   private int period;
 
-  public Schedule(int startDay, int startHour, int startMinute, int endHour, int endMinute,
-                  int year, int period) {
+  public Schedule(int startDay,
+                  int startHour,
+                  int startMinute,
+                  int endHour,
+                  int endMinute,
+                  int year,
+                  int period) {
     this.startDay_ = startDay;
     this.startHour_ = startHour;
     this.startMinute_ = startMinute;
@@ -40,7 +45,12 @@ public class Schedule {
     this.isFromSite_ = true;
   }
 
-  public Schedule(String title, DayTime start, DayTime end, int difference, int year, int period,
+  public Schedule(String title,
+                  DayTime start,
+                  DayTime end,
+                  int difference,
+                  int year,
+                  int period,
                   boolean isFromSite) {
     this.title_ = title;
     this.startDay_ = start.getDayValue();
@@ -64,7 +74,8 @@ public class Schedule {
 
   @ColorInt
   public int getColor() {
-    return !matter.isNull() ? matter.getTarget().getColor() : color_;
+    return !matter.isNull() ? matter.getTarget()
+                                    .getColor() : color_;
   }
 
   public void setDescription(String description) {
@@ -104,7 +115,8 @@ public class Schedule {
   }
 
   public String getTitle() {
-    return title_ == null ? matter.getTarget().getTitle() : title_;
+    return title_ == null ? matter.getTarget()
+                                  .getTitle() : title_;
   }
 
   public String getRoom() {
@@ -128,7 +140,12 @@ public class Schedule {
   }
 
   public String getMatter() {
-    return isFromSite_ || matter.isNull() ? "" : matter.getTarget().getTitle();
+    return isFromSite_ || matter.isNull() ? "" : matter.getTarget()
+                                                       .getTitle();
+  }
+
+  public void setFromSite(boolean fromSite) {
+    isFromSite_ = fromSite;
   }
 
   /*

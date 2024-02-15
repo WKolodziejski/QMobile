@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
 
+import com.google.android.material.color.ColorRoles;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.databinding.JournalHeaderBinding;
 import com.tinf.qmobile.model.matter.Matter;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
   private final JournalHeaderBinding binding;
@@ -22,9 +24,12 @@ public class JournalHeaderViewHolder extends JournalBaseViewHolder<Matter> {
 
   @Override
   public void bind(Context context, Matter matter, boolean lookup, boolean isHeader) {
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(context, matter.getColor());
+
     binding.title.setText(matter.getTitle());
     binding.badge.setVisibility(isHeader ? View.INVISIBLE : View.VISIBLE);
-    binding.badge.setBackgroundTintList(ColorStateList.valueOf(matter.getColor()));
+    binding.badge.setBackgroundTintList(ColorStateList.valueOf(colorRoles.getAccentContainer()));
+    binding.badge.setTextColor(colorRoles.getOnAccentContainer());
     binding.header.setVisibility(matter.hasJournals() ? View.VISIBLE : View.GONE);
     itemView.setOnClickListener(view -> {
       Intent intent = new Intent(context, MatterActivity.class);

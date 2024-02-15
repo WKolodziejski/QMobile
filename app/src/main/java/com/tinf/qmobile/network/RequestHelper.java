@@ -13,11 +13,11 @@ public class RequestHelper {
   public final int method;
   public final Map<String, String> form;
   public final boolean notify;
-  public final Matter matter;
+  public final Object[] payload;
   public final BaseParser.OnFinish onFinish;
 
   public RequestHelper(int pg, String url, int year, int period, int method,
-                       Map<String, String> form, boolean notify, Matter matter,
+                       Map<String, String> form, boolean notify, Object[] payload,
                        BaseParser.OnFinish onFinish) {
     this.pg = pg;
     this.url = url;
@@ -26,7 +26,7 @@ public class RequestHelper {
     this.method = method;
     this.form = form;
     this.notify = notify;
-    this.matter = matter;
+    this.payload = payload;
     this.onFinish = onFinish;
   }
 

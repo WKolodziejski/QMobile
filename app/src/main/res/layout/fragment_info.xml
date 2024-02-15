@@ -26,7 +26,8 @@
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_about"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -151,7 +152,8 @@
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_attendance"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -284,7 +286,8 @@
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_progress"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -406,7 +409,8 @@
                 android:gravity="center_vertical"
                 android:padding="16dp"
                 android:text="@string/infos_history"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
             <lecho.lib.hellocharts.view.LineChartView
                 android:id="@+id/chart_grades"

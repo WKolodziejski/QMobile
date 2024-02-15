@@ -2,11 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+<!--    TODO: criar strings -->
     <item
         android:id="@+id/action_account"
         android:icon="@drawable/ic_account"
-        android:orderInCategory="1"
         android:title="Account"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom"
+        android:orderInCategory="2"/>
+
+<!--    <item-->
+<!--        android:id="@+id/action_notifications"-->
+<!--        android:icon="@drawable/ic_notifications"-->
+<!--        android:title="Notifications"-->
+<!--        app:showAsAction="ifRoom"-->
+<!--        android:orderInCategory="1"/>-->
 
 </menu>

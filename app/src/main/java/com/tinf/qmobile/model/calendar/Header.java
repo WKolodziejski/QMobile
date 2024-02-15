@@ -2,6 +2,8 @@ package com.tinf.qmobile.model.calendar;
 
 import static com.tinf.qmobile.model.ViewType.MATTER;
 
+import android.text.format.DateUtils;
+
 import com.tinf.qmobile.model.Queryable;
 
 import org.joda.time.LocalDate;
@@ -84,6 +86,11 @@ public class Header implements CalendarBase {
   @Override
   public boolean isHeader() {
     return true;
+  }
+
+  @Override
+  public boolean isToday() {
+    return DateUtils.isToday(getDate().getTime());
   }
 
   @Override

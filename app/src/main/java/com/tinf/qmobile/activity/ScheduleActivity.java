@@ -12,6 +12,8 @@ import com.tinf.qmobile.databinding.ActivityScheduleBinding;
 import com.tinf.qmobile.fragment.ScheduleFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 
 public class ScheduleActivity extends AppCompatActivity implements OnResponse {
   private ActivityScheduleBinding binding;
@@ -21,12 +23,13 @@ public class ScheduleActivity extends AppCompatActivity implements OnResponse {
       @Nullable
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityScheduleBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(findViewById(R.id.toolbar_default));
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeAsUpIndicator(
-        AppCompatResources.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+        DesignUtils.getDrawable(this, R.drawable.ic_cancel));
 
     Client.get().load(PG_SCHEDULE);
 

@@ -220,6 +220,8 @@
     <string name="menu_schedule_start">Set initial time</string>
     <string name="menu_schedule_end">Set final time</string>
     <string name="menu_schedule_auto">Default</string>
+    <string name="menu_average_10">Average 10</string>
+    <string name="menu_average_100">Average 100</string>
     <string name="schedule_mon">Mon</string>
     <string name="schedule_tue">Tue</string>
     <string name="schedule_wed">Wed</string>
@@ -237,4 +239,5 @@
     <string name="login_unavailable">The Qmobile is only available to students</string>
     <string name="client_timeout">Timeout</string>
     <string name="toast_firebase_fail">It was not possible to fetch capus</string>
+    <string name="text_no_intent">No handlers for this option</string>
 </resources>

@@ -1,142 +1,163 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
     <ImageView
         android:id="@+id/empty"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:src="@drawable/draw_schedule"
         android:visibility="gone"
         tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/layout"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/days_layout"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:layout_width="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/guideline1"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/days_layout"
                 android:layout_height="wrap_content"
-                android:text="@string/schedule_sun"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                tools:visibility="visible">
 
-            <TextView
-                android:id="@+id/guideline2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule_mon"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline3"
-                app:layout_constraintStart_toEndOf="@id/guideline1"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/guideline1"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_sun"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/guideline3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule_tue"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline4"
-                app:layout_constraintStart_toEndOf="@id/guideline2"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/guideline2"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_mon"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline3"
+                    app:layout_constraintStart_toEndOf="@id/guideline1"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/guideline4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule_wed"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline5"
-                app:layout_constraintStart_toEndOf="@id/guideline3"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/guideline3"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_tue"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline4"
+                    app:layout_constraintStart_toEndOf="@id/guideline2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/guideline5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule_thu"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline6"
-                app:layout_constraintStart_toEndOf="@id/guideline4"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/guideline4"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_wed"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline5"
+                    app:layout_constraintStart_toEndOf="@id/guideline3"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/guideline6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule_fri"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline7"
-                app:layout_constraintStart_toEndOf="@id/guideline5"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/guideline5"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_thu"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline6"
+                    app:layout_constraintStart_toEndOf="@id/guideline4"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/guideline7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/schedule_sat"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                android:textSize="13sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/guideline6"
-                app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/guideline6"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_fri"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline7"
+                    app:layout_constraintStart_toEndOf="@id/guideline5"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/guideline7"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:text="@string/schedule_sat"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/guideline6"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:background="?attr/colorSurfaceContainerHighest"
+                android:layout_height="1dp"
+                android:layout_width="match_parent" />
+
+        </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
 
             <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 android:orientation="vertical">
 
                 <com.tinf.qmobile.widget.schedule.ScheduleViewSchedule
                     android:id="@+id/weekView"
-                    android:layout_width="match_parent"
                     android:layout_height="1456dp"
-                    android:layout_marginEnd="4dp"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_width="match_parent"
                     android:transitionName="Horario"
                     app:columnGap="8dp"
                     app:dayBackgroundColor="@color/transparent"
@@ -146,7 +167,7 @@
                     app:firstDayOfWeek="sunday"
                     app:headerColumnBackground="@color/transparent"
                     app:headerColumnPadding="8dp"
-                    app:headerColumnTextColor="@color/colorPrimary"
+                    app:headerColumnTextColor="?attr/colorOnSurface"
                     app:headerRowBackgroundColor="@color/transparent"
                     app:headerRowPadding="12dp"
                     app:horizontalFlingEnabled="false"
@@ -159,7 +180,7 @@
                     app:showFirstDayOfWeekFirst="true"
                     app:showNowLine="false"
                     app:todayBackgroundColor="@color/transparent"
-                    app:todayHeaderTextColor="@color/colorPrimary"
+                    app:todayHeaderTextColor="?attr/colorPrimary"
                     app:zoomFocusPointEnabled="false" />
 
             </LinearLayout>
@@ -170,11 +191,11 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_width="wrap_content"
         android:transitionName="Fab"
         app:borderWidth="0dp"
         app:fabSize="normal"

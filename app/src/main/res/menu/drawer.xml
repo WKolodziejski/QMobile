@@ -27,6 +27,11 @@
             android:icon="@drawable/ic_alarm"
             android:title="@string/title_horario" />
 
+<!--        <item-->
+<!--            android:id="@+id/drawer_report"-->
+<!--            android:icon="@drawable/ic_report"-->
+<!--            android:title="@string/title_boletim" />-->
+
         <item
             android:id="@+id/drawer_performance"
             android:icon="@drawable/ic_insights"

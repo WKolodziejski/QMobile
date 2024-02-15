@@ -1,5 +1,6 @@
 package com.tinf.qmobile.holder.message;
 
+import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 import android.content.Context;
@@ -17,7 +18,8 @@ import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.databinding.MessageHeaderBinding;
 import com.tinf.qmobile.model.message.Message;
-import com.tinf.qmobile.network.message.Messenger;
+import com.tinf.qmobile.parser.messages.LoadMessageHelper;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class MessageViewHolder extends MessagesViewHolder<Message> {
   private final MessageHeaderBinding binding;
@@ -28,7 +30,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
   }
 
   @Override
-  public void bind(Context context, Messenger messenger, Message message) {
+  public void bind(Context context, Message message) {
     binding.header.setText(message.sender.getTarget().getSign());
     binding.header.setBackgroundTintList(ColorStateList.valueOf(message.getColor()));
     binding.subject.setText(message.getSubject_());
@@ -38,38 +40,36 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
 
     binding.preview.setVisibility(message.getPreview().isEmpty() ? View.GONE : View.VISIBLE);
 
-    int c = context.getResources()
-                   .getColor(message.getContent().isEmpty() && !message.isSeen_()
-                             ? R.color.message_not_seen : R.color.message_seen);
-    int t = message.getContent().isEmpty() && !message.isSeen_() ? Typeface.BOLD : Typeface.NORMAL;
+    int t;
+    int c;
+
+    if (message.getContent().isEmpty() && !message.isSeen_()) {
+      t = Typeface.BOLD;
+      c = ColorsUtils.getColor(context, com.google.android.material.R.attr.colorOnSurface);
+    } else {
+      t = Typeface.NORMAL;
+      c = ColorsUtils.getColor(context, com.google.android.material.R.attr.colorOnSurfaceVariant);
+    }
 
     binding.att.setImageTintList(ColorStateList.valueOf(c));
-
-    binding.subject.setTextColor(c);
-    binding.sender.setTextColor(c);
-    binding.date.setTextColor(c);
-
-    binding.subject.setTypeface(null, t);
-    binding.sender.setTypeface(null, t);
-    binding.date.setTypeface(null, t);
+    binding.subject.setTypeface(Typeface.create(binding.subject.getTypeface(), t), t);
+    binding.sender.setTypeface(Typeface.create(binding.subject.getTypeface(), t), t);
+    binding.date.setTypeface(Typeface.create(binding.subject.getTypeface(), t), t);
+    binding.preview.setTypeface(Typeface.create(binding.subject.getTypeface(), t), t);
 
     binding.att.setVisibility(
         message.isHasAtt_() && message.attachments.isEmpty() ? View.VISIBLE : View.GONE);
 
-    if (message.isSolved_()) {
-      binding.subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
-      TextViewCompat.setCompoundDrawableTintList(binding.subject, ColorStateList.valueOf(
-          context.getColor(R.color.amber_a700)));
-    } else {
-      binding.subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-    }
+//    if (message.isSolved_()) {
+//      binding.subject.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check, 0, 0, 0);
+//      TextViewCompat.setCompoundDrawableTintList(binding.subject, ColorStateList.valueOf(
+//          context.getColor(R.color.amber_a700)));
+//    } else {
+//      binding.subject.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+//    }
 
     if (!message.attachments.isEmpty()) {
       binding.attachments.setVisibility(View.VISIBLE);
-      //binding.attachments.setHasFixedSize(true);
-      binding.attachments.setItemViewCacheSize(3);
-      binding.attachments.setDrawingCacheEnabled(true);
-      binding.attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
       binding.attachments.setLayoutManager(
           new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
       binding.attachments.setAdapter(new AttachmentsAdapter(context, message.attachments, true));
@@ -78,8 +78,9 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
     }
 
     itemView.setOnClickListener(v -> {
-      if (message.getContent().isEmpty())
-        messenger.openMessage(getAdapterPosition());
+      if (message.getContent().isEmpty()) {
+        LoadMessageHelper.loadMessage(message);
+      }
 
       Intent intent = new Intent(context, EventViewActivity.class);
       intent.putExtra("TYPE", MESSAGE);
@@ -88,10 +89,10 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
       context.startActivity(intent);
     });
 
-        /*if (message.highlight) {
-            itemView.setBackgroundColor(context.getColor(R.color
-            .notificationBackground));
-        }*/
+//        if (message.highlight) {
+//            itemView.setBackgroundColor(context.getColor(R.color
+//            .notificationBackground));
+//        }
   }
 
 }

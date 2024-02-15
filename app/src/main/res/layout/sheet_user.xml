@@ -1,178 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_account"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
 
-    <LinearLayout
-        android:id="@+id/layout1"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/q"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_height="36dp"
+            android:layout_margin="16dp"
+            android:layout_width="36dp"
+            android:src="@drawable/ic_account"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
+        <LinearLayout
+            android:id="@+id/layout1"
             android:gravity="center_vertical"
-            android:maxLines="1"
-            tools:text="Nome do Aluno" />
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/logout"
+            app:layout_constraintStart_toEndOf="@id/image"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/reg"
-            android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/name"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:maxLines="1"
+                tools:text="Nome do Aluno" />
+
+            <TextView
+                android:id="@+id/reg"
+                android:ellipsize="end"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:maxLines="1"
+                tools:text="Matrícula" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/logout"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            tools:text="Matrícula" />
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/q"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_launcher"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="68dp"
-        android:layout_marginTop="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toTopOf="@id/div1"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout1"
-        app:strokeColor="@color/blackDividers"
-        app:strokeWidth="1dp">
-
-        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="8dp"
-            android:text="@string/action_logout" />
+            android:orientation="vertical"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0">
 
-    </com.google.android.material.card.MaterialCardView>
+            <ImageView
+                android:layout_height="24dp"
+                android:layout_width="24dp"
+                android:src="@drawable/ic_exit" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/alerts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toTopOf="@id/div1"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@id/logout"
-        app:layout_constraintTop_toBottomOf="@id/layout1"
-        app:strokeColor="@color/blackDividers"
-        app:strokeWidth="1dp">
+            <TextView
+                android:ellipsize="end"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:maxLines="1"
+                android:text="@string/action_logout"
+                android:textAlignment="center" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="8dp"
-            android:text="@string/dialog_alerts" />
+        </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <View
         android:id="@+id/div1"
-        android:layout_width="match_parent"
+        android:background="?attr/colorSurfaceContainerHighest"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/blackDividers"
-        app:layout_constraintTop_toBottomOf="@id/logout"
+        android:layout_width="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/layout1"
         app:layout_goneMarginTop="8dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/offline"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_width="match_parent"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/div1"
         tools:visibility="visible">
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_margin="16dp"
+            android:layout_width="36dp"
             android:src="@drawable/ic_offline"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/layout2"
-            android:layout_width="0dp"
+            android:gravity="center_vertical"
             android:layout_height="match_parent"
             android:layout_margin="16dp"
-            android:gravity="center_vertical"
+            android:layout_width="0dp"
             android:orientation="vertical"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@id/icon"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:maxLines="1"
                 android:text="Offline"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/last"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
                 android:maxLines="1"
                 tools:text="Last update on 22/03/2017" />
 
@@ -180,10 +146,10 @@
 
         <View
             android:id="@+id/div2"
-            android:layout_width="match_parent"
+            android:background="?attr/colorSurfaceContainerHighest"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            android:background="@color/blackDividers"
+            android:layout_width="match_parent"
             app:layout_constraintTop_toBottomOf="@id/layout2"
             app:layout_goneMarginTop="8dp" />
 
@@ -192,9 +158,9 @@
     <Button
         android:id="@+id/policy"
         style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/pref_privacy"
         android:textAllCaps="false"
         android:textSize="13sp"
@@ -203,4 +169,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/offline" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

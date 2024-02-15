@@ -1,11 +1,12 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
-import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
+import static com.tinf.qmobile.model.ViewType.FOOTER_JOURNAL;
+import static com.tinf.qmobile.model.ViewType.FOOTER_PERIOD;
 import static com.tinf.qmobile.model.ViewType.HEADER;
+import static com.tinf.qmobile.model.ViewType.HEADER_YEAR;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNAL_EMPTY;
 import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.color.ColorRoles;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -31,11 +33,13 @@ import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderColorViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
-import com.tinf.qmobile.holder.journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.JournalHeaderYearViewHolder;
+import com.tinf.qmobile.holder.journal.JournalItemViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.journal.Header;
+import com.tinf.qmobile.model.journal.HeaderMatter;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 import java.util.List;
 
@@ -44,11 +48,15 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
   private final AsyncListDiffer<Queryable> list;
   private final Context context;
   private final OnList<Queryable> onList;
+  private final OnHeaderYearInteractListener onYear;
   private int currentHeader;
 
-  public JournalsAdapter(Context context, OnList<Queryable> onList) {
+  public JournalsAdapter(Context context,
+                         OnList<Queryable> onList,
+                         OnHeaderYearInteractListener onYear) {
     this.context = context;
     this.onList = onList;
+    this.onYear = onYear;
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
       @Override
       public boolean areItemsTheSame(
@@ -69,14 +77,17 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
       }
     });
 
-    onUpdate(DataBase.get().getJournalsDataProvider().getList());
+    onUpdate(DataBase.get()
+                     .getJournalsDataProvider()
+                     .getList());
   }
 
   @NonNull
   @Override
   public JournalBaseViewHolder onCreateViewHolder(
       @NonNull
-      ViewGroup parent, int viewType) {
+      ViewGroup parent,
+      int viewType) {
     switch (viewType) {
       case MATTER:
         return new JournalHeaderViewHolder(LayoutInflater.from(context)
@@ -84,15 +95,15 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
                                                                   false));
 
       case JOURNAL:
-        return new JournalViewHolder(LayoutInflater.from(context)
-                                                   .inflate(R.layout.journal_item, parent, false));
+        return new JournalItemViewHolder(LayoutInflater.from(context)
+                                                       .inflate(R.layout.journal_item, parent, false));
 
-      case FOOTERJOURNAL:
+      case FOOTER_JOURNAL:
         return new JournalFooterViewHolder(LayoutInflater.from(context)
                                                          .inflate(R.layout.journal_footer, parent,
                                                                   false));
 
-      case FOOTERPERIOD:
+      case FOOTER_PERIOD:
         return new PeriodFooterViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.period_footer, parent,
                                                                  false));
@@ -102,7 +113,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
                                                         .inflate(R.layout.period_header, parent,
                                                                  false));
 
-      case JOURNALEMPTY:
+      case JOURNAL_EMPTY:
         return new JournalEmptyViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.journal_item_empty,
                                                                  parent, false));
@@ -111,6 +122,11 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
         return new JournalHeaderColorViewHolder(LayoutInflater.from(context)
                                                               .inflate(R.layout.header_empty,
                                                                        parent, false));
+
+      case HEADER_YEAR:
+        return new JournalHeaderYearViewHolder(LayoutInflater.from(context)
+                                                             .inflate(R.layout.journal_header_year,
+                                                                      parent, false), onYear);
 
       case EMPTY:
         return new JournalEmptyViewHolder(LayoutInflater.from(context)
@@ -123,24 +139,31 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
 
   @Override
   public int getItemViewType(int i) {
-    return list.getCurrentList().get(i).getItemType();
+    return list.getCurrentList()
+               .get(i)
+               .getItemType();
   }
 
   @Override
   public void onBindViewHolder(
       @NonNull
-      JournalBaseViewHolder holder, int i) {
-    holder.bind(context, list.getCurrentList().get(i), true, i == currentHeader);
+      JournalBaseViewHolder holder,
+      int i) {
+    holder.bind(context, list.getCurrentList()
+                             .get(i), true, i == currentHeader);
   }
 
   @Override
   public int getItemCount() {
-    return list.getCurrentList().size();
+    return list.getCurrentList()
+               .size();
   }
 
   @Override
   public void onUpdate(List<Queryable> list) {
-    this.list.submitList(DataBase.get().getJournalsDataProvider().getList());
+    this.list.submitList(DataBase.get()
+                                 .getJournalsDataProvider()
+                                 .getList());
     onList.onUpdate(list);
   }
 
@@ -149,7 +172,9 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
       @NonNull
       RecyclerView recyclerView) {
     super.onDetachedFromRecyclerView(recyclerView);
-    DataBase.get().getJournalsDataProvider().removeOnDataListener(this);
+    DataBase.get()
+            .getJournalsDataProvider()
+            .removeOnDataListener(this);
   }
 
   @Override
@@ -157,15 +182,19 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
       @NonNull
       RecyclerView recyclerView) {
     super.onAttachedToRecyclerView(recyclerView);
-    DataBase.get().getJournalsDataProvider().addOnDataListener(this);
+    DataBase.get()
+            .getJournalsDataProvider()
+            .addOnDataListener(this);
   }
 
   @Override
   public Integer getHeaderPositionForItem(Integer i) {
-    Queryable q = list.getCurrentList().get(i);
+    Queryable q = list.getCurrentList()
+                      .get(i);
 
-    while (!(q instanceof Header) && i > 0)
-      q = list.getCurrentList().get(--i);
+    while (!(q instanceof HeaderMatter) && i > 0)
+      q = list.getCurrentList()
+              .get(--i);
 
     notifyItemChanged(currentHeader);
     currentHeader = i + 1;
@@ -176,24 +205,30 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
 
   @Override
   public Integer getHeaderLayout(Integer i) {
-    if (list.getCurrentList().get(i) instanceof Header)
+    if (list.getCurrentList()
+            .get(i) instanceof HeaderMatter)
       return R.layout.journal_header_color;
     else
       return R.layout.header_empty;
   }
 
   @Override
-  public void bindHeaderData(View header, Integer i) {
-    if (!(list.getCurrentList().get(i) instanceof Header))
+  public void bindHeaderData(View header,
+                             Integer i) {
+    if (!(list.getCurrentList()
+              .get(i) instanceof HeaderMatter))
       return;
 
-    Header h = (Header) list.getCurrentList().get(i);
+    HeaderMatter h = (HeaderMatter) list.getCurrentList()
+                                        .get(i);
 
     int n = h.getJournalNotSeenCount();
+    ColorRoles colorRoles = ColorsUtils.harmonizeWithPrimary(context, h.getColor());
 
-    TextView b = header.findViewById(R.id.badge);
-    b.setText(n > 0 ? String.valueOf(n) : "");
-    b.setBackgroundTintList(ColorStateList.valueOf(h.getColor()));
+    TextView badge = header.findViewById(R.id.badge);
+    badge.setText(n > 0 ? String.valueOf(n) : "");
+    badge.setBackgroundTintList(ColorStateList.valueOf(colorRoles.getAccentContainer()));
+    badge.setTextColor(colorRoles.getOnAccentContainer());
   }
 
   @Override
@@ -201,7 +236,9 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
     if (i < 0)
       return false;
 
-    Queryable q = list.getCurrentList().get(i);
-    return q instanceof Header;
+    Queryable q = list.getCurrentList()
+                      .get(i);
+
+    return q instanceof HeaderMatter;
   }
 }

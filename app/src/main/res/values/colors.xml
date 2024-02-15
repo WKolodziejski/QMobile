@@ -4,14 +4,15 @@
     <color name="colorPrimaryDark">@color/grey_300</color>
     <color name="colorPrimaryLight">@color/grey_50</color>
     <color name="colorAccent">@color/grey_800</color>
+
 <!--    <color name="colorSecondary">@color/grey_500</color>-->
-    <color name="notificationBackground">@color/blue_50</color>
+<!--    <color name="notificationBackground">@color/blue_50</color>-->
 <!--    <color name="headerBackground">#FFFFFF</color>-->
-    <color name="selectionBackground">@color/red_100</color>
-    <color name="blackDividers">@color/black_d</color>
-    <color name="whiteDividers">@color/white_d</color>
-    <color name="message_seen">@color/grey_600</color>
-    <color name="message_not_seen">@color/colorPrimary</color>
+<!--    <color name="selectionBackground">@color/red_100</color>-->
+<!--    <color name="blackDividers">@color/black_d</color>-->
+<!--    <color name="whiteDividers">@color/white_d</color>-->
+<!--    <color name="message_seen">@color/grey_600</color>-->
+<!--    <color name="message_not_seen">@color/colorPrimary</color>-->
 <!--    <color name="message_sign">@color/grey_50</color>-->
 <!--    <color name="message_solved">@color/amber_a700</color>-->
 <!--    <color name="badge">#A70724</color>-->
@@ -20,14 +21,14 @@
 
 <!--    <color name="actionBar">@color/colorPrimaryDark</color>-->
 
-    <color name="cardStroke">@color/black_d</color>
+<!--    <color name="cardStroke">@color/black_d</color>-->
     <color name="transparent">@android:color/transparent</color>
 
-    <color name="error">#B00020</color>
+<!--    <color name="error">#B00020</color>-->
 
-    <color name="good">@color/green_500</color>
-    <color name="ok">@color/blue_500</color>
-    <color name="bad">@color/red_500</color>
+<!--    <color name="good">@color/green_500</color>-->
+<!--    <color name="ok">@color/blue_500</color>-->
+<!--    <color name="bad">@color/red_500</color>-->
 
     <color name="warningRed">@color/red_100</color>
     <color name="warningYellow">@color/yellow_100</color>

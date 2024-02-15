@@ -11,6 +11,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.databinding.ClassItemBinding;
 import com.tinf.qmobile.model.matter.Clazz;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
   private final ClassItemBinding binding;
@@ -37,8 +38,16 @@ public class ClassItemViewHolder extends ClassBaseViewHolder<Clazz> {
     });
 
     if (clazz.highlight) {
-      itemView.setBackgroundColor(context.getColor(R.color.notificationBackground));
+      itemView.setBackgroundColor(
+          ColorsUtils.getColor(context, com.google.android.material.R.attr.colorPrimaryContainer));
+      setTextColor(ColorsUtils.getColor(context,
+                                        com.google.android.material.R.attr.colorOnPrimaryContainer));
     }
+  }
+
+  private void setTextColor(int color) {
+    binding.date.setTextColor(color);
+    binding.content.setTextColor(color);
   }
 
 }

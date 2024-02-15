@@ -34,8 +34,6 @@ public class ClassParser extends BaseParser {
 
   @Override
   public void parse(Document document) {
-    Log.d(TAG, "Parsing");
-
     Elements as = document.getElementsByAttributeValue("href",
                                                        Client.get().getURL() + INDEX + PG_JOURNALS +
                                                        "&ANO_PERIODO=" + matter.getYear_() + "_" +

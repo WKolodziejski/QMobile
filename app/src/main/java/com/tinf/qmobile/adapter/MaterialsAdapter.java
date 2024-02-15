@@ -24,11 +24,11 @@ import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
 import com.tinf.qmobile.holder.material.MaterialEmptyViewHolder;
+import com.tinf.qmobile.holder.material.MaterialHeaderColorViewHolder;
+import com.tinf.qmobile.holder.material.MaterialItemViewHolder;
 import com.tinf.qmobile.holder.material.MaterialHeaderViewHolder;
-import com.tinf.qmobile.holder.material.MaterialViewHolder;
-import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.model.journal.Header;
+import com.tinf.qmobile.model.journal.HeaderMatter;
 import com.tinf.qmobile.model.material.Material;
 
 import java.util.List;
@@ -39,7 +39,7 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
   private final OnList<Queryable> onList;
   private int currentHeader;
 
-  public MaterialsAdapter(Context context, OnInteractListener listener, OnList<Queryable> onList) {
+  public MaterialsAdapter(Context context, OnMaterialInteractListener listener, OnList<Queryable> onList) {
     super(context, listener);
     this.onList = onList;
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
@@ -90,18 +90,18 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
       ViewGroup parent, int viewType) {
     switch (viewType) {
       case MATTER:
-        return new MatterViewHolder(LayoutInflater.from(context)
-                                                  .inflate(R.layout.material_header, parent,
+        return new MaterialHeaderViewHolder(LayoutInflater.from(context)
+                                                          .inflate(R.layout.material_header, parent,
                                                            false));
 
       case MATERIAL:
-        return new MaterialViewHolder(LayoutInflater.from(context)
-                                                    .inflate(R.layout.material_item, parent,
+        return new MaterialItemViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.material_item, parent,
                                                              false));
 
       case HEADER:
-        return new MaterialHeaderViewHolder(LayoutInflater.from(context)
-                                                          .inflate(R.layout.header_empty, parent,
+        return new MaterialHeaderColorViewHolder(LayoutInflater.from(context)
+                                                               .inflate(R.layout.header_empty, parent,
                                                                    false));
 
       case EMPTY:
@@ -157,7 +157,7 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
   public Integer getHeaderPositionForItem(Integer i) {
     Queryable q = list.getCurrentList().get(i);
 
-    while (!(q instanceof Header) && i > 0)
+    while (!(q instanceof HeaderMatter) && i > 0)
       q = list.getCurrentList().get(--i);
 
     notifyItemChanged(currentHeader);
@@ -169,7 +169,7 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
 
   @Override
   public Integer getHeaderLayout(Integer i) {
-    if (list.getCurrentList().get(i) instanceof Header)
+    if (list.getCurrentList().get(i) instanceof HeaderMatter)
       return R.layout.journal_header_color;
     else
       return R.layout.header_empty;
@@ -177,10 +177,10 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
 
   @Override
   public void bindHeaderData(View header, Integer i) {
-    if (!(list.getCurrentList().get(i) instanceof Header))
+    if (!(list.getCurrentList().get(i) instanceof HeaderMatter))
       return;
 
-    Header h = (Header) list.getCurrentList().get(i);
+    HeaderMatter h = (HeaderMatter) list.getCurrentList().get(i);
 
     int n = h.getJournalNotSeenCount();
 
@@ -195,6 +195,6 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
       return false;
 
     Queryable q = list.getCurrentList().get(i);
-    return q instanceof Header;
+    return q instanceof HeaderMatter;
   }
 }
