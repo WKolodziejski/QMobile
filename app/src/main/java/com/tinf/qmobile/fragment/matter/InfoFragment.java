@@ -34,7 +34,6 @@ import java.util.Locale;
 import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
-import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.LineChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
@@ -67,13 +66,17 @@ public class InfoFragment extends Fragment {
 
     DataObserver observer = data -> setText(false);
 
-    sub1 = DataBase.get().getBoxStore().subscribe(Journal.class)
+    sub1 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Journal.class)
                    .on(AndroidScheduler.mainThread())
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub2 = DataBase.get().getBoxStore().subscribe(Matter.class)
+    sub2 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Matter.class)
                    .on(AndroidScheduler.mainThread())
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
@@ -83,7 +86,9 @@ public class InfoFragment extends Fragment {
   @Override
   public View onCreateView(
       @NonNull
-      LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      LayoutInflater inflater,
+      ViewGroup container,
+      Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_info, container, false);
     binding = FragmentInfoBinding.bind(view);
     return view;
@@ -104,7 +109,10 @@ public class InfoFragment extends Fragment {
   }
 
   private void setText(boolean onCreate) {
-    Matter matter = DataBase.get().getBoxStore().boxFor(Matter.class).get(id);
+    Matter matter = DataBase.get()
+                            .getBoxStore()
+                            .boxFor(Matter.class)
+                            .get(id);
 
     if (matter == null)
       return;
@@ -128,7 +136,8 @@ public class InfoFragment extends Fragment {
     List<SliceValue> values = new ArrayList<>();
 
     values.add(new SliceValue(classesLeft)
-                   .setColor(App.getContext().getColor(R.color.colorPrimaryDark))
+                   .setColor(App.getContext()
+                                .getColor(R.color.colorPrimaryDark))
                    .setLabel(""));
 
     if (presences > 0) {
@@ -164,7 +173,8 @@ public class InfoFragment extends Fragment {
     binding.classesTxtL.setText(matter.getClassesGivenString());
     binding.classesTxtR.setText(matter.getClassesTotalString());
     binding.classesProgress.setIndicatorColor(color1);
-    binding.classesProgress.setTrackColor(App.getContext().getColor(R.color.colorPrimaryDark));
+    binding.classesProgress.setTrackColor(App.getContext()
+                                             .getColor(R.color.colorPrimaryDark));
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       binding.classesProgress.setProgress(classesProgress, true);
     } else {
@@ -176,7 +186,8 @@ public class InfoFragment extends Fragment {
     binding.averageTxtR.setText(
         String.format(Locale.getDefault(), "%.1f", matter.getAllMaxGradesSum()));
     binding.averageProgress.setIndicatorColor(color1);
-    binding.averageProgress.setTrackColor(App.getContext().getColor(R.color.colorPrimaryDark));
+    binding.averageProgress.setTrackColor(App.getContext()
+                                             .getColor(R.color.colorPrimaryDark));
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       binding.averageProgress.setProgress(averageProgress, true);
     } else {
@@ -250,7 +261,9 @@ public class InfoFragment extends Fragment {
 
       binding.chartGrades.setOnValueTouchListener(new LineChartOnValueSelectListener() {
         @Override
-        public void onValueSelected(int lineIndex, int pointIndex, PointValue value) {
+        public void onValueSelected(int lineIndex,
+                                    int pointIndex,
+                                    PointValue value) {
           Intent intent = new Intent(getContext(), EventViewActivity.class);
           intent.putExtra("ID", journals.get(pointIndex).id);
           intent.putExtra("TYPE", JOURNAL);

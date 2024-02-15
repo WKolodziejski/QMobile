@@ -55,7 +55,6 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
 
     JournalsAdapter adapter = new JournalsAdapter(getContext(), this::onUpdate);
 
-    binding.recycler.setItemViewCacheSize(20);
     binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
     binding.recycler.addItemDecoration(new CustomItemDivider(getContext()));
     binding.recycler.setItemAnimator(null);

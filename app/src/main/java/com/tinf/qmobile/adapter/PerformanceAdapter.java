@@ -71,7 +71,7 @@ public class PerformanceAdapter extends RecyclerView.Adapter<PerformanceViewHold
                    .observer(observer);
   }
 
-  private void updateList() {
+  private synchronized void updateList() {
     DataBase.get().execute(() -> {
       List<Queryable> list = getList();
       handler.post(() -> this.list.submitList(list));

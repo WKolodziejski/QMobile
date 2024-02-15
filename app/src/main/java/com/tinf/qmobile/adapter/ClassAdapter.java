@@ -79,7 +79,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassBaseViewHolder> {
                    .observer(observer);
   }
 
-  private void updateList(Bundle bundle) {
+  private synchronized void updateList(Bundle bundle) {
     DataBase.get().execute(() -> {
       List<Queryable> list = getList(bundle);
 

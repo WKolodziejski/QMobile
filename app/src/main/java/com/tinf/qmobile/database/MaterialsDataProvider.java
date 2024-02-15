@@ -17,7 +17,7 @@ import java.util.List;
 
 import io.objectbox.reactive.DataSubscription;
 
-public class MaterialsDataProvider extends BaseDataProvider {
+public class MaterialsDataProvider extends BaseDataProvider<Queryable> {
   private DataSubscription sub1;
   private DataSubscription sub2;
   public final LongSparseArray<Long> downloading;

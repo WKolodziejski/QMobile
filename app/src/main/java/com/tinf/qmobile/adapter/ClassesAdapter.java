@@ -61,7 +61,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
   private final DataSubscription sub2;
   private final Handler handler;
 
-  public ClassesAdapter(Context context, Bundle bundle) {
+  public ClassesAdapter(Context context,
+                        Bundle bundle) {
     this.context = context;
     this.handler = new Handler(Looper.getMainLooper());
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
@@ -88,23 +89,28 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
     DataObserver observer = data -> updateList(bundle);
 
-    sub1 = DataBase.get().getBoxStore().subscribe(Matter.class)
+    sub1 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Matter.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub2 = DataBase.get().getBoxStore().subscribe(Clazz.class)
+    sub2 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Clazz.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
   }
 
-  private void updateList(Bundle bundle) {
-    DataBase.get().execute(() -> {
-      List<CalendarBase> list = getList(bundle);
+  private synchronized void updateList(Bundle bundle) {
+    DataBase.get()
+            .execute(() -> {
+              List<CalendarBase> list = getList(bundle);
 
-      handler.post(() -> this.list.submitList(list));
-    });
+              handler.post(() -> this.list.submitList(list));
+            });
   }
 
   private List<CalendarBase> getList(Bundle bundle) {
@@ -112,7 +118,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
     List<CalendarBase> ret = new ArrayList<>();
     List<Clazz> classes = new ArrayList<>();
 
-    Matter matter = DataBase.get().getBoxStore()
+    Matter matter = DataBase.get()
+                            .getBoxStore()
                             .boxFor(Matter.class)
                             .get(bundle.getLong("ID"));
 
@@ -165,14 +172,17 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
                                                                .withMaximumValue()
                                                                .toLocalDate();
 
-    if (Months.monthsBetween(minDate, maxDate).getMonths() == 0) {
+    if (Months.monthsBetween(minDate, maxDate)
+              .getMonths() == 0) {
       maxDate = maxDate.plusMonths(1);
     }
 
     LocalDate monthCounter = minDate;
 
-    for (int i = 0; i < Months.monthsBetween(minDate, maxDate).getMonths(); i++) {
-      Month month = new Month(monthCounter.toDate().getTime());
+    for (int i = 0; i < Months.monthsBetween(minDate, maxDate)
+                              .getMonths(); i++) {
+      Month month = new Month(monthCounter.toDate()
+                                          .getTime());
       //Log.d(month.getMonth(), String.valueOf(monthCounter.toDate().getTime()));
 
       List<CalendarBase> list = map.get(month.getHashKey());
@@ -184,11 +194,18 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
       list.add(0, month);
 
-      DateTime startDay = monthCounter.dayOfMonth().withMinimumValue().toDateTimeAtStartOfDay();
-      LocalDate week = startDay.dayOfWeek().withMaximumValue().toLocalDate();//.minusDays(1);
+      DateTime startDay = monthCounter.dayOfMonth()
+                                      .withMinimumValue()
+                                      .toDateTimeAtStartOfDay();
+      LocalDate week = startDay.dayOfWeek()
+                               .withMaximumValue()
+                               .toLocalDate();//.minusDays(1);
 
-      while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
-        Day day = new Day(week.toDate(), week.plusDays(6).toDate());
+      while (week.compareTo(startDay.dayOfMonth()
+                                    .withMaximumValue()
+                                    .toLocalDate()) < 0) {
+        Day day = new Day(week.toDate(), week.plusDays(6)
+                                             .toDate());
 
         List<CalendarBase> list2 = map.get(day.getHashKey());
 
@@ -214,7 +231,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       cal.set(Calendar.MILLISECOND, 0);
 
       List<CalendarBase> list = map.get(key);
-      Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
+      Collections.sort(list, (t1, t2) -> t1.getHashKey()
+                                           .compareTo(t2.getHashKey()));
 
       boolean hasHeader = false;
 
@@ -244,7 +262,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
   @Override
   public CalendarViewHolder onCreateViewHolder(
       @NonNull
-      ViewGroup parent, int viewType) {
+      ViewGroup parent,
+      int viewType) {
     switch (viewType) {
       case CLASS:
         return new EventClazzVerticalViewHolder(LayoutInflater.from(context)
@@ -277,7 +296,9 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
   @Override
   public int getItemViewType(int i) {
-    return list.getCurrentList().get(i).getItemType();
+    return list.getCurrentList()
+               .get(i)
+               .getItemType();
   }
 
   @Override
@@ -289,7 +310,8 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
   @Override
   public int getItemCount() {
-    return list.getCurrentList().size();
+    return list.getCurrentList()
+               .size();
   }
 
   @Override

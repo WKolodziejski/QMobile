@@ -59,9 +59,10 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
                                        .toLocalDate();
     LocalDate monthCounter = minDate;
 
-    for (int i = 0; i < Months.monthsBetween(minDate, maxDate).getMonths(); i++) {
-      Month month = new Month(monthCounter.toDate().getTime());
-      //Log.d(month.getMonth(), String.valueOf(monthCounter.toDate().getTime()));
+    for (int i = 0; i < Months.monthsBetween(minDate, maxDate)
+                              .getMonths(); i++) {
+      Month month = new Month(monthCounter.toDate()
+                                          .getTime());
 
       List<CalendarBase> list = map.get(month.getHashKey());
 
@@ -72,12 +73,18 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
 
       list.add(0, month);
 
-      DateTime startDay = monthCounter.dayOfMonth().withMinimumValue().toDateTimeAtStartOfDay();
-      LocalDate week = startDay.dayOfWeek().withMaximumValue().toLocalDate();//.minusDays(1);
+      DateTime startDay = monthCounter.dayOfMonth()
+                                      .withMinimumValue()
+                                      .toDateTimeAtStartOfDay();
+      LocalDate week = startDay.dayOfWeek()
+                               .withMaximumValue()
+                               .toLocalDate();
 
-      while (week.compareTo(startDay.dayOfMonth().withMaximumValue().toLocalDate()) < 0) {
-        Day day = new Day(week.toDate(), week.plusDays(6).toDate());
-        //Log.d(day.getDayPeriod(), String.valueOf(week.toDate().getTime()));
+      while (week.compareTo(startDay.dayOfMonth()
+                                    .withMaximumValue()
+                                    .toLocalDate()) < 0) {
+        Day day = new Day(week.toDate(), week.plusDays(6)
+                                             .toDate());
 
         List<CalendarBase> list2 = map.get(day.getHashKey());
 

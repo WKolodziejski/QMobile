@@ -69,14 +69,17 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
       }
     });
 
-    onUpdate(DataBase.get().getJournalsDataProvider().getList());
+    onUpdate(DataBase.get()
+                     .getJournalsDataProvider()
+                     .getList());
   }
 
   @NonNull
   @Override
   public JournalBaseViewHolder onCreateViewHolder(
       @NonNull
-      ViewGroup parent, int viewType) {
+      ViewGroup parent,
+      int viewType) {
     switch (viewType) {
       case MATTER:
         return new JournalHeaderViewHolder(LayoutInflater.from(context)

@@ -90,7 +90,7 @@ public class GradesAdapter extends RecyclerView.Adapter<JournalBaseViewHolder> {
                    .observer(observer);
   }
 
-  private void updateList(Bundle bundle) {
+  private synchronized void updateList(Bundle bundle) {
     DataBase.get().execute(() -> {
       List<Queryable> list = getList(bundle);
       handler.post(() -> this.list.submitList(list));
