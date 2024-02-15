@@ -1,4 +1,4 @@
-package com.tinf.qmobile.fragment.matter;
+package com.tinf.qmobile.adapter.tab;
 
 import android.os.Bundle;
 
@@ -9,6 +9,10 @@ import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.tinf.qmobile.fragment.ScheduleFragment;
+import com.tinf.qmobile.fragment.matter.ClassFragment;
+import com.tinf.qmobile.fragment.matter.GradesFragment;
+import com.tinf.qmobile.fragment.matter.InfoFragment;
+import com.tinf.qmobile.fragment.matter.SuppliesFragment;
 
 public class MatterTabsAdapter extends FragmentStateAdapter {
   private final Bundle bundle;

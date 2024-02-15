@@ -4,6 +4,7 @@ import static com.tinf.qmobile.model.ViewType.PERIOD;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Journal;
+import com.tinf.qmobile.utility.ChartUtils;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -81,7 +82,7 @@ public class Period implements Queryable {
     return p == -1 ? "-" : String.format(Locale.getDefault(), "%.1f", p);
   }
 
-  public float getPlotGrade() {
+  public float getPartialGrade() {
     if (journals.isEmpty())
       return 0;
 
@@ -96,15 +97,11 @@ public class Period implements Queryable {
     if (weight == 0)
       return sum;
 
-    return (sum / weight) * 10;
+    return (sum / weight) * ChartUtils.getAverageGrade();
   }
 
-  public String getPlotGradeString() {
-    return String.format(Locale.getDefault(), "%.1f", getPlotGrade());
-  }
-
-  public String getLabel() {
-    return String.format(Locale.getDefault(), "%.1f", getPlotGrade());
+  public String getPartialGradeString() {
+    return String.format(Locale.getDefault(), "%.1f", getPartialGrade());
   }
 
   public void setSub() {

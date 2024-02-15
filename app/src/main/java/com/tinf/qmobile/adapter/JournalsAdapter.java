@@ -1,11 +1,11 @@
 package com.tinf.qmobile.adapter;
 
 import static com.tinf.qmobile.model.ViewType.EMPTY;
-import static com.tinf.qmobile.model.ViewType.FOOTERJOURNAL;
-import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
+import static com.tinf.qmobile.model.ViewType.FOOTER_JOURNAL;
+import static com.tinf.qmobile.model.ViewType.FOOTER_PERIOD;
 import static com.tinf.qmobile.model.ViewType.HEADER;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
-import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNAL_EMPTY;
 import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.PERIOD;
 
@@ -31,7 +31,7 @@ import com.tinf.qmobile.holder.journal.JournalEmptyViewHolder;
 import com.tinf.qmobile.holder.journal.JournalFooterViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderColorViewHolder;
 import com.tinf.qmobile.holder.journal.JournalHeaderViewHolder;
-import com.tinf.qmobile.holder.journal.JournalViewHolder;
+import com.tinf.qmobile.holder.journal.JournalItemViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodFooterViewHolder;
 import com.tinf.qmobile.holder.journal.PeriodHeaderViewHolder;
 import com.tinf.qmobile.model.Queryable;
@@ -84,15 +84,15 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
                                                                   false));
 
       case JOURNAL:
-        return new JournalViewHolder(LayoutInflater.from(context)
-                                                   .inflate(R.layout.journal_item, parent, false));
+        return new JournalItemViewHolder(LayoutInflater.from(context)
+                                                       .inflate(R.layout.journal_item, parent, false));
 
-      case FOOTERJOURNAL:
+      case FOOTER_JOURNAL:
         return new JournalFooterViewHolder(LayoutInflater.from(context)
                                                          .inflate(R.layout.journal_footer, parent,
                                                                   false));
 
-      case FOOTERPERIOD:
+      case FOOTER_PERIOD:
         return new PeriodFooterViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.period_footer, parent,
                                                                  false));
@@ -102,7 +102,7 @@ public class JournalsAdapter extends RecyclerView.Adapter<JournalBaseViewHolder>
                                                         .inflate(R.layout.period_header, parent,
                                                                  false));
 
-      case JOURNALEMPTY:
+      case JOURNAL_EMPTY:
         return new JournalEmptyViewHolder(LayoutInflater.from(context)
                                                         .inflate(R.layout.journal_item_empty,
                                                                  parent, false));

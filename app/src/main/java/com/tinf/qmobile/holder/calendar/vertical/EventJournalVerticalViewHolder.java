@@ -35,7 +35,7 @@ public class EventJournalVerticalViewHolder extends CalendarViewHolder<Journal> 
       context.startActivity(intent);
     });
 
-    if (journal.isHeader) {
+    if (journal.isHeader()) {
       binding.header.day.setText(journal.getWeekString());
       binding.header.number.setText(journal.getDayString());
       binding.header.layout.setVisibility(View.VISIBLE);

@@ -23,8 +23,6 @@ public class CalendarParser extends BaseParser {
 
   @Override
   public void parse(Document document) {
-    Log.i(TAG, "Parsing");
-
     Elements months = document.getElementsByTag("table")
                               .get(10)
                               .getElementsByTag("tbody")

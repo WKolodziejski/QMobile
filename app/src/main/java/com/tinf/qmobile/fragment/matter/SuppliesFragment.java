@@ -27,11 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.App;
 import com.tinf.qmobile.R;
-import com.tinf.qmobile.adapter.OnInteractListener;
+import com.tinf.qmobile.adapter.OnMaterialInteractListener;
 import com.tinf.qmobile.adapter.SuppliesAdapter;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.service.DownloadReceiver;
-import com.tinf.qmobile.widget.divider.CustomlItemDivider;
+import com.tinf.qmobile.widget.divider.CustomItemDivider;
 
 public class SuppliesFragment extends Fragment {
   private BroadcastReceiver receiver;
@@ -85,7 +85,7 @@ public class SuppliesFragment extends Fragment {
       Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    adapter = new SuppliesAdapter(getContext(), getArguments(), new OnInteractListener() {
+    adapter = new SuppliesAdapter(getContext(), getArguments(), new OnMaterialInteractListener() {
 
       @Override
       public boolean isSelectionMode() {
@@ -121,9 +121,8 @@ public class SuppliesFragment extends Fragment {
     });
 
     RecyclerView recycler = view.findViewById(R.id.recycler);
-    recycler.setItemViewCacheSize(20);
     recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-    recycler.addItemDecoration(new CustomlItemDivider(getContext()));
+    recycler.addItemDecoration(new CustomItemDivider(getContext()));
     recycler.setItemAnimator(null);
     recycler.setAdapter(adapter);
   }

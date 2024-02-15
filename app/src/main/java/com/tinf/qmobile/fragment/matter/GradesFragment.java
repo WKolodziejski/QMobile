@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.GradesAdapter;
-import com.tinf.qmobile.widget.divider.CustomlItemDivider;
+import com.tinf.qmobile.widget.divider.CustomItemDivider;
 
 public class GradesFragment extends Fragment {
 
@@ -21,7 +21,7 @@ public class GradesFragment extends Fragment {
   public View onCreateView(
       @NonNull
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_grades, container, false);
+    return inflater.inflate(R.layout.fragment_journals, container, false);
   }
 
   @Override
@@ -33,10 +33,7 @@ public class GradesFragment extends Fragment {
     super.onViewCreated(view, savedInstanceState);
 
     RecyclerView recycler = view.findViewById(R.id.recycler);
-    recycler.setItemViewCacheSize(20);
-    recycler.setDrawingCacheEnabled(true);
-    recycler.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-    recycler.addItemDecoration(new CustomlItemDivider(getContext()));
+    recycler.addItemDecoration(new CustomItemDivider(getContext()));
     recycler.setLayoutManager(new LinearLayoutManager(getContext()));
     recycler.setAdapter(new GradesAdapter(getContext(), getArguments()));
   }

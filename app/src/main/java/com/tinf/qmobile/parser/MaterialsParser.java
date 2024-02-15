@@ -38,8 +38,6 @@ public class MaterialsParser extends BaseParser {
 
   @Override
   public void parse(Document document) {
-    Log.i(TAG, "Parsing");
-
     Element table = document.getElementsByTag("tbody").get(10);
     Elements rotulos = table.getElementsByClass("rotulo");
 

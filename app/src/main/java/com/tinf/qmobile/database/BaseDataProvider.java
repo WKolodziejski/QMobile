@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import io.objectbox.reactive.DataObserver;
 
 public abstract class BaseDataProvider<T> implements OnUpdate {
-  protected final List<OnData> listeners;
+  protected final List<OnData<T>> listeners;
   protected final DataObserver observer;
   private final ExecutorService executors;
   protected final Handler handler;
@@ -26,7 +26,7 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
 
   protected abstract void open();
 
-  public BaseDataProvider() {
+  protected BaseDataProvider() {
     this.list = new ArrayList<>();
     this.listeners = new LinkedList<>();
     this.executors = Executors.newFixedThreadPool(2);
@@ -39,21 +39,21 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
     updateList();
   }
 
-  public void updateList() {
+  public synchronized void updateList() {
     executors.execute(() -> {
       list = buildList();
       handler.post(this::callOnData);
     });
   }
 
-  public void addOnDataListener(OnData onData) {
+  public void addOnDataListener(OnData<T> onData) {
     Log.d(getClass().getName(), "Added listener from " + onData);
 
     if (onData != null && !listeners.contains(onData))
       listeners.add(onData);
   }
 
-  public void removeOnDataListener(OnData onData) {
+  public void removeOnDataListener(OnData<T> onData) {
     Log.d(getClass().getName(), "Removed listener from " + onData);
 
     if (onData != null)
@@ -61,7 +61,7 @@ public abstract class BaseDataProvider<T> implements OnUpdate {
   }
 
   private void callOnData() {
-    for (OnData onData : listeners)
+    for (OnData<T> onData : listeners)
       onData.onUpdate(list);
   }
 

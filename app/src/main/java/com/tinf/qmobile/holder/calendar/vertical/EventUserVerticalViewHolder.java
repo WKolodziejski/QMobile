@@ -77,7 +77,7 @@ public class EventUserVerticalViewHolder extends CalendarViewHolder<EventUser> {
       context.startActivity(intent);
     });
 
-    if (event.isHeader) {
+    if (event.isHeader()) {
       binding.header.day.setText(event.getWeekString());
       binding.header.number.setText(event.getDayString());
       binding.header.layout.setVisibility(View.VISIBLE);

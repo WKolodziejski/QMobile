@@ -31,7 +31,7 @@ import io.objectbox.Box;
 public abstract class MaterialsBaseAdapter extends RecyclerView.Adapter<MaterialBaseViewHolder> {
   protected final Context context;
   private final List<Long> selected;
-  protected final OnInteractListener listener;
+  protected final OnMaterialInteractListener listener;
 
   private final Box<Material> box = DataBase.get().getBoxStore().boxFor(Material.class);
   private final LongSparseArray<Long> downloading =
@@ -39,7 +39,7 @@ public abstract class MaterialsBaseAdapter extends RecyclerView.Adapter<Material
 
   protected abstract List<Queryable> getList();
 
-  public MaterialsBaseAdapter(Context context, OnInteractListener listener) {
+  public MaterialsBaseAdapter(Context context, OnMaterialInteractListener listener) {
     this.context = context;
     this.listener = listener;
     this.selected = new LinkedList<>();

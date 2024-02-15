@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -19,11 +18,11 @@ public class PopUpFragment extends BottomSheetDialogFragment {
   private TextView title;
   private TextView message;
   private CheckBox checkBox;
-  private String t, m;
-  private WebView webView;
+  private String t;
+  private String m;
 
-  public void setComponents(WebView webView, String t, String m) {
-    this.webView = webView;
+  public void setComponents(String t,
+                            String m) {
     this.t = t;
     this.m = m;
   }
@@ -61,10 +60,9 @@ public class PopUpFragment extends BottomSheetDialogFragment {
       DialogInterface dialog) {
     super.onDismiss(dialog);
 
-    if (checkBox.isChecked() && webView != null)
-      webView.loadUrl("javascript:(function() {" +
-                      "MarcarComoLida(mensagens[indiceMensagens].cod_mensagem);" +
-                      "})()");
+    if (checkBox.isChecked()) {
+      // TODO: não ver novamente
+    }
   }
 
 }

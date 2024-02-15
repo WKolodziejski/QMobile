@@ -46,7 +46,6 @@ public class ClassFragment extends Fragment {
     ClassesAdapter adapter = new ClassesAdapter(getContext(), getArguments());
 
     RecyclerView recyclerView = view.findViewById(R.id.recycler_class);
-    recyclerView.setItemViewCacheSize(20);
     recyclerView.addItemDecoration(new KmHeaderItemDecoration(adapter));
     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     recyclerView.setAdapter(adapter);

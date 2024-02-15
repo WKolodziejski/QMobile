@@ -6,7 +6,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.utility.DesignUtils;
 
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
@@ -44,7 +44,7 @@ public class CustomColumnChartRenderer extends AbstractChartRenderer {
 
   private final Viewport tempMaximumViewport = new Viewport();
 
-  private final float corner = Design.dpiToPixels(8);
+  private final float corner = DesignUtils.dpiToPixels(8);
 
   public CustomColumnChartRenderer(Context context, Chart chart,
                                    ColumnChartDataProvider dataProvider) {

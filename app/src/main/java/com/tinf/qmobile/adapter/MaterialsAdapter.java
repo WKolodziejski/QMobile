@@ -24,9 +24,8 @@ import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.database.OnList;
 import com.tinf.qmobile.holder.material.MaterialBaseViewHolder;
 import com.tinf.qmobile.holder.material.MaterialEmptyViewHolder;
+import com.tinf.qmobile.holder.material.MaterialItemViewHolder;
 import com.tinf.qmobile.holder.material.MaterialHeaderViewHolder;
-import com.tinf.qmobile.holder.material.MaterialViewHolder;
-import com.tinf.qmobile.holder.material.MatterViewHolder;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.journal.Header;
 import com.tinf.qmobile.model.material.Material;
@@ -39,7 +38,7 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
   private final OnList<Queryable> onList;
   private int currentHeader;
 
-  public MaterialsAdapter(Context context, OnInteractListener listener, OnList<Queryable> onList) {
+  public MaterialsAdapter(Context context, OnMaterialInteractListener listener, OnList<Queryable> onList) {
     super(context, listener);
     this.onList = onList;
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Queryable>() {
@@ -90,13 +89,13 @@ public class MaterialsAdapter extends MaterialsBaseAdapter
       ViewGroup parent, int viewType) {
     switch (viewType) {
       case MATTER:
-        return new MatterViewHolder(LayoutInflater.from(context)
-                                                  .inflate(R.layout.material_header, parent,
+        return new MaterialHeaderViewHolder(LayoutInflater.from(context)
+                                                          .inflate(R.layout.material_header, parent,
                                                            false));
 
       case MATERIAL:
-        return new MaterialViewHolder(LayoutInflater.from(context)
-                                                    .inflate(R.layout.material_item, parent,
+        return new MaterialItemViewHolder(LayoutInflater.from(context)
+                                                        .inflate(R.layout.material_item, parent,
                                                              false));
 
       case HEADER:

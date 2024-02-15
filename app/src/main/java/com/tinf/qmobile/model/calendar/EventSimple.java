@@ -13,7 +13,7 @@ import java.util.Objects;
 import io.objectbox.annotation.Entity;
 
 @Entity
-public class EventSimple extends EventBase {
+public class EventSimple extends Event {
   public enum Type {
     INICIO(1),
     FIM(2);
@@ -85,17 +85,6 @@ public class EventSimple extends EventBase {
   public int hashCode() {
     return Objects.hash(super.hashCode(), getType());
   }
-
-    /*@Override
-    public boolean equals(CalendarBase event) {
-        if (event instanceof EventSimple) {
-            EventSimple e = (EventSimple) event;
-
-            return super.equals(event)
-                    && e.getType() == type;
-        }
-        return false;
-    }*/
 
   @Override
   public long getId() {

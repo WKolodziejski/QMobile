@@ -29,6 +29,8 @@ public class Message implements Queryable {
   public ToMany<Attachment> attachments;
   public ToOne<Sender> sender;
 
+  private static final SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
+
   public Message(int uid_, float date_, String subject_, Sender sender, boolean hasAtt_) {
     this.uid_ = uid_;
     this.date_ = date_;
@@ -42,7 +44,6 @@ public class Message implements Queryable {
   }
 
   public String formatDate() {
-    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
     return format.format(date_);
   }
 

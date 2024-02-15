@@ -16,6 +16,8 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.ActivityEventCreateBinding;
 import com.tinf.qmobile.fragment.create.EventCreateFragment;
 import com.tinf.qmobile.fragment.create.ScheduleCreateFragment;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 
 public class EventCreateActivity extends AppCompatActivity {
   public ActivityEventCreateBinding binding;
@@ -26,12 +28,13 @@ public class EventCreateActivity extends AppCompatActivity {
       @Nullable
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityEventCreateBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     setSupportActionBar(binding.toolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setHomeAsUpIndicator(
-        ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_cancel));
+        DesignUtils.getDrawable(this, R.drawable.ic_cancel));
 
     //alarmReceiver = new AlarmReceiver();
 

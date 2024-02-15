@@ -6,10 +6,12 @@ import static com.tinf.qmobile.model.ViewType.EMPTY;
 import static com.tinf.qmobile.model.ViewType.JOURNAL;
 import static com.tinf.qmobile.model.ViewType.MATTER;
 import static com.tinf.qmobile.model.ViewType.MONTH;
+import static com.tinf.qmobile.model.ViewType.PADDING;
 import static com.tinf.qmobile.model.ViewType.SIMPLE;
 import static com.tinf.qmobile.model.ViewType.USER;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,7 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.google.android.material.color.ColorRoles;
 import com.kodmap.library.kmrecyclerviewstickyheader.KmStickyListener;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.database.DataBase;
@@ -38,18 +40,23 @@ import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
+import com.tinf.qmobile.widget.calendar.view.CompactCalendarView;
 
 import java.util.List;
 
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
+public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder<CalendarBase>>
     implements KmStickyListener, OnData<CalendarBase> {
   private final Context context;
   private final AsyncListDiffer<CalendarBase> list;
   private final CompactCalendarView calendar;
+  private OnCalendar onCalendar;
 
-  public CalendarAdapter(Context context, CompactCalendarView calendar, OnCalendar onCalendar) {
+  public CalendarAdapter(Context context,
+                         CompactCalendarView calendar,
+                         OnCalendar onCalendar) {
     this.context = context;
     this.calendar = calendar;
+    this.onCalendar = onCalendar;
     this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<CalendarBase>() {
       @Override
       public boolean areItemsTheSame(
@@ -70,8 +77,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       }
     });
 
-    onUpdate(DataBase.get().getCalendarDataProvider().getList());
-    calendar.postDelayed(onCalendar::scrollToToday, 500);
+    onUpdate(DataBase.get()
+                     .getCalendarDataProvider()
+                     .getList());
   }
 
   public List<CalendarBase> getList() {
@@ -82,7 +90,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
   @Override
   public CalendarViewHolder onCreateViewHolder(
       @NonNull
-      ViewGroup parent, int viewType) {
+      ViewGroup parent,
+      int viewType) {
     switch (viewType) {
       case JOURNAL:
         return new EventJournalVerticalViewHolder(LayoutInflater.from(context)
@@ -134,27 +143,32 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
   @Override
   public int getItemViewType(int i) {
-    return list.getCurrentList().get(i).getItemType();
+    return list.getCurrentList()
+               .get(i)
+               .getItemType();
   }
 
   @Override
   public void onBindViewHolder(
       @NonNull
-      CalendarViewHolder holder, int i) {
-    holder.bind(list.getCurrentList().get(i), context);
+      CalendarViewHolder holder,
+      int i) {
+    holder.bind(list.getCurrentList()
+                    .get(i), context);
   }
 
   @Override
   public int getItemCount() {
-    return list.getCurrentList().size();
+    return list.getCurrentList()
+               .size();
   }
 
   @Override
   public Integer getHeaderPositionForItem(Integer i) {
-    CalendarBase e = list.getCurrentList().get(i);
+    CalendarBase e = list.getCurrentList()
+                         .get(i);
 
-    if (e instanceof Month || e instanceof Day)
-      return i;
+    if (e instanceof Month || e instanceof Day) return i;
 
     while (!(e instanceof Header) && i > 0)
       e = list.getCurrentList().get(--i);
@@ -195,9 +209,17 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
 
   @Override
   public void onUpdate(List<CalendarBase> list) {
-    this.list.submitList(DataBase.get().getCalendarDataProvider().getList());
+    this.list.submitList(DataBase.get()
+                                 .getCalendarDataProvider()
+                                 .getList(), () -> calendar.postDelayed(() -> {
+      if (onCalendar != null && onCalendar.scrollToToday()) {
+        onCalendar = null;
+      }
+    }, 500));
     this.calendar.removeAllEvents();
-    this.calendar.addEvents(DataBase.get().getCalendarDataProvider().getEvents());
+    this.calendar.addEvents(DataBase.get()
+                                    .getCalendarDataProvider()
+                                    .getEvents());
   }
 
   @Override
@@ -205,7 +227,9 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       @NonNull
       RecyclerView recyclerView) {
     super.onDetachedFromRecyclerView(recyclerView);
-    DataBase.get().getCalendarDataProvider().removeOnDataListener(this);
+    DataBase.get()
+            .getCalendarDataProvider()
+            .removeOnDataListener(this);
   }
 
   @Override
@@ -213,11 +237,13 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       @NonNull
       RecyclerView recyclerView) {
     super.onAttachedToRecyclerView(recyclerView);
-    DataBase.get().getCalendarDataProvider().addOnDataListener(this);
+    DataBase.get()
+            .getCalendarDataProvider()
+            .addOnDataListener(this);
   }
 
   public interface OnCalendar {
-    void scrollToToday();
+    boolean scrollToToday();
   }
 
 }

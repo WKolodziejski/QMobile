@@ -4,7 +4,7 @@ import static com.tinf.qmobile.model.ViewType.ATTACHMENT;
 
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.utility.DesignUtils;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
@@ -27,7 +27,7 @@ public class Attachment implements Queryable {
 
   public int getIcon() {
     if (title_.contains(".")) {
-      return Design.parseIcon(title_.substring(title_.lastIndexOf(".")).toLowerCase());
+      return DesignUtils.parseIcon(title_.substring(title_.lastIndexOf(".")).toLowerCase());
     } else {
       return R.drawable.ic_file;
     }

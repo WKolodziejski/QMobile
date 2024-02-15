@@ -2,11 +2,10 @@ package com.tinf.qmobile.database;
 
 import android.os.Build;
 
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 import com.tinf.qmobile.model.calendar.EventSimple;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.calendar.Header;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -94,12 +94,22 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       monthCounter = monthCounter.plusMonths(1);
     }
 
-    Box<EventUser> eventUserBox = DataBase.get().getBoxStore().boxFor(EventUser.class);
-    Box<Journal> eventJournalBox = DataBase.get().getBoxStore().boxFor(Journal.class);
-    Box<EventSimple> eventSimpleBox = DataBase.get().getBoxStore().boxFor(EventSimple.class);
-    Box<Clazz> clazzBox = DataBase.get().getBoxStore().boxFor(Clazz.class);
+    Box<EventUser> eventUserBox = DataBase.get()
+                                          .getBoxStore()
+                                          .boxFor(EventUser.class);
+    Box<Journal> eventJournalBox = DataBase.get()
+                                           .getBoxStore()
+                                           .boxFor(Journal.class);
+    Box<EventSimple> eventSimpleBox = DataBase.get()
+                                              .getBoxStore()
+                                              .boxFor(EventSimple.class);
+    Box<Clazz> clazzBox = DataBase.get()
+                                  .getBoxStore()
+                                  .boxFor(Clazz.class);
 
-    for (EventBase e : eventUserBox.query().build().find()) {
+    for (Event e : eventUserBox.query()
+                               .build()
+                               .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -110,7 +120,9 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       list.add(e);
     }
 
-    for (EventBase e : eventJournalBox.query().build().find()) {
+    for (Event e : eventJournalBox.query()
+                                  .build()
+                                  .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -121,7 +133,9 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       list.add(e);
     }
 
-    for (EventBase e : eventSimpleBox.query().build().find()) {
+    for (Event e : eventSimpleBox.query()
+                                 .build()
+                                 .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -132,7 +146,9 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       list.add(e);
     }
 
-    for (EventBase e : clazzBox.query().build().find()) {
+    for (Event e : clazzBox.query()
+                           .build()
+                           .find()) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -156,9 +172,10 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
 
       List<CalendarBase> list = map.get(key);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        Collections.sort(list, Comparator.comparing(CalendarBase::getHashKey));
+        Collections.sort(list, Comparator.comparing(CalendarBase::getDate));
       } else {
-        Collections.sort(list, (t1, t2) -> t1.getHashKey().compareTo(t2.getHashKey()));
+        Collections.sort(list, (t1, t2) -> t1.getDate()
+                                             .compareTo(t2.getDate()));
       }
 
       boolean hasHeader = false;
@@ -166,12 +183,12 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
       for (int i = 0; i < list.size(); i++) {
         CalendarBase cb = list.get(i);
 
-        if (cb instanceof EventBase) {
+        if (cb instanceof Event) {
           if (!hasHeader) {
             hasHeader = true;
             list.add(i, new Header(cal.getTimeInMillis()));
             i++;
-            ((EventBase) cb).isHeader = true;
+            ((Event) cb).setHeader(true);
           }
 
           eventsList.add((Event) cb);
@@ -193,27 +210,37 @@ public class CalendarDataProvider extends BaseDataProvider<CalendarBase> {
 
   @Override
   protected void open() {
-    sub1 = DataBase.get().getBoxStore().subscribe(EventUser.class)
+    sub1 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(EventUser.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub2 = DataBase.get().getBoxStore().subscribe(Journal.class)
+    sub2 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Journal.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub3 = DataBase.get().getBoxStore().subscribe(Matter.class)
+    sub3 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Matter.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub4 = DataBase.get().getBoxStore().subscribe(EventSimple.class)
+    sub4 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(EventSimple.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);
 
-    sub5 = DataBase.get().getBoxStore().subscribe(Clazz.class)
+    sub5 = DataBase.get()
+                   .getBoxStore()
+                   .subscribe(Clazz.class)
                    .onlyChanges()
                    .onError(Throwable::printStackTrace)
                    .observer(observer);

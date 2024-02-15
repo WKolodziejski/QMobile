@@ -1,6 +1,6 @@
 package com.tinf.qmobile.database;
 
-import static com.tinf.qmobile.model.ViewType.JOURNALEMPTY;
+import static com.tinf.qmobile.model.ViewType.JOURNAL_EMPTY;
 import static com.tinf.qmobile.network.Client.pos;
 
 import com.tinf.qmobile.model.Empty;
@@ -43,7 +43,7 @@ public class JournalsDataProvider extends BaseDataProvider<Queryable> {
       List<Journal> items = matter.getLastJournals();
 
       if (items.isEmpty()) {
-        list.add(new Empty(JOURNALEMPTY));
+        list.add(new Empty(JOURNAL_EMPTY));
       } else {
         list.addAll(items);
       }

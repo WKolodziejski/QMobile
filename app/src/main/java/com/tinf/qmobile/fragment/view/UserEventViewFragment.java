@@ -23,7 +23,7 @@ import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.EventCreateActivity;
 import com.tinf.qmobile.activity.MatterActivity;
 import com.tinf.qmobile.database.DataBase;
-import com.tinf.qmobile.databinding.FragmentViewEventBinding;
+import com.tinf.qmobile.databinding.FragmentViewUserEventBinding;
 import com.tinf.qmobile.model.calendar.EventUser;
 import com.tinf.qmobile.model.matter.Matter;
 
@@ -34,8 +34,8 @@ import io.objectbox.android.AndroidScheduler;
 import io.objectbox.reactive.DataObserver;
 import io.objectbox.reactive.DataSubscription;
 
-public class EventViewFragment extends Fragment {
-  private FragmentViewEventBinding binding;
+public class UserEventViewFragment extends Fragment {
+  private FragmentViewUserEventBinding binding;
   private DataSubscription sub1, sub2;
   private long id;
   private boolean lookup;
@@ -78,8 +78,8 @@ public class EventViewFragment extends Fragment {
       ViewGroup container,
       @Nullable
       Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_view_event, container, false);
-    binding = FragmentViewEventBinding.bind(view);
+    View view = inflater.inflate(R.layout.fragment_view_user_event, container, false);
+    binding = FragmentViewUserEventBinding.bind(view);
     return view;
   }
 

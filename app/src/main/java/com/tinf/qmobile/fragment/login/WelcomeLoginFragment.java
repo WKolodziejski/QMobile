@@ -38,24 +38,21 @@ public class WelcomeLoginFragment extends Fragment {
       getParentFragmentManager()
           .beginTransaction()
           .replace(R.id.login_fragment, new CampusLoginFragment())
-          .addToBackStack(null)
-          .commit();
+          .commitNow();
     });
 
     binding.teacherBtn.setOnClickListener(view1 -> {
       getParentFragmentManager()
           .beginTransaction()
           .replace(R.id.login_fragment, new UnavailableLoginFragment())
-          .addToBackStack(null)
-          .commit();
+          .commitNow();
     });
 
     binding.otherBtn.setOnClickListener(view1 -> {
       getParentFragmentManager()
           .beginTransaction()
           .replace(R.id.login_fragment, new UnavailableLoginFragment())
-          .addToBackStack(null)
-          .commit();
+          .commitNow();
     });
 
     binding.privacy.setOnClickListener(view1 -> {

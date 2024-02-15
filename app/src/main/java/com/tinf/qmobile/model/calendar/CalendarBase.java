@@ -6,7 +6,7 @@ import org.joda.time.LocalDate;
 
 import java.util.Date;
 
-public interface CalendarBase<T extends CalendarBase> extends Queryable {
+public interface CalendarBase extends Queryable {
 
   Date getDate();
 
@@ -17,6 +17,10 @@ public interface CalendarBase<T extends CalendarBase> extends Queryable {
   LocalDate getHashKey();
 
   boolean isHeader();
-  //boolean equals(T event);
 
+  boolean isToday();
+
+  String getDayString();
+
+  String getWeekString();
 }

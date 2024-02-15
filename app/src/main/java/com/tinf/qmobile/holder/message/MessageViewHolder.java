@@ -1,5 +1,6 @@
 package com.tinf.qmobile.holder.message;
 
+import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
 import android.content.Context;
@@ -17,7 +18,7 @@ import com.tinf.qmobile.activity.EventViewActivity;
 import com.tinf.qmobile.adapter.AttachmentsAdapter;
 import com.tinf.qmobile.databinding.MessageHeaderBinding;
 import com.tinf.qmobile.model.message.Message;
-import com.tinf.qmobile.network.message.Messenger;
+import com.tinf.qmobile.parser.messages.LoadMessageHelper;
 
 public class MessageViewHolder extends MessagesViewHolder<Message> {
   private final MessageHeaderBinding binding;
@@ -28,7 +29,7 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
   }
 
   @Override
-  public void bind(Context context, Messenger messenger, Message message) {
+  public void bind(Context context, Message message) {
     binding.header.setText(message.sender.getTarget().getSign());
     binding.header.setBackgroundTintList(ColorStateList.valueOf(message.getColor()));
     binding.subject.setText(message.getSubject_());
@@ -66,10 +67,6 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
 
     if (!message.attachments.isEmpty()) {
       binding.attachments.setVisibility(View.VISIBLE);
-      //binding.attachments.setHasFixedSize(true);
-      binding.attachments.setItemViewCacheSize(3);
-      binding.attachments.setDrawingCacheEnabled(true);
-      binding.attachments.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
       binding.attachments.setLayoutManager(
           new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
       binding.attachments.setAdapter(new AttachmentsAdapter(context, message.attachments, true));
@@ -78,8 +75,9 @@ public class MessageViewHolder extends MessagesViewHolder<Message> {
     }
 
     itemView.setOnClickListener(v -> {
-      if (message.getContent().isEmpty())
-        messenger.openMessage(getAdapterPosition());
+      if (message.getContent().isEmpty()) {
+        LoadMessageHelper.loadMessage(message);
+      }
 
       Intent intent = new Intent(context, EventViewActivity.class);
       intent.putExtra("TYPE", MESSAGE);

@@ -40,7 +40,7 @@ public class EventClazzVerticalViewHolder extends CalendarViewHolder<Clazz> {
       context.startActivity(intent);
     });
 
-    if (clazz.isHeader) {
+    if (clazz.isHeader()) {
       binding.header.day.setText(clazz.getWeekString());
       binding.header.number.setText(clazz.getDayString());
       binding.header.layout.setVisibility(View.VISIBLE);

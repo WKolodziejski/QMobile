@@ -12,10 +12,11 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.recyclerview.widget.RecyclerView
 import com.tinf.qmobile.R
+import com.tinf.qmobile.utility.DesignUtils
 
 class MessageItemDivider(context: Context) : RecyclerView.ItemDecoration() {
     private val divider =
-        ContextCompat.getDrawable(context, R.drawable.decorator_messages)!!
+        DesignUtils.getDrawable(context, R.drawable.decorator_messages)!!
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         parent.adapter?.let { adapter ->

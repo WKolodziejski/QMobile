@@ -1,6 +1,6 @@
 package com.tinf.qmobile.model.search;
 
-import static com.tinf.qmobile.model.ViewType.HEADERSEARCH;
+import static com.tinf.qmobile.model.ViewType.HEADER_SEARCH;
 
 import com.tinf.qmobile.model.Queryable;
 
@@ -17,12 +17,12 @@ public class Header implements Queryable {
 
   @Override
   public int getItemType() {
-    return HEADERSEARCH;
+    return HEADER_SEARCH;
   }
 
   @Override
   public long getId() {
-    return HEADERSEARCH;
+    return HEADER_SEARCH;
   }
 
   @Override

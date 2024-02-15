@@ -32,7 +32,7 @@ import com.tinf.qmobile.holder.calendar.vertical.MonthViewHolder;
 import com.tinf.qmobile.model.Empty;
 import com.tinf.qmobile.model.calendar.CalendarBase;
 import com.tinf.qmobile.model.calendar.Day;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 import com.tinf.qmobile.model.calendar.Header;
 import com.tinf.qmobile.model.calendar.Month;
 import com.tinf.qmobile.model.matter.Clazz;
@@ -125,10 +125,10 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       }
     }
 
-    EventBase firstClazz = null;
-    EventBase lastClazz = null;
+    Event firstClazz = null;
+    Event lastClazz = null;
 
-    for (EventBase e : classes) {
+    for (Event e : classes) {
       List<CalendarBase> list = map.get(e.getHashKey());
 
       if (list == null) {
@@ -221,12 +221,12 @@ public class ClassesAdapter extends RecyclerView.Adapter<CalendarViewHolder>
       for (int i = 0; i < list.size(); i++) {
         CalendarBase cb = list.get(i);
 
-        if (cb instanceof EventBase) {
+        if (cb instanceof Event) {
           if (!hasHeader) {
             hasHeader = true;
             list.add(i, new Header(cal.getTimeInMillis()));
             i++;
-            ((EventBase) cb).isHeader = true;
+            ((Event) cb).setHeader(true);
           }
         }
       }

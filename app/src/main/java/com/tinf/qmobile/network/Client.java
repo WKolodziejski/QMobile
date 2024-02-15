@@ -5,7 +5,6 @@ import static com.android.volley.Request.Method.POST;
 import static com.tinf.qmobile.App.getContext;
 import static com.tinf.qmobile.network.OnResponse.INDEX;
 import static com.tinf.qmobile.network.OnResponse.MESSAGES;
-import static com.tinf.qmobile.network.OnResponse.PG_ACCESS_DENIED;
 import static com.tinf.qmobile.network.OnResponse.PG_CALENDAR;
 import static com.tinf.qmobile.network.OnResponse.PG_CLASSES;
 import static com.tinf.qmobile.network.OnResponse.PG_FETCH_YEARS;
@@ -13,12 +12,12 @@ import static com.tinf.qmobile.network.OnResponse.PG_GENERATOR;
 import static com.tinf.qmobile.network.OnResponse.PG_JOURNALS;
 import static com.tinf.qmobile.network.OnResponse.PG_LOGIN;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGE;
 import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES;
-import static com.tinf.qmobile.network.OnResponse.PG_QUEST;
-import static com.tinf.qmobile.network.OnResponse.PG_REGISTRATION;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGES_FORM;
+import static com.tinf.qmobile.network.OnResponse.PG_MESSAGE_FIND;
 import static com.tinf.qmobile.network.OnResponse.PG_REPORT;
 import static com.tinf.qmobile.network.OnResponse.PG_SCHEDULE;
-import static com.tinf.qmobile.network.OnResponse.PG_UPDATE;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -32,7 +31,6 @@ import android.webkit.CookieManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Header;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
@@ -49,14 +47,21 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.fragment.OnUpdate;
 import com.tinf.qmobile.model.matter.Matter;
 import com.tinf.qmobile.model.matter.Matter_;
+import com.tinf.qmobile.model.message.Message;
 import com.tinf.qmobile.parser.BaseParser;
 import com.tinf.qmobile.parser.CalendarParser;
 import com.tinf.qmobile.parser.ClassParser;
 import com.tinf.qmobile.parser.JournalParser;
+import com.tinf.qmobile.parser.LoginParser;
 import com.tinf.qmobile.parser.MaterialsParser;
-import com.tinf.qmobile.parser.MessageParser;
 import com.tinf.qmobile.parser.ReportParser;
+import com.tinf.qmobile.parser.ResponseParser;
 import com.tinf.qmobile.parser.ScheduleParser;
+import com.tinf.qmobile.parser.messages.FindMessageParser;
+import com.tinf.qmobile.parser.messages.FormMessagesParser;
+import com.tinf.qmobile.parser.messages.OnMessagesLoad;
+import com.tinf.qmobile.parser.messages.PageMessagesParser;
+import com.tinf.qmobile.parser.messages.SingleMessageParser;
 import com.tinf.qmobile.service.DownloadReceiver;
 import com.tinf.qmobile.utility.UserUtils;
 
@@ -67,7 +72,6 @@ import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,19 +87,23 @@ public class Client {
   private static Client instance;
   private final List<RequestHelper> requestsHelper;
   private final List<RequestRunning> requestsRunning;
-  private String URL;
   private final List<OnResponse> onResponses;
   private final List<OnUpdate> onUpdates;
+  private final List<OnEvent> onEvents;
   private final RequestQueue requestsQueue;
   private final Map<String, String> params;
   private final ExecutorService executors;
   private final Handler handler;
-  private String KEY_A;
-  private String KEY_B;
-  public static int pos = 0;
-  public static boolean background = false;
+  private String qCookie;
+  private String aspCookie;
+  private String URL;
+  private String keyA;
+  private String keyB;
   private boolean isValid;
   private boolean isLogging;
+
+  public static int pos;
+  public static boolean background;
 
   public enum Resp {
     OK,
@@ -115,9 +123,13 @@ public class Client {
     this.params = new HashMap<>();
     this.onUpdates = new LinkedList<>();
     this.onResponses = new LinkedList<>();
+    this.onEvents = new LinkedList<>();
     this.handler = new Handler(Looper.getMainLooper());
     this.executors = Executors.newFixedThreadPool(2);
     this.URL = UserUtils.getURL();
+
+    CookieManager.getInstance()
+                 .setAcceptCookie(true);
   }
 
   public static synchronized Client get() {
@@ -127,8 +139,14 @@ public class Client {
     return instance;
   }
 
-  private void createRequest(int pg, String url, int year, int period, int method,
-                             Map<String, String> form, boolean notify, Matter matter,
+  private void createRequest(int pg,
+                             String url,
+                             int year,
+                             int period,
+                             int method,
+                             Map<String, String> form,
+                             boolean notify,
+                             Object[] payload,
                              BaseParser.OnFinish onFinish) {
     if (!isConnected()) {
       return;
@@ -140,7 +158,7 @@ public class Client {
       if (!isLogging) {
         login();
       }
-      addToQueue(pg, url, year, period, method, form, notify, matter, onFinish);
+      addToQueue(pg, url, year, period, method, form, notify, payload, onFinish);
     } else {
       Log.i(TAG, "Request for: " + pg + " in " + year + "/" + period);
 
@@ -171,15 +189,16 @@ public class Client {
         String response =
             new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
-        if (response.contains("�"))
-          response = responseASCII;
+        if (response.contains("�")) response = responseASCII;
 
-        Resp r = testResponse(response);
+        Resp r =
+            ResponseParser.parseResponse(response, pg, year, period, this::callOnError, this::callOnAccessDenied);
 
         if (r == Resp.DENIED) {
-          addToQueue(pg, url, year, period, method, form, notify, matter, onFinish);
+          addToQueue(pg, url, year, period, method, form, notify, payload, onFinish);
           login();
-          callOnAccessDenied(pg, getContext().getResources().getString(R.string.login_expired));
+          callOnAccessDenied(pg, year, period, getContext().getResources()
+                                             .getString(R.string.login_expired));
 
         } else if (r == Resp.OK) {
           if (pg == PG_JOURNALS) {
@@ -203,31 +222,40 @@ public class Client {
                 response);
 
           } else if (pg == PG_MESSAGES) {
-            new MessageParser(pg, year, period, notify, onFinish, this::callOnError).execute(
+            new PageMessagesParser(pg, year, period, notify, onFinish, this::callOnError).execute(
                 response);
 
           } else if (pg == PG_CLASSES) {
-            new ClassParser(matter, pg, year, period, notify, onFinish, this::callOnError).execute(
-                response);
+            new ClassParser((Matter) payload[0], pg, year, period, notify, onFinish,
+                            this::callOnError).execute(response);
+
+          } else if (pg == PG_MESSAGES_FORM) {
+            new FormMessagesParser((OnMessagesLoad) payload[0], pg, year, period, notify, onFinish,
+                                   this::callOnError).execute(response);
+
+          } else if (pg == PG_MESSAGE_FIND) {
+            new FindMessageParser((OnMessagesLoad) payload[0], (Message) payload[1], pg, year,
+                                  period, notify, onFinish, this::callOnError).execute(response);
+
+          } else if (pg == PG_MESSAGE) {
+            new SingleMessageParser((Message) payload[0], pg, year, period, notify, onFinish,
+                                    this::callOnError).execute(response);
 
           } else if (pg == PG_FETCH_YEARS) {
             Document document = Jsoup.parse(response);
-
-            //Element frm = document.getElementById("frmConsultar");
 
             Element frm = document.getElementById("ANO_PERIODO2");
 
             if (frm != null) {
               Elements dates = frm.getElementsByTag("option");
 
-              if (dates != null) {
-                String[] years = new String[dates.size() - 1];
+              String[] years = new String[dates.size() - 1];
 
-                for (int i = 0; i < dates.size() - 1; i++)
-                  years[i] = dates.get(i + 1).text();
+              for (int i = 0; i < dates.size() - 1; i++)
+                years[i] = dates.get(i + 1)
+                                .text();
 
-                UserUtils.setYears(years);
-              }
+              UserUtils.setYears(years);
             }
 
             callOnFinish(PG_FETCH_YEARS, year, period);
@@ -235,7 +263,13 @@ public class Client {
             loadYear(0);
           }
         }
-      }, error -> onError(pg, error)) {
+      }, error -> onError(pg, year, period, error)) {
+
+        @Override
+        protected Response<String> parseNetworkResponse(NetworkResponse response) {
+          setCookie(response);
+          return super.parseNetworkResponse(response);
+        }
 
         @Override
         public Map<String, String> getHeaders() {
@@ -256,7 +290,8 @@ public class Client {
   }
 
   public void load(long id) {
-    Matter matter = DataBase.get().getBoxStore()
+    Matter matter = DataBase.get()
+                            .getBoxStore()
                             .boxFor(Matter.class)
                             .get(id);
 
@@ -269,63 +304,114 @@ public class Client {
     executors.execute(() -> {
       int qid = matter.getQID();
 
-      if (qid != -1)
-        createRequest(PG_CLASSES,
-                      INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + qid +
-                      "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
-                      matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(), false, matter,
-                      this::callOnFinish);
+      if (qid != -1) createRequest(PG_CLASSES,
+                                   INDEX + PG_JOURNALS + "&ACAO=VER_FREQUENCIA&COD_PAUTA=" + qid +
+                                   "&ANO_PERIODO=" + matter.getYear_() + "_" + matter.getPeriod_(),
+                                   matter.getYear_(), matter.getPeriod_(), POST, new HashMap<>(),
+                                   false, new Object[] { matter }, this::callOnFinish);
     });
   }
 
-  private void load(int pg, int year, int period, BaseParser.OnFinish onFinish) {
+  private void load(int pg,
+                    int year,
+                    int period,
+                    BaseParser.OnFinish onFinish) {
     load(pg, year, period, onFinish, false);
   }
 
-  private void load(int pg, int year, int period) {
+  private void load(int pg,
+                    int year,
+                    int period) {
     load(pg, year, period, this::callOnFinish, false);
   }
 
-  public void load(int pg, boolean notify) {
+  public void load(int pg,
+                   boolean notify) {
     load(pg, UserUtils.getYear(pos), UserUtils.getPeriod(pos), this::callOnFinish, notify);
   }
 
-  private void load(int pg, int year, int period, BaseParser.OnFinish onFinish, boolean notify) {
+  // Carrega as infos do form ASP
+  public void loadMessagesForm(OnMessagesLoad onMessagesLoad) {
+    createRequest(PG_MESSAGES_FORM, MESSAGES, UserUtils.getYear(pos),
+                  UserUtils.getPeriod(pos), GET, new HashMap<>(), false,
+                  new Object[] { onMessagesLoad },
+                  this::callOnFinish);
+  }
+
+  // Carrega uma página de mensagens
+  public void loadMessagesPage(Map<String, String> form,
+                               int pg) {
+    Log.d("Messages", form.toString());
+    createRequest(PG_MESSAGES, MESSAGES, pg, pg, POST, form, false, null,
+                  this::callOnFinish);
+  }
+
+  // Busca a página que contém a mensagem
+  public void findMessagesPage(OnMessagesLoad onMessagesLoad,
+                               Map<String, String> form,
+                               Message message,
+                               int pg) {
+    if (pg == 1) {
+      createRequest(PG_MESSAGE_FIND, MESSAGES, pg, pg, GET, new HashMap<>(), false,
+                    new Object[] { onMessagesLoad, message }, this::callOnFinish);
+    } else {
+      createRequest(PG_MESSAGE_FIND, MESSAGES, pg, pg, POST, form, false,
+                    new Object[] { onMessagesLoad, message }, this::callOnFinish);
+    }
+  }
+
+  // Carrega a mensagem
+  public void load(Message message,
+                   Map<String, String> form) {
+    createRequest(PG_MESSAGE, MESSAGES, UserUtils.getYear(pos),
+                  UserUtils.getPeriod(pos), POST, form, false,
+                  new Object[] { message },
+                  this::callOnFinish);
+  }
+
+  private void load(int pg,
+                    int year,
+                    int period,
+                    BaseParser.OnFinish onFinish,
+                    boolean notify) {
     executors.execute(() -> {
       int method = GET;
       String url = INDEX + pg;
       Map<String, String> form = new HashMap<>();
 
-      if (pg == PG_FETCH_YEARS) {
-        url = INDEX + PG_JOURNALS;
-      } else if (pg == PG_MESSAGES) {
-        url = MESSAGES;
-      } else {
-        switch (pg) {
-          case PG_JOURNALS:
-            method = POST;
-            form.put("ANO_PERIODO2", year + "_" + period);
-            break;
+      switch (pg) {
+        case PG_FETCH_YEARS:
+          url = INDEX + PG_JOURNALS;
+          break;
 
-          case PG_REPORT:
+        case PG_MESSAGES:
+          url = MESSAGES;
+          break;
 
-          case PG_SCHEDULE:
-            method = GET;
-            url = url.concat("&cmbanos=" + year + "&cmbperiodos=" + period);
-            break;
+        case PG_JOURNALS:
+          method = POST;
+          form.put("ANO_PERIODO2", year + "_" + period);
+          break;
 
-          case PG_MATERIALS:
-            method = POST;
-            form.put("ANO_PERIODO", year + "_" + period);
-            break;
-        }
+        case PG_REPORT:
+        case PG_SCHEDULE:
+          url = url.concat("&cmbanos=" + year + "&cmbperiodos=" + period);
+          break;
+
+        case PG_MATERIALS:
+          method = POST;
+          form.put("ANO_PERIODO", year + "_" + period);
+          break;
       }
 
       createRequest(pg, url, year, period, method, form, notify, null, onFinish);
     });
   }
 
-  private <T> void addRequest(Request<T> request, int pg, int year, int period) {
+  public <T> void addRequest(Request<T> request,
+                             int pg,
+                             int year,
+                             int period) {
     if (isConnected()) {
       callOnStart(pg);
       request.setRetryPolicy(new DefaultRetryPolicy(10000, 2, 1.5f));
@@ -337,8 +423,8 @@ public class Client {
       }
       Log.v(TAG, "Loading: " + request);
     } else {
-      onError(pg, new VolleyError(
-          getContext().getResources().getString(R.string.client_no_connection)));
+      onError(pg, year, period, new VolleyError(getContext().getResources()
+                                              .getString(R.string.client_no_connection)));
     }
   }
 
@@ -351,162 +437,68 @@ public class Client {
     }
 
     isLogging = true;
-    executors.execute(() ->
-                          fetchParams(success -> addRequest(
-                              new StringRequest(POST, URL + VALIDA, responseASCII -> {
-                                String response =
-                                    new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1),
-                                               StandardCharsets.UTF_8);
+    executors.execute(() -> fetchParams(
+        success -> addRequest(new StringRequest(POST, URL + VALIDA, responseASCII -> {
+          String response = new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1),
+                                       StandardCharsets.UTF_8);
 
-                                if (response.contains("�"))
-                                  response = responseASCII;
+          if (response.contains("�")) response = responseASCII;
 
-                                Resp r = testResponse(response);
+          Log.d("RESPONSE: " + PG_LOGIN, response);
 
-                                if (r == Resp.DENIED) {
-                                  callOnAccessDenied(PG_LOGIN, getContext().getString(
-                                      R.string.login_invalid));
+          Resp r = ResponseParser.parseResponse(response, PG_LOGIN, 0, 0, this::callOnError,
+                                                this::callOnAccessDenied);
 
-                                } else if (r == Resp.OK) {
+          if (r == Resp.DENIED) {
+            callOnAccessDenied(PG_LOGIN, 0, 0, getContext().getString(R.string.login_invalid));
 
-                                  isValid = true;
+          } else if (r == Resp.OK) {
+            isValid = true;
+            isLogging = false;
 
-                                  Document document = Jsoup.parse(response);
-
-                                  UserUtils.setLastLogin(new Date().getTime());
-
-                                  isLogging = false;
-
-                                  String cod = document.getElementsByTag("q_latente").get(4).val();
-                                  cod = cod.substring(cod.indexOf("=") + 1);
-
-                                  Element img =
-                                      document.getElementsByAttributeValueEnding("src", cod)
-                                              .first();
-
-                                  if (img != null && !background)
-                                    UserUtils.setImg(cod);
-
-                                  callOnFinish(PG_LOGIN, 0, 0);
-                                }
-
-                              }, error -> onError(PG_LOGIN, error)) {
-
-                                @Override
-                                public Map<String, String> getHeaders() {
-                                  return params;
-                                }
-
-                                @Override
-                                protected Map<String, String> getParams() {
-                                  return UserUtils.getLoginParams(KEY_A, KEY_B);
-                                }
-
-                                @Override
-                                public Priority getPriority() {
-                                  return Priority.IMMEDIATE;
-                                }
-
-                              }, PG_LOGIN, 0, 0)));
-  }
-
-  private Resp testResponse(String response) {
-    Document document = Jsoup.parse(response);
-
-    if (document.text().contains("Houve um erro inesperado"))
-      return Resp.UNKNOWN;
-
-    Element strong = document.getElementsByTag("strong").first();
-
-    if (strong != null) {
-      String s = strong.text().trim();
-
-      if (s.contains("negado") || s.contains("Negado")) {
-        Element div = document.getElementsByClass("conteudoTexto").first();
-
-        if (div != null) {
-          div.select("br").after("\\n");
-          String msg = div.text().replaceAll("\\\\n", "\n").trim();
-
-          if (msg.contains("inativo")) {
-            UserUtils.clearInfo();
-            callOnAccessDenied(PG_ACCESS_DENIED, msg);
-            return Resp.EGRESS;
+            new LoginParser(this::callOnDialog,
+                            this::callOnRenewalAvailable,
+                            PG_LOGIN,
+                            UserUtils.getYear(pos),
+                            UserUtils.getPeriod(pos),
+                            false,
+                            this::callOnFinish,
+                            this::callOnError).execute(response);
           }
-        }
-        return Resp.DENIED;
-      }
-    }
+        }, error -> onError(PG_LOGIN, 0, 0, error)) {
 
-    Element p = document.getElementsByTag("p").first();
+          @Override
+          protected Response<String> parseNetworkResponse(NetworkResponse response) {
+            setCookie(response);
+            return super.parseNetworkResponse(response);
+          }
 
-    if (p != null) {
-      if (p.text().contains("inacess") || p.text().contains("Banco")) {
-        callOnError(PG_LOGIN, getContext().getResources().getString(R.string.client_host));
-        return Resp.HOST;
-      }
-    }
+          @Override
+          public Map<String, String> getHeaders() {
+            return params;
+          }
 
-    Element form = document.getElementsByClass("conteudoTexto").first();
+          @Override
+          protected Map<String, String> getParams() {
+            return UserUtils.getLoginParams(keyA, keyB);
+          }
 
-    if (form != null) {
-      if (form.text().contains("senha")) {
-        String msg = form.text().replaceAll("\\\\n", "\n").trim();
-        callOnAccessDenied(PG_UPDATE, msg);
-        return Resp.UPDATE;
-      }
-    }
+          @Override
+          public Priority getPriority() {
+            return Priority.IMMEDIATE;
+          }
 
-    Element quest = document.getElementsByClass("TEXTO_TITULO").first();
-
-    if (quest != null) {
-      if (quest.text().contains("Question")) {
-        String msg = "";
-        if (form != null) {
-          msg = form.text().replaceAll("\\\\n", "\n").trim();
-        }
-        callOnAccessDenied(PG_QUEST, msg);
-        return Resp.QUEST;
-      }
-
-      if (quest.text().contains("Altera")) {
-        callOnAccessDenied(PG_REGISTRATION, "");
-        return Resp.REG;
-      }
-    }
-
-    Element title = document.getElementsByTag("title").first();
-
-    if (title != null) {
-      if (title.text().contains("Erro")) {
-        callOnAccessDenied(0, getContext().getString(R.string.client_error));
-        return Resp.UNKNOWN;
-      }
-    }
-
-    Elements sub = document.getElementsByClass("barraRodape");
-    Elements sub2 = document.getElementsByClass("titulo");
-
-    String name;
-
-    if (sub.size() >= 2) {
-      name = sub.get(1).text();
-    } else if (sub2.size() >= 2) {
-      name = sub2.get(1).text();
-      name = name.substring(name.indexOf(",") + 1).trim();
-    } else {
-      callOnAccessDenied(0, getContext().getString(R.string.client_error));
-      crashlytics.recordException(new Exception(document.toString()));
-      return Resp.UNKNOWN;
-    }
-
-    UserUtils.setName(name);
-
-    return Resp.OK;
+        }, PG_LOGIN, 0, 0), 0, 0));
   }
 
-  private synchronized void addToQueue(int pg, String url, int year, int period, int method,
-                                       Map<String, String> form, boolean notify, Matter matter,
+  private synchronized void addToQueue(int pg,
+                                       String url,
+                                       int year,
+                                       int period,
+                                       int method,
+                                       Map<String, String> form,
+                                       boolean notify,
+                                       Object[] payload,
                                        BaseParser.OnFinish onFinish) {
     boolean isNew = true;
 
@@ -531,29 +523,27 @@ public class Client {
     if (isNew) {
       synchronized (requestsHelper) {
         requestsHelper.add(
-            new RequestHelper(pg, url, year, period, method, form, notify, matter, onFinish));
+            new RequestHelper(pg, url, year, period, method, form, notify, payload, onFinish));
       }
-      //Log.i(TAG, "Queued: " + pg + " for " + User.getYears()[pos]);
     }
   }
 
-  private void fetchParams(Response.Listener<String> listener) {
+  private void fetchParams(Response.Listener<String> listener, int year, int period) {
     addRequest(new StringRequest(GET, URL + GERADOR, responseASCII -> {
       String response =
           new String(responseASCII.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
 
-      if (response.contains("�"))
-        response = responseASCII;
+      if (response.contains("�")) response = responseASCII;
 
       try {
         String keys =
             response.substring(response.indexOf("RSAKeyPair("), response.lastIndexOf(")"));
         keys = keys.substring(keys.indexOf("\"") + 1, keys.lastIndexOf("\""));
 
-        KEY_A = keys.substring(0, keys.indexOf("\""));
-        Log.d("Key A", KEY_A);
-        KEY_B = keys.substring(keys.lastIndexOf("\"") + 1);
-        Log.d("Key B", KEY_B);
+        keyA = keys.substring(0, keys.indexOf("\""));
+        Log.d("Key A", keyA);
+        keyB = keys.substring(keys.lastIndexOf("\"") + 1);
+        Log.d("Key B", keyB);
 
         Log.v(TAG, "Keys fetched");
       } catch (Exception e) {
@@ -563,33 +553,11 @@ public class Client {
 
       listener.onResponse(response);
 
-    }, error -> onError(PG_GENERATOR, error)) {
+    }, error -> onError(PG_GENERATOR, year, period, error)) {
 
       @Override
       protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-
-        String c1 = response.headers.get("Set-Cookie");
-
-        params.put("Cookie", c1);
-        cookieManager.setCookie(Client.get().getURL(), c1);
-
-        for (Header h : response.allHeaders) {
-          if (h.getValue().contains("QSESSIONID")) {
-            params.put("Set-Cookie", h.getValue());
-            cookieManager.setCookie(Client.get().getURL(), h.getValue());
-            break;
-          }
-        }
-
-        params.put("Accept",
-                   "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp," +
-                   "image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9");
-        params.put("Accept-Language", "en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7");
-
-        Log.d("Cookies", params.toString());
-
+        setCookie(response);
         return super.parseNetworkResponse(response);
       }
 
@@ -601,6 +569,35 @@ public class Client {
     }, PG_GENERATOR, 0, 0);
   }
 
+  private void setCookie(NetworkResponse response) {
+    if (response == null)
+      return;
+
+    if (response.headers == null)
+      return;
+
+    String setCookie = response.headers.get("Set-Cookie");
+
+    if (setCookie == null)
+      return;
+
+    if (setCookie.contains("ASP.NET")) {
+      aspCookie = setCookie;
+
+    } else if (!setCookie.contains("QSESSIONID")) {
+      qCookie = setCookie;
+    }
+
+    setCookie = qCookie + "; " + aspCookie;
+
+    params.put("Cookie", setCookie);
+
+    CookieManager.getInstance()
+                 .setCookie(getURL(), setCookie);
+
+    Log.d("Cookies", params.toString());
+  }
+
   public void close() {
     Log.i(TAG, "Logout");
     requestsHelper.clear();
@@ -608,47 +605,50 @@ public class Client {
     params.clear();
     onResponses.clear();
     onUpdates.clear();
-    KEY_A = "";
-    KEY_B = "";
-    pos = 0;
     instance = null;
   }
 
-  private void onError(int pg, VolleyError error) {
+  private void onError(int pg,
+                       int year,
+                       int period,
+                       VolleyError error) {
     String msg = null;
 
     error.printStackTrace();
 
     if (isConnected()) {
       if (pg == PG_GENERATOR) {
-        msg = getContext().getResources().getString(R.string.client_host);
+        msg = getContext().getResources()
+                          .getString(R.string.client_host);
 
       } else if (pg == PG_LOGIN) {
         isLogging = false;
         isValid = false;
       }
     } else {
-      msg = getContext().getResources().getString(R.string.client_no_connection);
+      msg = getContext().getResources()
+                        .getString(R.string.client_no_connection);
     }
 
     if (msg == null) {
-      if (error instanceof TimeoutError)
-        msg = getContext().getResources().getString(R.string.client_timeout);
+      if (error instanceof TimeoutError) msg = getContext().getResources()
+                                                           .getString(R.string.client_timeout);
 
-      else if (error instanceof NoConnectionError)
-        msg = getContext().getResources().getString(R.string.client_no_connection);
+      else if (error instanceof NoConnectionError) msg = getContext().getResources()
+                                                                     .getString(
+                                                                         R.string.client_no_connection);
 
       else {
-        msg = error.getLocalizedMessage() == null
-              ? getContext().getResources().getString(R.string.client_error)
-              : error.getLocalizedMessage();
+        msg = error.getLocalizedMessage() == null ? getContext().getResources()
+                                                                .getString(R.string.client_error)
+                                                  : error.getLocalizedMessage();
 
         crashlytics.log(String.valueOf(pg));
         crashlytics.recordException(error);
       }
     }
 
-    callOnError(pg, msg);
+    callOnError(pg, year, period, msg);
   }
 
   public static boolean isConnected() {
@@ -657,10 +657,10 @@ public class Client {
     Network nw = connectivityManager.getActiveNetwork();
     if (nw == null) return false;
     NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
-    return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-                             || actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                             || actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
-                             || actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
+    return actNw != null && (actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                             actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                             actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) ||
+                             actNw.hasTransport(NetworkCapabilities.TRANSPORT_BLUETOOTH));
   }
 
   public void addOnResponseListener(OnResponse onResponse) {
@@ -692,38 +692,81 @@ public class Client {
     }
   }
 
-  private void callOnError(int pg, String error) {
+  public void addOnEventListener(OnEvent onEvent) {
+    if (onEvent != null && !onEvents.contains(onEvent)) {
+      onEvents.add(onEvent);
+      Log.v(TAG, "addOnEventListener: " + onEvent);
+    }
+  }
+
+  public void removeOnEventListener(OnEvent onEvent) {
+    if (onEvent != null) {
+      onEvents.remove(onEvent);
+      Log.v(TAG, "removeOnEventListener: " + onEvent);
+    }
+  }
+
+  private void callOnDialog(String title,
+                            String msg) {
+    handler.post(() -> {
+      Log.v(TAG, "Dialog: " + title);
+      for (OnEvent onEvent : onEvents) {
+        onEvent.onDialog(title, msg);
+      }
+    });
+  }
+
+  private void callOnRenewalAvailable() {
+    handler.post(() -> {
+      Log.v(TAG, "RenewalAvailable");
+      for (OnEvent onEvent : onEvents) {
+        onEvent.onRenewalAvailable();
+      }
+    });
+  }
+
+  private void callOnError(int pg,
+                           int year,
+                           int period,
+                           String error) {
     handler.post(() -> {
       requestsQueue.cancelAll(request -> true);
       isLogging = false;
       isValid = false;
-      for (int i = 0; i < onResponses.size(); i++) {
-        onResponses.get(i).onError(pg, error);
-      }
-    });
-  }
-
-  private void callOnStart(int pg) {
-    handler.post(() -> {
-      Log.v(TAG, "Start: " + pg);
-      for (int i = 0; i < onResponses.size(); i++) {
-        onResponses.get(i).onStart(pg);
-      }
-    });
-  }
-
-  private void callOnFinish(int pg, int year, int period) {
-    handler.post(() -> {
-      Log.v(TAG, "Finish: " + pg);
-      for (int i = 0; i < onResponses.size(); i++) {
-        onResponses.get(i).onFinish(pg, year, period);
+      Log.v(TAG, "Error: " + pg);
+      for (OnResponse onResponse : onResponses) {
+        onResponse.onError(pg, year, period, error);
       }
     });
 
     checkQueue(pg, year, period);
   }
 
-  private void checkQueue(int pg, int year, int period) {
+  private void callOnStart(int pg) {
+    handler.post(() -> {
+      Log.v(TAG, "Start: " + pg);
+      for (OnResponse onResponse : onResponses) {
+        onResponse.onStart(pg);
+      }
+    });
+  }
+
+  private void callOnFinish(int pg,
+                            int year,
+                            int period) {
+    handler.post(() -> {
+      Log.v(TAG, "Finish: " + pg);
+      for (OnResponse onResponse : onResponses) {
+        onResponse.onFinish(pg, year, period);
+      }
+    });
+
+    checkQueue(pg, year, period);
+  }
+
+  private void checkQueue(int pg,
+                          int year,
+                          int period) {
     synchronized (requestsHelper) {
       for (RequestHelper h : requestsHelper)
         if (h.pg == pg && h.year == year && h.period == period) {
@@ -746,13 +789,16 @@ public class Client {
           RequestHelper helper = requestsHelper.get(0);
           requestsHelper.remove(0);
           createRequest(helper.pg, helper.url, helper.year, helper.period, helper.method,
-                        helper.form, helper.notify, helper.matter, helper.onFinish);
+                        helper.form, helper.notify, helper.payload, helper.onFinish);
         }
       }
     });
   }
 
-  private void callOnAccessDenied(int pg, String message) {
+  private void callOnAccessDenied(int pg,
+                                  int year,
+                                  int period,
+                                  String message) {
     handler.post(() -> {
       Log.v(TAG, pg + ": " + message);
       isValid = false;
@@ -760,22 +806,13 @@ public class Client {
       requestsHelper.clear();
       requestsQueue.cancelAll(request -> true);
       params.clear();
-      KEY_A = "";
-      KEY_B = "";
-      //pos = 0;
-      for (int i = 0; i < onResponses.size(); i++) {
-        onResponses.get(i).onAccessDenied(pg, message);
+      keyA = "";
+      keyB = "";
+      for (OnResponse onResponse : onResponses) {
+        onResponse.onAccessDenied(pg, message);
       }
     });
   }
-
-    /*private void callOnScrollRequest() {
-        handler.post(() -> {
-            for (int i = 0; i < onUpdates.size(); i++) {
-                onUpdates.get(i).onScrollRequest();
-            }
-        });
-    }*/
 
   public void changeDate(int pos) {
     handler.post(() -> {
@@ -785,11 +822,9 @@ public class Client {
 
           requestsQueue.cancelAll(request -> true);
           isLogging = false;
-
-          for (int i = 0; i < onUpdates.size(); i++) {
-            onUpdates.get(i).onDateChanged();
+          for (OnUpdate onUpdate : onUpdates) {
+            onUpdate.onDateChanged();
           }
-
           loadYear(pos);
         }
       }
@@ -799,27 +834,21 @@ public class Client {
   private int posBackup = -1;
 
   public void restorePreviousDate() {
-    if (posBackup >= 0)
-      changeDate(posBackup);
+    if (posBackup >= 0) changeDate(posBackup);
 
     posBackup = -1;
   }
 
   public void changeDateWithBackup(int pos) {
-    if (posBackup == -1)
-      posBackup = Client.pos;
+    if (posBackup == -1) posBackup = Client.pos;
 
     changeDate(pos);
   }
 
-    /*public void requestScroll() {
-        callOnScrollRequest();
-    }*/
-
   public void requestDelayedUpdate() {
     handler.postDelayed(() -> {
-      for (int i = 0; i < onUpdates.size(); i++) {
-        onUpdates.get(i).onDateChanged();
+      for (OnUpdate onUpdate : onUpdates) {
+        onUpdate.onDateChanged();
       }
     }, 10);
   }
@@ -843,9 +872,10 @@ public class Client {
     return isLogging;
   }
 
-  public void setURL(String url) {
+  public void setURL(String url, String campus) {
     URL = url;
     UserUtils.setURL(url);
+    UserUtils.setCampus(campus);
   }
 
   public String getURL() {
@@ -877,7 +907,8 @@ public class Client {
           load(PG_SCHEDULE, year, period, (pg2, year2, period2) -> {
 
             Log.d(TAG, "Loading classes");
-            for (Matter m : DataBase.get().getBoxStore()
+            for (Matter m : DataBase.get()
+                                    .getBoxStore()
                                     .boxFor(Matter.class)
                                     .query()
                                     .equal(Matter_.year_, year)
@@ -885,7 +916,8 @@ public class Client {
                                     .equal(Matter_.period_, period)
                                     .build()
                                     .find()) {
-              Client.get().load(m);
+              Client.get()
+                    .load(m);
             }
             callOnFinish(pg2, year2, period2);
           });
@@ -895,6 +927,4 @@ public class Client {
       });
     });
   }
-
-
 }

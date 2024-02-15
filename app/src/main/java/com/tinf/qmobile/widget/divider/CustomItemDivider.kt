@@ -13,12 +13,13 @@ import androidx.core.view.marginRight
 import androidx.recyclerview.widget.RecyclerView
 import com.tinf.qmobile.R
 import com.tinf.qmobile.model.ViewType
+import com.tinf.qmobile.utility.DesignUtils
 
-class CustomlItemDivider(context: Context) : RecyclerView.ItemDecoration() {
+class CustomItemDivider(context: Context) : RecyclerView.ItemDecoration() {
     private val fullDivider =
-        ContextCompat.getDrawable(context, R.drawable.decorator_journal_full)!!
+        DesignUtils.getDrawable(context, R.drawable.decorator_journal_full)!!
     private val shortDivider =
-        ContextCompat.getDrawable(context, R.drawable.decorator_journal_short)!!
+        DesignUtils.getDrawable(context, R.drawable.decorator_journal_short)!!
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         parent.adapter?.let { adapter ->

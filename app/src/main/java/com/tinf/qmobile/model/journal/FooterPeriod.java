@@ -1,6 +1,6 @@
 package com.tinf.qmobile.model.journal;
 
-import static com.tinf.qmobile.model.ViewType.FOOTERPERIOD;
+import static com.tinf.qmobile.model.ViewType.FOOTER_PERIOD;
 
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Period;
@@ -14,7 +14,7 @@ public class FooterPeriod implements Queryable {
 
   @Override
   public int getItemType() {
-    return FOOTERPERIOD;
+    return FOOTER_PERIOD;
   }
 
   @Override

@@ -20,8 +20,8 @@ import com.tinf.qmobile.database.DataBase;
 import com.tinf.qmobile.database.OnData;
 import com.tinf.qmobile.databinding.FragmentJournalsBinding;
 import com.tinf.qmobile.model.Queryable;
-import com.tinf.qmobile.utility.Design;
-import com.tinf.qmobile.widget.divider.CustomlItemDivider;
+import com.tinf.qmobile.utility.DesignUtils;
+import com.tinf.qmobile.widget.divider.CustomItemDivider;
 
 import java.util.List;
 
@@ -57,13 +57,13 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
 
     binding.recycler.setItemViewCacheSize(20);
     binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-    binding.recycler.addItemDecoration(new CustomlItemDivider(getContext()));
+    binding.recycler.addItemDecoration(new CustomItemDivider(getContext()));
     binding.recycler.setItemAnimator(null);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
-    binding.recycler.addOnScrollListener(Design.getRefreshBehavior(refresh));
+    binding.recycler.addOnScrollListener(DesignUtils.getRefreshBehavior(refresh));
 
-    new Handler(Looper.getMainLooper()).postDelayed(() -> Design.syncToolbar(toolbar, canExpand()), 10);
+    new Handler(Looper.getMainLooper()).postDelayed(() -> DesignUtils.syncToolbar(toolbar, canExpand()), 10);
   }
 
   @Override
@@ -80,7 +80,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
   @Override
   protected void onAddListeners() {
     DataBase.get().getJournalsDataProvider().addOnDataListener(this);
-    Design.syncToolbar(toolbar, canExpand());
+    DesignUtils.syncToolbar(toolbar, canExpand());
   }
 
   @Override
@@ -95,7 +95,7 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
 
   @Override
   public void onUpdate(List<Queryable> list) {
-    Design.syncToolbar(toolbar, !list.isEmpty());
+    DesignUtils.syncToolbar(toolbar, !list.isEmpty());
   }
 
 }

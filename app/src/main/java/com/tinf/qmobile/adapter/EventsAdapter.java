@@ -21,35 +21,35 @@ import com.tinf.qmobile.holder.calendar.CalendarViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventJournalHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventSimpleHorizontalViewHolder;
 import com.tinf.qmobile.holder.calendar.horizontal.EventUserHorizontalViewHolder;
-import com.tinf.qmobile.model.calendar.EventBase;
+import com.tinf.qmobile.model.calendar.Event;
 
 import java.util.List;
 
 public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder>
-    implements OnData<EventBase> {
+    implements OnData<Event> {
   private final Context context;
-  private final AsyncListDiffer<EventBase> list;
-  private final OnList<EventBase> onList;
+  private final AsyncListDiffer<Event> list;
+  private final OnList<Event> onList;
 
-  public EventsAdapter(Context context, OnList<EventBase> onList) {
+  public EventsAdapter(Context context, OnList<Event> onList) {
     this.context = context;
     this.onList = onList;
-    this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<EventBase>() {
+    this.list = new AsyncListDiffer<>(this, new DiffUtil.ItemCallback<Event>() {
       @Override
       public boolean areItemsTheSame(
           @NonNull
-          EventBase oldItem,
+          Event oldItem,
           @NonNull
-          EventBase newItem) {
+          Event newItem) {
         return oldItem.getId() == newItem.getId() && oldItem.getItemType() == newItem.getItemType();
       }
 
       @Override
       public boolean areContentsTheSame(
           @NonNull
-          EventBase oldItem,
+          Event oldItem,
           @NonNull
-          EventBase newItem) {
+          Event newItem) {
         return oldItem.isSame(newItem);
       }
     });
@@ -122,7 +122,7 @@ public class EventsAdapter extends RecyclerView.Adapter<CalendarViewHolder>
   }
 
   @Override
-  public void onUpdate(List<EventBase> list) {
+  public void onUpdate(List<Event> list) {
     this.list.submitList(list);
     onList.onUpdate(list);
   }

@@ -3,7 +3,7 @@ package com.tinf.qmobile.adapter;
 import android.view.ActionMode;
 import android.view.Menu;
 
-public interface OnInteractListener {
+public interface OnMaterialInteractListener {
   boolean isSelectionMode();
 
   void setSelectionMode(ActionMode.Callback callback);

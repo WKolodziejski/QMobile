@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.FragmentLoginCredentialsBinding;
 import com.tinf.qmobile.network.Client;
@@ -28,12 +29,12 @@ import com.tinf.qmobile.utility.UserUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.Map;
 
 public class CredentialsLoginFragment extends Fragment implements OnResponse {
   private static final String TAG = "CredentialLoginFragment";
   private FragmentLoginCredentialsBinding binding;
-  private int i;
+  private String campus;
 
   @Override
   public void onCreate(
@@ -42,15 +43,17 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
       Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    if (getArguments() != null && getArguments().containsKey("I")) {
-      i = getArguments().getInt("I");
+    if (getArguments() != null && getArguments().containsKey("CAMPUS")) {
+      campus = getArguments().getString("CAMPUS");
     }
   }
 
   @Override
   public View onCreateView(
       @NonNull
-      LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+      LayoutInflater inflater,
+      ViewGroup container,
+      Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_login_credentials, container, false);
     binding = FragmentLoginCredentialsBinding.bind(view);
     return view;
@@ -66,32 +69,55 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
 
     binding.btn.setOnClickListener(v -> {
 
-      if (binding.userInput.getText().toString().isEmpty()) {
+      if (binding.userInput.getText()
+                           .toString()
+                           .isEmpty()) {
         binding.userInput.setError(getResources().getString(R.string.text_empty));
       }
 
-      if (binding.passwordInput.getText().toString().isEmpty()) {
+      if (binding.passwordInput.getText()
+                               .toString()
+                               .isEmpty()) {
         binding.passwordInput.setError(getResources().getString(R.string.text_empty));
       }
 
-      if (!binding.userInput.getText().toString().isEmpty() &&
-          !binding.passwordInput.getText().toString().isEmpty()) {
+      if (!binding.userInput.getText()
+                            .toString()
+                            .isEmpty() &&
+          !binding.passwordInput.getText()
+                                .toString()
+                                .isEmpty()) {
         hideKeyboard();
         binding.userInput.setError(null);
 
         UserUtils.setCredential(REGISTRATION,
-                                binding.userInput.getText().toString().toUpperCase().trim());
-        UserUtils.setCredential(PASSWORD, binding.passwordInput.getText().toString().trim());
+                                binding.userInput.getText()
+                                                 .toString()
+                                                 .toUpperCase()
+                                                 .trim());
 
-        if (UserUtils.getURL().isEmpty())
-          Client.get().setURL(Arrays.asList(getResources().getStringArray(R.array.urls)).get(i));
+        UserUtils.setCredential(PASSWORD, binding.passwordInput.getText()
+                                                               .toString()
+                                                               .trim());
+
+        if (UserUtils.getURL()
+                     .isEmpty()) {
+          Map<String, String> map =
+              DefaultsXmlParser.getDefaultsFromXml(getContext(), R.xml.urls_map);
+
+          String url = map.get(campus);
+
+          Client.get()
+                .setURL(url, campus);
+        }
 
         FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
         crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
         crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
         crashlytics.setCustomKey("URL", UserUtils.getURL());
 
-        Client.get().login();
+        Client.get()
+              .login();
       }
     });
 
@@ -139,12 +165,17 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
   }
 
   @Override
-  public void onFinish(int pg, int year, int period) {
+  public void onFinish(int pg,
+                       int year,
+                       int period) {
     Log.v(TAG, "Finished loading");
   }
 
   @Override
-  public void onError(int pg, String error) {
+  public void onError(int pg,
+                      int year,
+                      int period,
+                      String error) {
     binding.progressBar.setVisibility(View.INVISIBLE);
     binding.textLoading.setVisibility(View.INVISIBLE);
     binding.btn.setEnabled(true);
@@ -153,7 +184,8 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
     try {
       int pid = android.os.Process.myPid();
       String command = "logcat --pid=" + pid + " -d";
-      Process process = Runtime.getRuntime().exec(command);
+      Process process = Runtime.getRuntime()
+                               .exec(command);
       BufferedReader bufferedReader = new BufferedReader(
           new InputStreamReader(process.getInputStream()));
       StringBuilder log = new StringBuilder();
@@ -163,14 +195,16 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
         log.append(line + "\n");
       }
 
-      FirebaseCrashlytics.getInstance().log(log.toString());
+      FirebaseCrashlytics.getInstance()
+                         .log(log.toString());
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   @Override
-  public void onAccessDenied(int pg, String message) {
+  public void onAccessDenied(int pg,
+                             String message) {
     binding.progressBar.setVisibility(View.INVISIBLE);
     binding.textLoading.setVisibility(View.INVISIBLE);
     binding.btn.setEnabled(true);
@@ -182,28 +216,32 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
   public void onStart() {
     super.onStart();
     Log.v(TAG, "onStart");
-    Client.get().addOnResponseListener(this);
+    Client.get()
+          .addOnResponseListener(this);
   }
 
   @Override
   public void onResume() {
     super.onResume();
     Log.v(TAG, "onResume");
-    Client.get().addOnResponseListener(this);
+    Client.get()
+          .addOnResponseListener(this);
   }
 
   @Override
   public void onStop() {
     super.onStop();
     Log.v(TAG, "onStop");
-    Client.get().removeOnResponseListener(this);
+    Client.get()
+          .removeOnResponseListener(this);
   }
 
   @Override
   public void onPause() {
     super.onPause();
     Log.v(TAG, "onPause");
-    Client.get().removeOnResponseListener(this);
+    Client.get()
+          .removeOnResponseListener(this);
   }
 
 }

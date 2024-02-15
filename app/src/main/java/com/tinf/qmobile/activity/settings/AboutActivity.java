@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tinf.qmobile.databinding.ActivityAboutBinding;
+import com.tinf.qmobile.utility.ColorsUtils;
 
 public class AboutActivity extends AppCompatActivity {
   private ActivityAboutBinding binding;
@@ -15,6 +16,7 @@ public class AboutActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityAboutBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
 

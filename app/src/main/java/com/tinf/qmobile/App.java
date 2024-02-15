@@ -15,7 +15,11 @@ import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.utility.UserUtils;
+
+import java.util.Map;
 
 import io.objectbox.BoxStore;
 
@@ -32,35 +36,60 @@ public class App extends Application {
     super.onCreate();
     context = getBaseContext();
 
+//    TODO: habilitar
+//    DynamicColors.applyToActivitiesIfAvailable(this);
+
     FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
     crashlytics.setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
     crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
     crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
     crashlytics.setCustomKey("URL", UserUtils.getURL());
 
-    FirebaseRemoteConfig
-        .getInstance()
+    FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+
+    // Busca as configurações do Firebase Remote Config a cada 12h
+    remoteConfig
         .setConfigSettingsAsync(new FirebaseRemoteConfigSettings
             .Builder()
                                     .setMinimumFetchIntervalInSeconds(43200) // 12h
                                     .build())
-        .addOnFailureListener(e -> FirebaseCrashlytics.getInstance().recordException(e));
+        .addOnFailureListener(crashlytics::recordException);
 
-    FirebaseRemoteConfig
-        .getInstance()
+    remoteConfig
         .fetchAndActivate()
-        .addOnFailureListener(e -> FirebaseCrashlytics.getInstance().recordException(e));
+        .addOnFailureListener(crashlytics::recordException);
 
-    StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll().build());
+    // Atualiza as URLs do app
+    remoteConfig.setDefaultsAsync(R.xml.urls_map)
+                .addOnSuccessListener(t -> {
+                  Map<String, String> urls = new Gson().fromJson(remoteConfig.getString("urls"),
+                                                                 new TypeToken<Map<String,
+                                                                     String>>() {
+                                                                 }.getType());
+
+                  // Se o usuário estiver logado, tenta pegar a URL do campus
+                  // Caso não tenha campus, o logout será forçado no SplashActivity
+                  if (UserUtils.getCampus() != null) {
+                    UserUtils.setURL(urls.get(UserUtils.getCampus()));
+                  }
+                })
+                .addOnFailureListener(crashlytics::recordException);
+
+    StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitAll()
+                                                                    .build());
 
     AppCompatDelegate.setDefaultNightMode(PreferenceManager.getDefaultSharedPreferences(
-        getBaseContext()).getBoolean(NIGHT, false) ?
+                                                               getBaseContext())
+                                                           .getBoolean(NIGHT, false) ?
                                           AppCompatDelegate.MODE_NIGHT_YES
-                                                   : AppCompatDelegate.MODE_NIGHT_NO);
+                                                                                     :
+                                          AppCompatDelegate.MODE_NIGHT_NO);
 
     if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true) &&
         BoxStore.deleteAllFiles(getBaseContext(), UserUtils.getCredential(REGISTRATION))) {
-      getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit().putBoolean(VERSION, false).apply();
+      getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit()
+                                                      .putBoolean(VERSION, false)
+                                                      .apply();
     }
   }
 

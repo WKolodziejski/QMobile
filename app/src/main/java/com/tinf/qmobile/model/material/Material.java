@@ -9,7 +9,7 @@ import android.os.Environment;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.model.Queryable;
 import com.tinf.qmobile.model.matter.Matter;
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.utility.DesignUtils;
 import com.tinf.qmobile.utility.UserUtils;
 
 import java.text.SimpleDateFormat;
@@ -55,7 +55,7 @@ public class Material implements Queryable {
   }
 
   public int getIcon() {
-    return link.contains(".") ? Design.parseIcon(
+    return link.contains(".") ? DesignUtils.parseIcon(
         link.substring(link.lastIndexOf(".")).toLowerCase()) : R.drawable.ic_file;
   }
 

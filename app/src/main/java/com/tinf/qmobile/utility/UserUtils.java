@@ -43,6 +43,7 @@ public class UserUtils {
   private static final String YEARS = ".Years";
   private static final String URL = ".Url";
   private static final String IMG = ".Img";
+  private static final String CAMPUS = ".Campus";
 
   public static boolean isValid() {
     return getInfo().getBoolean(VALID, false);
@@ -50,16 +51,24 @@ public class UserUtils {
 
   public static void setValid(boolean isValid) {
     if (getKeep()) {
-      getEditor().putBoolean(VALID, isValid).apply();
+      getEditor().putBoolean(VALID, isValid)
+                 .apply();
     }
   }
 
   public static void setURL(String url) {
-    getEditor().putString(URL, url).apply();
+    getEditor().putString(URL, url)
+               .apply();
   }
 
   public static void setKeep(boolean keep) {
-    getEditor().putBoolean(KEEP, keep).apply();
+    getEditor().putBoolean(KEEP, keep)
+               .apply();
+  }
+
+  public static void setCampus(String campus) {
+    getEditor().putString(CAMPUS, campus)
+               .apply();
   }
 
   public static boolean getKeep() {
@@ -70,20 +79,27 @@ public class UserUtils {
     return getInfo().getString(URL, "");
   }
 
+  public static String getCampus() {
+    return getInfo().getString(CAMPUS, null);
+  }
+
   public static String getName() {
     return getInfo().getString(NAME, "");
   }
 
   public static void setName(String name) {
-    getEditor().putString(NAME, name).apply();
+    getEditor().putString(NAME, name)
+               .apply();
   }
 
   public static String getCredential(String TAG) {
     return getInfo().getString(TAG, "");
   }
 
-  public static void setCredential(String TAG, String cred) {
-    getEditor().putString(TAG, cred).apply();
+  public static void setCredential(String TAG,
+                                   String cred) {
+    getEditor().putString(TAG, cred)
+               .apply();
   }
 
   public static String getLastLogin() {
@@ -93,11 +109,13 @@ public class UserUtils {
   }
 
   public static void setLastLogin(Long date) {
-    getEditor().putLong(LAST, date).apply();
+    getEditor().putLong(LAST, date)
+               .apply();
   }
 
   public static void clearInfo() {
-    getEditor().clear().apply();
+    getEditor().clear()
+               .apply();
   }
 
   static SharedPreferences getInfo() {
@@ -115,7 +133,8 @@ public class UserUtils {
       array.put(z);
     }
 
-    getEditor().putString(YEARS, array.toString()).apply();
+    getEditor().putString(YEARS, array.toString())
+               .apply();
   }
 
   public static String[] getYears() {
@@ -130,7 +149,8 @@ public class UserUtils {
         if (array.length() > 0) {
 
           for (int i = 0; i < array.length(); i++) {
-            years.add(array.getString(i).replaceAll("\\s+", ""));
+            years.add(array.getString(i)
+                           .replaceAll("\\s+", ""));
           }
         }
       } catch (JSONException e) {
@@ -148,33 +168,36 @@ public class UserUtils {
   public static int getYear(int i) {
     FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
-    if (getYears().length > 0) {
-      crashlytics.setCustomKey("Years", Arrays.toString(getYears()));
+    if (getYears().length == 0)
+      return 0;
 
-      if (getYears()[i].contains("/")) {
-        String s = getYears()[i];
-        return Integer.parseInt(s.substring(0, s.indexOf("/")));
+    crashlytics.setCustomKey("Years", Arrays.toString(getYears()));
 
-      } else if (!getYears()[i].isEmpty()) {
-        return Integer.parseInt(getYears()[i]);
+    if (getYears()[i].contains("/")) {
+      String s = getYears()[i];
+      return Integer.parseInt(s.substring(0, s.indexOf("/")));
 
-      } else return 0;
+    } else if (!getYears()[i].isEmpty()) {
+      return Integer.parseInt(getYears()[i]);
+    }
 
-    } else return 0;
+    return 0;
   }
 
   public static int getPeriod(int i) {
-    if (getYears().length > 0) {
-      if (getYears()[i].contains("/")) {
-        String s = getYears()[i];
-        return Integer.parseInt(s.substring(s.indexOf("/") + 1));
+    if (getYears().length == 0)
+      return 0;
 
-      } else return 0;
+    if (getYears()[i].contains("/")) {
+      String s = getYears()[i];
+      return Integer.parseInt(s.substring(s.indexOf("/") + 1));
+    }
 
-    } else return 0;
+    return 0;
   }
 
-  public static int getPos(int year, int period) {
+  public static int getPos(int year,
+                           int period) {
     String[] years = getYears();
 
     for (int i = 0; i < years.length; i++) {
@@ -188,7 +211,8 @@ public class UserUtils {
   }
 
   public static void setImg(String cod) {
-    getEditor().putString(IMG, cod).apply();
+    getEditor().putString(IMG, cod)
+               .apply();
   }
 
   public static String getImg() {
@@ -196,12 +220,14 @@ public class UserUtils {
   }
 
   public static boolean hasImg() {
-    return !getInfo().getString(IMG, "").isEmpty();
+    return !getInfo().getString(IMG, "")
+                     .isEmpty();
   }
 
   public static GlideUrl getImgUrl() {
     return new GlideUrl(UserUtils.getImg(), new LazyHeaders.Builder()
-        .addHeader("Cookie", Client.get().getCookie())
+        .addHeader("Cookie", Client.get()
+                                   .getCookie())
         .build());
   }
 
@@ -253,10 +279,13 @@ public class UserUtils {
         return null;
     }*/
 
-  private static String encrypt(String value, String KEY_A, String KEY_B) {
+  private static String encrypt(String value,
+                                String KEY_A,
+                                String KEY_B) {
     String encrypted = "", javaScriptCode = "";
 
-    InputStream inputStream = getContext().getResources().openRawResource(R.raw.encrypt);
+    InputStream inputStream = getContext().getResources()
+                                          .openRawResource(R.raw.encrypt);
     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
     try {
@@ -290,7 +319,8 @@ public class UserUtils {
     return encrypted;
   }
 
-  public static Map<String, String> getLoginParams(String KEY_A, String KEY_B) {
+  public static Map<String, String> getLoginParams(String KEY_A,
+                                                   String KEY_B) {
     Map<String, String> params = new HashMap<>();
     params.put("LOGIN", encrypt(UserUtils.getCredential(REGISTRATION), KEY_A, KEY_B));
     params.put("SENHA", encrypt(UserUtils.getCredential(PASSWORD), KEY_A, KEY_B));

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.color.ColorRoles;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -23,7 +24,8 @@ import com.tinf.qmobile.fragment.login.WelcomeLoginFragment;
 import com.tinf.qmobile.network.Client;
 import com.tinf.qmobile.network.OnResponse;
 import com.tinf.qmobile.service.FirebaseMessageParams;
-import com.tinf.qmobile.utility.Design;
+import com.tinf.qmobile.utility.ColorsUtils;
+import com.tinf.qmobile.utility.DesignUtils;
 import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.Date;
@@ -31,25 +33,19 @@ import java.util.Date;
 public class LoginActivity extends AppCompatActivity implements OnResponse {
   private ActivityLoginBinding binding;
   private static final String TAG = "LoginActivity";
-  Fragment fragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    ColorsUtils.setSystemBarColor(this, com.google.android.material.R.attr.colorSurface);
     binding = ActivityLoginBinding.inflate(getLayoutInflater());
     setContentView(binding.getRoot());
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-    if (savedInstanceState != null) {
-      fragment = getSupportFragmentManager().getFragment(savedInstanceState, "loginFragment");
-    } else {
-      fragment = new WelcomeLoginFragment();
-    }
-
     getSupportFragmentManager()
         .beginTransaction()
-        .replace(R.id.login_fragment, fragment)
-        .commit();
+        .replace(R.id.login_fragment, new WelcomeLoginFragment())
+        .commitNow();
 
     FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
 
@@ -76,13 +72,17 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
 
     Date now = new Date();
 
-    if (!params.show || params.showAfter.after(now) || params.hideAfter.before(now)) {
+    boolean show = params.show && params.showAfter.before(now) && params.hideAfter.after(now);
+
+    if (!show) {
       binding.warningCard.setVisibility(View.GONE);
       return;
     }
 
-    binding.warningCard.setCardBackgroundColor(
-        Design.getColorForWarning(getBaseContext(), params.color));
+    ColorRoles colorRoles = DesignUtils.getColorForWarning(getBaseContext(), params.color);
+
+    binding.warningCard.setCardBackgroundColor(colorRoles.getAccentContainer());
+    binding.warningText.setTextColor(colorRoles.getOnAccentContainer());
     binding.warningText.setText(params.message);
     binding.warningCard.setVisibility(View.VISIBLE);
   }
@@ -100,7 +100,9 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
   }
 
   @Override
-  public void onError(int pg, String error) {
+  public void onError(int pg,
+                      int year,
+                      int period, String error) {
     Toast.makeText(getBaseContext(), error, Toast.LENGTH_SHORT).show();
 
     Log.e(TAG, error);
@@ -187,14 +189,6 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
   protected void onDestroy() {
     super.onDestroy();
     Client.get().removeOnResponseListener(this);
-  }
-
-  @Override
-  protected void onSaveInstanceState(
-      @NonNull
-      Bundle outState) {
-    super.onSaveInstanceState(outState);
-    getSupportFragmentManager().putFragment(outState, "loginFragment", fragment);
   }
 
 }

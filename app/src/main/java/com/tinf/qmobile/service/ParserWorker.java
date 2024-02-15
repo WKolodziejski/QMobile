@@ -121,7 +121,10 @@ public class ParserWorker extends Worker {
       }
 
       @Override
-      public void onError(int pg, String error) {
+      public void onError(int pg,
+                          int year,
+                          int period,
+                          String error) {
         finish(false);
       }
 
