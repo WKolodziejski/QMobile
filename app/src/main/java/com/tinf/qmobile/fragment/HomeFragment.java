@@ -48,7 +48,6 @@ import com.tinf.qmobile.model.matter.Period;
 import com.tinf.qmobile.model.matter.Schedule;
 import com.tinf.qmobile.model.matter.Schedule_;
 import com.tinf.qmobile.network.Client;
-import com.tinf.qmobile.utility.ChartUtils;
 import com.tinf.qmobile.utility.DesignUtils;
 import com.tinf.qmobile.utility.EventsUtils;
 import com.tinf.qmobile.utility.ScheduleUtils;
@@ -172,7 +171,7 @@ public class HomeFragment extends BaseFragment implements OnData<Event>, OnUpdat
 
       if (fab != null) {
         try {
-          transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+          transition = ActivityOptions.makeSceneTransitionAnimation(requireActivity(),
                                                                     Pair.create(fab,
                                                                                 fab.getTransitionName()))
                                       .toBundle();
@@ -222,7 +221,7 @@ public class HomeFragment extends BaseFragment implements OnData<Event>, OnUpdat
 
     binding.weekView.setOnEventClickListener((event, eventRect) -> {
       Log.d("WEEK", event.getName());
-      Intent intent = new Intent(getActivity(), EventViewActivity.class);
+      Intent intent = new Intent(requireActivity(), EventViewActivity.class);
       intent.putExtra("TYPE", SCHEDULE);
       intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
       intent.putExtra("LOOKUP", true);
@@ -236,7 +235,7 @@ public class HomeFragment extends BaseFragment implements OnData<Event>, OnUpdat
 
       if (fab != null) {
         try {
-          transition = ActivityOptions.makeSceneTransitionAnimation(getActivity(),
+          transition = ActivityOptions.makeSceneTransitionAnimation(requireActivity(),
                                                                     Pair.create(fab,
                                                                                 fab.getTransitionName()))
                                       .toBundle();

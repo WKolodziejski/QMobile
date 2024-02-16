@@ -132,10 +132,10 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
   }
 
   private void hideKeyboard() {
-    View vi = getActivity().getCurrentFocus();
+    View vi = requireActivity().getCurrentFocus();
     if (vi != null) {
       InputMethodManager imm =
-          (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+          (InputMethodManager) requireActivity().getSystemService(INPUT_METHOD_SERVICE);
       if (imm != null) {
         imm.hideSoftInputFromWindow(vi.getWindowToken(), 0);
       }

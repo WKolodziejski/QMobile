@@ -19,7 +19,6 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import com.tinf.qmobile.App;
 import com.tinf.qmobile.BuildConfig;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.activity.MatterActivity;
@@ -32,7 +31,7 @@ public class NotificationUtils {
       return;
 
     NotificationUtils.show("Debug", text, -1, 0,
-                           new Intent(App.getContext(), SplashActivity.class));
+                           new Intent(getContext(), SplashActivity.class));
   }
 
   public static void show(String title, String txt, int channelID, int id, Intent intent) {
@@ -92,25 +91,25 @@ public class NotificationUtils {
         return "DEBUG";
 
       case 0:
-        return App.getContext().getResources().getString(R.string.app_name);
+        return getContext().getResources().getString(R.string.app_name);
 
       case JOURNAL:
-        return App.getContext().getResources().getString(R.string.title_diarios);
+        return getContext().getResources().getString(R.string.title_diarios);
 
       case SCHEDULE:
-        return App.getContext().getResources().getString(R.string.title_horario);
+        return getContext().getResources().getString(R.string.title_horario);
 
       case MATERIAL:
-        return App.getContext().getResources().getString(R.string.title_materiais);
+        return getContext().getResources().getString(R.string.title_materiais);
 
       case MESSAGE:
-        return App.getContext().getResources().getString(R.string.title_messages);
+        return getContext().getResources().getString(R.string.title_messages);
 
       case EVENT:
-        return App.getContext().getResources().getString(R.string.title_calendario);
+        return getContext().getResources().getString(R.string.title_calendario);
     }
 
-    return App.getContext().getResources().getString(R.string.app_name);
+    return getContext().getResources().getString(R.string.app_name);
   }
 
 }

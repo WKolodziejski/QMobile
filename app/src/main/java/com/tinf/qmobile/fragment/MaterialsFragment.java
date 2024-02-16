@@ -66,14 +66,14 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
         });
 
     receiver =
-        new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE),
+        new DownloadReceiver((DownloadManager) requireActivity().getSystemService(DOWNLOAD_SERVICE),
                              id -> adapter.notifyItemDownloaded(id));
 
-    getActivity().registerReceiver(receiver,
-                                   new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    requireActivity().registerReceiver(receiver,
+                                       new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
     if (!hasPermission(getContext()) && launcher != null) {
-      requestPermission(getActivity(), launcher);
+      requestPermission(requireActivity(), launcher);
     }
   }
 
@@ -94,7 +94,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
 
       @Override
       public void setSelectionMode(ActionMode.Callback callback) {
-        action = getActivity().startActionMode(callback);
+        action = requireActivity().startActionMode(callback);
         refresh.setEnabled(false);
       }
 
@@ -114,7 +114,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
       public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
         refresh.setEnabled(false);
 
-        MenuInflater menuInflater = getActivity().getMenuInflater();
+        MenuInflater menuInflater = requireActivity().getMenuInflater();
         menuInflater.inflate(R.menu.materials, menu);
         return true;
       }
@@ -183,7 +183,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
   public void onDestroy() {
     super.onDestroy();
     launcher = null;
-    getActivity().unregisterReceiver(receiver);
+    requireActivity().unregisterReceiver(receiver);
   }
 
   @Override

@@ -90,7 +90,7 @@ public class ScheduleCreateFragment extends Fragment {
                                   .get(id);
 
       if (schedule == null) {
-        getActivity().finish();
+        requireActivity().finish();
         return;
       }
 
@@ -285,7 +285,7 @@ public class ScheduleCreateFragment extends Fragment {
       binding.colorDecoration.setVisibility(GONE);
     }
 
-    ((EventCreateActivity) getActivity()).binding.add.setOnClickListener(v -> {
+    ((EventCreateActivity) requireActivity()).binding.add.setOnClickListener(v -> {
       end = new DayTime(start.getDayValue(), end.getHour(), end.getMinute());
 
       Calendar alarmTime = Calendar.getInstance();
@@ -364,7 +364,7 @@ public class ScheduleCreateFragment extends Fragment {
 
       Works.scheduleAlarm(input, schedule.getAlarm(), alarmDif == 0);
 
-      getActivity().finish();
+      requireActivity().finish();
     });
   }
 

@@ -15,7 +15,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -128,7 +127,7 @@ public class UserFragment extends DialogFragment {
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity());
-    theDialogView = onCreateView(LayoutInflater.from(requireContext()), null, savedInstanceState);
+    theDialogView = onCreateView(LayoutInflater.from(getContext()), null, savedInstanceState);
     builder.setView(theDialogView);
 
     return builder.create();

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,14 +22,6 @@ import java.util.List;
 
 public class ReportFragment extends BaseFragment implements OnData<Queryable> {
   private FragmentReportBinding binding;
-
-  @Override
-  public void onCreate(
-      @Nullable
-      Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
-  }
 
   @Override
   public View onCreateView(
@@ -59,13 +49,6 @@ public class ReportFragment extends BaseFragment implements OnData<Queryable> {
     binding.table.getCellRecyclerView().addOnScrollListener(DesignUtils.getRefreshBehavior(refresh));
 
     new Handler(Looper.getMainLooper()).postDelayed(() -> DesignUtils.syncToolbar(toolbar, canExpand()), 10);
-  }
-
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.grades, menu);
-    super.onCreateOptionsMenu(menu, inflater);
-    menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_list);
   }
 
   private boolean canExpand() {

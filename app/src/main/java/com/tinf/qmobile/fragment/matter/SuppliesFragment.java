@@ -57,15 +57,15 @@ public class SuppliesFragment extends Fragment {
         });
 
     receiver =
-        new DownloadReceiver((DownloadManager) getActivity().getSystemService(DOWNLOAD_SERVICE),
+        new DownloadReceiver((DownloadManager) requireActivity().getSystemService(DOWNLOAD_SERVICE),
                              id -> adapter.notifyItemDownloaded(id));
 
-    getActivity().registerReceiver(receiver,
-                                   new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    requireActivity().registerReceiver(receiver,
+                                       new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
     if (!hasPermission(getContext()) && launcher != null) {
-      requestPermission(getActivity(), launcher);
+      requestPermission(requireActivity(), launcher);
     }
   }
 
@@ -94,7 +94,7 @@ public class SuppliesFragment extends Fragment {
 
       @Override
       public void setSelectionMode(ActionMode.Callback callback) {
-        action = getActivity().startActionMode(callback);
+        action = requireActivity().startActionMode(callback);
       }
 
       @Override
@@ -109,7 +109,7 @@ public class SuppliesFragment extends Fragment {
 
       @Override
       public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-        MenuInflater menuInflater = getActivity().getMenuInflater();
+        MenuInflater menuInflater = requireActivity().getMenuInflater();
         menuInflater.inflate(R.menu.materials, menu);
         return true;
       }
@@ -140,7 +140,7 @@ public class SuppliesFragment extends Fragment {
   public void onDestroy() {
     super.onDestroy();
     launcher = null;
-    getActivity().unregisterReceiver(receiver);
+    requireActivity().unregisterReceiver(receiver);
   }
 
 }

@@ -49,7 +49,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     Preference reset = findPreference(DB);
     reset.setOnPreferenceClickListener(preference -> {
-      new MaterialAlertDialogBuilder(getActivity())
+      new MaterialAlertDialogBuilder(requireActivity())
           .setTitle(getResources().getString(R.string.dialog_clear_data_title))
           .setMessage(getResources().getString(R.string.dialog_clear_data_text))
           .setCancelable(true)
@@ -70,7 +70,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     Preference about = findPreference("key_about");
     about.setOnPreferenceClickListener(preference -> {
-      startActivity(new Intent(getActivity(), AboutActivity.class));
+      startActivity(new Intent(requireActivity(), AboutActivity.class));
       return true;
     });
 

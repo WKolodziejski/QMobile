@@ -172,11 +172,11 @@ public class UserEventViewFragment extends Fragment {
       return true;
 
     } else if (itemId == R.id.action_delete) {
-      new MaterialAlertDialogBuilder(getActivity())
+      new MaterialAlertDialogBuilder(requireActivity())
           .setMessage(getString(R.string.dialog_delete_txt))
           .setPositiveButton(R.string.dialog_delete, (dialog, which) -> {
             DataBase.get().getBoxStore().boxFor(EventUser.class).remove(id);
-            getActivity().finish();
+            requireActivity().finish();
             Toast.makeText(getContext(), getString(R.string.event_removed), Toast.LENGTH_SHORT)
                  .show();
           })

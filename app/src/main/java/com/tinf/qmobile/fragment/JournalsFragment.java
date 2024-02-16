@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,14 +27,6 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
   private FragmentJournalsBinding binding;
 
   @Override
-  public void onCreate(
-      @Nullable
-      Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
-  }
-
-  @Override
   public View onCreateView(
       @NonNull
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,23 +43,17 @@ public class JournalsFragment extends BaseFragment implements OnData<Queryable> 
       Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    JournalsAdapter adapter = new JournalsAdapter(getContext(), this::onUpdate);
+    JournalsAdapter adapter = new JournalsAdapter(requireContext(), this::onUpdate);
 
-    binding.recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-    binding.recycler.addItemDecoration(new CustomItemDivider(getContext()));
+    binding.recycler.setLayoutManager(new LinearLayoutManager(requireContext()));
+    binding.recycler.addItemDecoration(new CustomItemDivider(requireContext()));
     binding.recycler.setItemAnimator(null);
     binding.recycler.setAdapter(adapter);
     binding.recycler.addItemDecoration(new KmHeaderItemDecoration(adapter));
     binding.recycler.addOnScrollListener(DesignUtils.getRefreshBehavior(refresh));
 
-    new Handler(Looper.getMainLooper()).postDelayed(() -> DesignUtils.syncToolbar(toolbar, canExpand()), 10);
-  }
-
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.grades, menu);
-    super.onCreateOptionsMenu(menu, inflater);
-    menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_column);
+    new Handler(Looper.getMainLooper()).postDelayed(
+        () -> DesignUtils.syncToolbar(toolbar, canExpand()), 10);
   }
 
   private boolean canExpand() {

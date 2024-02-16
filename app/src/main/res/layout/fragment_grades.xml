@@ -6,15 +6,6 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        app:tabIndicatorFullWidth="false"
-        app:tabMode="auto"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
-
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
         android:layout_width="match_parent"

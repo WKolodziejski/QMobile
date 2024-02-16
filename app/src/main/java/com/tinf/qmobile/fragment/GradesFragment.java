@@ -1,15 +1,16 @@
 package com.tinf.qmobile.fragment;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.adapter.tab.GradesTabsAdapter;
 import com.tinf.qmobile.databinding.FragmentGradesBinding;
@@ -17,6 +18,14 @@ import com.tinf.qmobile.databinding.FragmentGradesBinding;
 public class GradesFragment extends BaseFragment {
 
   private FragmentGradesBinding binding;
+
+  @Override
+  public void onCreate(
+      @Nullable
+      Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
+  }
 
   @Override
   public View onCreateView(
@@ -39,21 +48,37 @@ public class GradesFragment extends BaseFragment {
     super.onViewCreated(view, savedInstanceState);
 
     binding.pager.setAdapter(new GradesTabsAdapter(getChildFragmentManager(), getLifecycle()));
-
-    new TabLayoutMediator(binding.tab, binding.pager, (tab, position) -> {
-      Resources resources = getContext().getResources();
-      switch (position) {
-        case 0:
-          tab.setText(resources.getString(R.string.title_diarios));
-          break;
-
-        case 1:
-          tab.setText(resources.getString(R.string.title_boletim));
-          break;
-      }
-    }).attach();
-
+    binding.pager.setUserInputEnabled(false);
     binding.pager.setCurrentItem(0);
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.grades, menu);
+    super.onCreateOptionsMenu(menu, inflater);
+    menu.findItem(R.id.action_grades).setIcon(R.drawable.ic_column);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(
+      @NonNull
+      MenuItem item) {
+
+    if (item.getItemId() == R.id.action_grades) {
+      if (binding.pager.getCurrentItem() == 0) {
+        binding.pager.setCurrentItem(1);
+        item.setIcon(R.drawable.ic_list);
+        return true;
+      }
+
+      if (binding.pager.getCurrentItem() == 1) {
+        binding.pager.setCurrentItem(0);
+        item.setIcon(R.drawable.ic_column);
+        return true;
+      }
+    }
+
+    return super.onOptionsItemSelected(item);
   }
 
   @Override
@@ -69,6 +94,6 @@ public class GradesFragment extends BaseFragment {
   @Override
   protected void onScrollRequest() {
     ((BaseFragment) getChildFragmentManager().getFragments()
-                                              .get(0)).requestScroll();
+                                             .get(0)).requestScroll();
   }
 }

@@ -11,7 +11,6 @@ import android.os.StrictMode;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
-import com.google.android.material.color.DynamicColors;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -21,11 +20,7 @@ import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.Map;
 
-import io.objectbox.BoxStore;
-
 public class App extends Application {
-  public static final String VERSION = ".v1.8.8";
-  public static final String VERSION_INFO = ".Version";
   public static final String USE_INFO = ".use";
   public static final String USE_COUNT = ".count";
   public static final String USE_RATED = ".rated";
@@ -67,8 +62,7 @@ public class App extends Application {
                                                                      String>>() {
                                                                  }.getType());
 
-                  // Se o usuário estiver logado, tenta pegar a URL do campus
-                  // Caso não tenha campus, o logout será forçado no SplashActivity
+                  // Se o usuário estiver logado, tenta atualizar a URL do campus
                   if (UserUtils.getCampus() != null) {
                     UserUtils.setURL(urls.get(UserUtils.getCampus()));
                   }
@@ -84,13 +78,6 @@ public class App extends Application {
                                           AppCompatDelegate.MODE_NIGHT_YES
                                                                                      :
                                           AppCompatDelegate.MODE_NIGHT_NO);
-
-    if (getSharedPreferences(VERSION_INFO, MODE_PRIVATE).getBoolean(VERSION, true) &&
-        BoxStore.deleteAllFiles(getBaseContext(), UserUtils.getCredential(REGISTRATION))) {
-      getSharedPreferences(VERSION_INFO, MODE_PRIVATE).edit()
-                                                      .putBoolean(VERSION, false)
-                                                      .apply();
-    }
   }
 
   public static Context getContext() {

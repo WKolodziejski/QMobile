@@ -31,7 +31,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -336,7 +335,6 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     if (itemId == android.R.id.home) {
       getOnBackPressedDispatcher().onBackPressed();
       return true;
-
     }
 //    else if (itemId == R.id.action_account) {
 //      UserFragment fragment = new UserFragment();

@@ -160,13 +160,16 @@
                 android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
 
-        <activity android:name=".activity.ReportActivity"
+        <activity
+            android:name=".activity.ReportActivity"
             android:screenOrientation="landscape"
             android:label="">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tinf.qmobile.activity.MainActivity" />
         </activity>
+
+        <activity android:name="com.tinf.qmobile.activity.WebAppActivity" />
 
         <service
             android:name="androidx.work.impl.foreground.SystemForegroundService"

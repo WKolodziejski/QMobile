@@ -99,7 +99,7 @@ public class ScheduleFragment extends Fragment {
     binding.weekView.setWeekViewLoader(ArrayList::new);
 
     binding.weekView.setOnEventClickListener((event, eventRect) -> {
-      Intent intent = new Intent(getActivity(), EventViewActivity.class);
+      Intent intent = new Intent(requireActivity(), EventViewActivity.class);
       intent.putExtra("TYPE", SCHEDULE);
       intent.putExtra("ID", Long.valueOf(event.getIdentifier()));
       intent.putExtra("LOOKUP", bundle == null);
@@ -112,7 +112,7 @@ public class ScheduleFragment extends Fragment {
       Intent intent = new Intent(getContext(), EventCreateActivity.class);
       intent.putExtra("TYPE", SCHEDULE);
 
-      if (getActivity() instanceof MatterActivity)
+      if (requireActivity() instanceof MatterActivity)
         intent.putExtra("ID2", bundle.getLong("ID"));
 
       startActivity(intent);

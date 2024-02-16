@@ -104,7 +104,7 @@ public class EventCreateFragment extends Fragment {
             }
           }
         } else {
-          getActivity().finish();
+          requireActivity().finish();
         }
       } else {
         color = App.getContext().getColor(R.color.colorPrimary);
@@ -214,23 +214,21 @@ public class EventCreateFragment extends Fragment {
       dialog.show();
     });
 
-    binding.colorLayout.setOnClickListener(v -> {
-      ColorPickerDialogBuilder
-          .with(getContext())
-          .setTitle(getString(R.string.dialog_choose_color))
-          .initialColor(color)
-          .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
-          .density(6)
-          .lightnessSliderOnly()
-          .setPositiveButton(getString(R.string.dialog_select),
-                             (dialog, selectedColor, allColors) -> {
-                               color = selectedColor;
-                               updateText();
-                             })
-          .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
-          .build()
-          .show();
-    });
+    binding.colorLayout.setOnClickListener(v -> ColorPickerDialogBuilder
+        .with(getContext())
+        .setTitle(getString(R.string.dialog_choose_color))
+        .initialColor(color)
+        .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+        .density(6)
+        .lightnessSliderOnly()
+        .setPositiveButton(getString(R.string.dialog_select),
+                           (dialog, selectedColor, allColors) -> {
+                             color = selectedColor;
+                             updateText();
+                           })
+        .setNegativeButton(getString(R.string.dialog_cancel), (dialog, which) -> {})
+        .build()
+        .show());
 
     binding.matterLayout.setOnClickListener(v -> {
       String[] strings = new String[matters.size() + 1];
@@ -272,7 +270,7 @@ public class EventCreateFragment extends Fragment {
           .create().show();
     });
 
-    ((EventCreateActivity) getActivity()).binding.add.setOnClickListener(v -> {
+    ((EventCreateActivity) requireActivity()).binding.add.setOnClickListener(v -> {
 
       if (end.getTimeInMillis() == start.getTimeInMillis()) {
         end.setTimeInMillis(0);
@@ -331,7 +329,7 @@ public class EventCreateFragment extends Fragment {
 
       Works.scheduleAlarm(input, event.getAlarm(), alarmDif == 0);
 
-      getActivity().finish();
+      requireActivity().finish();
     });
   }
 
