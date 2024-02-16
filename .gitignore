@@ -8,12 +8,10 @@
 /captures
 .externalNativeBuild
 .idea/misc.xml
-.idea/misc.xml
 .idea/modules.xml
-.idea/modules.xml
+.idea/inspectionProfiles
+.idea/sonarlint
 app/release/app-release.apk
 app/release/output.json
-.idea/modules.xml
-.idea/misc.xml
 .idea/vcs.xml
 app/google-services.json
