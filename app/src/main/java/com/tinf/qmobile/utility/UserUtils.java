@@ -10,6 +10,9 @@ import android.text.TextUtils;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.network.Client;
 
@@ -31,7 +34,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class UserUtils {
+public final class UserUtils {
+  private static final String WEBAPP = ".Webapp";
 
   public static final String REGISTRATION = ".Reg";
   public static final String PASSWORD = ".Pass";
@@ -44,6 +48,7 @@ public class UserUtils {
   private static final String URL = ".Url";
   private static final String IMG = ".Img";
   private static final String CAMPUS = ".Campus";
+  private UserUtils() {}
 
   public static boolean isValid() {
     return getInfo().getBoolean(VALID, false);
@@ -71,6 +76,10 @@ public class UserUtils {
                .apply();
   }
 
+  public static boolean getWebapp() {
+    return getInfo().getBoolean(WEBAPP, false);
+  }
+
   public static boolean getKeep() {
     return getInfo().getBoolean(KEEP, true);
   }
@@ -81,6 +90,11 @@ public class UserUtils {
 
   public static String getCampus() {
     return getInfo().getString(CAMPUS, null);
+  }
+
+  public static void setWebapp(boolean webapp) {
+    getEditor().putBoolean(WEBAPP, webapp)
+               .apply();
   }
 
   public static String getName() {
@@ -327,6 +341,20 @@ public class UserUtils {
     params.put("Submit", encrypt("OK", KEY_A, KEY_B));
     params.put("TIPO_USU", encrypt("1", KEY_A, KEY_B));
     return params;
+  }
+
+  public static Map<String, String> getUrlMap() {
+    FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    remoteConfig.setDefaultsAsync(R.xml.urls_map);
+    return new Gson().fromJson(remoteConfig.getString("urls"),
+                               new TypeToken<Map<String, String>>() {
+                               }.getType());
+  }
+
+  public static List<String> getWebappList() {
+    FirebaseRemoteConfig remoteConfig = FirebaseRemoteConfig.getInstance();
+    remoteConfig.setDefaultsAsync(R.xml.urls_map);
+    return Arrays.asList(remoteConfig.getString("webapps").split(","));
   }
 
 }

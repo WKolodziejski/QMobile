@@ -872,10 +872,8 @@ public class Client {
     return isLogging;
   }
 
-  public void setURL(String url, String campus) {
+  public void setURL(String url) {
     URL = url;
-    UserUtils.setURL(url);
-    UserUtils.setCampus(campus);
   }
 
   public String getURL() {

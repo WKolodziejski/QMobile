@@ -87,9 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnResponse, OnEve
     setContentView(binding.getRoot());
     setSupportActionBar(binding.toolbar);
 
-    if (UserUtils.getYears().length > 0)
-      binding.date.setText(UserUtils.getYears()[pos]);
-
+    onDateChanged();
     buildDrawer();
     buildToolbar();
     buildNavigation();

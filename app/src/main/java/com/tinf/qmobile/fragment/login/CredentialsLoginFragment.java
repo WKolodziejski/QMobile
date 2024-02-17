@@ -19,7 +19,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
-import com.google.firebase.remoteconfig.internal.DefaultsXmlParser;
 import com.tinf.qmobile.R;
 import com.tinf.qmobile.databinding.FragmentLoginCredentialsBinding;
 import com.tinf.qmobile.network.Client;
@@ -29,24 +28,10 @@ import com.tinf.qmobile.utility.UserUtils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Map;
 
 public class CredentialsLoginFragment extends Fragment implements OnResponse {
   private static final String TAG = "CredentialLoginFragment";
   private FragmentLoginCredentialsBinding binding;
-  private String campus;
-
-  @Override
-  public void onCreate(
-      @Nullable
-      @org.jetbrains.annotations.Nullable
-      Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    if (getArguments() != null && getArguments().containsKey("CAMPUS")) {
-      campus = getArguments().getString("CAMPUS");
-    }
-  }
 
   @Override
   public View onCreateView(
@@ -67,58 +52,41 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
       Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
-    binding.btn.setOnClickListener(v -> {
+    binding.loginBtn.setOnClickListener(v -> {
 
       if (binding.userInput.getText()
                            .toString()
                            .isEmpty()) {
         binding.userInput.setError(getResources().getString(R.string.text_empty));
+        return;
       }
 
       if (binding.passwordInput.getText()
                                .toString()
                                .isEmpty()) {
         binding.passwordInput.setError(getResources().getString(R.string.text_empty));
+        return;
       }
 
-      if (!binding.userInput.getText()
-                            .toString()
-                            .isEmpty() &&
-          !binding.passwordInput.getText()
-                                .toString()
-                                .isEmpty()) {
-        hideKeyboard();
-        binding.userInput.setError(null);
+      hideKeyboard();
+      binding.userInput.setError(null);
 
-        UserUtils.setCredential(REGISTRATION,
-                                binding.userInput.getText()
-                                                 .toString()
-                                                 .toUpperCase()
-                                                 .trim());
+      UserUtils.setCredential(REGISTRATION,
+                              binding.userInput.getText()
+                                               .toString()
+                                               .toUpperCase()
+                                               .trim());
 
-        UserUtils.setCredential(PASSWORD, binding.passwordInput.getText()
-                                                               .toString()
-                                                               .trim());
+      UserUtils.setCredential(PASSWORD, binding.passwordInput.getText()
+                                                             .toString()
+                                                             .trim());
 
-        if (UserUtils.getURL()
-                     .isEmpty()) {
-          Map<String, String> map =
-              DefaultsXmlParser.getDefaultsFromXml(getContext(), R.xml.urls_map);
+      FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+      crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
+      crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
+      crashlytics.setCustomKey("URL", UserUtils.getURL());
 
-          String url = map.get(campus);
-
-          Client.get()
-                .setURL(url, campus);
-        }
-
-        FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
-        crashlytics.setCustomKey("Register", UserUtils.getCredential(REGISTRATION));
-        crashlytics.setCustomKey("Password", UserUtils.getCredential(PASSWORD));
-        crashlytics.setCustomKey("URL", UserUtils.getURL());
-
-        Client.get()
-              .login();
-      }
+      Client.get().login();
     });
 
     binding.keepLogin.setOnClickListener(view1 -> UserUtils.setKeep(binding.keepLogin.isChecked()));
@@ -146,7 +114,7 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
   public void onStart(int pg) {
     binding.progressBar.setVisibility(VISIBLE);
     binding.textLoading.setVisibility(View.VISIBLE);
-    binding.btn.setEnabled(false);
+    binding.loginBtn.setEnabled(false);
 
     if (pg == PG_GENERATOR) {
       binding.textLoading.setText(getResources().getString(R.string.login_token));
@@ -178,7 +146,7 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
                       String error) {
     binding.progressBar.setVisibility(View.INVISIBLE);
     binding.textLoading.setVisibility(View.INVISIBLE);
-    binding.btn.setEnabled(true);
+    binding.loginBtn.setEnabled(true);
     Log.e(TAG, error);
 
     try {
@@ -207,7 +175,7 @@ public class CredentialsLoginFragment extends Fragment implements OnResponse {
                              String message) {
     binding.progressBar.setVisibility(View.INVISIBLE);
     binding.textLoading.setVisibility(View.INVISIBLE);
-    binding.btn.setEnabled(true);
+    binding.loginBtn.setEnabled(true);
     binding.userInput.setError(message);
     Log.v(TAG, "Access denied");
   }

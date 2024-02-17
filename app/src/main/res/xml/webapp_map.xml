@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>webapp</key>
+        <value>
+            IFCE,IFES,IFG,IFGOIANO,IFPE
+        </value>
+    </entry>
+</defaultsMap>

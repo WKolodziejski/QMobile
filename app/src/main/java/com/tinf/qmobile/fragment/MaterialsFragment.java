@@ -1,13 +1,16 @@
 package com.tinf.qmobile.fragment;
 
 import static android.content.Context.DOWNLOAD_SERVICE;
+import static android.content.Context.RECEIVER_EXPORTED;
 import static com.tinf.qmobile.network.OnResponse.PG_MATERIALS;
 import static com.tinf.qmobile.utility.PermissionsUtils.hasPermission;
 import static com.tinf.qmobile.utility.PermissionsUtils.requestPermission;
 
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -48,6 +51,7 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
   private ActionMode action;
   private ActivityResultLauncher<String[]> launcher;
 
+  @SuppressLint("UnspecifiedRegisterReceiverFlag")
   @Override
   public void onCreate(
       @Nullable
@@ -69,8 +73,15 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
         new DownloadReceiver((DownloadManager) requireActivity().getSystemService(DOWNLOAD_SERVICE),
                              id -> adapter.notifyItemDownloaded(id));
 
-    requireActivity().registerReceiver(receiver,
-                                       new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      requireActivity().registerReceiver(receiver,
+                                         new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                                         RECEIVER_EXPORTED);
+    } else {
+      requireActivity().registerReceiver(receiver,
+                                         new IntentFilter(
+                                             DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
 
     if (!hasPermission(getContext()) && launcher != null) {
       requestPermission(requireActivity(), launcher);
@@ -145,8 +156,9 @@ public class MaterialsFragment extends BaseFragment implements OnData<Queryable>
       }
     }
 
-    new Handler(Looper.getMainLooper()).postDelayed(() -> DesignUtils.syncToolbar(toolbar, canExpand()),
-                                                    10);
+    new Handler(Looper.getMainLooper()).postDelayed(
+        () -> DesignUtils.syncToolbar(toolbar, canExpand()),
+        10);
   }
 
   @Nullable

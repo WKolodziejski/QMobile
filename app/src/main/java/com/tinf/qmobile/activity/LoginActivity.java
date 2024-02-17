@@ -7,10 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.color.ColorRoles;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -90,7 +88,15 @@ public class LoginActivity extends AppCompatActivity implements OnResponse {
   @Override
   public void onFinish(int pg, int year, int period) {
     if (pg == PG_LOGIN) {
-      Client.get().load(PG_FETCH_YEARS);
+      // Se for versão webapp, redireciona
+      if (UserUtils.getWebapp()) {
+        UserUtils.setValid(true);
+        startActivity(new Intent(this, WebAppActivity.class));
+        finish();
+
+      } else {
+        Client.get().load(PG_FETCH_YEARS);
+      }
 
     } else if (pg == PG_FETCH_YEARS) {
       UserUtils.setValid(true);

@@ -1,12 +1,13 @@
 package com.tinf.qmobile.activity;
 
-import static android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE;
 import static com.tinf.qmobile.model.ViewType.MESSAGE;
 
+import android.annotation.SuppressLint;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,7 +15,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.tinf.qmobile.R;
@@ -33,6 +33,7 @@ public class MessagesActivity extends AppCompatActivity implements OnResponse {
   ActivityResultLauncher<Intent> launcher = registerForActivityResult(
       new ActivityResultContracts.StartActivityForResult(), result -> finish());
 
+  @SuppressLint("UnspecifiedRegisterReceiverFlag")
   @Override
   protected void onCreate(
       @Nullable
@@ -53,7 +54,15 @@ public class MessagesActivity extends AppCompatActivity implements OnResponse {
 
     receiver = new DownloadReceiver((DownloadManager) getSystemService(DOWNLOAD_SERVICE), id -> {});
 
-    registerReceiver(receiver, new IntentFilter(ACTION_DOWNLOAD_COMPLETE));
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      registerReceiver(receiver,
+                       new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                       RECEIVER_EXPORTED);
+    } else {
+      registerReceiver(receiver,
+                       new IntentFilter(
+                           DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
 
     binding.recycler.setLayoutManager(new LinearLayoutManager(this));
     binding.recycler.setAdapter(new MessagesAdapter(this));

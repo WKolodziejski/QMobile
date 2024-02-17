@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tinf.qmobile.utility.UserUtils;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
   public static final String USE_INFO = ".use";
@@ -46,7 +47,9 @@ public class App extends Application {
     remoteConfig
         .setConfigSettingsAsync(new FirebaseRemoteConfigSettings
             .Builder()
-                                    .setMinimumFetchIntervalInSeconds(43200) // 12h
+                                    .setMinimumFetchIntervalInSeconds(
+                                        BuildConfig.DEBUG ? 0 :
+                                        TimeUnit.HOURS.toSeconds(12))
                                     .build())
         .addOnFailureListener(crashlytics::recordException);
 
