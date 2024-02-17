@@ -68,9 +68,9 @@ public class WebAppActivity extends AppCompatActivity implements OnResponse {
               "O Q-Acadêmico Web fez uma alteração em seu site, provocando problemas no " +
               "aplicativo " +
               "do Qmobile. " +
-              "Como solução temporária, o aplicativo irá redicerioná-lo para o site do " +
+              "Como solução temporária, o aplicativo irá redirecioná-lo para o site do " +
               "Q-Acadêmico Web, onde você poderá continuar utilizando o serviço. " +
-              "Estamos trabalhando em uma correção e pedimos desculpas pelo inconveninente.")
+              "Estamos trabalhando em uma correção e pedimos desculpas pelo inconveniente.")
           .setCancelable(false)
           .setPositiveButton("Entendido", null)
           .setNeutralButton("Não exibir novamente", (dialogInterface, i) -> {
